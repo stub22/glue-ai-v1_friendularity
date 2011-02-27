@@ -5,6 +5,7 @@ body {
 
 #page-heading {
 	font-size: 20;
+	font-family: arial;  	
 }
 #navigationBlock ul li {
   list-style: none;
