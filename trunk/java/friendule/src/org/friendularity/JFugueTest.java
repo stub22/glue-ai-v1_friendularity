@@ -76,6 +76,6 @@ rhythm.addSubstitution('.', "Ri");
 Pattern rpat = rhythm.getPattern();
 rpat.repeat(4);
 player.play(rpat);
-        System.exit(0); // If using Java 1.4 or lower
+       // System.exit(0); // If using Java 1.4 or lower
     }
 }
