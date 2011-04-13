@@ -30,8 +30,15 @@ public class VirtCharPanel extends javax.swing.JPanel {
 	public int getTestChannelNum() {
 		return (Integer) jspin_animTestChannelNum.getValue();
 	}
+	public String getTestChannelModifier() {
+		return (String) jspin_animTestChannelMod.getValue();
+	}
 	public String getTestDirection() {
 		return (String) jspin_animTestDirectionNum.getValue();
+	}
+
+	public void setDumpText(String dt) {
+		jtxta_dump.setText(dt);
 	}
     /** This method is called from within the constructor to
      * initialize the form.
@@ -46,6 +53,9 @@ public class VirtCharPanel extends javax.swing.JPanel {
         jButton1 = new javax.swing.JButton();
         jspin_animTestChannelNum = new javax.swing.JSpinner();
         jspin_animTestDirectionNum = new javax.swing.JSpinner();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jtxta_dump = new javax.swing.JTextArea();
+        jspin_animTestChannelMod = new javax.swing.JSpinner();
         renderPanel = new javax.swing.JPanel();
 
         setPreferredSize(new java.awt.Dimension(640, 640));
@@ -60,17 +70,30 @@ public class VirtCharPanel extends javax.swing.JPanel {
 
         jspin_animTestDirectionNum.setModel(new javax.swing.SpinnerListModel(new String[] {"pitch", "roll", "yaw"}));
 
+        jtxta_dump.setColumns(20);
+        jtxta_dump.setRows(5);
+        jScrollPane1.setViewportView(jtxta_dump);
+
+        jspin_animTestChannelMod.setModel(new javax.swing.SpinnerListModel(new String[] {"self", "first child"}));
+
         javax.swing.GroupLayout controlPanelLayout = new javax.swing.GroupLayout(controlPanel);
         controlPanel.setLayout(controlPanelLayout);
         controlPanelLayout.setHorizontalGroup(
             controlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, controlPanelLayout.createSequentialGroup()
-                .addGap(73, 73, 73)
-                .addComponent(jspin_animTestDirectionNum, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(167, 167, 167)
-                .addComponent(jspin_animTestChannelNum, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 89, Short.MAX_VALUE)
-                .addComponent(jButton1)
+            .addGroup(controlPanelLayout.createSequentialGroup()
+                .addGroup(controlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(controlPanelLayout.createSequentialGroup()
+                        .addGap(73, 73, 73)
+                        .addComponent(jspin_animTestDirectionNum, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(36, 36, 36)
+                        .addComponent(jspin_animTestChannelNum, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(41, 41, 41)
+                        .addComponent(jspin_animTestChannelMod, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 130, Short.MAX_VALUE)
+                        .addComponent(jButton1))
+                    .addGroup(controlPanelLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 509, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         controlPanelLayout.setVerticalGroup(
@@ -79,9 +102,11 @@ public class VirtCharPanel extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(controlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
+                    .addComponent(jspin_animTestDirectionNum, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jspin_animTestChannelNum, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jspin_animTestDirectionNum, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(116, Short.MAX_VALUE))
+                    .addComponent(jspin_animTestChannelMod, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE))
         );
 
         add(controlPanel, java.awt.BorderLayout.NORTH);
@@ -107,8 +132,11 @@ public class VirtCharPanel extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel controlPanel;
     private javax.swing.JButton jButton1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JSpinner jspin_animTestChannelMod;
     private javax.swing.JSpinner jspin_animTestChannelNum;
     private javax.swing.JSpinner jspin_animTestDirectionNum;
+    private javax.swing.JTextArea jtxta_dump;
     private javax.swing.JPanel renderPanel;
     // End of variables declaration//GEN-END:variables
 
