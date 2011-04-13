@@ -244,13 +244,19 @@ public class WomanFaceTest extends SimpleApplication implements AnimEventListene
 
 		Bone roots[] = csk.getRoots();
 		// System.out.println("Found " + roots.length + " root bones: " + roots);
-		Bone b = roots[0];
+		Bone rootBone = roots[0];
+		Bone tgtBone = rootBone;
+		String mod = myVCP.getTestChannelModifier();
+		if (mod.equals("first child")) {
+			List<Bone> kids = rootBone.getChildren();
+			Bone firstKid = kids.get(0);
+			tgtBone = firstKid;
+		}
 
-
-		Vector3f localPos = b.getLocalPosition();
-		Vector3f modelPos = b.getModelSpacePosition();
+		Vector3f localPos = rootBone.getLocalPosition();
+		Vector3f modelPos = rootBone.getModelSpacePosition();
 		// System.out.println("================================================================");
-		System.out.println("bone=" + b + ", localPos=" + localPos + ", modelPos=" + modelPos);
+		myVCP.setDumpText("tgtBone=" + tgtBone + ", localPos=" + localPos + ", modelPos=" + modelPos);
 
 
 		myWaistTwistAngle += tpf * myWaistTwistRate;
@@ -279,8 +285,8 @@ public class WomanFaceTest extends SimpleApplication implements AnimEventListene
 		q.fromAngles(pitchAngle, rollAngle, yawAngle);
 
 
-		b.setUserControl(true);
-		b.setUserTransforms(Vector3f.ZERO, q, Vector3f.UNIT_XYZ);
+		tgtBone.setUserControl(true);
+		tgtBone.setUserTransforms(Vector3f.ZERO, q, Vector3f.UNIT_XYZ);
 
 
 	}
