@@ -1,3 +1,6 @@
+
+/* Copied from JMonkey code */
+
 package org.friendularity;
 
 import com.jme3.app.SimpleApplication;

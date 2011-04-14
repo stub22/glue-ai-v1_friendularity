@@ -13,8 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
- * @author winston
+ * @author Stu B. <www.texpedient.com>
  */
 public class SpatialManipFuncs {
 	public static void dumpNodeTree(Node sceneNode, String childPrefix) {
