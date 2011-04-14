@@ -1,3 +1,5 @@
+/* Copied from JMonkey code */
+
 package org.friendularity;
 
 import jme3test.input.*;

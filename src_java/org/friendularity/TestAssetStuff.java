@@ -1,14 +1,13 @@
+/* Copied from JMonkey code */
+
 package org.friendularity;
 
-import jme3test.helloworld.*;
 import com.jme3.app.SimpleApplication;
-import com.jme3.font.BitmapText;
 import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
 import com.jme3.math.Vector3f;
-import com.jme3.scene.Geometry;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.shape.Box;
+
 
 /** Sample 3 - how to load an OBJ model, and OgreXML model, 
  * a material/texture, or text. */
