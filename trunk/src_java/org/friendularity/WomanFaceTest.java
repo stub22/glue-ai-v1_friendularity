@@ -39,6 +39,8 @@ import com.jme3.system.JmeContext;
 import java.awt.BorderLayout;
 import java.awt.Canvas;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
 import javax.swing.JFrame;
 
 /**
@@ -60,7 +62,9 @@ public class WomanFaceTest extends SimpleApplication implements AnimEventListene
 		owTst.startCanvasInPanelInFrame();
 		// owTst.start(JmeContext.Type.Display);
 	}
-
+	public List<AnimControl>	getAnimControls() {
+		return myAnimControls;
+	}
 	public Canvas makeCanvas() {
 		/* See Jmonkey examples    "TestCanvas.java" and "AppHarness.java"  */
 		AppSettings settings = new AppSettings(true);
@@ -96,10 +100,26 @@ public class WomanFaceTest extends SimpleApplication implements AnimEventListene
 
 		frame.setVisible(true);
 		startCanvas();  		// equivalent to this?:     start(JmeContext.Type.Canvas);
+
+		Future fut = enqueue(new Callable() {
+			public Object call() throws Exception {
+				System.out.println("*********** Enqueued call is executing");
+				return null;
+			}
+		});
+//to retrieve return value (waits for call to finish, fire&forget otherwise):
+		Object unusedResult;
+		try {
+			unusedResult = fut.get();
+		} catch (Throwable t) {
+			t.printStackTrace();
+		}
+		System.out.println("*********** startCanvasInPanelInFrame is returning");
 	}
 
 	@Override
 	public void simpleInitApp() {
+		System.out.println("*********** SimpleInitApp is starting");
 		flyCam.setMoveSpeed(10f);
 		viewPort.setBackgroundColor(ColorRGBA.LightGray);
 //    initKeys();
@@ -144,6 +164,8 @@ public class WomanFaceTest extends SimpleApplication implements AnimEventListene
 		 */
 		initWomanFaceModel();
 		setupTextBox();
+		System.out.println("*********** SimpleInitApp is finished");
+
 	}
 
 	public void initWomanFaceModel() {
@@ -171,12 +193,11 @@ public class WomanFaceTest extends SimpleApplication implements AnimEventListene
 
 		for (AnimControl ac : myAnimControls) {
 			Skeleton csk = ac.getSkeleton();
-			csk.reset();
+			csk.reset();  		// Forces bones to absorb default-bind-pose coords from nodes.
 			Bone roots[] = csk.getRoots();
 			Bone rb = roots[0];
 			Vector3f localPos = rb.getLocalPosition();
 			Vector3f modelPos = rb.getModelSpacePosition();
-			// These positions are all 0.0, because bones haven't absorbed default-bind-pose coords from nodes yet.
 			System.out.println("root bone=" + rb + ", localPos=" + localPos + ", modelPos=" + modelPos);
 			List<Bone> bkl = rb.getChildren();
 			for (Bone bk : bkl) {
@@ -298,11 +319,8 @@ public class WomanFaceTest extends SimpleApplication implements AnimEventListene
 			yawAngle = myWaistTwistAngle;
 		}
 		q.fromAngles(pitchAngle, rollAngle, yawAngle);
-
-
 		tgtBone.setUserControl(true);
 		tgtBone.setUserTransforms(Vector3f.ZERO, q, Vector3f.UNIT_XYZ);
-
 
 	}
 }

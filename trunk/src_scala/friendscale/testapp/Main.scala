@@ -16,8 +16,9 @@
 
 package friendscale.testapp
 
-import heaven.piece.{GoFish, Boxy}
-import org.friendularity.{TestOgreComplexAnimDeluxeEdition, WomanFaceTest, JFugueTest}
+import heaven.piece.{GoFish, Boxy};
+import com.jme3.animation.{AnimControl};
+import org.friendularity.{TestOgreComplexAnimDeluxeEdition, WomanFaceTest, JFugueTest};
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -32,26 +33,25 @@ object Main {
 		println("friendscale.testapp.main() sez: Hello, world!");
 		val tnc = GoFish.makeTNC(args);
 
-		val box1 = boxLunch("1");
+		val box1 = Bony.boxLunch("blp1", "bls1");
 		tnc.addBoxToRoot(box1, false);
 		tnc.launchFrame("FriendScale");
-		WomanFaceTest.main(args);
-		val box2 = boxLunch("2");
+		val owTst = new WomanFaceTest();
+		owTst.startCanvasInPanelInFrame();
+		val animCtrlsJL : java.util.List[AnimControl] = owTst.getAnimControls();
+		println("Got animControls: " + animCtrlsJL);
+		val animCtrlsSS : Seq[AnimControl] = scala.collection.JavaConversions.asBuffer(animCtrlsJL) ;
+
+
+		val rootBox = tnc.myBC.getRootBox();
+		println("****************** Attaching scene box tree");
+		val sceneBoxTree = Bony.attachSceneBoxTree(tnc.myBC, rootBox, animCtrlsSS);
+		println("****************** Finished attaching scene box tree");
+		
+		val box2 = Bony.boxLunch("blp2", "bls2");
 		tnc.addBoxToRoot(box2, false);
-		JFugueTest.main(args);
+
+		// JFugueTest.main(args);
 	}
-	class FriendBox extends Boxy.BoxOne {}
-	class FriendTrig extends Boxy.TriggerOne {
-		override def fire(box : Boxy.BoxOne) : Unit = {
-			println(this.toString() + " friendly-firing on " + box.toString());
-		}
-	}
-	def boxLunch(suffix : String) : FriendBox = {
-		val fb1 = new FriendBox();
-		fb1.setShortLabel("friendBox-" + suffix)
-		val ft1 = new FriendTrig();
-		ft1.setShortLabel("friendTrig-"  + suffix);
-		fb1.attachTrigger(ft1);
-		fb1;
-	}
+
 }
