@@ -62,7 +62,7 @@ object Bony {
 		}
 		skelBox;
 	}
-	def attachChildBoxTree(bc : BoxContext, parentBox : Box[_], bone : Bone) : Unit = {
+	def attachChildBoxTree(bc : BoxContext, parentBox : Box[_], bone : Bone) : BoneBox = {
 		val boneBox = boxLunch("boneBox-", "-X");
 		bc.contextualizeAndAttachChildBox(parentBox, boneBox);
 		val kidJL : java.util.List[Bone] = bone.getChildren();
@@ -72,6 +72,7 @@ object Bony {
 		}
 		boneBox;
 	}
+
 	/*
 		Bone rootBone = roots[0];
 		Bone tgtBone = rootBone;
@@ -91,6 +92,18 @@ object Bony {
 
 	class FriendBox(shortLabel : String) extends Boxy.BoxOne {
 		setShortLabel(shortLabel);
+		def attachTrigToKids(bc : BoxContext, trig : FriendTrig, recursive : Boolean) : Unit = {
+			// Assume for the moment that all kids are also friendBoxes.
+			val kidBoxes = getOpenKidBoxes(bc);
+			for (kid <- kidBoxes) {
+				kid.attachTrigger(trig);
+				if (recursive) {
+					// TODO : add a match, or get fancier with types.
+					val fk : FriendBox = kid.asInstanceOf[FriendBox];
+					fk.attachTrigToKids(bc, trig, true);
+				}
+			}
+		}
 	}
 	class FriendTrig(shortLabel: String) extends Boxy.TriggerOne {
 		override def fire(box : Boxy.BoxOne) : Unit = {
@@ -102,9 +115,16 @@ object Bony {
 	}
 	class BoneTrig(shortLabel: String) extends FriendTrig(shortLabel) {
 		setShortLabel(shortLabel);
+		override def fire(box : Boxy.BoxOne) : Unit = {
+			println(this.toString() + " bone-thugging on " + box.toString());
+		}
 	}
-
-	def boxLunch(labelPrefix : String, labelSuffix : String) : FriendBox = {
+	class NudgeTrig extends BoneTrig("nudge") {
+		override def fire(box : Boxy.BoxOne) : Unit = {
+			println(this.toString() + " nudging " + box.toString());
+		}
+	}
+	def boxLunch(labelPrefix : String, labelSuffix : String) : BoneBox = {
 		val bb1 = new BoneBox(labelPrefix + "-bba-" + labelSuffix);
 		val bt1 = new BoneTrig(labelPrefix + "-bt-a.1-" + labelSuffix);
 		bb1.attachTrigger(bt1);
