@@ -45,7 +45,9 @@ object Main {
 
 		val rootBox = tnc.myBC.getRootBox();
 		println("****************** Attaching scene box tree");
-		val sceneBoxTree = Bony.attachSceneBoxTree(tnc.myBC, rootBox, animCtrlsSS);
+		val sceneBoxTree : Bony.FriendBox = Bony.attachSceneBoxTree(tnc.myBC, rootBox, animCtrlsSS);
+		val nt = new Bony.NudgeTrig();
+		sceneBoxTree.attachTrigToKids(tnc.myBC, nt, true);
 		println("****************** Finished attaching scene box tree");
 		
 		val box2 = Bony.boxLunch("blp2", "bls2");
