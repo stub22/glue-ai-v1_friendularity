@@ -19,6 +19,7 @@ package friendscale.testapp
 import com.appdapter.gui.box.{Box, BoxContext};
 import heaven.piece.{GoFish, Boxy};
 import com.jme3.animation.{AnimChannel, AnimControl, Bone, LoopMode, Skeleton};
+import com.jme3.math.{Quaternion, Vector3f};
 /*
 import com.jme3.app.SimpleApplication;
 import com.jme3.font.BitmapFont;
@@ -43,7 +44,7 @@ import com.jme3.system.JmeContext;
 object Bony {
 
 	def attachSceneBoxTree(bc : BoxContext, parentBox : Box[_], animCtrls : Seq[AnimControl]) : FriendBox = {
-		val sceneBox = boxLunch("sceneBox-", "-X");
+		val sceneBox = new FriendBox("-scene[acCount=" + animCtrls.length + "]");
 		bc.contextualizeAndAttachChildBox(parentBox, sceneBox);
 		for (ac <- animCtrls) {
 			val skel = ac.getSkeleton();
@@ -53,38 +54,30 @@ object Bony {
 		}
 		sceneBox;
 	}
-	def attachSkeletonBoxTree(bc : BoxContext, parentBox : Box[_], skel : Skeleton) : BoneBox = {
-		val skelBox =  new BoneBox("-skelbt-");
+	def attachSkeletonBoxTree(bc : BoxContext, parentBox : Box[_], skel : Skeleton) : FriendBox = {
+		val skelBox =  new FriendBox("[" + skel + "]");
 		bc.contextualizeAndAttachChildBox(parentBox, skelBox);
 		val roots : Array[Bone] = skel.getRoots();
 		for (rb <- roots) {
-			attachChildBoxTree(bc, skelBox, rb);
+			attachBoneBoxTree(bc, skelBox, rb);
 		}
 		skelBox;
 	}
-	def attachChildBoxTree(bc : BoxContext, parentBox : Box[_], bone : Bone) : BoneBox = {
-		val boneBox = boxLunch("boneBox-", "-X");
+	def attachBoneBoxTree(bc : BoxContext, parentBox : Box[_], bone : Bone) : BoneBox = {
+		val boneBox =  new BoneBox(bone);
 		bc.contextualizeAndAttachChildBox(parentBox, boneBox);
 		val kidJL : java.util.List[Bone] = bone.getChildren();
-		val kidSS : Seq[Bone] = scala.collection.JavaConversions.asBuffer(kidJL) ;
+		val kidSS : Seq[Bone] = scala.collection.JavaConversions.asScalaBuffer(kidJL) ;
 		for (kid <- kidSS) {
-			attachChildBoxTree(bc, boneBox, kid);
+			attachBoneBoxTree(bc, boneBox, kid);
 		}
 		boneBox;
 	}
 
 	/*
-		Bone rootBone = roots[0];
-		Bone tgtBone = rootBone;
-		String mod = myVCP.getTestChannelModifier();
-		if (mod.equals("first child")) {
-			List<Bone> kids = rootBone.getChildren();
-			Bone firstKid = kids.get(0);
-			tgtBone = firstKid;
-		}
+	
 
-		Vector3f localPos = rootBone.getLocalPosition();
-		Vector3f modelPos = rootBone.getModelSpacePosition();
+
 		// System.out.println("================================================================");
 		myVCP.setDumpText("tgtBone=" + tgtBone + ", localPos=" + localPos + ", modelPos=" + modelPos);
 	*/
@@ -110,8 +103,32 @@ object Bony {
 			println(this.toString() + " friendly-firing on " + box.toString());
 		}
 	}
-	class BoneBox(shortLabel: String) extends FriendBox(shortLabel) {
+	class BoneBox(val myBone : Bone) extends FriendBox("[" + myBone.toString() + "]") {
+		def nudgeBone(direction : String,  angleRad : Float) : Unit = {
+			val localPos : Vector3f = myBone.getLocalPosition();
+			val localRot : Quaternion = myBone.getLocalRotation();
+			val localScale : Vector3f = myBone.getLocalScale();
+			// Vector3f modelPos = rootBone.getModelSpacePosition();
 
+			val q = new Quaternion();
+			// yaw, roll, pitch
+			//	System.out.println("Setting roll for bone: " + b + " to " + myWaistTwistAngle);
+
+			var pitchAngle = 0.0f;
+			var rollAngle = 0.0f;
+			var yawAngle = 0.0f;
+			if (direction.equals("pitch")) {
+				pitchAngle = angleRad;
+			} else if (direction.equals("roll")) {
+				rollAngle = angleRad;
+			} else if (direction.equals("yaw")) {
+				yawAngle = angleRad;
+			}
+			q.fromAngles(pitchAngle, rollAngle, yawAngle);
+			val nextRotQ = localRot.mult(q);
+			myBone.setUserControl(true);
+			myBone.setUserTransforms(Vector3f.ZERO, nextRotQ, Vector3f.UNIT_XYZ);
+		}
 	}
 	class BoneTrig(shortLabel: String) extends FriendTrig(shortLabel) {
 		setShortLabel(shortLabel);
@@ -119,16 +136,23 @@ object Bony {
 			println(this.toString() + " bone-thugging on " + box.toString());
 		}
 	}
-	class NudgeTrig extends BoneTrig("nudge") {
+	class NudgeTrig(val myDir : String, val myAmt : Float) extends BoneTrig("nudge-" + myDir + "-" + myAmt) {
 		override def fire(box : Boxy.BoxOne) : Unit = {
+			val boneBox = box.asInstanceOf[BoneBox];
 			println(this.toString() + " nudging " + box.toString());
+			boneBox.nudgeBone(myDir, myAmt);
 		}
 	}
+	def attachNudger(bc: BoxContext, boxTree : FriendBox, dir : String, amt : Float) : Unit = {
+		val nt = new Bony.NudgeTrig(dir, amt);
+		boxTree.attachTrigToKids(bc, nt, true);
+	}
+	/*
 	def boxLunch(labelPrefix : String, labelSuffix : String) : BoneBox = {
 		val bb1 = new BoneBox(labelPrefix + "-bba-" + labelSuffix);
 		val bt1 = new BoneTrig(labelPrefix + "-bt-a.1-" + labelSuffix);
 		bb1.attachTrigger(bt1);
 		bb1;
 	}
-
+	*/
 }
