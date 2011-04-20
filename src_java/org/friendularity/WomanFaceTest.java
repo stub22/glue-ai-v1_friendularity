@@ -26,6 +26,7 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.font.BitmapFont;
 import com.jme3.font.BitmapText;
 import com.jme3.font.Rectangle;
+import com.jme3.input.FlyByCamera;
 import com.jme3.light.DirectionalLight;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
@@ -33,6 +34,7 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.renderer.Camera;
+import com.jme3.renderer.ViewPort;
 import com.jme3.system.AppSettings;
 import com.jme3.system.JmeCanvasContext;
 import com.jme3.system.JmeContext;
@@ -72,6 +74,7 @@ public class WomanFaceTest extends SimpleApplication implements AnimEventListene
 		int height = 480;
 		settings.setWidth(width);
 		settings.setHeight(height);
+		// settings.setUseInput(false);
 		setSettings(settings);
         createCanvas();
 /* In a silent applet, we might do:
@@ -117,11 +120,14 @@ public class WomanFaceTest extends SimpleApplication implements AnimEventListene
 		System.out.println("*********** startCanvasInPanelInFrame is returning");
 	}
 
-	@Override
-	public void simpleInitApp() {
+	@Override public void simpleInitApp() {
 		System.out.println("*********** SimpleInitApp is starting");
-		flyCam.setMoveSpeed(10f);
-		viewPort.setBackgroundColor(ColorRGBA.LightGray);
+
+		FlyByCamera fbc = getFlyByCamera();
+		fbc.setMoveSpeed(10f);
+		setPauseOnLostFocus(false);
+		ViewPort vp = getViewPort();
+		vp.setBackgroundColor(ColorRGBA.LightGray);
 //    initKeys();
 
 		// JME2-only so far, it seems

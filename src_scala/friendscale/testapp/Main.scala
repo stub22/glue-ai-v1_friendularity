@@ -33,25 +33,30 @@ object Main {
 		println("friendscale.testapp.main() sez: Hello, world!");
 		val tnc = GoFish.makeTNC(args);
 
-		val box1 = Bony.boxLunch("blp1", "bls1");
-		tnc.addBoxToRoot(box1, false);
+		// val box1 = Bony.boxLunch("blp1", "bls1");
+		// tnc.addBoxToRoot(box1, false);
 		tnc.launchFrame("FriendScale");
 		val owTst = new WomanFaceTest();
 		owTst.startCanvasInPanelInFrame();
 		val animCtrlsJL : java.util.List[AnimControl] = owTst.getAnimControls();
 		println("Got animControls: " + animCtrlsJL);
-		val animCtrlsSS : Seq[AnimControl] = scala.collection.JavaConversions.asBuffer(animCtrlsJL) ;
+		val animCtrlsSS : Seq[AnimControl] = scala.collection.JavaConversions.asScalaBuffer(animCtrlsJL) ;
 
 
 		val rootBox = tnc.myBC.getRootBox();
 		println("****************** Attaching scene box tree");
 		val sceneBoxTree : Bony.FriendBox = Bony.attachSceneBoxTree(tnc.myBC, rootBox, animCtrlsSS);
-		val nt = new Bony.NudgeTrig();
-		sceneBoxTree.attachTrigToKids(tnc.myBC, nt, true);
+		Bony.attachNudger(tnc.myBC, sceneBoxTree, "pitch", 0.05f);
+		Bony.attachNudger(tnc.myBC, sceneBoxTree, "pitch", -0.05f);
+		Bony.attachNudger(tnc.myBC, sceneBoxTree, "yaw", 0.05f);
+		Bony.attachNudger(tnc.myBC, sceneBoxTree, "yaw", -0.05f);
+		Bony.attachNudger(tnc.myBC, sceneBoxTree, "roll", 0.05f);
+		Bony.attachNudger(tnc.myBC, sceneBoxTree, "roll", -0.05f);
+
 		println("****************** Finished attaching scene box tree");
 		
-		val box2 = Bony.boxLunch("blp2", "bls2");
-		tnc.addBoxToRoot(box2, false);
+		// val box2 = Bony.boxLunch("blp2", "bls2");
+		// tnc.addBoxToRoot(box2, false);
 
 		// JFugueTest.main(args);
 	}
