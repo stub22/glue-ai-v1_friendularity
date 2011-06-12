@@ -189,7 +189,8 @@ public class WomanFaceTest extends SimpleApplication implements AnimEventListene
 		 */
 		// Node testSceneNode = (Node) assetManager.loadModel("resources/leo_hanson_tests/test1/test1.scene");
 		// Node testSceneNode = (Node) assetManager.loadModel("resources/leo_hanson_tests/test2/test2.scene");
-		Node testSceneNode = (Node) assetManager.loadModel("resources/leo_hanson_tests/test3/test3.scene");
+		// Node testSceneNode = (Node) assetManager.loadModel("resources/leo_hanson_tests/test3/test3.scene");
+		Node testSceneNode = (Node) assetManager.loadModel("resources/stu_stickbot_01/ss.scene");
 		System.out.println("test scene loaded: " + testSceneNode);
 
 		SpatialManipFuncs.dumpNodeTree(testSceneNode, "   ");
