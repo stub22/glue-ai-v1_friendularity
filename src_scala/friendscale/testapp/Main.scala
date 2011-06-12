@@ -30,7 +30,7 @@ object Main {
    * @param args the command line arguments
    */
 	def main(args: Array[String]): Unit = {
-		println("friendscale.testapp.main() sez: Hello, world!");
+		println("friendscale.testapp.main() START with args: " + args);
 		val tnc = GoFish.makeTNC(args);
 
 		// val box1 = Bony.boxLunch("blp1", "bls1");
@@ -54,11 +54,18 @@ object Main {
 		Bony.attachNudger(tnc.myBC, sceneBoxTree, "roll", -0.05f);
 
 		println("****************** Finished attaching scene box tree");
+		println("friendscale.testapp.main() END with args: " + args);
 		
 		// val box2 = Bony.boxLunch("blp2", "bls2");
 		// tnc.addBoxToRoot(box2, false);
 
 		// JFugueTest.main(args);
 	}
+	//
+	trait Scope {
+		
+	}
+	class ScopeBox   extends Boxy.BoxOne {
 
+	}
 }
