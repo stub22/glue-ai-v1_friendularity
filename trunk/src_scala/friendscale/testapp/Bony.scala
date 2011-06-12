@@ -117,13 +117,19 @@ object Bony {
 			var pitchAngle = 0.0f;
 			var rollAngle = 0.0f;
 			var yawAngle = 0.0f;
+
+			var xDisp = 0.0f;
+			var yDisp = 0.0f;
+			var zDisp = 0.0f;
+
 			if (direction.equals("pitch")) {
 				pitchAngle = angleRad;
 			} else if (direction.equals("roll")) {
 				rollAngle = angleRad;
 			} else if (direction.equals("yaw")) {
 				yawAngle = angleRad;
-			}
+			} else if (direction)
+
 			q.fromAngles(pitchAngle, rollAngle, yawAngle);
 			val nextRotQ = localRot.mult(q);
 			myBone.setUserControl(true);
@@ -155,4 +161,6 @@ object Bony {
 		bb1;
 	}
 	*/
+
+
 }
