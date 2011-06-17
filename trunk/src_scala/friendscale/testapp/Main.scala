@@ -53,6 +53,14 @@ object Main {
 		Bony.attachNudger(tnc.myBC, sceneBoxTree, "roll", 0.05f);
 		Bony.attachNudger(tnc.myBC, sceneBoxTree, "roll", -0.05f);
 
+		Bony.attachNudger(tnc.myBC, sceneBoxTree, "x", 0.5f);
+		Bony.attachNudger(tnc.myBC, sceneBoxTree, "x", -0.5f);
+		Bony.attachNudger(tnc.myBC, sceneBoxTree, "y", 0.5f);
+		Bony.attachNudger(tnc.myBC, sceneBoxTree, "y", -0.5f);
+		Bony.attachNudger(tnc.myBC, sceneBoxTree, "z", 0.5f);
+		Bony.attachNudger(tnc.myBC, sceneBoxTree, "z", -0.5f);
+
+
 		println("****************** Finished attaching scene box tree");
 		println("friendscale.testapp.main() END with args: " + args);
 		
