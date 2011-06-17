@@ -104,13 +104,37 @@ object Bony {
 		}
 	}
 	class BoneBox(val myBone : Bone) extends FriendBox("[" + myBone.toString() + "]") {
-		def nudgeBone(direction : String,  angleRad : Float) : Unit = {
+		def nudgeBone(direction : String,  displacement : Float) : Unit = {
 			val localPos : Vector3f = myBone.getLocalPosition();
-			val localRot : Quaternion = myBone.getLocalRotation();
+			val localRotQ : Quaternion = myBone.getLocalRotation();
 			val localScale : Vector3f = myBone.getLocalScale();
+
+			// "Model" values are same as the "World" values.
+			// When a bone has no parent, these values will be copies of the "local" vals.
+			// When there is a parent, then these model values reflect the local offest
+			// to the parent model values.
+			//
+			val modelPos : Vector3f = myBone.getModelSpacePosition();
+			val modelRotQ : Quaternion = myBone.getModelSpaceRotation();
+			val modelScale : Vector3f = myBone.getModelSpaceScale();
+			println("=================================================================");
+			println("old model pos=" + modelPos);
+			println("old model rot=" + modelRotQ);
+			println("old model scale=" + modelScale);
+
+			val initialPos : Vector3f = myBone.getInitialPos();
+			val initialRotQ : Quaternion = myBone.getInitialRot();
+			// val initialScale : Vector3f = myBone.getInitialScale();  no getter...
+			println("=================================================================");
+			println("old initialPos=" + initialPos);
+			println("old localPos=" + localPos);
+			println("old initialRotQ=" + initialRotQ);
+			println("old localRotQ=" + localRotQ);	
+			println("old localScale=" + localScale);
+			println("=================================================================");
 			// Vector3f modelPos = rootBone.getModelSpacePosition();
 
-			val q = new Quaternion();
+			val nudgedRotQ = new Quaternion();
 			// yaw, roll, pitch
 			//	System.out.println("Setting roll for bone: " + b + " to " + myWaistTwistAngle);
 
@@ -123,17 +147,51 @@ object Bony {
 			var zDisp = 0.0f;
 
 			if (direction.equals("pitch")) {
-				pitchAngle = angleRad;
+				pitchAngle = displacement;
 			} else if (direction.equals("roll")) {
-				rollAngle = angleRad;
+				rollAngle = displacement;
 			} else if (direction.equals("yaw")) {
-				yawAngle = angleRad;
-			} else if (direction)
+				yawAngle = displacement;
+			} else if (direction.equals("x")) {
+				xDisp = displacement;
+			} else if (direction.equals("y")) {
+				yDisp = displacement;
+			} else if (direction.equals("z")) {
+				zDisp = displacement;
+			} else {
+				println("Unknown nudge direction: " + direction);
+			}
+			nudgedRotQ.fromAngles(pitchAngle, rollAngle, yawAngle);
+			val nextRotQ = localRotQ.mult(nudgedRotQ);
+			val displacePosVec = new Vector3f(xDisp, yDisp, zDisp);
+			val nextPosVec = initialPos.add(displacePosVec);
 
-			q.fromAngles(pitchAngle, rollAngle, yawAngle);
-			val nextRotQ = localRot.mult(q);
-			myBone.setUserControl(true);
-			myBone.setUserTransforms(Vector3f.ZERO, nextRotQ, Vector3f.UNIT_XYZ);
+			println("next posVec: " + nextPosVec);
+			println("next rotQ=" + nextRotQ);
+			println("=================================================================");
+			// Note that "userControl" makes the following methods silentlyl disabled:
+			//		setAnimTransforms
+			//		blendAnimTransforms
+			//		reset
+			// myBone.setUserControl(true);
+		
+			// Vector3f.ZERO
+			// Note that scale is set to 0.5f during initial placement
+			
+
+			myBone.setBindTransforms(nextPosVec, nextRotQ, Vector3f.UNIT_XYZ);
+			//When using "userTransforms"
+			// These are all applied as DELTAS from the initialPos, initialRot, initialScale,
+			// to yield a new value of localPos, localRot, localScale.
+			//
+			//  essentially:       localPos = initialPos + translation
+			//						localRot = initalRot * rotation
+			//						localScale = initialScale * scale
+
+			// myBone.setUserTransforms(displacePosVec, nudgedRotQ, Vector3f.UNIT_XYZ);
+			// myBone.setBindingPose();   is protected scope.
+			// setBindingPose will write the current localP,R,S into initialP,R,S
+			// and recursively do so on all child bones.
 		}
 	}
 	class BoneTrig(shortLabel: String) extends FriendTrig(shortLabel) {
@@ -142,7 +200,7 @@ object Bony {
 			println(this.toString() + " bone-thugging on " + box.toString());
 		}
 	}
-	class NudgeTrig(val myDir : String, val myAmt : Float) extends BoneTrig("nudge-" + myDir + "-" + myAmt) {
+	class NudgeTrig(val myDir : String, val myAmt : Float) extends BoneTrig("nudge-" + myDir + " " + myAmt) {
 		override def fire(box : Boxy.BoxOne) : Unit = {
 			val boneBox = box.asInstanceOf[BoneBox];
 			println(this.toString() + " nudging " + box.toString());
