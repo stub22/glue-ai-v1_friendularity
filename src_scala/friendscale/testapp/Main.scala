@@ -46,19 +46,15 @@ object Main {
 		val rootBox = tnc.myBC.getRootBox();
 		println("****************** Attaching scene box tree");
 		val sceneBoxTree : Bony.FriendBox = Bony.attachSceneBoxTree(tnc.myBC, rootBox, animCtrlsSS);
-		Bony.attachNudger(tnc.myBC, sceneBoxTree, "pitch", 0.05f);
-		Bony.attachNudger(tnc.myBC, sceneBoxTree, "pitch", -0.05f);
-		Bony.attachNudger(tnc.myBC, sceneBoxTree, "yaw", 0.05f);
-		Bony.attachNudger(tnc.myBC, sceneBoxTree, "yaw", -0.05f);
-		Bony.attachNudger(tnc.myBC, sceneBoxTree, "roll", 0.05f);
-		Bony.attachNudger(tnc.myBC, sceneBoxTree, "roll", -0.05f);
 
-		Bony.attachNudger(tnc.myBC, sceneBoxTree, "x", 0.5f);
-		Bony.attachNudger(tnc.myBC, sceneBoxTree, "x", -0.5f);
-		Bony.attachNudger(tnc.myBC, sceneBoxTree, "y", 0.5f);
-		Bony.attachNudger(tnc.myBC, sceneBoxTree, "y", -0.5f);
-		Bony.attachNudger(tnc.myBC, sceneBoxTree, "z", 0.5f);
-		Bony.attachNudger(tnc.myBC, sceneBoxTree, "z", -0.5f);
+		val scoreBoard = owTst.getScoreBoard();
+		Bony.attachNudgerPair(tnc.myBC, sceneBoxTree, "pitch", 0.05f, scoreBoard);
+		Bony.attachNudger(tnc.myBC, sceneBoxTree, "yaw", 0.05f, scoreBoard);
+		Bony.attachNudger(tnc.myBC, sceneBoxTree, "roll", 0.05f, scoreBoard);
+
+		Bony.attachNudger(tnc.myBC, sceneBoxTree, "x", 0.5f, scoreBoard);
+		Bony.attachNudger(tnc.myBC, sceneBoxTree, "y", 0.5f, scoreBoard);
+		Bony.attachNudger(tnc.myBC, sceneBoxTree, "z", 0.5f, scoreBoard);
 
 
 		println("****************** Finished attaching scene box tree");

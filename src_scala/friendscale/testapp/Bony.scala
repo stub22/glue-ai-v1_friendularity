@@ -18,6 +18,7 @@ package friendscale.testapp
 
 import com.appdapter.gui.box.{Box, BoxContext};
 import heaven.piece.{GoFish, Boxy};
+import org.friendularity.{ScoreBoard};
 import com.jme3.animation.{AnimChannel, AnimControl, Bone, LoopMode, Skeleton};
 import com.jme3.math.{Quaternion, Vector3f};
 /*
@@ -104,7 +105,7 @@ object Bony {
 		}
 	}
 	class BoneBox(val myBone : Bone) extends FriendBox("[" + myBone.toString() + "]") {
-		def nudgeBone(direction : String,  displacement : Float) : Unit = {
+		def nudgeBone(direction : String,  displacement : Float, scoreBoard : ScoreBoard) : Unit = {
 			val localPos : Vector3f = myBone.getLocalPosition();
 			val localRotQ : Quaternion = myBone.getLocalRotation();
 			val localScale : Vector3f = myBone.getLocalScale();
@@ -166,6 +167,10 @@ object Bony {
 			val displacePosVec = new Vector3f(xDisp, yDisp, zDisp);
 			val nextPosVec = initialPos.add(displacePosVec);
 
+			scoreBoard.displayScore(0, "bone: " + myBone);
+			scoreBoard.displayScore(1, "posVec: " + nextPosVec);
+			scoreBoard.displayScore(2, "posVec: " + nextPosVec);
+
 			println("next posVec: " + nextPosVec);
 			println("next rotQ=" + nextRotQ);
 			println("=================================================================");
@@ -200,16 +205,20 @@ object Bony {
 			println(this.toString() + " bone-thugging on " + box.toString());
 		}
 	}
-	class NudgeTrig(val myDir : String, val myAmt : Float) extends BoneTrig("nudge-" + myDir + " " + myAmt) {
+	class NudgeTrig(val myDir : String, val myAmt : Float, val myScoreBoard : ScoreBoard) extends BoneTrig("nudge-" + myDir + " " + myAmt) {
 		override def fire(box : Boxy.BoxOne) : Unit = {
 			val boneBox = box.asInstanceOf[BoneBox];
 			println(this.toString() + " nudging " + box.toString());
-			boneBox.nudgeBone(myDir, myAmt);
+			boneBox.nudgeBone(myDir, myAmt, myScoreBoard);
 		}
 	}
-	def attachNudger(bc: BoxContext, boxTree : FriendBox, dir : String, amt : Float) : Unit = {
-		val nt = new Bony.NudgeTrig(dir, amt);
+	def attachNudger(bc: BoxContext, boxTree : FriendBox, dir : String, amt : Float, scoreBoard : ScoreBoard) : Unit = {
+		val nt = new Bony.NudgeTrig(dir, amt, scoreBoard);
 		boxTree.attachTrigToKids(bc, nt, true);
+	}
+	def attachNudgerPair(bc: BoxContext, boxTree : FriendBox, dir : String, amt : Float, scoreBoard : ScoreBoard) : Unit = {
+		attachNudger(bc, boxTree, dir, amt, scoreBoard);
+		attachNudger(bc, boxTree, dir, -1.0f * amt, scoreBoard);
 	}
 	/*
 	def boxLunch(labelPrefix : String, labelSuffix : String) : BoneBox = {

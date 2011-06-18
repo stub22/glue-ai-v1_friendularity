@@ -56,12 +56,16 @@ public class WomanFaceTest extends SimpleApplication implements AnimEventListene
 	// Node otoNode;
 	private float			myWaistTwistAngle = 0;
 	private float			myWaistTwistRate = 1;
-	private BitmapText		myTextBox;
+	private	boolean			myTwistScoringFlag = false;
 	private VirtCharPanel	myVCP;
+
+	private ScoreBoard		myScoreBoard;
+
 
 	public static void main(String[] args) {
 		WomanFaceTest owTst = new WomanFaceTest();
 		owTst.startCanvasInPanelInFrame();
+		owTst.myTwistScoringFlag = true;
 		// owTst.start(JmeContext.Type.Display);
 	}
 	public List<AnimControl>	getAnimControls() {
@@ -169,7 +173,8 @@ public class WomanFaceTest extends SimpleApplication implements AnimEventListene
 		otoNode.attachChild(skeletonDebug);
 		 */
 		initWomanFaceModel();
-		setupTextBox();
+		setupScoreBoard();
+// 		setupTextBox();
 		System.out.println("*********** SimpleInitApp is finished");
 
 	}
@@ -244,16 +249,16 @@ public class WomanFaceTest extends SimpleApplication implements AnimEventListene
 		 */
 
 	}
+	public void setupScoreBoard() {
+		int numScoreLines = 3;
+		ScoreBoard sb = new ScoreBoard(assetManager, guiNode, numScoreLines, 0, 0, settings.getWidth(), settings.getHeight());
+		myScoreBoard = sb;
+	}
 
-	public void setupTextBox() {
-
-		BitmapFont fnt = assetManager.loadFont("Interface/Fonts/Default.fnt");
-		myTextBox = new BitmapText(fnt, false);
-		myTextBox.setBox(new Rectangle(0, 0, settings.getWidth(), settings.getHeight()));
-		myTextBox.setSize(fnt.getPreferredSize() * 2f);
-		myTextBox.setText("nothing to say here, just yet");
-		myTextBox.setLocalTranslation(0, settings.getHeight(), 0);
-		guiNode.attachChild(myTextBox);
+	public void showScoreText(int lineNum, String scoreText) {
+		if (myScoreBoard != null) {
+			myScoreBoard.displayScore(lineNum, scoreText);
+		}
 	}
 	/*
 	public void dumpScene(Node sceneNode) {
@@ -327,7 +332,16 @@ public class WomanFaceTest extends SimpleApplication implements AnimEventListene
 		}
 		q.fromAngles(pitchAngle, rollAngle, yawAngle);
 		tgtBone.setUserControl(true);
+		
+		// This applies rotation q to the "initial"/"bind" orientation, putting result in "local" rot.
 		tgtBone.setUserTransforms(Vector3f.ZERO, q, Vector3f.UNIT_XYZ);
+		if (myTwistScoringFlag) {
+			showScoreText(0, "tgtBone=" + tgtBone);
+			showScoreText(1, "xformRot=" + q);
+		}
 
+	}
+	public ScoreBoard getScoreBoard() {
+		return myScoreBoard;
 	}
 }
