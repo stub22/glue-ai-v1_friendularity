@@ -53,6 +53,7 @@ public class TestAssetStuff extends SimpleApplication {
         wall.setLocalTranslation(2.0f,-2.5f,0.0f);
         rootNode.attachChild(wall);
 
+		 *
         /** Display a line of text (default font from test-data) 
         guiNode.detachAllChildren();
         guiFont = assetManager.loadFont("Interface/Fonts/Default.fnt");

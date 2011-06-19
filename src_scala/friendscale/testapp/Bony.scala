@@ -169,7 +169,7 @@ object Bony {
 
 			scoreBoard.displayScore(0, "bone: " + myBone);
 			scoreBoard.displayScore(1, "posVec: " + nextPosVec);
-			scoreBoard.displayScore(2, "posVec: " + nextPosVec);
+			scoreBoard.displayScore(2, "rotQ: " + nextRotQ);
 
 			println("next posVec: " + nextPosVec);
 			println("next rotQ=" + nextRotQ);
