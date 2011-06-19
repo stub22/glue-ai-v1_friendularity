@@ -36,7 +36,7 @@ object Main {
 		// val box1 = Bony.boxLunch("blp1", "bls1");
 		// tnc.addBoxToRoot(box1, false);
 		tnc.launchFrame("FriendScale");
-		val owTst = new WomanFaceTest();
+		val owTst = new Warbler(); // WomanFaceTest();
 		owTst.startCanvasInPanelInFrame();
 		val animCtrlsJL : java.util.List[AnimControl] = owTst.getAnimControls();
 		println("Got animControls: " + animCtrlsJL);
@@ -49,12 +49,12 @@ object Main {
 
 		val scoreBoard = owTst.getScoreBoard();
 		Bony.attachNudgerPair(tnc.myBC, sceneBoxTree, "pitch", 0.05f, scoreBoard);
-		Bony.attachNudger(tnc.myBC, sceneBoxTree, "yaw", 0.05f, scoreBoard);
-		Bony.attachNudger(tnc.myBC, sceneBoxTree, "roll", 0.05f, scoreBoard);
+		Bony.attachNudgerPair(tnc.myBC, sceneBoxTree, "yaw", 0.08f, scoreBoard);
+		Bony.attachNudgerPair(tnc.myBC, sceneBoxTree, "roll", 0.12f, scoreBoard);
 
-		Bony.attachNudger(tnc.myBC, sceneBoxTree, "x", 0.5f, scoreBoard);
-		Bony.attachNudger(tnc.myBC, sceneBoxTree, "y", 0.5f, scoreBoard);
-		Bony.attachNudger(tnc.myBC, sceneBoxTree, "z", 0.5f, scoreBoard);
+		Bony.attachNudgerPair(tnc.myBC, sceneBoxTree, "x", 0.5f, scoreBoard);
+		Bony.attachNudgerPair(tnc.myBC, sceneBoxTree, "y", 0.7f, scoreBoard);
+		Bony.attachNudgerPair(tnc.myBC, sceneBoxTree, "z", 0.6f, scoreBoard);
 
 
 		println("****************** Finished attaching scene box tree");
@@ -71,5 +71,11 @@ object Main {
 	}
 	class ScopeBox   extends Boxy.BoxOne {
 
+	}
+	class Warbler() extends WomanFaceTest() {
+		override def runUpdate(tpf : Float) : Unit = {
+			// println("Warbler is Gargling!");
+			super.runUpdate(tpf);
+		}
 	}
 }

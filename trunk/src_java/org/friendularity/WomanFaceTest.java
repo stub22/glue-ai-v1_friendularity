@@ -146,9 +146,6 @@ public class WomanFaceTest extends SimpleApplication implements AnimEventListene
 		Quaternion camRotQ = new Quaternion(0.0f, 1.0f, 0.5f, 0.0f);
 		cam.setAxes(camRotQ);
 
-
-		// cam.se
-
 		/*
 		 * These mesh.xml files are excluded from assets.jar in JME default setup
 		 * (see "assets" section of project properties)
@@ -285,8 +282,13 @@ public class WomanFaceTest extends SimpleApplication implements AnimEventListene
 		// unused
 	}
 
-	@Override
-	public void simpleUpdate(float tpf) {
+	@Override public void simpleUpdate(float tpf) {
+		runUpdate(tpf);
+	}
+	protected void runUpdate(float tpf) {
+		doUpdate(tpf);
+	}
+	private void doUpdate(float tpf) {
 		//	System.out.println("simpleUpdate, tpf=" + tpf);
 		int testChannelNum = myVCP.getTestChannelNum();
 
@@ -309,7 +311,7 @@ public class WomanFaceTest extends SimpleApplication implements AnimEventListene
 		Vector3f localPos = rootBone.getLocalPosition();
 		Vector3f modelPos = rootBone.getModelSpacePosition();
 		// System.out.println("================================================================");
-		myVCP.setDumpText("tgtBone=" + tgtBone + ", localPos=" + localPos + ", modelPos=" + modelPos);
+		myVCP.setDumpText("tgtBone=" + tgtBone + ", localPos=" + localPos + ", modelPos=" + modelPos + ", localRot=" + rootBone.getLocalRotation());
 
 
 		myWaistTwistAngle += tpf * myWaistTwistRate;
@@ -343,8 +345,16 @@ public class WomanFaceTest extends SimpleApplication implements AnimEventListene
 		if (myTwistScoringFlag) {
 			showScoreText(0, "tgtBone=" + tgtBone);
 			showScoreText(1, "xformRot=" + q);
+			showScoreText(2, "tpf=" + tpf);
 		}
-
+		/*
+		try {
+			Thread.sleep(50);
+		} catch (Throwable t) {
+			t.printStackTrace();
+		}
+		 *
+		 */
 	}
 	public ScoreBoard getScoreBoard() {
 		return myScoreBoard;
