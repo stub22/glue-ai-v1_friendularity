@@ -38,19 +38,20 @@ public class ScoreBoard {
 	BitmapFont	myScoreFont;
 	ColorRGBA	myScoreColor;
 	int			myBaseX, myBaseY, myWidth, myHeight;
-	List<Line>	myLines;
+	List<Row>	myRows;
 
-	public class Line {
+	public class Row {
 		private	BitmapText		myRenderedText;
 		private	Rectangle		myRectangle;
-		public Line(int baseX, int baseY, int width, int height) {
+		public Row(int baseX, int baseY, int width, int height, float textSizeMult) {
 			myRenderedText = new BitmapText(myScoreFont, false);
-			myRectangle = new Rectangle (baseX, baseY, width, height);
-			myRenderedText.setBox(myRectangle);
+			// This part is just responsible for clipping rectangle, not screen pos?
+			// myRectangle = new Rectangle (baseX, baseY, width, height);
+			// myRenderedText.setBox(myRectangle);
 			float scoreFontSize = myScoreFont.getPreferredSize();
-			myRenderedText.setSize(scoreFontSize * 2f);
+			myRenderedText.setSize(scoreFontSize * textSizeMult);
 			myRenderedText.setText("_");
-			myRenderedText.setLocalTranslation(0, height, 0);
+			myRenderedText.setLocalTranslation(baseX, baseY + height, 0);
 			myRenderedText.setColor(myScoreColor);
 		}
 		Spatial getRenderingSpatial() {
@@ -60,19 +61,23 @@ public class ScoreBoard {
 			myRenderedText.setText(scoreText);
 		}
 	}
-	public ScoreBoard(AssetManager assetManager, Node parentNode, int numLines, int baseX, int baseY, int width, int height) {
-		myLines = new ArrayList<Line>();
+	public ScoreBoard(AssetManager assetManager, Node parentNode, int baseX, int baseY, int boardWidth,
+				int rowHeight, int numRows, float textSizeMult) {
+		myRows = new ArrayList<Row>();
 
 		myScoreFont = assetManager.loadFont("Interface/Fonts/Default.fnt");
 		myScoreColor = ColorRGBA.Magenta;
-		for (int lineIdx=0; lineIdx < numLines; lineIdx++) {
-			Line aLine = new Line (baseX, baseY, width, height);
+		//
+		int topY = baseY + (numRows - 1) * rowHeight;
+		for (int rowIdx=0; rowIdx < numRows; rowIdx++) {
+			Row aLine = new Row (baseX, topY - rowIdx * rowHeight, boardWidth, rowHeight, textSizeMult);
 			parentNode.attachChild(aLine.getRenderingSpatial());
-			myLines.add(aLine);
+			myRows.add(aLine);
+			aLine.setScoreText("line_" + rowIdx);
 		}
 	}
-	public void displayScore(int lineNum, String scoreText) {
-		Line l = myLines.get(lineNum);
+	public void displayScore(int rowNum, String scoreText) {
+		Row l = myRows.get(rowNum);
 		l.setScoreText(scoreText);
 	}
 }

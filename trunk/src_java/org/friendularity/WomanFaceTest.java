@@ -250,8 +250,13 @@ public class WomanFaceTest extends SimpleApplication implements AnimEventListene
 
 	}
 	public void setupScoreBoard() {
-		int numScoreLines = 3;
-		ScoreBoard sb = new ScoreBoard(assetManager, guiNode, numScoreLines, 0, 0, settings.getWidth(), settings.getHeight());
+		int numScoreRows = 4;
+		int rowHeight = 50;
+		int boardWidth = settings.getWidth();
+		int baseX = 20;
+		int baseY = settings.getHeight() - numScoreRows * rowHeight;
+		float textSizeMult = 0.5f;
+		ScoreBoard sb = new ScoreBoard(assetManager, guiNode, baseX, baseY, boardWidth, rowHeight, numScoreRows, textSizeMult);
 		myScoreBoard = sb;
 	}
 
