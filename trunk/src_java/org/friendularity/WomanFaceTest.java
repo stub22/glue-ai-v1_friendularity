@@ -23,9 +23,6 @@ import com.jme3.animation.Bone;
 import com.jme3.animation.LoopMode;
 import com.jme3.animation.Skeleton;
 import com.jme3.app.SimpleApplication;
-import com.jme3.font.BitmapFont;
-import com.jme3.font.BitmapText;
-import com.jme3.font.Rectangle;
 import com.jme3.input.FlyByCamera;
 import com.jme3.light.DirectionalLight;
 import com.jme3.math.Vector3f;
@@ -358,5 +355,10 @@ public class WomanFaceTest extends SimpleApplication implements AnimEventListene
 	}
 	public ScoreBoard getScoreBoard() {
 		return myScoreBoard;
+	}
+    @Override  public void initialize() {
+		System.out.println("********************* WomanFaceTest.initialize() called, calling super.initialize()");
+		super.initialize();
+		System.out.println("********************* WomanFaceTest.initialize() returning");
 	}
 }
