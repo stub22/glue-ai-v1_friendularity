@@ -1,4 +1,5 @@
 rm(list=ls(all=TRUE))
+require("FKF")
 x=0;
 dx=0;
 u=1;
@@ -79,8 +80,8 @@ matrixpower<-function(mat,n){
 for (dt in (1:300)){
 
 # enviornment change during the process
-FrictionDecayFactor<- 0.85
-if(dt>100) FrictionDecayFactor<- 0.9
+FrictionDecayFactor<- 0.8
+if(dt>100) FrictionDecayFactor<- 0.85
 
 ddt=0.05;
 
@@ -102,7 +103,7 @@ ddt=0.05;
      tmpsp <- posvelss(fit$par["T1"],fit$par["T2"],fit$par["T3"],fit$par["T4"], fit$par["sigma"],utr)
      A <- tmpsp$Tt
      B <- matrix(c(0,0,0,1),nrow=2)
-     Step <- 3
+     Step <- 2
      StateM <- matrix(0,nrow=2,ncol=2)
      for (i in (1:Step)){
                 StateM <- StateM+matrixpower(A,Step-i) %*% B
@@ -139,7 +140,7 @@ ddt=0.05;
 # updata PLD control
                      
 #design the motion by Jacobian
-    if(x>PLD$xfinal-1 & x<PLD$xfinal+1 & dx > PLD$dxfinal-0.5 & dx <PLD$dxfinal+0.5) stop("arrive destination")
+    if(x>PID$xfinal-1 & x<PID$xfinal+1 & dx > PID$dxfinal-0.5 & dx <PID$dxfinal+0.5) stop("arrive destination")
     
 # this part could be refined using RK method
 }
