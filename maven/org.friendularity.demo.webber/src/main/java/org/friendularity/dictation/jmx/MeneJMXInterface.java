@@ -12,7 +12,7 @@ import javax.management.remote.JMXConnector;
 import javax.management.remote.JMXConnectorFactory;
 import javax.management.remote.JMXServiceURL;
 import org.cogchar.convoid.broker.IRemoteResponseInterface;
-import org.friendularity.webber.comm.CommunicatorMBean;
+import org.friendularity.weber.comm.CommunicatorMBean;
 
 /**
  *

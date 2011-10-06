@@ -26,8 +26,8 @@ import javax.swing.text.DefaultCaret;
 import org.friendularity.bind.cogbot.cogsim.DictationReciever;
 import org.friendularity.bind.cogbot.service.CogbotService;
 import org.friendularity.bind.cogbot.simulator.CogbotAvatar;
-import org.friendularity.webber.comm.Communicator;
-import org.friendularity.webber.config.MeneConfig;
+import org.friendularity.weber.comm.Communicator;
+import org.friendularity.weber.config.MeneConfig;
 /**
  *
  * @author matt
