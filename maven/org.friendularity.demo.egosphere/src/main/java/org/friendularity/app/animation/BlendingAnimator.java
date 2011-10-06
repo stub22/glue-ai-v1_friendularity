@@ -18,8 +18,9 @@ import javax.swing.SwingUtilities;
 import org.cogchar.animoid.broker.AnimoidFacade;
 import org.cogchar.animoid.calc.estimate.PositionEstimator;
 import org.cogchar.animoid.config.AnimoidConfig;
+import org.cogchar.animoid.monitor.IServoMonitor;
 import org.cogchar.animoid.protocol.Frame;
-import org.cogchar.animoid.protocol.IServoPositionReporter;
+import org.cogchar.animoid.monitor.IServoPositionReporter;
 import org.cogchar.animoid.protocol.JPARFrame;
 import org.cogchar.animoid.protocol.JointPositionSnapshot;
 import org.cogchar.animoid.protocol.JointStateCoordinateType;
@@ -142,7 +143,7 @@ public class BlendingAnimator implements PropertyChangeListener, IServoPositionR
 			SwingUtilities.invokeLater(new Runnable() {
 				public void run() {
 					// Posts a GUI update to servos tab
-					myServoMonitor.servoSnapshotUpdate(lopsidedSnap); // , previousFrameAbsRom);
+					myServoMonitor.servoSnapshotUpdate(lopsidedSnap, previousFrameAbsRom);
 				}});
 		}
 	}
@@ -167,7 +168,4 @@ public class BlendingAnimator implements PropertyChangeListener, IServoPositionR
 		}		
 	}
 
-	public void setMonitor(org.cogchar.animoid.protocol.IServoMonitor monitor) {
-		throw new UnsupportedOperationException("Not supported yet.");
-	}
 }
