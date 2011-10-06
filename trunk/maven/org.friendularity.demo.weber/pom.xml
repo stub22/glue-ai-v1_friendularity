@@ -4,11 +4,11 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.friendularity</groupId>
-	<artifactId>org.friendularity.demo.webber</artifactId>
+	<artifactId>org.friendularity.demo.weber</artifactId>
 	<version>1.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>org.friendularity.demo.webber</name>
+	<name>org.friendularity.demo.weber</name>
 	<url>http://maven.apache.org</url>
 
 	<properties>
