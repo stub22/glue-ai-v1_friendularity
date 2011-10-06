@@ -3,7 +3,7 @@
  *  All Rights Reserved.
  */
 
-package com.hansonrobotics.gui.servo;
+package org.friendularity.gui.servo;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;

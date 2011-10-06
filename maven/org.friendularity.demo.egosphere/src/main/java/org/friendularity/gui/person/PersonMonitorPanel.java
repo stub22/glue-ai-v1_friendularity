@@ -4,7 +4,7 @@
  * Created on July 30, 2009, 11:15 PM
  */
 
-package com.hansonrobotics.gui.person;
+package org.friendularity.gui.person;
 
 import java.util.logging.Logger;
 

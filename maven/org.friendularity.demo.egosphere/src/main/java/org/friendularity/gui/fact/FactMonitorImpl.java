@@ -3,7 +3,7 @@
  *  All Rights Reserved.
  */
 
-package com.hansonrobotics.gui.fact;
+package org.friendularity.gui.fact;
 
 import java.util.Observable;
 import java.util.Observer;

@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package com.hansonrobotics.gui.servo;
+package org.friendularity.gui.servo;
 
 import java.beans.*;
 import java.io.Serializable;

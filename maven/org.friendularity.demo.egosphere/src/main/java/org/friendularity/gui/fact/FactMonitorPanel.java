@@ -4,9 +4,9 @@
  * Created on July 30, 2009, 11:15 PM
  */
 
-package com.hansonrobotics.gui.fact;
+package org.friendularity.gui.fact;
 
-import com.hansonrobotics.gui.person.PersonTableModel.WrappingTextColumnRenderer;
+import org.friendularity.gui.person.PersonTableModel.WrappingTextColumnRenderer;
 import java.awt.Component;
 import java.awt.event.KeyEvent;
 import javax.swing.JTable;
