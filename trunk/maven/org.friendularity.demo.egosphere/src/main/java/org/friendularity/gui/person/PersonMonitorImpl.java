@@ -3,7 +3,7 @@
  *  All Rights Reserved.
  */
 
-package com.hansonrobotics.gui.person;
+package org.friendularity.gui.person;
 
 import java.util.Observable;
 import java.util.logging.Logger;

@@ -2,7 +2,7 @@
 
 <Form version="1.5" maxVersion="1.6" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
   <NonVisualComponents>
-    <Component class="com.hansonrobotics.gui.servo.ServoMonitorConfigBean" name="myServoMonitorConfigBean">
+    <Component class="org.friendularity.gui.servo.ServoMonitorConfigBean" name="myServoMonitorConfigBean">
     </Component>
   </NonVisualComponents>
   <AuxValues>

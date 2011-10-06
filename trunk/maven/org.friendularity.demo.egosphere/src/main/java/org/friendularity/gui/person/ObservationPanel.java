@@ -3,7 +3,7 @@
  * All Rights Reserved.
  */
 
-package com.hansonrobotics.gui.person;
+package org.friendularity.gui.person;
 
 import java.awt.Graphics;
 import java.awt.Image;

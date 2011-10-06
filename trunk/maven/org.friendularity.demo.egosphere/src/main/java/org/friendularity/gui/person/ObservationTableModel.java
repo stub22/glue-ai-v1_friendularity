@@ -3,10 +3,10 @@
  *  All Rights Reserved.
  */
 
-package com.hansonrobotics.gui.person;
+package org.friendularity.gui.person;
 
-import com.hansonrobotics.gui.person.PersonTableModel.FaceObsColumnRenderer;
-import com.hansonrobotics.gui.person.PersonTableModel.WrappingTextColumnRenderer;
+import org.friendularity.gui.person.PersonTableModel.FaceObsColumnRenderer;
+import org.friendularity.gui.person.PersonTableModel.WrappingTextColumnRenderer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NavigableSet;

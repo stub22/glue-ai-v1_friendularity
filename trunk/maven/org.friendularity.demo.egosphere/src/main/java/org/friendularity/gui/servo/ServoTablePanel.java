@@ -3,7 +3,7 @@
  * All Rights Reserved.
  */
 
-package com.hansonrobotics.gui.servo;
+package org.friendularity.gui.servo;
 
 import com.thoughtworks.xstream.converters.javabean.BeanProperty;
 import org.jdesktop.beansbinding.AutoBinding;
@@ -77,7 +77,7 @@ public class ServoTablePanel extends javax.swing.JPanel {
     private void initComponents() {
         bindingGroup = new org.jdesktop.beansbinding.BindingGroup();
 
-        myServoMonitorConfigBean = new com.hansonrobotics.gui.servo.ServoMonitorConfigBean();
+        myServoMonitorConfigBean = new org.friendularity.gui.servo.ServoMonitorConfigBean();
         panel_servoMonitoringControls = new javax.swing.JPanel();
         button_refresh = new javax.swing.JButton();
         toggle_updateContinuously = new javax.swing.JToggleButton();
@@ -193,7 +193,7 @@ private void button_refreshActionPerformed(java.awt.event.ActionEvent evt) {//GE
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton button_refresh;
-    private com.hansonrobotics.gui.servo.ServoMonitorConfigBean myServoMonitorConfigBean;
+    private org.friendularity.gui.servo.ServoMonitorConfigBean myServoMonitorConfigBean;
     private javax.swing.JPanel panel_servoMonitoringControls;
     private javax.swing.JScrollPane servo_joint_scroller;
     private javax.swing.JTable servo_joint_table;
