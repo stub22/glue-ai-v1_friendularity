@@ -35,8 +35,8 @@ import org.cogchar.vision.PortableImage;
 import org.freckler.extra.FreckbaseFacade;
 import org.friendularity.bind.cogbot.service.CogbotService;
 import org.friendularity.bind.cogbot.simulator.CogbotAvatar;
-import org.friendularity.webber.comm.Communicator;
-import org.friendularity.webber.config.MeneConfig;
+import org.friendularity.weber.comm.Communicator;
+import org.friendularity.weber.config.MeneConfig;
 
 /**
  * @Deprecated Ad-hoc singleton for sending various signals to/from the Thalamus and JMX Clients
