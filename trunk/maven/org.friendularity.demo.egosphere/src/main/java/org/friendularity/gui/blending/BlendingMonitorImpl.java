@@ -22,7 +22,7 @@ import java.util.logging.Level;
 import org.cogchar.ancient.utility.Parameters;
 import org.cogchar.animoid.broker.AnimoidFacade;
 import org.cogchar.animoid.broker.MotionController;
-import org.cogchar.animoid.protocol.IServoPositionReporter;
+import org.cogchar.animoid.monitor.IServoPositionReporter;
 import org.cogchar.integroid.boot.ConfigSystemImpl;
 import org.cogchar.integroid.boot.SubsystemImpl;
 
