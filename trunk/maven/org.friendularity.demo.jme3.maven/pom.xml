@@ -17,8 +17,8 @@
   
 	<repositories>
 		<repository>
-			<id>sonatype</id>
-			<name>sonatype</name>
+			<id>sonatype-public</id>
+			<name>sonatype public</name>
 			<url>https://oss.sonatype.org/content/groups/public/</url>
 		</repository>	  
 	</repositories>
