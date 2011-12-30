@@ -14,16 +14,6 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
-  
-	<repositories>
-		<repository>
-			<id>sonatype-public</id>
-			<name>sonatype public</name>
-			<url>https://oss.sonatype.org/content/groups/public/</url>
-		</repository>	  
-	</repositories>
-
-	<dependencies>
 
 <!-- 
 
@@ -51,10 +41,22 @@ on the jars supplied directly by these vendors.
 After jME3 reaches GA release 3.0, we can create a "release" version of 
 these dependencies, using the available third party jars. 
 
-
+To use the dependencies from this project, copy the "repository" and
+"dependency" items below into your pom.xml.  Leave out the ones YOU
+don't want ;-)
 
 -->
 
+	<repositories>
+		<repository>
+			<id>sonatype-public</id>
+			<name>sonatype public</name>
+			<url>https://oss.sonatype.org/content/groups/public/</url>
+		</repository>	  
+	</repositories>
+
+
+	<dependencies>
 
 		<dependency>
 			<!-- Contains just the jme3test demo classes, with main methods -->
@@ -149,9 +151,7 @@ these dependencies, using the available third party jars.
 			<version>3.0.0-SNAPSHOT</version>
 		</dependency>		
 		
-		<!-- Third party libs -  
-	
-		-->
+		<!-- Third party libs -->
 		<dependency>
 			<groupId>com.jme3</groupId>
 			<artifactId>jinput</artifactId>
