@@ -25,6 +25,37 @@
 
 	<dependencies>
 
+<!-- 
+
+Demonstration of a JMonkeyEngine-3 game pom.xml file,
+with direct dependencies on all jars in the jME3 nightly build.
+
+This game has one class in it, LaunchJME3TestChooser, which 
+merely invokes the jME3 TestChooser demo.  Running all of the
+demos (some of which fail) requires using most or all of the
+dependencies in this file.
+
+If you are resource constrained, you may want to comment out the 
+jME3-testdata (40M) and nifty-examples (20M) dependencies, although
+most demos require jME3-testdata so then, of course, you will have
+to manage your own classpath resource situation!
+
+Currently all of these jar files are pulled from the jME3 repo
+on sonatype-snapshots, representing a complete copy of all ordinary
+lib jars in the jme3-nightly-build of 2011-12-15.
+
+About half of these dependencies from the nightly-build are actually
+3rd party jars which should eventually be replaced with dependencies 
+on the jars supplied directly by these vendors.   
+
+After jME3 reaches GA release 3.0, we can create a "release" version of 
+these dependencies, using the available third party jars. 
+
+
+
+-->
+
+
 		<dependency>
 			<!-- Contains just the jme3test demo classes, with main methods -->
 			<groupId>com.jme3</groupId>
@@ -33,7 +64,9 @@
 		</dependency>
 				
 		<dependency>
-			<!-- LARGE block of test data -->
+			<!-- WARNING:  Large (40M) block of test data.  Disable this
+				dependency when not needed.
+			-->
 			<groupId>com.jme3</groupId>
 			<artifactId>jME3-testdata</artifactId>
 			<version>3.0.0-SNAPSHOT</version>
@@ -116,9 +149,8 @@
 			<version>3.0.0-SNAPSHOT</version>
 		</dependency>		
 		
-		<!-- Third party libs - these dependencies should eventually
-			be replaced with  dependencies on the jars supplied
-			directly by these vendors.
+		<!-- Third party libs -  
+	
 		-->
 		<dependency>
 			<groupId>com.jme3</groupId>
@@ -166,8 +198,9 @@
 			<groupId>com.jme3</groupId>
 			<artifactId>nifty-default-controls</artifactId>
 			<version>3.0.0-SNAPSHOT</version>
-		</dependency>	
+		</dependency>
 		<dependency>
+			<!-- WARNING : Large - about 20M -->
 			<groupId>com.jme3</groupId>
 			<artifactId>nifty-examples</artifactId>
 			<version>3.0.0-SNAPSHOT</version>
