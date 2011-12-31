@@ -6,10 +6,10 @@
 
 	<groupId>org.friendularity</groupId>
 	<artifactId>org.friendularity.demo.jme3.maven</artifactId>
-	<version>1.0-SNAPSHOT</version>
+	<version>1.0.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>org.friendularity.demo.jme3.maven</name>
+	<name>${project.artifactId} - jME3 demo wrapper project</name>
 	<url>http://www.friendularity.org</url>
 
 	<properties>
@@ -17,9 +17,9 @@
 	</properties>
 
 <!-- 
+Updated:	2011-12-30
+Maintainer:	stub22  AT  appstract.com
 
-Author and maintainer:  stub22  AT  appstract.com
-Updated:				2011-12-30
 
 Demonstration of a JMonkeyEngine-3 game pom.xml file,
 with direct dependencies on all jars in the jME3 nightly build.
@@ -141,7 +141,7 @@ don't want ;-)
 			<version>3.0.0-SNAPSHOT</version>
 		</dependency>	
 		
-		<!-- Ogg stuff -->
+		<!-- Ogg audio stuff -->
 		<dependency>
 			<groupId>com.jme3</groupId>
 			<artifactId>jME3-jogg</artifactId>
