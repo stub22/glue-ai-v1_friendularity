@@ -18,13 +18,16 @@
 
 <!-- 
 
+Author and maintainer:  stub22  AT  appstract.com
+Updated:				2011-12-30
+
 Demonstration of a JMonkeyEngine-3 game pom.xml file,
 with direct dependencies on all jars in the jME3 nightly build.
 
 This game has one class in it, LaunchJME3TestChooser, which 
 merely invokes the jME3 TestChooser demo.  Running all of the
 demos (some of which fail) requires using most or all of the
-dependencies in this file.
+dependencies in this pom.xml project.  
 
 If you are resource constrained, you may want to comment out the 
 jME3-testdata (40M) and nifty-examples (20M) dependencies, although
@@ -32,9 +35,9 @@ many demos require some pieces of jME3-testdata.   So removing
 these dependencies means you will have to manage your own classpath 
 resource situation.
 
-Currently all of these deps below are pulled from the jME3 repo
-on sonatype-snapshots, yielding a complete copy of all ordinary
-lib jars in the jme3-nightly-build of 2011-12-15.  You can browse
+Currently all of these deps below are pulled from the community-maintained
+com.jme3 repo on sonatype-snapshots, yielding a complete copy of all 
+ordinary lib jars in the jme3-nightly-build of 2011-12-15.  You can browse
 the snapshot file tree via the web here:
 
 http://oss.sonatype.org/content/repositories/snapshots/com/jme3/
