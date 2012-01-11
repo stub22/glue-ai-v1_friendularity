@@ -10,7 +10,7 @@
     <name>org.friendularity.bundle.demo.ccrk OSGi Bundle</name>
 
     <properties>
-		<cogchar-version>1.0.0-SNAPSHOT</cogchar-version>
+		<cogchar-version>1.0.1-SNAPSHOT</cogchar-version>
 		<appdapter-version>1.0.3</appdapter-version>
 
 		<scala.version>2.8.1</scala.version>
@@ -27,10 +27,17 @@
 	</properties>		
 
 	<repositories>
+		<!-- Needed for "good" log4J bundle -->
 		<repository>
 			<id>com.springsource.repository.bundles.external</id>
 			<name>Spring EBR External Release Repository</name>
 			<url>http://repository.springsource.com/maven/bundles/external</url>
+		</repository>
+		<!-- Needed for snapshots -->
+		<repository>
+			<id>sonatype-public</id>
+			<name>sonatype public</name>
+			<url>https://oss.sonatype.org/content/groups/public/</url>
 		</repository>		
 	</repositories>
     <dependencies>
@@ -62,12 +69,14 @@
 			<artifactId>com.springsource.org.apache.log4j</artifactId>
 			<version>1.2.16</version>
 			<scope>runtime</scope>			
-		</dependency>		
+		</dependency>	
+		<!--
         <dependency>
             <groupId>org.friendularity</groupId>
             <artifactId>ext.bundle.frag.sun.misc</artifactId>
             <version>1.0.0-SNAPSHOT</version>
-        </dependency>		
+        </dependency>
+		-->
 		<!--
         <dependency>
             <groupId>org.appdapter</groupId>
@@ -205,6 +214,9 @@
                                     <entry key="felix.auto.deploy.action" value="uninstall,install,update,start"/>
                                     <entry key="org.osgi.framework.storage" value="${project.build.directory}${file.separator}felix-cache"/>
                                     <entry key="org.osgi.framework.bootdelegation" value="*"/>
+									<!-- Allow sun.misc package to be used by LWJGL -->
+									<entry key="org.osgi.framework.system.packages.extra" value="sun.misc" />
+									
                                 </propertyfile>
                                 <makeurl property="run.properties.url" file="${project.build.directory}/run.properties"/>
                                 <java fork="true" jar="${maven.dependency.org.apache.felix.org.apache.felix.main.jar.path}">
