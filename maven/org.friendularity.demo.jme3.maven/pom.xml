@@ -3,18 +3,17 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.friendularity</groupId>
+		<artifactId>org.friendularity.modules.main</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+		<relativePath>../org.friendularity.modules.main/pom.xml</relativePath>
+	</parent>	
 
-	<groupId>org.friendularity</groupId>
 	<artifactId>org.friendularity.demo.jme3.maven</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>${project.artifactId} - jME3 demo wrapper project</name>
-	<url>http://www.friendularity.org</url>
-
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
 
 <!-- 
 Updated:	2011-12-30
@@ -69,7 +68,7 @@ don't want ;-)
 			<!-- Contains just the jme3test demo classes, with main methods -->
 			<groupId>com.jme3</groupId>
 			<artifactId>jmonkeyengine3</artifactId>
-			<version>3.0.0-SNAPSHOT</version>
+			<version>${jmonkey.version}</version>
 		</dependency>
 				
 		<dependency>
@@ -78,7 +77,7 @@ don't want ;-)
 			-->
 			<groupId>com.jme3</groupId>
 			<artifactId>jME3-testdata</artifactId>
-			<version>3.0.0-SNAPSHOT</version>
+			<version>${jmonkey.version}</version>
 		</dependency>
 
 		
@@ -86,36 +85,36 @@ don't want ;-)
 		<dependency>
 			<groupId>com.jme3</groupId>
 			<artifactId>jME3-core</artifactId>
-			<version>3.0.0-SNAPSHOT</version>
+			<version>${jmonkey.version}</version>
 		</dependency>		
 		
 		<!-- LWJGL stuff -->
 		<dependency>
 			<groupId>com.jme3</groupId>
 			<artifactId>jME3-lwjgl</artifactId>
-			<version>3.0.0-SNAPSHOT</version>
+			<version>${jmonkey.version}</version>
 		</dependency>		
 		<dependency>
 			<groupId>com.jme3</groupId>
 			<artifactId>jME3-lwjgl-natives</artifactId>
-			<version>3.0.0-SNAPSHOT</version>
+			<version>${jmonkey.version}</version>
 		</dependency>		
 		<dependency>
 			<groupId>com.jme3</groupId>
 			<artifactId>lwjgl</artifactId>
-			<version>3.0.0-SNAPSHOT</version>
+			<version>${jmonkey.version}</version>
 		</dependency>	
 		
 		<!-- Bullet stuff -->
 		<dependency>
 			<groupId>com.jme3</groupId>
 			<artifactId>jME3-jbullet</artifactId>
-			<version>3.0.0-SNAPSHOT</version>
+			<version>${jmonkey.version}</version>
 		</dependency>		
 		<dependency>
 			<groupId>com.jme3</groupId>
 			<artifactId>jbullet</artifactId>
-			<version>3.0.0-SNAPSHOT</version>
+			<version>${jmonkey.version}</version>
 		</dependency>		
 
 		
@@ -123,99 +122,99 @@ don't want ;-)
 		<dependency>
 			<groupId>com.jme3</groupId>
 			<artifactId>jME3-blender</artifactId>
-			<version>3.0.0-SNAPSHOT</version>
+			<version>${jmonkey.version}</version>
 		</dependency>		
 		<dependency>
 			<groupId>com.jme3</groupId>
 			<artifactId>jME3-desktop</artifactId>
-			<version>3.0.0-SNAPSHOT</version>
+			<version>${jmonkey.version}</version>
 		</dependency>		
 		<dependency>
 			<groupId>com.jme3</groupId>
 			<artifactId>jME3-plugins</artifactId>
-			<version>3.0.0-SNAPSHOT</version>
+			<version>${jmonkey.version}</version>
 		</dependency>		
 		<dependency>
 			<groupId>com.jme3</groupId>
 			<artifactId>jME3-terrain</artifactId>
-			<version>3.0.0-SNAPSHOT</version>
+			<version>${jmonkey.version}</version>
 		</dependency>	
 		
 		<!-- Ogg audio stuff -->
 		<dependency>
 			<groupId>com.jme3</groupId>
 			<artifactId>jME3-jogg</artifactId>
-			<version>3.0.0-SNAPSHOT</version>
+			<version>${jmonkey.version}</version>
 		</dependency>		
 		<dependency>
 			<groupId>com.jme3</groupId>
 			<artifactId>j-ogg-oggd</artifactId>
-			<version>3.0.0-SNAPSHOT</version>
+			<version>${jmonkey.version}</version>
 		</dependency>		
 		<dependency>
 			<groupId>com.jme3</groupId>
 			<artifactId>j-ogg-vorbisd</artifactId>
-			<version>3.0.0-SNAPSHOT</version>
+			<version>${jmonkey.version}</version>
 		</dependency>		
 		
 		<!-- Third party libs -->
 		<dependency>
 			<groupId>com.jme3</groupId>
 			<artifactId>jinput</artifactId>
-			<version>3.0.0-SNAPSHOT</version>
+			<version>${jmonkey.version}</version>
 		</dependency>		
 		<dependency>
 			<groupId>com.jme3</groupId>
 			<artifactId>eventbus</artifactId>
-			<version>3.0.0-SNAPSHOT</version>
+			<version>${jmonkey.version}</version>
 		</dependency>		
 		<dependency>
 			<groupId>com.jme3</groupId>
 			<artifactId>stack-alloc</artifactId>
-			<version>3.0.0-SNAPSHOT</version>
+			<version>${jmonkey.version}</version>
 		</dependency>		
 		<dependency>
 			<groupId>com.jme3</groupId>
 			<artifactId>vecmath</artifactId>
-			<version>3.0.0-SNAPSHOT</version>
+			<version>${jmonkey.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.jme3</groupId>
 			<artifactId>xmlpull-xpp3</artifactId>
-			<version>3.0.0-SNAPSHOT</version>
+			<version>${jmonkey.version}</version>
 		</dependency>	
 		<dependency>
 			<groupId>com.jme3</groupId>
 			<artifactId>noise</artifactId>
-			<version>3.0.0-SNAPSHOT</version>
+			<version>${jmonkey.version}</version>
 		</dependency>			
 		
 		<!-- Nifty GUI -->
 		<dependency>
 			<groupId>com.jme3</groupId>
 			<artifactId>jME3-niftygui</artifactId>
-			<version>3.0.0-SNAPSHOT</version>
+			<version>${jmonkey.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.jme3</groupId>
 			<artifactId>nifty</artifactId>
-			<version>3.0.0-SNAPSHOT</version>
+			<version>${jmonkey.version}</version>
 		</dependency>			
 		<dependency>
 			<groupId>com.jme3</groupId>
 			<artifactId>nifty-default-controls</artifactId>
-			<version>3.0.0-SNAPSHOT</version>
+			<version>${jmonkey.version}</version>
 		</dependency>
 		<dependency>
 			<!-- WARNING : Large - about 20M -->
 			<groupId>com.jme3</groupId>
 			<artifactId>nifty-examples</artifactId>
-			<version>3.0.0-SNAPSHOT</version>
+			<version>${jmonkey.version}</version>
 		</dependency>	
 		<dependency>
 			<groupId>com.jme3</groupId>
 			<artifactId>nifty-style-black</artifactId>
-			<version>3.0.0-SNAPSHOT</version>
+			<version>${jmonkey.version}</version>
 		</dependency>	
 
 		<!-- Test-phase-only dependencies -->

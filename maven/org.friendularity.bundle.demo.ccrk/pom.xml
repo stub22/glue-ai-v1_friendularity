@@ -10,7 +10,7 @@
     <name>org.friendularity.bundle.demo.ccrk OSGi Bundle</name>
 
     <properties>
-		<cogchar-version>1.0.1-SNAPSHOT</cogchar-version>
+		<cogchar-version>1.0.1</cogchar-version>
 		<appdapter-version>1.0.3</appdapter-version>
 
 		<scala.version>2.8.1</scala.version>
@@ -38,7 +38,13 @@
 			<id>sonatype-public</id>
 			<name>sonatype public</name>
 			<url>https://oss.sonatype.org/content/groups/public/</url>
-		</repository>		
+		</repository>
+		<!-- Needed during staging tests -->
+		<repository>
+			<id>sonatype-staging</id>
+			<name>sonatype staging</name>
+			<url>https://oss.sonatype.org/content/groups/staging/</url>
+		</repository>				
 	</repositories>
     <dependencies>
         <dependency>
