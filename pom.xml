@@ -38,7 +38,7 @@ Version-less parent will be allowed in Maven 3.1.
 	<name>${project.artifactId} - Root pom, linked to Sonatype repo parent</name>
 	<description>Project Root Folder pom.xml - includes all code + doc directories when snapped.</description>
 	<url>http://www.friendularity.org</url>
-	<inceptionYear>2010</inceptionYear>
+	<inceptionYear>2011</inceptionYear>
 	<licenses>
 		<license>
 			<name>Apache License, Version 2.0</name>

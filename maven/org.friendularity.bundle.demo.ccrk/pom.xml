@@ -1,30 +1,18 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+	
+	<parent>
+		<groupId>org.friendularity</groupId>
+		<artifactId>org.friendularity.modules.main</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+		<relativePath>../org.friendularity.modules.main/pom.xml</relativePath>
+	</parent>		
 
-    <groupId>org.friendularity</groupId>
     <artifactId>org.friendularity.bundle.demo.ccrk</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
     <packaging>bundle</packaging>
 
-    <name>org.friendularity.bundle.demo.ccrk OSGi Bundle</name>
-
-    <properties>
-		<cogchar-version>1.0.1</cogchar-version>
-		<appdapter-version>1.0.3</appdapter-version>
-
-		<scala.version>2.8.1</scala.version>
-
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
-		<netbeans.version>RELEASE691</netbeans.version>
-				
-		<maven.compiler.source>1.6</maven.compiler.source>
-		<maven.compiler.target>1.6</maven.compiler.target>
-		<encoding>UTF-8</encoding>
-		
-		<netbeans.hint.license>friendularity-apache20</netbeans.hint.license>		
-	</properties>		
+    <name>${project.artifactId}-OSGi_Bundle</name>	
 
 	<repositories>
 		<!-- Needed for "good" log4J bundle -->
@@ -33,18 +21,7 @@
 			<name>Spring EBR External Release Repository</name>
 			<url>http://repository.springsource.com/maven/bundles/external</url>
 		</repository>
-		<!-- Needed for snapshots -->
-		<repository>
-			<id>sonatype-public</id>
-			<name>sonatype public</name>
-			<url>https://oss.sonatype.org/content/groups/public/</url>
-		</repository>
-		<!-- Needed during staging tests -->
-		<repository>
-			<id>sonatype-staging</id>
-			<name>sonatype staging</name>
-			<url>https://oss.sonatype.org/content/groups/staging/</url>
-		</repository>				
+			
 	</repositories>
     <dependencies>
         <dependency>
@@ -56,7 +33,7 @@
         <dependency>
             <groupId>org.cogchar</groupId>
             <artifactId>org.cogchar.bundle.app.puma</artifactId>
-            <version>${cogchar-version}</version>
+            <version>${cogchar.version}</version>
         </dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
