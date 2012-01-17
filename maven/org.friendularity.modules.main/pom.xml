@@ -1,0 +1,67 @@
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+  
+	<parent>
+		<groupId>org.friendularity</groupId>
+		<artifactId>org.friendularity.project.root</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+		<relativePath>../../pom.xml</relativePath>
+	</parent>    
+
+	<artifactId>org.friendularity.modules.main</artifactId>
+	<packaging>pom</packaging>
+	<name>${project.artifactId} - all modules</name>
+	<description>All libraries and OSGi bundles</description>
+	
+	<repositories>
+		
+		<repository>
+			<id>sonatype-public</id>
+			<!-- Needed for snapshots -->
+			<name>sonatype public</name>
+			<url>https://oss.sonatype.org/content/groups/public/</url>
+		</repository>
+		<repository>
+			<id>scala-tools.org-RELEASES</id>
+			<name>Scala-Tools Releases Repo</name>
+			<url>http://scala-tools.org/repo-releases</url>
+		</repository>
+		<repository>
+			<id>scala-tools.org-SNAPSHOTS</id>
+			<name>Scala-Tools Snapshots Repo</name>
+			<url>http://scala-tools.org/repo-snapshots/</url>
+		</repository>
+		<!-- Needed during staging tests -->
+		<repository>
+			<id>sonatype-staging</id>
+			<name>sonatype staging</name>
+			<url>https://oss.sonatype.org/content/groups/staging/</url>
+		</repository>			
+	</repositories>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>scala-tools.org-RELEASES</id>
+			<name>Scala-Tools Releases Repo</name>
+			<url>http://scala-tools.org/repo-releases</url>
+		</pluginRepository>
+	</pluginRepositories>	
+
+	
+	<modules>
+		<module>../org.friendularity.bundle.demo.ccrk</module>
+		<module>../org.friendularity.demo.egosphere</module>
+		<!--
+		<module>../org.friendularity.demo.funapp</module>
+		<module>../org.friendularity.demo.funny</module>
+		-->
+		<module>../org.friendularity.demo.jme3.maven</module>
+		<module>../org.friendularity.demo.lifter</module>
+		<module>../org.friendularity.demo.music</module>
+		<module>../org.friendularity.demo.speech.hear</module>
+		<module>../org.friendularity.demo.weber</module>
+
+	</modules>	
+</project>
