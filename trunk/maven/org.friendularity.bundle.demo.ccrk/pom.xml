@@ -25,16 +25,22 @@
 	</repositories>
     <dependencies>
         <dependency>
+            <groupId>org.cogchar</groupId>
+            <artifactId>org.cogchar.bundle.app.puma</artifactId>
+            <version>${cogchar.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.cogchar</groupId>
+            <artifactId>org.cogchar.bundle.render.resources</artifactId>
+            <version>${cogchar.version}</version>
+        </dependency>
+		<dependency>
             <groupId>org.apache.felix</groupId>
             <artifactId>org.osgi.core</artifactId>
             <version>1.4.0</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>org.cogchar</groupId>
-            <artifactId>org.cogchar.bundle.app.puma</artifactId>
-            <version>${cogchar.version}</version>
-        </dependency>
+		
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
