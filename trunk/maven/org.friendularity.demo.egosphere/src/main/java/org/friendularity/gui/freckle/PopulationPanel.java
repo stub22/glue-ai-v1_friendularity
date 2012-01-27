@@ -36,8 +36,8 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
-import org.cogchar.vision.OpenCVImage;
-import org.cogchar.vision.PortableImage;
+import org.cogchar.sight.vision.OpenCVImage;
+import org.cogchar.sight.vision.PortableImage;
 
 public class PopulationPanel extends JPanel {
 	public PopulationPanel(ServerVizUI app) {

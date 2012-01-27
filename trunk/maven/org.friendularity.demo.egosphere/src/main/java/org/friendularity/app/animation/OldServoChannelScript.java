@@ -10,7 +10,7 @@ import org.friendularity.nwrap.joint.JointFrameStruct;
 import org.friendularity.nwrap.joint.JointInstructionStruct;
 import java.io.Serializable;
 import java.util.logging.Logger;
-import org.cogchar.animoid.config.ServoChannelConfig;
+import org.cogchar.api.animoid.config.bonus.ServoChannelConfig;
 
 /**
  *

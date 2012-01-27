@@ -34,9 +34,9 @@ import javax.management.NotificationListener;
 import javax.management.remote.JMXConnector;
 import javax.management.remote.JMXConnectorFactory;
 import org.friendularity.bind.cogbot.service.CogbotService;
-import org.cogchar.animoid.output.AnimationExecJob;
-import org.cogchar.animoid.output.VisemeJob;
-import org.cogchar.animoid.protocol.Animation;
+import org.cogchar.animoid.job.AnimationExecJob;
+import org.cogchar.animoid.job.VisemeJob;
+import org.cogchar.api.animoid.protocol.Animation;
 import org.cogchar.platform.stub.CueStub;
 import org.cogchar.platform.stub.JobStub;
 

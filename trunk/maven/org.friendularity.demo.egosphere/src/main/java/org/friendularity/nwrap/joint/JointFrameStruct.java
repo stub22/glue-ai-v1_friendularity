@@ -10,10 +10,11 @@ import		java.util.HashMap;
 import		java.util.Map;
 import		javolution.io.Struct;
 import		java.util.logging.Logger;
-import org.cogchar.animoid.protocol.Frame;
-import org.cogchar.animoid.protocol.JointPosition;
-import org.cogchar.animoid.protocol.JointPositionAROM;
-import org.cogchar.animoid.protocol.JointStateCoordinateType;
+
+import org.cogchar.api.animoid.protocol.Frame;
+import org.cogchar.api.animoid.protocol.JointPosition;
+import org.cogchar.api.animoid.protocol.JointPositionAROM;
+import org.cogchar.api.animoid.protocol.JointStateCoordinateType;
 
 /**
  * @author Stu Baurmann

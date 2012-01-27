@@ -16,9 +16,9 @@ import java.util.logging.Logger;
 import org.friendularity.nwrap.joint.JointAnimationPacket;
 import java.util.logging.Level;
 
-import org.cogchar.animoid.config.BoundsAssertions;
-import org.cogchar.animoid.config.ServoChannelConfig;
 import org.cogchar.animoid.oldconfig.IntMatrixFuncs;
+import org.cogchar.api.animoid.config.bonus.ServoChannelConfig;
+import org.cogchar.platform.util.BoundsAssertions;
 
 
 /**

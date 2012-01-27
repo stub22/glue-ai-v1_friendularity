@@ -11,7 +11,7 @@ import org.friendularity.app.face.FaceObservation;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Logger;
-import org.cogchar.integroid.cue.PersonCue;
+import org.cogchar.api.integroid.cue.PersonCue;
 import org.cogchar.sight.track.SightTrackerRegistry;
 
 /**

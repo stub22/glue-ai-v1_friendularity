@@ -16,8 +16,8 @@ import javax.swing.table.AbstractTableModel;
 // Drools 4
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
-import org.cogchar.animoid.protocol.EgocentricDirection;
-import org.cogchar.freckler.protocol.FaceRecognitionStatus;
+import org.cogchar.api.animoid.protocol.EgocentricDirection;
+import org.cogchar.api.freckler.protocol.FaceRecognitionStatus;
 import org.cogchar.platform.util.TimeUtils;
 import org.cogchar.sight.obs.SightObservationLog;
 import org.friendularity.app.face.FaceObservation;

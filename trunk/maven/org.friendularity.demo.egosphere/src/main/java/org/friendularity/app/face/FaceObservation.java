@@ -5,17 +5,17 @@
 
 package org.friendularity.app.face;
 
-import org.cogchar.freckler.protocol.FaceRecognitionStatus;
-import org.cogchar.freckler.protocol.FreckleResult;
-import org.cogchar.sight.obs.SightObservation;
-import org.cogchar.vision.PortableImage;
+import org.cogchar.api.freckler.protocol.FaceRecognitionStatus;
+import org.cogchar.api.freckler.protocol.FreckleResult;
+import org.cogchar.api.sight.SightObservation;
+import org.cogchar.sight.vision.PortableImage;
 import org.friendularity.app.freckle.FreckleFace;
 
 import java.awt.Rectangle;
 
 import java.util.logging.Logger;
 
-import static org.cogchar.freckler.protocol.FaceRecognitionStatus.*;
+import static org.cogchar.api.freckler.protocol.FaceRecognitionStatus.*;
 /**
  * @author Stu Baurmann
  */

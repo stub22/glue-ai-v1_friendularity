@@ -36,8 +36,8 @@ import javax.swing.JTextField;
 import javax.swing.LayoutStyle;
 
 import org.cogchar.nwrap.core.EmptyEngine;
-import org.cogchar.vision.OpenCVImage;
-import org.cogchar.vision.PortableImage;
+import org.cogchar.sight.vision.OpenCVImage;
+import org.cogchar.sight.vision.PortableImage;
 
 public class ServerVizUI {
     public ServerVizUI () {

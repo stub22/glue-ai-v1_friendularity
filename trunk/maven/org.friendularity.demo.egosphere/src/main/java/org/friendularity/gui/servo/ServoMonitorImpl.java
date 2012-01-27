@@ -11,14 +11,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.cogchar.animoid.config.ServoChannelConfig;
+
 import org.cogchar.animoid.monitor.IServoMonitor;
 import org.cogchar.animoid.monitor.IServoPositionReporter;
-import org.cogchar.animoid.protocol.JPARFrame;
-import org.cogchar.animoid.protocol.JointPosition;
-import org.cogchar.animoid.protocol.JointPositionAROM;
-import org.cogchar.animoid.protocol.JointPositionSnapshot;
-import org.cogchar.animoid.protocol.JointStateCoordinateType;
+
+import org.cogchar.api.animoid.config.bonus.ServoChannelConfig;
+import org.cogchar.api.animoid.protocol.JPARFrame;
+import org.cogchar.api.animoid.protocol.JointPosition;
+import org.cogchar.api.animoid.protocol.JointPositionAROM;
+import org.cogchar.api.animoid.protocol.JointPositionSnapshot;
+import org.cogchar.api.animoid.protocol.JointStateCoordinateType;
 import org.cogchar.integroid.boot.SubsystemImpl;
 import org.friendularity.app.animation.BlendingAnimator;
 import org.friendularity.gui.blending.BlendingMonitorImpl;

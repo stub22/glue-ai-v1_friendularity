@@ -10,8 +10,8 @@ import java.awt.image.BufferedImage;
 import javax.swing.JComponent;
 import javax.swing.TransferHandler;
 import javax.swing.event.MouseInputListener;
-import org.cogchar.vision.OpenCVImage;
-import org.cogchar.vision.PortableImage;
+import org.cogchar.sight.vision.OpenCVImage;
+import org.cogchar.sight.vision.PortableImage;
 
 public class ImagePanel extends JComponent //java.awt.Canvas 
     implements MouseInputListener {

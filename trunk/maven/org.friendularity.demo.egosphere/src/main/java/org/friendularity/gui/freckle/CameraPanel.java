@@ -11,9 +11,9 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import org.cogchar.nwrap.core.EmptyEngine;
-import org.cogchar.vision.RawVisionObserver;
-import org.cogchar.vision.VisionCanvas;
-import org.cogchar.vision.VisionFacade;
+import org.cogchar.sight.vision.RawVisionObserver;
+import org.cogchar.sight.vision.VisionCanvas;
+import org.cogchar.sight.vision.VisionFacade;
 
 public class CameraPanel extends JPanel implements WindowListener {
 	public CameraPanel(AbstractAction buttonAction) {

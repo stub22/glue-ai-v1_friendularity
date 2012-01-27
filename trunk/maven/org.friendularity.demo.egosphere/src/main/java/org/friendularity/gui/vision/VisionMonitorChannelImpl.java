@@ -27,11 +27,11 @@ import org.cogchar.ancient.utility.NullPaddedArrayList;
 import org.cogchar.ancient.utility.Parameters;
 import org.cogchar.integroid.boot.ConfigSystemImpl;
 import org.cogchar.integroid.boot.SubsystemImpl;
-import org.cogchar.vision.FaceTrackObserver;
-import org.cogchar.vision.MotionFilterObserver;
-import org.cogchar.vision.ROIVisionObserver;
-import org.cogchar.vision.RawFrameProcessor;
-import org.cogchar.vision.VisionFacade;
+import org.cogchar.sight.vision.FaceTrackObserver;
+import org.cogchar.sight.vision.MotionFilterObserver;
+import org.cogchar.sight.vision.ROIVisionObserver;
+import org.cogchar.sight.vision.RawFrameProcessor;
+import org.cogchar.sight.vision.VisionFacade;
 import org.jdesktop.observablecollections.ObservableList;
 
 

@@ -8,7 +8,7 @@ package org.friendularity.gui.person;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.util.logging.Logger;
-import org.cogchar.vision.PortableImage;
+import org.cogchar.sight.vision.PortableImage;
 import org.friendularity.app.face.FaceObservation;
 
 /**

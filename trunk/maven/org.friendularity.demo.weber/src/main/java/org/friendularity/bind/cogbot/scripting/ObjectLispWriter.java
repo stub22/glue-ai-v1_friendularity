@@ -9,8 +9,8 @@ package org.friendularity.bind.cogbot.scripting;
 import java.lang.reflect.Method;
 import java.util.IdentityHashMap;
 import javax.management.AttributeChangeNotification;
-import org.cogchar.integroid.cue.PersonCue;
-import org.cogchar.platform.cues.NamedCue;
+import org.cogchar.api.integroid.cue.PersonCue;
+import org.cogchar.api.platform.cues.NamedCue;
 import org.cogchar.platform.stub.ThalamentStub;
 
 /**

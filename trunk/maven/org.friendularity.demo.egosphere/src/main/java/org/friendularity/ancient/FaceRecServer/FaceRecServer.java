@@ -9,7 +9,7 @@ import java.util.Collection;
 import org.cogchar.nwrap.facerec.FaceProfile;
 import org.cogchar.nwrap.facerec.FaceProfileManager;
 import org.cogchar.nwrap.facerec.FaceRecPopulationManager;
-import org.cogchar.vision.OpenCVImage;
+import org.cogchar.sight.vision.OpenCVImage;
 
 public class FaceRecServer implements FaceRecPopulationManager, FaceProfileManager {
 	public FaceRecServer(String config) {

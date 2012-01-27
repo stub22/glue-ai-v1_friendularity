@@ -34,6 +34,16 @@
             <artifactId>org.cogchar.bundle.render.resources</artifactId>
             <version>${cogchar.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.robokind.headless</groupId>
+            <artifactId>org.robokind.headless.speech</artifactId>
+            <version>${robokind.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.robokind.headless</groupId>
+            <artifactId>org.robokind.headless.messaging</artifactId>
+            <version>${robokind.version}</version>
+        </dependency>				
 		<dependency>
             <groupId>org.apache.felix</groupId>
             <artifactId>org.osgi.core</artifactId>
@@ -73,6 +83,15 @@
                     <instructions>
                         <Bundle-Activator>org.friendularity.bundle.demo.ccrk.CCRK_DemoActivator</Bundle-Activator>
                     </instructions>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
                 </configuration>
             </plugin>
         </plugins>

@@ -6,7 +6,7 @@
 package org.friendularity.model.joint;
 
 import java.awt.Rectangle;
-import org.cogchar.animoid.config.MuscleJoint;
+import org.cogchar.api.animoid.config.bonus.MuscleJoint;
 
 /**
  * @author Stu Baurmann

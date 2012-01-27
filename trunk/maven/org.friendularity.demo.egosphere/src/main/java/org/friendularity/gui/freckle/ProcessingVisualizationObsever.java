@@ -2,7 +2,7 @@ package org.friendularity.gui.freckle;
 
 import org.friendularity.ancient.FaceRecServer.ProcessingObserver;
 import org.cogchar.integroid.boot.ThreadAwareObject;
-import org.cogchar.vision.OpenCVImage;
+import org.cogchar.sight.vision.OpenCVImage;
 
 public class ProcessingVisualizationObsever extends ThreadAwareObject implements ProcessingObserver {
 	//Received Requests

@@ -14,9 +14,9 @@ import org.friendularity.nwrap.joint.JointFrameStruct;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
-import org.cogchar.animoid.protocol.JointPositionSnapshot;
-import org.cogchar.animoid.protocol.JointStateCoordinateType;
-import org.cogchar.animoid.protocol.Robot;
+import org.cogchar.api.animoid.protocol.JointPositionSnapshot;
+import org.cogchar.api.animoid.protocol.JointStateCoordinateType;
+import org.cogchar.api.animoid.protocol.Robot;
 
 /**
  *

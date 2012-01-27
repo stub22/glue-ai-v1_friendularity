@@ -17,9 +17,9 @@ import java.util.NavigableMap;
 
 import java.util.Set;
 import java.util.logging.Logger;
-import org.cogchar.animoid.config.FaceNoticeConfig;
-import org.cogchar.animoid.config.ViewPort;
-import org.cogchar.freckler.protocol.FaceRecognitionStatus;
+import org.cogchar.api.freckler.protocol.FaceNoticeConfig;
+import org.cogchar.api.sight.SightPort;
+import org.cogchar.api.freckler.protocol.FaceRecognitionStatus;
 import org.cogchar.platform.util.CollectionFilter;
 import org.cogchar.sight.hypo.SightHypothesis;
 
@@ -218,7 +218,7 @@ public class FaceHypothesis extends SightHypothesis<FaceObservation> {
 	}
 	public Double getDiameterDegrees() {
 		FaceModel fm = getFaceModel();
-		ViewPort vp = fm.getGazeDirectionComputer().getViewPort();
+		SightPort vp = fm.getGazeDirectionComputer().getViewPort();
 		FaceObservation mrObs = (FaceObservation) getMostRecentObservation();
 		Double obsDiamDeg = mrObs.getDiameterDeg(vp);
 		return obsDiamDeg;
