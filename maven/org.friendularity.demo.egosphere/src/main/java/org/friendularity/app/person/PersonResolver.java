@@ -18,15 +18,15 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import org.cogchar.animoid.broker.AnimoidFacade;
-import org.cogchar.animoid.config.AnimoidConfig;
 import org.cogchar.animoid.gaze.IGazeTarget;
+import org.cogchar.api.animoid.config.bonus.AnimoidConfig;
+import org.cogchar.api.integroid.cue.AwarenessCue;
+import org.cogchar.api.integroid.cue.MotionCue;
+import org.cogchar.api.integroid.cue.PersonCue;
+import org.cogchar.api.sight.SightCue;
 import org.cogchar.integroid.broker.IntegroidFacade;
 import org.cogchar.integroid.broker.IntegroidHelpFuncs;
-import org.cogchar.integroid.cue.AwarenessCue;
-import org.cogchar.integroid.cue.MotionCue;
-import org.cogchar.integroid.cue.PersonCue;
 import org.cogchar.platform.util.TimeUtils;
-import org.cogchar.sight.track.SightCue;
 
 
 /**

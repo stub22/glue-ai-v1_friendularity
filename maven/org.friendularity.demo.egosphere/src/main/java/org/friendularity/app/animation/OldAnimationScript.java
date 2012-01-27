@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.cogchar.animoid.config.ServoChannelConfig;
+import org.cogchar.api.animoid.config.bonus.ServoChannelConfig;
 
 /**
  * @author Stu Baurmann

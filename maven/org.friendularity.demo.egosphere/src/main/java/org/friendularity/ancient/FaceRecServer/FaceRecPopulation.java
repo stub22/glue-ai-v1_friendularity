@@ -1,6 +1,6 @@
 package org.friendularity.ancient.FaceRecServer;
 
-import org.cogchar.vision.OpenCVImage;
+import org.cogchar.sight.vision.OpenCVImage;
 
 public class FaceRecPopulation {
 	public FaceRecPopulation() {

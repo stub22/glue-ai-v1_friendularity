@@ -10,9 +10,9 @@ import java.awt.Image;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.cogchar.vision.IAnnotatingObserver;
-import org.cogchar.vision.IRawFrameObserver;
-import org.cogchar.vision.RawFrameProcessor;
+import org.cogchar.sight.vision.IAnnotatingObserver;
+import org.cogchar.sight.vision.IRawFrameObserver;
+import org.cogchar.sight.vision.RawFrameProcessor;
 
 /**
  *

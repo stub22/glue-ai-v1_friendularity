@@ -13,14 +13,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 import org.cogchar.animoid.broker.AnimoidFacade;
-import org.cogchar.animoid.config.ServoChannelConfig;
-import org.cogchar.animoid.protocol.Animation;
-import org.cogchar.animoid.protocol.Device;
-import org.cogchar.animoid.protocol.Frame;
-import org.cogchar.animoid.protocol.Joint;
-import org.cogchar.animoid.protocol.JointPositionAROM;
-import org.cogchar.animoid.protocol.JointPositionCache;
-import org.cogchar.animoid.protocol.Library;
+import org.cogchar.api.animoid.config.bonus.ServoChannelConfig;
+import org.cogchar.api.animoid.protocol.Animation;
+import org.cogchar.api.animoid.protocol.Device;
+import org.cogchar.api.animoid.protocol.Frame;
+import org.cogchar.api.animoid.protocol.Joint;
+import org.cogchar.api.animoid.protocol.JointPositionAROM;
+import org.cogchar.api.animoid.protocol.JointPositionCache;
+import org.cogchar.api.animoid.protocol.Library;
 
 /**
  *

@@ -16,10 +16,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.cogchar.ancient.utility.Parameters;
 import org.cogchar.animoid.broker.AnimoidFacade;
-import org.cogchar.animoid.config.AnimoidConfig;
-import org.cogchar.animoid.config.FreckleMatchConfig;
-import org.cogchar.freckler.protocol.FreckleQuery;
-import org.cogchar.freckler.protocol.FreckleResult;
+import org.cogchar.api.animoid.config.bonus.AnimoidConfig;
+import org.cogchar.api.freckler.protocol.FreckleMatchConfig;
+import org.cogchar.api.freckler.protocol.FreckleQuery;
+import org.cogchar.api.freckler.protocol.FreckleResult;
 import org.cogchar.sight.hypo.SightHypothesis;
 import org.freckler.jmxwrap.FreckleServiceClient;
 import org.freckler.jmxwrap.FreckleServiceWrapper;
@@ -27,7 +27,7 @@ import org.freckler.jmxwrap.FreckleServiceWrapperMXBean;
 import org.freckler.service.FreckleResultListener;
 import org.freckler.service.FreckleServiceImpl;
 /**
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public class FreckleMatcher implements  FreckleResultListener, Runnable {
 	private static Logger theLogger = Logger.getLogger(FreckleMatcher.class.getName());

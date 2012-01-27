@@ -19,16 +19,16 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.cogchar.animoid.broker.AnimoidFacade;
 import org.cogchar.animoid.calc.estimate.GazeDirectionComputer;
-import org.cogchar.animoid.config.ViewPort;
 import org.cogchar.animoid.gaze.IGazeTarget;
-import org.cogchar.animoid.protocol.EgocentricDirection;
-import org.cogchar.animoid.protocol.SmallAngle;
+import org.cogchar.api.animoid.protocol.EgocentricDirection;
+import org.cogchar.api.animoid.protocol.SmallAngle;
+import org.cogchar.api.integroid.cue.PersonCue;
+import org.cogchar.api.sight.SightAttentionStatus;
+import org.cogchar.api.sight.SightPort;
 import org.cogchar.integroid.broker.IntegroidFacade;
-import org.cogchar.integroid.cue.PersonCue;
 import org.cogchar.sight.hypo.SightModel;
-import org.cogchar.sight.track.SightAttentionStatus;
-import org.cogchar.vision.IRawFrameObserver;
-import org.cogchar.vision.PortableImage;
+import org.cogchar.sight.vision.IRawFrameObserver;
+import org.cogchar.sight.vision.PortableImage;
 
 /**
  *
@@ -111,7 +111,7 @@ public class EgosphereSwingPanel extends javax.swing.JPanel {
 			theLogger.info("EgocentricDirection is null, cannot continue.");
 			return false;
 		}
-		ViewPort vp = gdc.getViewPort();
+		SightPort vp = gdc.getViewPort();
 		myViewportAzDeg = vp.getWidthAngle().getDegrees();
 		myViewportElDeg = vp.getHeightAngle().getDegrees();
 

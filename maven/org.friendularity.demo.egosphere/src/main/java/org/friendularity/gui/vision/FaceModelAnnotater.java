@@ -21,14 +21,15 @@ import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.cogchar.animoid.calc.estimate.GazeDirectionComputer;
-import org.cogchar.animoid.config.ViewPort;
-import org.cogchar.animoid.protocol.EgocentricDirection;
+import org.cogchar.api.sight.SightPort;
+import org.cogchar.api.animoid.protocol.EgocentricDirection;
 import org.cogchar.integroid.broker.IntegroidFacade;
-import org.cogchar.integroid.cue.PersonCue;
+import org.cogchar.api.integroid.cue.PersonCue;
+import org.cogchar.api.sight.SightObservation;
+import org.cogchar.api.sight.SightAttentionStatus;
+import org.cogchar.sight.vision.IAnnotatingObserver;
 import org.cogchar.sight.hypo.SightHypothesis;
-import org.cogchar.sight.obs.SightObservation;
-import org.cogchar.sight.track.SightAttentionStatus;
-import org.cogchar.vision.IAnnotatingObserver;
+
 
 /**
  * @author Stu Baurmann
@@ -53,7 +54,7 @@ public class FaceModelAnnotater implements IAnnotatingObserver {
 			
 			GazeDirectionComputer gazeDirectionComputer = myFaceModel.getGazeDirectionComputer();
 			if (gazeDirectionComputer != null) {
-				ViewPort vp = gazeDirectionComputer.getViewPort();
+				SightPort vp = gazeDirectionComputer.getViewPort();
 				Collection<FaceHypothesis> hypos = myFaceModel.getHypoSnapshotOrderedByNum();
 				for (SightHypothesis h : hypos) {
 					drawSightHypothesisInfo(h, vp, g);
@@ -64,7 +65,7 @@ public class FaceModelAnnotater implements IAnnotatingObserver {
 			theLogger.log(Level.SEVERE, "g=" + g, t);
 		}
 	}
-	private void drawSightHypothesisInfo(SightHypothesis h, ViewPort vp, Graphics g) {
+	private void drawSightHypothesisInfo(SightHypothesis h, SightPort vp, Graphics g) {
 		// SightObservation obs = h.getMostRecentObservation();
 		IntegroidFacade igf = SignalStation.getSignalStation().getIntegroidFacade();
 		PersonTracker pt = PersonHelpFuncs.getPersonTrackerForHypo(igf, (FaceHypothesis) h);
@@ -137,7 +138,7 @@ public class FaceModelAnnotater implements IAnnotatingObserver {
 			g.drawString("stat=" + attStatString, textX, textY);
 		}
 	}
-	private void drawCameraDirectionInfo(ViewPort vp, Graphics g) {
+	private void drawCameraDirectionInfo(SightPort vp, Graphics g) {
 		EgocentricDirection cameraDir = myFaceModel.getCameraCenterDirection(false); 
 		if (cameraDir != null) {
 			g.setColor(Color.RED);

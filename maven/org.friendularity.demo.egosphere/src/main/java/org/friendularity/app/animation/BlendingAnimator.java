@@ -17,13 +17,15 @@ import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
 import org.cogchar.animoid.broker.AnimoidFacade;
 import org.cogchar.animoid.calc.estimate.PositionEstimator;
-import org.cogchar.animoid.config.AnimoidConfig;
+
 import org.cogchar.animoid.monitor.IServoMonitor;
-import org.cogchar.animoid.protocol.Frame;
 import org.cogchar.animoid.monitor.IServoPositionReporter;
-import org.cogchar.animoid.protocol.JPARFrame;
-import org.cogchar.animoid.protocol.JointPositionSnapshot;
-import org.cogchar.animoid.protocol.JointStateCoordinateType;
+
+import org.cogchar.api.animoid.config.bonus.AnimoidConfig;
+import org.cogchar.api.animoid.protocol.Frame;
+import org.cogchar.api.animoid.protocol.JPARFrame;
+import org.cogchar.api.animoid.protocol.JointPositionSnapshot;
+import org.cogchar.api.animoid.protocol.JointStateCoordinateType;
 
 /**
  * @author Stu Baurmann

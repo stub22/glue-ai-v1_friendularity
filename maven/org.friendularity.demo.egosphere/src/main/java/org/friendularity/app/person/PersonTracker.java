@@ -5,14 +5,14 @@
 
 package org.friendularity.app.person;
 
+import org.cogchar.api.integroid.cue.BogeyCue;
+import org.cogchar.api.integroid.cue.FriendCue;
+import org.cogchar.api.integroid.cue.PersonCue;
+import org.cogchar.api.sight.SightAttentionStatus;
 import org.cogchar.platform.stub.CueBrokerStub;
 import org.cogchar.integroid.awareness.AwarenessHelpFuncs;
 import org.cogchar.integroid.broker.IntegroidCueBroker;
 import org.cogchar.integroid.broker.IntegroidFacade;
-import org.cogchar.integroid.cue.BogeyCue;
-import org.cogchar.integroid.cue.FriendCue;
-import org.cogchar.integroid.cue.PersonCue;
-import org.cogchar.sight.track.SightAttentionStatus;
 import org.cogchar.sight.track.SightTracker;
 import org.friendularity.app.face.FaceHypothesis;
 import org.friendularity.app.face.FaceModel;
@@ -20,7 +20,7 @@ import org.friendularity.app.face.FaceObservation;
 
 import java.util.logging.Logger;
 
-import static org.cogchar.sight.track.SightAttentionStatus.*;
+import static org.cogchar.api.sight.SightAttentionStatus.*;
 
 /**
  * @author Stu Baurmann

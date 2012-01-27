@@ -5,7 +5,6 @@
 
 package org.friendularity.app.freckle;
 
-import org.cogchar.convoid.output.config.BehaviorDataSaver;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.Dom4JDriver;
 import com.thoughtworks.xstream.io.xml.Dom4JWriter;
@@ -14,6 +13,7 @@ import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
+import org.cogchar.xml.convoid.behavior.BehaviorDataSaver;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 

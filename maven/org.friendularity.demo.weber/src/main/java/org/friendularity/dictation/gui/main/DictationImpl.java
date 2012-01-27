@@ -24,7 +24,8 @@ public class DictationImpl {
         myPanel = dp;
         loadINI();
         mySoundDetector = new SoundDetector(this, myPanel.getVolumeMonitorPanel(), myProperties);
-        mySoundDetector.initialize();
+      
+	//	mySoundDetector.initialize();
         loadSoundLengths();
 
         CaptureThread capThread=mySoundDetector.getCaptureThread();

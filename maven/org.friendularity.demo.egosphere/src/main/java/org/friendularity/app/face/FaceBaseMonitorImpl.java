@@ -9,11 +9,11 @@ import org.friendularity.app.freckle.FreckleFace;
 import org.friendularity.app.person.PersonHelpFuncs;
 import java.util.Observer;
 import java.util.logging.Logger;
+import org.cogchar.api.integroid.cue.PersonCue;
 import org.cogchar.integroid.boot.SubsystemImpl;
 import org.cogchar.integroid.broker.IntegroidCueBroker;
 import org.cogchar.integroid.broker.IntegroidFacade;
 import org.cogchar.integroid.broker.IntegroidJobBroker;
-import org.cogchar.integroid.cue.PersonCue;
 import org.cogchar.platform.stub.ThalamusBrokerStub;
 
 /**

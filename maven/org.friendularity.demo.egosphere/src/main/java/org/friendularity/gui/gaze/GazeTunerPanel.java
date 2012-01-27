@@ -11,9 +11,9 @@
 
 package org.friendularity.gui.gaze;
 
-import org.cogchar.animoid.config.GazeJointStrategy;
 import org.cogchar.animoid.gaze.GazeStrategyCue;
 import org.cogchar.animoid.gaze.GazeStrategyCue.MotionStyle;
+import org.cogchar.api.animoid.gaze.GazeJointStrategy;
 import org.cogchar.sight.hypo.SightHypothesis;
 
 /**

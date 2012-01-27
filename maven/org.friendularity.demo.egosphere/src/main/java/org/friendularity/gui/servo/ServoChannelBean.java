@@ -9,7 +9,7 @@ package org.friendularity.gui.servo;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
-import org.cogchar.animoid.config.ServoChannelConfig;
+import org.cogchar.api.animoid.config.bonus.ServoChannelConfig;
 
 /**
  * @author Stu Baurmann

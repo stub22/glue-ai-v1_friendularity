@@ -7,9 +7,9 @@ package org.friendularity.app.animation;
 
 import java.util.Set;
 import java.util.logging.Logger;
-import org.cogchar.animoid.output.AnimationExecJob;
-import org.cogchar.animoid.protocol.Frame;
-import org.cogchar.animoid.protocol.Joint;
+import org.cogchar.animoid.job.AnimationExecJob;
+import org.cogchar.api.animoid.protocol.Frame;
+import org.cogchar.api.animoid.protocol.Joint;
 
 /**
  *
