@@ -10,6 +10,14 @@
     
     <style class="lift:CSS.fancyType" />
     <style type="text/css">
+       .table {
+           border: 0px; 
+           bordercolor: #FFCC00;
+           background-color: #FFFFFF; 
+           width: 700px;
+           height: 525px;
+       }
+        
         .buttongray {
 font-family: Arial;
 color: #ffffff;
@@ -221,7 +229,7 @@ background: -moz-linear-gradient(top, #A92CE8, #B92EFF);
     </script>
   </head>
   <body>
-      <table border="0" bordercolor="#FFCC00" style="background-color:#FFFFCC" width="700" cellpadding="20" cellspacing="3">
+      <table class="table" cellpadding="20">
 	<tr>
 		<td><div id="button1" class="buttongray" onclick="button1_set(), CSSswitch()"></div></td>
 		<td><div id="button2" class="buttongray" onclick="button2_set(), CSSswitch()"></div></td>
@@ -241,6 +249,8 @@ background: -moz-linear-gradient(top, #A92CE8, #B92EFF);
 		<td><div id="button12" class="buttongray" onclick="button12_set(), CSSswitch()"></div></td>
 	</tr>
 </table>
-
+      <div id="ServerUpdate"><lift:comet type="PushActor" name="ServerUpdatePush">
+        The server updated me after <clk:RandPush>Missing Clock</clk:RandPush> ms.
+    </lift:comet></div>
   </body>
 </html>
