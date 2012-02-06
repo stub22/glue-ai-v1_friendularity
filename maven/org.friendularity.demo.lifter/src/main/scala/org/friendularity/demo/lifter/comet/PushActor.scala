@@ -32,7 +32,7 @@ var PushSeconds = (r.nextInt(5)+3)*1000
 
   override def lowPriority : PartialFunction[Any, Unit] = {
     case Tick => {
-      partialUpdate(SetHtml("RandPush", Text(PushSeconds.toString))) ;
+      partialUpdate(SetHtml("RandPush", Text((PushSeconds/1000).toString))) ;
       ActorPing.schedule(this, Tick, PushSeconds) ;
       PushSeconds = (r.nextInt(5)+3)*1000;
     }
