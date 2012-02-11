@@ -163,6 +163,8 @@ background: -moz-linear-gradient(top, #A92CE8, #B92EFF);
     <script>
         var buttonid;
         
+        var now = new Date()
+        
         function button1_set()
         {buttonid = 'button1';}
         
@@ -199,6 +201,11 @@ background: -moz-linear-gradient(top, #A92CE8, #B92EFF);
         function button12_set()
         {buttonid = 'button12';}
         
+        function ConsoleLog()
+        {
+            console.log(buttonid + " pressed at " + now);
+        }
+        
         function CSSswitch()
         {
             if(document.getElementById(buttonid).className=='buttongray')
@@ -231,22 +238,22 @@ background: -moz-linear-gradient(top, #A92CE8, #B92EFF);
   <body>
       <table class="table" cellpadding="20">
 	<tr>
-		<td><div id="button1" class="buttongray" onclick="button1_set(), CSSswitch()"></div></td>
-		<td><div id="button2" class="buttongray" onclick="button2_set(), CSSswitch()"></div></td>
-		<td><div id="button3" class="buttongray" onclick="button3_set(), CSSswitch()"></div></td>
-		<td><div id="button4" class="buttongray" onclick="button4_set(), CSSswitch()"></div></td>
+		<td><div id="button1" class="buttongray" onclick="button1_set(), CSSswitch(), ConsoleLog()"></div></td>
+		<td><div id="button2" class="buttongray" onclick="button2_set(), CSSswitch(), ConsoleLog()"></div></td>
+		<td><div id="button3" class="buttongray" onclick="button3_set(), CSSswitch(), ConsoleLog()"></div></td>
+		<td><div id="button4" class="buttongray" onclick="button4_set(), CSSswitch(), ConsoleLog()"></div></td>
 	</tr>
 	<tr>
-		<td><div id="button5" class="buttongray" onclick="button5_set(), CSSswitch()"></div></td>
-		<td><div id="button6" class="buttongray" onclick="button6_set(), CSSswitch()"></div></td>
-		<td><div id="button7" class="buttongray" onclick="button7_set(), CSSswitch()"></div></td>
-		<td><div id="button8" class="buttongray" onclick="button8_set(), CSSswitch()"></div></td>
+		<td><div id="button5" class="buttongray" onclick="button5_set(), CSSswitch(), ConsoleLog()"></div></td>
+		<td><div id="button6" class="buttongray" onclick="button6_set(), CSSswitch(), ConsoleLog()"></div></td>
+		<td><div id="button7" class="buttongray" onclick="button7_set(), CSSswitch(), ConsoleLog()"></div></td>
+		<td><div id="button8" class="buttongray" onclick="button8_set(), CSSswitch(), ConsoleLog()"></div></td>
 	</tr>
 	<tr>
-		<td><div id="button9" class="buttongray" onclick="button9_set(), CSSswitch()"></div></td>
-		<td><div id="button10" class="buttongray" onclick="button10_set(), CSSswitch()"></div></td>
-		<td><div id="button11" class="buttongray" onclick="button11_set(), CSSswitch()"></div></td>
-		<td><div id="button12" class="buttongray" onclick="button12_set(), CSSswitch()"></div></td>
+		<td><div id="button9" class="buttongray" onclick="button9_set(), CSSswitch(), ConsoleLog()"></div></td>
+		<td><div id="button10" class="buttongray" onclick="button10_set(), CSSswitch(), ConsoleLog()"></div></td>
+		<td><div id="button11" class="buttongray" onclick="button11_set(), CSSswitch(), ConsoleLog()"></div></td>
+		<td><div id="button12" class="buttongray" onclick="button12_set(), CSSswitch(), ConsoleLog()"></div></td>
 	</tr>
 </table>
       <div id="ServerUpdate"><lift:comet type="PushActor" name="ServerUpdatePush">
