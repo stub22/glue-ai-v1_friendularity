@@ -3,7 +3,7 @@ package comet {
 
 
 import net.liftweb.common._
-
+import net.liftweb.http.js.JE._
 import net.liftweb.http._
 import S._
 import net.liftweb.http.js.JsCmds.SetHtml
