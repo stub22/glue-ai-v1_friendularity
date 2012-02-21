@@ -13,7 +13,7 @@
 	<artifactId>org.friendularity.demo.lifter</artifactId>
 	<packaging>war</packaging>
 
-	<name>${project.artifactId} - demo app jar</name>
+	<name>org.friendularity.demo.lifter - demo webapp</name>
 
 
 

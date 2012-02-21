@@ -37,12 +37,12 @@
         <dependency>
             <groupId>org.robokind.headless</groupId>
             <artifactId>org.robokind.headless.speech</artifactId>
-            <version>${robokind.version}</version>
+            <version>${robokind.headless.version}</version>
         </dependency>
         <dependency>
             <groupId>org.robokind.headless</groupId>
             <artifactId>org.robokind.headless.messaging</artifactId>
-            <version>${robokind.version}</version>
+            <version>${robokind.headless.version}</version>
         </dependency>				
 		<dependency>
             <groupId>org.apache.felix</groupId>

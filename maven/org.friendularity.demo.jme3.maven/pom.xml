@@ -182,11 +182,6 @@ don't want ;-)
 			<groupId>com.jme3</groupId>
 			<artifactId>xmlpull-xpp3</artifactId>
 			<version>${jmonkey.version}</version>
-		</dependency>	
-		<dependency>
-			<groupId>com.jme3</groupId>
-			<artifactId>noise</artifactId>
-			<version>${jmonkey.version}</version>
 		</dependency>			
 		
 		<!-- Nifty GUI -->
