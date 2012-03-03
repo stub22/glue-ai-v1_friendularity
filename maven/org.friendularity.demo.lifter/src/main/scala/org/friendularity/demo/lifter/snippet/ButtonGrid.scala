@@ -18,7 +18,7 @@ import _root_.net.liftweb.util.Log
 
 object ButtonGrid {
 
-var now = new Date()
+def now = new Date()
 
   def render1 ={
     "#button1 [onclick]" #> SHtml.ajaxInvoke (() => {
