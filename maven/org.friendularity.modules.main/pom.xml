@@ -23,16 +23,6 @@
 			<name>sonatype public</name>
 			<url>https://oss.sonatype.org/content/groups/public/</url>
 		</repository>
-		<repository>
-			<id>scala-tools.org-RELEASES</id>
-			<name>Scala-Tools Releases Repo</name>
-			<url>http://scala-tools.org/repo-releases</url>
-		</repository>
-		<repository>
-			<id>scala-tools.org-SNAPSHOTS</id>
-			<name>Scala-Tools Snapshots Repo</name>
-			<url>http://scala-tools.org/repo-snapshots/</url>
-		</repository>
 		<!-- Needed during staging tests -->
 		<repository>
 			<id>sonatype-staging</id>
@@ -40,15 +30,6 @@
 			<url>https://oss.sonatype.org/content/groups/staging/</url>
 		</repository>			
 	</repositories>
-
-	<pluginRepositories>
-		<pluginRepository>
-			<id>scala-tools.org-RELEASES</id>
-			<name>Scala-Tools Releases Repo</name>
-			<url>http://scala-tools.org/repo-releases</url>
-		</pluginRepository>
-	</pluginRepositories>	
-
 	
 	<modules>
 		<module>../org.friendularity.bundle.demo.ccrk</module>

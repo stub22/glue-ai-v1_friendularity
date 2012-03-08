@@ -33,16 +33,17 @@
             <groupId>org.cogchar</groupId>
             <artifactId>org.cogchar.bundle.render.resources</artifactId>
             <version>${cogchar.version}</version>
+			<scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>org.robokind.headless</groupId>
+            <groupId>org.robokind</groupId>
             <artifactId>org.robokind.headless.speech</artifactId>
-            <version>${robokind.headless.version}</version>
+            <version>${robokind.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.robokind.headless</groupId>
+            <groupId>org.robokind</groupId>
             <artifactId>org.robokind.headless.messaging</artifactId>
-            <version>${robokind.headless.version}</version>
+            <version>${robokind.version}</version>
         </dependency>				
 		<dependency>
             <groupId>org.apache.felix</groupId>
