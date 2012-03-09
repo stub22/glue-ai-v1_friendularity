@@ -29,12 +29,12 @@ public class CCRK_DemoActivator extends BundleActivatorBase {
 	protected void startPumaDemo(BundleContext bundleCtx) throws Exception {
 		String uriPrefix = "http://model.cogchar.org/char/bony/";
 		String bonyCharUniqueSuffix = "0x0000FFFF";
-		String bonyCharURI = uriPrefix + bonyCharUniqueSuffix;
-		String debugTxt = "bonyChar at URI[" + bonyCharURI + "]";
+		String sysContextURI = uriPrefix + bonyCharUniqueSuffix;
+		String debugTxt = "sysContextURI = [" + sysContextURI + "]";
 		theLogger.info("======================================== Starting " + debugTxt);		
-		PumaAppContext pac = new PumaAppContext(bundleCtx);
+		PumaAppContext pac = new PumaAppContext(bundleCtx, sysContextURI);
 		try {
-			pac.makeDualCharForSwingOSGi(bonyCharURI);
+			pac.makeDualCharsForSwingOSGi();
 		} catch (Throwable t) {
 			theLogger.error("Cannot initialize " + debugTxt, t);
 		}
