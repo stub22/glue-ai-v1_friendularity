@@ -32,7 +32,7 @@ public class CCRK_DemoActivator extends BundleActivatorBase {
 		String sysContextURI = uriPrefix + bonyCharUniqueSuffix;
 		String debugTxt = "sysContextURI = [" + sysContextURI + "]";
 		theLogger.info("======================================== Starting " + debugTxt);		
-		PumaAppContext pac = new PumaAppContext(bundleCtx, sysContextURI);
+		PumaAppContext pac = new PumaAppContext(bundleCtx, sysContextURI, null);
 		try {
 			pac.makeDualCharsForSwingOSGi();
 		} catch (Throwable t) {
