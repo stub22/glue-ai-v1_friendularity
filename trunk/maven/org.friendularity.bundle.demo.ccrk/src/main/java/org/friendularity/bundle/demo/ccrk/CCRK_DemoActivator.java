@@ -6,21 +6,20 @@ import org.cogchar.bundle.app.puma.PumaAppContext;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class CCRK_DemoActivator extends BundleActivatorBase {
-	static Logger theLogger = LoggerFactory.getLogger(CCRK_DemoActivator.class);
-	@Override protected Logger getLogger() {
-		return theLogger;
-	}	
-    @Override public void start(BundleContext context) throws Exception {
+
+	@Override public void start(BundleContext context) throws Exception {
 		// Will look for log4j.properties at root of this bundle.
+		// Any top-level OSGi app that wants to enable Log4J (and thereby make Jena happy, while
+		// retaining the power to configure Jena's logging level) should have the dependencies
+		// in our pom.xml, and call this once at startup.
 		forceLog4jConfig();
-		// Print a bunch of howdys
+		// Print some howdys
 		super.start(context);
-		
+		// Start the basic PUMA application (Cogchar OpenGL rendering with Robokind animation and speech).
 		startPumaDemo(context);
+		// Could start some extra app-specific (e.g.) Cogbot binding goodies, tell them to attach to PUMA behavior system.
 	}
     @Override public void stop(BundleContext context) throws Exception {
 		super.stop(context);
@@ -31,15 +30,15 @@ public class CCRK_DemoActivator extends BundleActivatorBase {
 		String bonyCharUniqueSuffix = "0x0000FFFF";
 		String sysContextURI = uriPrefix + bonyCharUniqueSuffix;
 		String debugTxt = "sysContextURI = [" + sysContextURI + "]";
-		theLogger.info("======================================== Starting " + debugTxt);		
+		logInfo("======================================== Starting " + debugTxt);		
 		PumaAppContext pac = new PumaAppContext(bundleCtx, sysContextURI, null);
 		try {
 			pac.makeDualCharsForSwingOSGi();
 		} catch (Throwable t) {
-			theLogger.error("Cannot initialize " + debugTxt, t);
+			logError("Cannot initialize " + debugTxt, t);
 		}
 		
-		theLogger.info("Started" + debugTxt + "\n========================================");		
+		logInfo("Started" + debugTxt + "\n========================================");		
 	}
 
 }
