@@ -26,6 +26,12 @@
     <dependencies>
         <dependency>
             <groupId>org.cogchar</groupId>
+            <artifactId>org.cogchar.bundle.bind.cogbot</artifactId>
+            <version>${cogchar.version}</version>
+        </dependency>
+		
+        <dependency>
+            <groupId>org.cogchar</groupId>
             <artifactId>org.cogchar.bundle.app.puma</artifactId>
             <version>${cogchar.version}</version>
         </dependency>
