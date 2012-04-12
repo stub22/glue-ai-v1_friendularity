@@ -7,6 +7,7 @@ public class Activator implements BundleActivator {
 
     public void start(BundleContext context) throws Exception {
         // TODO add activation code here
+		System.out.println("Hello activated!");
     }
 
     public void stop(BundleContext context) throws Exception {
