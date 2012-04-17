@@ -3,6 +3,7 @@ package org.friendularity.cogbot;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -23,12 +24,16 @@ import org.robokind.api.messaging.RecordAsyncReceiver;
 import org.robokind.api.messaging.RecordSender;
 import org.robokind.api.speech.SpeechRequest;
 import org.robokind.api.speech.SpeechRequestFactory;
+import org.robokind.api.speechrec.SpeechRecEvent;
+import org.robokind.api.speechrec.SpeechRecEventList;
 import org.robokind.avrogen.speech.SpeechRequestRecord;
+import org.robokind.avrogen.speechrec.SpeechRecEventListRecord;
 import org.robokind.impl.messaging.JMSAvroRecordAsyncReceiver;
 import org.robokind.impl.messaging.JMSAvroRecordSender;
 import org.robokind.impl.messaging.JMSBytesMessageSender;
 import org.robokind.impl.messaging.utils.ConnectionManager;
 import org.robokind.impl.speech.PortableSpeechRequest;
+import org.robokind.impl.speechrec.PortableSpeechRecEventList;
 
 /**
  * Hello world!
@@ -38,7 +43,7 @@ public class App {
     private final static Logger theLogger = Logger.getLogger(App.class.getName());
     
     public static void main( String[] args ){
-        Session session = getSession("127.0.0.1");
+        Session session = getSession("192.168.0.108");
         if(session == null){
             return;
         }
@@ -47,24 +52,27 @@ public class App {
             return;
         }
         Destination sendDest = ConnectionManager.createDestination("speech.Request");
-        Destination recDest = ConnectionManager.createDestination("speechrec.Event");
+        Destination recDest = ConnectionManager.createDestination("speechrec.Event;  {create: always, node: {type: topic}}");
         
         MessageSender<SpeechRequest> sender = createSpeechSender(session, sendDest);
         if(sender == null){
             return;
         }
         SpeechHandler handler = new SpeechHandler(cogbot, sender);
-        MessageAsyncReceiver<SpeechRequest> receiver = createSpeechReceiver(session, recDest);
+        MessageAsyncReceiver<SpeechRecEventList> receiver = createSpeechReceiver(session, recDest);
         if(receiver == null){
             return;
         }
         receiver.addMessageListener(handler);
         try{
+            sender.start();
             receiver.start();
         }catch(Exception ex){
             theLogger.log(Level.SEVERE, "Error starting message receiver.", ex);
             return;
         }
+        //SpeechRequest req = new PortableSpeechRequest("", "", TimeUtils.now(), "hello how are you?");
+        //handler.handleEvent(req);
     }
     
     private static Session getSession(String ip){
@@ -126,11 +134,11 @@ public class App {
         return sender;
     }
     
-    private static MessageAsyncReceiver<SpeechRequest> createSpeechReceiver(
+    private static MessageAsyncReceiver<SpeechRecEventList> createSpeechReceiver(
             Session session, Destination dest){
         
-        DefaultMessageAsyncReceiver<SpeechRequest, SpeechRequestRecord> receiver = 
-                new DefaultMessageAsyncReceiver<SpeechRequest, SpeechRequestRecord>();
+        DefaultMessageAsyncReceiver<SpeechRecEventList, SpeechRecEventListRecord> receiver = 
+                new DefaultMessageAsyncReceiver<SpeechRecEventList, SpeechRecEventListRecord>();
         MessageConsumer consumer;
         try{
             consumer = session.createConsumer(dest);
@@ -138,17 +146,17 @@ public class App {
             theLogger.log(Level.SEVERE, "Error starting message receiver.", ex);
             return null;
         }
-        RecordAsyncReceiver<SpeechRequestRecord> recReceiver = 
-                new JMSAvroRecordAsyncReceiver<SpeechRequestRecord>(
-                        SpeechRequestRecord.class, 
-                        SpeechRequestRecord.SCHEMA$, 
+        RecordAsyncReceiver<SpeechRecEventListRecord> recReceiver = 
+                new JMSAvroRecordAsyncReceiver<SpeechRecEventListRecord>(
+                        SpeechRecEventListRecord.class, 
+                        SpeechRecEventListRecord.SCHEMA$, 
                         consumer);
         receiver.setRecordReceiver(recReceiver);
-        receiver.setAdapter(new PortableSpeechRequest.RecordMessageAdapter());
+        receiver.setAdapter(new PortableSpeechRecEventList.RecordMessageAdapter());
         return receiver;
     }
     
-    static class SpeechHandler implements Listener<SpeechRequest>{
+    static class SpeechHandler implements Listener<SpeechRecEventList>{
         private CogbotCommunicator myCogbot;
         private MessageSender<SpeechRequest> mySpeechSender;
         private SpeechRequestFactory myFactory;
@@ -164,8 +172,12 @@ public class App {
             myFactory = new PortableSpeechRequest.Factory();
         }
         
-        public void handleEvent(SpeechRequest event) {
-            String input = event.getPhrase();
+        public void handleEvent(SpeechRecEventList event) {
+            List<SpeechRecEvent> events = event.getSpeechRecEvents();
+            if(events == null || events.isEmpty()){
+                return;
+            }
+            String input = events.get(0).getRecognizedText();
             GenRespWithConf genResp = myCogbot.getResponse(input);
             String resp = genResp.getResponse();
             SpeechRequest req = myFactory.create("client", "host", resp);

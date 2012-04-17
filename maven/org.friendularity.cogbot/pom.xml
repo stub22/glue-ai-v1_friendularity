@@ -53,5 +53,10 @@
             <artifactId>org.robokind.impl.messaging</artifactId>
             <version>0.8.4-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>org.robokind</groupId>
+            <artifactId>org.robokind.impl.speechrec</artifactId>
+            <version>0.8.4-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 </project>
