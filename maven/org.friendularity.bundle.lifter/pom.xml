@@ -13,33 +13,52 @@
 	<groupId>org.friendularity</groupId>
 	<artifactId>org.friendularity.bundle.lifter</artifactId>
 	<version>1.0-SNAPSHOT</version>
-	<packaging>bundle</packaging>
+	<packaging>war</packaging>
 
 	<name>org.friendularity.bundle.lifter OSGi Bundle</name>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+                <web.contextPath>test</web.contextPath>
 	</properties>
+        
 	<repositories>
 		<!-- Needed for "good" log4J bundle -->
 		<repository>
 			<id>com.springsource.repository.bundles.external</id>
 			<name>Spring EBR External Release Repository</name>
 			<url>http://repository.springsource.com/maven/bundles/external</url>
-		</repository>
-			
+		</repository>	
 	</repositories>
+        
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.felix</groupId>
 			<artifactId>org.osgi.core</artifactId>
 			<version>1.4.0</version>
 			<scope>provided</scope>
+		</dependency>          
+
+                <dependency>
+			<groupId>org.ops4j.pax.web</groupId>
+			<artifactId>pax-web-jetty-bundle</artifactId>
+			<version>1.1.2</version>
 		</dependency>
+                <dependency>
+			<groupId>org.ops4j.pax.web</groupId>
+			<artifactId>pax-web-extender-war</artifactId>
+			<version>1.1.2</version>
+		</dependency>
+                <dependency>
+			<groupId>org.ops4j.pax.web</groupId>
+			<artifactId>pax-web-jsp</artifactId>
+			<version>1.1.2</version>
+		</dependency>
+
 		<dependency>
 			<groupId>net.liftweb</groupId>
 			<artifactId>lift-mapper_2.8.1</artifactId>
-			<version>2.3</version>
+			<version>2.3</version>                      
 			<exclusions>
 				<exclusion>
 					<artifactId>scala-library</artifactId>
@@ -49,8 +68,9 @@
 					<artifactId>h2</artifactId>
 					<groupId>com.h2database</groupId>
 				</exclusion>
-			</exclusions>
+			</exclusions>                       
 		</dependency>
+     
 		<dependency>
 			<groupId>net.liftweb</groupId>
 			<artifactId>lift-testkit_2.8.1</artifactId>
@@ -66,12 +86,12 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+             
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
 			<version>1.0.1</version>
 		</dependency>
-
 
 		<dependency>
 			<!-- OSGi bundle version of Scala 2.8.1 library -->
@@ -80,44 +100,22 @@
 			<type>jar</type>
 			<version>2.8.1</version>
 		</dependency>
-<!--		
-		<dependency>
-			<groupId>org.ops4j.pax.web</groupId>
-			<artifactId>pax-web-api</artifactId>
-			<version>1.1.2</version>
+
+<!-- javax.servlet may be included in pax web, not sure if this is still needed -->
+                <dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.5</version>
+			<scope>provided</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.ops4j.pax.web</groupId>
-			<artifactId>pax-web-spi</artifactId>
-			<version>1.1.2</version>
-		</dependency>		
-		<dependency>
-			<groupId>org.ops4j.pax.web</groupId>
-			<artifactId>pax-web-jetty</artifactId>
-			<version>1.1.2</version>
-		</dependency>
-		<dependency>
-			<groupId>org.ops4j.pax.web</groupId>
-			<artifactId>pax-web-runtime</artifactId>
-			<version>1.1.2</version>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.jetty.orbit</groupId>
-			<artifactId>javax.servlet</artifactId>
-			<version>2.5.0.v201103041518</version>
-		</dependency>		
--->		
-		<dependency>
-			<groupId>org.mortbay.jetty</groupId>
-			<artifactId>jetty</artifactId>
-			<version>7.0.0.pre5</version>
-		</dependency>
+          
 		<dependency>
 			<!-- Used by lift-json -->	
 			<groupId>org.apache.servicemix.bundles</groupId>
 			<artifactId>org.apache.servicemix.bundles.paranamer</artifactId>
 			<version>2.4_1</version>
 		</dependency>
+                
 		<dependency>
 			<groupId>org.apache.servicemix.bundles</groupId>
 			<artifactId>org.apache.servicemix.bundles.javax-inject</artifactId>
@@ -149,8 +147,10 @@
 			<groupId>org.apache.servicemix.bundles</groupId>
 			<artifactId>org.apache.servicemix.bundles.xpp3</artifactId>
 			<version>1.1.4c_6</version>
-		</dependency>		
-		<dependency>
+		</dependency>	
+           	
+
+                <dependency>
 			<groupId>org.apache.log4j</groupId>
 			<artifactId>com.springsource.org.apache.log4j</artifactId>
 			<version>1.2.16</version>
@@ -159,43 +159,88 @@
 
 
 		<dependency>
-			<!-- We depend on Cogchar to get its transitive dependencies
-				like IBM-icu4j, Xerces, etc.   
-			-->
+			<!--We depend on Cogchar to get its transitive dependencies like IBM-icu4j, Xerces, etc.-->
 			<groupId>org.cogchar</groupId>
 			<artifactId>org.cogchar.bundle.core</artifactId>
 			<version>1.0.4-SNAPSHOT</version>
 		</dependency>
+       
 	</dependencies>
 
-	<build>
-        
-		<sourceDirectory>src/main/scala</sourceDirectory>
 
-               
-		<plugins>   
-            
-			<plugin>
-				<groupId>org.ops4j</groupId>
-				<artifactId>maven-pax-plugin</artifactId>
-				<version>1.4</version>
-			</plugin>
-            
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-bundle-plugin</artifactId>
-				<version>2.2.0</version>
-				<extensions>true</extensions>
-				<configuration>
-					<instructions>
-						<Export-Package>org.friendularity.bundle.lifter.*, bootstrap.*, props, net.liftweb.*,  nu.validator.*
-						</Export-Package>
-						<Bundle-Activator>org.friendularity.bundle.lifter.Activator</Bundle-Activator>
-						<Import-Package>!nu.xom.*, !org.mozilla.*, !org.specs.*, *</Import-Package>
-					</instructions>
-				</configuration>
-			</plugin>
-                        
+	<build>
+		<sourceDirectory>src/main/scala</sourceDirectory>
+ 
+		<plugins>    
+<!--                
+                        <plugin> This is needed (per http://leshazlewood.com/2010/09/08/osgi-maven-pax-and-web-applications/) to pass web context to manifest, but this seems to be responsible for "2 xml files found" error on run
+                            
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-war-plugin</artifactId>
+                            <version>2.1</version>
+                            <configuration>
+                            <archive>                              
+                                <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>                 
+                            </archive>
+                            </configuration>
+                        </plugin>
+-->                        
+ 
+                        <plugin>
+                            <!-- Reconfigured based on http://leshazlewood.com/2010/09/08/osgi-maven-pax-and-web-applications/  -->
+                            <groupId>org.apache.felix</groupId>
+                            <artifactId>maven-bundle-plugin</artifactId>
+                            <version>2.2.0</version>
+                            <extensions>true</extensions>
+                            <executions>
+                                <execution>
+                                <id>bundle-manifest</id>
+                                <phase>process-classes</phase>
+                                <goals>
+                                    <goal>manifest</goal>
+                                </goals>
+                                    <configuration>
+                                        <instructions>
+                                            <Bundle-SymbolicName>org.friendularity.bundle.lifter</Bundle-SymbolicName>
+                                            <Bundle-ClassPath>.,WEB-INF/classes</Bundle-ClassPath> <!-- Yet we get a warning about this directory not exisiting - it appears there are some sequencing issues? -->
+                                            <Embed-Directory>WEB-INF/lib</Embed-Directory>
+                                            <!-- <Embed-Dependency>*;scope=compile|runtime</Embed-Dependency> This is suggested by http://leshazlewood.com/2010/09/08/osgi-maven-pax-and-web-applications/ but leads to the many obscure dependency errors I mentioned (but I think only when maven-war-plugin is loaded - generates many warnings when enabled either way) -->
+                                            <Embed-Transitive>true</Embed-Transitive>
+                                            <Web-ContextPath>${web.contextPath}</Web-ContextPath>
+                                            <Webapp-Context>${web.contextPath}</Webapp-Context>
+                                        </instructions>
+                                    </configuration>
+                                </execution>
+                            </executions>
+                            <configuration>
+                                <supportedProjectTypes>
+                                <supportedProjectType>jar</supportedProjectType>
+                                <supportedProjectType>bundle</supportedProjectType>
+                                <supportedProjectType>war</supportedProjectType>
+                                </supportedProjectTypes>
+                                <instructions>
+                                    <Export-Package>org.friendularity.bundle.lifter.*, bootstrap.*, props, net.liftweb.*,  nu.validator.*
+                                    </Export-Package>
+                                    <DynamicImport-Package>*</DynamicImport-Package> <!-- This excessively horrid workaround still does not enable loading of LiftFilter, tho probably I am doing this wrong! -->
+                                    <Import-Package>!nu.xom.*,!org.mozilla.*,!org.specs.*,*</Import-Package>        
+                                </instructions>
+                            </configuration>
+                            </plugin>
+                            
+                            <plugin>
+                                <!-- This is supposed to make it possible to launch OSGi war from Maven; not sure if it is necessary in our context -->
+                                <groupId>org.ops4j</groupId>
+                                <artifactId>maven-pax-plugin</artifactId>
+                                <version>1.5</version>
+                                <configuration>
+                                    <provision>
+                                        <param>--platform=felix</param>
+                                        <param>--profiles=compendium,web,war</param>
+                                    </provision>
+                                </configuration>
+                            </plugin>
+
+    
 			<plugin>
 				<groupId>org.scala-tools</groupId>
 				<artifactId>maven-scala-plugin</artifactId>
@@ -242,9 +287,39 @@
 					</execution>
 				</executions>
 			</plugin>
+                        
+<!-- We may or may not still need this plugin with pax web, but took it out for the moment to be sure it isn't causing problems                        
+                        <plugin>
+                        
+				<groupId>org.mortbay.jetty</groupId>
+				<artifactId>maven-jetty-plugin</artifactId>
+                                <version>6.1.25</version>
+				<configuration>
+					<contextPath>/</contextPath>
+					<scanIntervalSeconds>5</scanIntervalSeconds>
+					<systemProperties>
+						  
+								http://docs.codehaus.org/display/JETTY/Configuring+Connectors
+								
+								"The particular interface to listen on. If not set or 0.0.0.0, 
+								jetty will listen on #port on all interfaces."
+								
+								If we do not set here, Jetty seems to think value is "set",
+								but not in a way that allows remote client access.  So, we
+								explicitly set it to 0.0.0.0.
+						
+						
+						<systemProperty>
+							<name>jetty.host</name>
+							<value>0.0.0.0</value>
+						</systemProperty>
+					</systemProperties>
+				</configuration>
+			</plugin>
+-->                        
 		</plugins>
 	</build>
-    
+      
 	<reporting>
 		<plugins>
 			<plugin>
@@ -261,7 +336,8 @@
 			</plugin>
 		</plugins>
 	</reporting>
-
+        
+        <!-- I believe all the following is boilerplate for Felix OSGi project -->
 	<profiles>
 		<profile>
 			<id>build-for-felix</id>
@@ -269,7 +345,7 @@
 				<dependency>
 					<groupId>org.apache.felix</groupId>
 					<artifactId>org.apache.felix.main</artifactId>
-					<version>3.0.7</version>
+					<version>3.2.2</version>
 					<scope>provided</scope>
 				</dependency>
                 <!-- To include a shell:
@@ -347,7 +423,7 @@
 				<dependency>
 					<groupId>org.apache.felix</groupId>
 					<artifactId>org.apache.felix.main</artifactId>
-					<version>3.0.7</version>
+					<version>3.2.2</version>
 					<scope>provided</scope>
 				</dependency>
                 <!-- org.apache.felix:org.apache.felix.gogo.shell:0.6.1 useless from Maven since stdin is swallowed -->
@@ -367,7 +443,7 @@
 								</pathconvert>
 								<makeurl property="urls" separator=" ">
 									<path path="${plugins.jars}"/>
-									<path location="${project.build.directory}/${project.build.finalName}.jar"/>
+									<path location="${project.build.directory}/${project.build.finalName}.war"/>
 								</makeurl>
 								<propertyfile file="${project.build.directory}/run.properties">
 									<entry key="felix.auto.start" value="${urls}"/>
