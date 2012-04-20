@@ -37,11 +37,15 @@
 			<artifactId>pax-web-extender-war</artifactId>
 			<version>1.1.2</version>
 		</dependency>
+		<!--  Apparently needed to resolve:
+				org.ops4j.pax.web.pax-web-jetty-bundle imports (package=org.eclipse.jdt.core.compiler)		
+		-->
 		<dependency>
 			<groupId>org.ops4j.pax.web</groupId>
 			<artifactId>pax-web-jsp</artifactId>
 			<version>1.1.2</version>
 		</dependency>
+
 
 		<dependency>
 			<!-- Note that "main" and "root" must also have been built, in order for variables
