@@ -15,11 +15,6 @@
 
     <name>${project.artifactId} - OSGi</name>
 	
-<!--
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
--->
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.felix</groupId>
@@ -28,19 +23,29 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
+			<!-- This is a big honking hunk of code, but so far is working better than trying
+				to mix-and-match our own version of Jetty + PAX.
+			-->
 			<groupId>org.ops4j.pax.web</groupId>
 			<artifactId>pax-web-jetty-bundle</artifactId>
 			<version>1.1.2</version>
 		</dependency>
 		<dependency>
+			<!--  		http://team.ops4j.org/wiki/display/paxweb/WAR+Extender
+			"Once installed the war extender will watch over the bundles that get started / stopped. 
+			Once your war bundle gets deployed and started, the war extender will parse your web.xml 
+			and registers all elements with http service."
+			-->
+
 			<groupId>org.ops4j.pax.web</groupId>
 			<artifactId>pax-web-extender-war</artifactId>
 			<version>1.1.2</version>
 		</dependency>
-		<!--  Apparently needed to resolve:
-				org.ops4j.pax.web.pax-web-jetty-bundle imports (package=org.eclipse.jdt.core.compiler)		
-		-->
+
 		<dependency>
+			<!--  We do not use JSP technology, but apparently pax-web-jsp is needed, to resolve:
+				org.ops4j.pax.web.pax-web-jetty-bundle imports (package=org.eclipse.jdt.core.compiler)
+			-->			
 			<groupId>org.ops4j.pax.web</groupId>
 			<artifactId>pax-web-jsp</artifactId>
 			<version>1.1.2</version>
@@ -48,10 +53,10 @@
 
 
 		<dependency>
-			<!-- Note that "main" and "root" must also have been built, in order for variables
-				 like "robokind.version" to resolve when applied *transitively*
-				(The built main+root is not required to resolve the variables in this pom; those
-				are allowed to come from the source-tree poms).
+			<!-- Note that o.f.project.root and o.f.modules.main must also have been built and avail in local repo,
+				in order for variables like "robokind.version" to resolve when applied *transitively*
+				(The built main+root is not required to resolve the variables used directly in this pom; 
+					those are allowed to come from the source-tree poms).
 			-->
 			<groupId>${project.groupId}</groupId>
 			<artifactId>org.friendularity.bundle.demo.ccrk</artifactId>
