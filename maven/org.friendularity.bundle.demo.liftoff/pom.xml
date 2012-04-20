@@ -62,6 +62,12 @@
 			<artifactId>org.friendularity.bundle.demo.ccrk</artifactId>
             <version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<!-- Our Lift-based webapp, which we expect PAX services above to find and launch to HTTP for us -->
+			<groupId>${project.groupId}</groupId>
+			<artifactId>org.friendularity.bundle.lifter</artifactId>
+            <version>${project.version}</version>
+		</dependency>
 
 	</dependencies>
 

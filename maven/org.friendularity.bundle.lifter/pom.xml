@@ -9,29 +9,22 @@
 		<version>1.0.0-SNAPSHOT</version>
 		<relativePath>../org.friendularity.modules.main/pom.xml</relativePath>
 	</parent>
-
-	<groupId>org.friendularity</groupId>
 	<artifactId>org.friendularity.bundle.lifter</artifactId>
-	<version>1.0-SNAPSHOT</version>
+	
+	<!-- Hmmmm.  "war" or "bundle" ? -->
+	<!--
 	<packaging>war</packaging>
-
-	<name>org.friendularity.bundle.lifter OSGi Bundle</name>
+	-->
+	<packaging>bundle</packaging>
+	
+	<name>${project.artifactId} - OSGi Webapp</name>
 
 	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-                <web.contextPath>test</web.contextPath>
-                <bundle.symbolicName>org.friendularity.bundle.lifter</bundle.symbolicName>
-                <bundle.namespace>org.friendularity.bundle.lifter</bundle.namespace>
+		<web.contextPath>test</web.contextPath>
+		<bundle.symbolicName>org.friendularity.bundle.lifter</bundle.symbolicName>
+		<bundle.namespace>org.friendularity.bundle.lifter</bundle.namespace>
 	</properties>
         
-	<repositories>
-		<!-- Needed for "good" log4J bundle -->
-		<repository>
-			<id>com.springsource.repository.bundles.external</id>
-			<name>Spring EBR External Release Repository</name>
-			<url>http://repository.springsource.com/maven/bundles/external</url>
-		</repository>	
-	</repositories>
         
 	<dependencies>
 		<dependency>
@@ -40,32 +33,31 @@
 			<version>1.4.0</version>
 			<scope>provided</scope>
 		</dependency>          
-
-                <dependency>
+<!--	Our servlet container + web server live outside this bundle.
+		
+		<dependency>
 			<groupId>org.ops4j.pax.web</groupId>
 			<artifactId>pax-web-jetty-bundle</artifactId>
 			<version>1.1.2</version>
 		</dependency>
-                <dependency>
+		<dependency>
 			<groupId>org.ops4j.pax.web</groupId>
 			<artifactId>pax-web-extender-war</artifactId>
 			<version>1.1.2</version>
 		</dependency>
-              
-                <dependency>
+		<dependency>
 			<groupId>org.ops4j.pax.web</groupId>
 			<artifactId>pax-web-extender-whiteboard</artifactId>
 			<version>1.1.2</version>
-		</dependency>
-              
-                <dependency>
+		</dependency>           
+		<dependency>
 			<groupId>org.ops4j.pax.web</groupId>
 			<artifactId>pax-web-jsp</artifactId>
 			<version>1.1.2</version>
 		</dependency>
+-->
 
-
-                <!-- This is in demo.lifter -->
+		<!-- This is in demo.lifter -->
 		<dependency>
 			<groupId>net.liftweb</groupId>
 			<artifactId>lift-mapper_2.8.1</artifactId>
@@ -100,18 +92,18 @@
 		</dependency>
              
                 <!-- May not be needed - I've seen some resolution errors pointing at it, but may have been a different misconfig -->
-                <dependency>
-                        <groupId>net.liftweb</groupId>
-                        <artifactId>lift-actor_2.8.1</artifactId>
-                        <version>2.3</version>
-                </dependency>
+		<dependency>
+			<groupId>net.liftweb</groupId>
+			<artifactId>lift-actor_2.8.1</artifactId>
+			<version>2.3</version>
+		</dependency>
 
                 <!-- Here's where http.LiftFilter lives, I believe -->
-                <dependency>
-                        <groupId>net.liftweb</groupId>
-                        <artifactId>lift-webkit_2.8.1</artifactId>
-                        <version>2.3</version> 
-                </dependency>
+		<dependency>
+			<groupId>net.liftweb</groupId>
+			<artifactId>lift-webkit_2.8.1</artifactId>
+			<version>2.3</version> 
+		</dependency>
 
              
 		<dependency>
@@ -129,7 +121,7 @@
 		</dependency>
 
 <!-- javax.servlet may be included in pax web, not sure if this is still needed -->
-                <dependency>
+		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
 			<version>2.5</version>
@@ -177,7 +169,7 @@
 		</dependency>	
            	
 
-                <dependency>
+		<dependency>
 			<groupId>org.apache.log4j</groupId>
 			<artifactId>com.springsource.org.apache.log4j</artifactId>
 			<version>1.2.16</version>
@@ -200,75 +192,75 @@
  
 		<plugins>    
             
-                        <plugin> 
-                            <groupId>org.apache.maven.plugins</groupId>
-                            <artifactId>maven-war-plugin</artifactId>
-                            <version>2.2</version>
-                            <configuration>
-                            <archive>                              
-                                <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>                 
-                            </archive>
-                            </configuration>
-                        </plugin>
+			<plugin> 
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.2</version>
+				<configuration>
+					<archive>                              
+						<manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>                 
+					</archive>
+				</configuration>
+			</plugin>
                      
  
-                        <plugin>
+			<plugin>
                             <!-- Reconfigured based on http://leshazlewood.com/2010/09/08/osgi-maven-pax-and-web-applications/  -->
-                            <groupId>org.apache.felix</groupId>
-                            <artifactId>maven-bundle-plugin</artifactId>
-                            <version>2.2.0</version>
-                            <extensions>true</extensions>
-                            <executions>
-                                <execution>
-                                <id>bundle-manifest</id>
-                                <phase>process-classes</phase>
-                                <goals>
-                                    <goal>manifest</goal>
-                                </goals>
-                                    <configuration>
-                                        <instructions>
-                                            <Bundle-SymbolicName>org.friendularity.bundle.lifter</Bundle-SymbolicName>
-                                            <Bundle-ClassPath>.,/WEB-INF/classes</Bundle-ClassPath> <!-- Yet we get a warning about this directory not exisiting - it appears there are some sequencing issues? (yes, I've seen others mention this too - sounds like maybe ignorable -->
-                                            <Embed-Directory>/WEB-INF/lib</Embed-Directory>
-                                            <Embed-Dependency>net.liftweb.*</Embed-Dependency> <!-- Thought maybe this would make LiftFilter visible - but maybe problem is visibility "outside" the war? But seems like we have that via dependency... -->
-                                            <Embed-Transitive>true</Embed-Transitive> <!-- Need to understand this better, doesn't seem to have much effect -->
-                                            <Import-Package>*;resolution:=optional</Import-Package> <!-- From Pax Web WAR extender examples; seems best avoided but may be required in some form -->
-                                            <Web-ContextPath>${web.contextPath}</Web-ContextPath>
-                                            <Webapp-Context>${web.contextPath}</Webapp-Context>
-                                            <Export-Package>net.liftweb.* <!-- Thought I'd try this here just to see; need to get a little more clear on the distinction between the two <configuration> sections -->
-                                            </Export-Package> 
-                                        </instructions>
-                                    </configuration>
-                                </execution>
-                            </executions>
-                            <configuration>
-                                <supportedProjectTypes>
-                                <supportedProjectType>jar</supportedProjectType>
-                                <supportedProjectType>bundle</supportedProjectType>
-                                <supportedProjectType>war</supportedProjectType>
-                                </supportedProjectTypes>
-                                <instructions>
-                                    <Export-Package>org.friendularity.bundle.lifter.*, bootstrap.*, props, net.liftweb.*,  nu.validator.*
-                                    </Export-Package>
-                                    <DynamicImport-Package>*</DynamicImport-Package>  <!-- This excessively horrid workaround still does not enable loading of LiftFilter - I set it back to * for now -->
-                                    <Import-Package>!nu.xom.*,!org.mozilla.*,!org.specs.*,*</Import-Package>  
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<version>2.2.0</version>
+				<extensions>true</extensions>
+				<executions>
+					<execution>
+						<id>bundle-manifest</id>
+						<phase>process-classes</phase>
+						<goals>
+							<goal>manifest</goal>
+						</goals>
+						<configuration>
+							<instructions>
+								<Bundle-SymbolicName>org.friendularity.bundle.lifter</Bundle-SymbolicName>
+								<Bundle-ClassPath>.,/WEB-INF/classes</Bundle-ClassPath> <!-- Yet we get a warning about this directory not exisiting - it appears there are some sequencing issues? (yes, I've seen others mention this too - sounds like maybe ignorable -->
+								<Embed-Directory>/WEB-INF/lib</Embed-Directory>
+								<Embed-Dependency>net.liftweb.*</Embed-Dependency> <!-- Thought maybe this would make LiftFilter visible - but maybe problem is visibility "outside" the war? But seems like we have that via dependency... -->
+								<Embed-Transitive>true</Embed-Transitive> <!-- Need to understand this better, doesn't seem to have much effect -->
+								<Import-Package>*;resolution:=optional</Import-Package> <!-- From Pax Web WAR extender examples; seems best avoided but may be required in some form -->
+								<Web-ContextPath>${web.contextPath}</Web-ContextPath>
+								<Webapp-Context>${web.contextPath}</Webapp-Context>
+								<Export-Package>net.liftweb.* <!-- Thought I'd try this here just to see; need to get a little more clear on the distinction between the two <configuration> sections -->
+								</Export-Package> 
+							</instructions>
+						</configuration>
+					</execution>
+				</executions>
+				<configuration>
+					<supportedProjectTypes>
+						<supportedProjectType>jar</supportedProjectType>
+						<supportedProjectType>bundle</supportedProjectType>
+						<supportedProjectType>war</supportedProjectType>
+					</supportedProjectTypes>
+					<instructions>
+						<Export-Package>org.friendularity.bundle.lifter.*, bootstrap.*, props, net.liftweb.*,  nu.validator.*
+						</Export-Package>
+						<DynamicImport-Package>*</DynamicImport-Package>  <!-- This excessively horrid workaround still does not enable loading of LiftFilter - I set it back to * for now -->
+						<Import-Package>!nu.xom.*,!org.mozilla.*,!org.specs.*,*</Import-Package>  
                                     <!-- <Bundle-Activator>org.friendularity.bundle.lifter.Activator</Bundle-Activator> Should not be needed in final product-->
-                                </instructions>
-                            </configuration>
-                            </plugin>
+					</instructions>
+				</configuration>
+			</plugin>
                             
-                            <plugin>
+			<plugin>
                                 <!-- This is supposed to make it possible to launch OSGi war from Maven; not sure if it is necessary in our context -->
-                                <groupId>org.ops4j</groupId>
-                                <artifactId>maven-pax-plugin</artifactId>
-                                <version>1.5</version>
-                                <configuration>
-                                    <provision>
-                                        <param>--platform=felix</param>
-                                        <param>--profiles=compendium,web,war</param>
-                                    </provision>
-                                </configuration>
-                            </plugin>
+				<groupId>org.ops4j</groupId>
+				<artifactId>maven-pax-plugin</artifactId>
+				<version>1.5</version>
+				<configuration>
+					<provision>
+						<param>--platform=felix</param>
+						<param>--profiles=compendium,web,war</param>
+					</provision>
+				</configuration>
+			</plugin>
 
     
 			<plugin>
@@ -320,11 +312,11 @@
                         
                
                         <!-- Still guessing this is no longer needed with this version of Jetty, but we'll see -->
-                        <plugin>
+			<plugin>
                         
 				<groupId>org.mortbay.jetty</groupId>
 				<artifactId>maven-jetty-plugin</artifactId>
-                                <version>6.1.25</version>
+				<version>6.1.25</version>
 				<configuration>
 					<contextPath>/</contextPath>
 					<scanIntervalSeconds>5</scanIntervalSeconds>
