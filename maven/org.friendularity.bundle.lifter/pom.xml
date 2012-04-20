@@ -51,12 +51,21 @@
 			<artifactId>pax-web-extender-war</artifactId>
 			<version>1.1.2</version>
 		</dependency>
+              
+                <dependency>
+			<groupId>org.ops4j.pax.web</groupId>
+			<artifactId>pax-web-extender-whiteboard</artifactId>
+			<version>1.1.2</version>
+		</dependency>
+              
                 <dependency>
 			<groupId>org.ops4j.pax.web</groupId>
 			<artifactId>pax-web-jsp</artifactId>
 			<version>1.1.2</version>
 		</dependency>
 
+
+                <!-- This is in demo.lifter -->
 		<dependency>
 			<groupId>net.liftweb</groupId>
 			<artifactId>lift-mapper_2.8.1</artifactId>
@@ -72,7 +81,8 @@
 				</exclusion>
 			</exclusions>                       
 		</dependency>
-     
+    
+                <!-- Added by Stu I believe -->
 		<dependency>
 			<groupId>net.liftweb</groupId>
 			<artifactId>lift-testkit_2.8.1</artifactId>
@@ -88,6 +98,21 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+             
+                <!-- May not be needed - I've seen some resolution errors pointing at it, but may have been a different misconfig -->
+                <dependency>
+                        <groupId>net.liftweb</groupId>
+                        <artifactId>lift-actor_2.8.1</artifactId>
+                        <version>2.3</version>
+                </dependency>
+
+                <!-- Here's where http.LiftFilter lives, I believe -->
+                <dependency>
+                        <groupId>net.liftweb</groupId>
+                        <artifactId>lift-webkit_2.8.1</artifactId>
+                        <version>2.3</version> 
+                </dependency>
+
              
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
@@ -178,7 +203,7 @@
                         <plugin> 
                             <groupId>org.apache.maven.plugins</groupId>
                             <artifactId>maven-war-plugin</artifactId>
-                            <version>2.1-beta-1</version>
+                            <version>2.2</version>
                             <configuration>
                             <archive>                              
                                 <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>                 
@@ -203,13 +228,15 @@
                                     <configuration>
                                         <instructions>
                                             <Bundle-SymbolicName>org.friendularity.bundle.lifter</Bundle-SymbolicName>
-                                            <Bundle-ClassPath>.,/WEB-INF/classes</Bundle-ClassPath> <!-- Yet we get a warning about this directory not exisiting - it appears there are some sequencing issues? -->
+                                            <Bundle-ClassPath>.,/WEB-INF/classes</Bundle-ClassPath> <!-- Yet we get a warning about this directory not exisiting - it appears there are some sequencing issues? (yes, I've seen others mention this too - sounds like maybe ignorable -->
                                             <Embed-Directory>/WEB-INF/lib</Embed-Directory>
-                                            <Embed-Dependency>*;scope=compile|runtime</Embed-Dependency> 
-                                            <Embed-Transitive>true</Embed-Transitive>
-                                            <Import-Package>*;resolution:=optional</Import-Package>
+                                            <Embed-Dependency>net.liftweb.*</Embed-Dependency> <!-- Thought maybe this would make LiftFilter visible - but maybe problem is visibility "outside" the war? But seems like we have that via dependency... -->
+                                            <Embed-Transitive>true</Embed-Transitive> <!-- Need to understand this better, doesn't seem to have much effect -->
+                                            <Import-Package>*;resolution:=optional</Import-Package> <!-- From Pax Web WAR extender examples; seems best avoided but may be required in some form -->
                                             <Web-ContextPath>${web.contextPath}</Web-ContextPath>
                                             <Webapp-Context>${web.contextPath}</Webapp-Context>
+                                            <Export-Package>net.liftweb.* <!-- Thought I'd try this here just to see; need to get a little more clear on the distinction between the two <configuration> sections -->
+                                            </Export-Package> 
                                         </instructions>
                                     </configuration>
                                 </execution>
@@ -223,8 +250,9 @@
                                 <instructions>
                                     <Export-Package>org.friendularity.bundle.lifter.*, bootstrap.*, props, net.liftweb.*,  nu.validator.*
                                     </Export-Package>
-                                    <DynamicImport-Package>*</DynamicImport-Package> <!-- This excessively horrid workaround still does not enable loading of LiftFilter, tho probably I am doing this wrong! -->
-                                    <Import-Package>!nu.xom.*,!org.mozilla.*,!org.specs.*,*</Import-Package>        
+                                    <DynamicImport-Package>*</DynamicImport-Package>  <!-- This excessively horrid workaround still does not enable loading of LiftFilter - I set it back to * for now -->
+                                    <Import-Package>!nu.xom.*,!org.mozilla.*,!org.specs.*,*</Import-Package>  
+                                    <!-- <Bundle-Activator>org.friendularity.bundle.lifter.Activator</Bundle-Activator> Should not be needed in final product-->
                                 </instructions>
                             </configuration>
                             </plugin>
@@ -290,7 +318,8 @@
 				</executions>
 			</plugin>
                         
-<!-- We may or may not still need this plugin with pax web, but took it out for the moment to be sure it isn't causing problems                        
+               
+                        <!-- Still guessing this is no longer needed with this version of Jetty, but we'll see -->
                         <plugin>
                         
 				<groupId>org.mortbay.jetty</groupId>
@@ -300,7 +329,7 @@
 					<contextPath>/</contextPath>
 					<scanIntervalSeconds>5</scanIntervalSeconds>
 					<systemProperties>
-						  
+						  <!--
 								http://docs.codehaus.org/display/JETTY/Configuring+Connectors
 								
 								"The particular interface to listen on. If not set or 0.0.0.0, 
@@ -309,7 +338,7 @@
 								If we do not set here, Jetty seems to think value is "set",
 								but not in a way that allows remote client access.  So, we
 								explicitly set it to 0.0.0.0.
-						
+                                                   -->             
 						
 						<systemProperty>
 							<name>jetty.host</name>
@@ -318,7 +347,7 @@
 					</systemProperties>
 				</configuration>
 			</plugin>
--->                        
+                     
 		</plugins>
 	</build>
       
@@ -387,7 +416,7 @@
 											</mapper>
 										</pathconvert>
 										<propertyfile file="${project.build.directory}/config.properties">
-											<entry key="felix.auto.start" value="${bundles} file:modules/${project.build.finalName}.jar"/>
+											<entry key="felix.auto.start" value="${bundles} file:modules/${project.build.finalName}.war"/> <!-- war here? -->
 											<entry key="org.osgi.framework.bootdelegation" value="*"/>
 										</propertyfile>
 										<copy file="${maven.dependency.org.apache.felix.org.apache.felix.main.jar.path}" tofile="${project.build.directory}/felix.jar"/>
@@ -445,7 +474,7 @@
 								</pathconvert>
 								<makeurl property="urls" separator=" ">
 									<path path="${plugins.jars}"/>
-									<path location="${project.build.directory}/${project.build.finalName}.war"/>
+									<path location="${project.build.directory}/${project.build.finalName}.war"/> <!-- Changed to .war as necessary -->
 								</makeurl>
 								<propertyfile file="${project.build.directory}/run.properties">
 									<entry key="felix.auto.start" value="${urls}"/>
