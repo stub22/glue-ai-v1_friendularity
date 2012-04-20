@@ -39,14 +39,18 @@
 	
 	<modules>
 		<module>../org.friendularity.bundle.demo.ccrk</module>
-
+		<module>../org.friendularity.bundle.lifter</module>
+		<module>../org.friendularity.bundle.demo.liftoff</module>
 <!--
 		<module>../org.friendularity.demo.egosphere</module>
 -->
 		<module>../org.friendularity.demo.jme3.maven</module>
-		<module>../org.friendularity.demo.lifter</module>
+
 		<module>../org.friendularity.demo.weber</module>
-<!--		
+		
+<!--	
+		<module>../org.friendularity.demo.lifter</module>
+
 		<module>../org.friendularity.demo.music</module>
 		<module>../org.friendularity.demo.speech.hear</module>
 -->
