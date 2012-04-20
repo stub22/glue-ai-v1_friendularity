@@ -29,20 +29,27 @@
 			<name>sonatype staging</name>
 			<url>https://oss.sonatype.org/content/groups/staging/</url>
 		</repository>			
+		<!-- Needed for "good" log4J bundle -->
+		<repository>
+			<id>com.springsource.repository.bundles.external</id>
+			<name>Spring EBR External Release Repository</name>
+			<url>http://repository.springsource.com/maven/bundles/external</url>
+		</repository>		
 	</repositories>
 	
 	<modules>
 		<module>../org.friendularity.bundle.demo.ccrk</module>
+
+<!--
 		<module>../org.friendularity.demo.egosphere</module>
-		<!--
-		<module>../org.friendularity.demo.funapp</module>
-		<module>../org.friendularity.demo.funny</module>
-		-->
+-->
 		<module>../org.friendularity.demo.jme3.maven</module>
 		<module>../org.friendularity.demo.lifter</module>
+		<module>../org.friendularity.demo.weber</module>
+<!--		
 		<module>../org.friendularity.demo.music</module>
 		<module>../org.friendularity.demo.speech.hear</module>
-		<module>../org.friendularity.demo.weber</module>
+-->
 
 	</modules>	
 </project>

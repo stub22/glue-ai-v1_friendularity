@@ -12,24 +12,16 @@
     <artifactId>org.friendularity.bundle.demo.ccrk</artifactId>
     <packaging>bundle</packaging>
 
-    <name>org.friendularity.bundle.demo.ccrk - OSGi</name>	
+    <name>${project.artifactId} - OSGi</name>	
 
-	<repositories>
-		<!-- Needed for "good" log4J bundle -->
-		<repository>
-			<id>com.springsource.repository.bundles.external</id>
-			<name>Spring EBR External Release Repository</name>
-			<url>http://repository.springsource.com/maven/bundles/external</url>
-		</repository>
-			
-	</repositories>
     <dependencies>
+		<!--
         <dependency>
             <groupId>org.cogchar</groupId>
             <artifactId>org.cogchar.bundle.bind.cogbot</artifactId>
             <version>${cogchar.version}</version>
         </dependency>
-		
+		-->
         <dependency>
             <groupId>org.cogchar</groupId>
             <artifactId>org.cogchar.bundle.app.puma</artifactId>
@@ -41,11 +33,13 @@
             <version>${cogchar.version}</version>
 			<scope>runtime</scope>
         </dependency>
+
         <dependency>
             <groupId>org.robokind</groupId>
             <artifactId>org.robokind.headless.speech</artifactId>
             <version>${robokind.version}</version>
         </dependency>
+
         <dependency>
             <groupId>org.robokind</groupId>
             <artifactId>org.robokind.headless.messaging</artifactId>
