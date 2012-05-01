@@ -11,9 +11,9 @@
 	</parent>		
 
 	<artifactId>org.friendularity.bundle.demo.liftoff</artifactId>
-    <packaging>bundle</packaging>
+	<packaging>bundle</packaging>
 
-    <name>${project.artifactId} - OSGi</name>
+	<name>${project.artifactId} - OSGi</name>
 	
 	<dependencies>
 		<dependency>
@@ -29,6 +29,7 @@
 			<groupId>org.ops4j.pax.web</groupId>
 			<artifactId>pax-web-jetty-bundle</artifactId>
 			<version>1.1.2</version>
+			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<!--  		http://team.ops4j.org/wiki/display/paxweb/WAR+Extender
@@ -40,6 +41,7 @@
 			<groupId>org.ops4j.pax.web</groupId>
 			<artifactId>pax-web-extender-war</artifactId>
 			<version>1.1.2</version>
+			<scope>runtime</scope>
 		</dependency>
 
 		<dependency>
@@ -49,9 +51,17 @@
 			<groupId>org.ops4j.pax.web</groupId>
 			<artifactId>pax-web-jsp</artifactId>
 			<version>1.1.2</version>
+			<scope>runtime</scope>
 		</dependency>
-
-
+		
+		<dependency>
+			<!-- What exactly is this one doing for us? -->
+			<groupId>org.ops4j.pax.web</groupId>
+			<artifactId>pax-web-extender-whiteboard</artifactId>
+			<version>1.1.2</version>
+			<scope>runtime</scope>
+		</dependency> 
+	
 		<dependency>
 			<!-- Note that o.f.project.root and o.f.modules.main must also have been built and avail in local repo,
 				in order for variables like "robokind.version" to resolve when applied *transitively*
@@ -60,13 +70,19 @@
 			-->
 			<groupId>${project.groupId}</groupId>
 			<artifactId>org.friendularity.bundle.demo.ccrk</artifactId>
-            <version>${project.version}</version>
+			<version>${project.version}</version>
+			<scope>runtime</scope>
 		</dependency>
+    		
 		<dependency>
 			<!-- Our Lift-based webapp, which we expect PAX services above to find and launch to HTTP for us -->
 			<groupId>${project.groupId}</groupId>
 			<artifactId>org.friendularity.bundle.lifter</artifactId>
-            <version>${project.version}</version>
+			<version>${project.version}</version>
+			<!-- If "type" is "war, then the bundle is not automatically included for OSGi launch by run.properties
+			<type>war</type>
+			 -->
+			<scope>runtime</scope>
 		</dependency>
 
 	</dependencies>
@@ -194,7 +210,9 @@
 								</pathconvert>
 								<makeurl property="urls" separator=" ">
 									<path path="${plugins.jars}"/>
+									<!-- TODO:  Friendularity edit:  Adding the ".war" file as a bundle -->
 									<path location="${project.build.directory}/${project.build.finalName}.jar"/>
+									
 								</makeurl>
 								<propertyfile file="${project.build.directory}/run.properties">
 									<entry key="felix.auto.start" value="${urls}"/>

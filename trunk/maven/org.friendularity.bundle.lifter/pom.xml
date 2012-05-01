@@ -12,17 +12,46 @@
 	<artifactId>org.friendularity.bundle.lifter</artifactId>
 	
 	<!-- Hmmmm.  "war" or "bundle" ? -->
-	<!--
-	<packaging>war</packaging>
+	<!--   War packaging yields a ".war" file, which has been processed to include WEB-INF directory. 
+			We are able to force an OSGi manifest to be created by BND using the
+						<id>bundle-manifest</id>
+						<phase>process-classes</phase>
+			executions, but the bundle:bundle task is never run, so export-packages are not automatically
+			implemented by classes being pulled into the main package tree of the archive, as they are
+			with "bundle" packaging.    So we see messages like:
+Warning in manifest for org.friendularity:org.friendularity.bundle.lifter:war:1.0.0-SNAPSHOT : Superfluous export-package instructions: [nu.validator.*, net.liftweb.*]
+Warning in manifest for org.friendularity:org.friendularity.bundle.lifter:war:1.0.0-SNAPSHOT : Did not find matching referal for !nu.xom.*
+Warning in manifest for org.friendularity:org.friendularity.bundle.lifter:war:1.0.0-SNAPSHOT : Did not find matching referal for !org.mozilla.*
+Warning in manifest for org.friendularity:org.friendularity.bundle.lifter:war:1.0.0-SNAPSHOT : Did not find matching referal for !org.specs.*			
+			To make libraries available then, we have to "embed" them into
+			WEB-INF/lib, but there are two additional problems:
+			
+			1) The outer OSGi application see (o.f.bundle.demo.liftoff) must know to load our archive as an OSGi bundle.
+			
+				a) If the "type" of dep in client is "war", then our ".war" is found, but the default configs
+					for maven-antrun-plugin do not include our .war file into run.properties for felix.
+				b) If the "type" of dep in client is default, then our ".war" is not found.
+				
+			2) 
+			
+			***********
+			
+			When we use "bundle" packaging, then we get a ".jar" file which is easily loaded as a bundle.
+
+			
 	-->
-	<packaging>bundle</packaging>
 	
-	<name>${project.artifactId} - OSGi Webapp</name>
+	<packaging>bundle</packaging>
+
+	
+	<name>${project.artifactId} - Webapp in OSGi bundle</name>
 
 	<properties>
-		<web.contextPath>test</web.contextPath>
+		<web.contextPath>test_lifter</web.contextPath>
+		<!--
 		<bundle.symbolicName>org.friendularity.bundle.lifter</bundle.symbolicName>
 		<bundle.namespace>org.friendularity.bundle.lifter</bundle.namespace>
+		-->
 	</properties>
         
         
@@ -33,30 +62,21 @@
 			<version>1.4.0</version>
 			<scope>provided</scope>
 		</dependency>          
-<!--	Our servlet container + web server live outside this bundle.
-		
-		<dependency>
-			<groupId>org.ops4j.pax.web</groupId>
-			<artifactId>pax-web-jetty-bundle</artifactId>
-			<version>1.1.2</version>
-		</dependency>
-		<dependency>
-			<groupId>org.ops4j.pax.web</groupId>
-			<artifactId>pax-web-extender-war</artifactId>
-			<version>1.1.2</version>
-		</dependency>
-		<dependency>
-			<groupId>org.ops4j.pax.web</groupId>
-			<artifactId>pax-web-extender-whiteboard</artifactId>
-			<version>1.1.2</version>
-		</dependency>           
-		<dependency>
-			<groupId>org.ops4j.pax.web</groupId>
-			<artifactId>pax-web-jsp</artifactId>
-			<version>1.1.2</version>
-		</dependency>
--->
 
+
+		<!--  Main lift Jar -->
+		<dependency>
+			<groupId>net.liftweb</groupId>
+			<artifactId>lift-webkit_2.8.1</artifactId>
+			<version>2.3</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>scala-library</artifactId>
+					<groupId>org.scala-lang</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		
 		<!-- This is in demo.lifter -->
 		<dependency>
 			<groupId>net.liftweb</groupId>
@@ -72,9 +92,24 @@
 					<groupId>com.h2database</groupId>
 				</exclusion>
 			</exclusions>                       
+		</dependency>		
+
+		<!-- TODO : Recheck source of this dep  -->
+		<dependency>
+			<groupId>net.liftweb</groupId>
+			<artifactId>lift-actor_2.8.1</artifactId>
+			<version>2.3</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>scala-library</artifactId>
+					<groupId>org.scala-lang</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
-    
-                <!-- Added by Stu I believe -->
+
+		<!--	Lift 2.3 (which is not OSGi-fied, while 2.4 is but has some ugly deps)
+				wants these classes;  We could mark the imports as optional to avoid this dep.
+		-->
 		<dependency>
 			<groupId>net.liftweb</groupId>
 			<artifactId>lift-testkit_2.8.1</artifactId>
@@ -88,21 +123,11 @@
 					<artifactId>commons-httpclient</artifactId>
 					<groupId>commons-httpclient</groupId>
 				</exclusion>
+				<exclusion>
+					<artifactId>scala-library</artifactId>
+					<groupId>org.scala-lang</groupId>
+				</exclusion>
 			</exclusions>
-		</dependency>
-             
-                <!-- May not be needed - I've seen some resolution errors pointing at it, but may have been a different misconfig -->
-		<dependency>
-			<groupId>net.liftweb</groupId>
-			<artifactId>lift-actor_2.8.1</artifactId>
-			<version>2.3</version>
-		</dependency>
-
-                <!-- Here's where http.LiftFilter lives, I believe -->
-		<dependency>
-			<groupId>net.liftweb</groupId>
-			<artifactId>lift-webkit_2.8.1</artifactId>
-			<version>2.3</version> 
 		</dependency>
 
              
@@ -189,7 +214,16 @@
 
 	<build>
 		<sourceDirectory>src/main/scala</sourceDirectory>
- 
+
+		<resources>
+			<resource>
+				<directory>${project.basedir}/src/main/resources</directory>
+			</resource>
+			<resource>
+				<directory>${project.basedir}/src/main/webapp</directory>
+			</resource>
+		</resources>
+		
 		<plugins>    
             
 			<plugin> 
@@ -202,67 +236,88 @@
 					</archive>
 				</configuration>
 			</plugin>
-                     
- 
+	
 			<plugin>
-                            <!-- Reconfigured based on http://leshazlewood.com/2010/09/08/osgi-maven-pax-and-web-applications/  -->
+        <!-- Reconfigured based on http://leshazlewood.com/2010/09/08/osgi-maven-pax-and-web-applications/  -->
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
 				<version>2.2.0</version>
 				<extensions>true</extensions>
-				<executions>
-					<execution>
-						<id>bundle-manifest</id>
-						<phase>process-classes</phase>
-						<goals>
-							<goal>manifest</goal>
-						</goals>
-						<configuration>
-							<instructions>
-								<Bundle-SymbolicName>org.friendularity.bundle.lifter</Bundle-SymbolicName>
-								<Bundle-ClassPath>.,/WEB-INF/classes</Bundle-ClassPath> <!-- Yet we get a warning about this directory not exisiting - it appears there are some sequencing issues? (yes, I've seen others mention this too - sounds like maybe ignorable -->
-								<Embed-Directory>/WEB-INF/lib</Embed-Directory>
-								<Embed-Dependency>net.liftweb.*</Embed-Dependency> <!-- Thought maybe this would make LiftFilter visible - but maybe problem is visibility "outside" the war? But seems like we have that via dependency... -->
-								<Embed-Transitive>true</Embed-Transitive> <!-- Need to understand this better, doesn't seem to have much effect -->
-								<Import-Package>*;resolution:=optional</Import-Package> <!-- From Pax Web WAR extender examples; seems best avoided but may be required in some form -->
-								<Web-ContextPath>${web.contextPath}</Web-ContextPath>
-								<Webapp-Context>${web.contextPath}</Webapp-Context>
-								<Export-Package>net.liftweb.* <!-- Thought I'd try this here just to see; need to get a little more clear on the distinction between the two <configuration> sections -->
-								</Export-Package> 
-							</instructions>
-						</configuration>
-					</execution>
-				</executions>
 				<configuration>
 					<supportedProjectTypes>
+						<!-- Allow the maven-bundle-plugin to work inside all these project types -->
 						<supportedProjectType>jar</supportedProjectType>
 						<supportedProjectType>bundle</supportedProjectType>
 						<supportedProjectType>war</supportedProjectType>
 					</supportedProjectTypes>
-					<instructions>
-						<Export-Package>org.friendularity.bundle.lifter.*, bootstrap.*, props, net.liftweb.*,  nu.validator.*
-						</Export-Package>
-						<DynamicImport-Package>*</DynamicImport-Package>  <!-- This excessively horrid workaround still does not enable loading of LiftFilter - I set it back to * for now -->
-						<Import-Package>!nu.xom.*,!org.mozilla.*,!org.specs.*,*</Import-Package>  
-                                    <!-- <Bundle-Activator>org.friendularity.bundle.lifter.Activator</Bundle-Activator> Should not be needed in final product-->
-					</instructions>
-				</configuration>
-			</plugin>
-                            
-			<plugin>
-                                <!-- This is supposed to make it possible to launch OSGi war from Maven; not sure if it is necessary in our context -->
-				<groupId>org.ops4j</groupId>
-				<artifactId>maven-pax-plugin</artifactId>
-				<version>1.5</version>
-				<configuration>
-					<provision>
-						<param>--platform=felix</param>
-						<param>--profiles=compendium,web,war</param>
-					</provision>
-				</configuration>
+				<!--					
+				</configuration>	
+
+				<executions>
+					<execution>
+					-->
+						<!--	When our packaging type is not "bundle" (e.g. "war"), this execution allows BND to run
+								and generate manifest headers.  BND will simply pass through any CapitalizedHeaders
+								it sees, and thus we are also able to set manifest headers for a "war".  
+						-->
+						<!--
+						<id>bundle-manifest</id>
+					
+						<phase>process-classes</phase>
+						<goals>
+							<goal>manifest</goal>
+						</goals>
+						<configuration>						
+						-->
+
+							<instructions>
+				<!--  Bundle-SymbolicName    Should not be necessary			
+								<Bundle-SymbolicName>org.friendularity.bundle.lifter</Bundle-SymbolicName>
+				-->
+<!-- Yet we get a warning about this directory not exisiting - it appears there are some 	sequencing issues? 
+	(yes, I've seen others mention this too - sounds like maybe ignorable -->
+								
+<!--
+								<Embed-Dependency>net.liftweb.*</Embed-Dependency> 
+								<Embed-Transitive>true</Embed-Transitive> 
+-->
+<!-- From Pax Web WAR extender examples; seems best avoided but may be required in some form -->
+
+<!--
+								<Bundle-ClassPath>.,/WEB-INF/classes</Bundle-ClassPath> 
+								<Embed-Directory>/WEB-INF/lib</Embed-Directory>
+	-->					
+	
+			<!--	"Webapp-Context"  is PAX-specific and deprecated since PAX 1.0.0.
+								<Webapp-Context>${web.contextPath}</Webapp-Context>
+								Web-ContextPath is from the OSGi spec.
+			-->
+
+								<Web-ContextPath>${web.contextPath}</Web-ContextPath>
+			<!--								
+								With no Web-ContextPath, we use:
+								http://localhost:8080/org.friendularity.org.friendularity.bundle.lifter/
+			-->
+								<Export-Package>org.friendularity.bundle.lifter.*, net.liftweb.*, bootstrap.*, props, nu.validator.*
+								</Export-Package>
+<!-- This excessively horrid workaround still does not enable loading of LiftFilter - I set it back to * for now -->						
+								<DynamicImport-Package>*</DynamicImport-Package>  						
+								<Import-Package>!nu.xom.*,!org.mozilla.*,!org.specs.*,*</Import-Package>
+								<!--
+								<Import-Package>*;resolution:=optional</Import-Package> 
+								-->
+							</instructions>
+<!-- Thought I'd try this here just to see; need to get a little more clear on the distinction 
+between the two <configuration> sections -->							
+
+						</configuration>
+<!--						
+					</execution>
+				</executions>                     
+						-->
 			</plugin>
 
-    
+							
 			<plugin>
 				<groupId>org.scala-tools</groupId>
 				<artifactId>maven-scala-plugin</artifactId>
@@ -309,58 +364,10 @@
 					</execution>
 				</executions>
 			</plugin>
-                        
-               
-                        <!-- Still guessing this is no longer needed with this version of Jetty, but we'll see -->
-			<plugin>
-                        
-				<groupId>org.mortbay.jetty</groupId>
-				<artifactId>maven-jetty-plugin</artifactId>
-				<version>6.1.25</version>
-				<configuration>
-					<contextPath>/</contextPath>
-					<scanIntervalSeconds>5</scanIntervalSeconds>
-					<systemProperties>
-						  <!--
-								http://docs.codehaus.org/display/JETTY/Configuring+Connectors
-								
-								"The particular interface to listen on. If not set or 0.0.0.0, 
-								jetty will listen on #port on all interfaces."
-								
-								If we do not set here, Jetty seems to think value is "set",
-								but not in a way that allows remote client access.  So, we
-								explicitly set it to 0.0.0.0.
-                                                   -->             
-						
-						<systemProperty>
-							<name>jetty.host</name>
-							<value>0.0.0.0</value>
-						</systemProperty>
-					</systemProperties>
-				</configuration>
-			</plugin>
-                     
 		</plugins>
 	</build>
-      
-	<reporting>
-		<plugins>
-			<plugin>
-				<groupId>org.scala-tools</groupId>
-				<artifactId>maven-scala-plugin</artifactId>
-				<version>2.14.3</version>
-				<configuration>
-					<charset>${project.build.sourceEncoding}</charset>
-					<jvmArgs>
-						<jvmArg>-Xmx1024m</jvmArg>
-						<jvmArg>-DpackageLinkDefs=file://${project.build.directory}/packageLinkDefs.properties</jvmArg>
-					</jvmArgs>
-				</configuration>
-			</plugin>
-		</plugins>
-	</reporting>
-        
-        <!-- I believe all the following is boilerplate for Felix OSGi project -->
+
+
 	<profiles>
 		<profile>
 			<id>build-for-felix</id>
