@@ -258,7 +258,16 @@ MNG-1412 / MNG-3111 introduced deterministic ordering of dependencies on the cla
 								</propertyfile>
 								<makeurl property="run.properties.url" file="${project.build.directory}/run.properties"/>
 								<java fork="true" jar="${maven.dependency.org.apache.felix.org.apache.felix.main.jar.path}">
+									
 									<sysproperty key="felix.config.properties" value="${run.properties.url}"/>
+									<!-- Friendularity edit:  Allow Jetty to listen for remote clients 
+										Seems to not be necessary under Jetty version bundled by PAX,
+										although Stu's wifi-connected Windows 7 host seems to not like
+										remote clients for some other reason.  Wire-connected XP is
+										accepting remote clients with no problem.
+										
+									<sysproperty key="jetty.host" value="0.0.0.0"/>
+									-->
 									<jvmarg line="${vm.args}"/>
 								</java>
 							</target>
