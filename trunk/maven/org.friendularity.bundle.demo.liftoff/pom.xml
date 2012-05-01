@@ -22,6 +22,51 @@
 			<version>1.4.0</version>
 			<scope>provided</scope>
 		</dependency>
+		
+	<!--  TEMPORARY:  o.c.b.render.opengl and others added explicitly here to force runtime start() to happen before 
+			o.f.b.demo.ccrk.start() (exposing the weakness of our current activator reliance). 	
+			
+			Transitive deps are always *later* in the classpath.
+			
+From the release notes of maven 2.0.9:
+MNG-1412 / MNG-3111 introduced deterministic ordering of dependencies on the classpath. 
+...The ordering is now preserved from your pom, with dependencies added by inheritence added last. 
+	-->
+        <dependency>
+			<!-- Force o.c.b.core to load so that credClaz is avail: org.cogchar.blob.emit.RegistryClient$
+			-->
+            <groupId>org.cogchar</groupId>
+            <artifactId>org.cogchar.bundle.core</artifactId>
+            <version>${cogchar.version}</version>
+			<scope>runtime</scope>
+        </dependency>	
+        <dependency>
+			<!-- That credClaz is needed when we go to register with the assetContext -->
+            <groupId>org.cogchar</groupId>
+            <artifactId>org.cogchar.bundle.render.resources</artifactId>
+            <version>${cogchar.version}</version>
+			<scope>runtime</scope>
+        </dependency>	
+		<dependency>
+			<!-- ...which we need when we load up the JME3 "app", which we need to do before  ccrk.start().
+			-->
+			<groupId>org.cogchar</groupId>
+			<artifactId>org.cogchar.bundle.render.opengl</artifactId>
+			<version>${cogchar.version}</version>
+		</dependency>
+	
+	
+		<dependency>
+			<!-- Note that o.f.project.root and o.f.modules.main must also have been built and avail in local repo,
+				in order for variables like "robokind.version" to resolve when applied *transitively*
+				(The built main+root is not required to resolve the variables used directly in this pom; 
+					those are allowed to come from the source-tree poms).
+			-->
+			<groupId>${project.groupId}</groupId>
+			<artifactId>org.friendularity.bundle.demo.ccrk</artifactId>
+			<version>${project.version}</version>
+		
+		</dependency>		
 		<dependency>
 			<!-- This is a big honking hunk of code, but so far is working better than trying
 				to mix-and-match our own version of Jetty + PAX.
@@ -62,26 +107,13 @@
 			<scope>runtime</scope>
 		</dependency> 
 	
-		<dependency>
-			<!-- Note that o.f.project.root and o.f.modules.main must also have been built and avail in local repo,
-				in order for variables like "robokind.version" to resolve when applied *transitively*
-				(The built main+root is not required to resolve the variables used directly in this pom; 
-					those are allowed to come from the source-tree poms).
-			-->
-			<groupId>${project.groupId}</groupId>
-			<artifactId>org.friendularity.bundle.demo.ccrk</artifactId>
-			<version>${project.version}</version>
-			<scope>runtime</scope>
-		</dependency>
+
     		
 		<dependency>
 			<!-- Our Lift-based webapp, which we expect PAX services above to find and launch to HTTP for us -->
 			<groupId>${project.groupId}</groupId>
 			<artifactId>org.friendularity.bundle.lifter</artifactId>
 			<version>${project.version}</version>
-			<!-- If "type" is "war, then the bundle is not automatically included for OSGi launch by run.properties
-			<type>war</type>
-			 -->
 			<scope>runtime</scope>
 		</dependency>
 
@@ -210,7 +242,6 @@
 								</pathconvert>
 								<makeurl property="urls" separator=" ">
 									<path path="${plugins.jars}"/>
-									<!-- TODO:  Friendularity edit:  Adding the ".war" file as a bundle -->
 									<path location="${project.build.directory}/${project.build.finalName}.jar"/>
 									
 								</makeurl>
