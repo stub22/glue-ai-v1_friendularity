@@ -128,6 +128,16 @@ don't want ;-)
 			<groupId>com.jme3</groupId>
 			<artifactId>jME3-desktop</artifactId>
 			<version>${jmonkey.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.jme3</groupId>
+			<artifactId>jME3-effects</artifactId>
+			<version>${jmonkey.version}</version>
+		</dependency>		
+		<dependency>
+			<groupId>com.jme3</groupId>
+			<artifactId>jME3-networking</artifactId>
+			<version>${jmonkey.version}</version>
 		</dependency>		
 		<dependency>
 			<groupId>com.jme3</groupId>
