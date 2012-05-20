@@ -1,0 +1,49 @@
+package org.friendularity.bundle.lifter {
+  package snippet {
+
+	import scala.xml._	
+	import net.liftweb.http.js.JsCmd
+	import net.liftweb.util._
+	import Helpers._
+	import net.liftweb.http._
+	import net.liftweb.http.SHtml._
+	import S._
+	import org.friendularity.bundle.lifter.commander.PageCommander
+
+	object PushyButton {
+  
+	  // Button with no image - the NodeSeq here and in the overloaded method below may go to external resource files eventually
+	  def makeButton(buttonText:String, buttonClass:String, buttonId: Int): NodeSeq = {
+		val buttonNum: String = buttonId.toString
+		<lift:PushyButton buttonId={buttonNum}><div id="pushbutton" class={buttonClass} onclick="">{buttonText}</div></lift:PushyButton>
+	  }
+
+	  //Button with image
+	  def makeButton(buttonText:String, buttonClass:String, buttonImage:String, buttonId: Int): NodeSeq = {
+		val buttonNum: String = buttonId.toString
+		val buttonPath: String = "/images/" + buttonImage
+		<lift:PushyButton buttonId={buttonNum}><div id="pushbutton" class={buttonClass} onclick=""><img src={buttonPath} width="50%"/><br/>{buttonText}</div></lift:PushyButton>
+	  }
+  
+	  def render = {
+		val buttonId: Int = (S.attr("buttonId") openOr "-1").toInt
+		"#pushbutton [onclick]" #> SHtml.ajaxInvoke (() => {
+			println("Button " + buttonId + " was pressed at " + now)
+
+			buttonId match {
+			  case 99 => {
+				  PageCommander.initFromCogcharRDF
+				}
+			  case _ => {
+				  println("Starting action mapped to button " + buttonId)
+				  PageCommander.triggerCogcharScene(buttonId)
+				}
+			}
+		  })
+	  } 
+	  
+	}
+
+  }
+}
+
