@@ -181,12 +181,6 @@
 			<version>${cogchar.version}</version>
 		</dependency>
 		
-		<!-- Needed so that we can trigger scenes -->
-		<dependency>
-			<groupId>org.cogchar</groupId>
-			<artifactId>org.cogchar.bundle.render.opengl</artifactId>
-			<version>${cogchar.version}</version>
-		</dependency>
        
 	</dependencies>
 

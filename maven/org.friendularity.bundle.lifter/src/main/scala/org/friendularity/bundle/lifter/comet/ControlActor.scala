@@ -16,16 +16,15 @@ package org.friendularity.bundle.lifter {
 	class ControlActor extends CometActor with CometListener {
   
 	  lazy val myElementNumber : Int = (name openOr"-1").toInt
-	  private var configChunk: Int = 99
 	  
 	  def registerWith = org.friendularity.bundle.lifter.commander.PageCommander
 	  
 	  override def lowPriority : PartialFunction[Any, Unit]  = {
-		case a: Int if (a == myElementNumber) => configChunk = a; reRender() // implementing partial update here would be a big performance improvement (if I can get it to work)
+		case a: Int if (a == myElementNumber) => reRender() // implementing partial update here would be a big performance improvement (if I can get it to work)
 		case _: Int => // Do nothing if our ID not matched  
 	  }
 
-	  def render = "@ControlSlot" #> PageCommander.getNode(configChunk)
+	  def render = "@ControlSlot" #> PageCommander.getNode(myElementNumber)
   
 	}
 
