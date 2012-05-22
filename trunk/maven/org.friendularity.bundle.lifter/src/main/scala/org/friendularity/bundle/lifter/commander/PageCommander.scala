@@ -3,6 +3,7 @@ package org.friendularity.bundle.lifter {
 
 	import net.liftweb.common._
 	import net.liftweb.http.js.JE._
+	import net.liftweb.http.js.JsCmds
 	import net.liftweb.http.js.JsCmds._
 	import net.liftweb.http._
 	import S._
@@ -16,21 +17,20 @@ package org.friendularity.bundle.lifter {
 	import org.cogchar.bind.lift._
 	import scala.collection.JavaConverters._
 	import org.cogchar.platform.trigger.DummyBinding
-	import org.cogchar.render.app.humanoid.SceneActions
 	
 	object PageCommander extends LiftActor with ListenerManager  {
-  
+	  private var controlDefMap = new scala.collection.mutable.HashMap[Int, ControlConfig]
 	  private var controlsMap = new scala.collection.mutable.HashMap[Int, NodeSeq]
-	  private var actionsMap = new scala.collection.mutable.HashMap[Int, String]
+	  
 	  private var updateInfo: Int = 0
 	  
 	  def createUpdate = updateInfo
 	  
 	  def getNode(controlId: Int): NodeSeq = {
-		if ((controlId == 0) || (controlId == 99)) PushyButton.makeButton("Push to Initalize", "buttongray", 99) else controlsMap(controlId) // We'll get rid of this special init mode soon
+		controlsMap(controlId)
 	  }
 	  
-	  def initFromCogcharRDF {
+	  def initFromCogcharRDF { // This could potentially get called more than once but shouldn't usually - may want to add check for that, but shouldn't really hurt anything if it happens
 		val controlList: java.util.ArrayList[ControlConfig] = LiftAmbassador.getControls()
 		val controlSet = controlList.asScala.toSet
 		controlSet.foreach(controlDef => {
@@ -46,21 +46,42 @@ package org.friendularity.bundle.lifter {
 			val text = controlDef.text
 			val style = controlDef.style
 			val resource = controlDef.resource
+			controlDefMap(id) = controlDef; //May or may not turn out to be the best approach long run - saving the control def for actions binding and transfer of info to "Scene Playing" page
 			if (controlType.equals(ControlConfig.ControlType.PUSHYBUTTON)) {
-			  controlsMap(id) = PushyButton.makeButton(text, style, resource, slotNum)
-			  actionsMap(id) = action
+			  controlsMap(slotNum) = PushyButton.makeButton(text, style, resource, id)
 			  updateInfo = slotNum
 			  updateListeners()
 			}
 		  })
 	  }
 	  
-	  // Really want to do this via LiftAmbassador, but it can't see into cogchar.lib.render
-	  def triggerCogcharScene(id: Int) {
-		val triggerBinding = SceneActions.getTriggerBinding(actionsMap(id))
-		if (triggerBinding != null) {triggerBinding.perform}  
+	  def triggerCogcharScene(id: Int) = {
+		val success = LiftAmbassador.triggerScene(controlDefMap(id).action)
+		if (success) {setSceneRunningInfo(id)}
+		success // not sure the if statement doesn't take care of this, but this does for sure!
 	  }
 	  
+	  def setSceneRunningInfo(id: Int) {
+		SceneInfo.infoClass = controlDefMap(id).style
+		SceneInfo.infoImage = controlDefMap(id).resource
+		SceneInfo.infoText = controlDefMap(id).text
+	  }
+	  
+	  var theMessenger: CogcharMessenger = null // Or None?
+	
+	  def getMessenger: LiftAmbassador.LiftInterface = { 
+		if (theMessenger == null) {
+		  theMessenger = new CogcharMessenger
+		}
+		theMessenger
+	  }
+
+	  class CogcharMessenger extends LiftAmbassador.LiftInterface {
+		def notifyConfigReady {
+		  initFromCogcharRDF
+		}
+	  }
+	
 	}
 
   }
