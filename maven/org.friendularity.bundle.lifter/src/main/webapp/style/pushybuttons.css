@@ -9,7 +9,6 @@
 	position:absolute;
 	left:10%;
 	top:15%;
-	text-decoration: none;
 	text-align: center;
 	-webkit-border-radius: 37px;
 	-moz-border-radius: 37px;
@@ -59,23 +58,6 @@
 }
 
 .buttonpurple {
-	border: solid #8402C4 2px;
-	background: -webkit-gradient(linear, 0 0, 0 100%, from(#A92CE8), to(#B92EFF));
-	background: -moz-linear-gradient(top, #A92CE8, #B92EFF);
-}
-
-.buttontest {
-	font-family: Arial;
-	color: #ffffff;
-	font-size: 35px;
-	padding: 10px;
-	text-decoration: none;
-	text-align:center;
-	-webkit-border-radius: 20px;
-	-moz-border-radius: 20px;
-	-webkit-box-shadow: 2px 4px 8px #666666;
-	-moz-box-shadow: 2px 4px 8px #666666;
-	text-shadow: 1px 1px 3px #666666;
 	border: solid #8402C4 2px;
 	background: -webkit-gradient(linear, 0 0, 0 100%, from(#A92CE8), to(#B92EFF));
 	background: -moz-linear-gradient(top, #A92CE8, #B92EFF);
