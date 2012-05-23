@@ -36,10 +36,13 @@ package org.friendularity.bundle.lifter {
 			  case 99 => {
 				  PageCommander.initFromCogcharRDF
 				}
+			  case 101 => {
+				  JsCmds.RedirectTo("/")
+				}	
 			  case _ => {
 				  println("Starting action mapped to button " + buttonId)
 				  val success = PageCommander.triggerCogcharScene(buttonId)
-				  //if (success) {JsCmds.RedirectTo("cogchar/scene_running.html")} //Disabling for now until we can return
+				  if (success) {JsCmds.RedirectTo("cogchar/scene_running.html")} //Disabling for now until we can return
 				}
 			}
 		  })
