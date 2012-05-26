@@ -4,6 +4,7 @@ import _root_.net.liftweb.util._
 import _root_.net.liftweb.common._
 import _root_.net.liftweb.http._
 import _root_.net.liftweb.http.provider._
+import _root_.net.liftweb.mapper._
 import _root_.net.liftweb.sitemap._
 import _root_.net.liftweb.sitemap.Loc._
 import Helpers._
@@ -14,45 +15,49 @@ import _root_.org.friendularity.bundle.lifter.commander._
 import _root_.org.cogchar.bind.lift.LiftAmbassador
 
 
+
 /**
  * A class that's instantiated early and run.  It allows the application
  * to modify lift's environment
+ * 
+ * Currently a mess. It'll come together soon.
  */
 class Boot {
   def boot {
 	
-	/* Causing horrible exceptions and none of the rest of Boot.scala runs (I discovered after being utterly confused for 30 min!)
-	 * A lot of this DB stuff is just crashing, so for now I'll kill it and figure out what we really need going forward
-	 if (!DB.jndiJdbcConnAvailable_?) {
-	 val vendor = 
-	 new StandardDBVendor(Props.get("db.driver") openOr "org.h2.Driver",
-	 Props.get("db.url") openOr 
-	 "jdbc:h2:lift_proto.db;AUTO_SERVER=TRUE",
-	 Props.get("db.user"), Props.get("db.password"))
+	//println("Boot.scala here we go")
+	if (!DB.jndiJdbcConnAvailable_?) {
+	  val vendor = 
+		new StandardDBVendor(Props.get("db.driver") openOr "org.h2.Driver",
+							 Props.get("db.url") openOr 
+							 "jdbc:h2:lift_proto.db;AUTO_SERVER=TRUE",
+							 Props.get("db.user"), Props.get("db.password"))
 
-	 LiftRules.unloadHooks.append(vendor.closeAllConnections_! _)
+	  LiftRules.unloadHooks.append(vendor.closeAllConnections_! _)
 
-	 DB.defineConnectionManager(DefaultConnectionIdentifier, vendor)
-	 }
-	 */
+	  DB.defineConnectionManager(DefaultConnectionIdentifier, vendor)
+	}
 
     // where to search snippet
     LiftRules.addToPackages("org.friendularity.bundle.lifter")
 	
-	/*
-	 Schemifier.schemify(true, Schemifier.infoF _, User)
+	//LiftRules.setSiteMap(SiteMap(User.sitemap)) //just trying to see if I can figure out MetaMegaProtoUser login
+	
+	//Schemifier.schemify(true, Schemifier.infoF _, User) // This causes big fat exception in db, maybe need to figure out what Schemifier is!
 
-	 // Build SiteMap
+	// Build SiteMap
+	/* Let's just not for now - coming soon
 	 def sitemap() = SiteMap(
 	 Menu("Home") / "index" >> User.AddUserMenusAfter, // Simple menu form
 	 // Menu with special Link
 	 Menu(Loc("Static", Link(List("static"), true, "/static/index"), 
-	 "Static Content")))
-
+	 "Static Content"))) // huh, does this make everythingin static visible?
+	 
 	 LiftRules.setSiteMapFunc(() => User.sitemapMutator(sitemap()))
 	
+	 println("Boot.scala got past SiteMap config")
 	 */
-
+	
     /*
      * Show the spinny image when an Ajax call starts
      */
@@ -78,7 +83,7 @@ class Boot {
 	if (LiftAmbassador.checkConfigReady) {
 	  PageCommander.initFromCogcharRDF
 	}
-
+	//println("Boot.scala got to end!")
   }
 
   /**
