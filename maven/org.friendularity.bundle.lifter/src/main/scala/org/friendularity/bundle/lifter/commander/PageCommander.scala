@@ -47,12 +47,38 @@ package org.friendularity.bundle.lifter {
 			val style = controlDef.style
 			val resource = controlDef.resource
 			controlDefMap(id) = controlDef; //May or may not turn out to be the best approach long run - saving the control def for actions binding and transfer of info to "Scene Playing" page
-			if (controlType.equals(ControlConfig.ControlType.PUSHYBUTTON)) {
-			  controlsMap(slotNum) = PushyButton.makeButton(text, style, resource, id)
-			  updateInfo = slotNum
-			  updateListeners()
+			
+			controlType match {
+			  case ControlConfig.ControlType.PUSHYBUTTON => {
+				  setControl(slotNum, PushyButton.makeButton(text, style, resource, id))
+				}
+			  case ControlConfig.ControlType.TEXTINPUT => {
+				  setControl(slotNum, TextForm.makeTextForm(text, id))
+				}
+			  case ControlConfig.ControlType.SELECTBOXES => {
+				  // From the RDF "text" value we assume a comma separated list with the first item the title and the rest checkbox labels
+				  val textItems = List.fromArray(text.split(","))
+				  val titleText = textItems(0)
+				  val labelItems = textItems.tail
+				  setControl(slotNum, SelectBoxes.makeSelectBoxes(titleText, labelItems, id))
+				}
+			  case ControlConfig.ControlType.RADIOBUTTONS => {
+				  // From the RDF "text" value we assume a comma separated list with the first item the title and the rest radiobutton labels
+				  val textItems = List.fromArray(text.split(","))
+				  val titleText = textItems(0)
+				  val labelItems = textItems.tail
+				  setControl(slotNum, RadioButtons.makeRadioButtons(titleText, labelItems, id))
+				  //setControl(slotNum, RadioButtons.makeRadioButtons(text, "Dummy Label", id)) //OLD
+				}
+			  case _ => // No action if no match
 			}
 		  })
+	  }
+					  
+	  def setControl(slotNum: Int, slotHtml: NodeSeq) {
+		controlsMap(slotNum) = slotHtml 
+		updateInfo = slotNum
+		updateListeners()
 	  }
 	  
 	  def triggerCogcharScene(id: Int) = {
@@ -67,7 +93,7 @@ package org.friendularity.bundle.lifter {
 		SceneInfo.infoText = controlDefMap(id).text
 	  }
 	  
-	  var theMessenger: CogcharMessenger = null // Or None?
+	  var theMessenger: CogcharMessenger = null
 	
 	  def getMessenger: LiftAmbassador.LiftInterface = { 
 		if (theMessenger == null) {
