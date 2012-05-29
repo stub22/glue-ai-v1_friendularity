@@ -42,7 +42,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.cogchar</groupId>
-			<artifactId>org.cogchar.lib.core</artifactId>
+			<artifactId>org.cogchar.bundle.core</artifactId>
 			<version>${cogchar.version}</version>
 		</dependency>
 		<dependency>

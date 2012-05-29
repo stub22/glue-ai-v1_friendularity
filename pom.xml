@@ -54,10 +54,10 @@ Version-less parent will be allowed in Maven 3.1.
 		<!--
 		<jmonkey.version>3.0.0.20120209-SNAPSHOT</jmonkey.version>
 		-->
-		<cogchar.version>1.0.4-SNAPSHOT</cogchar.version>
+		<cogchar.version>1.0.5-SNAPSHOT</cogchar.version>
 		<!--  No direct dependence on Appdapter. -->
 		<!--  We are directly using the "headless" part of Robokind-core. -->
-		<robokind.version>0.8.4</robokind.version>
+		<robokind.version>0.8.5</robokind.version>
 
 		<freckler.version>1.0.0-SNAPSHOT</freckler.version>
 		<scala.version>2.8.1</scala.version>

@@ -15,6 +15,16 @@
     <name>${project.artifactId} - OSGi</name>	
 
     <dependencies>
+        <dependency>
+            <groupId>com.hrkind</groupId>
+            <artifactId>com.hrkind.content.preview</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>		
+        <dependency>
+            <groupId>org.robokind</groupId>
+            <artifactId>org.robokind.headless.messaging</artifactId>
+            <version>${robokind.version}</version>
+        </dependency>		
 		<!--
         <dependency>
             <groupId>org.cogchar</groupId>
@@ -39,12 +49,7 @@
             <artifactId>org.robokind.headless.speech</artifactId>
             <version>${robokind.version}</version>
         </dependency>
-
-        <dependency>
-            <groupId>org.robokind</groupId>
-            <artifactId>org.robokind.headless.messaging</artifactId>
-            <version>${robokind.version}</version>
-        </dependency>				
+			
 		<dependency>
             <groupId>org.apache.felix</groupId>
             <artifactId>org.osgi.core</artifactId>
@@ -70,7 +75,7 @@
 			<artifactId>com.springsource.org.apache.log4j</artifactId>
 			<version>1.2.16</version>
 			<scope>runtime</scope>			
-		</dependency>	
+		</dependency>
 
     </dependencies>
 
@@ -213,7 +218,7 @@
                                     <entry key="org.osgi.framework.bootdelegation" value="*"/>
 									<!-- Allow sun.misc package to be used by LWJGL -->
 									<entry key="org.osgi.framework.system.packages.extra" value="sun.misc" />
-									
+
                                 </propertyfile>
                                 <makeurl property="run.properties.url" file="${project.build.directory}/run.properties"/>
                                 <java fork="true" jar="${maven.dependency.org.apache.felix.org.apache.felix.main.jar.path}">
