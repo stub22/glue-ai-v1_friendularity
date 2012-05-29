@@ -16,13 +16,17 @@
 	<name>${project.artifactId} - jME3 demo wrapper project</name>
 
 <!-- 
-Updated:	2011-12-30
+Updated:	2012-05-13
 Maintainer:	stub22  AT  appstract.com
-
 
 Demonstration of a JMonkeyEngine-3 game pom.xml file,
 with direct dependencies on all jars in the jME3 nightly build.
 
+The jmonkey.version variable is set in the parent pom to the following value.
+Set it in the properties of your own pom.
+
+		<jmonkey.version>3.0.0.20120512-SNAPSHOT</jmonkey.version>
+		
 This game has one class in it, LaunchJME3TestChooser, which 
 merely invokes the jME3 TestChooser demo.  Running all of the
 demos (some of which fail) requires using most or all of the
@@ -36,7 +40,7 @@ resource situation.
 
 Currently all of these deps below are pulled from the community-maintained
 com.jme3 repo on sonatype-snapshots, yielding a complete copy of all 
-ordinary lib jars in the jme3-nightly-build of 2011-12-15.  You can browse
+ordinary lib jars in the jme3-nightly-build of 2012-05-12.  You can browse
 the snapshot file tree via the web here:
 
 http://oss.sonatype.org/content/repositories/snapshots/com/jme3/
@@ -61,7 +65,9 @@ don't want ;-)
 		</repository>	  
 	</repositories>
 
-
+	<!-- Note that the jmonkey.version variable is set in our parent pom.xml.
+		Currently the value is   3.0.0.20120512-SNAPSHOT
+	-->
 	<dependencies>
 
 		<dependency>
