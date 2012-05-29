@@ -23,37 +23,13 @@
 			<scope>provided</scope>
 		</dependency>
 		
-	<!--  TEMPORARY:  o.c.b.render.opengl and others added explicitly here to force runtime start() to happen before 
-			o.f.b.demo.ccrk.start() (exposing the weakness of our current activator reliance). 	
-			
-			Transitive deps are always *later* in the classpath.
+	<!--  
 			
 From the release notes of maven 2.0.9:
 MNG-1412 / MNG-3111 introduced deterministic ordering of dependencies on the classpath. 
 ...The ordering is now preserved from your pom, with dependencies added by inheritence added last. 
 	-->
-        <dependency>
-			<!-- Force o.c.b.core to load so that credClaz is avail: org.cogchar.blob.emit.RegistryClient$
-			-->
-            <groupId>org.cogchar</groupId>
-            <artifactId>org.cogchar.bundle.core</artifactId>
-            <version>${cogchar.version}</version>
-			<scope>runtime</scope>
-        </dependency>	
-        <dependency>
-			<!-- That credClaz is needed when we go to register with the assetContext -->
-            <groupId>org.cogchar</groupId>
-            <artifactId>org.cogchar.bundle.render.resources</artifactId>
-            <version>${cogchar.version}</version>
-			<scope>runtime</scope>
-        </dependency>	
-		<dependency>
-			<!-- ...which we need when we load up the JME3 "app", which we need to do before  ccrk.start().
-			-->
-			<groupId>org.cogchar</groupId>
-			<artifactId>org.cogchar.bundle.render.opengl</artifactId>
-			<version>${cogchar.version}</version>
-		</dependency>
+
 	
 	
 		<dependency>
