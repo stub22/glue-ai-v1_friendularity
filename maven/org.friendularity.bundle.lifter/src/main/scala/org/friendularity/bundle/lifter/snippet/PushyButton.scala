@@ -9,7 +9,7 @@ package org.friendularity.bundle.lifter {
 	import net.liftweb.http._
 	import net.liftweb.http.SHtml._
 	import S._
-	import org.friendularity.bundle.lifter.commander.PageCommander
+	import org.friendularity.bundle.lifter.model.PageCommander
 
 	object PushyButton {
   
