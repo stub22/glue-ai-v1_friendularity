@@ -26,8 +26,21 @@ package org.friendularity.bundle.lifter {
 	  
 	  def createUpdate = updateInfo
 	  
+	  // A list of possible control types
+	  object ControlType extends Enumeration { 
+		type ControlType = Value
+		val NULLTYPE, PUSHYBUTTON, TEXTINPUT, SELECTBOXES, RADIOBUTTONS, LISTBOX = Value
+	  }
+	  import ControlType._
+	  
 	  def getNode(controlId: Int): NodeSeq = {
-		controlsMap(controlId)
+		var nodeOut = NodeSeq.Empty
+		try {
+		  nodeOut = controlsMap(controlId)
+		} catch {
+		  case _: Any => // Implies nothing in map for this controlId, do nothing and return empty nodeOut
+		}
+		nodeOut
 	  }
 	  
 	  def initFromCogcharRDF { // This could potentially get called more than once but shouldn't usually - may want to add check for that, but shouldn't really hurt anything if it happens
@@ -40,7 +53,11 @@ package org.friendularity.bundle.lifter {
 			} catch {
 			  case _: Any =>  // Implies malformed RDF for this control slot: just leave slotNum at -1
 			}
-			val controlType: ControlConfig.ControlType = controlDef.controlType
+			var controlType: ControlType = NULLTYPE
+			ControlType.values foreach(testType => {
+				if (controlDef.controlType equals(testType.toString)) controlType = testType
+			  })
+			println("Control type has been found to be " + controlType)
 			val id = controlDef.id
 			val action = controlDef.action
 			val text = controlDef.text
@@ -49,28 +66,27 @@ package org.friendularity.bundle.lifter {
 			controlDefMap(id) = controlDef; //May or may not turn out to be the best approach long run - saving the control def for actions binding and transfer of info to "Scene Playing" page
 			
 			controlType match {
-			  case ControlConfig.ControlType.PUSHYBUTTON => {
+			  case ControlType.PUSHYBUTTON => {
 				  setControl(slotNum, PushyButton.makeButton(text, style, resource, id))
 				}
-			  case ControlConfig.ControlType.TEXTINPUT => {
+			  case ControlType.TEXTINPUT => {
 				  setControl(slotNum, TextForm.makeTextForm(text, id))
 				}
-			  case ControlConfig.ControlType.SELECTBOXES => {
+			  case ControlType.SELECTBOXES => {
 				  // From the RDF "text" value we assume a comma separated list with the first item the title and the rest checkbox labels
 				  val textItems = List.fromArray(text.split(","))
 				  val titleText = textItems(0)
 				  val labelItems = textItems.tail
 				  setControl(slotNum, SelectBoxes.makeSelectBoxes(titleText, labelItems, id))
 				}
-			  case ControlConfig.ControlType.RADIOBUTTONS => {
+			  case ControlType.RADIOBUTTONS => {
 				  // From the RDF "text" value we assume a comma separated list with the first item the title and the rest radiobutton labels
 				  val textItems = List.fromArray(text.split(","))
 				  val titleText = textItems(0)
 				  val labelItems = textItems.tail
 				  setControl(slotNum, RadioButtons.makeRadioButtons(titleText, labelItems, id))
-				  //setControl(slotNum, RadioButtons.makeRadioButtons(text, "Dummy Label", id)) //OLD
 				}
-			  case ControlConfig.ControlType.LISTBOX => {
+			  case ControlType.LISTBOX => {
 				  // From the RDF "text" value we assume a comma separated list with the first item the title and the rest radiobutton labels
 				  val textItems = List.fromArray(text.split(","))
 				  val titleText = textItems(0)
