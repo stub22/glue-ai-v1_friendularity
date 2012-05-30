@@ -12,7 +12,7 @@ package org.friendularity.bundle.lifter {
 	import net.liftweb.util._
 	import Helpers._
 	import net.liftweb.http.SHtml._
-	import org.friendularity.bundle.lifter.commander.PageCommander
+	import org.friendularity.bundle.lifter.model.PageCommander
 	import S._
 
 	object RadioButtons {

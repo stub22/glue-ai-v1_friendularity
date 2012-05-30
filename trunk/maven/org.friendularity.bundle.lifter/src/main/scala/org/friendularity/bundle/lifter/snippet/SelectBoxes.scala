@@ -12,7 +12,7 @@ package org.friendularity.bundle.lifter {
 	import net.liftweb.util._
 	import Helpers._
 	import net.liftweb.http.SHtml._
-	import org.friendularity.bundle.lifter.commander.PageCommander
+	import org.friendularity.bundle.lifter.model.PageCommander
 	import S._
 
 	object SelectBoxes {
@@ -65,7 +65,7 @@ package org.friendularity.bundle.lifter {
 		  val labelId: String = "#" + SelectBoxes.labelPrefix + boxIndex.toString
 		  val boxId: String = "#" + SelectBoxes.boxPrefix + boxIndex.toString
 		  labelId #> SelectBoxes.labelMap(formId)(boxIndex) &
-		  boxId #> SHtml.ajaxCheckbox(false, (toggled: Boolean) => process(toggled, boxIndex), "class" -> "showit")
+		  boxId #> SHtml.ajaxCheckbox(false, (toggled: Boolean) => process(toggled, boxIndex))
 		}
 
 		formId = (S.attr("formId") openOr "-1").toInt

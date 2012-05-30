@@ -10,17 +10,17 @@ package org.friendularity.bundle.lifter {
 	import net.liftweb.util._
 	import Helpers._
 	import scala.xml._
-	import org.friendularity.bundle.lifter.commander.PageCommander
+	import org.friendularity.bundle.lifter.model.PageCommander
 
 	
 	class ControlActor extends CometActor with CometListener {
   
 	  lazy val myElementNumber : Int = (name openOr"-1").toInt
 	  
-	  def registerWith = org.friendularity.bundle.lifter.commander.PageCommander
+	  def registerWith = org.friendularity.bundle.lifter.model.PageCommander
 	  
 	  override def lowPriority : PartialFunction[Any, Unit]  = {
-		case a: Int if (a == myElementNumber) => reRender() // implementing partial update here would be a big performance improvement (if I can get it to work)
+		case a: Int if (a == myElementNumber) => reRender()
 		case _: Int => // Do nothing if our ID not matched  
 	  }
 

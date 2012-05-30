@@ -1,5 +1,5 @@
 package org.friendularity.bundle.lifter {
-  package commander {
+  package model {
 
 	import net.liftweb.common._
 	import net.liftweb.http.js.JE._
@@ -38,7 +38,7 @@ package org.friendularity.bundle.lifter {
 			try {
 			  slotNum = controlDef.myURI_Fragment.stripPrefix(LiftAmbassador.getPrefix()).toInt
 			} catch {
-			  case _: Any =>  // Implies malformed RDF for this control ID: just leave slotNum at -1
+			  case _: Any =>  // Implies malformed RDF for this control slot: just leave slotNum at -1
 			}
 			val controlType: ControlConfig.ControlType = controlDef.controlType
 			val id = controlDef.id
@@ -70,6 +70,13 @@ package org.friendularity.bundle.lifter {
 				  setControl(slotNum, RadioButtons.makeRadioButtons(titleText, labelItems, id))
 				  //setControl(slotNum, RadioButtons.makeRadioButtons(text, "Dummy Label", id)) //OLD
 				}
+			  case ControlConfig.ControlType.LISTBOX => {
+				  // From the RDF "text" value we assume a comma separated list with the first item the title and the rest radiobutton labels
+				  val textItems = List.fromArray(text.split(","))
+				  val titleText = textItems(0)
+				  val labelItems = textItems.tail
+				  setControl(slotNum, ListBox.makeListBox(titleText, labelItems, id))
+				}
 			  case _ => // No action if no match
 			}
 		  })
@@ -80,6 +87,23 @@ package org.friendularity.bundle.lifter {
 		updateInfo = slotNum
 		updateListeners()
 	  }
+	  
+	  // A central place to define actions performed by displayed controls - may want to move to its own class eventually
+	  // Likely Lift actions will eventually be set up from RDF and/or cogchar actions; having this in PageCommander
+	  // will make it natural to reconfigure from Cogchar - next up is a further refinement/generalization of control actions
+	  // Just a skeleton so far to demo Comet control switching
+	  def controlActionMapper(formId:Int, subControl:Int) {
+		formId match {
+		  case 5 => {subControl match {
+				case 0 => setControl(6, PushyButton.makeButton("A button", "buttonred", "still-27.jpg", 6))
+				case 1 => setControl(6, TextForm.makeTextForm("A text box", 6))
+				case 2 => setControl(6, SelectBoxes.makeSelectBoxes("Checkboxes", List("an option", "and another"), 6))
+				case 3 => setControl(6, RadioButtons.makeRadioButtons("Radio buttons", List("Radio Option 1", "Radio Option 2"), 6))
+				case _ =>
+			  }}
+		  case _ => 
+		}
+	  }	
 	  
 	  def triggerCogcharScene(id: Int) = {
 		val success = LiftAmbassador.triggerScene(controlDefMap(id).action)
