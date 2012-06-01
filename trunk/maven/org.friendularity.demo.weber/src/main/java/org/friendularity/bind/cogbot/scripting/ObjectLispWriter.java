@@ -10,8 +10,8 @@ import java.lang.reflect.Method;
 import java.util.IdentityHashMap;
 import javax.management.AttributeChangeNotification;
 import org.cogchar.api.integroid.cue.PersonCue;
-import org.cogchar.api.platform.cues.NamedCue;
-import org.cogchar.platform.stub.ThalamentStub;
+import org.cogchar.zzz.api.platform.cues.NamedCue;
+import org.cogchar.zzz.platform.stub.ThalamentStub;
 
 /**
  *

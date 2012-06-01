@@ -37,8 +37,8 @@ import org.friendularity.bind.cogbot.service.CogbotService;
 import org.cogchar.animoid.job.AnimationExecJob;
 import org.cogchar.animoid.job.VisemeJob;
 import org.cogchar.api.animoid.protocol.Animation;
-import org.cogchar.platform.stub.CueStub;
-import org.cogchar.platform.stub.JobStub;
+import org.cogchar.zzz.platform.stub.CueStub;
+import org.cogchar.zzz.platform.stub.JobStub;
 
 /**
  * @author Stu Baurmann/Douglas Miles
