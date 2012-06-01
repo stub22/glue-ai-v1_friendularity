@@ -14,6 +14,7 @@ package org.friendularity.bundle.lifter {
 	import _root_.net.liftweb.util.Log
 	import net.liftweb.actor._
 	import org.friendularity.bundle.lifter.snippet._
+	import org.friendularity.bundle.lifter.view._
 	import org.cogchar.bind.lift._
 	import scala.collection.JavaConverters._
 	import org.cogchar.platform.trigger.DummyBinding
@@ -29,7 +30,7 @@ package org.friendularity.bundle.lifter {
 	  // A list of possible control types
 	  object ControlType extends Enumeration { 
 		type ControlType = Value
-		val NULLTYPE, PUSHYBUTTON, TEXTINPUT, SELECTBOXES, RADIOBUTTONS, LISTBOX = Value
+		val NULLTYPE, PUSHYBUTTON, TEXTINPUT, SELECTBOXES, RADIOBUTTONS, LISTBOX, VIDEOBOX = Value
 	  }
 	  import ControlType._
 	  
@@ -92,6 +93,9 @@ package org.friendularity.bundle.lifter {
 				  val titleText = textItems(0)
 				  val labelItems = textItems.tail
 				  setControl(slotNum, ListBox.makeListBox(titleText, labelItems, id))
+				}
+			  case ControlType.VIDEOBOX => {
+				  setControl(slotNum, VideoBox.makeBox(resource, true)) // Videos muted for now, but we can change and/or add config from RDF as desired
 				}
 			  case _ => // No action if no match
 			}
