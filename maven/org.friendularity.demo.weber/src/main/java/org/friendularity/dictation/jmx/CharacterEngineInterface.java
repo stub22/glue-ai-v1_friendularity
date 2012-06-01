@@ -20,8 +20,8 @@ import javax.management.remote.JMXConnector;
 import javax.management.remote.JMXConnectorFactory;
 import javax.management.remote.JMXServiceURL;
 import org.cogchar.integroid.jmxwrap.IntegroidWrapperMXBean;
-import org.cogchar.api.platform.cues.ThoughtCue;
-import org.cogchar.platform.stub.CueStub;
+import org.cogchar.zzz.api.platform.cues.ThoughtCue;
+import org.cogchar.zzz.platform.stub.CueStub;
 
 /**
  *

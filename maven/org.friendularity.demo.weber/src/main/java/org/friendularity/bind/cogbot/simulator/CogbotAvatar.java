@@ -29,9 +29,9 @@ import org.friendularity.bind.cogbot.scripting.ObjectLispWriter;
 import org.friendularity.bind.cogbot.scripting.SerialEventQueue;
 import org.cogchar.integroid.awareness.AwarenessConstants;
 import org.cogchar.integroid.awareness.AwarenessHelpFuncs;
-import org.cogchar.api.platform.cues.VariableCue;
-import org.cogchar.platform.stub.CueStub;
-import org.cogchar.platform.stub.JobStub;
+import org.cogchar.zzz.api.platform.cues.VariableCue;
+import org.cogchar.zzz.platform.stub.CueStub;
+import org.cogchar.zzz.platform.stub.JobStub;
 
 /**
  *
