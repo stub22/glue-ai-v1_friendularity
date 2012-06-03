@@ -62,7 +62,17 @@
 			<artifactId>org.friendularity.bundle.lifter</artifactId>
 			<version>${project.version}</version>
 			<scope>runtime</scope>
-		</dependency>				
+		</dependency>
+        <dependency>
+            <groupId>net.sf.opencsv</groupId>
+            <artifactId>opencsv</artifactId>
+            <version>2.3</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>org.friendularity.bundle.lifter</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
