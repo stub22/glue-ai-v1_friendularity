@@ -58,7 +58,6 @@ package org.friendularity.bundle.lifter {
 			ControlType.values foreach(testType => {
 				if (controlDef.controlType equals(testType.toString)) controlType = testType
 			  })
-			println("Control type has been found to be " + controlType)
 			val id = controlDef.id
 			val action = controlDef.action
 			val text = controlDef.text
@@ -68,7 +67,11 @@ package org.friendularity.bundle.lifter {
 			
 			controlType match {
 			  case ControlType.PUSHYBUTTON => {
-				  setControl(slotNum, PushyButton.makeButton(text, style, resource, id))
+				  if (resource.length >= 5) { // needs to be at least this long to have a valid image filename
+					setControl(slotNum, PushyButton.makeButton(text, style, resource, id))
+				  } else {
+					setControl(slotNum, PushyButton.makeButton(text, style, id)) // If no image, use no image constructor
+				  }
 				}
 			  case ControlType.TEXTINPUT => {
 				  setControl(slotNum, TextForm.makeTextForm(text, id))
@@ -115,7 +118,7 @@ package org.friendularity.bundle.lifter {
 	  def controlActionMapper(formId:Int, subControl:Int) {
 		formId match {
 		  case 5 => {subControl match {
-				case 0 => setControl(6, PushyButton.makeButton("A button", "buttonred", "still-27.jpg", 6))
+				case 0 => setControl(6, PushyButton.makeButton("A button", "buttonred", "still-27.jpg", 50))
 				case 1 => setControl(6, TextForm.makeTextForm("A text box", 6))
 				case 2 => setControl(6, SelectBoxes.makeSelectBoxes("Checkboxes", List("an option", "and another"), 6))
 				case 3 => setControl(6, RadioButtons.makeRadioButtons("Radio buttons", List("Radio Option 1", "Radio Option 2"), 6))
@@ -125,10 +128,14 @@ package org.friendularity.bundle.lifter {
 		}
 	  }	
 	  
-	  def triggerCogcharScene(id: Int) = {
-		val success = LiftAmbassador.triggerScene(controlDefMap(id).action)
-		if (success) {setSceneRunningInfo(id)}
-		success // not sure the if statement doesn't take care of this, but this does for sure!
+	  def triggerCogcharAction(id: Int) = {
+		val success = LiftAmbassador.triggerAction(controlDefMap(id).action)
+		// This is very much a hack to show the Scene Running page if a scene is activated - we'll want to replace this as
+		// we work in more general responses to action trigger results
+		val startSceneRunningPage = (success) && (controlDefMap(id).action.startsWith("sceneTrig"))
+		if (startSceneRunningPage) {setSceneRunningInfo(id)}
+		startSceneRunningPage // Tells PushyButtons to trigger the change to Scene Running Page - needs to happen there to fire JS
+		//success // now this would make sense
 	  }
 	  
 	  def setSceneRunningInfo(id: Int) {
