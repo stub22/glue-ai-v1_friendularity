@@ -41,8 +41,8 @@ package org.friendularity.bundle.lifter {
 				}	
 			  case _ => {
 				  println("Starting action mapped to button " + buttonId)
-				  val success = PageCommander.triggerCogcharScene(buttonId)
-				  if (success) {JsCmds.RedirectTo("cogchar/scene_running.html")} //Disabling for now until we can return
+				  val success = PageCommander.triggerCogcharAction(buttonId)
+				  if (success) {JsCmds.RedirectTo("cogchar/scene_running.html")}
 				}
 			}
 		  })

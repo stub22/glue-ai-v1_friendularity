@@ -15,7 +15,7 @@ package org.friendularity.bundle.lifter {
 	import org.friendularity.bundle.lifter.model.PageCommander
 	import S._
 
-	object RadioButtons {
+	object RadioButtons extends Logger {
   
 	  val responseText = "I see you!"
 	  
@@ -34,7 +34,7 @@ package org.friendularity.bundle.lifter {
 	  }  
 	}
 	
-	class RadioButtons extends StatefulSnippet {
+	class RadioButtons extends StatefulSnippet with Logger {
 	  
 	  var formId: Int = RadioButtons.blankId
 	  lazy val radioButtonsInstanceTitleId = RadioButtons.titlePrefix + formId
@@ -44,7 +44,7 @@ package org.friendularity.bundle.lifter {
 	  def render(xhtml:NodeSeq): NodeSeq = {
 		
 		def process(result: String): JsCmd = {
-		  println("RadioButtons says option number " + result + " on formId " + formId + " is selected")
+		  info("RadioButtons says option number " + result + " on formId " + formId + " is selected")
 		  SetHtml(radioButtonsInstanceTitleId, Text(RadioButtons.responseText))
 		}
 		formId = (S.attr("formId") openOr "-1").toInt
@@ -60,7 +60,7 @@ package org.friendularity.bundle.lifter {
 			buttonHtml = buttonHtml ++ <div><span class="formlabels">{RadioButtons.labelMap(formId)(buttonIndex)}</span><span>{theButtons(buttonIndex)}</span></div>
 		  }
 		  selectors = titleSelectorText #> RadioButtons.titleMap(formId) & "#buttonshere" #> buttonHtml
-		} else println("RadioButtons.render cannot find a valid formId! Reported formId: " + formId)
+		} else error("RadioButtons.render cannot find a valid formId! Reported formId: " + formId)
 		if (valid) selectors.apply(xhtml) else NodeSeq.Empty // Blanks control if something is wrong with formId
 		//selectors.apply(xhtml) // This would be ok too, and would just apply the "null" selector transform to html if something is broken
 	  }  
