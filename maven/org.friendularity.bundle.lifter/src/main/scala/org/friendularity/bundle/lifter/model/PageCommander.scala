@@ -13,6 +13,7 @@ package org.friendularity.bundle.lifter {
 	import scala.xml._
 	import _root_.net.liftweb.util.Log
 	import net.liftweb.actor._
+	import org.friendularity.bundle.lifter.lib._
 	import org.friendularity.bundle.lifter.snippet._
 	import org.friendularity.bundle.lifter.view._
 	import org.cogchar.bind.lift._
@@ -118,7 +119,7 @@ package org.friendularity.bundle.lifter {
 	  def controlActionMapper(formId:Int, subControl:Int) {
 		formId match {
 		  case 5 => {subControl match {
-				case 0 => setControl(6, PushyButton.makeButton("A button", "buttonred", "still-27.jpg", 50))
+				case 0 => setControl(6, PushyButton.makeButton("A button", "buttonred", 50))
 				case 1 => setControl(6, TextForm.makeTextForm("A text box", 6))
 				case 2 => setControl(6, SelectBoxes.makeSelectBoxes("Checkboxes", List("an option", "and another"), 6))
 				case 3 => setControl(6, RadioButtons.makeRadioButtons("Radio buttons", List("Radio Option 1", "Radio Option 2"), 6))
@@ -128,8 +129,16 @@ package org.friendularity.bundle.lifter {
 		}
 	  }	
 	  
+	  def notifyNewSpeech(speech: String) {
+		// What do we want to do with the new speech? It can be anything we want. Probably we'll tell the robot about it!
+		// But for now, let's just stick it in a no-image button, which we can use as a text box.
+		// Essentially this is just a piece of demo config right now, but this is the place from which we can wire speech into Cogchar.
+		setControl(12, PushyButton.makeButton("I think you said \"" + speech + "\"", "", 12))
+	  }
+	  
 	  def triggerCogcharAction(id: Int) = {
-		val success = LiftAmbassador.triggerAction(controlDefMap(id).action)
+		var success = false;
+		if (controlDefMap.contains(id)) {success = LiftAmbassador.triggerAction(controlDefMap(id).action)}
 		// This is very much a hack to show the Scene Running page if a scene is activated - we'll want to replace this as
 		// we work in more general responses to action trigger results
 		val startSceneRunningPage = (success) && (controlDefMap(id).action.startsWith("sceneTrig"))
@@ -143,6 +152,18 @@ package org.friendularity.bundle.lifter {
 		SceneInfo.infoImage = controlDefMap(id).resource
 		SceneInfo.infoText = controlDefMap(id).text
 	  }
+	  
+	  /* Disabling until we figure out some strange concurrency issues haunting our comet actors
+	   def requestSpeech {
+	   // Pretty ugly, but for now we just send this 201 ID which triggers SpeechRequestActor. 
+	   // Soon I'd like to roll in a cleaner, more transparently RDF accessible way to configure this
+	   // Note though that a speech request button can currently be declared in RDF by giving it an ID of 201. (Due to code in PushyButton)
+	   this.synchronized {
+	   updateInfo = 201 
+	   updateListeners()
+	   }
+	   }
+	   */
 	  
 	  var theMessenger: CogcharMessenger = null
 	
