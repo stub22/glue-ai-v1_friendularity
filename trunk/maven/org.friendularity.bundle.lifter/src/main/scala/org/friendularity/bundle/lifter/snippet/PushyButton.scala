@@ -33,12 +33,18 @@ package org.friendularity.bundle.lifter {
 			println("Button " + buttonId + " was pressed at " + now)
 
 			buttonId match {
+			  // These 99 and 101 IDs are mainly for testing and will likely disappear soon
 			  case 99 => {
 				  PageCommander.initFromCogcharRDF
 				}
 			  case 101 => {
 				  JsCmds.RedirectTo("/")
-				}	
+				}
+				// A special ID which results in an request for Android speech.
+				// Yes, a nasty hack. I'd like to get rid of "special case" handling of these pushy button actions soon
+			  case 201 => { 
+				  //PageCommander.requestSpeech // Disabled until we figure out some comet issues causing problems with this
+				}
 			  case _ => {
 				  println("Starting action mapped to button " + buttonId)
 				  val success = PageCommander.triggerCogcharAction(buttonId)
