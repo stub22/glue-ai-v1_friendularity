@@ -15,8 +15,9 @@
 	<packaging>bundle</packaging>
 
 	<name>${project.artifactId} - OSGi</name>
-
-
+	<properties>
+		<appdapter.version>1.0.8-SNAPSHOT</appdapter.version>
+	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.felix</groupId>
@@ -65,15 +66,28 @@
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
-			<groupId>net.sf.opencsv</groupId>
-			<artifactId>opencsv</artifactId>
-			<version>2.3</version>
-		</dependency>
+			<groupId>org.appdapter</groupId>
+			<artifactId>org.appdapter.bundle.core</artifactId>
+			<version>${appdapter.version}</version>
+		</dependency>		
 		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>org.friendularity.bundle.lifter</artifactId>
-			<version>${project.version}</version>
+			<groupId>org.appdapter</groupId>
+			<artifactId>ext.bundle.jena_all_264</artifactId>
+			<type>jar</type>
+			<version>${appdapter.version}</version>
 		</dependency>
+		<!-- We want the same deps as CCRK, but not the full PUMA boot peformed by CCRK activator.
+		-->
+       <dependency>
+            <groupId>org.cogchar</groupId>
+            <artifactId>org.cogchar.bundle.app.puma</artifactId>
+            <version>${cogchar.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.cogchar</groupId>
+            <artifactId>org.cogchar.bundle.render.resources</artifactId>
+            <version>${cogchar.version}</version>
+        </dependency>		
 	</dependencies>
 
 	<build>
@@ -236,6 +250,8 @@
 									<entry key="felix.auto.deploy.action" value="uninstall,install,update,start"/>
 									<entry key="org.osgi.framework.storage" value="${project.build.directory}${file.separator}felix-cache"/>
 									<entry key="org.osgi.framework.bootdelegation" value="*"/>
+									<!-- Allow sun.misc package to be used by LWJGL -->
+									<entry key="org.osgi.framework.system.packages.extra" value="sun.misc" />									
 								</propertyfile>
 								<makeurl property="run.properties.url" file="${project.build.directory}/run.properties"/>
 								<java fork="true" jar="${maven.dependency.org.apache.felix.org.apache.felix.main.jar.path}">
