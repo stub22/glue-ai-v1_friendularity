@@ -18,7 +18,7 @@
         <dependency>
             <groupId>com.hrkind</groupId>
             <artifactId>com.hrkind.content.preview</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.0.2-SNAPSHOT</version>
         </dependency>		
         <dependency>
             <groupId>org.robokind</groupId>
