@@ -20,7 +20,7 @@ package org.friendularity.bundle.lifter {
 	import scala.collection.JavaConverters._
 	import org.cogchar.platform.trigger.DummyBinding
 	
-	object PageCommander extends LiftActor with ListenerManager  {
+	object PageCommander extends LiftActor with ListenerManager with Logger  {
 	  private var controlDefMap = new scala.collection.mutable.HashMap[Int, ControlConfig]
 	  private var controlsMap = new scala.collection.mutable.HashMap[Int, NodeSeq]
 	  
@@ -45,7 +45,11 @@ package org.friendularity.bundle.lifter {
 		nodeOut
 	  }
 	  
-	  def initFromCogcharRDF { // This could potentially get called more than once but shouldn't usually - may want to add check for that, but shouldn't really hurt anything if it happens
+	  def initFromCogcharRDF {
+		
+		controlDefMap = new scala.collection.mutable.HashMap[Int, ControlConfig]
+		controlsMap = new scala.collection.mutable.HashMap[Int, NodeSeq]
+		
 		val controlList: java.util.ArrayList[ControlConfig] = LiftAmbassador.getControls()
 		val controlSet = controlList.asScala.toSet
 		controlSet.foreach(controlDef => {
@@ -107,6 +111,7 @@ package org.friendularity.bundle.lifter {
 	  }
 					  
 	  def setControl(slotNum: Int, slotHtml: NodeSeq) {
+		//info("Updating listeners in setControl: Control Slot #" + slotNum)
 		controlsMap(slotNum) = slotHtml 
 		updateInfo = slotNum
 		updateListeners()
@@ -119,9 +124,10 @@ package org.friendularity.bundle.lifter {
 	  def controlActionMapper(formId:Int, subControl:Int) {
 		formId match {
 		  case 5 => {subControl match {
-				case 0 => setControl(6, PushyButton.makeButton("A button", "buttonred", 50))
+				case 0 => setControl(6, PushyButton.makeButton("A button (which triggers speech input in Android Proctor)", "buttonred", 201))
 				case 1 => setControl(6, TextForm.makeTextForm("A text box", 6))
 				case 2 => setControl(6, SelectBoxes.makeSelectBoxes("Checkboxes", List("an option", "and another"), 6))
+				  //case 2 => setControl(6, PushyButton.makeButton("Change controls!", "buttonred", 202))
 				case 3 => setControl(6, RadioButtons.makeRadioButtons("Radio buttons", List("Radio Option 1", "Radio Option 2"), 6))
 				case _ =>
 			  }}
@@ -153,17 +159,21 @@ package org.friendularity.bundle.lifter {
 		SceneInfo.infoText = controlDefMap(id).text
 	  }
 	  
-	  /* Disabling until we figure out some strange concurrency issues haunting our comet actors
-	   def requestSpeech {
-	   // Pretty ugly, but for now we just send this 201 ID which triggers SpeechRequestActor. 
-	   // Soon I'd like to roll in a cleaner, more transparently RDF accessible way to configure this
-	   // Note though that a speech request button can currently be declared in RDF by giving it an ID of 201. (Due to code in PushyButton)
-	   this.synchronized {
-	   updateInfo = 201 
-	   updateListeners()
-	   }
-	   }
-	   */
+	  def requestSpeech {
+		// Pretty ugly, but for now we just send this 201 ID which triggers SpeechRequestActor. 
+		// Soon I'd like to roll in a cleaner, more transparently RDF accessible way to configure this
+		// Note though that a speech request button can currently be declared in RDF by giving it an ID of 201. (Due to code in PushyButton)
+		//info("Updating listeners in requestSpeech")
+		updateInfo = 201
+		updateListeners()
+	  }
+	   
+	  /*
+	  // Not working yet on Cog Char side
+	  def reconfigureControlsFromRdf(rdfFile:String) = {
+		LiftAmbassador.activateControlsFromRdf(rdfFile)
+	  }
+	  */
 	  
 	  var theMessenger: CogcharMessenger = null
 	

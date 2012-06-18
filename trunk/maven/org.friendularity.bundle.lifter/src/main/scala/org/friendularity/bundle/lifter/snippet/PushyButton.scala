@@ -2,16 +2,17 @@ package org.friendularity.bundle.lifter {
   package snippet {
 
 	import scala.xml._	
-	import net.liftweb.http.js.JsCmd
-	import net.liftweb.http.js.JsCmds
-	import net.liftweb.util._
-	import Helpers._
+	import net.liftweb.common._
 	import net.liftweb.http._
 	import net.liftweb.http.SHtml._
+	import net.liftweb.util._
+	import net.liftweb.http.js.JsCmd
+	import net.liftweb.http.js.JsCmds
+	import Helpers._
 	import S._
 	import org.friendularity.bundle.lifter.model.PageCommander
 
-	object PushyButton {
+	object PushyButton extends Logger {
   
 	  // Button with no image - the NodeSeq here and in the overloaded method below may go to external resource files eventually
 	  def makeButton(buttonText:String, buttonClass:String, buttonId: Int): NodeSeq = {
@@ -30,7 +31,7 @@ package org.friendularity.bundle.lifter {
 	  def render = {
 		val buttonId: Int = (S.attr("buttonId") openOr "-1").toInt
 		"#pushbutton [onclick]" #> SHtml.ajaxInvoke (() => {
-			println("Button " + buttonId + " was pressed at " + now)
+			info("Button " + buttonId + " was pressed at " + now)
 
 			buttonId match {
 			  // These 99 and 101 IDs are mainly for testing and will likely disappear soon
@@ -43,10 +44,16 @@ package org.friendularity.bundle.lifter {
 				// A special ID which results in an request for Android speech.
 				// Yes, a nasty hack. I'd like to get rid of "special case" handling of these pushy button actions soon
 			  case 201 => { 
-				  //PageCommander.requestSpeech // Disabled until we figure out some comet issues causing problems with this
+				  PageCommander.requestSpeech
 				}
+				/* This is for testing of controls reconfiguration once it's working in Cog Char
+				 case 202 => {
+				 PageCommander.reconfigureControlsFromRdf("anotherLiftConfig.ttl")
+				 JsCmds.Noop
+				 }
+				 */
 			  case _ => {
-				  println("Starting action mapped to button " + buttonId)
+				  info("Starting action mapped to button " + buttonId)
 				  val success = PageCommander.triggerCogcharAction(buttonId)
 				  if (success) {JsCmds.RedirectTo("cogchar/scene_running.html")}
 				}
