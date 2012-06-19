@@ -24,6 +24,8 @@ package org.friendularity.bundle.lifter {
 	  private var controlDefMap = new scala.collection.mutable.HashMap[Int, ControlConfig]
 	  private var controlsMap = new scala.collection.mutable.HashMap[Int, NodeSeq]
 	  
+	  private var requestedPage: Option[String] = None // A variable to hold the path to a page requested by LiftAmbassador
+	  
 	  private var updateInfo: Int = 0
 	  
 	  def createUpdate = updateInfo
@@ -44,6 +46,13 @@ package org.friendularity.bundle.lifter {
 		}
 		nodeOut
 	  }
+	  
+	  def getRequestedPage = {
+		val pageToGet = requestedPage
+		requestedPage = None // Once the page is read, the request is complete, so we set this back to Nothing
+		pageToGet
+	  }
+	  
 	  
 	  def initFromCogcharRDF {
 		
@@ -127,7 +136,6 @@ package org.friendularity.bundle.lifter {
 				case 0 => setControl(6, PushyButton.makeButton("A button (which triggers speech input in Android Proctor)", "buttonred", 201))
 				case 1 => setControl(6, TextForm.makeTextForm("A text box", 6))
 				case 2 => setControl(6, SelectBoxes.makeSelectBoxes("Checkboxes", List("an option", "and another"), 6))
-				  //case 2 => setControl(6, PushyButton.makeButton("Change controls!", "buttonred", 202))
 				case 3 => setControl(6, RadioButtons.makeRadioButtons("Radio buttons", List("Radio Option 1", "Radio Option 2"), 6))
 				case _ =>
 			  }}
@@ -144,13 +152,12 @@ package org.friendularity.bundle.lifter {
 	  
 	  def triggerCogcharAction(id: Int) = {
 		var success = false;
-		if (controlDefMap.contains(id)) {success = LiftAmbassador.triggerAction(controlDefMap(id).action)}
-		// This is very much a hack to show the Scene Running page if a scene is activated - we'll want to replace this as
-		// we work in more general responses to action trigger results
-		val startSceneRunningPage = (success) && (controlDefMap(id).action.startsWith("sceneTrig"))
-		if (startSceneRunningPage) {setSceneRunningInfo(id)}
-		startSceneRunningPage // Tells PushyButtons to trigger the change to Scene Running Page - needs to happen there to fire JS
-		//success // now this would make sense
+		if (controlDefMap.contains(id)) {
+		  success = LiftAmbassador.triggerAction(controlDefMap(id).action)
+		  // In case this is a scene and Cog Char tells us to show the info page, be sure it has the required info 
+		  setSceneRunningInfo(id) // eventually this may not be necessary, and Cog Char may handle this part too}
+		}
+		success
 	  }
 	  
 	  def setSceneRunningInfo(id: Int) {
@@ -160,20 +167,16 @@ package org.friendularity.bundle.lifter {
 	  }
 	  
 	  def requestSpeech {
-		// Pretty ugly, but for now we just send this 201 ID which triggers SpeechRequestActor. 
-		// Soon I'd like to roll in a cleaner, more transparently RDF accessible way to configure this
-		// Note though that a speech request button can currently be declared in RDF by giving it an ID of 201. (Due to code in PushyButton)
+		// May not be the cleanest solution in the long run, but for now special requests like this are handled with special "control" IDs
+		// A speech request button can currently be declared in RDF by giving it an ID of 201. (Due to code in PushyButton)
 		//info("Updating listeners in requestSpeech")
 		updateInfo = 201
 		updateListeners()
 	  }
 	   
-	  /*
-	  // Not working yet on Cog Char side
 	  def reconfigureControlsFromRdf(rdfFile:String) = {
 		LiftAmbassador.activateControlsFromRdf(rdfFile)
 	  }
-	  */
 	  
 	  var theMessenger: CogcharMessenger = null
 	
@@ -187,6 +190,12 @@ package org.friendularity.bundle.lifter {
 	  class CogcharMessenger extends LiftAmbassador.LiftInterface {
 		def notifyConfigReady {
 		  initFromCogcharRDF
+		}
+		def loadPage(pagePath:String) {
+		  //info("Updating listeners in loadPage")
+		  requestedPage = Some(pagePath)
+		  updateInfo = 202 // Our "special control slot" for triggering page redirect
+		  updateListeners()
 		}
 	  }
 	
