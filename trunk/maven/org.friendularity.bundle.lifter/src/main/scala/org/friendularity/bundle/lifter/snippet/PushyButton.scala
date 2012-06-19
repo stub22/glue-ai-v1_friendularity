@@ -34,28 +34,19 @@ package org.friendularity.bundle.lifter {
 			info("Button " + buttonId + " was pressed at " + now)
 
 			buttonId match {
-			  // These 99 and 101 IDs are mainly for testing and will likely disappear soon
-			  case 99 => {
-				  PageCommander.initFromCogcharRDF
-				}
+			  // A special ID used by the SceneInfo screen
+			  // These "special cases" probably will eventually be worked out of here
 			  case 101 => {
 				  JsCmds.RedirectTo("/")
 				}
-				// A special ID which results in an request for Android speech.
-				// Yes, a nasty hack. I'd like to get rid of "special case" handling of these pushy button actions soon
+				// Another special ID which results in an request for Android speech.
 			  case 201 => { 
 				  PageCommander.requestSpeech
 				}
-				/* This is for testing of controls reconfiguration once it's working in Cog Char
-				 case 202 => {
-				 PageCommander.reconfigureControlsFromRdf("anotherLiftConfig.ttl")
-				 JsCmds.Noop
-				 }
-				 */
 			  case _ => {
 				  info("Starting action mapped to button " + buttonId)
-				  val success = PageCommander.triggerCogcharAction(buttonId)
-				  if (success) {JsCmds.RedirectTo("cogchar/scene_running.html")}
+				  PageCommander.triggerCogcharAction(buttonId)
+				  JsCmds.Noop
 				}
 			}
 		  })
