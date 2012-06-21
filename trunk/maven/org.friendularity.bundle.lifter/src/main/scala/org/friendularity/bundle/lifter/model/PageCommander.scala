@@ -184,10 +184,9 @@ package org.friendularity.bundle.lifter {
 		  val actionToken = desiredAction.stripPrefix(stringToStrip)
 		  actionToken match {
 			case COGBOT_TOKEN => {
-				if (cogbotDisplayers != Nil) { // Likely this check is not necessary - foreach just won't execute anything if list is Nil, right?
+				if (cogbotDisplayers != Nil) { // Likely this check is not necessary - foreach just won't execute if list is Nil, right?
 				  val response = LiftAmbassador.getCogbotResponse(text)
-				  //val cleanedResponse = cleanCogbotResponse(response) //... coming soon
-				  val cleanedResponse = response
+				  val cleanedResponse = response.replaceAll("<.*>", ""); // For now, things are more readable if we just discard embedded XML
 				  cogbotDisplayers.foreach(slotNum => setControl(slotNum, PushyButton.makeButton("Cogbot said \"" + cleanedResponse + "\"", "", slotNum)))
 				}
 			  }
