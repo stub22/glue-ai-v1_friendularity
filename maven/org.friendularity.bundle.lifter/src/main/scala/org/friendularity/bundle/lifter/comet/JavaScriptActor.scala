@@ -27,7 +27,7 @@ package org.friendularity.bundle.lifter {
 	  override def lowPriority : PartialFunction[Any, Unit] = {
 		case 201 => { // A special "slot" code for speech request. Sort of a workaround, but works OK for now.
 			partialUpdate(new JsCmd { 
-				def toJsCmd = "Android.getSpeechInput();"
+				def toJsCmd = "try{Android.getSpeechInput();} catch(err) {}" // What an idea! Put our oddball JS method in a try block, so non-Proctor browsers are happy!
 			  })
 		  }
 		case 202 => { // A special "slot" code for page redirect.

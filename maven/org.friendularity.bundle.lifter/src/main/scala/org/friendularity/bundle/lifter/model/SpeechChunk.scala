@@ -60,7 +60,7 @@ package org.friendularity.bundle.lifter {
 	  // Simple answer for now: just load its text into lastSpeech and let PageCommander know
 	  def setContents(chunk: SpeechChunk): SpeechChunk = {
 		lastSpeech = chunk.speechText
-		PageCommander.notifyNewSpeech(lastSpeech)
+		PageCommander.textInputMapper(201, lastSpeech); // Let PageCommander know about the text so it can figure out what to do with it, using our stinkin' special speech ID as usual
 		chunk // ... and return the SpeechChunk we just got as a "read back", which gets cast back to JSON in SpeechRestListener using toJson above
 	  }
   
