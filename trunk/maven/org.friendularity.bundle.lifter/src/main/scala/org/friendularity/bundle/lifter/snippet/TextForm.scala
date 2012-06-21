@@ -16,11 +16,11 @@ package org.friendularity.bundle.lifter {
 	import S._
 	
 	object TextForm {
-	  val defaultText = "We can have a default text, or not!" // We can add bits to define this in XML if we want
-	  val responseText = "Thanks for the input!" // We can add bits to define this in XML if we want
+	  val defaultText = "" // We can add bits to define this in XML if we want
+	  //val responseText = "Thanks for the input!" // We can add bits to define this in XML if we want - will probably do so soon, but disabling for "operational" demo right now
 	  val afterEntryText = "" // Right now we just clear text after input; we can do whatever we want
 	  val submitLabel = "Submit" // We can add bits to define this in XML if we want
-	  val textBoxRows = 5;
+	  val textBoxRows = 7;
 	  
 	  val labelIdPrefix = "textformlabel"
 	  val textBoxIdPrefix = "text_in"
@@ -49,7 +49,9 @@ package org.friendularity.bundle.lifter {
    
 		def process(): JsCmd = {
 		  println("Input text for form #" + formId + ": " + text)
-		  SetHtml(textFormInstanceLabel, Text(TextForm.responseText)) & SetValById(textBoxInstanceLabel, TextForm.afterEntryText)
+		  PageCommander.textInputMapper(formId, text); // Let PageCommander know about the text so it can figure out what to do with it
+		  //SetHtml(textFormInstanceLabel, Text(TextForm.responseText)) & // for now, this is disabled for the "operational" demo requirements
+		  SetValById(textBoxInstanceLabel, TextForm.afterEntryText)
 		}
 		
 		formId = (S.attr("formId") openOr "-1").toInt

@@ -39,8 +39,8 @@ package org.friendularity.bundle.lifter {
 			  case 101 => {
 				  JsCmds.RedirectTo("/")
 				}
-				// Another special ID which results in an request for Android speech.
-			  case 201 => { 
+				// Another special ID range which results in an request for Android speech.
+			  case x if 201 to 210 contains x => { 
 				  PageCommander.requestSpeech
 				}
 			  case _ => {
