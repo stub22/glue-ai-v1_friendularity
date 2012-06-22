@@ -36,7 +36,14 @@ package org.friendularity.bundle.lifter {
 			  case Some(page) => partialUpdate(JsCmds.RedirectTo(page))
 			  case None => JsCmds.Noop
 			}  
-		  }	
+		  }
+		case 203 => { // This code results in a request for speech output on Android
+			info("Sending speech to Android...")
+			val text = PageCommander.getOutputSpeech
+			partialUpdate(new JsCmd { 
+				def toJsCmd = "try{Android.outputSpeech(\"" + text + "\");} catch(err) {}"
+			  })
+		}
 		case _ => // Do nothing for other IDs
 	  }
 	}
