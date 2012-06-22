@@ -19,6 +19,7 @@ package org.friendularity.bundle.lifter {
 	import org.cogchar.bind.lift._
 	import scala.collection.JavaConverters._
 	import org.cogchar.platform.trigger.DummyBinding
+	import java.util.concurrent.{Executors, TimeUnit}
 	
 	object PageCommander extends LiftActor with ListenerManager with Logger  {
 	  // configNames doesn't seem to work, but loading directly from LiftConfigNames does. Not sure if that's because of static fields in an instance or some Java-Scala interop subtlety
@@ -34,6 +35,7 @@ package org.friendularity.bundle.lifter {
 	  private val speechDisplayers = new scala.collection.mutable.ArrayBuffer[Int]
 	  
 	  private var requestedPage: Option[String] = None // A variable to hold the path to a page requested by LiftAmbassador
+	  private var outputSpeech: String = "" // Holds speech we want Android to say
 	  
 	  private var updateInfo: Int = 0
 	  
@@ -188,6 +190,16 @@ package org.friendularity.bundle.lifter {
 				  val response = LiftAmbassador.getCogbotResponse(text)
 				  val cleanedResponse = response.replaceAll("<.*>", ""); // For now, things are more readable if we just discard embedded XML
 				  cogbotDisplayers.foreach(slotNum => setControl(slotNum, PushyButton.makeButton("Cogbot said \"" + cleanedResponse + "\"", "", slotNum)))
+				  //outputSpeech(cleanedResponse) // For the moment, let's try hardcoding for Cogbot speech output via Android!
+				  // Or, well, for some reason it won't work as a response to speech input if it happens too fast.
+				  // Not sure if it's a problem with the actor here or JavaScript in the Android app.
+				  // But if we wait a bit, it will work:
+				  lazy val sched = Executors.newSingleThreadScheduledExecutor();
+				  sched.schedule(new Runnable {
+					  def run = {
+						outputSpeech(cleanedResponse) 
+					  }
+					}, 3500, TimeUnit.MILLISECONDS);
 				}
 			  }
 			case _ => warn("No action found in textInputMapper for token " + actionToken)
@@ -219,6 +231,16 @@ package org.friendularity.bundle.lifter {
 		//info("Updating listeners in requestSpeech")
 		updateInfo = 201 // Just to be confusing, this is a different special "ID" - this is actually a slotNum. Death to separate IDs!!
 		updateListeners()
+	  }
+	  
+	  def outputSpeech(text: String) {
+		outputSpeech = text
+		updateInfo = 203 // To tell JavaScriptActor we want Android devices to say the text
+		updateListeners()
+	  }
+	  
+	  def getOutputSpeech = {
+		outputSpeech
 	  }
 	   
 	  def reconfigureControlsFromRdf(rdfFile:String) = {
