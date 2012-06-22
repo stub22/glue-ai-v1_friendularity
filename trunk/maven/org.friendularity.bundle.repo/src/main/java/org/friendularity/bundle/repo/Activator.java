@@ -18,6 +18,7 @@ public class Activator implements BundleActivator {
 		ClassLoader resourceCL = org.cogchar.bundle.render.resources.ResourceBundleActivator.class.getClassLoader();
 		PumaWebMapper pwm = new PumaWebMapper();
 		pwm.connectWebStuff(resourceCL);
+		pwm.connectLiftInterface();
 	}
 
 }
