@@ -16,9 +16,11 @@ public class Activator implements BundleActivator {
 	
 	public void initWebapp () { 
 		ClassLoader resourceCL = org.cogchar.bundle.render.resources.ResourceBundleActivator.class.getClassLoader();
+		ClassLoader hrkContentCL = com.hrkind.content.preview.PreviewContentBundleActivator.class.getClassLoader();
 		PumaWebMapper pwm = new PumaWebMapper();
 		pwm.connectWebStuff(resourceCL);
 		pwm.connectLiftInterface();
+		pwm.connectHrkindContent(hrkContentCL);
 	}
 
 }

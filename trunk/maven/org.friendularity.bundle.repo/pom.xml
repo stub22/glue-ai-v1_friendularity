@@ -87,7 +87,12 @@
             <groupId>org.cogchar</groupId>
             <artifactId>org.cogchar.bundle.render.resources</artifactId>
             <version>${cogchar.version}</version>
-        </dependency>		
+        </dependency>
+		<dependency>
+            <groupId>com.hrkind</groupId>
+            <artifactId>com.hrkind.content.preview</artifactId>
+            <version>1.0.2-SNAPSHOT</version>
+        </dependency>
 	</dependencies>
 
 	<build>
