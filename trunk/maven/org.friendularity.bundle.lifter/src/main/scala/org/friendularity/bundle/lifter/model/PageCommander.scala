@@ -33,9 +33,12 @@ package org.friendularity.bundle.lifter {
 	  // These guys hold lists of slotNums which will display text from Cogbot, or from Android speech input
 	  private val cogbotDisplayers = new scala.collection.mutable.ArrayBuffer[Int]
 	  private val speechDisplayers = new scala.collection.mutable.ArrayBuffer[Int]
+	  // ... and this holds lists of slotNums which should trigger Android spech input
+	  private val speechGetters = new scala.collection.mutable.ArrayBuffer[Int]
 	  
 	  private var requestedPage: Option[String] = None // A variable to hold the path to a page requested by LiftAmbassador
 	  private var outputSpeech: String = "" // Holds speech we want Android to say
+	  private var lastSpeechReqSlotNum = 0 // slotNum of last control which requested speech - used by JavaScriptActor to add identifying info to request
 	  
 	  private var updateInfo: Int = 0
 	  
@@ -65,9 +68,6 @@ package org.friendularity.bundle.lifter {
 	  }
 	  
 	  
-	  // IDs, slotNums - someday soon they will be one and the same! This will eliminate all sorts of possible gotchas.
-	  // For now we keep the distinction a little longer, because it enables a few workarounds.
-	  // A control will always render in the control slot corresponding to its slotNum. Its ID can be anything, but should be unique
 	  def initFromCogcharRDF {
 		
 		controlDefMap = new scala.collection.mutable.HashMap[Int, ControlConfig]
@@ -80,58 +80,58 @@ package org.friendularity.bundle.lifter {
 			try {
 			  slotNum = controlDef.myURI_Fragment.stripPrefix(LiftAmbassador.getControlPrefix()).toInt
 			} catch {
-			  case _: Any =>  // Implies malformed RDF for this control slot: just leave slotNum at -1
+			  case _: Any =>  warn("Unable to get valid slotNum from loaded control; URI fragment was " + controlDef.myURI_Fragment) // The control will still be loaded into slot -1; could "break" here but it's messy and unnecessary
 			}
 			var controlType: ControlType = NULLTYPE
 			ControlType.values foreach(testType => {
 				if (controlDef.controlType equals(testType.toString)) controlType = testType
 			  })
-			val id = controlDef.id
 			val action = controlDef.action
 			val text = controlDef.text
 			val style = controlDef.style
 			val resource = controlDef.resource
-			controlDefMap(id) = controlDef; //May or may not turn out to be the best approach long run - saving the control def for actions binding and transfer of info to "Scene Playing" page
+			
 			
 			controlType match {
 			  case ControlType.PUSHYBUTTON => {
 				  if (resource.length >= 5) { // needs to be at least this long to have a valid image filename
-					setControl(slotNum, PushyButton.makeButton(text, style, resource, id))
+					setControl(slotNum, PushyButton.makeButton(text, style, resource, slotNum))
 				  } else {
-					setControl(slotNum, PushyButton.makeButton(text, style, id)) // If no image, use no image constructor
+					setControl(slotNum, PushyButton.makeButton(text, style, slotNum)) // If no image, use no image constructor
 				  }
 				  // Check for "local" actions which PageCommander needs to handle, such as text display
-				  checkLocalActions(slotNum, action)
+				  controlDef.action = checkLocalActions(slotNum, action) // this method will modify action as necessary according to prefixes
 				}
 			  case ControlType.TEXTINPUT => {
-				  setControl(slotNum, TextForm.makeTextForm(text, id))
+				  setControl(slotNum, TextForm.makeTextForm(text, slotNum))
 				}
 			  case ControlType.SELECTBOXES => {
 				  // From the RDF "text" value we assume a comma separated list with the first item the title and the rest checkbox labels
 				  val textItems = List.fromArray(text.split(","))
 				  val titleText = textItems(0)
 				  val labelItems = textItems.tail
-				  setControl(slotNum, SelectBoxes.makeSelectBoxes(titleText, labelItems, id))
+				  setControl(slotNum, SelectBoxes.makeSelectBoxes(titleText, labelItems, slotNum))
 				}
 			  case ControlType.RADIOBUTTONS => {
 				  // From the RDF "text" value we assume a comma separated list with the first item the title and the rest radiobutton labels
 				  val textItems = List.fromArray(text.split(","))
 				  val titleText = textItems(0)
 				  val labelItems = textItems.tail
-				  setControl(slotNum, RadioButtons.makeRadioButtons(titleText, labelItems, id))
+				  setControl(slotNum, RadioButtons.makeRadioButtons(titleText, labelItems, slotNum))
 				}
 			  case ControlType.LISTBOX => {
 				  // From the RDF "text" value we assume a comma separated list with the first item the title and the rest radiobutton labels
 				  val textItems = List.fromArray(text.split(","))
 				  val titleText = textItems(0)
 				  val labelItems = textItems.tail
-				  setControl(slotNum, ListBox.makeListBox(titleText, labelItems, id))
+				  setControl(slotNum, ListBox.makeListBox(titleText, labelItems, slotNum))
 				}
 			  case ControlType.VIDEOBOX => {
 				  setControl(slotNum, VideoBox.makeBox(resource, true)) // Videos muted for now, but we can change and/or add config from RDF as desired
 				}
 			  case _ => setControl(slotNum, NodeSeq.Empty); // Blank the control if none of the above
 			}
+			controlDefMap(slotNum) = controlDef; //Save the controlDef for this slotNum for future reference
 		  })
 	  }
 					  
@@ -143,17 +143,24 @@ package org.friendularity.bundle.lifter {
 	  }
 	  
 	  // Check to see if any action requested requires PageCommander to do some local handling
-	  def checkLocalActions(slotNum:Int, action:String) {
+	  def checkLocalActions(slotNum:Int, action:String):String = {
+		var adjustedAction = action
 		val splitAction = action.split("_")
 		splitAction(0) match {
+		  case LiftConfigNames.partial_P_acquireSpeech => { // Special handling for this one! It wants us to acquire speech
+			  speechGetters += slotNum // Add this slotNum to the list of speechGetters!
+			  val replacedText = LiftConfigNames.partial_P_acquireSpeech + "_"
+			  adjustedAction = action.stripPrefix(replacedText) // Strip the getspeech prefix, now the remaining action can be processed as usual
+			}
 		  case LiftConfigNames.partial_P_showText => {splitAction(1) match {
 				case COGBOT_TOKEN => cogbotDisplayers += slotNum // Show Cogbot speech on this control? Add it to the cogbotDisplayers list.
 				case ANDROID_SPEECH_TOKEN => speechDisplayers += slotNum // Add to the speechDisplayers list if we want Android speech shown here
 				case _ => warn("checkLocalActions doesn't know what to do in order to display text with token " + splitAction(1))
 			  }
-			}									
+			}			  
 		  case _ => // looks like this action doesn't require anything to happen locally, so do nothing
 		}
+		adjustedAction // This is returned, in case action needed to be modified
 	  }
 
 	  
@@ -177,8 +184,7 @@ package org.friendularity.bundle.lifter {
 	  // Similarly, a central place to handle text input.
 	  def textInputMapper(formId:Int, text:String) {
 		val desiredAction = controlDefMap(formId).action
-		if ((formId > 200) && (formId < 211)) { // This special ID range tells us we are receiving speech from the SpeechRestListener
-		  // I have a dream, of a day soon when this special workaround ID for speech will finally be banished, and RDF greatness will reign supreme! But not quite yet.
+		if (speechGetters contains formId) { // If it does, we are receiving speech from the SpeechChunk
 		  speechDisplayers.foreach(slotNum => setControl(slotNum, PushyButton.makeButton("I think you said \"" + text + "\"", "", slotNum)))
 		} // ... then continue to see if RDF tells us we need to do anything else with speech
 		if (desiredAction.startsWith(LiftConfigNames.partial_P_submitText)) { //... otherwise, we don't have a properly defined action for this text input
@@ -194,28 +200,37 @@ package org.friendularity.bundle.lifter {
 				  // It used to seem necessary to invoke an arbitrary delay first for this to work following Android speech recognition.
 				  // This seems fixed by using an alternate speech recognition technique in HRK Android Viewer. Leaving this for now for possible future debugging:
 				  /*
-				  lazy val sched = Executors.newSingleThreadScheduledExecutor();
-				  sched.schedule(new Runnable {
-					  def run = {
-						outputSpeech(cleanedResponse) 
-					  }
-					}, 5000, TimeUnit.MILLISECONDS);
-				  */
+				   lazy val sched = Executors.newSingleThreadScheduledExecutor();
+				   sched.schedule(new Runnable {
+				   def run = {
+				   outputSpeech(cleanedResponse) 
+				   }
+				   }, 5000, TimeUnit.MILLISECONDS);
+				   */
 				}
 			  }
 			case _ => warn("No action found in textInputMapper for token " + actionToken)
 		  }
 		} else {
-		  warn("Action in control id " + formId + " is not recognized by textInputMapper")
+		  warn("Action in control id " + formId + " is not recognized by textInputMapper: " + desiredAction)
 		}
 	  }
 	  
 	  def triggerCogcharAction(id: Int) = {
 		var success = false;
 		if (controlDefMap.contains(id)) {
-		  success = LiftAmbassador.triggerAction(controlDefMap(id).action)
-		  // In case this is a scene and Cog Char tells us to show the info page, be sure it has the required info 
-		  setSceneRunningInfo(id) // eventually this may not be necessary, and Cog Char may handle this part too}
+		  if (speechGetters contains id) { // A special case! This control is asking for speech acquisition.
+			updateInfo = 201 // Special "slotNum" to tell JavaScriptActor to request speech
+			lastSpeechReqSlotNum = id; // Set this field - JavaScriptActor will use it to attach requesting info to JS Call - allows multiple speech request controls
+			updateListeners()
+			success = true
+		  } else {	
+			success = LiftAmbassador.triggerAction(controlDefMap(id).action)
+			// In case this is a scene and Cog Char tells us to show the info page, be sure it has the required info 
+			setSceneRunningInfo(id) // eventually this may not be necessary, and Cog Char may handle this part too}
+		  }
+		} else {
+		  warn("Action requested, but no control def found for slot " + id)
 		}
 		success
 	  }
@@ -226,19 +241,13 @@ package org.friendularity.bundle.lifter {
 		SceneInfo.infoText = controlDefMap(id).text
 	  }
 	  
-	  def requestSpeech {
-		// May not be the cleanest solution in the long run, but for now special requests like this are handled with special "control" IDs
-		// A speech request button can currently be declared in RDF by giving it an ID of 201 to 210. (Due to code in PushyButton)
-		//info("Updating listeners in requestSpeech")
-		updateInfo = 201 // Just to be confusing, this is a different special "ID" - this is actually a slotNum. Death to separate IDs!!
-		updateListeners()
-	  }
-	  
 	  def outputSpeech(text: String) {
 		outputSpeech = text
 		updateInfo = 203 // To tell JavaScriptActor we want Android devices to say the text
 		updateListeners()
 	  }
+	  
+	  def getSpeechReqControl = lastSpeechReqSlotNum
 	  
 	  def getOutputSpeech = {
 		outputSpeech

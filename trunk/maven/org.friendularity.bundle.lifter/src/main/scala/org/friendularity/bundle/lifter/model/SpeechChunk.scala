@@ -7,9 +7,9 @@ package org.friendularity.bundle.lifter {
 	import common._
 	import json._
 
-// This is essentially the JSON template. Right now it's really simple: one string labeled speechText.
+// This is essentially the JSON template. Right now it contains a string labeled speechText and a requesting control id.
 // But if we wanted, we could, say, also receive the lower-confidence results which Google speech generates, or etc.
-	case class SpeechChunk(speechText: String)
+	case class SpeechChunk(speechText: String, requestingId: Int)
 
 // Right now this model is very basic: it just sits on the last piece of text sent, 
 // plus it notifies PageCommander when speech is PUT, so PageCommander can do something with it if it chooses.	
@@ -39,9 +39,9 @@ package org.friendularity.bundle.lifter {
 	   * have overloaded unapply methods
 	   * (so says Simply Lift, not sure I understand the need for this bit which loads SpeechChunk's speechText value into an Option)
 	   */
-	  def unapply(in: Any): Option[(String)] = {
+	  def unapply(in: Any): Option[(String, Int)] = {
 		in match {
-		  case i: SpeechChunk => Some((i.speechText))
+		  case i: SpeechChunk => Some((i.speechText, i.requestingId))
 		  case _ => None
 		}
 	  }
@@ -60,7 +60,7 @@ package org.friendularity.bundle.lifter {
 	  // Simple answer for now: just load its text into lastSpeech and let PageCommander know
 	  def setContents(chunk: SpeechChunk): SpeechChunk = {
 		lastSpeech = chunk.speechText
-		PageCommander.textInputMapper(201, lastSpeech); // Let PageCommander know about the text so it can figure out what to do with it, using our stinkin' special speech ID as usual
+		PageCommander.textInputMapper(chunk.requestingId, lastSpeech); // Let PageCommander know about the text so it can figure out what to do with it, using our stinkin' special speech ID as usual
 		chunk // ... and return the SpeechChunk we just got as a "read back", which gets cast back to JSON in SpeechRestListener using toJson above
 	  }
   
