@@ -7,6 +7,7 @@ import _root_.net.liftweb.http.provider._
 import _root_.net.liftweb.mapper._
 import _root_.net.liftweb.sitemap._
 import _root_.net.liftweb.sitemap.Loc._
+import _root_.net.liftweb.actor.ActorLogger
 import Helpers._
 //import _root_.net.liftweb.mapper.{DB, ConnectionManager, Schemifier, DefaultConnectionIdentifier, StandardDBVendor}
 import _root_.java.sql.{Connection, DriverManager}
@@ -100,6 +101,12 @@ class Boot {
 	
 	// Add the listener for JSON speech to the dispatch table
 	LiftRules.statelessDispatchTable.append(SpeechRestListener)
+	
+	// Might this help our multiple Comet updates and Ajax weirdness?
+	// See http://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=7&ved=0CG4QFjAG&url=http%3A%2F%2Fgroups.google.com%2Fgroup%2Fliftweb%2Fbrowse_thread%2Fthread%2F88fb4250febd412d&ei=UbXmT8bOCoyE2QXz9o3dCQ&usg=AFQjCNHq3h0-gDVRxzYKcZGbgMZuxkTUkw
+	//LiftRules.ajaxRetryCount = Full(0) // Interesting. Seems to make things not update sometimes. We have a lot of long polling going on and not many HTTP connections, so things may need to retry... core of the problems may lie in this somehow
+	//
+	LiftRules.cometLogger = ActorLogger // Kind of a WAG as to how to use this, just trying it out. Actually seems to perhaps be making Comet behave better, but too early to say (and why would we expect it to?).
 	
 	//println("Boot.scala got to end!")
   }
