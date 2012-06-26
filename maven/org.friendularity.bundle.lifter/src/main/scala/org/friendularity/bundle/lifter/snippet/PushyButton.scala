@@ -36,12 +36,9 @@ package org.friendularity.bundle.lifter {
 			buttonId match {
 			  // A special ID used by the SceneInfo screen
 			  // These "special cases" probably will eventually be worked out of here
+			  // In fact 101 is the last one standing, going away soon
 			  case 101 => {
 				  JsCmds.RedirectTo("/")
-				}
-				// Another special ID range which results in an request for Android speech.
-			  case x if 201 to 210 contains x => { 
-				  PageCommander.requestSpeech
 				}
 			  case _ => {
 				  info("Starting action mapped to button " + buttonId)
