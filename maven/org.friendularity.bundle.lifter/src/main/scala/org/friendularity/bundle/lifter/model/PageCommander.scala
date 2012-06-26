@@ -78,7 +78,7 @@ package org.friendularity.bundle.lifter {
 		controlSet.foreach(controlDef => {
 			var slotNum:Int = -1
 			try {
-			  slotNum = controlDef.myURI_Fragment.stripPrefix(LiftAmbassador.getPrefix()).toInt
+			  slotNum = controlDef.myURI_Fragment.stripPrefix(LiftAmbassador.getControlPrefix()).toInt
 			} catch {
 			  case _: Any =>  // Implies malformed RDF for this control slot: just leave slotNum at -1
 			}
@@ -190,16 +190,17 @@ package org.friendularity.bundle.lifter {
 				  val response = LiftAmbassador.getCogbotResponse(text)
 				  val cleanedResponse = response.replaceAll("<.*>", ""); // For now, things are more readable if we just discard embedded XML
 				  cogbotDisplayers.foreach(slotNum => setControl(slotNum, PushyButton.makeButton("Cogbot said \"" + cleanedResponse + "\"", "", slotNum)))
-				  //outputSpeech(cleanedResponse) // For the moment, let's try hardcoding for Cogbot speech output via Android!
-				  // Or, well, for some reason it won't work as a response to speech input if it happens too fast.
-				  // Not sure if it's a problem with the actor here or JavaScript in the Android app.
-				  // But if we wait a bit, it will work:
+				  outputSpeech(cleanedResponse) // For the moment, let's try hardcoding for Cogbot speech output via Android!
+				  // It used to seem necessary to invoke an arbitrary delay first for this to work following Android speech recognition.
+				  // This seems fixed by using an alternate speech recognition technique in HRK Android Viewer. Leaving this for now for possible future debugging:
+				  /*
 				  lazy val sched = Executors.newSingleThreadScheduledExecutor();
 				  sched.schedule(new Runnable {
 					  def run = {
 						outputSpeech(cleanedResponse) 
 					  }
-					}, 3500, TimeUnit.MILLISECONDS);
+					}, 5000, TimeUnit.MILLISECONDS);
+				  */
 				}
 			  }
 			case _ => warn("No action found in textInputMapper for token " + actionToken)
