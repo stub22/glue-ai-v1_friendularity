@@ -14,18 +14,14 @@ package org.friendularity.bundle.lifter {
 
 	object PushyButton extends Logger {
   
-	  // Button with no image - the NodeSeq here and in the overloaded method below may go to external resource files eventually
-	  def makeButton(buttonText:String, buttonClass:String, buttonId: Int): NodeSeq = {
-		val buttonNum: String = buttonId.toString
-		<lift:PushyButton buttonId={buttonNum}><div id="pushbutton" class={buttonClass} onclick=""><br/>{buttonText}</div></lift:PushyButton>
-		//<lift:PushyButton buttonId={buttonNum}><div id="pushbutton" class={buttonClass} onclick=""><div style="display: table;"><div style="display: table-cell; vertical-align: middle;"><div>{buttonText}</div></div></div></div></lift:PushyButton> // Trying to center vertically: Method 1 in http://blog.themeforest.net/tutorials/vertical-centering-with-css/ - doesn't work!
-	  }
-
-	  //Button with image
 	  def makeButton(buttonText:String, buttonClass:String, buttonImage:String, buttonId: Int): NodeSeq = {
 		val buttonNum: String = buttonId.toString
 		val buttonPath: String = "/images/" + buttonImage // May want to move this prefix to central location
-		<lift:PushyButton buttonId={buttonNum}><div id="pushbutton" class={buttonClass} onclick=""><img src={buttonPath} width="50%"/><br/>{buttonText}</div></lift:PushyButton>
+		if (buttonImage.length >= 5) { // needs to be at least this long to have a valid image filename
+		  <lift:PushyButton buttonId={buttonNum}><div id="pushbutton" class={buttonClass} onclick=""><img src={buttonPath} width="50%"/><br/>{buttonText}</div></lift:PushyButton>
+		} else {
+		  <lift:PushyButton buttonId={buttonNum}><div id="pushbutton" class={buttonClass} onclick=""><br/>{buttonText}</div></lift:PushyButton>
+		}
 	  }
   
 	  def render = {
@@ -42,15 +38,13 @@ package org.friendularity.bundle.lifter {
 				}
 			  case _ => {
 				  info("Starting action mapped to button " + buttonId)
-				  PageCommander.triggerCogcharAction(buttonId)
+				  PageCommander.triggerAction(buttonId)
 				  JsCmds.Noop
 				}
 			}
 		  })
 	  } 
-	  
 	}
-
   }
 }
 
