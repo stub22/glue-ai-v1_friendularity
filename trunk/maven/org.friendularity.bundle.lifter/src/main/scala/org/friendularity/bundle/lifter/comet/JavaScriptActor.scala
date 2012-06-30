@@ -45,6 +45,18 @@ package org.friendularity.bundle.lifter {
 				def toJsCmd = "try{Android.outputSpeech(\"" + text + "\");} catch(err) {}"
 			  })
 		  }
+		case 204 => { // This code for starting continuous speech. These proliferating codes should go into named constants soon.
+			val slotNum = PageCommander.getSpeechReqControl
+			partialUpdate(new JsCmd { 
+				def toJsCmd = "try{Android.getContinuousSpeechInput(" + slotNum + ");} catch(err) {}"
+			  })
+		  }
+		case 205 => { // This code for stopping continuous speech. These proliferating codes should go into named constants soon.
+			val slotNum = PageCommander.getSpeechReqControl
+			partialUpdate(new JsCmd { 
+				def toJsCmd = "try{Android.stopContinuousSpeechInput();} catch(err) {}"
+			  })
+		  }
 		case _ => // Do nothing for other IDs
 	  }
 	}

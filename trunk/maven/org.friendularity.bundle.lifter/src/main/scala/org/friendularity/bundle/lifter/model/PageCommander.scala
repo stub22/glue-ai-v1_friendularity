@@ -31,12 +31,14 @@ package org.friendularity.bundle.lifter {
 	  
 	  private val controlDefMap = new scala.collection.mutable.HashMap[Int, ControlConfig]
 	  private val controlsMap = new scala.collection.mutable.HashMap[Int, NodeSeq]
+	  private val singularAction = new scala.collection.mutable.HashMap[Int, String] // Holds action for currently enabled state of a multi-state control, such as a TOGGLEBUTTON
 	  
 	  // These guys hold lists of slotNums which will display text from Cogbot, or from Android speech input
 	  private val cogbotDisplayers = new scala.collection.mutable.ArrayBuffer[Int]
 	  private val speechDisplayers = new scala.collection.mutable.ArrayBuffer[Int]
 	  // ... and this holds lists of slotNums which should trigger Android spech input
-	  private val speechGetters = new scala.collection.mutable.ArrayBuffer[Int]
+	  private val speechGetters = new scala.collection.mutable.ArrayBuffer[Int] // Will be factoring this out and handling more like continuous speech
+	  private val continuousSpeechGetters = new scala.collection.mutable.ArrayBuffer[Int] // ... but for now will need this too, what a mess! Need to clean up this logic.
 	  // ... this one for ToggleButtons
 	  private val toggleButtonMap =  new scala.collection.mutable.HashMap[Int, Boolean]
 	  
@@ -80,7 +82,9 @@ package org.friendularity.bundle.lifter {
 		cogbotDisplayers.clear
 		speechDisplayers.clear
 		speechGetters.clear
+		continuousSpeechGetters.clear
 		toggleButtonMap.clear
+		singularAction.clear
 		
 		val controlList: java.util.ArrayList[ControlConfig] = LiftAmbassador.getControls()
 		val controlSet = controlList.asScala.toSet
@@ -198,8 +202,17 @@ package org.friendularity.bundle.lifter {
 	  
 	  // Similarly, a central place to handle text input.
 	  def textInputMapper(formId:Int, text:String) {
-		val desiredAction = controlDefMap(formId).action
-		if (speechGetters contains formId) { // If it does, we are receiving speech from the SpeechChunk
+		var desiredAction = controlDefMap(formId).action
+		if (singularAction contains formId) {desiredAction = singularAction(formId)} // If this is a "multi-state" control, get the action corresponding to current state
+		// If we see an action with the getContinuousSpeech command, strip that off and see what's behind
+		if (desiredAction startsWith ActionStrings.getContinuousSpeech) {desiredAction = desiredAction.stripPrefix(ActionStrings.getContinuousSpeech + "_")}
+		//info("In textInputMapper; desiredAction is " + desiredAction) // TEST ONLY
+		/* This may work after refactoring - problem now is that acquireSpeech prefix has been stripped in initLocalActions
+		 if (desiredAction.startsWith(LiftConfigNames.partial_P_acquireSpeech) || desiredAction.startsWith(ActionStrings.getContinuousSpeech)) { // If it does, we are receiving speech from the SpeechChunk
+		 speechDisplayers.foreach(slotNum => setControl(slotNum, PushyButton.makeButton("I think you said \"" + text + "\"", controlDefMap(slotNum).style, "", slotNum)))
+		 } // ... then continue to see if RDF tells us we need to do anything else with speech
+		 */
+		if ((speechGetters contains formId) || (continuousSpeechGetters contains formId)) { // If it does, we are receiving speech from the SpeechChunk
 		  speechDisplayers.foreach(slotNum => setControl(slotNum, PushyButton.makeButton("I think you said \"" + text + "\"", controlDefMap(slotNum).style, "", slotNum)))
 		} // ... then continue to see if RDF tells us we need to do anything else with speech
 		if (desiredAction.startsWith(LiftConfigNames.partial_P_submitText)) { //... otherwise, we don't have a properly defined action for this text input
@@ -231,24 +244,28 @@ package org.friendularity.bundle.lifter {
 		}
 	  }
 	  
-	  // Perform action according to slotNum - appropriate for regular PushyButtons
+	  // Perform action according to slotNum 
 	  def triggerAction(id: Int): Boolean  = {
-		var success = false;
+		var success = false
 		if (toggleButtonMap contains id) {success = toggleButton(id)}
-		else if (controlDefMap.contains(id)) {success = triggerAction(controlDefMap(id).action, id)}
-		else {warn("Action requested, but no control def found for slot " + id)}
+		else {success = continueTriggering(id)}
 		success
 	  }
 	  
-	  // Perform action by string - used by triggerAction(Int) and by ToggleButtons. Checks for local actions according to both slotNum and action string
-	  def triggerAction(action: String, slotNum: Int): Boolean = {
+	  // Another "segment" of the triggering operation, which we jump back into from toggleButton
+	  def continueTriggering(id: Int): Boolean = {
 		var success = false
-		if (performLocalActions(action, slotNum)) success = true // Local action was performed! We're done.
-		else {
-		  success = LiftAmbassador.triggerAction(action)
-		  // In case this is a scene and Cog Char tells us to show the info page, be sure it has the required info 
-		  setSceneRunningInfo(slotNum) // eventually this may not be necessary, and Cog Char may handle this part too}
-		}
+		if (controlDefMap.contains(id)) {
+		  if (performLocalActions(id)) success = true // Local action was performed! We're done.
+		  else {
+			var action = controlDefMap(id).action
+			if (singularAction contains id) {action = singularAction(id)} // If this is a "multi-state" control, get the action corresponding to current state
+			//info("In continueTriggering, acting on action " + action) // TEST ONLY
+			success = LiftAmbassador.triggerAction(action)
+			// In case this is a scene and Cog Char tells us to show the info page, be sure it has the required info 
+			setSceneRunningInfo(id) // eventually this may not be necessary, and Cog Char may handle this part too}
+		  }
+		} else {warn("Action requested, but no control def found for slot " + id)}
 		success
 	  }
 	  
@@ -259,7 +276,10 @@ package org.friendularity.bundle.lifter {
 	  }
 	  
 	  // Perform any button actions handled locally, and return true if we find one
-	  def performLocalActions(action: String, slotNum: Int) = {
+	  def performLocalActions(slotNum: Int) = {
+		var action = controlDefMap(slotNum).action
+		if (singularAction contains slotNum) {action = singularAction(slotNum)} // If this is a "multi-state" control, get the action corresponding to current state
+		//info("In performLocalActions, acting on action " + action) // TEST ONLY
 		var success = false;
 		if (speechGetters contains slotNum) { // Check to see if this control handles speech input
 		  updateInfo = 201 // Special "slotNum" to tell JavaScriptActor to request speech
@@ -273,6 +293,14 @@ package org.friendularity.bundle.lifter {
 				case ENABLE_TOKEN => cogbotSpeaks = true; success = true
 				case DISABLE_TOKEN => cogbotSpeaks = false; success = true
 				case _ => // No match, just exit (success=false)
+			  }
+			case ActionStrings.getContinuousSpeech => {
+				requestContinuousSpeech(slotNum, true)
+				continuousSpeechGetters += slotNum;
+			  }
+			case ActionStrings.stopContinuousSpeech => {
+				requestContinuousSpeech(slotNum, false)
+				continuousSpeechGetters -= slotNum;
 			  }
 			case _ => // No match, just exit (success=false)
 		  }
@@ -291,7 +319,8 @@ package org.friendularity.bundle.lifter {
 			if (toggleButtonMap contains slotNum) {
 			  if (toggleButtonMap(slotNum)) {
 				// Button is "selected" -- change back to "default" and perform action
-				success = triggerAction(actionItems(0), slotNum)
+				singularAction(slotNum) = actionItems(1)
+				success = continueTriggering(slotNum)
 				setControl(slotNum, PushyButton.makeButton(textItems(0), styleItems(0), resourceItems(0), slotNum))
 				toggleButtonMap(slotNum) = false
 			  } else {
@@ -301,7 +330,8 @@ package org.friendularity.bundle.lifter {
 				if (actionItems.length < 2) actionItems ::= actionItems(0)
 				if (styleItems.length < 2) styleItems ::= styleItems(0)
 				if (resourceItems.length < 2) resourceItems ::= resourceItems(0)
-				success = triggerAction(actionItems(1), slotNum)
+				singularAction(slotNum) = actionItems(0)
+				success = continueTriggering(slotNum)
 				setControl(slotNum, PushyButton.makeButton(textItems(1), styleItems(1), resourceItems(1), slotNum))
 				toggleButtonMap(slotNum) = true
 			  }
@@ -321,6 +351,18 @@ package org.friendularity.bundle.lifter {
 		outputSpeech = text
 		updateInfo = 203 // To tell JavaScriptActor we want Android devices to say the text
 		updateListeners()
+	  }
+	  
+	  def requestContinuousSpeech(slotNum: Int, desired: Boolean) {
+		info("In requestContinuousSpeech, setting to " + desired)
+		if (desired) {
+		  lastSpeechReqSlotNum = slotNum
+		  updateInfo = 204 // To request start command - Needs to become a named constant soon
+		  updateListeners()
+		} else {
+		  updateInfo = 205 // To request stop command - Needs to become a named constant soon
+		  updateListeners()
+		}
 	  }
 	  
 	  def getSpeechReqControl = lastSpeechReqSlotNum
