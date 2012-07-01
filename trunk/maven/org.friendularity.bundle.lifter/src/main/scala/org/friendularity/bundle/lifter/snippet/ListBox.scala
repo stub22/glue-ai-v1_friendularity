@@ -54,7 +54,12 @@ package org.friendularity.bundle.lifter {
 		def process(result: String): JsCmd = {
 		  println("ListBox says option number " + result + " on formId " + formId + " is selected.")
 		  //SetHtml(listBoxInstanceTitle, Text(ListBox.responseText)) // We'll leave the title the same for the demo
-		  PageCommander.controlActionMapper(formId, result.toInt)
+		  val processThread = new Thread(new Runnable { // A new thread to call back into PageCommander to make sure we don't block Ajax handling
+			  def run() {
+				PageCommander.controlActionMapper(formId, result.toInt)
+			  }
+			})
+		  processThread.start
 		}
 
 		formId = (S.attr("formId") openOr "-1").toInt

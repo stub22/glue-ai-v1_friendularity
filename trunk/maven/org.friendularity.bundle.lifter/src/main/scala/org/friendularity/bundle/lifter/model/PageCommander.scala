@@ -29,18 +29,18 @@ package org.friendularity.bundle.lifter {
 	  private final val ENABLE_TOKEN = "enable" 
 	  private final val DISABLE_TOKEN = "disable"
 	  
-	  private val controlDefMap = new scala.collection.mutable.HashMap[Int, ControlConfig]
-	  private val controlsMap = new scala.collection.mutable.HashMap[Int, NodeSeq]
-	  private val singularAction = new scala.collection.mutable.HashMap[Int, String] // Holds action for currently enabled state of a multi-state control, such as a TOGGLEBUTTON
+	  private var controlDefMap = new scala.collection.mutable.HashMap[Int, ControlConfig]
+	  private var controlsMap = new scala.collection.mutable.HashMap[Int, NodeSeq]
+	  private var singularAction = new scala.collection.mutable.HashMap[Int, String] // Holds action for currently enabled state of a multi-state control, such as a TOGGLEBUTTON
 	  
 	  // These guys hold lists of slotNums which will display text from Cogbot, or from Android speech input
-	  private val cogbotDisplayers = new scala.collection.mutable.ArrayBuffer[Int]
-	  private val speechDisplayers = new scala.collection.mutable.ArrayBuffer[Int]
+	  private var cogbotDisplayers = new scala.collection.mutable.ArrayBuffer[Int]
+	  private var speechDisplayers = new scala.collection.mutable.ArrayBuffer[Int]
 	  // ... and this holds lists of slotNums which should trigger Android spech input
-	  private val speechGetters = new scala.collection.mutable.ArrayBuffer[Int] // Will be factoring this out and handling more like continuous speech
-	  private val continuousSpeechGetters = new scala.collection.mutable.ArrayBuffer[Int] // ... but for now will need this too, what a mess! Need to clean up this logic.
+	  private var speechGetters = new scala.collection.mutable.ArrayBuffer[Int] // Will be factoring this out and handling more like continuous speech
+	  private var continuousSpeechGetters = new scala.collection.mutable.ArrayBuffer[Int] // ... but for now will need this too, what a mess! Need to clean up this logic.
 	  // ... this one for ToggleButtons
-	  private val toggleButtonMap =  new scala.collection.mutable.HashMap[Int, Boolean]
+	  private var toggleButtonMap =  new scala.collection.mutable.HashMap[Int, Boolean]
 	  
 	  private var requestedPage: Option[String] = None // A variable to hold the path to a page requested by LiftAmbassador
 	  private var outputSpeech: String = "" // Holds speech we want Android to say

@@ -38,7 +38,12 @@ package org.friendularity.bundle.lifter {
 				}
 			  case _ => {
 				  info("Starting action mapped to button " + buttonId)
-				  PageCommander.triggerAction(buttonId)
+				  val processThread = new Thread(new Runnable { // A new thread to call back into PageCommander to make sure we don't block Ajax handling
+					  def run() {
+						PageCommander.triggerAction(buttonId)
+					  }
+					})
+				  processThread.start
 				  JsCmds.Noop
 				}
 			}

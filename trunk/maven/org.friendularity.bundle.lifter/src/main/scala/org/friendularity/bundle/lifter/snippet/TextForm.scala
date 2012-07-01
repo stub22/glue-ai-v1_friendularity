@@ -49,7 +49,12 @@ package org.friendularity.bundle.lifter {
    
 		def process(): JsCmd = {
 		  println("Input text for form #" + formId + ": " + text)
-		  PageCommander.textInputMapper(formId, text); // Let PageCommander know about the text so it can figure out what to do with it
+		  val processThread = new Thread(new Runnable { // A new thread to call back into PageCommander to make sure we don't block Ajax handling
+			  def run() {
+				PageCommander.textInputMapper(formId, text) // Let PageCommander know about the text so it can figure out what to do with it
+			  }
+			})
+		  processThread.start
 		  //SetHtml(textFormInstanceLabel, Text(TextForm.responseText)) & // for now, this is disabled for the "operational" demo requirements
 		  SetValById(textBoxInstanceLabel, TextForm.afterEntryText)
 		}
