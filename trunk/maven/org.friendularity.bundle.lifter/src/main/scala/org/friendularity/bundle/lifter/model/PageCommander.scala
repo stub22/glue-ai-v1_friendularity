@@ -22,13 +22,7 @@ package org.friendularity.bundle.lifter {
 	import java.util.concurrent.{Executors, TimeUnit}
 	
 	object PageCommander extends LiftActor with ListenerManager with Logger  {
-	  // configNames doesn't seem to work, but loading directly from LiftConfigNames does. Not sure if that's because of static fields in an instance or some Java-Scala interop subtlety
-	  //private lazy val configNames = LiftAmbassador.getConfigNames() // This loads in an instance of LiftConfigNames from Cogchar so we can look up various RDF action prefixes, etc.
-	  private final val COGBOT_TOKEN = "cogbot" // These token definitiions will probably not live here permanently
-	  private final val ANDROID_SPEECH_TOKEN = "androidSpeech" // for Android speech recognition
-	  private final val ENABLE_TOKEN = "enable" 
-	  private final val DISABLE_TOKEN = "disable"
-	  
+
 	  private var controlDefMap = new scala.collection.mutable.HashMap[Int, ControlConfig]
 	  private var controlsMap = new scala.collection.mutable.HashMap[Int, NodeSeq]
 	  private var singularAction = new scala.collection.mutable.HashMap[Int, String] // Holds action for currently enabled state of a multi-state control, such as a TOGGLEBUTTON
@@ -36,10 +30,7 @@ package org.friendularity.bundle.lifter {
 	  // These guys hold lists of slotNums which will display text from Cogbot, or from Android speech input
 	  private var cogbotDisplayers = new scala.collection.mutable.ArrayBuffer[Int]
 	  private var speechDisplayers = new scala.collection.mutable.ArrayBuffer[Int]
-	  // ... and this holds lists of slotNums which should trigger Android spech input
-	  private var speechGetters = new scala.collection.mutable.ArrayBuffer[Int] // Will be factoring this out and handling more like continuous speech
-	  private var continuousSpeechGetters = new scala.collection.mutable.ArrayBuffer[Int] // ... but for now will need this too, what a mess! Need to clean up this logic.
-	  // ... this one for ToggleButtons
+	  // ... this one for ToggleButton states
 	  private var toggleButtonMap =  new scala.collection.mutable.HashMap[Int, Boolean]
 	  
 	  private var requestedPage: Option[String] = None // A variable to hold the path to a page requested by LiftAmbassador
@@ -81,8 +72,6 @@ package org.friendularity.bundle.lifter {
 		controlsMap.clear
 		cogbotDisplayers.clear
 		speechDisplayers.clear
-		speechGetters.clear
-		continuousSpeechGetters.clear
 		toggleButtonMap.clear
 		singularAction.clear
 		
@@ -104,12 +93,13 @@ package org.friendularity.bundle.lifter {
 			val style = controlDef.style
 			val resource = controlDef.resource
 			
+			controlDefMap(slotNum) = controlDef; //Save the controlDef for this slotNum for future reference
 			
 			controlType match {
 			  case ControlType.PUSHYBUTTON => {
 				  setControl(slotNum, PushyButton.makeButton(text, style, resource, slotNum))
 				  // Check for "local" actions which PageCommander needs to handle, such as text display
-				  controlDef.action = initLocalActions(slotNum, action) // this method will modify action as necessary according to prefixes
+				  initLocalActions(slotNum, action) // this method will modify action as necessary according to prefixes
 				}
 			  case ControlType.TEXTINPUT => {
 				  setControl(slotNum, TextForm.makeTextForm(text, slotNum))
@@ -149,8 +139,7 @@ package org.friendularity.bundle.lifter {
 				  toggleButtonMap(slotNum) = false
 				}
 			  case _ => setControl(slotNum, NodeSeq.Empty); // Blank the control if none of the above
-			}
-			controlDefMap(slotNum) = controlDef; //Save the controlDef for this slotNum for future reference
+			}	
 		  })
 	  }
 					  
@@ -162,24 +151,17 @@ package org.friendularity.bundle.lifter {
 	  }
 	  
 	  // Check to see if any action requested requires PageCommander to do some local handling
-	  def initLocalActions(slotNum:Int, action:String):String = {
-		var adjustedAction = action
+	  def initLocalActions(slotNum:Int, action:String) {
 		val splitAction = action.split("_")
 		splitAction(0) match {
-		  case LiftConfigNames.partial_P_acquireSpeech => { // Special handling for this one! It wants us to acquire speech
-			  speechGetters += slotNum // Add this slotNum to the list of speechGetters!
-			  val replacedText = LiftConfigNames.partial_P_acquireSpeech + "_"
-			  adjustedAction = action.stripPrefix(replacedText) // Strip the getspeech prefix, now the remaining action can be processed as usual
-			}
-		  case LiftConfigNames.partial_P_showText => {splitAction(1) match {
-				case COGBOT_TOKEN => cogbotDisplayers += slotNum // Show Cogbot speech on this control? Add it to the cogbotDisplayers list.
-				case ANDROID_SPEECH_TOKEN => speechDisplayers += slotNum // Add to the speechDisplayers list if we want Android speech shown here
+		  case ActionStrings.showText => {splitAction(1) match {
+				case ActionStrings.COGBOT_TOKEN => cogbotDisplayers += slotNum // Show Cogbot speech on this control? Add it to the cogbotDisplayers list.
+				case ActionStrings.ANDROID_SPEECH_TOKEN => speechDisplayers += slotNum // Add to the speechDisplayers list if we want Android speech shown here
 				case _ => warn("checkLocalActions doesn't know what to do in order to display text with token " + splitAction(1))
 			  }
 			}			  
 		  case _ => // looks like this action doesn't require anything to happen locally, so do nothing
 		}
-		adjustedAction // This is returned, in case action needed to be modified
 	  }
 
 	  
@@ -204,22 +186,24 @@ package org.friendularity.bundle.lifter {
 	  def textInputMapper(formId:Int, text:String) {
 		var desiredAction = controlDefMap(formId).action
 		if (singularAction contains formId) {desiredAction = singularAction(formId)} // If this is a "multi-state" control, get the action corresponding to current state
-		// If we see an action with the getContinuousSpeech command, strip that off and see what's behind
-		if (desiredAction startsWith ActionStrings.getContinuousSpeech) {desiredAction = desiredAction.stripPrefix(ActionStrings.getContinuousSpeech + "_")}
+		// If we see an action with a get speech command, set displayInputSpeech, strip off acquire command and see what's behind
+		var displayInputSpeech = false;
+		if (desiredAction startsWith ActionStrings.acquireSpeech) {
+		  desiredAction = desiredAction.stripPrefix(ActionStrings.acquireSpeech + "_")
+		  displayInputSpeech = true;
+		} else if (desiredAction startsWith ActionStrings.getContinuousSpeech) {
+		  desiredAction = desiredAction.stripPrefix(ActionStrings.getContinuousSpeech + "_")
+		  displayInputSpeech = true;
+		}
 		//info("In textInputMapper; desiredAction is " + desiredAction) // TEST ONLY
-		/* This may work after refactoring - problem now is that acquireSpeech prefix has been stripped in initLocalActions
-		 if (desiredAction.startsWith(LiftConfigNames.partial_P_acquireSpeech) || desiredAction.startsWith(ActionStrings.getContinuousSpeech)) { // If it does, we are receiving speech from the SpeechChunk
-		 speechDisplayers.foreach(slotNum => setControl(slotNum, PushyButton.makeButton("I think you said \"" + text + "\"", controlDefMap(slotNum).style, "", slotNum)))
-		 } // ... then continue to see if RDF tells us we need to do anything else with speech
-		 */
-		if ((speechGetters contains formId) || (continuousSpeechGetters contains formId)) { // If it does, we are receiving speech from the SpeechChunk
+		if (displayInputSpeech) {
 		  speechDisplayers.foreach(slotNum => setControl(slotNum, PushyButton.makeButton("I think you said \"" + text + "\"", controlDefMap(slotNum).style, "", slotNum)))
 		} // ... then continue to see if RDF tells us we need to do anything else with speech
-		if (desiredAction.startsWith(LiftConfigNames.partial_P_submitText)) { //... otherwise, we don't have a properly defined action for this text input
-		  val stringToStrip = LiftConfigNames.partial_P_submitText + "_"
+		if (desiredAction.startsWith(ActionStrings.submitText)) { //... otherwise, we don't have a properly defined action for this text input
+		  val stringToStrip = ActionStrings.submitText + "_"
 		  val actionToken = desiredAction.stripPrefix(stringToStrip)
 		  actionToken match {
-			case COGBOT_TOKEN => {
+			case ActionStrings.COGBOT_TOKEN => {
 				if (cogbotDisplayers != Nil) { // Likely this check is not necessary - foreach just won't execute if list is Nil, right?
 				  val response = LiftAmbassador.getCogbotResponse(text)
 				  val cleanedResponse = response.replaceAll("<.*>", ""); // For now, things are more readable if we just discard embedded XML
@@ -281,33 +265,30 @@ package org.friendularity.bundle.lifter {
 		if (singularAction contains slotNum) {action = singularAction(slotNum)} // If this is a "multi-state" control, get the action corresponding to current state
 		//info("In performLocalActions, acting on action " + action) // TEST ONLY
 		var success = false;
-		if (speechGetters contains slotNum) { // Check to see if this control handles speech input
-		  updateInfo = 201 // Special "slotNum" to tell JavaScriptActor to request speech
-		  lastSpeechReqSlotNum = slotNum; // Set this field - JavaScriptActor will use it to attach requesting info to JS Call - allows multiple speech request controls
-		  updateListeners()
-		  success = true
-		} else { // Check for other actions defined in action string
-		  val splitAction = action.split("_")
-		  splitAction(0) match {
-			case LiftConfigNames.partial_P_cogbotSpeech => splitAction(1) match {
-				case ENABLE_TOKEN => cogbotSpeaks = true; success = true
-				case DISABLE_TOKEN => cogbotSpeaks = false; success = true
-				case _ => // No match, just exit (success=false)
-			  }
-			case ActionStrings.getContinuousSpeech => {
-				requestContinuousSpeech(slotNum, true)
-				continuousSpeechGetters += slotNum;
-			  }
-			case ActionStrings.stopContinuousSpeech => {
-				requestContinuousSpeech(slotNum, false)
-				continuousSpeechGetters -= slotNum;
-			  }
-			case _ => // No match, just exit (success=false)
-		  }
+		val splitAction = action.split("_")
+		splitAction(0) match {
+		  case ActionStrings.acquireSpeech => {
+			  updateInfo = 201 // Special "slotNum" to tell JavaScriptActor to request speech
+			  lastSpeechReqSlotNum = slotNum; // Set this field - JavaScriptActor will use it to attach requesting info to JS Call - allows multiple speech request controls
+			  updateListeners()
+			  success = true
+			}
+		  case ActionStrings.cogbotSpeech => splitAction(1) match {
+			  case ActionStrings.ENABLE_TOKEN => cogbotSpeaks = true; success = true
+			  case ActionStrings.DISABLE_TOKEN => cogbotSpeaks = false; success = true
+			  case _ => // No match, just exit (success=false)
+			}
+		  case ActionStrings.getContinuousSpeech => {
+			  requestContinuousSpeech(slotNum, true)
+			}
+		  case ActionStrings.stopContinuousSpeech => {
+			  requestContinuousSpeech(slotNum, false)
+			}
+		  case _ => // No match, just exit (success=false)
 		}
 		success
 	  }
-	  
+	
 	  def toggleButton(slotNum: Int) = {
 		var success = false;
 		if (controlDefMap contains slotNum) {
