@@ -21,14 +21,34 @@
 			 margin: 0;
 			 padding: 0;
 			 text-align: center;
+			 overflow: hidden;
 		}
 
-		.slotstyle {
-			float:left;
+		.slotstyle, .slotstyle2wide, .slotstyle_r, .slotstyle2wide_r {
 			height: 100%;
-			width: 25%;
 			position:relative;
 			overflow: hidden;
+			
+		}
+		
+		.slotstyle {
+			width: 25%;
+			float:left;
+		}
+		
+		.slotstyle_r {
+			width: 25%;
+			float:right;
+		}
+		
+		.slotstyle2wide {
+			width: 50%;
+			float:left;
+		}
+		
+		.slotstyle2wide_r {
+			width: 50%;
+			float:right;
 		}
 		
 		.labels {
@@ -54,24 +74,7 @@
    
   </head>
   <body>
-	<div style="height: 33%;">
-		<span class="slotstyle"><span class="lift:comet?type=ControlActor;name=1"><span name="ControlSlot">Slot</span></span></span>
-		<span class="slotstyle"><span class="lift:comet?type=ControlActor;name=2"><span name="ControlSlot">Slot</span></span></span>
-		<span class="slotstyle"><span class="lift:comet?type=ControlActor;name=3"><span name="ControlSlot">Slot</span></span></span>
-		<span class="slotstyle"><span class="lift:comet?type=ControlActor;name=4"><span name="ControlSlot">Slot</span></span></span>
-	</div>
-	<div style="height: 33%;">
-		<span class="slotstyle"><span class="lift:comet?type=ControlActor;name=5"><span name="ControlSlot">Slot</span></span></span>
-		<span class="slotstyle"><span class="lift:comet?type=ControlActor;name=6"><span name="ControlSlot">Slot</span></span></span>
-		<span class="slotstyle"><span class="lift:comet?type=ControlActor;name=7"><span name="ControlSlot">Slot</span></span></span>
-		<span class="slotstyle"><span class="lift:comet?type=ControlActor;name=8"><span name="ControlSlot">Slot</span></span></span>
-	</div>
-	<div style="height: 33%;">
-		<span class="slotstyle"><span class="lift:comet?type=ControlActor;name=9"><span name="ControlSlot">Slot</span></span></span>
-		<span class="slotstyle"><span class="lift:comet?type=ControlActor;name=10"><span name="ControlSlot">Slot</span></span></span>
-		<span class="slotstyle"><span class="lift:comet?type=ControlActor;name=11"><span name="ControlSlot">Slot</span></span></span>
-		<span class="slotstyle"><span class="lift:comet?type=ControlActor;name=12"><span name="ControlSlot">Slot</span></span></span>
-	</div>
+	<span class="lift:comet?type=TemplateActor"><span name="TemplateSlot">Template fills here</span></span>
 	<div id="SpeechRequest">
 		<lift:comet type="JavaScriptActor"><js_command:CommandPush>A hidden div to fire JS command</js_command:CommandPush></lift:comet>
 	</div>
