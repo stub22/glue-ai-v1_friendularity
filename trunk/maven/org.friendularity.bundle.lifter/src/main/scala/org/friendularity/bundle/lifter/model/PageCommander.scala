@@ -37,6 +37,7 @@ package org.friendularity.bundle.lifter {
 	  private var outputSpeech: String = "" // Holds speech we want Android to say
 	  private var lastSpeechReqSlotNum = 0 // slotNum of last control which requested speech - used by JavaScriptActor to add identifying info to request
 	  private var cogbotSpeaks = false // Determines whether Cogbot speech out also triggers Android speech
+	  private var currentTemplate = "12slots" // Name of current template (in /templates-hidden) which corresponds to current liftConfig
 	  
 	  private var updateInfo: Int = 0
 	  
@@ -75,7 +76,14 @@ package org.friendularity.bundle.lifter {
 		toggleButtonMap.clear
 		singularAction.clear
 		
-		val controlList: java.util.ArrayList[ControlConfig] = LiftAmbassador.getControls()
+		val liftConfig = LiftAmbassador.getConfig();
+		val controlList: java.util.List[ControlConfig] = liftConfig.myCCs
+		
+		//Get current template and request it be set
+		currentTemplate = liftConfig.template
+		updateInfo = 301 // Special code to trigger TemplateActor
+		updateListeners;
+		
 		val controlSet = controlList.asScala.toSet
 		controlSet.foreach(controlDef => {
 			var slotNum:Int = -1
@@ -347,6 +355,8 @@ package org.friendularity.bundle.lifter {
 	  }
 	  
 	  def getSpeechReqControl = lastSpeechReqSlotNum
+	  
+	  def getCurrentTemplate = currentTemplate
 	  
 	  def getOutputSpeech = {
 		outputSpeech
