@@ -48,7 +48,7 @@ package org.friendularity.bundle.lifter {
 	  // A list of possible control types
 	  object ControlType extends Enumeration { 
 		type ControlType = Value
-		val NULLTYPE, PUSHYBUTTON, TEXTINPUT, SELECTBOXES, RADIOBUTTONS, LISTBOX, VIDEOBOX, TOGGLEBUTTON = Value
+		val NULLTYPE, PUSHYBUTTON, TEXTINPUT, SELECTBOXES, RADIOBUTTONS, LISTBOX, VIDEOBOX, TOGGLEBUTTON, TEXTBOX = Value
 	  }
 	  import ControlType._
 	  
@@ -109,8 +109,6 @@ package org.friendularity.bundle.lifter {
 			controlType match {
 			  case ControlType.PUSHYBUTTON => {
 				  setControl(slotNum, PushyButton.makeButton(text, style, resource, slotNum))
-				  // Check for "local" actions which PageCommander needs to handle, such as text display
-				  initLocalActions(slotNum, action) // this method will modify action as necessary according to prefixes
 				}
 			  case ControlType.TEXTINPUT => {
 				  setControl(slotNum, TextForm.makeTextForm(text, slotNum))
@@ -148,6 +146,11 @@ package org.friendularity.bundle.lifter {
 				  setControl(slotNum, PushyButton.makeButton(textItems(0), styleItems(0), resourceItems(0), slotNum))
 				  // Flag the fact this is a toggle button, currently in the default (false) condition
 				  toggleButtonMap(slotNum) = false
+				}
+			  case ControlType.TEXTBOX => {
+				  setControl(slotNum, TextBox.makeBox(text, style))
+				  // Check for "local" actions which PageCommander needs to handle, such as text display
+				  initLocalActions(slotNum, action) // this method will modify action as necessary according to prefixes 
 				}
 			  case _ => setControl(slotNum, NodeSeq.Empty); // Blank the control if none of the above
 			}	
@@ -221,7 +224,7 @@ package org.friendularity.bundle.lifter {
 		}
 		//info("In textInputMapper; desiredAction is " + desiredAction) // TEST ONLY
 		if (displayInputSpeech) {
-		  speechDisplayers.foreach(slotNum => setControl(slotNum, PushyButton.makeButton("I think you said \"" + text + "\"", controlDefMap(slotNum).style, "", slotNum)))
+		  speechDisplayers.foreach(slotNum => setControl(slotNum, TextBox.makeBox("I think you said \"" + text + "\"", controlDefMap(slotNum).style, true)))
 		} // ... then continue to see if RDF tells us we need to do anything else with speech
 		if (desiredAction.startsWith(ActionStrings.submitText)) { //... otherwise, we don't have a properly defined action for this text input
 		  val stringToStrip = ActionStrings.submitText + "_"
@@ -231,7 +234,7 @@ package org.friendularity.bundle.lifter {
 				if (cogbotDisplayers != Nil) { // Likely this check is not necessary - foreach just won't execute if list is Nil, right?
 				  val response = LiftAmbassador.getCogbotResponse(text)
 				  val cleanedResponse = response.replaceAll("<.*>", ""); // For now, things are more readable if we just discard embedded XML
-				  cogbotDisplayers.foreach(slotNum => setControl(slotNum, PushyButton.makeButton("Cogbot said \"" + cleanedResponse + "\"", controlDefMap(slotNum).style, "", slotNum)))
+				  cogbotDisplayers.foreach(slotNum => setControl(slotNum, TextBox.makeBox("Cogbot said \"" + cleanedResponse + "\"", controlDefMap(slotNum).style)))
 				  if (cogbotSpeaks) outputSpeech(cleanedResponse) // Output Android speech if cogbotSpeaks is set
 				}
 			  }

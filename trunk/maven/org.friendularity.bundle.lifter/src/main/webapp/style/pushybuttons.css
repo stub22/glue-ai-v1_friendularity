@@ -2,15 +2,6 @@
 	font-family: Arial;
 	color: #ffffff;
 	font-size: 24px;
-	width: 80%;
-	min-height: 70%;
-	height: auto !important;
-	height: 70%;
-
-	position:absolute;
-	top: 15%;
-	left: 10%;
-	text-decoration: none;
 	text-align: center;
 	-webkit-border-radius: 37px;
 	-moz-border-radius: 37px;
@@ -63,6 +54,10 @@
 	border: solid #8402C4 2px;
 	background: -webkit-gradient(linear, 0 0, 0 100%, from(#A92CE8), to(#B92EFF));
 	background: -moz-linear-gradient(top, #A92CE8, #B92EFF);
+}
+
+.pushypadding {
+	padding: 11% 8%;
 }
 
 .blackbg {
