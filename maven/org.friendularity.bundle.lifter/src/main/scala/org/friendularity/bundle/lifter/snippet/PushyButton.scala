@@ -18,15 +18,15 @@ package org.friendularity.bundle.lifter {
 		val buttonNum: String = buttonId.toString
 		val buttonPath: String = "/images/" + buttonImage // May want to move this prefix to central location
 		if (buttonImage.length >= 5) { // needs to be at least this long to have a valid image filename
-		  <lift:PushyButton buttonId={buttonNum}><div id="pushbutton" class={buttonClass} onclick=""><img src={buttonPath} width="50%"/><br/>{buttonText}</div></lift:PushyButton>
+		  <lift:PushyButton buttonId={buttonNum}><div class="centerVert pushypadding"><div name="pushbutton" class={buttonClass} onclick=""><img src={buttonPath} width="50%"/><br/>{buttonText}</div></div></lift:PushyButton>
 		} else {
-		  <lift:PushyButton buttonId={buttonNum}><div id="pushbutton" class={buttonClass} onclick=""><br/>{buttonText}</div></lift:PushyButton>
+		  <lift:PushyButton buttonId={buttonNum}><div class="centerVert pushypadding"><div name="pushbutton" class={buttonClass} onclick="">{buttonText}</div></div></lift:PushyButton>
 		}
 	  }
   
 	  def render = {
 		val buttonId: Int = (S.attr("buttonId") openOr "-1").toInt
-		"#pushbutton [onclick]" #> SHtml.ajaxInvoke (() => {
+		"@pushbutton [onclick]" #> SHtml.ajaxInvoke (() => {
 			info("Button " + buttonId + " was pressed at " + now)
 
 			buttonId match {
