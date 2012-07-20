@@ -33,6 +33,9 @@ package org.friendularity.bundle.lifter {
 	  // ... this one for ToggleButton states
 	  private var toggleButtonMap =  new scala.collection.mutable.HashMap[Int, Boolean]
 	  
+	  // This associates error source codes with the control on which they should be displayed
+	  private var errorMap = new scala.collection.mutable.HashMap[String, Int]
+	  
 	  private var appVariablesMap = new scala.collection.mutable.HashMap[String, String] // A place to hold variables that can be defined and set dynamically by the apps defined in the lift config files themselves
 	  
 	  private var requestedPage: Option[String] = None // A variable to hold the path to a page requested by LiftAmbassador
@@ -78,6 +81,7 @@ package org.friendularity.bundle.lifter {
 		toggleButtonMap.clear
 		singularAction.clear
 		appVariablesMap.clear // Probably we won't want this to clear permanently. It's sort of a quick-fix for now to make sure that toggle button states don't get out of sync with app variables they control when a "page" is exited and reentered
+		errorMap.clear
 		
 		val liftConfig = LiftAmbassador.getConfig();
 		val controlList: java.util.List[ControlConfig] = liftConfig.myCCs
@@ -95,65 +99,7 @@ package org.friendularity.bundle.lifter {
 			} catch {
 			  case _: Any =>  warn("Unable to get valid slotNum from loaded control; URI fragment was " + controlDef.myURI_Fragment) // The control will still be loaded into slot -1; could "break" here but it's messy and unnecessary
 			}
-			var controlType: ControlType = NULLTYPE
-			ControlType.values foreach(testType => {
-				if (controlDef.controlType equals(testType.toString)) controlType = testType
-			  })
-			val action = controlDef.action
-			val text = controlDef.text
-			val style = controlDef.style
-			val resource = controlDef.resource
-			
-			controlDefMap(slotNum) = controlDef; //Save the controlDef for this slotNum for future reference
-			
-			controlType match {
-			  case ControlType.PUSHYBUTTON => {
-				  setControl(slotNum, PushyButton.makeButton(text, style, resource, slotNum))
-				}
-			  case ControlType.TEXTINPUT => {
-				  setControl(slotNum, TextForm.makeTextForm(text, slotNum))
-				}
-			  case ControlType.SELECTBOXES => {
-				  // From the RDF "text" value we assume a comma separated list with the first item the title and the rest checkbox labels
-				  val textItems = List.fromArray(text.split(","))
-				  val titleText = textItems(0)
-				  val labelItems = textItems.tail
-				  setControl(slotNum, SelectBoxes.makeSelectBoxes(titleText, labelItems, slotNum))
-				}
-			  case ControlType.RADIOBUTTONS => {
-				  // From the RDF "text" value we assume a comma separated list with the first item the title and the rest radiobutton labels
-				  val textItems = List.fromArray(text.split(","))
-				  val titleText = textItems(0)
-				  val labelItems = textItems.tail
-				  setControl(slotNum, RadioButtons.makeRadioButtons(titleText, labelItems, slotNum))
-				}
-			  case ControlType.LISTBOX => {
-				  // From the RDF "text" value we assume a comma separated list with the first item the title and the rest radiobutton labels
-				  val textItems = List.fromArray(text.split(","))
-				  val titleText = textItems(0)
-				  val labelItems = textItems.tail
-				  setControl(slotNum, ListBox.makeListBox(titleText, labelItems, slotNum))
-				}
-			  case ControlType.VIDEOBOX => {
-				  setControl(slotNum, VideoBox.makeBox(resource, true)) // Videos muted for now, but we can change and/or add config from RDF as desired
-				}
-			  case ControlType.TOGGLEBUTTON => {
-				  // For a ToggleButton, the first item in CSV text, action, style, image corresponds to the default condition, the second to the "toggled" condition
-				  val textItems = List.fromArray(text.split(","))
-				  val styleItems = List.fromArray(style.split(","))
-				  val resourceItems = List.fromArray(resource.split(","))
-				  // Set control for initial (default) state
-				  setControl(slotNum, PushyButton.makeButton(textItems(0), styleItems(0), resourceItems(0), slotNum))
-				  // Flag the fact this is a toggle button, currently in the default (false) condition
-				  toggleButtonMap(slotNum) = false
-				}
-			  case ControlType.TEXTBOX => {
-				  setControl(slotNum, TextBox.makeBox(text, style))
-				  // Check for "local" actions which PageCommander needs to handle, such as text display
-				  initLocalActions(slotNum, action) // this method will modify action as necessary according to prefixes 
-				}
-			  case _ => setControl(slotNum, NodeSeq.Empty); // Blank the control if none of the above
-			}	
+			initSingleControl(controlDef, slotNum)
 		  })
 		// Blank unspecified slots (out to 20)
 		for (slot <- 1 to 20) {
@@ -161,6 +107,68 @@ package org.friendularity.bundle.lifter {
 			setControl(slot, NodeSeq.Empty)
 		  }
 		}
+	  }
+	  
+	  def initSingleControl(controlDef:ControlConfig, slotNum:Int) {
+		var controlType: ControlType = NULLTYPE
+		ControlType.values foreach(testType => {
+			if (controlDef.controlType equals(testType.toString)) controlType = testType
+		  })
+		val action = controlDef.action
+		val text = controlDef.text
+		val style = controlDef.style
+		val resource = controlDef.resource
+			
+		controlDefMap(slotNum) = controlDef; //Save the controlDef for this slotNum for future reference
+			
+		controlType match {
+		  case ControlType.PUSHYBUTTON => {
+			  setControl(slotNum, PushyButton.makeButton(text, style, resource, slotNum))
+			}
+		  case ControlType.TEXTINPUT => {
+			  setControl(slotNum, TextForm.makeTextForm(text, slotNum))
+			}
+		  case ControlType.SELECTBOXES => {
+			  // From the RDF "text" value we assume a comma separated list with the first item the title and the rest checkbox labels
+			  val textItems = List.fromArray(text.split(","))
+			  val titleText = textItems(0)
+			  val labelItems = textItems.tail
+			  setControl(slotNum, SelectBoxes.makeSelectBoxes(titleText, labelItems, slotNum))
+			}
+		  case ControlType.RADIOBUTTONS => {
+			  // From the RDF "text" value we assume a comma separated list with the first item the title and the rest radiobutton labels
+			  val textItems = List.fromArray(text.split(","))
+			  val titleText = textItems(0)
+			  val labelItems = textItems.tail
+			  setControl(slotNum, RadioButtons.makeRadioButtons(titleText, labelItems, slotNum))
+			}
+		  case ControlType.LISTBOX => {
+			  // From the RDF "text" value we assume a comma separated list with the first item the title and the rest radiobutton labels
+			  val textItems = List.fromArray(text.split(","))
+			  val titleText = textItems(0)
+			  val labelItems = textItems.tail
+			  setControl(slotNum, ListBox.makeListBox(titleText, labelItems, slotNum))
+			}
+		  case ControlType.VIDEOBOX => {
+			  setControl(slotNum, VideoBox.makeBox(resource, true)) // Videos muted for now, but we can change and/or add config from RDF as desired
+			}
+		  case ControlType.TOGGLEBUTTON => {
+			  // For a ToggleButton, the first item in CSV text, action, style, image corresponds to the default condition, the second to the "toggled" condition
+			  val textItems = List.fromArray(text.split(","))
+			  val styleItems = List.fromArray(style.split(","))
+			  val resourceItems = List.fromArray(resource.split(","))
+			  // Set control for initial (default) state
+			  setControl(slotNum, PushyButton.makeButton(textItems(0), styleItems(0), resourceItems(0), slotNum))
+			  // Flag the fact this is a toggle button, currently in the default (false) condition
+			  toggleButtonMap(slotNum) = false
+			}
+		  case ControlType.TEXTBOX => {
+			  setControl(slotNum, TextBox.makeBox(text, style))
+			  // Check for "local" actions which PageCommander needs to handle, such as text display
+			  initLocalActions(slotNum, action) // this method will modify action as necessary according to prefixes 
+			}
+		  case _ => setControl(slotNum, NodeSeq.Empty); // Blank the control if none of the above
+		}	
 	  }
 					  
 	  def setControl(slotNum: Int, slotHtml: NodeSeq) {
@@ -177,14 +185,14 @@ package org.friendularity.bundle.lifter {
 		  case ActionStrings.showText => {splitAction(1) match {
 				case ActionStrings.COGBOT_TOKEN => cogbotDisplayers += slotNum // Show Cogbot speech on this control? Add it to the cogbotDisplayers list.
 				case ActionStrings.ANDROID_SPEECH_TOKEN => speechDisplayers += slotNum // Add to the speechDisplayers list if we want Android speech shown here
+				case ActionStrings.ERROR_TOKEN => errorMap(splitAction(2)) = slotNum // Associate the error source name with the slotNum where errors will display
 				case _ => warn("checkLocalActions doesn't know what to do in order to display text with token " + splitAction(1))
 			  }
 			}			  
 		  case _ => // looks like this action doesn't require anything to happen locally, so do nothing
 		}
 	  }
-
-	  
+	    
 	  // A central place to define actions performed by displayed controls - may want to move to its own class eventually
 	  def controlActionMapper(formId:Int, subControl:Int) {
 		val splitAction = controlDefMap(formId).action.split("_")
@@ -197,7 +205,7 @@ package org.friendularity.bundle.lifter {
 			  info("App Variable " + splitAction(1) + " set to " + textItems(textIndex))
 			}
 		  case ActionStrings.oldDemo => { // Just a way to include the old hard-coded demo just a little longer; soon will configure all of this from RDF
-			  subControl match { // An early hard coded demo - must move to RDF definition very soon!!
+			  subControl match { // An early hard coded demo
 				case 0 => setControl(6, PushyButton.makeButton("A button", "buttonred", "", 6))
 				case 1 => setControl(6, TextForm.makeTextForm("A text box", 6))
 				case 2 => setControl(6, SelectBoxes.makeSelectBoxes("Checkboxes", List("an option", "and another"), 6))
@@ -413,6 +421,24 @@ package org.friendularity.bundle.lifter {
 		  var contents:String = null
 		  if (appVariablesMap contains key) contents = appVariablesMap(key)
 		  contents
+		}
+		
+		def setSingleControl(control:ControlConfig, slotNum:Int) {
+		  initSingleControl(control, slotNum)
+		}
+		
+		def showError(errorSourceCode:String, errorText:String) {
+		  info("In showError; code = " + errorSourceCode + "; text = " + errorText);
+		  if (errorMap contains errorSourceCode) {
+			val slotNum = errorMap(errorSourceCode)
+			if (errorText.isEmpty) {
+			  setControl(slotNum, NodeSeq.Empty)
+			} else {
+			  setControl(slotNum, TextBox.makeBox(errorText, controlDefMap(slotNum).style, true, false))
+			}
+		  } else {
+			error("Error display requested, but no controls set to display errors with source code: " + errorSourceCode)
+		  }
 		}
 	  }
 	

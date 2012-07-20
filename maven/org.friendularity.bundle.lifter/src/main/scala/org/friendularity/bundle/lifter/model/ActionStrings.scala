@@ -16,6 +16,7 @@ package org.friendularity.bundle.lifter {
 	  final val ANDROID_SPEECH_TOKEN = "androidSpeech" // for Android speech recognition
 	  final val ENABLE_TOKEN = "enable" 
 	  final val DISABLE_TOKEN = "disable"
+	  final val ERROR_TOKEN = "error"
 	}
 
   }
