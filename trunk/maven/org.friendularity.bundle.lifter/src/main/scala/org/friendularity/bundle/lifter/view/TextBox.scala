@@ -8,12 +8,22 @@ package org.friendularity.bundle.lifter {
 
 	object TextBox {
   
-	  def makeBox(text:String, style:String, centered:Boolean): NodeSeq = {
+	  def makeBox(text:String, style:String, centered:Boolean, displayAsCell:Boolean): NodeSeq = {
 		if (centered) {
-		  <div class="centerVert"><div class={style}>{text}</div></div>
+		  if (displayAsCell) {
+			<div class="centerVert"><div class={style}>{text}</div></div>
+		  } else {
+			// The extra div makes the contents not display as a table cell, for example, for when we don't want background to fill whole cell
+			<div class="centerVert"><div><div class={style}>{text}</div></div></div> 
+		  }
+		  
 		} else {
 		  <div class={style}>{text}</div>
 		}
+	  }
+	  
+	  def makeBox(text:String, style:String, centered:Boolean): NodeSeq = {
+		makeBox(text, style, centered, true)
 	  }
 	  
 	  def makeBox(text:String, style:String): NodeSeq = {
