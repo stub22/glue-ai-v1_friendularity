@@ -95,7 +95,8 @@ package org.friendularity.bundle.lifter {
 		controlSet.foreach(controlDef => {
 			var slotNum:Int = -1
 			try {
-			  slotNum = controlDef.myURI_Fragment.stripPrefix(LiftAmbassador.getControlPrefix()).toInt
+			  val finalSplitterIndex = controlDef.myURI_Fragment.lastIndexOf("_")
+			  slotNum = controlDef.myURI_Fragment.splitAt(finalSplitterIndex+1)._2.toInt
 			} catch {
 			  case _: Any =>  warn("Unable to get valid slotNum from loaded control; URI fragment was " + controlDef.myURI_Fragment) // The control will still be loaded into slot -1; could "break" here but it's messy and unnecessary
 			}
