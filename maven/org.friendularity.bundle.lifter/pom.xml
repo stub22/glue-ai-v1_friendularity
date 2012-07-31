@@ -181,6 +181,13 @@
 			<version>${cogchar.version}</version>
 		</dependency>
 		
+		<dependency>
+			<!--For now we depend directly on o.c.bundle.bind.lift, but soon much of the webapp will live there natively-->
+			<groupId>org.cogchar</groupId>
+			<artifactId>org.cogchar.bundle.bind.lift</artifactId>
+			<version>${cogchar.version}</version>
+		</dependency>
+		
        
 	</dependencies>
 
