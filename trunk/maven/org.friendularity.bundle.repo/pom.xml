@@ -60,9 +60,9 @@
 				
 		<dependency>
 			<!-- Our Lift-based webapp, which we expect PAX services above to find and launch to HTTP for us -->
-			<groupId>${project.groupId}</groupId>
-			<artifactId>org.friendularity.bundle.lifter</artifactId>
-			<version>${project.version}</version>
+			<groupId>org.cogchar</groupId>
+			<artifactId>org.cogchar.bundle.bind.lift</artifactId>
+			<version>${cogchar.version}</version>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
