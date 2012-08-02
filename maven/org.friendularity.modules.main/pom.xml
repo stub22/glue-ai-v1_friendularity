@@ -39,7 +39,6 @@
 	
 	<modules>
 		<module>../org.friendularity.bundle.demo.ccrk</module>
-		<module>../org.friendularity.bundle.lifter</module>
 		<module>../org.friendularity.bundle.demo.liftoff</module>
 		<module>../org.friendularity.bundle.repo</module>
 <!--
