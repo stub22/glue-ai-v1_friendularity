@@ -88,7 +88,6 @@ MNG-1412 / MNG-3111 introduced deterministic ordering of dependencies on the cla
 			<groupId>org.cogchar</groupId>
 			<artifactId>org.cogchar.bundle.bind.lift</artifactId>
 			<version>${cogchar.version}</version>
-			<scope>runtime</scope>
 		</dependency>
 		
 		<dependency>
