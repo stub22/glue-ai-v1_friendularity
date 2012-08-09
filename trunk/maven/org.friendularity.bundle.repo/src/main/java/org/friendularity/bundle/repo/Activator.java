@@ -2,6 +2,7 @@ package org.friendularity.bundle.repo;
 
 import org.cogchar.bind.lift.LifterLifecycle;
 import org.cogchar.bundle.app.puma.PumaBooter;
+import org.cogchar.bundle.app.puma.PumaAppContext;
 import org.cogchar.bundle.app.puma.PumaWebMapper;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -21,6 +22,8 @@ public class Activator implements BundleActivator {
 	public void initWebapp(BundleContext context) {
 		// Since we are not running PumaBooter, we must at least start the query service to get sheet-based config going
 		PumaBooter.startQueryService(context);
+		// And now, also apply the global mode
+		PumaBooter.applyGlobalMode(new PumaAppContext(context));
 		ClassLoader hrkContentCL = com.hrkind.content.preview.PreviewContentBundleActivator.class.getClassLoader();
 		PumaWebMapper pwm = new PumaWebMapper();
 		pwm.connectLiftInterface(context);
