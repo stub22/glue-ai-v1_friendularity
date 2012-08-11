@@ -32,8 +32,21 @@ public class LinuxNetworkConfigurator implements NetworkConfigurator {
     private final static Logger theLogger =
             Logger.getLogger(LinuxNetworkConfigurator.class.getName());
     
+    public LinuxNetworkConfigurator() {
+        
+    }
+    
     @Override
     public void configureNetwork(NetworkConfig config) {
+        Map<String, Map<String, String>> confMap = createMap(config);
+        String confData = makeConfFile(confMap);
+        
+        writeConfig(confData, "/etc/NetworkManager/system-connections/nm_conf");
+        
+        restartServices();
+    }
+    
+    private Map<String, Map<String, String>> createMap(NetworkConfig config) {
         Map<String, Map<String, String>> confMap =
                 new HashMap<String, Map<String, String>>();
         Map<String, String> connectionMap = new HashMap<String, String>();
@@ -41,7 +54,6 @@ public class LinuxNetworkConfigurator implements NetworkConfigurator {
         Map<String, String> ipv4Map = new HashMap<String, String>();
         Map<String, String> ipv6Map = new HashMap<String, String>();
         Map<String, String> securityMap;
-        String confData;
         
         confMap.put("connection", connectionMap);
         confMap.put("802-11-wireless", wirelessMap);
@@ -81,10 +93,7 @@ public class LinuxNetworkConfigurator implements NetworkConfigurator {
             }
         }
         
-        confData = makeConfFile(confMap);
-        writeConfig(confData, "/etc/NetworkManager/system-connections/nm_conf");
-        
-        restartServices();
+        return confMap;
     }
     
     private String makeSsid(String textSsid) {
