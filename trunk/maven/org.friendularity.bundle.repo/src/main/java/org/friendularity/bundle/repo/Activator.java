@@ -23,7 +23,10 @@ public class Activator implements BundleActivator {
 		// Since we are not running PumaBooter, we must at least start the query service to get sheet-based config going
 		PumaBooter.startQueryService(context);
 		// And now, also apply the global mode
-		PumaBooter.applyGlobalMode(new PumaAppContext(context));
+		PumaAppContext pac = new PumaAppContext(context);
+		PumaBooter.applyGlobalMode(pac);
+		// ... and set our app context with PumaWebMapper, so lift can issue repo update requests
+		PumaWebMapper.setAppContext(pac);
 		ClassLoader hrkContentCL = com.hrkind.content.preview.PreviewContentBundleActivator.class.getClassLoader();
 		PumaWebMapper pwm = new PumaWebMapper();
 		pwm.connectLiftInterface(context);
