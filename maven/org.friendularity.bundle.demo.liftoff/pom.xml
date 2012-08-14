@@ -42,7 +42,14 @@ MNG-1412 / MNG-3111 introduced deterministic ordering of dependencies on the cla
 			<artifactId>org.friendularity.bundle.demo.ccrk</artifactId>
 			<version>${project.version}</version>
 		
-		</dependency>		
+		</dependency>
+		<dependency>
+			<!-- Hooks in network configuration (via lifter) module -->
+			<groupId>${project.groupId}</groupId>
+			<artifactId>org.friendularity.bundle.netconfig</artifactId>
+			<version>${project.version}</version>
+		
+		</dependency>	
 		<dependency>
 			<!-- This is a big honking hunk of code, but so far is working better than trying
 				to mix-and-match our own version of Jetty + PAX.
