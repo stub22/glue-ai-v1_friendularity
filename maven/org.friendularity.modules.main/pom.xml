@@ -48,7 +48,6 @@
 
 		<module>../org.friendularity.demo.weber</module>
 		
-		
 <!--	
 		<module>../org.friendularity.demo.lifter</module>
 
@@ -56,5 +55,9 @@
 		<module>../org.friendularity.demo.speech.hear</module>
 -->
 	 <module>../org.friendularity.bundle.netconfig</module>
+	 <module>../org.friendularity.model.test</module>
 	</modules>	
+	<properties>
+		<jmonkey.version>3.0.0.20120512-SNAPSHOT</jmonkey.version>
+	</properties>
 </project>
