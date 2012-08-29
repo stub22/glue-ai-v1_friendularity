@@ -30,7 +30,7 @@ import java.io.File;
  */
 public class ModelViewer extends SimpleApplication {
 
-	private static final String HUD_MESSAGE = "Press Esc to exit and load new model";
+	private static final String HUD_MESSAGE = "Use Mouse and W, A, S, D to move camera.\nPress Esc to exit and load new model.";
 	private String modelPath;
 	private File modelFile;
 
@@ -67,10 +67,10 @@ public class ModelViewer extends SimpleApplication {
 		sun4.setDirection(new Vector3f(-1f, -0.7f, 0f));
 		rootNode.addLight(sun4);
 		BitmapText infoText = new BitmapText(guiFont);
-		infoText.setSize(24f);
+		infoText.setSize(20f);
 		infoText.setColor(ColorRGBA.Black);
 		infoText.setText(HUD_MESSAGE);
-		infoText.setLocalTranslation(400, infoText.getLineHeight(), 0); // position
+		infoText.setLocalTranslation(425, infoText.getLineHeight()*2, 0); // position
 		guiNode.attachChild(infoText);
 	}
 
