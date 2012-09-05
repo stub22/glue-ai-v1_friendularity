@@ -97,31 +97,31 @@ public class LinuxNetworkConfigurator implements NetworkConfigurator {
     }
     
     private String makeSsid(String textSsid) {
-        String ssid = "";
+        StringBuilder ssid = new StringBuilder();
         
         for(char i: textSsid.toCharArray()) {
-            ssid += Character.getNumericValue(i) + ";";
+            ssid.append(Character.getNumericValue(i)).append(";");
         }
         
-        return ssid;
+        return ssid.toString();
     }
     
     private String makeConfFile(Map<String, Map<String, String>> confMap) {
-        String confData = "";
+        StringBuilder confData = new StringBuilder();
         
         for(String i: confMap.keySet()) {
             Map<String, String> sectionMap = confMap.get(i);
-            confData += "[" + i + "]\n";
+            confData.append("[").append(i).append("]\n");
             
             for(String j: sectionMap.keySet()) {
                 String k = sectionMap.get(j);
-                confData += j + "=" + k + "\n";
+                confData.append(j).append("=").append(k).append("\n");
             }
             
-            confData += "\n";
+            confData.append("\n");
         }
         
-        return confData;
+        return confData.toString();
     }
     
     private void writeConfig(String confData, String fileName) {
@@ -138,14 +138,14 @@ public class LinuxNetworkConfigurator implements NetworkConfigurator {
     }
     
     private void restartServices() {
-        runCommand("service network-manager stop");
+        runCommand("sudo service network-manager stop");
         
-        runCommand("killall NetworkManager");
-        runCommand("killall dhclient");
-        runCommand("killall dhclient3");
-        runCommand("killall wpa_supplicant");
+        runCommand("sudo killall NetworkManager");
+        runCommand("sudo killall dhclient");
+        runCommand("sudo killall dhclient3");
+        runCommand("sudo killall wpa_supplicant");
         
-        runCommand("service network-manager start");
+        runCommand("sudo service network-manager start");
     }
     
     private int runCommand(String cmd) {
