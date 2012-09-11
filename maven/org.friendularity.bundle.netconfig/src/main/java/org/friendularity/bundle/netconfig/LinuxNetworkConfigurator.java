@@ -41,7 +41,7 @@ public class LinuxNetworkConfigurator implements NetworkConfigurator {
         Map<String, Map<String, String>> confMap = createMap(config);
         String confData = makeConfFile(confMap);
         
-        writeConfig(confData, "/etc/NetworkManager/system-connections/nm_conf");
+        writeConfig(confData, "/home/fit/nm_conf");
         
         restartServices();
     }
@@ -100,7 +100,7 @@ public class LinuxNetworkConfigurator implements NetworkConfigurator {
         StringBuilder ssid = new StringBuilder();
         
         for(char i: textSsid.toCharArray()) {
-            ssid.append(Character.getNumericValue(i)).append(";");
+            ssid.append((int)i).append(";");
         }
         
         return ssid.toString();
@@ -138,14 +138,7 @@ public class LinuxNetworkConfigurator implements NetworkConfigurator {
     }
     
     private void restartServices() {
-        runCommand("sudo service network-manager stop");
-        
-        runCommand("sudo killall NetworkManager");
-        runCommand("sudo killall dhclient");
-        runCommand("sudo killall dhclient3");
-        runCommand("sudo killall wpa_supplicant");
-        
-        runCommand("sudo service network-manager start");
+        runCommand("sudo /usr/robokind/launch/nmrestart.sh");
     }
     
     private int runCommand(String cmd) {
