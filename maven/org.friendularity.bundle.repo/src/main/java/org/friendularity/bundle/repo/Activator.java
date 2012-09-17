@@ -26,9 +26,9 @@ public class Activator implements BundleActivator {
 		PumaAppContext pac = new PumaAppContext(context);
 		PumaBooter.applyGlobalMode(pac);
 		// ... and set our app context with PumaWebMapper, so lift can issue repo update requests
-		PumaWebMapper.setAppContext(pac);
+		PumaWebMapper pwm = PumaWebMapper.getWebMapper();
+		pwm.setAppContext(pac);
 		ClassLoader hrkContentCL = com.hrkind.content.preview.PreviewContentBundleActivator.class.getClassLoader();
-		PumaWebMapper pwm = new PumaWebMapper();
 		pwm.connectLiftInterface(context);
 		pwm.connectHrkindWebContent(hrkContentCL);
 		
