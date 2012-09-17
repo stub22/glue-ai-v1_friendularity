@@ -18,10 +18,9 @@ public class Activator implements BundleActivator {
 
     public void initWebapp(BundleContext context) {
         ClassLoader hrkContentCL = com.hrkind.content.preview.PreviewContentBundleActivator.class.getClassLoader();
-        PumaWebMapper pwm = new PumaWebMapper();
+        PumaWebMapper pwm = PumaWebMapper.getTheWebMapper();
         pwm.connectLiftInterface(context); // We may want to do this in PUMA, but for now this may make sense
         pwm.connectHrkindWebContent(hrkContentCL);
-
         // Tell the lifter lifecycle to start, once its dependencies are satisfied
         LifterLifecycle lifecycle = new LifterLifecycle();
         OSGiComponent lifterComp = new OSGiComponent(context, lifecycle);
