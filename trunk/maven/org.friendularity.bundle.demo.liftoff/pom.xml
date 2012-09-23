@@ -96,13 +96,6 @@ MNG-1412 / MNG-3111 introduced deterministic ordering of dependencies on the cla
 			<artifactId>org.cogchar.bundle.bind.lift</artifactId>
 			<version>${cogchar.version}</version>
 		</dependency>
-		
-		<dependency>
-			<!-- These resources are needed so that classloader for chat app config can be set -->
-            <groupId>com.hrkind</groupId>
-            <artifactId>com.hrkind.content.preview</artifactId>
-            <version>1.0.2-SNAPSHOT</version>
-        </dependency>
 
 	</dependencies>
 
