@@ -15,11 +15,16 @@
     <name>${project.artifactId} - OSGi</name>	
 
     <dependencies>
+		<!-- Removing commercial dependency, b/c  Friendularity is open source!
+			See com.hrkind.bundle.opengl.R50 for a commercial bundle comparable to
+			o.f.b.demo.ccrk
+			
         <dependency>
             <groupId>com.hrkind</groupId>
             <artifactId>com.hrkind.content.preview</artifactId>
             <version>1.0.2-SNAPSHOT</version>
         </dependency>		
+		-->
         <dependency>
             <groupId>org.robokind</groupId>
             <artifactId>org.robokind.headless.messaging</artifactId>
