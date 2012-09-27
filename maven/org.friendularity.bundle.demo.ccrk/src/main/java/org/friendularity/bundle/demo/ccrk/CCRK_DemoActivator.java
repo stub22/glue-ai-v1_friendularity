@@ -8,6 +8,7 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkEvent;
 import org.osgi.framework.FrameworkListener;
+import org.slf4j.LoggerFactory;
 
 
 public class CCRK_DemoActivator extends BundleActivatorBase {
