@@ -2,13 +2,8 @@ package org.friendularity.bundle.demo.ccrk;
 
 import org.appdapter.osgi.core.BundleActivatorBase;
 
-import org.cogchar.bundle.app.puma.PumaAppContext;
 import org.cogchar.bundle.app.puma.PumaBooter;
-import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.FrameworkEvent;
-import org.osgi.framework.FrameworkListener;
-import org.slf4j.LoggerFactory;
 
 /**
  * This class is a bundle activator demonstrating how to start the Cogchar PUMA system, in an
@@ -57,7 +52,7 @@ public class CCRK_DemoActivator extends BundleActivatorBase {
 
 	}
 	@Override protected void handleFrameworkStartedEvent(BundleContext bundleCtx) {
-		logInfo("CCRK_DemoActivator.handleFrameworkStartedEvent() calling startPumaDemo()");
+		getLogger().info("Calling startPumaDemo()");
 		startPumaDemo(bundleCtx);
 		
 		// Here we *could start some extra app-specific (e.g. Cogbot binding) goodies, and tell them to attach to 
@@ -71,7 +66,7 @@ public class CCRK_DemoActivator extends BundleActivatorBase {
 	private void startPumaDemo(BundleContext bundleCtx) {
 		PumaBooter pumaBooter = new PumaBooter();
 		PumaBooter.BootResult bootResult = pumaBooter.bootUnderOSGi(bundleCtx);
-		logInfo("PUMA BootResult: " + bootResult);
+		getLogger().info("Got PUMA BootResult: " + bootResult);
 	}
 
 }
