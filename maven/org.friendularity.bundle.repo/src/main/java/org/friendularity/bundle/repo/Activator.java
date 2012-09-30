@@ -1,7 +1,6 @@
 package org.friendularity.bundle.repo;
 
 import org.cogchar.bind.lift.LifterLifecycle;
-import org.cogchar.bundle.app.puma.PumaBooter;
 import org.cogchar.bundle.app.puma.PumaAppContext;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
