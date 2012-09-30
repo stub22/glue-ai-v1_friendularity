@@ -21,9 +21,9 @@ public class Activator implements BundleActivator {
 	public void initWebapp(BundleContext context) {
 		// Since we are not running PumaBooter, we must at least start the query service to get sheet-based config going
 		PumaAppContext pac = new PumaAppContext(context);
-		pac.startVanillaQueryInterface();
+		pac.startVanillaRepoClient();
 		// And now, also apply the global mode
-		pac.applyGlobalConfig();
+		pac.applyGlobalConfigAndStartService();
 		// ... and set our app context with PumaWebMapper, so lift can issue repo update requests
 		pac.getWebMapper().connectLiftInterface(context);
 		// Tell the lifter lifecycle to start, once its dependencies are satisfied
