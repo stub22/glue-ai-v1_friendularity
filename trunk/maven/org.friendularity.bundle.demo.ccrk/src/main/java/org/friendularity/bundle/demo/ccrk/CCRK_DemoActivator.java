@@ -1,8 +1,10 @@
 package org.friendularity.bundle.demo.ccrk;
 
 import org.appdapter.osgi.core.BundleActivatorBase;
+import org.cogchar.bundle.app.puma.PumaAppContext;
 
 import org.cogchar.bundle.app.puma.PumaBooter;
+import org.cogchar.bundle.app.puma.PumaContextMediator;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -65,8 +67,57 @@ public class CCRK_DemoActivator extends BundleActivatorBase {
 
 	private void startPumaDemo(BundleContext bundleCtx) {
 		PumaBooter pumaBooter = new PumaBooter();
-		PumaBooter.BootResult bootResult = pumaBooter.bootUnderOSGi(bundleCtx);
+		DemoMediator mediator = new DemoMediator();
+		PumaBooter.BootResult bootResult = pumaBooter.bootUnderOSGi(bundleCtx, mediator);
 		getLogger().info("Got PUMA BootResult: " + bootResult);
 	}
+	static class DemoMediator extends PumaContextMediator {
+		// These methods can be customized to change the way that PUMA boots + runs, and
+		// to receive notifications of progress during the boot / re-boot process.
+		
+		@Override public boolean getFlagAllowJFrames() {
+			return super.getFlagAllowJFrames();
+		}
+
+		@Override public boolean getFlagIncludeCharacters() {
+			return super.getFlagIncludeCharacters();
+		}
+
+		@Override public boolean getFlagIncludeVirtualWorld() {
+			return super.getFlagIncludeVirtualWorld();
+		}
+
+		@Override public boolean getFlagIncludeWebServices() {
+			return super.getFlagIncludeWebServices();
+		}
+
+		@Override public String getOptionalFilesysRoot() {
+			return super.getOptionalFilesysRoot();
+		}
+
+		@Override public String getPanelKind() {
+			return super.getPanelKind();
+		}
+
+		@Override public String getSysContextRootURI() {
+			return super.getSysContextRootURI();
+		}
+
+		@Override public void notifyContextBuilt(PumaAppContext ctx) throws Throwable {
+			super.notifyContextBuilt(ctx);
+		}
+
+		@Override public void notifyPanelsConstructed(PumaAppContext ctx) throws Throwable {
+			super.notifyPanelsConstructed(ctx);
+		}
+		@Override public void notifyCharactersLoaded(PumaAppContext ctx) throws Throwable {
+			super.notifyCharactersLoaded(ctx);
+		}
+		
+		@Override public void notifyBeforeBootComplete(PumaAppContext ctx) throws Throwable {
+			super.notifyBeforeBootComplete(ctx);
+		}
+		
+	}	
 
 }

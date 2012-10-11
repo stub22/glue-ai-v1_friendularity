@@ -22,7 +22,7 @@ public class Activator implements BundleActivator {
 		PumaAppContext pac = new PumaAppContext(context);
 		pac.startRepositoryConfigServices();
 		// ... and set our app context with PumaWebMapper, so lift can issue repo update requests
-		pac.getWebMapper().connectLiftInterface(context);
+		pac.getOrMakeWebMapper().connectLiftInterface(context);
 		// Tell the lifter lifecycle to start, once its dependencies are satisfied
 		LifterLifecycle lifecycle = new LifterLifecycle();
     	OSGiComponent lifterComp = new OSGiComponent(context, lifecycle);
