@@ -1,7 +1,10 @@
 package org.friendularity.bundle.repo;
 
+import org.appdapter.core.name.FreeIdent;
+import org.appdapter.core.name.Ident;
 import org.cogchar.bind.lift.LifterLifecycle;
 import org.cogchar.bundle.app.puma.PumaAppContext;
+import org.cogchar.bundle.app.puma.PumaModeConstants;
 import org.cogchar.bundle.app.puma.PumaContextMediator;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -21,7 +24,9 @@ public class Activator implements BundleActivator {
 	public void initWebapp(BundleContext context) {
 		// Since we are not running PumaBooter, we must at least start the query service to get sheet-based config going
 		PumaContextMediator mediator = new RepoPumaMediator();
-		PumaAppContext pac = new PumaAppContext(context, mediator);
+		String roleShortName = "pumaCtx_FrienduRepo";
+		Ident ctxID = new FreeIdent(PumaModeConstants.RKRT_NS_PREFIX + roleShortName, roleShortName);		
+		PumaAppContext pac = new PumaAppContext(context, mediator, ctxID);
 		pac.startRepositoryConfigServices();
 		// ... and set our app context with PumaWebMapper, so lift can issue repo update requests
 		pac.getOrMakeWebMapper().connectLiftInterface(context);
