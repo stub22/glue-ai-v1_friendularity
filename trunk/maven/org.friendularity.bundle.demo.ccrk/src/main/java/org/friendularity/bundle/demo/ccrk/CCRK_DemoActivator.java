@@ -5,7 +5,11 @@ import org.cogchar.bundle.app.puma.PumaAppContext;
 
 import org.cogchar.bundle.app.puma.PumaBooter;
 import org.cogchar.bundle.app.puma.PumaContextMediator;
+import org.cogchar.bundle.app.puma.PumaGlobalPrebootInjector;
 import org.osgi.framework.BundleContext;
+
+import org.cogchar.blob.emit.RepoSpec;
+import org.cogchar.blob.emit.OnlineSheetRepoSpec;
 
 /**
  * This class is a bundle activator demonstrating how to start the Cogchar PUMA system, in an
@@ -20,18 +24,18 @@ import org.osgi.framework.BundleContext;
  * using forceLog4jConfig(), which assumes a "log4j.properties" file-resource is
  * available on the classpath.
  *
- * In principle, this bundle should start *all* of Cogchar, for *any* environment, including
+ * In principle, this bundle should start any desired subset of Cogchar functionality, for *any* environment, including
  *		<ul><li>Cogchar behavior
  *		</li><li>Robokind animation and speech
  *		</li><li>Optional Cogchar OpenGL rendering</li></ul>
- * 
- * wever, in practice, at this time (reviewed 2012-09-28), our limitations are:
- * 
- * L1) This bundle does not try to start a lifter webapp, which is currently initialized
+
+*  The actual subset is determined through the intervation of a customizable PumaContextMediator object.
+
+* L1) This bundle does not try to start a lifter webapp, which is currently initialized
  * orthogonally to the PUMA system.  See the o.f.b.demo.liftoff project.
  * <p>
- * Other immediate problems (2012-09-28):
- * P1) At present the PumaBooter is hardcoded to *always* init an OpenGL simulator window.
+ * Other immediate problems (Updated 2012-10-15):
+ *		
  * P2) To exit, a user must kill the process (e.g. with netbeans "stop", or using ps/kill/TaskManager). 
  * We do not have clean shutdown triggers in place.  We need to call stop on bundle 0, when:
  *<br/>		a) A user X-closes our "main" simulator window.
@@ -49,6 +53,12 @@ public class CCRK_DemoActivator extends BundleActivatorBase {
 		forceLog4jConfig();
 		// Print some howdys
 		super.start(context);
+		// Register our default mediator
+		DemoMediator mediator = new DemoMediator();
+		PumaGlobalPrebootInjector injector = PumaGlobalPrebootInjector.getTheInjector();
+		// False => Do not overwrite, so any other customer mediator will get preference.
+		// Our DemoMediator coded below is only used as a backup/default.
+		injector.setMediator(mediator, false);
 		// Schedule our callback to the handle method below.
 		scheduleFrameworkStartEventHandler(context);
 
@@ -67,57 +77,20 @@ public class CCRK_DemoActivator extends BundleActivatorBase {
 
 	private void startPumaDemo(BundleContext bundleCtx) {
 		PumaBooter pumaBooter = new PumaBooter();
-		DemoMediator mediator = new DemoMediator();
+		PumaContextMediator mediator = PumaGlobalPrebootInjector.getTheInjector().getMediator();
 		PumaBooter.BootResult bootResult = pumaBooter.bootUnderOSGi(bundleCtx, mediator);
 		getLogger().info("Got PUMA BootResult: " + bootResult);
 	}
 	static class DemoMediator extends PumaContextMediator {
-		// These methods can be customized to change the way that PUMA boots + runs, and
+		// Override base class methods to customize the way that PUMA boots + runs, and
 		// to receive notifications of progress during the boot / re-boot process.
+		String TEST_REPO_SHEET_KEY = "0ArBjkBoH40tndDdsVEVHZXhVRHFETTB5MGhGcWFmeGc";
+		int  DFLT_NAMESPACE_SHEET_NUM = 9;
+		int   DFLT_DIRECTORY_SHEET_NUM = 8;
 		
-		@Override public boolean getFlagAllowJFrames() {
-			return super.getFlagAllowJFrames();
+		@Override public RepoSpec getMainConfigRepoSpec() {
+			return new OnlineSheetRepoSpec(TEST_REPO_SHEET_KEY, DFLT_NAMESPACE_SHEET_NUM, DFLT_DIRECTORY_SHEET_NUM);
 		}
-
-		@Override public boolean getFlagIncludeCharacters() {
-			return super.getFlagIncludeCharacters();
-		}
-
-		@Override public boolean getFlagIncludeVirtualWorld() {
-			return super.getFlagIncludeVirtualWorld();
-		}
-
-		@Override public boolean getFlagIncludeWebServices() {
-			return super.getFlagIncludeWebServices();
-		}
-
-		@Override public String getOptionalFilesysRoot() {
-			return super.getOptionalFilesysRoot();
-		}
-
-		@Override public String getPanelKind() {
-			return super.getPanelKind();
-		}
-
-		@Override public String getSysContextRootURI() {
-			return super.getSysContextRootURI();
-		}
-
-		@Override public void notifyContextBuilt(PumaAppContext ctx) throws Throwable {
-			super.notifyContextBuilt(ctx);
-		}
-
-		@Override public void notifyPanelsConstructed(PumaAppContext ctx) throws Throwable {
-			super.notifyPanelsConstructed(ctx);
-		}
-		@Override public void notifyCharactersLoaded(PumaAppContext ctx) throws Throwable {
-			super.notifyCharactersLoaded(ctx);
-		}
-		
-		@Override public void notifyBeforeBootComplete(PumaAppContext ctx) throws Throwable {
-			super.notifyBeforeBootComplete(ctx);
-		}
-		
 	}	
 
 }

@@ -6,6 +6,10 @@ import org.cogchar.bind.lift.LifterLifecycle;
 import org.cogchar.bundle.app.puma.PumaAppContext;
 import org.cogchar.bundle.app.puma.PumaModeConstants;
 import org.cogchar.bundle.app.puma.PumaContextMediator;
+
+import org.cogchar.blob.emit.RepoSpec;
+import org.cogchar.blob.emit.OnlineSheetRepoSpec;
+
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.robokind.api.common.osgi.lifecycle.OSGiComponent;
@@ -37,6 +41,14 @@ public class Activator implements BundleActivator {
 	}
 	
 	private static class RepoPumaMediator extends PumaContextMediator {
-		// Override methods to customize.
+		// Override base class methods to customize the way that PUMA boots + runs, and
+		// to receive notifications of progress during the boot / re-boot process.
+		String TEST_REPO_SHEET_KEY = "0ArBjkBoH40tndDdsVEVHZXhVRHFETTB5MGhGcWFmeGc";
+		int  DFLT_NAMESPACE_SHEET_NUM = 9;
+		int   DFLT_DIRECTORY_SHEET_NUM = 8;
+		
+		@Override public RepoSpec getMainConfigRepoSpec() {
+			return new OnlineSheetRepoSpec(TEST_REPO_SHEET_KEY, DFLT_NAMESPACE_SHEET_NUM, DFLT_DIRECTORY_SHEET_NUM);
+		}
 	}
 }
