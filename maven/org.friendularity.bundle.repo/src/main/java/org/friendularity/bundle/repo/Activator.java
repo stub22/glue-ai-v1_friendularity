@@ -2,22 +2,21 @@ package org.friendularity.bundle.repo;
 
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
+import org.appdapter.osgi.core.BundleActivatorBase;
 import org.cogchar.bind.lift.LifterLifecycle;
-import org.cogchar.bundle.app.puma.PumaAppContext;
-import org.cogchar.bundle.app.puma.PumaModeConstants;
-import org.cogchar.bundle.app.puma.PumaContextMediator;
-
-import org.cogchar.blob.emit.RepoSpec;
 import org.cogchar.blob.emit.OnlineSheetRepoSpec;
-
-import org.osgi.framework.BundleActivator;
+import org.cogchar.blob.emit.RepoSpec;
+import org.cogchar.bundle.app.puma.PumaAppContext;
+import org.cogchar.bundle.app.puma.PumaContextMediator;
+import org.cogchar.bundle.app.puma.PumaModeConstants;
 import org.osgi.framework.BundleContext;
 import org.robokind.api.common.osgi.lifecycle.OSGiComponent;
 
 
-public class Activator implements BundleActivator {
+public class Activator extends BundleActivatorBase {
 
 	public void start(BundleContext context) throws Exception {
+		forceLog4jConfig();
 		initWebapp(context);
 	}
 
@@ -43,7 +42,8 @@ public class Activator implements BundleActivator {
 	private static class RepoPumaMediator extends PumaContextMediator {
 		// Override base class methods to customize the way that PUMA boots + runs, and
 		// to receive notifications of progress during the boot / re-boot process.
-		String TEST_REPO_SHEET_KEY = "0ArBjkBoH40tndDdsVEVHZXhVRHFETTB5MGhGcWFmeGc";
+		String TEST_REPO_SHEET_KEY = "0ArBjkBoH40tndDdsVEVHZXhVRHFETTB5MGhGcWFmeGc"; // Main Repo
+		//String TEST_REPO_SHEET_KEY = "0Ajj1Rnx7FCoHdDN2VFdVazMzRGNGY3BMQmk1TXZzUHc"; // Biggs Test Repo
 		int  DFLT_NAMESPACE_SHEET_NUM = 9;
 		int   DFLT_DIRECTORY_SHEET_NUM = 8;
 		
