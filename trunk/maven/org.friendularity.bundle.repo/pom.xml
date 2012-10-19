@@ -15,9 +15,7 @@
 	<packaging>bundle</packaging>
 
 	<name>${project.artifactId} - OSGi</name>
-	<properties>
-		<appdapter.version>1.0.8-SNAPSHOT</appdapter.version>
-	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.felix</groupId>
