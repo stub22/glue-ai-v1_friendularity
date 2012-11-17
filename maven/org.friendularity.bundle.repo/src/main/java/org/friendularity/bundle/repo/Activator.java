@@ -7,14 +7,22 @@ import org.cogchar.bind.lift.LifterLifecycle;
 import org.cogchar.blob.emit.OnlineSheetRepoSpec;
 import org.cogchar.blob.emit.RepoSpec;
 import org.cogchar.app.puma.boot.PumaAppContext;
+import org.cogchar.app.puma.boot.PumaContextCommandBox;
+import org.cogchar.app.puma.cgchr.PumaWebMapper;
+import org.cogchar.app.puma.config.PumaConfigManager;
 import org.cogchar.app.puma.config.PumaContextMediator;
 import org.cogchar.app.puma.config.PumaModeConstants;
 import org.osgi.framework.BundleContext;
 import org.robokind.api.common.osgi.lifecycle.OSGiComponent;
 
+import org.appdapter.help.repo.RepoClient;
+import org.appdapter.core.store.Repo;
+import com.hp.hpl.jena.query.Dataset;
 
 public class Activator extends BundleActivatorBase {
 
+	public static Dataset theMainConfigDataset;
+	
 	public void start(BundleContext context) throws Exception {
 		forceLog4jConfig();
 		initWebapp(context);
@@ -32,11 +40,23 @@ public class Activator extends BundleActivatorBase {
 		PumaAppContext pac = new PumaAppContext(context, mediator, ctxID);
 		pac.startRepositoryConfigServices();
 		// ... and set our app context with PumaWebMapper, so lift can issue repo update requests
-		pac.getOrMakeWebMapper().connectLiftInterface(context);
+		PumaWebMapper pwm = pac.getOrMakeWebMapper();	
+		pwm.connectLiftInterface(context);
 		// Tell the lifter lifecycle to start, once its dependencies are satisfied
 		LifterLifecycle lifecycle = new LifterLifecycle();
     	OSGiComponent lifterComp = new OSGiComponent(context, lifecycle);
     	lifterComp.start();
+		
+		PumaContextCommandBox pccb = pwm.getCommandBox();
+		RepoClient mainConfRC = pccb.getMainConfigRepoClient();
+		Repo mainConfRepo = mainConfRC.getRepo();
+		Dataset mainConfDset = mainConfRepo.getMainQueryDataset();
+		theMainConfigDataset = mainConfDset;
+		
+		java.util.List<Repo.GraphStat> gStats = mainConfRepo.getGraphStats();
+		for (Repo.GraphStat gStat : gStats) {
+			System.out.println("Found in main config:  " + gStat);
+		}
 	}
 	
 	private static class RepoPumaMediator extends PumaContextMediator {

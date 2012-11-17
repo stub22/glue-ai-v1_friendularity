@@ -15,7 +15,11 @@
 	<packaging>bundle</packaging>
 
 	<name>${project.artifactId} - OSGi</name>
-
+	
+	<properties>
+		<web.contextPath>friendu_joseki</web.contextPath>
+	</properties>
+	
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.felix</groupId>
@@ -125,6 +129,13 @@
 				<extensions>true</extensions>
 				<configuration>
 					<instructions>
+			<!--				Web-ContextPath is from the OSGi spec.
+								With no Web-ContextPath, PAX assigns a default context path like:
+								http://localhost:8080/org.cogchar.org.cogchar.lifter/
+			-->
+
+						<Web-ContextPath>${web.contextPath}</Web-ContextPath>
+						<Export-Package>etc.*, Data.*</Export-Package>						
 						<Bundle-Activator>org.friendularity.bundle.repo.Activator</Bundle-Activator>
 					</instructions>
 				</configuration>
