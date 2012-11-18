@@ -47,12 +47,15 @@ public class Activator extends BundleActivatorBase {
     	OSGiComponent lifterComp = new OSGiComponent(context, lifecycle);
     	lifterComp.start();
 		
+		
 		PumaContextCommandBox pccb = pwm.getCommandBox();
 		RepoClient mainConfRC = pccb.getMainConfigRepoClient();
 		Repo mainConfRepo = mainConfRC.getRepo();
 		Dataset mainConfDset = mainConfRepo.getMainQueryDataset();
+		// First stab at connecting outer code to our config dataset uses this ugly static variable.  
 		theMainConfigDataset = mainConfDset;
 		
+		// Print out the available graphs, for debugging.
 		java.util.List<Repo.GraphStat> gStats = mainConfRepo.getGraphStats();
 		for (Repo.GraphStat gStat : gStats) {
 			System.out.println("Found in main config:  " + gStat);
