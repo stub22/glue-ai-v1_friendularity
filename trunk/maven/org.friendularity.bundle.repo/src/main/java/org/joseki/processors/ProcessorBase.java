@@ -121,6 +121,7 @@ public abstract class ProcessorBase implements Processor
 			
 			// 2012-11-17   Stu uncommented this, since it appears that exceptions above leave Joseki hung
 			// on next update attempt.
+			log.warn("*********************** Leaving critical section from exception handler, using code uncommented by Stu!");
           operationLock.leaveCriticalSection() ;
             throw ex ; 
         }
@@ -134,7 +135,7 @@ public abstract class ProcessorBase implements Processor
 			
 			// 2012-11-17   Stu uncommented this, since it appears that exceptions above leave Joseki hung
 			// on next update attempt.
-			
+			log.warn("*********************** Leaving critical section from exception handler, using code uncommented by Stu!");
 			operationLock.leaveCriticalSection() ;
             log.warn("Internal error - unexpected exception: ", ex) ;
             throw ex ; 
