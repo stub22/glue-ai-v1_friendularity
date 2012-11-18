@@ -118,7 +118,10 @@ public abstract class ProcessorBase implements Processor
 //            // Looking bad - abort the transaction, release the lock.
 //            if ( needAbort && transactions )
 //                defaultModel.abort();
-//            operationLock.leaveCriticalSection() ;
+			
+			// 2012-11-17   Stu uncommented this, since it appears that exceptions above leave Joseki hung
+			// on next update attempt.
+          operationLock.leaveCriticalSection() ;
             throw ex ; 
         }
         // These should have been caught.
@@ -127,7 +130,12 @@ public abstract class ProcessorBase implements Processor
 //            // Looking bad - abort the transaction, release the lock.
 //            if ( needAbort && transactions )
 //                defaultModel.abort();
-//            operationLock.leaveCriticalSection() ;
+			
+			
+			// 2012-11-17   Stu uncommented this, since it appears that exceptions above leave Joseki hung
+			// on next update attempt.
+			
+			operationLock.leaveCriticalSection() ;
             log.warn("Internal error - unexpected exception: ", ex) ;
             throw ex ; 
         }
