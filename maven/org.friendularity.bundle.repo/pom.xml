@@ -15,7 +15,14 @@
 	<packaging>bundle</packaging>
 
 	<name>${project.artifactId} - OSGi</name>
-	
+	<!-- Important: Establish the Web URL, which is used in OSGi spec
+			Web-ContextPath instruction far below, in maven-bundle-plugin.instructions
+			
+		When starting from a "New bundle project", to create a webapp, besides the
+		PAX-Web dependencies we need those instructions (and optionally this 
+		highly-visible web.contextPath variable.
+	-->
+
 	<properties>
 		<web.contextPath>friendu_joseki</web.contextPath>
 	</properties>
@@ -67,6 +74,11 @@
 			<version>${cogchar.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>org.cogchar</groupId>
+			<artifactId>org.cogchar.bundle.bind.joseki</artifactId>
+			<version>${cogchar.version}</version>
+		</dependency>		
+		<dependency>
 			<groupId>org.appdapter</groupId>
 			<artifactId>org.appdapter.bundle.core</artifactId>
 			<version>${appdapter.version}</version>
@@ -79,16 +91,16 @@
 		</dependency>
 		<!-- We want the same deps as CCRK, but not the full PUMA boot peformed by CCRK activator.
 		-->
-       <dependency>
-            <groupId>org.cogchar</groupId>
-            <artifactId>org.cogchar.bundle.app.puma</artifactId>
-            <version>${cogchar.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.cogchar</groupId>
-            <artifactId>org.cogchar.bundle.render.resources</artifactId>
-            <version>${cogchar.version}</version>
-        </dependency>
+		<dependency>
+			<groupId>org.cogchar</groupId>
+			<artifactId>org.cogchar.bundle.app.puma</artifactId>
+			<version>${cogchar.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.cogchar</groupId>
+			<artifactId>org.cogchar.bundle.render.resources</artifactId>
+			<version>${cogchar.version}</version>
+		</dependency>
 		<dependency>
 			<!-- Note that o.f.project.root and o.f.modules.main must also have been built and avail in local repo,
 				in order for variables like "robokind.version" to resolve when applied *transitively*
@@ -104,20 +116,21 @@
 			<artifactId>slf4j-log4j12</artifactId>
 			<version>1.6.1</version>
 			<scope>runtime</scope>
-				<exclusions>
+			<exclusions>
 					<!-- This embedded Log4J version is not OSGi friendly -->                               
-					<exclusion>
-						<artifactId>log4j</artifactId>
-						<groupId>log4j</groupId>
-					</exclusion>
-				</exclusions>
-         </dependency>
-         <dependency>
+				<exclusion>
+					<artifactId>log4j</artifactId>
+					<groupId>log4j</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
 			<groupId>org.apache.log4j</groupId>
 			<artifactId>com.springsource.org.apache.log4j</artifactId>
 			<version>1.2.16</version>
 			<scope>runtime</scope>                    
-         </dependency>
+		</dependency>
+
 	</dependencies>
 
 	<build>
