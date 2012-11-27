@@ -17,6 +17,21 @@
 	
 	<dependencies>
 		<dependency>
+			<!-- Our Lift-based webapp, which we expect PAX services above to find and launch to HTTP for us -->
+			<groupId>org.cogchar</groupId>
+			<artifactId>org.cogchar.bundle.bind.lift</artifactId>
+			<version>${cogchar.version}</version>
+		</dependency>
+		<dependency>
+			<!-- Our Joseki-based webapp. -->
+			<groupId>org.cogchar</groupId>
+			<artifactId>org.cogchar.bundle.bind.joseki</artifactId>
+			<version>${cogchar.version}</version>
+		</dependency>
+		
+		
+		
+		<dependency>
 			<groupId>org.apache.felix</groupId>
 			<artifactId>org.osgi.core</artifactId>
 			<version>1.4.0</version>
@@ -90,12 +105,6 @@ MNG-1412 / MNG-3111 introduced deterministic ordering of dependencies on the cla
 			<scope>runtime</scope>
 		</dependency> 
     		
-		<dependency>
-			<!-- Our Lift-based webapp, which we expect PAX services above to find and launch to HTTP for us -->
-			<groupId>org.cogchar</groupId>
-			<artifactId>org.cogchar.bundle.bind.lift</artifactId>
-			<version>${cogchar.version}</version>
-		</dependency>
 
 	</dependencies>
 

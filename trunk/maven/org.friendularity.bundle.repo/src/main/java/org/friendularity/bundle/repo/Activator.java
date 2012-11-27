@@ -25,14 +25,14 @@ public class Activator extends BundleActivatorBase {
 	
 	public void start(BundleContext context) throws Exception {
 		forceLog4jConfig();
-		initWebapp(context);
+		initWebapps(context);
 	}
 
 	public void stop(BundleContext context) throws Exception {
 		// TODO add deactivation code here
 	}
 
-	public void initWebapp(BundleContext context) {
+	public void initWebapps(BundleContext context) {
 		// Since we are not running PumaBooter, we must at least start the query service to get sheet-based config going
 		PumaContextMediator mediator = new RepoPumaMediator();
 		String roleShortName = "pumaCtx_FrienduRepo";
@@ -42,24 +42,13 @@ public class Activator extends BundleActivatorBase {
 		// ... and set our app context with PumaWebMapper, so lift can issue repo update requests
 		PumaWebMapper pwm = pac.getOrMakeWebMapper();	
 		pwm.connectLiftInterface(context);
-		// Tell the lifter lifecycle to start, once its dependencies are satisfied
-		LifterLifecycle lifecycle = new LifterLifecycle();
-    	OSGiComponent lifterComp = new OSGiComponent(context, lifecycle);
-    	lifterComp.start();
-		
-		
-		PumaContextCommandBox pccb = pwm.getCommandBox();
-		RepoClient mainConfRC = pccb.getMainConfigRepoClient();
-		Repo mainConfRepo = mainConfRC.getRepo();
-		Dataset mainConfDset = mainConfRepo.getMainQueryDataset();
+		// Tell the lifter lifecycle to start, once its OSGi dependencies are satisfied
+		pwm.startLifterLifecycle(context);
+		setupJosekiSparqlAccess(pwm);
+	}
+	protected void setupJosekiSparqlAccess(PumaWebMapper pwm) { 
 		// First stab at connecting outer code to our config dataset uses this ugly static variable.  
-		theMainConfigDataset = mainConfDset;
-		
-		// Print out the available graphs, for debugging.
-		java.util.List<Repo.GraphStat> gStats = mainConfRepo.getGraphStats();
-		for (Repo.GraphStat gStat : gStats) {
-			System.out.println("Found in main config:  " + gStat);
-		}
+		theMainConfigDataset = pwm.getMainSparqlDataset();
 	}
 	
 	private static class RepoPumaMediator extends PumaContextMediator {
