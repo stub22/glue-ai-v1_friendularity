@@ -19,6 +19,8 @@ import org.appdapter.help.repo.RepoClient;
 import org.appdapter.core.store.Repo;
 import com.hp.hpl.jena.query.Dataset;
 
+import org.cogchar.joswrap.RepoUpdateCallbackAdapter;
+
 public class Activator extends BundleActivatorBase {
 
 	public static Dataset theMainConfigDataset;
@@ -49,6 +51,13 @@ public class Activator extends BundleActivatorBase {
 	protected void setupJosekiSparqlAccess(PumaWebMapper pwm) { 
 		// First stab at connecting outer code to our config dataset uses this ugly static variable.  
 		theMainConfigDataset = pwm.getMainSparqlDataset();
+		RepoUpdateCallbackAdapter.registerCallback(new RepoUpdateCallbackAdapter.Callback() {
+			public void repoUpdateCompleted() {
+				getLogger().info("o.f.b.repo activator got SPARQL-UPDATE callback");
+				System.out.println("***\n*** (System.out direct) \n***\nYep, got repo SPARQL-UPDATE callback!!!");
+			}
+		});
+		
 	}
 	
 	private static class RepoPumaMediator extends PumaContextMediator {
