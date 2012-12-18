@@ -3,23 +3,17 @@ package org.friendularity.bundle.repo;
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
 import org.appdapter.osgi.core.BundleActivatorBase;
-import org.cogchar.bind.lift.LifterLifecycle;
 import org.cogchar.blob.emit.OnlineSheetRepoSpec;
 import org.cogchar.blob.emit.RepoSpec;
 import org.cogchar.app.puma.boot.PumaAppContext;
-import org.cogchar.app.puma.boot.PumaContextCommandBox;
 import org.cogchar.app.puma.cgchr.PumaWebMapper;
-import org.cogchar.app.puma.config.PumaConfigManager;
 import org.cogchar.app.puma.config.PumaContextMediator;
 import org.cogchar.app.puma.config.PumaModeConstants;
 import org.osgi.framework.BundleContext;
-import org.robokind.api.common.osgi.lifecycle.OSGiComponent;
-
-import org.appdapter.help.repo.RepoClient;
-import org.appdapter.core.store.Repo;
 import com.hp.hpl.jena.query.Dataset;
 
 import org.cogchar.joswrap.RepoUpdateCallbackAdapter;
+import org.joseki.processors.ProcessorBase;
 
 public class Activator extends BundleActivatorBase {
 
@@ -54,10 +48,11 @@ public class Activator extends BundleActivatorBase {
 		RepoUpdateCallbackAdapter.registerCallback(new RepoUpdateCallbackAdapter.Callback() {
 			public void repoUpdateCompleted() {
 				getLogger().info("o.f.b.repo activator got SPARQL-UPDATE callback");
-				System.out.println("***\n*** (System.out direct) \n***\nYep, got repo SPARQL-UPDATE callback!!!");
+				// System.out.println("***\n*** (System.out direct) \n***\nYep, got repo SPARQL-UPDATE callback!!!");
 			}
 		});
-		
+		//ProcessorBase.stusLockingEnabledFlag = false;
+		//ProcessorBase.stusTransactEnabledFlag = false;
 	}
 	
 	private static class RepoPumaMediator extends PumaContextMediator {
