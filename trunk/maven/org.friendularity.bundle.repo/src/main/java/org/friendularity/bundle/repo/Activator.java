@@ -6,7 +6,7 @@ import org.appdapter.osgi.core.BundleActivatorBase;
 import org.cogchar.blob.emit.OnlineSheetRepoSpec;
 import org.cogchar.blob.emit.RepoSpec;
 import org.cogchar.app.puma.boot.PumaAppContext;
-import org.cogchar.app.puma.cgchr.PumaWebMapper;
+import org.cogchar.app.puma.web.PumaWebMapper;
 import org.cogchar.app.puma.config.PumaContextMediator;
 import org.cogchar.app.puma.config.PumaModeConstants;
 import org.osgi.framework.BundleContext;
