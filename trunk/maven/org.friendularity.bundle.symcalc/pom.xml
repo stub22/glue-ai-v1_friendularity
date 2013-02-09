@@ -2,18 +2,20 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.friendularity</groupId>
+		<artifactId>org.friendularity.modules.main</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+		<relativePath>../org.friendularity.modules.main/pom.xml</relativePath>
+	</parent>	
 
-	<groupId>org.friendularity</groupId>
 	<artifactId>org.friendularity.bundle.symcalc</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
 	<packaging>bundle</packaging>
+   <name>${project.artifactId} - OSGi</name>	
 
-	<name>org.friendularity.bundle.symcalc OSGi Bundle</name>
 
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
 	<repositories>
+		<!-- use this to read from Symja maven repo - currently only contains parser version 0.0.7
 		<repository>
 			<id>org-matheclipse-repository</id>
 			<url>http://symja.googlecode.com/svn/maven-repository/</url>
@@ -24,6 +26,7 @@
 				<enabled>false</enabled>
 			</snapshots>
 		</repository>
+		-->
 	</repositories>		
 	<dependencies>
 		<dependency>
@@ -35,7 +38,26 @@
 			<groupId>com.google.collections</groupId>
 			<artifactId>google-collections</artifactId>
 			<version>1.0</version>
-		</dependency>			
+		</dependency>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>11.0</version>
+		</dependency>		
+		<dependency>
+			<!-- Log4J is used directly by some JAS classes -->
+			<groupId>org.apache.log4j</groupId>
+			<artifactId>com.springsource.org.apache.log4j</artifactId>
+			<version>1.2.16</version>
+			<scope>provided</scope>			
+		</dependency>
+		<dependency>
+			<!-- JAS has some embedded JUnit tests -->
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.6</version>
+			<scope>provided</scope>			
+		</dependency>		
 		<dependency>
 			<groupId>org.apache.felix</groupId>
 			<artifactId>org.osgi.core</artifactId>
