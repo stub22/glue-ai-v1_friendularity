@@ -87,6 +87,7 @@
 				<configuration>
 					<instructions>
 						<Bundle-Activator>org.friendularity.bundle.symcalc.Activator</Bundle-Activator>
+						<Private-Package>com.google.common.*,junit.*, org.junit.*, org.hamcrest.*</Private-Package>
 					</instructions>
 				</configuration>
 			</plugin>
@@ -205,6 +206,8 @@
 									<entry key="felix.auto.deploy.action" value="uninstall,install,update,start"/>
 									<entry key="org.osgi.framework.storage" value="${project.build.directory}${file.separator}felix-cache"/>
 									<entry key="org.osgi.framework.bootdelegation" value="*"/>
+									<!-- Friendularity custom : Allow sun.misc package to be used by (which math piece?) -->
+									<entry key="org.osgi.framework.system.packages.extra" value="sun.misc" />									
 								</propertyfile>
 								<makeurl property="run.properties.url" file="${project.build.directory}/run.properties"/>
 								<java fork="true" jar="${maven.dependency.org.apache.felix.org.apache.felix.main.jar.path}">
