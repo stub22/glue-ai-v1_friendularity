@@ -1,14 +1,17 @@
 package org.friendularity.bundle.demo.ccrk;
 
+import java.util.List;
 import org.appdapter.osgi.core.BundleActivatorBase;
 
 import org.cogchar.app.puma.boot.PumaBooter;
 import org.cogchar.app.puma.config.PumaContextMediator;
 import org.cogchar.app.puma.registry.PumaGlobalPrebootInjector;
+import org.cogchar.bind.rk.robot.motion.CogcharMotionSource;
 import org.osgi.framework.BundleContext;
 
 import org.cogchar.blob.emit.RepoSpec;
 import org.cogchar.blob.emit.OnlineSheetRepoSpec;
+import org.robokind.api.motion.Robot;
 
 /**
  * This class is a bundle activator demonstrating how to start the Cogchar PUMA system, in an
@@ -32,14 +35,9 @@ import org.cogchar.blob.emit.OnlineSheetRepoSpec;
 
 * L1) This bundle does not try to start a lifter webapp, which is currently initialized
  * orthogonally to the PUMA system.  See the o.f.b.demo.liftoff project.
- * <p>
- * Other immediate problems (Updated 2012-10-15):
- *		
- * P2) To exit, a user must kill the process (e.g. with netbeans "stop", or using ps/kill/TaskManager). 
- * We do not have clean shutdown triggers in place.  We need to call stop on bundle 0, when:
- *<br/>		a) A user X-closes our "main" simulator window.
- *<br/>		b) User chooses quit command from a console GUI menu or a web GUI
- * </p>
+ * 		
+ * To exit, a user may X-closes our "main" simulator window, which calls stop on bundle 0.
+ * 
  * @author Stu B. <www.texpedient.com>
  */
 public class CCRK_DemoActivator extends BundleActivatorBase {
@@ -79,6 +77,18 @@ public class CCRK_DemoActivator extends BundleActivatorBase {
 		PumaContextMediator mediator = PumaGlobalPrebootInjector.getTheInjector().getMediator();
 		PumaBooter.BootResult bootResult = pumaBooter.bootUnderOSGi(bundleCtx, mediator);
 		getLogger().info("Got PUMA BootResult: " + bootResult);
+		startMotionComputers(bundleCtx);
+		
+	}
+	private void startMotionComputers(BundleContext bundleCtx) { 
+		List<CogcharMotionSource> cogMotSrcList = CogcharMotionSource.findCogcharMotionSources(bundleCtx);
+		for (CogcharMotionSource cms : cogMotSrcList) {
+			Robot srcBot = cms.getRobot();
+			Robot.Id srcBotID = srcBot.getRobotId();
+			getLogger().info("Found CogcharMotionSource for Robot-ID: " + srcBotID);
+			CCRK_DemoMotionComputer dmc = new CCRK_DemoMotionComputer();
+			cms.addJointComputer(dmc);
+		}
 	}
 	static class DemoMediator extends PumaContextMediator {
 		// Override base class methods to customize the way that PUMA boots + runs, and
