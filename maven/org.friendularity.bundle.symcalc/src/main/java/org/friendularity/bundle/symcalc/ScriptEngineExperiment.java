@@ -117,7 +117,12 @@ public class ScriptEngineExperiment {
 			evalPrint("D[Sin[x]*Cos[x],x]");		//  assertEquals("Cos[x]^2-Sin[x]^2"
 			String e = (String) evalPrint("Expand[(x+5)^3]");			//   assertEquals("125+75*x+15*x^2+x^3", stringResult);
 			evalPrint("Factor[" + e + "]");		//  assertEquals("(5+x)^3", stringResult);
-
+			evalPrint("JavaForm[{{1,2,3},{3,4,11},{13,7,8}}.{{1,2,3},{3,4,11},{13,7,8}}]");
+			// "a matrix contains the rows as sublists"
+			evalPrint("({{1,2,3},{3,4,11},{13,7,8}}.{{1,2,3},{3,4,11},{13,7,8}})[[2]]");
+			evalPrint("$vvv=Transpose[{{1,2,3},{3,4,11},{13,7,8}}.{{1,2,3},{3,4,11},{13,7,8}}][[2]]");
+			evalPrint("$vvv[[3]]");
+			evalPrint("For[$j = 1, $j <= 10, $j++, Print[$j]]");
 			// Define variables $x and $y:
 
 			evalPrint("$x");
@@ -127,6 +132,8 @@ public class ScriptEngineExperiment {
 
 			evalPrint("$threeVec[v1_,v2_,v3_]:={v1,v2 * " + magicMult + ",v3}");
 			evalPrint("$threeVec[$x,5,NextPrime[37,3]]");
+			
+			evalPrint("$signalValue[idx_,val_,1]:={v1,v2 * " + magicMult + ",v3}");
 
 			Object ratObj1 = evalPrint("Rational[2,3]");
 			Object ratObj2 = evalPrint("Rational[11,5]+2");
