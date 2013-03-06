@@ -121,7 +121,7 @@ public class KalmanToy {
 // H = inv(Rxx)* Rxy, R= Rxy(0)-h*Rxx(0)
             H = R0Inverse.multiply(Rxy);
             H = H.transpose();
-            //R=...
+            // haven't finish this equation, R=...
             
             //System.out.println(H.getColumn(0)[1]);
 //Update the parameter
