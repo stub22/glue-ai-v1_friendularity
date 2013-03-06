@@ -15,9 +15,7 @@ import org.apache.commons.math3.analysis.function.*;
  */
 public class KalmanToy {
 
-    /**
-     * @param args the command line arguments
-     */
+
     // this code is to simulate the closed-loop / semi-supervised learning of a robot
     public static void main(String[] args) {
         System.out.println("BEGIN The algorithm...");
@@ -49,6 +47,7 @@ public class KalmanToy {
 // process and measurement noise vectors
         RealVector pNoise = new ArrayRealVector(new double[2]);
         RealVector mNoise = new ArrayRealVector(new double[1]);
+// the u should be a command series set to the 'robot'
         RealVector u = new ArrayRealVector(new double[]{input});
 
         RealVector z = new ArrayRealVector(new double[600]);
@@ -73,11 +72,9 @@ public class KalmanToy {
 // x = A * x + B*u + p_noise
             x = A.operate(x).add(B.operate(u.mapMultiply(1))).add(pNoise);
 
-//System.out.println("after adding pNoise");
 // simulate the measurement
             mNoise.setEntry(0, measurementNoise * rand.nextGaussian());
 
-//System.out.println("after 2nd setEntry");
 // z = H * x + m_noise
             z.setSubVector(i, H.operate(x).add(mNoise));
             s.setEntry(i, x.getEntry(0));
@@ -119,7 +116,7 @@ public class KalmanToy {
             RealMatrix R0Inverse = new LUDecomposition(R0).getSolver().getInverse();
             A = R1.multiply(R0Inverse);
             Q = R0.add(A.multiply(R1)).subtract(B.multiply(B.transpose()).scalarMultiply(input * input));
-//System.out.println(A.getColumn(0)[1]); 
+
 // M-step: update H and R with regression method
 // H = inv(Rxx)* Rxy, R= Rxy(0)-h*Rxx(0)
             H = R0Inverse.multiply(Rxy);
@@ -133,5 +130,6 @@ public class KalmanToy {
         filter = new KalmanFilter(pm, mm);
         }
     }//end of the EM algorithm
+    
 // choose the input u in order to minimize E[(s-z)^2]
 }
