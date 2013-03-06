@@ -127,7 +127,7 @@ public class KalmanToy {
             //R=...
             
             //System.out.println(H.getColumn(0)[1]);
-//
+//Update the parameter
         pm = new DefaultProcessModel(A, B, Q, x, P0);
         mm = new DefaultMeasurementModel(H, R);
         filter = new KalmanFilter(pm, mm);
