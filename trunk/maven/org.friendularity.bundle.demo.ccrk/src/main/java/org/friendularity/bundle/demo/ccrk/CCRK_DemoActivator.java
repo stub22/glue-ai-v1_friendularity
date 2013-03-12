@@ -12,7 +12,8 @@ import org.osgi.framework.BundleContext;
 import org.cogchar.blob.emit.RepoSpec;
 import org.cogchar.blob.emit.OnlineSheetRepoSpec;
 import org.robokind.api.motion.Robot;
-
+import org.robokind.ui.swing.common.lifecycle.ServicesFrame;
+import org.cogchar.bind.rk.behavior.SceneLifecycleDemo;
 /**
  * This class is a bundle activator demonstrating how to start the Cogchar PUMA system, in an
  * OSGi environment.  We call such a bundle a "top" bundle, which is essentially a launchable
@@ -58,7 +59,16 @@ public class CCRK_DemoActivator extends BundleActivatorBase {
 		injector.setMediator(mediator, false);
 		// Schedule our callback to the handle method below.
 		scheduleFrameworkStartEventHandler(context);
+		startLifecycleMonitor(context);
 
+	}
+	protected void startLifecycleMonitor(final BundleContext context) {
+      
+		ServicesFrame frame = new ServicesFrame();
+		frame.setBundleContext(context);
+		frame.setVisible(true);
+  
+        SceneLifecycleDemo.test(context);		
 	}
 	@Override protected void handleFrameworkStartedEvent(BundleContext bundleCtx) {
 		getLogger().info("Calling startPumaDemo()");
