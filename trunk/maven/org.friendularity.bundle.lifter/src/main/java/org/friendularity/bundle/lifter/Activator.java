@@ -5,11 +5,11 @@ import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
 import org.appdapter.osgi.core.BundleActivatorBase;
 import org.cogchar.app.puma.boot.PumaAppContext;
-import org.cogchar.app.puma.cgchr.PumaWebMapper;
 import org.cogchar.app.puma.config.PumaContextMediator;
-import org.cogchar.app.puma.config.PumaModeConstants;
+import org.cogchar.app.puma.web.PumaWebMapper;
 import org.cogchar.blob.emit.OnlineSheetRepoSpec;
 import org.cogchar.blob.emit.RepoSpec;
+import org.cogchar.name.entity.EntityRoleCN;
 import org.osgi.framework.BundleContext;
 
 public class Activator extends BundleActivatorBase {
@@ -29,7 +29,7 @@ public class Activator extends BundleActivatorBase {
 		// Since we are not running PumaBooter, we must at least start the query service to get sheet-based config going
 		PumaContextMediator mediator = new RepoPumaMediator();
 		String roleShortName = "pumaCtx_FrienduRepo";
-		Ident ctxID = new FreeIdent(PumaModeConstants.RKRT_NS_PREFIX + roleShortName, roleShortName);		
+		Ident ctxID = new FreeIdent(EntityRoleCN.RKRT_NS_PREFIX + roleShortName, roleShortName);		
 		PumaAppContext pac = new PumaAppContext(context, mediator, ctxID);
 		pac.startRepositoryConfigServices();
 		// ... and set our app context with PumaWebMapper, so lift can issue repo update requests
