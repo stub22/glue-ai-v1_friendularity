@@ -163,7 +163,7 @@
 							<tasks>
 								<property name="runtime_classpath" refid="maven.runtime.classpath" />
 								<echo
-									message="Extracting DeliSchema from deliSchema.n3 and converting to Java" />
+									message="Rendering AnimMotivMapBlend.owl into Java constants" />
 								<java classname="jena.schemagen" classpath="${runtime_classpath}">
 									<arg value="--inference"/>
 									<arg value="-i"/>
