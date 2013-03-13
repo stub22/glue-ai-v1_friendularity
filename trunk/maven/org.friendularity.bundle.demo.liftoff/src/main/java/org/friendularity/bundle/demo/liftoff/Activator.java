@@ -1,14 +1,18 @@
 package org.friendularity.bundle.demo.liftoff;
 
+import org.appdapter.osgi.core.BundleActivatorBase;
 import org.cogchar.bind.lift.LifterLifecycle;
+import org.cogchar.bundle.app.puma.PumaAppUtils;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.robokind.api.common.osgi.lifecycle.OSGiComponent;
+import org.cogchar.joswrap.RepoUpdateCallbackAdapter;
 
-public class Activator implements BundleActivator {
+public class Activator extends BundleActivatorBase {
 
     public void start(BundleContext context) throws Exception {
         initWebapp(context);
+		setupRepoUpdateCallback();
     }
 
     public void stop(BundleContext context) throws Exception {
@@ -21,4 +25,18 @@ public class Activator implements BundleActivator {
         OSGiComponent lifterComp = new OSGiComponent(context, lifecycle);
         lifterComp.start();
     }
+	
+	public void setupRepoUpdateCallback() {
+		/**
+		 * This is a giant hack around the topic of properly notifying our VWorld (or any other aspect of Cogchar)
+		 * that something in our "main memory" repo has changed.  At present we assume that any such update means
+		 * we should simply update the Goodies in our V-World.
+		 */
+		RepoUpdateCallbackAdapter.registerCallback(new RepoUpdateCallbackAdapter.Callback() {
+			public void repoUpdateCompleted() {
+				getLogger().info("o.f.b.demo.liftoff activator got SPARQL-UPDATE callback, now pumping Goody Updates!");
+				PumaAppUtils.pumpGoodyUpdatesToVWorld();
+			}
+		});
+	}
 }
