@@ -59,16 +59,20 @@ public class CCRK_DemoActivator extends BundleActivatorBase {
 		injector.setMediator(mediator, false);
 		// Schedule our callback to the handle method below.
 		scheduleFrameworkStartEventHandler(context);
-		startLifecycleMonitor(context);
+		startLifecycleMonitorGuiWindow(context);
+		startWhackamoleGuiWindow(context);
 
 	}
-	protected void startLifecycleMonitor(final BundleContext context) {
+	protected void startLifecycleMonitorGuiWindow(final BundleContext context) {
       
 		ServicesFrame frame = new ServicesFrame();
 		frame.setBundleContext(context);
 		frame.setVisible(true);
   
         SceneLifecycleDemo.test(context);		
+	}
+	protected void startWhackamoleGuiWindow(final BundleContext context) {
+		org.cogchar.impl.trigger.Whackamole.main(null);
 	}
 	@Override protected void handleFrameworkStartedEvent(BundleContext bundleCtx) {
 		getLogger().info("Calling startPumaDemo()");
