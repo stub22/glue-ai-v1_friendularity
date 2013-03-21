@@ -12,7 +12,8 @@ import org.osgi.framework.BundleContext;
 import org.cogchar.blob.emit.RepoSpec;
 import org.cogchar.blob.emit.OnlineSheetRepoSpec;
 import org.robokind.api.motion.Robot;
-import org.robokind.ui.swing.common.lifecycle.ServicesFrame;
+// import org.robokind.ui.swing.common.lifecycle.ServicesFrame;
+import org.rwshop.swing.common.lifecycle.ServicesFrame;
 import org.cogchar.bind.rk.behavior.SceneLifecycleDemo;
 /**
  * This class is a bundle activator demonstrating how to start the Cogchar PUMA system, in an
