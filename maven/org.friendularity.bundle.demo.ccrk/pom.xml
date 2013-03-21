@@ -73,10 +73,11 @@
 			<scope>runtime</scope>			
 		</dependency>
 		<dependency>
-			<groupId>org.robokind.ui</groupId>
-			<artifactId>org.robokind.ui.swing.common</artifactId>
-			<version>0.8.6</version>
-		</dependency>
+			<groupId>org.rwshop</groupId>
+			<artifactId>org.rwshop.swing.common</artifactId>
+			<version>${rwshop.version}</version>
+		</dependency>		
+
 	</dependencies>
 
 	<build>
