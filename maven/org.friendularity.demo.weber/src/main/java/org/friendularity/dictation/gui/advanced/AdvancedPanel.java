@@ -13,7 +13,8 @@ package org.friendularity.dictation.gui.advanced;
 
 import org.friendularity.dictation.main.Vocabulary;
 import org.friendularity.dictation.gui.main.DictationImpl;
-import com.hansonrobotics.dictation.gui.advanced.resources.ModifiedFlowLayout;
+//import com.hansonrobotics.dictation.gui.advanced.resources.ModifiedFlowLayout;
+import org.friendularity.dictation.gui.advanced.resources.ModifiedFlowLayout;
 import org.friendularity.dictation.jmx.JMXWrapper;
 import java.awt.Color;
 import java.awt.FlowLayout;
