@@ -3,7 +3,8 @@
  * and open the template in the editor.
  */
 
-package com.hansonrobotics.dictation.gui.advanced.resources;
+package org.friendularity.dictation.gui.advanced.resources;
+//package com.hansonrobotics.dictation.gui.advanced.resources;
 
 /*
  */
