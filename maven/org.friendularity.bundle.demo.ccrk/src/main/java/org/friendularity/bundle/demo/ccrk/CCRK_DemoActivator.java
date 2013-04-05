@@ -70,7 +70,14 @@ public class CCRK_DemoActivator extends BundleActivatorBase {
 		frame.setBundleContext(context);
 		frame.setVisible(true);
   
-        SceneLifecycleDemo.test(context);		
+       // SceneLifecycleDemo.test(context);		
+/*  [java] java.lang.RuntimeException: Uri does not contain text after hash '#' [fakeURI]
+     [java] 	at org.appdapter.core.name.FreeIdent.<init>(FreeIdent.java:40)
+     [java] 	at org.cogchar.bind.rk.behavior.ChannelBindingConfig.initExplicitly(ChannelBindingConfig.java:41)
+     [java] 	at org.cogchar.bind.rk.behavior.SceneLifecycleDemo.test(SceneLifecycleDemo.java:66)
+     [java] 	at org.friendularity.bundle.demo.ccrk.CCRK_DemoActivator.startLifecycleMonitorGuiWindow(CCRK_DemoActivator.java:73)
+     [java] 	at org.friendularity.bundle.demo.ccrk.CCRK_DemoActivator.start(CCRK_DemoActivator.java:63)
+**/
 	}
 	protected void startWhackamoleGuiWindow(final BundleContext context) {
 		org.cogchar.impl.trigger.Whackamole.main(null);
