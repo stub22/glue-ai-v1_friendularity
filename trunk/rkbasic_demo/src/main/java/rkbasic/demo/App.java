@@ -24,14 +24,14 @@ public class App {
         myRobot = Robokind.connectRobot();
         myPlayer = Robokind.connectAnimationPlayer();
         mySpeaker = Robokind.connectSpeechService();
+        
+        JointId waist = new JointId(myRobot.getRobotId(), new Joint.Id(WAIST));
+        JointId leg = new JointId(
+                myRobot.getRobotId(), new Joint.Id(RIGHT_HIP_YAW));
+        
         myGoalPositions = new RobotPositionHashMap();
-        
-        JointId jointId = new JointId(myRobot.getRobotId(), new Joint.Id(WAIST));
-
-        myGoalPositions.put(jointId, new NormalizedDouble(0.0));
-        myGoalPositions.put(jointId, new NormalizedDouble(1.0));
-        myGoalPositions.put(jointId, new NormalizedDouble(0.5));
-        
+        myGoalPositions.put(waist, new NormalizedDouble(1.0));
+        myGoalPositions.put(leg, new NormalizedDouble(0.5));
         myRobot.move(myGoalPositions, 1000);
         
         Animation introAnim = Robokind.loadAnimation("intro.anim.xml");
