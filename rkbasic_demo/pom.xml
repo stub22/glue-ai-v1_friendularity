@@ -26,7 +26,7 @@
     <dependencies>
         <dependency>
             <groupId>org.robokind</groupId>
-            <artifactId>org.robokind.basic</artifactId>
+            <artifactId>org.robokind.client.basic</artifactId>
             <version>${robokind.version}</version>
         </dependency>
         <dependency>
