@@ -7,10 +7,10 @@ import org.robokind.api.common.position.NormalizedDouble;
 import org.robokind.api.motion.Joint;
 import org.robokind.api.motion.messaging.RemoteRobot;
 import org.robokind.api.speech.messaging.RemoteSpeechServiceClient;
-import org.robokind.basic.Robokind;
+import org.robokind.client.basic.Robokind;
 
 import static org.robokind.api.motion.Robot.*;
-import static org.robokind.basic.RobotJoints.*;
+import static org.robokind.client.basic.RobotJoints.*;
 
 public class App {
     private static RemoteRobot myRobot;
