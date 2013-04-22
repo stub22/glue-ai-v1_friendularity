@@ -57,6 +57,7 @@
 -->
 	 <module>../org.friendularity.bundle.netconfig</module>
 	 <module>../org.friendularity.model.test</module>
+	 <module>../org.friendularity.demo.lifecycles</module>
 	</modules>	
 	<properties>
 		<jmonkey.version>3.0.0.20120512-SNAPSHOT</jmonkey.version>
