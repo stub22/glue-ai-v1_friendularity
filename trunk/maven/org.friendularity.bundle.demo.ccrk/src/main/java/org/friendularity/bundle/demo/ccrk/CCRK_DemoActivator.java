@@ -80,7 +80,7 @@ public class CCRK_DemoActivator extends BundleActivatorBase {
 **/
 	}
 	protected void startWhackamoleGuiWindow(final BundleContext context) {
-		org.cogchar.impl.trigger.Whackamole.main(null);
+		org.cogchar.impl.trigger.Whackamole.launchWhackamoleGui(null);
 	}
 	@Override protected void handleFrameworkStartedEvent(BundleContext bundleCtx) {
 		getLogger().info("Calling startPumaDemo()");
