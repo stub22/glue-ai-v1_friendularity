@@ -63,12 +63,15 @@ Version-less parent will be allowed in Maven 3.1.
 		<rwshop.version>0.8.9.2</rwshop.version>
 
 		<freckler.version>1.0.0-SNAPSHOT</freckler.version>
+        
+        <jflux.version>0.1.5-SNAPSHOT</jflux.version>
 	
 		<scala.version>2.8.1</scala.version>
 		<netbeans.version>RELEASE701</netbeans.version>
 				
 		<maven.compiler.source>1.6</maven.compiler.source>
 		<maven.compiler.target>1.6</maven.compiler.target>
+        
 		<encoding>UTF-8</encoding>
 		
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
