@@ -59,6 +59,8 @@
 	 <module>../org.friendularity.model.test</module>
 	 <module>../org.friendularity.demo.lifecycles</module>
      <module>../org.friendularity.temp.connection</module>
+     <module>../org.friendularity.test.camera.r50</module>
+     <module>../org.friendularity.test.sensors.r50</module>
 	</modules>	
 	<properties>
 		<jmonkey.version>3.0.0.20120512-SNAPSHOT</jmonkey.version>
