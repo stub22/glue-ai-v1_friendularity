@@ -61,7 +61,8 @@ public class ConnectionLifecycle implements ServiceLifecycle<Connection> {
         
         // Retrieve the spec
         // ConnectionSpec connectionSpec = null;
-
+        
+        /*
         //<editor-fold defaultstate="collapsed" desc=" Build the URL from the Spec ">
 
         // The address extension to the url
@@ -102,6 +103,8 @@ public class ConnectionLifecycle implements ServiceLifecycle<Connection> {
                 //</editor-fold>
 
         return connection;
+        */
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
