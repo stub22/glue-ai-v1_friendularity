@@ -33,8 +33,6 @@ import org.apache.qpid.url.URLSyntaxException;
  */
 public class ConnectionLifecycle implements ServiceLifecycle<Connection> {
     
-    //private final static String theConnectionSpec = "connectionSpec";
-
     /**
      * This is the format string for AMQP: Advanced Message Queuing Protocol.
      * AMQP is a language agnostic implementation similar to JMS: Java Messaging
@@ -51,6 +49,13 @@ public class ConnectionLifecycle implements ServiceLifecycle<Connection> {
      */
     private final static String theTCPAddressFormatString = "tcp://%s:%s";
 
+    
+    ConnectionSpec myConnectionSpec;
+    
+    public ConnectionLifecycle( ConnectionSpec aConnection) {
+        myConnectionSpec = aConnection;
+    }
+    
     @Override
     public List getDependencySpecs() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -59,23 +64,19 @@ public class ConnectionLifecycle implements ServiceLifecycle<Connection> {
     @Override
     public Connection createService(Map<String,Object> dependencyMap) {
         
-        // Retrieve the spec
-        // ConnectionSpec connectionSpec = null;
-        
-        /*
         //<editor-fold defaultstate="collapsed" desc=" Build the URL from the Spec ">
 
         // The address extension to the url
         String Address = String.format(theTCPAddressFormatString,
-                connectionSpec.getIpAddress(),
-                connectionSpec.getPort());
+                myConnectionSpec.getIpAddress(),
+                myConnectionSpec.getPort());
 
         // The URL used for QPID messaging.
         String amqpURL = String.format(theAMQPFormatString,
-                connectionSpec.getUsername(),
-                connectionSpec.getPassword(),
-                connectionSpec.getClientName(),
-                connectionSpec.getVirtualHost(),
+                myConnectionSpec.getUsername(),
+                myConnectionSpec.getPassword(),
+                myConnectionSpec.getClientName(),
+                myConnectionSpec.getVirtualHost(),
                 Address);
         //</editor-fold>
         
@@ -103,8 +104,6 @@ public class ConnectionLifecycle implements ServiceLifecycle<Connection> {
                 //</editor-fold>
 
         return connection;
-        */
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
