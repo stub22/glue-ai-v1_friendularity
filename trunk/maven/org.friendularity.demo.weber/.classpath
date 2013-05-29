@@ -1,42 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" output="target/classes" path="src/main/java">
-		<attributes>
-			<attribute name="optional" value="true"/>
-			<attribute name="maven.pomderived" value="true"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry excluding="**" kind="src" output="target/classes" path="src/main/resources">
-		<attributes>
-			<attribute name="maven.pomderived" value="true"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="src" output="target/test-classes" path="src/test/java">
-		<attributes>
-			<attribute name="optional" value="true"/>
-			<attribute name="maven.pomderived" value="true"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6">
-		<attributes>
-			<attribute name="maven.pomderived" value="true"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER">
-		<attributes>
-			<attribute name="maven.pomderived" value="true"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="src" path="/org.cogchar.lib.integroid"/>
-	<classpathentry kind="src" path="/org.cogchar.lib.core"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.appdapter.lib.core"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.appdapter.lib.registry"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.cogchar.lib.animoid"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.cogchar.lib.convoid"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.cogchar.lib.freckler"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.cogchar.lib.onto"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.cogchar.lib.outer.client"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.cogchar.lib.render"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.cogchar.lib.sonograph"/>
-	<classpathentry kind="output" path="target/classes"/>
+  <classpathentry kind="src" path="src/test/java" output="target/test-classes" including="**/*.java"/>
+  <classpathentry kind="src" path="src/main/java" including="**/*.java"/>
+  <classpathentry kind="src" path="src/main/resources" excluding="**/*.java"/>
+  <classpathentry kind="output" path="target/classes"/>
+  <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+  <classpathentry kind="var" path="M2_REPO/junit/junit/3.8.1/junit-3.8.1.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/apache/httpcomponents/httpclient/4.1.2/httpclient-4.1.2.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/apache/httpcomponents/httpcore/4.1.2/httpcore-4.1.2.jar"/>
+  <classpathentry kind="var" path="M2_REPO/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1.jar"/>
+  <classpathentry kind="var" path="M2_REPO/commons-codec/commons-codec/1.4/commons-codec-1.4.jar"/>
+  <classpathentry kind="var" path="M2_REPO/com/kenai/nbpwr/com-sun-syndication-feed/1.0-201002241208/com-sun-syndication-feed-1.0-201002241208.jar"/>
+  <classpathentry kind="var" path="M2_REPO/rome/rome/1.0/rome-1.0.jar"/>
+  <classpathentry kind="var" path="M2_REPO/jdom/jdom/1.0/jdom-1.0.jar"/>
+  <classpathentry kind="var" path="M2_REPO/com/kenai/nbpwr/org-jdom/1.0-201002261215/org-jdom-1.0-201002261215.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/cogchar/org.cogchar.bundle.core/1.0.6.1/org.cogchar.bundle.core-1.0.6.1.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/appdapter/org.appdapter.bundle.core/1.1.0/org.appdapter.bundle.core-1.1.0.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/appdapter/ext.bundle.osgi.common/1.1.0/ext.bundle.osgi.common-1.1.0.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/osgi/org.osgi.core/4.2.0/org.osgi.core-4.2.0.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/osgi/org.osgi.compendium/4.2.0/org.osgi.compendium-4.2.0.jar"/>
+  <classpathentry kind="var" path="M2_REPO/com/h2database/h2/1.3.157/h2-1.3.157.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/slf4j/slf4j-api/1.6.1/slf4j-api-1.6.1.jar"/>
+  <classpathentry kind="var" path="M2_REPO/com/weiglewilczek/scala-lang-osgi/scala-library/2.8.1/scala-library-2.8.1.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/appdapter/ext.bundle.jena_all_264/1.1.0/ext.bundle.jena_all_264-1.1.0.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/apache/felix/org.osgi.core/1.4.0/org.osgi.core-1.4.0.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/apache/servicemix/bundles/org.apache.servicemix.bundles.xmlresolver/1.2_3/org.apache.servicemix.bundles.xmlresolver-1.2_3.jar"/>
+  <classpathentry kind="var" path="M2_REPO/com/ibm/icu/com.springsource.com.ibm.icu/3.4.5/com.springsource.com.ibm.icu-3.4.5.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/apache/servicemix/bundles/org.apache.servicemix.bundles.lucene/3.0.3_2/org.apache.servicemix.bundles.lucene-3.0.3_2.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/apache/servicemix/bundles/org.apache.servicemix.bundles.xerces/2.9.1_5/org.apache.servicemix.bundles.xerces-2.9.1_5.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/apache/servicemix/bundles/org.apache.servicemix.bundles.javax.mail/1.4.1_4/org.apache.servicemix.bundles.javax.mail-1.4.1_4.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/apache/servicemix/specs/org.apache.servicemix.specs.activation-api-1.1/1.8.0/org.apache.servicemix.specs.activation-api-1.1-1.8.0.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/appdapter/ext.bundle.math.jscience_50SNAP/1.0.9/ext.bundle.math.jscience_50SNAP-1.0.9.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/appdapter/ext.bundle.xml.dom4j_161/1.1.0/ext.bundle.xml.dom4j_161-1.1.0.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/ow2/bundles/ow2-bundles-externals-commons-logging/1.0.33/ow2-bundles-externals-commons-logging-1.0.33.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/apache/servicemix/bundles/org.apache.servicemix.bundles.commons-codec/1.3_3/org.apache.servicemix.bundles.commons-codec-1.3_3.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/openl/rules/org.openl.lib.poi.dev/5.9.4.1/org.openl.lib.poi.dev-5.9.4.1.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/apache/poi/ooxml-schemas/1.1/ooxml-schemas-1.1.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/apache/xmlbeans/xmlbeans/2.3.0/xmlbeans-2.3.0.jar"/>
+  <classpathentry kind="var" path="M2_REPO/dom4j/dom4j/1.6.1/dom4j-1.6.1.jar"/>
+  <classpathentry kind="var" path="M2_REPO/xml-apis/xml-apis/1.0.b2/xml-apis-1.0.b2.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/appdapter/ext.bundle.math.symja_jas/1.1.0/ext.bundle.math.symja_jas-1.1.0.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/apache/commons/commons-math3/3.1.1/commons-math3-3.1.1.jar"/>
+  <classpathentry kind="var" path="M2_REPO/com/google/collections/google-collections/1.0/google-collections-1.0.jar"/>
+  <classpathentry kind="var" path="M2_REPO/com/google/guava/guava/11.0/guava-11.0.jar"/>
+  <classpathentry kind="var" path="M2_REPO/com/google/code/findbugs/jsr305/1.3.9/jsr305-1.3.9.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/apache/log4j/com.springsource.org.apache.log4j/1.2.16/com.springsource.org.apache.log4j-1.2.16.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/apache/servicemix/bundles/org.apache.servicemix.bundles.xpp3/1.1.4c_5/org.apache.servicemix.bundles.xpp3-1.1.4c_5.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/netbeans/api/org-jdesktop-layout/RELEASE701/org-jdesktop-layout-RELEASE701.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/netbeans/external/swing-layout-1.0.4/RELEASE701/swing-layout-1.0.4-RELEASE701.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/netbeans/api/org-jdesktop-beansbinding/RELEASE701/org-jdesktop-beansbinding-RELEASE701.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/netbeans/external/beansbinding-1.2.1/RELEASE701/beansbinding-1.2.1-RELEASE701.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/netbeans/external/appframework-1.0.3/RELEASE701/appframework-1.0.3-RELEASE701.jar"/>
 </classpath>
