@@ -16,8 +16,8 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <robokind.version>0.9.0-SNAPSHOT</robokind.version>
-        <rwshop.version>0.9.0-SNAPSHOT</rwshop.version>
+<!--        <robokind.version>0.9.0-SNAPSHOT</robokind.version>
+        <rwshop.version>0.9.0-SNAPSHOT</rwshop.version>-->
         <jflux.version>0.1.5-SNAPSHOT</jflux.version>
     </properties>
 
