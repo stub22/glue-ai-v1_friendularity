@@ -1,0 +1,25 @@
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.friendularity</groupId>
+    <artifactId>org.friendularity.demo.rkbasic</artifactId>
+    <version>1.0.3-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <name>org.friendularity.demo.rkbasic</name>
+    
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <robokind.version>0.9.0-SNAPSHOT</robokind.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.robokind</groupId>
+            <artifactId>org.robokind.client.basic</artifactId>
+            <version>${robokind.version}</version>
+        </dependency>
+    </dependencies>
+</project>
