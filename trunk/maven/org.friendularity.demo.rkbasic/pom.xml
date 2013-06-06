@@ -10,6 +10,15 @@
 
     <name>org.friendularity.demo.rkbasic</name>
     
+    <repositories>
+		<repository>
+			<id>sonatype-public</id>
+			<!-- Needed for snapshots -->
+			<name>sonatype public</name>
+			<url>https://oss.sonatype.org/content/groups/public/</url>
+		</repository>
+    </repositories>
+    
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <robokind.version>0.9.0-SNAPSHOT</robokind.version>
