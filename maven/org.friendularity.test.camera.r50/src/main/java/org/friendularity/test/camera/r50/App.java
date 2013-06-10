@@ -13,7 +13,8 @@ import org.robokind.client.basic.UserSettings;
  */
 public class App {
     public static void main(String[] args) {
-        String ipAddress = "192.168.2.126";
+        //Set the ip address of the robot below:
+        String ipAddress = "127.0.0.1";
         UserSettings.setImageRegionAddress(ipAddress);
         UserSettings.setImageRegionId("0");
         
