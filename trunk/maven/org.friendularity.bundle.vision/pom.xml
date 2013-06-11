@@ -21,9 +21,9 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>org.robokind.ui</groupId>
-			<artifactId>org.robokind.ui.swing.vision</artifactId>
-			<version>${robokind-ui.version}</version>
+			<groupId>org.rwshop</groupId>
+			<artifactId>org.rwshop.swing.vision</artifactId>
+			<version>${rwshop.version}</version>
 		</dependency>			
 		<dependency>
 			<groupId>org.robokind</groupId>
