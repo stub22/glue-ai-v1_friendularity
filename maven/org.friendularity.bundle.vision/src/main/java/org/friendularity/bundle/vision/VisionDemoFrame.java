@@ -24,13 +24,13 @@ import javax.swing.JFrame;
  */
 
 public class VisionDemoFrame extends JFrame {
-    private org.robokind.ui.swing.vision.VideoControlPanel	myVideoControlPanel;
-    private org.robokind.ui.swing.vision.VideoPanel			myVideoPanel;
+    private org.rwshop.swing.vision.VideoControlPanel	myVideoControlPanel;
+    private org.rwshop.swing.vision.VideoPanel			myVideoPanel;
 	
 	public void setup() { 
 		
-        myVideoPanel = new org.robokind.ui.swing.vision.VideoPanel();
-        myVideoControlPanel = new org.robokind.ui.swing.vision.VideoControlPanel();
+        myVideoPanel = new org.rwshop.swing.vision.VideoPanel();
+        myVideoControlPanel = new org.rwshop.swing.vision.VideoControlPanel();
 		
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
