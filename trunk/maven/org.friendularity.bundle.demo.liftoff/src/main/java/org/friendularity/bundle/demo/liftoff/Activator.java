@@ -35,7 +35,7 @@ public class Activator extends BundleActivatorBase {
 		RepoUpdateCallbackAdapter.registerCallback(new RepoUpdateCallbackAdapter.Callback() {
 			public void repoUpdateCompleted() {
 				getLogger().info("o.f.b.demo.liftoff activator got SPARQL-UPDATE callback, now pumping Goody Updates!");
-				PumaAppUtils.pumpGoodyUpdatesToVWorld();
+				PumaAppUtils.processPendingThingActions();
 			}
 		});
 	}
