@@ -9,8 +9,8 @@ import org.cogchar.app.puma.registry.PumaGlobalPrebootInjector;
 import org.cogchar.bind.rk.robot.motion.CogcharMotionSource;
 import org.osgi.framework.BundleContext;
 
-import org.cogchar.blob.emit.RepoSpec;
-import org.cogchar.blob.emit.OnlineSheetRepoSpec;
+import org.appdapter.core.matdat.RepoSpec;
+import org.appdapter.core.matdat.OnlineSheetRepoSpec;
 import org.robokind.api.motion.Robot;
 // import org.robokind.ui.swing.common.lifecycle.ServicesFrame;
 import org.rwshop.swing.common.lifecycle.ServicesFrame;
