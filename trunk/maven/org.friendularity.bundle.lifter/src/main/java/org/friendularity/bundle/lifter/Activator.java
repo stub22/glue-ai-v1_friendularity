@@ -7,8 +7,8 @@ import org.appdapter.osgi.core.BundleActivatorBase;
 import org.cogchar.app.puma.boot.PumaAppContext;
 import org.cogchar.app.puma.config.PumaContextMediator;
 import org.cogchar.app.puma.web.PumaWebMapper;
-import org.cogchar.blob.emit.OnlineSheetRepoSpec;
-import org.cogchar.blob.emit.RepoSpec;
+import org.appdapter.core.matdat.OnlineSheetRepoSpec;
+import org.appdapter.core.matdat.RepoSpec;
 import org.cogchar.name.entity.EntityRoleCN;
 import org.osgi.framework.BundleContext;
 
