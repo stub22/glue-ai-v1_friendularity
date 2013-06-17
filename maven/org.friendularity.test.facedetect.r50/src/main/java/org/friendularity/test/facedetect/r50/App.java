@@ -1,4 +1,4 @@
-package org.friendularity.test.camera.r50;
+package org.friendularity.test.facedetect.r50;
 
 import org.jflux.api.core.Listener;
 import org.robokind.api.vision.ImageRegionList;
