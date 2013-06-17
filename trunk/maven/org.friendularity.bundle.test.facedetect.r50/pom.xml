@@ -9,10 +9,10 @@
         <relativePath>../org.friendularity.modules.main/pom.xml</relativePath>
     </parent>
     
-    <artifactId>org.friendularity.bundle.test.camera.r50</artifactId>
+    <artifactId>org.friendularity.bundle.test.facedetect.r50</artifactId>
     <packaging>bundle</packaging>
 
-    <name>org.friendularity.bundle.test.camera.r50 OSGi Bundle</name>
+    <name>org.friendularity.bundle.test.facedetect.r50 OSGi Bundle</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
