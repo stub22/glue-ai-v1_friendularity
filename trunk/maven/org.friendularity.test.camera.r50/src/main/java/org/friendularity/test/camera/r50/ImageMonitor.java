@@ -17,7 +17,7 @@ import org.robokind.impl.vision.PortableImageUtils;
  * @author Jason G. Pallack <jgpallack@gmail.com>
  */
 public class ImageMonitor extends JPanel implements Listener<ImageEvent> {
-    Image myImage;
+    private Image myImage;
     
     public ImageMonitor() {
         myImage = null;
