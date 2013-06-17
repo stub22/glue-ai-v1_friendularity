@@ -5,10 +5,10 @@
     <groupId>org.friendularity</groupId>
     <version>1.0.0-SNAPSHOT</version>
     
-    <artifactId>org.friendularity.test.camera.r50</artifactId>
+    <artifactId>org.friendularity.test.facedetect.r50</artifactId>
     <packaging>jar</packaging>
 
-    <name>org.friendularity.test.camera.r50</name>
+    <name>org.friendularity.test.facedetect.r50</name>
 
 	<repositories>
 		
