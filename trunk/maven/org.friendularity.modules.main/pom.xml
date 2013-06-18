@@ -39,6 +39,7 @@
 	
 	<modules>
 		<module>../org.friendularity.bundle.demo.ccrk</module>
+		<module>../org.friendularity.bundle.demo.dictation</module>
 		<module>../org.friendularity.bundle.demo.liftoff</module>
 		<module>../org.friendularity.bundle.repo</module>
 		<module>../org.friendularity.bundle.lifter</module>
@@ -61,6 +62,7 @@
 	 <module>../org.friendularity.demo.lifecycles</module>
      <module>../org.friendularity.temp.connection</module>
      <module>../org.friendularity.test.camera.r50</module>
+     <module>../org.friendularity.test.facedetect.r50</module>
      <module>../org.friendularity.test.sensors.r50</module>
 	</modules>	
 	<properties>
