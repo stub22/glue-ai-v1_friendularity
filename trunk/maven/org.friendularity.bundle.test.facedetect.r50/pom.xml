@@ -39,7 +39,7 @@
         <dependency>
             <groupId>org.robokind</groupId>
             <artifactId>org.robokind.client.basic</artifactId>
-            <version>0.9.0-SNAPSHOT</version>
+            <version>${robokind.version}</version>
         </dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
