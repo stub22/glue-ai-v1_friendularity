@@ -22,11 +22,9 @@ public class Responder implements Listener<SpeechRecEventListRecord> {
     
     @Override
     public void handleEvent(SpeechRecEventListRecord t) {
-        SpeechRecEventListRecord eventList =
-                (SpeechRecEventListRecord)t;
         SpeechRequestRecord.Builder builder = SpeechRequestRecord.newBuilder();
 
-        SpeechRecEvent event = eventList.getSpeechRecEvents().get(0);
+        SpeechRecEvent event = t.getSpeechRecEvents().get(0);
         builder.setPhrase(event.getRecognizedText());
         builder.setRequestSourceId(event.getRecognizerId());
         builder.setTimestampMillisecUTC(TimeUtils.now());
