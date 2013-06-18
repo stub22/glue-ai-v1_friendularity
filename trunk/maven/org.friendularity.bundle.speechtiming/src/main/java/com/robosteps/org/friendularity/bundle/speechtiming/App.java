@@ -29,7 +29,7 @@ public class App {
         Scanner reader = new Scanner(System.in);
         String ip = reader.nextLine().trim();
         if(!ip.isEmpty()){
-            UserSettings.setSensorAddress(ip);
+            UserSettings.setSpeechAddress(ip);
         }
         mySpeaker = Robokind.connectSpeechService();
         mySpeaker.addSpeechEventListener(new SpeechEventListener());
