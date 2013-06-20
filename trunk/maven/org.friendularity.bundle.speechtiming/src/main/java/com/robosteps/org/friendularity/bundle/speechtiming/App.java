@@ -74,7 +74,7 @@ public class App {
                 return;
             }
             long bytePos = event.getTextPosition();
-            long wordTime = (long)(((double)bytePos)*(1.0/16000.0)*1000.0);
+            long wordTime = (long)(((double)bytePos)*(1.0/16000.0)*1000.0)/2;
             int wordStartIndex = event.getTextLength();
             info.wordsInfo.add(new SpeechWordInfo(wordStartIndex, wordTime));
             
