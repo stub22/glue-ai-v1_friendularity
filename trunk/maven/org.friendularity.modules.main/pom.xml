@@ -43,6 +43,8 @@
 		<module>../org.friendularity.bundle.demo.liftoff</module>
 		<module>../org.friendularity.bundle.repo</module>
 		<module>../org.friendularity.bundle.lifter</module>
+        <module>../org.friendularity.bundle.messagemonitor</module>
+        <module>../org.friendularity.bundle.messageplayer</module>
 		<module>../org.friendularity.bundle.vision</module>
 <!--
 		<module>../org.friendularity.demo.egosphere</module>
@@ -57,13 +59,13 @@
 		<module>../org.friendularity.demo.music</module>
 		<module>../org.friendularity.demo.speech.hear</module>
 -->
-	 <module>../org.friendularity.bundle.netconfig</module>
-	 <module>../org.friendularity.model.test</module>
-	 <module>../org.friendularity.demo.lifecycles</module>
-     <module>../org.friendularity.temp.connection</module>
-     <module>../org.friendularity.test.camera.r50</module>
-     <module>../org.friendularity.test.facedetect.r50</module>
-     <module>../org.friendularity.test.sensors.r50</module>
+        <module>../org.friendularity.bundle.netconfig</module>
+        <module>../org.friendularity.model.test</module>
+        <module>../org.friendularity.demo.lifecycles</module>
+        <module>../org.friendularity.temp.connection</module>
+        <module>../org.friendularity.test.camera.r50</module>
+        <module>../org.friendularity.test.facedetect.r50</module>
+        <module>../org.friendularity.test.sensors.r50</module>
 	</modules>	
 	<properties>
 		<jmonkey.version>3.0.0.20120512-SNAPSHOT</jmonkey.version>
