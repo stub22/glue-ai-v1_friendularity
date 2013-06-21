@@ -31,12 +31,16 @@ import org.robokind.api.animation.lifecycle.AnimationPlayerClientLifecycle;
 import org.robokind.api.animation.messaging.RemoteAnimationPlayerClient;
 import org.robokind.api.animation.protocol.AnimationEvent;
 import org.robokind.api.animation.protocol.AnimationEvent.AnimationEventFactory;
+import org.robokind.api.animation.protocol.AnimationSignal;
 import org.robokind.api.common.lifecycle.ManagedService;
 import org.robokind.api.common.lifecycle.utils.SimpleLifecycle;
 import org.robokind.api.common.osgi.OSGiUtils;
 import org.robokind.api.common.osgi.lifecycle.OSGiComponent;
 import org.robokind.avrogen.animation.AnimationRecord;
+import org.robokind.avrogen.animation.AnimationSignallingRecord;
 import org.robokind.impl.animation.messaging.PortableAnimationEvent;
+import org.robokind.impl.animation.messaging.PortableAnimationSignal;
+import org.robokind.impl.messaging.lifecycle.JMSAvroAsyncReceiverLifecycle;
 import org.robokind.impl.messaging.lifecycle.JMSAvroMessageSenderLifecycle;
 import org.robokind.impl.messaging.utils.ConnectionManager;
 import org.robokind.impl.messaging.utils.ConnectionUtils;
@@ -51,6 +55,7 @@ public class PlayerClientPanel extends javax.swing.JPanel implements Source<Remo
     private ManagedService mySenderService;
     private ManagedService myConnectionService;
     private ManagedService mySessionService;
+    private ManagedService myReceiverService;
     private boolean myStartFlag;
     private PlayerClientComboBoxModel myModel;
     /** Creates new form PlayerClientPanel */
@@ -176,10 +181,22 @@ public class PlayerClientPanel extends javax.swing.JPanel implements Source<Remo
         registerEventFactory(context);
         mySenderService = new OSGiComponent(context, senderLife);
         mySenderService.start();
+        ConnectionUtils.ensureSession(context, 
+                "remoteSignalConnection", con, null);
+        ConnectionUtils.ensureDestinations(context, 
+                "remoteAnimationSignal", "animationSignal", ConnectionUtils.TOPIC, null);
+        JMSAvroAsyncReceiverLifecycle receiverLife =
+                new JMSAvroAsyncReceiverLifecycle(
+                new PortableAnimationSignal.RecordMessageAdapter(),
+                AnimationSignal.class, AnimationSignallingRecord.class,
+                AnimationSignallingRecord.SCHEMA$, "remoteSignalReceiver",
+                "remoteSignalConnection", "remoteAnimationSignal");
+        myReceiverService = new OSGiComponent(context, receiverLife);
+        myReceiverService.start();
         myLifecycle = 
                 new AnimationPlayerClientLifecycle(
                 "remotePlayer", "remotePlayer", "remoteAnimSender",
-                "remoteSignalReceiver");
+                "remoteSignalReceiver", context);
         myPlayerService = new OSGiComponent(context, myLifecycle);
         myPlayerService.start();
         myStartFlag = true;
