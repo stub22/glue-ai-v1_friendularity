@@ -16,9 +16,9 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <org.friendularity.bundle.test.camera.r50.connections>
+        <org.friendularity.bundle.test.facedetect.r50.connections>
             192.168.2.140
-        </org.friendularity.bundle.test.camera.r50.connections>
+        </org.friendularity.bundle.test.facedetect.r50.connections>
     </properties>
     
     <repositories>
@@ -78,7 +78,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Bundle-Activator>org.friendularity.bundle.test.camera.r50.Activator</Bundle-Activator>
+                        <Bundle-Activator>org.friendularity.bundle.test.facedetect.r50.Activator</Bundle-Activator>
                         <Export-Package>org.robokind.client.basic.*</Export-Package>
                     </instructions>
                 </configuration>
@@ -202,7 +202,7 @@
                                 <makeurl property="run.properties.url" file="${project.build.directory}/run.properties"/>
                                 <java fork="true" jar="${maven.dependency.org.apache.felix.org.apache.felix.main.jar.path}">
                                     <sysproperty key="felix.config.properties" value="${run.properties.url}"/>
-                                    <sysproperty key="org.friendularity.bundle.test.camera.r50.connections" value="${org.friendularity.bundle.test.camera.r50.connections}" />
+                                    <sysproperty key="org.friendularity.bundle.test.facedetect.r50.connections" value="${org.friendularity.bundle.test.facedetect.r50.connections}" />
                                     <jvmarg line="${vm.args}"/>
                                 </java>
                             </target>

@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.friendularity.bundle.test.camera.r50;
+package org.friendularity.bundle.test.facedetect.r50;
 
 import java.util.List;
 import org.jflux.api.core.Listener;
