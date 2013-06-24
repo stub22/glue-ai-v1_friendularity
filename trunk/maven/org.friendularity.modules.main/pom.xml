@@ -47,6 +47,7 @@
 		<module>../org.friendularity.bundle.lifter</module>
         <module>../org.friendularity.bundle.messagemonitor</module>
         <module>../org.friendularity.bundle.messageplayer</module>
+        <module>../org.friendularity.bundle.test.facedetect.r50</module>
         <module>../org.friendularity.bundle.ui.swing.animation</module>
 		<module>../org.friendularity.bundle.vision</module>
 <!--
@@ -65,6 +66,7 @@
         <module>../org.friendularity.bundle.netconfig</module>
         <module>../org.friendularity.model.test</module>
         <module>../org.friendularity.demo.lifecycles</module>
+        <module>../org.friendularity.demo.rkbasic</module>
         <module>../org.friendularity.temp.connection</module>
         <module>../org.friendularity.test.camera.r50</module>
         <module>../org.friendularity.test.facedetect.r50</module>

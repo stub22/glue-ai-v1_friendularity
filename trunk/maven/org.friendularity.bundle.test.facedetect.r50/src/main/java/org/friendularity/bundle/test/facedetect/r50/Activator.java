@@ -1,4 +1,4 @@
-package org.friendularity.bundle.test.camera.r50;
+package org.friendularity.bundle.test.facedetect.r50;
 
 import org.jflux.api.core.Listener;
 import org.osgi.framework.BundleActivator;
@@ -14,7 +14,7 @@ public class Activator implements BundleActivator {
     @Override
     public void start(BundleContext context) throws Exception {
         String envVarKey =
-                "org.friendularity.bundle.test.camera.r50.connections";
+                "org.friendularity.bundle.test.facedetect.r50.connections";
         String ipAddress = System.getProperty(
                 envVarKey, System.getenv(envVarKey));
         UserSettings.setImageRegionAddress(ipAddress);
