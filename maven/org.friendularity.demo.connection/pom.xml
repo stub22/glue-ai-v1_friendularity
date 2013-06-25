@@ -105,11 +105,11 @@
             <artifactId>org.robokind.api.common</artifactId>
             <version>${robokind.version}</version>
         </dependency>
-        <dependency>
+<!--        <dependency>
             <groupId>org.rwshop</groupId>
             <artifactId>org.rwshop.swing.common</artifactId>
             <version>${rwshop.version}</version>
-        </dependency>
+        </dependency>-->
     </dependencies>
     
     <build>
@@ -121,7 +121,8 @@
 				<extensions>true</extensions>
 				<configuration>
 					<instructions>
-						<Bundle-Activator>org.friendularity.api.connection.Activator</Bundle-Activator>
+						<Bundle-Activator>org.friendularity.demo.connection.Activator</Bundle-Activator>
+                        <Export-Package>org.cogchar.outer.behav.*</Export-Package>
 					</instructions>
 				</configuration>
 			</plugin>

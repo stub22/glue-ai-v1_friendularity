@@ -7,7 +7,6 @@ import org.cogchar.outer.behav.demo.RepoConnector;
 import org.cogchar.outer.behav.demo.RobotConnector;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
-import org.rwshop.swing.common.lifecycle.ServicesFrame;
 
 // The new two promiscuous imports allows running of both cogchar-1.0.6.2 and cogchar-1.0.7.0
 import org.cogchar.blob.emit.*;
@@ -52,13 +51,13 @@ public class Activator implements BundleActivator {
 //        RepoConnector repoConn = new RepoConnector();
 //		EnhancedRepoClient defaultDemoRepoClient = repoConn.makeRepoClientForDefaultOnlineSheet(context);
         
-        ConnectionWiringDemo connectionWiringDemo = new ConnectionWiringDemo(context, defaultDemoRepoClient);
+        ConnectionWiringDemo connectionWiringDemo = new ConnectionWiringDemo(context, enhancedRepoSpec);
         
         // Allows the wiring demo to pull in any needed dependancies
         connectionWiringDemo.registerJFluxExtenders(context);
         
         // Pull connectionSpecs from repo and publish to JFlux
-        connectionWiringDemo.initialConnectionLoad(context, defaultDemoRepoClient, CONNECTION_GRAPH_QN);
+        connectionWiringDemo.initialConnectionLoad(context, enhancedRepoSpec, CONNECTION_GRAPH_QN);
         
         // Start the services Panel to view the contents of the object registry.
         startServicesPanel(context);
@@ -67,13 +66,13 @@ public class Activator implements BundleActivator {
     }
     
     public void startServicesPanel(final BundleContext context) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            @Override public void run() {
-                ServicesFrame sf = new ServicesFrame();
-                sf.setBundleContext(context);
-                sf.setVisible(true);
-            }
-        });
+//        java.awt.EventQueue.invokeLater(new Runnable() {
+//            @Override public void run() {
+//                ServicesFrame sf = new ServicesFrame();
+//                sf.setBundleContext(context);
+//                sf.setVisible(true);
+//            }
+//        });
     }
     
     
