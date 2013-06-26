@@ -15,7 +15,7 @@
  */
 package org.friendularity.demo.connection;
 
-import org.appdapter.bind.rdf.jena.assembly.CachingComponentAssembler;
+import org.appdapter.bind.rdf.jena.assembly.DynamicCachingComponentAssembler;
 import org.appdapter.core.item.Item;
 import org.appdapter.core.name.Ident;
 
@@ -30,20 +30,21 @@ import org.appdapter.bind.rdf.jena.assembly.ItemAssemblyReader;
 /**
  * @author Jason R. Eads <eadsjr>
  */
-public class ConnectionSpecBuilder extends CachingComponentAssembler<ConnectionSpec> {
+public class ConnectionSpecBuilder extends DynamicCachingComponentAssembler<ConnectionSpec> {
     
     /**
      * 
      * TODO: rename builderConfRes to be more meaningful
      * @param builderConfRes 
      */
-    ConnectionSpecBuilder( Resource builderConfRes ) {
+    public ConnectionSpecBuilder( Resource builderConfRes ) {
         super(builderConfRes);
     }
     
     @Override
     protected Class<ConnectionSpec> decideComponentClass(Ident ident, Item item) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return ConnectionSpec.class;
+//        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     /**

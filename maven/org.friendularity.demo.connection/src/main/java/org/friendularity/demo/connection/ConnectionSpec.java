@@ -32,6 +32,9 @@ public class ConnectionSpec extends KnownComponentImpl {
     private String virtualHost;
     private String connectionOptions;
 
+    public ConnectionSpec() {
+    }
+    
     public ConnectionSpec(String ipAddress, String port, String username, String password, String clientName, String virtualHost, String connectionOptions) {
         this.ipAddress = ipAddress;
         this.port = port;
