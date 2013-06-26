@@ -122,7 +122,7 @@
 				<configuration>
 					<instructions>
 						<Bundle-Activator>org.friendularity.demo.connection.Activator</Bundle-Activator>
-                        <Export-Package>org.cogchar.outer.behav.*</Export-Package>
+                        <Export-Package>org.cogchar.outer.behav.*, org.friendularity.demo.connection.*</Export-Package>
 					</instructions>
 				</configuration>
 			</plugin>

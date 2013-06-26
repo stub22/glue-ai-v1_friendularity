@@ -16,6 +16,7 @@
 package org.friendularity.demo.connection;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import org.jflux.api.service.ServiceManager;
 import org.jflux.impl.registry.OSGiRegistry;
@@ -40,6 +41,7 @@ public class ConnectionSpecExtender extends ServiceClassListener<ConnectionSpec>
     public ConnectionSpecExtender(BundleContext context, String serviceFilter)  {
         super(ConnectionSpec.class, context, serviceFilter);
         myBundleContext = context;
+        myManagedConnectionsMap = new HashMap<ConnectionSpec, ServiceManager>();
     }
     //
     
