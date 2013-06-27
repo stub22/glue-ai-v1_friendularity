@@ -32,13 +32,13 @@ import org.appdapter.bind.rdf.jena.assembly.ItemAssemblyReader;
  */
 public class ConnectionSpecBuilder extends DynamicCachingComponentAssembler<ConnectionSpec> {
     
-    private static String        PATH_ipAddress = "ipAddress";
-    private static String        PATH_port = "port";
-    private static String        PATH_username = "username";
-    private static String        PATH_password = "password";
-    private static String        PATH_clientName = "clientName";
-    private static String        PATH_virtualHost = "virtualHost";
-    private static String        PATH_connectionOptions = "connectionOptions";
+    private final static String   ipAddress = "ipAddress";
+    private final static String   port = "port";
+    private final static String   username = "username";
+    private final static String   password = "password";
+    private final static String   clientName = "clientName";
+    private final static String   virtualHost = "virtualHost";
+    private final static String   connectionOptions = "connectionOptions";
     
     /**
      * 
@@ -61,18 +61,18 @@ public class ConnectionSpecBuilder extends DynamicCachingComponentAssembler<Conn
      * 
      * @param connectionSpec - the spec that is being populated with data
      * @param item - provides identity of item from data source
-     * @param asmblr - ...appears to do nothing?
-     * @param mode  - ...appears to do nothing?
+     * @param asmblr - NOT USED IN THIS CASE
+     * @param mode  - NOT USED IN THIS CASE
      */
     @Override
     protected void initExtendedFieldsAndLinks(ConnectionSpec connectionSpec, Item item, Assembler asmblr, Mode mode) {
         ItemAssemblyReader reader =  getReader();
-        connectionSpec.setIpAddress(reader.readConfigValString(item.getIdent(), PATH_ipAddress, item, ""));
-        connectionSpec.setPort(reader.readConfigValString(item.getIdent(), PATH_port, item, ""));
-        connectionSpec.setUsername(reader.readConfigValString(item.getIdent(), PATH_username, item, ""));
-        connectionSpec.setPassword(reader.readConfigValString(item.getIdent(), PATH_password, item, ""));
-        connectionSpec.setClientName(reader.readConfigValString(item.getIdent(), PATH_clientName, item, ""));
-        connectionSpec.setVirtualHost(reader.readConfigValString(item.getIdent(), PATH_virtualHost, item, ""));
-        connectionSpec.setConnectionOptions(reader.readConfigValString(item.getIdent(), PATH_connectionOptions, item, ""));
+        connectionSpec.setIpAddress(reader.readConfigValString(item.getIdent(), ipAddress, item, ""));
+        connectionSpec.setPort(reader.readConfigValString(item.getIdent(), port, item, ""));
+        connectionSpec.setUsername(reader.readConfigValString(item.getIdent(), username, item, ""));
+        connectionSpec.setPassword(reader.readConfigValString(item.getIdent(), password, item, ""));
+        connectionSpec.setClientName(reader.readConfigValString(item.getIdent(), clientName, item, ""));
+        connectionSpec.setVirtualHost(reader.readConfigValString(item.getIdent(), virtualHost, item, ""));
+        connectionSpec.setConnectionOptions(reader.readConfigValString(item.getIdent(), connectionOptions, item, ""));
     }
 }
