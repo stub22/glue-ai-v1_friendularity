@@ -27,15 +27,16 @@
 		</repository>
     </repositories>
 
-    <dependencies><dependency>
+    <dependencies>
+<!--    <dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
 			<version>1.6.1</version>
 			<scope>runtime</scope>
 		    <exclusions>
-				<!-- We exclude the normally embedded Log4J version, because it is not OSGi friendly.
+				 We exclude the normally embedded Log4J version, because it is not OSGi friendly.
 					We instead use the bundled version supplied by SpringSource below.
-				-->				
+								
 		        <exclusion>
 		            <artifactId>log4j</artifactId>
 		            <groupId>log4j</groupId>
@@ -43,12 +44,12 @@
 		    </exclusions>
 		</dependency>
 		<dependency>
-			<!-- Here is an OSGi-friendly Log4J bundle, which we presume can be initialized through
+			 Here is an OSGi-friendly Log4J bundle, which we presume can be initialized through
 				the methods provided by Appdapter, which assumes a log4j.properties file at
 				root of this bundle.  To initialize Log4J differently, we could make this a
 				compile-scoped dependency, and then do any Log4J config using code, e.g.
 				using "BasicConfigurator".
-			-->
+			
 			<groupId>org.apache.log4j</groupId>
 			<artifactId>com.springsource.org.apache.log4j</artifactId>
 			<version>1.2.16</version>		
@@ -68,11 +69,11 @@
 			<artifactId>org.cogchar.lib.core</artifactId>
 			<version>${cogchar.version}</version>
 		</dependency>
-        <dependency>
+-->        <dependency>
 			<groupId>org.cogchar</groupId>
 			<artifactId>org.cogchar.lib.outer.behavior</artifactId>
 			<version>${cogchar.version}</version>
-		</dependency>
+		</dependency><!--
         <dependency>
 			<groupId>org.appdapter</groupId>
 			<artifactId>org.appdapter.lib.core</artifactId>
@@ -89,11 +90,11 @@
             <version>3.8.1</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
+-->        <dependency>
             <artifactId>org.friendularity.spec.connection</artifactId>
             <groupId>org.friendularity</groupId>
             <version>${project.version}</version>
-        </dependency>
+        </dependency><!--
         <dependency>
             <groupId>org.appdapter</groupId>
             <artifactId>ext.bundle.apache_qpid_010</artifactId>
@@ -103,7 +104,7 @@
             <groupId>org.robokind</groupId>
             <artifactId>org.robokind.api.common</artifactId>
             <version>${robokind.version}</version>
-        </dependency>
+        </dependency>-->
 <!--        <dependency>
             <groupId>org.rwshop</groupId>
             <artifactId>org.rwshop.swing.common</artifactId>
