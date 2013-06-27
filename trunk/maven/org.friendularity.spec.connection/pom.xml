@@ -21,6 +21,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.appdapter</groupId>
+            <artifactId>ext.bundle.apache_qpid_010</artifactId>
+            <version>1.0.5</version>
+        </dependency>
+        <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.core</artifactId>
             <version>4.3.0</version>
@@ -28,7 +33,7 @@
         </dependency>
         <dependency>
             <groupId>org.appdapter</groupId>
-            <artifactId>org.appdapter.lib.core</artifactId>
+            <artifactId>org.appdapter.bundle.core</artifactId>
             <version>${appdapter.version}</version>
         </dependency>
         <dependency>
@@ -36,6 +41,21 @@
             <artifactId>ext.bundle.jena_all_264</artifactId>
             <version>${appdapter.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.robokind</groupId>
+            <artifactId>org.robokind.api.common</artifactId>
+            <version>${robokind.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jflux</groupId>
+            <artifactId>org.jflux.api.services</artifactId>
+            <version>${jflux.version}</version>
+        </dependency>
+        <dependency>
+			<groupId>org.jflux</groupId>
+			<artifactId>org.jflux.impl.registry.osgi</artifactId>
+			<version>${jflux.version}</version>
+		</dependency>
     </dependencies>
 
     <build>
