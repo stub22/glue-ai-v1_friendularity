@@ -42,7 +42,7 @@ public class Activator implements BundleActivator {
         
         // Setup to connect to a GoogSheet repo
         List<ClassLoader> classloaders = ClassLoaderUtils.getFileResourceClassLoaders(context, ClassLoaderUtils.ALL_RESOURCE_CLASSLOADER_TYPES);
-        OnlineSheetRepoSpec repoSpec = new OnlineSheetRepoSpec("0AsAJ7pzOB_F2dGlOTmxWVlQ2cVhRR1RjdE53cjF5VkE", 1, 2, classloaders);
+        OnlineSheetRepoSpec repoSpec = new OnlineSheetRepoSpec("0AlpQRNQ-L8QUdFh5YWswSzdYZFJMb1N6aEhJVWwtR3c", 4, 3, classloaders);
         
 //        
         RepoConnector rc = new RepoConnector();

@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.friendularity.demo.connection;
+package org.friendularity.spec.connection;
 
 import org.appdapter.core.component.KnownComponentImpl;
 
@@ -32,17 +32,9 @@ public class ConnectionSpec extends KnownComponentImpl {
     private String virtualHost;
     private String connectionOptions;
 
+    // There must be a public constructor with no parameters for appdapter to
+    // be able build it.
     public ConnectionSpec() {
-    }
-    
-    public ConnectionSpec(String ipAddress, String port, String username, String password, String clientName, String virtualHost, String connectionOptions) {
-        this.ipAddress = ipAddress;
-        this.port = port;
-        this.username = username;
-        this.password = password;
-        this.clientName = clientName;
-        this.virtualHost = virtualHost;
-        this.connectionOptions = connectionOptions;
     }
 
     public String getIpAddress() {

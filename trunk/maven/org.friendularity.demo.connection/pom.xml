@@ -90,15 +90,14 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <artifactId>ext.bundle.jena_all_264</artifactId>
-            <groupId>org.appdapter</groupId>
-            <version>${appdapter.version}</version>
+            <artifactId>org.friendularity.spec.connection</artifactId>
+            <groupId>org.friendularity</groupId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.appdapter</groupId>
             <artifactId>ext.bundle.apache_qpid_010</artifactId>
-            <!--<version>1.0.5</version>-->
-            <version>${appdapter.version}</version>
+            <version>1.0.5</version>
         </dependency>
         <dependency>
             <groupId>org.robokind</groupId>

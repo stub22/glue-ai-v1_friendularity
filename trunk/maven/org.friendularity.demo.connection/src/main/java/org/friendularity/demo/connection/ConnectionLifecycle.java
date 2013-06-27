@@ -25,7 +25,7 @@ import javax.jms.JMSException;
 import org.jflux.api.service.ServiceLifecycle;
 import org.apache.qpid.client.AMQConnectionFactory;
 import org.apache.qpid.url.URLSyntaxException;
-import org.jflux.api.service.DependencySpec;
+import org.friendularity.spec.connection.ConnectionSpec;
 
 /**
  * This lifecycle comprises the JFlux object registry interface for the

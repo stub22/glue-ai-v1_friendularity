@@ -18,6 +18,7 @@ package org.friendularity.demo.connection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import org.friendularity.spec.connection.ConnectionSpec;
 import org.jflux.api.service.ServiceManager;
 import org.jflux.impl.registry.OSGiRegistry;
 import org.osgi.framework.BundleContext;
