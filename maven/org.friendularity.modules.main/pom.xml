@@ -67,7 +67,8 @@
         <module>../org.friendularity.model.test</module>
         <module>../org.friendularity.demo.lifecycles</module>
         <module>../org.friendularity.demo.rkbasic</module>
-        <module>../org.friendularity.temp.connection</module>
+        <module>../org.friendularity.demo.connection</module>
+        <module>../org.friendularity.spec.connection</module>
         <module>../org.friendularity.test.camera.r50</module>
         <module>../org.friendularity.test.facedetect.r50</module>
         <module>../org.friendularity.test.sensors.r50</module>
