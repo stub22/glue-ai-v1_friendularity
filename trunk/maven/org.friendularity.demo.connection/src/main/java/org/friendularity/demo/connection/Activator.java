@@ -1,15 +1,12 @@
 
 package org.friendularity.demo.connection;
 
+import org.friendularity.spec.connection.ConnectionWiring;
 import java.util.List;
-import org.cogchar.outer.behav.demo.AnimationConnector;
 import org.cogchar.outer.behav.demo.RepoConnector;
-import org.cogchar.outer.behav.demo.RobotConnector;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
-// The new two promiscuous imports allows running of both cogchar-1.0.6.2 and cogchar-1.0.7.0
-import org.cogchar.blob.emit.*;
 import org.appdapter.core.matdat.*;
 import org.cogchar.platform.util.ClassLoaderUtils;
 
@@ -51,7 +48,7 @@ public class Activator implements BundleActivator {
 //        RepoConnector repoConn = new RepoConnector();
 //		EnhancedRepoClient defaultDemoRepoClient = repoConn.makeRepoClientForDefaultOnlineSheet(context);
         
-        ConnectionWiringDemo connectionWiringDemo = new ConnectionWiringDemo(context, enhancedRepoSpec);
+        ConnectionWiring connectionWiringDemo = new ConnectionWiring(context, enhancedRepoSpec);
         
         // Allows the wiring demo to pull in any needed dependancies
         connectionWiringDemo.registerJFluxExtenders(context);
