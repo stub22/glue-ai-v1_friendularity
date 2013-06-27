@@ -10,10 +10,10 @@
     </parent>
 
     <groupId>org.friendularity</groupId>
-    <artifactId>org.friendularity.demo.connection.fragment</artifactId>
+    <artifactId>org.friendularity.spec.connection</artifactId>
     <packaging>bundle</packaging>
 
-    <name>org.friendularity.demo.connection.fragment OSGi Bundle</name>
+    <name>org.friendularity.spec.connection OSGi Bundle</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -31,6 +31,11 @@
             <artifactId>org.appdapter.lib.core</artifactId>
             <version>${appdapter.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.appdapter</groupId>
+            <artifactId>ext.bundle.jena_all_264</artifactId>
+            <version>${appdapter.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -42,8 +47,8 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Fragment-Host>org.appdapter.org.appdapter.ext.jena_all_264</Fragment-Host>
-                        <Export-Package>org.friendularity.demo.connection.fragment.*</Export-Package>
+                        <Fragment-Host>org.appdapter.ext.bundle.jena_all_264</Fragment-Host>
+                        <Export-Package>org.friendularity.spec.connection</Export-Package>
                     </instructions>
                 </configuration>
             </plugin>

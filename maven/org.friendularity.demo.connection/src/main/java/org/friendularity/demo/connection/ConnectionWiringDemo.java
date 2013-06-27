@@ -21,9 +21,9 @@ import java.util.Set;
 import org.appdapter.core.name.Ident;
 import org.cogchar.outer.behav.demo.WiringDemo;
 import org.osgi.framework.BundleContext;
+import org.friendularity.spec.connection.ConnectionSpec;
 
 // The new two promiscuous imports allows running of both cogchar-1.0.6.2 and cogchar-1.0.7.0
-import org.cogchar.blob.emit.*;
 import org.appdapter.core.matdat.*;
 
 /**
