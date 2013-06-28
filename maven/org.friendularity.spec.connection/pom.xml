@@ -48,6 +48,11 @@
         </dependency>
         <dependency>
             <groupId>org.jflux</groupId>
+            <artifactId>org.jflux.api.core</artifactId>
+            <version>${jflux.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jflux</groupId>
             <artifactId>org.jflux.api.services</artifactId>
             <version>${jflux.version}</version>
         </dependency>

@@ -16,12 +16,18 @@
 package org.friendularity.spec.connection;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import org.appdapter.core.name.Ident;
 import org.osgi.framework.BundleContext;
 import org.appdapter.core.matdat.*;
+import org.jflux.api.registry.Registry;
+import org.jflux.impl.registry.OSGiRegistry;
+import org.robokind.api.common.lifecycle.ManagedService;
+import org.robokind.api.common.lifecycle.ServiceLifecycleProvider;
 import org.robokind.api.common.lifecycle.utils.SimpleLifecycle;
 import org.robokind.api.common.osgi.lifecycle.OSGiComponent;
 
@@ -30,80 +36,61 @@ import org.robokind.api.common.osgi.lifecycle.OSGiComponent;
  * @author Jason R. Eads <eadsjr>
  */
 public class ConnectionWiring {
-	//private ManagedServiceFactory	myManagedServiceFactory;
-	private EnhancedRepoClient      myRepoClient;
-    private BundleContext           myBundleContext;
 
-    public static final String GROUP_KEY_FOR_CONNECION_SPEC = "connectionSpecGroupID";
-    public static final String CONNECTION_GROUP_QN = "UNIMPLEMENTED_FEATURE.";
-
-    //TODO: fix the
-    /**
-     * Manages the process of wiring the Repo raw data into usable JFlux Specs.
-     * 
-     * @param aManagedServiceFactory ...
-     * @param aBundleContext the bundle Context for the current OSGi/JFlux instance
-     * @param aConnectedRepoClient Repo Client that pulls data from its repo.
-     */
-    public ConnectionWiring(BundleContext aBundleContext, EnhancedRepoClient aConnectedRepoClient) {
-        myBundleContext = aBundleContext;
-        myRepoClient = aConnectedRepoClient;
-    }
-//    public ConnectionWiring(ManagedServiceFactory aManagedServiceFactory, EnhancedRepoClient aConnectedRepoClient) {
-//        myManagedServiceFactory = aManagedServiceFactory;
-//        myRepoClient = aConnectedRepoClient;
-//    }
-
-    public void registerJFluxExtenders(BundleContext bundleCtx) {
-        ConnectionSpecExtender connectionSpecExtender = new ConnectionSpecExtender(bundleCtx, null);
-        connectionSpecExtender.start();
+    public static final String GROUP_KEY_FOR_CONNECION_SPEC = "connectionSpecGroupId";
+    public static final String CONNECTION_GROUP_QN = "demoConnectionGroup";
+    
+    public static ConnectionSpecExtender startSpecExtender(BundleContext bundleCtx, String optionalSpecFilter) {
+        Registry reg = new OSGiRegistry(bundleCtx);
+        ConnectionSpecExtender cse = new ConnectionSpecExtender(bundleCtx, reg, optionalSpecFilter);
+        cse.start();
+        return cse;
     }
     
-    void initialConnectionLoad(BundleContext context, EnhancedRepoClient defaultDemoRepoClient, String connectionGraphQN) {
+    public static Map<ConnectionSpec,ManagedService> loadAndRegisterSpecs(
+            BundleContext context, EnhancedRepoClient defaultDemoRepoClient, String connectionGraphQN) {
+        Map<ConnectionSpec,ManagedService> specServices = new HashMap<ConnectionSpec, ManagedService>();
         List<ConnectionSpec> specs = loadConnectionSpecs(defaultDemoRepoClient, connectionGraphQN);
-        registerConnectionSpecs(specs, context);
-    }
-
-    // TODO: comment
-    private List<ConnectionSpec> loadConnectionSpecs(EnhancedRepoClient defaultDemoRepoClient, String connectionGraphQN) {
-        List<ConnectionSpec> specs = new ArrayList();
-
-        // Determine the URI for the 'qualified name' which identifies the data in the repo
-        Ident connectionGraphID = defaultDemoRepoClient.makeIdentForQName(connectionGraphQN);
-
-        // Collect the specs from the repo, building them from RDF raw data
-        Set<Object> allConnectionSpecs = defaultDemoRepoClient.assembleRootsFromNamedModel(connectionGraphID);
-
-        // TODO: implement the filter here? or not?
-
-        // Publish the new spec objects to JFlux
-        for (Object spec : allConnectionSpecs) {
-            // TODO: CHECK THIS TYPE CHECKING LOGIC PLZ
-            // Check for strong typing
-            if (spec == null || spec.getClass() != ConnectionSpec.class) {
+        for(ConnectionSpec spec : specs){
+            if(specServices.containsKey(spec)){
                 continue;
             }
-            ConnectionSpec connectionSpec = (ConnectionSpec) spec;
-            specs.add(connectionSpec);
+            ManagedService service = registerConnectionSpec(context, spec);
+            specServices.put(spec, service);
         }
-
+        return specServices;
+    }
+    
+    private static List<ConnectionSpec> loadConnectionSpecs(EnhancedRepoClient defaultDemoRepoClient, String connectionGraphQN) {
+        List<ConnectionSpec> specs = new ArrayList();
+        // Determine the URI for the 'qualified name' which identifies the data in the repo
+        Ident connectionGraphID = defaultDemoRepoClient.makeIdentForQName(connectionGraphQN);
+        // Collect the objects from the repo, building them from RDF raw data
+        Set<Object> assembledRoots = defaultDemoRepoClient.assembleRootsFromNamedModel(connectionGraphID);
+        for (Object root : assembledRoots) {
+            // Ignore anything that is not a ConnectionSpec
+            if (root == null || !ConnectionSpec.class.isAssignableFrom(root.getClass())) {
+                continue;
+            }
+            specs.add((ConnectionSpec) root);
+        }
         return specs;
     }
 
     /**
      * Allows JFlux to register connection specs
-     * @param specs the specs to be registered.
-     * @param context the bundle Context for the current OSGi/JFlux instance
+     * @param context the BundleContext used to register the spec
+     * @param connectionSpec the spec to be registered
      */
-    private void registerConnectionSpecs(List<ConnectionSpec> specs, BundleContext context) {
-        for (ConnectionSpec connectionSpec : specs) {
-            //TODO: Resolve ManagedServiceFactory issue
-            Properties props = null;
-            if (GROUP_KEY_FOR_CONNECION_SPEC != null) {
-                props = new Properties();
-                props.put(GROUP_KEY_FOR_CONNECION_SPEC, CONNECTION_GROUP_QN);
-            }
-            new OSGiComponent(context, new SimpleLifecycle(connectionSpec, ConnectionSpec.class, props)).start();
-        }
+    private static ManagedService registerConnectionSpec(
+            BundleContext context, ConnectionSpec connectionSpec) {
+        Properties props = new Properties();
+        props.put(GROUP_KEY_FOR_CONNECION_SPEC, CONNECTION_GROUP_QN);
+        
+        ServiceLifecycleProvider lifecycle = 
+                new SimpleLifecycle(connectionSpec, ConnectionSpec.class);
+        ManagedService ms = new OSGiComponent(context, lifecycle, props);
+        ms.start();
+        return ms;
     }
 }
