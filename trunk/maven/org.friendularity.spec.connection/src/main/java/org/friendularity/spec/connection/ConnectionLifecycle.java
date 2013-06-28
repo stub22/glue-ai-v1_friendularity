@@ -18,14 +18,13 @@ package org.friendularity.spec.connection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.jms.Connection;
 import javax.jms.JMSException;
 import org.jflux.api.service.ServiceLifecycle;
 import org.apache.qpid.client.AMQConnectionFactory;
 import org.apache.qpid.url.URLSyntaxException;
-import org.friendularity.spec.connection.ConnectionSpec;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * This lifecycle comprises the JFlux object registry interface for the
@@ -39,7 +38,7 @@ import org.slf4j.LoggerFactory;
  * @author Jason R. Eads <eadsjr>
  */
 public class ConnectionLifecycle implements ServiceLifecycle<Connection> {
-    
+    private final static Logger theLogger = Logger.getLogger(ConnectionLifecycle.class.getName());
     /**
      * This is the format string for Advanced Message Queuing Protocol (AMQP).
      * AMQP is a language agnostic implementation similar to Java Messaging
@@ -58,22 +57,13 @@ public class ConnectionLifecycle implements ServiceLifecycle<Connection> {
      * This provides the classnames for use in JFlux.
      */
     private final static String[] theClassNameArray = new String[]{Connection.class.getName()};
-
-    /**
-     * The slf4j Logger, which makes logs to aid debugging and developement
-     */
-    private final static Logger theLogger = LoggerFactory.getLogger(ConnectionLifecycle.class);
     
     /**
      * Message Strings for Logger.
      */
-    private final static String theMessageFormatString = "{0}:\n{1}";
     private final static String theFailedToCreateFactoryErrorMessage = "AMQP URL failed to create AMQConnectionFactory.";
     private final static String theFailedToProduceOrStartErrorMessage = "AMQP URL failed to produce or start an AMQconnection.";
     private final static String theFailedToStopConnectionErrorMessage = "Failed to stop AMQP connection.";
-    private final static String theServiceStartedMessage = "AMPQ Connection started";
-    private final static String theServiceStoppedMessage = "AMPQ Connection stopped";
-    private final static String theServiceDependenciesChangedMessage = "AMPQ Connection dependencies have changed";
     
     /**
      * The Spec from which the object is created.
@@ -108,9 +98,6 @@ public class ConnectionLifecycle implements ServiceLifecycle<Connection> {
      */
     @Override
     public Connection createService(Map<String,Object> dependencyMap) {
-        
-        //<editor-fold defaultstate="collapsed" desc=" Build the URL from the Spec ">
-
         // The address extension to the url
         String address = String.format(theTCPAddressFormatString,
                 myConnectionSpec.getIpAddress(),
@@ -123,32 +110,25 @@ public class ConnectionLifecycle implements ServiceLifecycle<Connection> {
                 myConnectionSpec.getClientName(),
                 myConnectionSpec.getVirtualHost(),
                 address);
-        //</editor-fold>
         
-        //<editor-fold defaultstate="collapsed" desc=" Use the URL to make the connection. ">
-
         // Feed the URL into the connectionFactory 
-        AMQConnectionFactory connectionFactory = null;
+        AMQConnectionFactory connectionFactory;
         try {
             connectionFactory = new AMQConnectionFactory(amqpURL);
-            } catch (URLSyntaxException ex) {
-            theLogger.error(theMessageFormatString, theFailedToCreateFactoryErrorMessage, ex);
+        } catch (URLSyntaxException ex) {
+            theLogger.log(Level.SEVERE, theFailedToCreateFactoryErrorMessage, ex);
+            return null;
         }
         
         // Retrieve the connection from the factory, activate it
         Connection connection = null;
         try {
-            if( connectionFactory != null ) {
-                connection = connectionFactory.createConnection();
-                connection.start();
-                theLogger.trace(theMessageFormatString, theServiceStartedMessage, connection.toString());
-            }
+            connection = connectionFactory.createConnection();
+            connection.start();
         }
         catch (JMSException ex) {
-            theLogger.error(theMessageFormatString, theFailedToProduceOrStartErrorMessage, ex);
+            theLogger.log(Level.SEVERE, theFailedToProduceOrStartErrorMessage, ex);
         }
-                //</editor-fold>
-
         return connection;
     }
 
@@ -165,7 +145,6 @@ public class ConnectionLifecycle implements ServiceLifecycle<Connection> {
      */
     @Override
     public Connection handleDependencyChange(Connection service, String changeType, String dependencyName, Object dependency, Map<String,Object> availableDependencies) {
-        theLogger.trace(theMessageFormatString, theServiceDependenciesChangedMessage, service.toString());
         return service;
     }
 
@@ -178,10 +157,9 @@ public class ConnectionLifecycle implements ServiceLifecycle<Connection> {
     @Override
     public void disposeService(Connection service, Map<String,Object> availableDependencies) {
         try {
-            theLogger.trace(theMessageFormatString, theServiceStoppedMessage, service.toString());
             service.stop();
         } catch (JMSException ex) {
-            theLogger.error(theMessageFormatString, theFailedToStopConnectionErrorMessage, ex);
+            theLogger.log(Level.WARNING, theFailedToStopConnectionErrorMessage, ex);
         }
     }
 

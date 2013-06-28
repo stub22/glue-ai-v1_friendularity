@@ -21,65 +21,22 @@ import org.cogchar.platform.util.ClassLoaderUtils;
 public class Activator implements BundleActivator {
     
     private final static String CONNECTION_GRAPH_QN = "fc:connection_sheet_1";
-	public final static String ROBOT_CONNECTION_ENV_VAR_KEY = "com.hrkind.robot.connections";
     
-    /**
-     * 
-     * 
-     * @param context metadata for the execution context
-     * @throws Exception 
-     */
     public void start(BundleContext context) throws Exception {
-//		try {
-//			AnimationConnector.launchPortableAnimEventFactory(context);
-//			RobotConnector.connectRobotsFromSysEnv(context, ROBOT_CONNECTION_ENV_VAR_KEY);
-//		} catch (Throwable t) {
-//			System.err.print("Connection Problem:\n" + t.toString());
-//		}
-        
         // Setup to connect to a GoogSheet repo
-        List<ClassLoader> classloaders = ClassLoaderUtils.getFileResourceClassLoaders(context, ClassLoaderUtils.ALL_RESOURCE_CLASSLOADER_TYPES);
-        OnlineSheetRepoSpec repoSpec = new OnlineSheetRepoSpec("0AlpQRNQ-L8QUdFh5YWswSzdYZFJMb1N6aEhJVWwtR3c", 4, 3, classloaders);
-        
-//        
+        List<ClassLoader> classloaders = 
+                ClassLoaderUtils.getFileResourceClassLoaders(context, ClassLoaderUtils.ALL_RESOURCE_CLASSLOADER_TYPES);
+        OnlineSheetRepoSpec repoSpec = 
+                new OnlineSheetRepoSpec("0AlpQRNQ-L8QUdFh5YWswSzdYZFJMb1N6aEhJVWwtR3c", 4, 3, classloaders);
         RepoConnector rc = new RepoConnector();
         EnhancedRepoClient enhancedRepoSpec = rc.connectDemoRepoClient(repoSpec);
         
-//        RepoConnector repoConn = new RepoConnector();
-//		EnhancedRepoClient defaultDemoRepoClient = repoConn.makeRepoClientForDefaultOnlineSheet(context);
-        
-        ConnectionWiring connectionWiringDemo = new ConnectionWiring(context, enhancedRepoSpec);
-        
-        // Allows the wiring demo to pull in any needed dependancies
-        connectionWiringDemo.registerJFluxExtenders(context);
-        
+        //Extender listens for specs and creates lfecycles
+        ConnectionWiring.startSpecExtender(context, null);
         // Pull connectionSpecs from repo and publish to JFlux
-        connectionWiringDemo.initialConnectionLoad(context, enhancedRepoSpec, CONNECTION_GRAPH_QN);
-        
-        // Start the services Panel to view the contents of the object registry.
-        startServicesPanel(context);
-
-        
+        ConnectionWiring.loadAndRegisterSpecs(context, enhancedRepoSpec, CONNECTION_GRAPH_QN);   
     }
     
-    public void startServicesPanel(final BundleContext context) {
-//        java.awt.EventQueue.invokeLater(new Runnable() {
-//            @Override public void run() {
-//                ServicesFrame sf = new ServicesFrame();
-//                sf.setBundleContext(context);
-//                sf.setVisible(true);
-//            }
-//        });
-    }
-    
-    
-    /**
-     * 
-     * 
-     * @param context metadata for the execution context
-     * @throws Exception 
-     */
-    public void stop(BundleContext context) throws Exception {
-        //TODO add deactivation code here
-    }
+    @Override
+    public void stop(BundleContext context) throws Exception {}
 }

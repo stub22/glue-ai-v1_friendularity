@@ -18,9 +18,8 @@ package org.friendularity.spec.connection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import org.friendularity.spec.connection.ConnectionSpec;
+import org.jflux.api.registry.Registry;
 import org.jflux.api.service.ServiceManager;
-import org.jflux.impl.registry.OSGiRegistry;
 import org.osgi.framework.BundleContext;
 import org.robokind.api.common.osgi.ServiceClassListener;
 
@@ -28,41 +27,35 @@ import org.robokind.api.common.osgi.ServiceClassListener;
  * @author Jason R. Eads <eadsjr>
  */
 public class ConnectionSpecExtender extends ServiceClassListener<ConnectionSpec>{
-    
     /**
      * Stores the managed connections for later removal
      */
     private Map< ConnectionSpec, ServiceManager> myManagedConnectionsMap;
-    
     /**
      * Context reference for interacting with JFlux
      */
-    private OSGiRegistry myOSGiRegistry;
+    private Registry myRegistry;
     
-    public ConnectionSpecExtender(BundleContext context, String serviceFilter)  {
+    public ConnectionSpecExtender(BundleContext context, Registry registry, String serviceFilter)  {
         super(ConnectionSpec.class, context, serviceFilter);
-        myOSGiRegistry = new OSGiRegistry(context);
+        myRegistry = registry;
         myManagedConnectionsMap = new HashMap<ConnectionSpec, ServiceManager>();
     }
     
     /**
      * Create and register the connection.
-     * 
      * @param connectionSpec data object used to generate connection
      */
+    @Override
     protected void addService(ConnectionSpec connectionSpec) {
         if( connectionSpec == null || myManagedConnectionsMap.containsKey(connectionSpec) ) {
             return;
         }
-        
         ConnectionLifecycle lifecycle = new ConnectionLifecycle(connectionSpec);
-        
         // As this class has no dependancies, an empty collection is sufficient for JFlux
         ServiceManager managedConnection = new ServiceManager(lifecycle, Collections.EMPTY_MAP, Collections.EMPTY_MAP);
-        
-        // Actually publish the new 'object' as a service in the JFlux registry
-        managedConnection.start(myOSGiRegistry);
-
+        // Start the service manager which will create and register an Connection instance
+        managedConnection.start(myRegistry);
         // Store the connection so it may be removed later.
         myManagedConnectionsMap.put(connectionSpec, managedConnection);
     }
@@ -70,14 +63,16 @@ public class ConnectionSpecExtender extends ServiceClassListener<ConnectionSpec>
     /**
      * Removes the connection that the given spec created from the JFlux
      * registry
-     * 
      * @param connectionSpec  data object used to generate connection
      */
+    @Override
     protected void removeService(ConnectionSpec connectionSpec) {
         if(connectionSpec == null || !myManagedConnectionsMap.containsKey(connectionSpec)) {
             return;
         }
-        
-        myManagedConnectionsMap.remove(connectionSpec);
+        ServiceManager manager = myManagedConnectionsMap.remove(connectionSpec);
+        if(manager != null){
+            manager.stop();
+        }
     }
 }

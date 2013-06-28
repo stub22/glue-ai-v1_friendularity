@@ -15,7 +15,7 @@
  */
 package org.friendularity.spec.connection;
 
-import org.appdapter.bind.rdf.jena.assembly.DynamicCachingComponentAssembler;
+import org.appdapter.bind.rdf.jena.assembly.CachingComponentAssembler;
 import org.appdapter.core.item.Item;
 import org.appdapter.core.name.Ident;
 
@@ -28,9 +28,10 @@ import org.appdapter.bind.rdf.jena.assembly.ItemAssemblyReader;
 
 
 /**
+ * Used by Jena, not meant to be created and used directly.
  * @author Jason R. Eads <eadsjr>
  */
-public class ConnectionSpecBuilder extends DynamicCachingComponentAssembler<ConnectionSpec> {
+public class ConnectionSpecBuilder extends CachingComponentAssembler<ConnectionSpec> {
     
     private final static String   ipAddress = "ipAddress";
     private final static String   port = "port";
@@ -40,11 +41,6 @@ public class ConnectionSpecBuilder extends DynamicCachingComponentAssembler<Conn
     private final static String   virtualHost = "virtualHost";
     private final static String   connectionOptions = "connectionOptions";
     
-    /**
-     * 
-     * TODO: rename builderConfRes to be more meaningful
-     * @param builderConfRes 
-     */
     public ConnectionSpecBuilder( Resource builderConfRes ) {
         super(builderConfRes);
     }
@@ -52,17 +48,15 @@ public class ConnectionSpecBuilder extends DynamicCachingComponentAssembler<Conn
     @Override
     protected Class<ConnectionSpec> decideComponentClass(Ident ident, Item item) {
         return ConnectionSpec.class;
-//        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     /**
      * This extracts the data from the data source and injects it into a spec
      * object.
-     * 
-     * @param connectionSpec - the spec that is being populated with data
-     * @param item - provides identity of item from data source
-     * @param asmblr - NOT USED IN THIS CASE
-     * @param mode  - NOT USED IN THIS CASE
+     * @param connectionSpec the spec that is being populated with data
+     * @param item provides identity of item from data source
+     * @param asmblr unused parameter
+     * @param mode unused parameter
      */
     @Override
     protected void initExtendedFieldsAndLinks(ConnectionSpec connectionSpec, Item item, Assembler asmblr, Mode mode) {
