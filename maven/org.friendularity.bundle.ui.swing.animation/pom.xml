@@ -23,7 +23,7 @@
         <dependency>
             <groupId>org.rwshop</groupId>
             <artifactId>org.rwshop.swing.animation</artifactId>
-            <version>0.9.1-SNAPSHOT</version>
+            <version>${rwshop.version}</version>
         </dependency>
         <dependency>
             <groupId>org.cogchar</groupId>
