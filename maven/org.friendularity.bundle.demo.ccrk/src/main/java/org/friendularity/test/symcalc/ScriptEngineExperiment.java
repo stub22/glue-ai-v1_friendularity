@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.friendularity.bundle.symcalc;
+package org.friendularity.test.symcalc;
 
 import java.io.FileReader;
 import java.util.ArrayList;
