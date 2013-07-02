@@ -37,7 +37,9 @@ public class VisionDemoFrame extends JFrame {
 		getContentPane().setLayout(new BorderLayout());
 		getContentPane().add(myVideoControlPanel, BorderLayout.NORTH);
 		getContentPane().add(myVideoPanel, BorderLayout.CENTER);
-		
+		// Does:
+		// 1)   videoService.addImageListener(myVideoPanel.getImageEventListener());
+        // 2)	faceService.addImageRegionsListener(myVideoPanel.getImageRegionListListener());
 		myVideoControlPanel.setVideoPanel(myVideoPanel);
 	}
    	

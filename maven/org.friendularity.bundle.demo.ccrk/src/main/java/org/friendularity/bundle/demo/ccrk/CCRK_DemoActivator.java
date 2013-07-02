@@ -11,10 +11,11 @@ import org.osgi.framework.BundleContext;
 
 import org.appdapter.core.matdat.RepoSpec;
 import org.appdapter.core.matdat.OnlineSheetRepoSpec;
+import org.cogchar.bundle.app.puma.PumaAppUtils;
+import org.friendularity.test.symcalc.ScriptEngineExperiment;
 import org.robokind.api.motion.Robot;
 // import org.robokind.ui.swing.common.lifecycle.ServicesFrame;
 import org.rwshop.swing.common.lifecycle.ServicesFrame;
-import org.cogchar.bind.rk.behavior.SceneLifecycleDemo;
 /**
  * This class is a bundle activator demonstrating how to start the Cogchar PUMA system, in an
  * OSGi environment.  We call such a bundle a "top" bundle, which is essentially a launchable
@@ -63,6 +64,8 @@ public class CCRK_DemoActivator extends BundleActivatorBase {
 		startLifecycleMonitorGuiWindow(context);
 		// New bugs in ScreenBoxImpl are preventing this window from launching.
 		// startWhackamoleGuiWindow(context);
+		
+		ScriptEngineExperiment.main(null);
 
 	}
 	protected void startLifecycleMonitorGuiWindow(final BundleContext context) {
@@ -101,7 +104,7 @@ public class CCRK_DemoActivator extends BundleActivatorBase {
 		PumaBooter.BootResult bootResult = pumaBooter.bootUnderOSGi(bundleCtx, mediator);
 		getLogger().info("Got PUMA BootResult: " + bootResult);
 		startMotionComputers(bundleCtx);
-		
+		PumaAppUtils.startMotionComputers(bundleCtx);
 	}
 	private void startMotionComputers(BundleContext bundleCtx) { 
 		List<CogcharMotionSource> cogMotSrcList = CogcharMotionSource.findCogcharMotionSources(bundleCtx);
@@ -112,6 +115,7 @@ public class CCRK_DemoActivator extends BundleActivatorBase {
 			CCRK_DemoMotionComputer dmc = new CCRK_DemoMotionComputer();
 			cms.addJointComputer(dmc);
 		}
+		
 	}
 	static class DemoMediator extends PumaContextMediator {
 		// Override base class methods to customize the way that PUMA boots + runs, and
