@@ -12,6 +12,7 @@ import org.osgi.framework.BundleContext;
 import org.appdapter.core.matdat.RepoSpec;
 import org.appdapter.core.matdat.OnlineSheetRepoSpec;
 import org.cogchar.bundle.app.puma.PumaAppUtils;
+import org.friendularity.api.west.WorldEstimateRenderModule;
 import org.friendularity.test.symcalc.ScriptEngineExperiment;
 import org.robokind.api.motion.Robot;
 // import org.robokind.ui.swing.common.lifecycle.ServicesFrame;
@@ -103,8 +104,17 @@ public class CCRK_DemoActivator extends BundleActivatorBase {
 		PumaContextMediator mediator = PumaGlobalPrebootInjector.getTheInjector().getMediator();
 		PumaBooter.BootResult bootResult = pumaBooter.bootUnderOSGi(bundleCtx, mediator);
 		getLogger().info("Got PUMA BootResult: " + bootResult);
+		// TODO:  Pay attention to {the set of relevant charIDs and component configs}, as we set up these
+		// motionComputer + estimateVisualizer components.
+		
+		// Start the motion computers local to demo CCRK (which don't do anything yet)
 		startMotionComputers(bundleCtx);
-		PumaAppUtils.startMotionComputers(bundleCtx);
+		// Nonsensically, let's also start a trivial sinusoid-demo implemented in Puma.
+		PumaAppUtils.startSillyMotionComputersDemoForVWorldOnly(bundleCtx); 
+		// Hey, let's get some fused-sensor-data visualization going too, while we're at it!
+		WorldEstimateRenderModule werm = new WorldEstimateRenderModule();
+		PumaAppUtils.attachVWorldRenderModule(bundleCtx, werm, null);
+		werm.setupVisualizer(null, null, null);
 	}
 	private void startMotionComputers(BundleContext bundleCtx) { 
 		List<CogcharMotionSource> cogMotSrcList = CogcharMotionSource.findCogcharMotionSources(bundleCtx);

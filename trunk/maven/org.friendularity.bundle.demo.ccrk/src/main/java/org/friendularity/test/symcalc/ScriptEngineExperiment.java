@@ -64,7 +64,7 @@ public class ScriptEngineExperiment {
 		tse1.mySpaceName = "ONE";
 
 		// This is a static level call that affects the F registry used by the whole JVM.
-		registerFuncPackage("org.friendularity.bundle.symcalc");
+		registerFuncPackage("org.friendularity.test.symcalc");
 
 		tse1.go(100);
 
