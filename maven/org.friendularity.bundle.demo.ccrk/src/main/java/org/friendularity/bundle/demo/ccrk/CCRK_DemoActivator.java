@@ -61,7 +61,8 @@ public class CCRK_DemoActivator extends BundleActivatorBase {
 		// Schedule our callback to the handle method below.
 		scheduleFrameworkStartEventHandler(context);
 		startLifecycleMonitorGuiWindow(context);
-		startWhackamoleGuiWindow(context);
+		// New bugs in ScreenBoxImpl are preventing this window from launching.
+		// startWhackamoleGuiWindow(context);
 
 	}
 	protected void startLifecycleMonitorGuiWindow(final BundleContext context) {
