@@ -37,6 +37,11 @@ import org.cogchar.render.model.humanoid.HumanoidFigureManager;
 
 public class WorldEstimateRenderModule extends RenderModule implements WorldEstimate.Consumer  {
 	private		Visualizer			myVisualizer;
+	// calc engine holds a set of variables defining our state.
+	// we treat these variables as RDF:Nodes.  Our dog's position, in some environment coord frame, rep in turtle as:
+	// dog_pos inFrame env_frame_18; hasX 22.2 ; hasY 0.3; hasZ  -14.0.
+	// Tricky part:  How do we maintain symbol table correspondence?
+	// Symja has 
 	private		ScriptEngine		myCalcEngine;
 	private		WorldEstimate		myCachedWorldEstim;
 	public WorldEstimateRenderModule() { 
@@ -50,7 +55,9 @@ public class WorldEstimateRenderModule extends RenderModule implements WorldEsti
 			// optionally do some updates+ refinements to the cached estimate, either in-place or replacing completely.
 		}
 		if (myVisualizer != null) {
-			myVisualizer.renderCurrentEstimates(myCachedWorldEstim);
+			if (myCachedWorldEstim != null) {
+				myVisualizer.renderCurrentEstimates(myCachedWorldEstim);
+			}
 		}
 	}
 
@@ -62,9 +69,12 @@ public class WorldEstimateRenderModule extends RenderModule implements WorldEsti
 		myVisualizer = viz;
 		return viz;
 	}
-	protected static class Visualizer {
+	protected static class Visualizer extends ThingEstimate.Visualizer {
 		private	HumanoidRenderContext	myRenderCtx;
-
+		protected Visualizer(HumanoidRenderContext hrc) {
+			myRenderCtx = hrc;
+		}
+		
 		protected RenderRegistryClient getRenderRegistryClient() { 
 			return myRenderCtx.getRenderRegistryClient();
 		}
@@ -76,9 +86,7 @@ public class WorldEstimateRenderModule extends RenderModule implements WorldEsti
 			// This could also be fetched through the RenderRegistryClient
 			return myRenderCtx.getPhysicsSpace();
 		}
-		protected Visualizer(HumanoidRenderContext hrc) {
-			myRenderCtx = hrc;
-		}
+
 		private void doMoreStuff() { 
 			RenderRegistryClient rrc = getRenderRegistryClient();
 			AssetManager amgr = rrc.getJme3AssetManager(null);
@@ -87,7 +95,7 @@ public class WorldEstimateRenderModule extends RenderModule implements WorldEsti
 		}
 		
 		protected void renderCurrentEstimates(WorldEstimate estimate) { 
-
+			estimate.renderAsSillyShape(this);
 		}
 		
 	}	

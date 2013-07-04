@@ -16,24 +16,59 @@
 
 package org.friendularity.api.west;
 
+import com.jme3.math.*;
 import org.appdapter.core.name.Ident;
+import org.cogchar.render.sys.registry.RenderRegistryClient;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
 
 public class ThingEstimate {
-	public	Ident		myIdent;
+	public		Ident						myIdent;
+	public		String						myMathExpr;
+	public		ShapeAnimator.VizShape		myCachedVizObject;
+	public		Object						myCachedMathObject;
 	
-	public void renderAsSillyShape() {
-		
+	public ThingEstimate(Ident id) {
+		myIdent = id;
 	}
-			
+	public void updateFromMathSpace(MathSpace ms) { 
+		
+	}	
+	public void renderAsSillyShape(Visualizer viz) {
+		if (myCachedVizObject == null) {
+			Vector3f initPos = new Vector3f(35.0f, 35.0f, -5.0f);
+			float initRadius = 20.0f;
+			ColorRGBA initColor = ColorRGBA.Red;
+			myCachedVizObject = new ShapeAnimator.VizShape(myIdent, initPos, initRadius, initColor);
+			RenderRegistryClient rrc = viz.getRenderRegistryClient();
+			ShapeAnimator sa = viz.getShapeAnimator();
+			sa.attachChild_onRendThrd(rrc, myCachedVizObject);
+		}
+	}
+	
 	public static abstract class CoordinateFrame {
 		public		Ident				myIdent;
 		public		CoordinateFrame		myParent;
 	}
 	public static class Jme3CoordinateFrame extends CoordinateFrame {
 		// Vector loc + Quat rot
+	}
+	public static abstract class Visualizer {
+		private		ShapeAnimator	myShapeAnimator;
+		public ShapeAnimator getShapeAnimator() { 
+			if (myShapeAnimator == null) {
+				RenderRegistryClient rrc = getRenderRegistryClient();
+				myShapeAnimator = new ShapeAnimator();
+				myShapeAnimator.setupMaterials(rrc);
+				myShapeAnimator.enable_onRendThrd(rrc);
+			}
+			return myShapeAnimator;
+		}
+		protected abstract RenderRegistryClient getRenderRegistryClient();
+	}
+	public static abstract class MathSpace {
+		// Get object or object-set for a given Ident.
 	}
 }
