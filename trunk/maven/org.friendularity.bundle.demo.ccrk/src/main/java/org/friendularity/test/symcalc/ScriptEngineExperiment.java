@@ -115,8 +115,13 @@ public class ScriptEngineExperiment {
 			evalPrint("$threeVec[$threeVec[8," + dq("onlyTwoArgs!") + "],5,6]");
 			evalPrint("$threeVec[1,2,-3]");
 			evalPrint("D[Sin[x]*Cos[x],x]");		//  assertEquals("Cos[x]^2-Sin[x]^2"
-			String e = (String) evalPrint("Expand[(x+5)^3]");			//   assertEquals("125+75*x+15*x^2+x^3", stringResult);
-			evalPrint("Factor[" + e + "]");		//  assertEquals("(5+x)^3", stringResult);
+			// This functions differently depending on whether the engine is set to allow object returns.
+			Object expandResObj = evalPrint("Expand[(x+5)^3]");			//   assertEquals("125+75*x+15*x^2+x^3", stringResult);
+			if (expandResObj instanceof String) {
+				evalPrint("Factor[" + (String) expandResObj + "]");		//  assertEquals("(5+x)^3", stringResult);
+			} else {
+	
+			}
 			evalPrint("JavaForm[{{1,2,3},{3,4,11},{13,7,8}}.{{1,2,3},{3,4,11},{13,7,8}}]");
 			// "a matrix contains the rows as sublists"
 			evalPrint("({{1,2,3},{3,4,11},{13,7,8}}.{{1,2,3},{3,4,11},{13,7,8}})[[2]]");
@@ -128,7 +133,8 @@ public class ScriptEngineExperiment {
 			evalPrint("$x");
 			putVar("$x", new Boolean(true));
 			putVar("$y", new Boolean(true));
-			String xAndY = (String) evalPrint("$x && $y");	// assertEquals("True", stringResult);
+			// String xAndY = (String) 
+			evalPrint("$x && $y");	// assertEquals("True", stringResult);
 
 			evalPrint("$threeVec[v1_,v2_,v3_]:={v1,v2 * " + magicMult + ",v3}");
 			evalPrint("$threeVec[$x,5,NextPrime[37,3]]");
@@ -171,7 +177,7 @@ public class ScriptEngineExperiment {
 
 			ScriptContext context = myEng.getContext();
 			// If we do this, an AST is returned.  Otherwise a String is returned.
-			// context.setAttribute(MathScriptEngine.RETURN_OBJECT, Boolean.TRUE,	ScriptContext.ENGINE_SCOPE);
+			context.setAttribute(MathScriptEngine.RETURN_OBJECT, Boolean.TRUE,	ScriptContext.ENGINE_SCOPE);
 			Object objectResult = evalPrint("$m.$m");
 			//   engine_1         .eval(new FileReader(         "C:\\temp\\test.m"));
 // print result for matrix multiplication: {{1,2,3}, {3, 4, 11},
@@ -190,7 +196,7 @@ public class ScriptEngineExperiment {
 	}
 
 	public void printIExpr(IExpr expr) {
-
+		System.out.println("Printing an expr of type = " + expr.getClass());
 		if (expr instanceof List) {
 			System.out.println("----------- Printing List, foreach -------");
 			// use java.util.List to print the rows
@@ -224,8 +230,6 @@ public class ScriptEngineExperiment {
 				subExpr = list.get(i);
 				System.out.println(subExpr);
 			}
-
-
 		}
 
 	}

@@ -11,7 +11,11 @@ import org.osgi.framework.BundleContext;
 
 import org.appdapter.core.matdat.RepoSpec;
 import org.appdapter.core.matdat.OnlineSheetRepoSpec;
+import org.appdapter.core.name.FreeIdent;
+import org.appdapter.core.name.Ident;
 import org.cogchar.bundle.app.puma.PumaAppUtils;
+import org.friendularity.api.west.ThingEstimate;
+import org.friendularity.api.west.WorldEstimate;
 import org.friendularity.api.west.WorldEstimateRenderModule;
 import org.friendularity.test.symcalc.ScriptEngineExperiment;
 import org.robokind.api.motion.Robot;
@@ -115,6 +119,11 @@ public class CCRK_DemoActivator extends BundleActivatorBase {
 		WorldEstimateRenderModule werm = new WorldEstimateRenderModule();
 		PumaAppUtils.attachVWorldRenderModule(bundleCtx, werm, null);
 		werm.setupVisualizer(null, null, null);
+		Ident worldEstimID = new FreeIdent(WorldEstimate.ESTIM_NS + "world_estim_31");
+		WorldEstimate we = new WorldEstimate(worldEstimID);
+		// Needs to be done at least once for the selfEstim to exist.
+		we.updateFromMathSpace(null);
+		werm.setWorldEstimate(we);
 	}
 	private void startMotionComputers(BundleContext bundleCtx) { 
 		List<CogcharMotionSource> cogMotSrcList = CogcharMotionSource.findCogcharMotionSources(bundleCtx);
