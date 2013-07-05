@@ -41,8 +41,8 @@ public class WorldEstimateRenderModule extends RenderModule implements WorldEsti
 	// we treat these variables as RDF:Nodes.  Our dog's position, in some environment coord frame, rep in turtle as:
 	// dog_pos inFrame env_frame_18; hasX 22.2 ; hasY 0.3; hasZ  -14.0.
 	// Tricky part:  How do we maintain symbol table correspondence?
-	// Symja has 
-	private		ScriptEngine		myCalcEngine;
+	// Symja is function-oriented, and does not obviously/trivially supply an associate-array or record construct.
+	private		MathGate			myMathGate;
 	private		WorldEstimate		myCachedWorldEstim;
 	public WorldEstimateRenderModule() { 
 		setDebugRateModulus(1000);
@@ -50,9 +50,15 @@ public class WorldEstimateRenderModule extends RenderModule implements WorldEsti
 	@Override public void setWorldEstimate(WorldEstimate worldEstim) {
 		myCachedWorldEstim = worldEstim;
 	}
+	public void setMathGate(MathGate mg) {
+		myMathGate = mg;
+	}
 	@Override protected void doRenderCycle(long runSeqNum, float timePerFrame) {
-		if (myCalcEngine != null) {
+		if (myMathGate != null) {
 			// optionally do some updates+ refinements to the cached estimate, either in-place or replacing completely.
+			if (myCachedWorldEstim != null) {
+				myCachedWorldEstim.updateFromMathSpace(myMathGate);
+			}
 		}
 		if (myVisualizer != null) {
 			if (myCachedWorldEstim != null) {
@@ -60,7 +66,6 @@ public class WorldEstimateRenderModule extends RenderModule implements WorldEsti
 			}
 		}
 	}
-
 	// Args are all unused at present...
   	public Visualizer setupVisualizer(RepoClient rc, Ident charID, Ident vizConfGraphID) {
 		RenderGateway rg = getRenderGateway();

@@ -42,20 +42,20 @@ public class ScriptEngineExperiment {
 
 	private ScriptEngine myEng;
 	private String mySpaceName;
-	static String engineName = "matheclipse";
+	static String ENGINE_FACTORY_NAME = "symja_via_appd";
 
 	public static void main(final String args[]) {
 		ScriptEngineManager scriptManager = new ScriptEngineManager();
-		MathScriptEngineFactory msef = new MathScriptEngineFactory();
+		MathScriptEngineFactory mseFactory = new MathScriptEngineFactory();
 		// In server mode we are only allowed to change symbols that start with "$".
 		// We use this feature to try to darken the line between symbol categories.
 		// Note that the constructor for MathScriptEngineFactory sets this flag to false, so we
 		// are overriding it here.
 		Config.SERVER_MODE = true;
-		scriptManager.registerEngineName(engineName, msef);
+		scriptManager.registerEngineName(ENGINE_FACTORY_NAME, mseFactory);
 		// Otherwise requires an entry in META-INF/services/javax.script.ScriptEngineFactory
 		// ScriptEngine scriptEng = scriptManager.getEngineByExtension("m");
-		ScriptEngine scriptEng_1 = scriptManager.getEngineByName(engineName);
+		ScriptEngine scriptEng_1 = scriptManager.getEngineByName(ENGINE_FACTORY_NAME);
 		// ScriptEngine scriptEng  = msef.getScriptEngine();
 		System.out.println("Got script engine: " + scriptEng_1);
 		ScriptEngineExperiment tse1 = new ScriptEngineExperiment();
@@ -71,15 +71,19 @@ public class ScriptEngineExperiment {
 		System.out.println("================================================================================");
 
 
-		ScriptEngine scriptEng_2 = scriptManager.getEngineByName(engineName);
-
-		ScriptEngineExperiment tse2 = new ScriptEngineExperiment();
-		tse2.myEng = scriptEng_2;
-		tse2.mySpaceName = "TWO";
-		tse2.go(200);
-		System.out.println("================================================================================");
+		ScriptEngine scriptEng_2 = scriptManager.getEngineByName(ENGINE_FACTORY_NAME);
+		if (scriptEng_2 == scriptEng_1) {
+			System.out.println("eng1 == eng2");
+		} else {
+			ScriptEngineExperiment tse2 = new ScriptEngineExperiment();
+			tse2.myEng = scriptEng_2;
+			tse2.mySpaceName = "TWO";
+			tse2.go(200);
 		
-		tse1.go(111);
+			System.out.println("================================================================================");
+		
+			tse1.go(111);
+		}
 	}
 
 	public Object evalPrint(String script) {
@@ -108,6 +112,7 @@ public class ScriptEngineExperiment {
 	}
 	public void go(int magicMult) {
 		try {
+
 			evalPrint("Fit[{{1,1},{2,4},{3,8},{4,17}},3,x]");
 			// This "pattern" is only defined below - so it will only work here on a subsequent "go()",
 			// assuming no other engine has messed up the F context (which is what we're testing!)
@@ -176,8 +181,10 @@ public class ScriptEngineExperiment {
 // $m.$m
 
 			ScriptContext context = myEng.getContext();
+						
 			// If we do this, an AST is returned.  Otherwise a String is returned.
 			context.setAttribute(MathScriptEngine.RETURN_OBJECT, Boolean.TRUE,	ScriptContext.ENGINE_SCOPE);
+			evalPrint("{0.9, 0.8, 0.7}");
 			Object objectResult = evalPrint("$m.$m");
 			//   engine_1         .eval(new FileReader(         "C:\\temp\\test.m"));
 // print result for matrix multiplication: {{1,2,3}, {3, 4, 11},
@@ -197,25 +204,12 @@ public class ScriptEngineExperiment {
 
 	public void printIExpr(IExpr expr) {
 		System.out.println("Printing an expr of type = " + expr.getClass());
-		if (expr instanceof List) {
-			System.out.println("----------- Printing List, foreach -------");
-			// use java.util.List to print the rows
-			List<IExpr> list = (List<IExpr>) expr;
-			for (IExpr subExpr : list) {
-				System.out.println(subExpr);
-			}
-			System.out.println("----------- Printing List, for/index -------");
-			IExpr subExpr;
-			// there's a difference between foreach and for loop
-			// because the head is stored at index 0:
-			for (int i = 0; i < list.size(); i++) {
-				subExpr = list.get(i);
-				System.out.println(subExpr);
-			}
-		}
 
 		if (expr instanceof IAST) {
-			System.out.println("----------- Printing IAST, foreach -------");
+			// IAST extends INestedList<IExpr> extends java.util.List<IExpr>
+			// It has a special impl of "iterator()" that skips over the 0th element, which is the function-symbol (functor)
+			// So, "size()" returns one more than the number of entries iterator() produces.
+			System.out.println("----------- Printing IAST, foreach - using special iterator() -------");
 			// use org.matheclipse.core.interfaces.IAST to print the
 			// rows
 			IAST list = (IAST) expr;
@@ -225,7 +219,7 @@ public class ScriptEngineExperiment {
 			IExpr subExpr;
 			// there's a difference between foreach and for loop
 			// because the head is stored at index 0:
-			System.out.println("----------- Printing IAST, for/index -------");
+			System.out.println("----------- Printing IAST, for/index - using underlying java.util.List -------");
 			for (int i = 0; i < list.size(); i++) {
 				subExpr = list.get(i);
 				System.out.println(subExpr);

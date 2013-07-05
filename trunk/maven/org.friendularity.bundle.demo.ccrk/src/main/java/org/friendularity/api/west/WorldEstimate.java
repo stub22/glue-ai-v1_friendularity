@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.Set;
 import org.appdapter.core.name.Ident;
 import org.appdapter.core.name.FreeIdent;
+import com.jme3.math.Vector3f;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -34,15 +35,38 @@ public class WorldEstimate extends ThingEstimate {
 	public WorldEstimate(Ident id) {
 		super(id);
 	}
-
+	boolean mathNeedsInit = true;
 	@Override
-	public void updateFromMathSpace(MathSpace ms) {
+	public void updateFromMathSpace(MathGate mg) {
+		long nowMsec = System.currentTimeMillis();
+		double nowSec = nowMsec / 1000.0;
+		mg.putVar("$nowSec", new Double(nowSec));
+		if (mathNeedsInit) {
+			mg.putVar("$startSec", new Double(nowSec));
+			mg.putVar("$cycleSec", new Double(3.0));
+			mathNeedsInit=false;
+		}
+		Object globs1 = mg.evalToIExpr("$elapsed:=$nowSec-$startSec; $cycles:=Floor[$elapsed/$cycleSec]");
+		Object globs2 = mg.evalToIExpr("$phaseFrac:=$elapsed/$cycleSec-$cycles; $phaseAng:=2.0*Pi*$phaseFrac");
+		super.updateFromMathSpace(mg);
 		if (mySelfEstim == null) {
 			Ident selfEstID = new FreeIdent(ESTIM_NS + "self_estim_88");
 			mySelfEstim = new SelfEstimate(selfEstID);
+			mySelfEstim.myPosVecExpr="{5.0^Sin[$phaseAng], 6.0^(2*Cos[$phaseAng]), $phaseFrac}";
+			for (int i = 0; i < 10; i++) {
+				Ident personID = new FreeIdent(ESTIM_NS + "person_estim_0" + i);
+				PersonEstimate pest = new PersonEstimate(personID);
+				double px = -10.0 - i * 2.0, py=10.0 + i * 2.0, pz = 4.0;
+				String baseVecExpr = "{" + px + ", " + py + ", " + pz + "}";
+				pest.myPosVecExpr="Sin[$phaseAng]*" + baseVecExpr;
+				pest.myColorVecExpr = "{Sin[$phaseAng],Sin[3.0*$phaseAng], Sin[$phaseAng/2], $phaseFrac}";
+				myPersonEstims.add(pest);
+			}
 		}
-		mySelfEstim.updateFromMathSpace(ms);
-
+		mySelfEstim.updateFromMathSpace(mg);
+		for (PersonEstimate pest : myPersonEstims) {
+			pest.updateFromMathSpace(mg);
+		}
 
 	}
 
@@ -51,6 +75,11 @@ public class WorldEstimate extends ThingEstimate {
 		if (mySelfEstim != null) {
 			mySelfEstim.renderAsSillyShape(viz);
 		}
+		for (PersonEstimate pest : myPersonEstims) {
+			pest.renderAsSillyShape(viz);
+		}
+
+		
 	}
 
 	public static class SelfEstimate extends ThingEstimate {
@@ -59,19 +88,6 @@ public class WorldEstimate extends ThingEstimate {
 			super(id);
 		}
 
-		@Override
-		public void updateFromMathSpace(MathSpace ms) {
-			// First goal is to Get X, Y, Z + Rot-X, Rot-Y, Rot-Z
-			// Formal but costly approach:  Serialize my previous data into MathSpace, calc update, serialize back out.
-			// Alternative is to assume a symbiosis:  MathSpace knows what's up!  In this case, we at least serialize
-			// in our own ident, and look up state on that basis.  
-		}
-
-		@Override
-		public void renderAsSillyShape(Visualizer viz) {
-			// Move the character's location + orientation to the values from MathSpace estimate.
-			super.renderAsSillyShape(viz);
-		}
 	}
 
 	public static class PersonEstimate extends ThingEstimate {
