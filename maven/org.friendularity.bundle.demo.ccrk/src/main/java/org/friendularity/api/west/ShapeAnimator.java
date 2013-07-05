@@ -88,11 +88,11 @@ public class ShapeAnimator {
 	}
 
 	static class VizShape {
-		Ident				myIdent;
-		Vector3f			myPosVec;
-		float				myRadius;
+		private Ident				myIdent;
+		private Vector3f			myPosVec;
+		private float				myRadius;
 		// Strangely it seems RGBA is the only colorspace directly supported by JME3 core API - true? (No HSV, YUV)
-		ColorRGBA			myColor;
+		private ColorRGBA			myColor;
 		
 		private	Geometry			myGeom;
 		// RigidBodyControl	myRigidBodyControl;
@@ -105,15 +105,19 @@ public class ShapeAnimator {
 			myRadius = initRadius;
 			myColor = initColor;
 		} 
-		public void setupGeom(ShapeAnimator sa, RenderRegistryClient rrc) { 
-			// Copied+modified from DataballGoodyBuilder
-			Sphere sphereMesh = new Sphere(20, 20, myRadius);
-			myMaterial = sa.myStandardMaterial.clone();
-			myMaterial.setBoolean("UseMaterialColors", true);
+		protected void applyColorsToMat() {
 			myMaterial.setColor("Diffuse", myColor);
 			myMaterial.setColor("Ambient", myColor);
 			myMaterial.setColor("Specular", myColor);
-			myMaterial.setFloat("Shininess", 25f);
+			myMaterial.setFloat("Shininess", 25f);		
+		}
+		public void setupGeom(ShapeAnimator sa, RenderRegistryClient rrc) {
+			int zSamp = 20, rSamp = 20;
+			// Copied+modified from DataballGoodyBuilder
+			Sphere sphereMesh = new Sphere(zSamp, rSamp, myRadius);
+			myMaterial = sa.myStandardMaterial.clone();
+			myMaterial.setBoolean("UseMaterialColors", true);
+			applyColorsToMat();
 			// 		material.getAdditionalRenderState().setBlendMode(BlendMode.Alpha);
 			//  geometry.setQueueBucket(Bucket.Transparent);
 			RigidBodyControl optRBC = null;
@@ -121,8 +125,20 @@ public class ShapeAnimator {
 			// control.setRestitution(0.5f);
 			String emptySelector = null;
 			GeomFactory geomFactory = rrc.getSceneGeometryFacade(emptySelector);
-			
 			myGeom = geomFactory.makeGeom(myIdent.getLocalName(), sphereMesh, myMaterial, optRBC);
+			myGeom.setLocalTranslation(myPosVec);
+		}
+		public void setPosition(Vector3f pos) {
+			myPosVec = pos;
+			if (myGeom != null) {
+				myGeom.setLocalTranslation(myPosVec);
+			}
+		}
+		public void setColor(ColorRGBA col) {
+			myColor = col;
+			if (myMaterial != null) {
+				applyColorsToMat();
+			}
 		}
  
 
