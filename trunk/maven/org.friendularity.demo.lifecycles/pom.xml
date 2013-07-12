@@ -67,7 +67,7 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
-            <version>1.6.1</version>
+            <version>1.7.5</version>
             <scope>runtime</scope>
             <exclusions>
                 <!-- We exclude the normally embedded Log4J version, because it is not OSGi friendly.

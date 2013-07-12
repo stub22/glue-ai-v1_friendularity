@@ -32,9 +32,9 @@
 		
 		
 		<dependency>
-			<groupId>org.apache.felix</groupId>
+			<groupId>org.osgi</groupId>
 			<artifactId>org.osgi.core</artifactId>
-			<version>1.4.0</version>
+			<version>4.2.0</version>
 			<scope>provided</scope>
 		</dependency>
 		
@@ -115,7 +115,7 @@ MNG-1412 / MNG-3111 introduced deterministic ordering of dependencies on the cla
 			<plugin>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
-				<version>2.2.0</version>
+				<version>2.3.7</version>
 				<extensions>true</extensions>
 				<configuration>
 					<instructions>
@@ -133,7 +133,7 @@ MNG-1412 / MNG-3111 introduced deterministic ordering of dependencies on the cla
 				<dependency>
 					<groupId>org.apache.felix</groupId>
 					<artifactId>org.apache.felix.main</artifactId>
-					<version>3.0.7</version>
+					<version>4.2.1</version>
 					<scope>provided</scope>
 				</dependency>
                 <!-- To include a shell:
@@ -211,7 +211,7 @@ MNG-1412 / MNG-3111 introduced deterministic ordering of dependencies on the cla
 				<dependency>
 					<groupId>org.apache.felix</groupId>
 					<artifactId>org.apache.felix.main</artifactId>
-					<version>3.0.7</version>
+					<version>4.2.1</version>
 					<scope>provided</scope>
 				</dependency>
                 <!-- org.apache.felix:org.apache.felix.gogo.shell:0.6.1 useless from Maven since stdin is swallowed -->
@@ -241,7 +241,16 @@ MNG-1412 / MNG-3111 introduced deterministic ordering of dependencies on the cla
 									<entry key="org.osgi.framework.bootdelegation" value="*"/>
 									
 									<!-- Friendularity edit:  Allow sun.misc package to be used by LWJGL -->
-									<entry key="org.osgi.framework.system.packages.extra" value="sun.misc" />
+                                    <!-- org.w3c.dom.* are missing from default.properties in felix 4.2.1, they are present in 3.0.7 -->
+									<entry key="org.osgi.framework.system.packages.extra" 
+                                           value="sun.misc,
+                                                    org.w3c.dom.css,
+                                                    org.w3c.dom.html,
+                                                    org.w3c.dom.stylesheets,
+                                                    org.w3c.dom.traversal,
+                                                    org.w3c.dom.ranges,
+                                                    org.w3c.dom.views,
+                                                    org.w3c.dom.xpath" />
 									<!-- end Friendularity edit (above and below the edit is boilerplate from archetype) -->
 									
 								</propertyfile>
