@@ -55,7 +55,7 @@
 -->
 		<module>../org.friendularity.demo.jme3.maven</module>
 
-		<module>../org.friendularity.demo.weber</module>
+<!--		<module>../org.friendularity.demo.weber</module>-->
 		
 <!--	
 		<module>../org.friendularity.demo.lifter</module>
@@ -74,6 +74,6 @@
         <module>../org.friendularity.test.sensors.r50</module>
 	</modules>	
 	<properties>
-		<jmonkey.version>3.0.0.20120512-SNAPSHOT</jmonkey.version>
+		<jmonkey.version>3.0.0.20121220-SNAPSHOT</jmonkey.version>
 	</properties>
 </project>
