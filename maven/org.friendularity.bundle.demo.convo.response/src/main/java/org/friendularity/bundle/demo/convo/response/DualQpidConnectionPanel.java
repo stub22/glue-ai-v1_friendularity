@@ -22,8 +22,8 @@
 package org.friendularity.bundle.demo.convo.response;
 
 import javax.swing.JOptionPane;
-import org.robokind.avrogen.speech.SpeechRequestRecord;
-import org.robokind.avrogen.speechrec.SpeechRecEventListRecord;
+import org.robokind.impl.speech.SpeechRequestRecord;
+import org.robokind.impl.speechrec.SpeechRecEventListRecord;
 import org.rwshop.swing.common.HistoricalComboBoxModel;
 
 /**
