@@ -40,7 +40,7 @@ import org.robokind.api.animation.library.DefaultAnimationLibrary;
 import org.robokind.api.animation.messaging.RemoteAnimationPlayerClient;
 import org.robokind.api.common.config.VersionProperty;
 import org.robokind.api.messaging.services.ServiceCommand;
-import org.robokind.avrogen.messaging.ServiceCommandRecord;
+import org.robokind.impl.messaging.ServiceCommandRecord;
 
 /**
  *

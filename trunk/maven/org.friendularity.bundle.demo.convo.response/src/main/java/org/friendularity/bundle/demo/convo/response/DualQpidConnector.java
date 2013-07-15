@@ -23,16 +23,14 @@ import javax.jms.JMSException;
 import javax.jms.MessageConsumer;
 import javax.jms.Session;
 import org.apache.avro.Schema;
-import org.apache.avro.generic.IndexedRecord;
 import org.jflux.api.core.util.DefaultNotifier;
 import org.robokind.api.messaging.RecordAsyncReceiver.RecordHandler;
-import org.robokind.api.speech.SpeechRequest;
-import org.robokind.avrogen.speech.SpeechRequestRecord;
-import org.robokind.avrogen.speechrec.SpeechRecEventListRecord;
 import org.robokind.impl.messaging.JMSAvroRecordAsyncReceiver;
 import org.robokind.impl.messaging.JMSAvroRecordSender;
 import org.robokind.impl.messaging.JMSBytesMessageSender;
 import org.robokind.impl.messaging.utils.ConnectionManager;
+import org.robokind.impl.speech.SpeechRequestRecord;
+import org.robokind.impl.speechrec.SpeechRecEventListRecord;
 
 /**
  *

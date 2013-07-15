@@ -9,11 +9,11 @@ import org.robokind.api.sensor.gpio.RemoteGpioServiceClient;
 import org.robokind.api.sensor.imu.RemoteAccelerometerServiceClient;
 import org.robokind.api.sensor.imu.RemoteCompassServiceClient;
 import org.robokind.api.sensor.imu.RemoteGyroscopeServiceClient;
-import org.robokind.avrogen.sensor.AccelerometerConfigRecord;
-import org.robokind.avrogen.sensor.CompassConfigRecord;
-import org.robokind.avrogen.sensor.DeviceReadPeriodRecord;
-import org.robokind.avrogen.sensor.GyroConfigRecord;
-import org.robokind.avrogen.sensor.HeaderRecord;
+import org.robokind.impl.sensor.AccelerometerConfigRecord;
+import org.robokind.impl.sensor.CompassConfigRecord;
+import org.robokind.impl.sensor.DeviceReadPeriodRecord;
+import org.robokind.impl.sensor.GyroConfigRecord;
+import org.robokind.impl.sensor.HeaderRecord;
 import org.robokind.client.basic.Robokind;
 import org.robokind.client.basic.UserSettings;
 
