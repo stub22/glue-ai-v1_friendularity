@@ -51,7 +51,7 @@
 			<version>${cogchar.version}</version>
 		</dependency>
         <dependency>
-            <artifactId>org.friendularity.spec.connection</artifactId>
+            <artifactId>org.friendularity.demo.spec.connection</artifactId>
             <groupId>org.friendularity</groupId>
             <version>${project.version}</version>
         </dependency>
