@@ -61,6 +61,11 @@
 			<artifactId>org.jflux.impl.registry.osgi</artifactId>
 			<version>${jflux.version}</version>
 		</dependency>
+        <dependency>
+			<groupId>org.robokind</groupId>
+			<artifactId>org.robokind.impl.messaging</artifactId>
+			<version>${robokind.version}</version>
+		</dependency>
     </dependencies>
 
     <build>
