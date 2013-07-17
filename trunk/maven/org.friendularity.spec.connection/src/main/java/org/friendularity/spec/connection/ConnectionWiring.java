@@ -42,9 +42,10 @@ public class ConnectionWiring {
     
     public static ConnectionSpecExtender startSpecExtender(BundleContext bundleCtx, String optionalSpecFilter) {
         Registry reg = new OSGiRegistry(bundleCtx);
-        ConnectionSpecExtender cse = new ConnectionSpecExtender(bundleCtx, reg, optionalSpecFilter);
-        cse.start();
-        return cse;
+//        ConnectionSpecExtender cse = new ConnectionSpecExtender(bundleCtx, reg, optionalSpecFilter);
+//        cse.start();
+//        return cse;
+        return null;
     }
     
     public static Map<ConnectionSpec,ManagedService> loadAndRegisterSpecs(
