@@ -53,7 +53,7 @@ public class ConnectionSpecExtender extends ServiceClassListener<ConnectionSpec>
         }
         ConnectionLifecycle lifecycle = new ConnectionLifecycle(connectionSpec);
         // As this class has no dependancies, an empty collection is sufficient for JFlux
-        ServiceManager managedConnection = new ServiceManager(lifecycle, Collections.EMPTY_MAP, Collections.EMPTY_MAP);
+        ServiceManager managedConnection = new ServiceManager(lifecycle, Collections.EMPTY_MAP, Collections.EMPTY_MAP, null);
         // Start the service manager which will create and register an Connection instance
         managedConnection.start(myRegistry);
         // Store the connection so it may be removed later.
