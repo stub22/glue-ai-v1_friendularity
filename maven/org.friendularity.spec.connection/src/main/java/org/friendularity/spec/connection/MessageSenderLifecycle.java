@@ -21,7 +21,8 @@ import static org.jflux.impl.encode.avro.SerializationConfigUtils.CONF_ENCODING_
  */
 
 
-public class MessageSenderLifecycle implements ServiceLifecycle<JMSAvroMessageSender> {
+public class MessageSenderLifecycle
+    implements ServiceLifecycle<JMSAvroMessageSender> {
     private final static Logger theLogger =
             Logger.getLogger(MessageSenderLifecycle.class.getName());
     private final static String theSenderConfiguration = "messageSenderConfig";
