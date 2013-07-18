@@ -15,9 +15,7 @@ import org.jflux.api.service.ServiceDependency;
 import org.jflux.api.service.ServiceLifecycle;
 import org.robokind.impl.messaging.JMSAvroMessageAsyncReceiver;
 
-import static org.jflux.impl.encode.avro.SerializationConfigUtils.CONF_AVRO_RECORD_SCHEMA;
-import static org.jflux.impl.encode.avro.SerializationConfigUtils.CONF_DECODING_ADAPTER;
-import static org.jflux.impl.encode.avro.SerializationConfigUtils.CONF_OUTPUT_CLASS;
+import static org.jflux.impl.encode.avro.SerializationConfigUtils.*;
 
 /**
  *
