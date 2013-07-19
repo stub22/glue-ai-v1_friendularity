@@ -17,7 +17,6 @@ import org.jflux.api.service.ServiceLifecycle;
  * @author Jason G. Pallack <jgpallack@gmail.com>
  */
 
-
 public class SessionLifecycle implements ServiceLifecycle<Session> {
     private final static Logger theLogger =
             Logger.getLogger(SessionLifecycle.class.getName());
@@ -33,6 +32,9 @@ public class SessionLifecycle implements ServiceLifecycle<Session> {
     private final static String[] theClassNameArray = {
         Session.class.getName()
     };
+    
+    public SessionLifecycle() {
+    }
     
     @Override
     public List<ServiceDependency> getDependencySpecs() {
@@ -72,5 +74,4 @@ public class SessionLifecycle implements ServiceLifecycle<Session> {
     public String[] getServiceClassNames() {
         return theClassNameArray;
     }
-    
 }

@@ -20,7 +20,6 @@ import static org.jflux.impl.encode.avro.SerializationConfigUtils.*;
  * @author Jason G. Pallack <jgpallack@gmail.com>
  */
 
-
 public class MessageSenderLifecycle
     implements ServiceLifecycle<JMSAvroMessageSender> {
     private final static Logger theLogger =
@@ -108,5 +107,4 @@ public class MessageSenderLifecycle
     public String[] getServiceClassNames() {
         return theClassNameArray;
     }
-    
 }
