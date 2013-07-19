@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import org.jflux.api.service.DependencySpec;
+import org.jflux.api.service.ServiceDependency;
 import org.jflux.api.service.ServiceLifecycle;
 import org.robokind.api.messaging.MessageAsyncReceiver;
 import org.robokind.api.messaging.MessageSender;
@@ -38,17 +38,17 @@ public class RemoteSpeechServiceLifecycle implements ServiceLifecycle<RemoteSpee
     
     private final static String[] theClassNames = new String[]{RemoteSpeechServiceClient.class.getName()};
     
-    private final static List<DependencySpec> theDependencySpecs = new ArrayList<DependencySpec>(Arrays.asList(
-            new DependencySpec(theCommandSender, MessageSender.class.getName(), DependencySpec.Cardinality.MANDATORY_UNARY, DependencySpec.UpdateStrategy.DYNAMIC, null),
-            new DependencySpec(theConfigSender, MessageSender.class.getName(), DependencySpec.Cardinality.MANDATORY_UNARY, DependencySpec.UpdateStrategy.DYNAMIC, null),
-            new DependencySpec(theErrorReceiver, MessageAsyncReceiver.class.getName(), DependencySpec.Cardinality.MANDATORY_UNARY, DependencySpec.UpdateStrategy.DYNAMIC, null),
-            new DependencySpec(theCommandFactory, ServiceCommandFactory.class.getName(), DependencySpec.Cardinality.MANDATORY_UNARY, DependencySpec.UpdateStrategy.DYNAMIC, null),
-            new DependencySpec(theRequestSender, MessageSender.class.getName(), DependencySpec.Cardinality.MANDATORY_UNARY, DependencySpec.UpdateStrategy.DYNAMIC, null),
-            new DependencySpec(theEventsReceiver, MessageAsyncReceiver.class.getName(), DependencySpec.Cardinality.MANDATORY_UNARY, DependencySpec.UpdateStrategy.DYNAMIC, null),
-            new DependencySpec(theRequestFactory, SpeechRequestFactory.class.getName(), DependencySpec.Cardinality.MANDATORY_UNARY, DependencySpec.UpdateStrategy.DYNAMIC, null)));
+    private final static List<ServiceDependency> theServiceDependencys = new ArrayList<ServiceDependency>(Arrays.asList(
+            new ServiceDependency(theCommandSender, MessageSender.class.getName(), ServiceDependency.Cardinality.MANDATORY_UNARY, ServiceDependency.UpdateStrategy.DYNAMIC, null),
+            new ServiceDependency(theConfigSender, MessageSender.class.getName(), ServiceDependency.Cardinality.MANDATORY_UNARY, ServiceDependency.UpdateStrategy.DYNAMIC, null),
+            new ServiceDependency(theErrorReceiver, MessageAsyncReceiver.class.getName(), ServiceDependency.Cardinality.MANDATORY_UNARY, ServiceDependency.UpdateStrategy.DYNAMIC, null),
+            new ServiceDependency(theCommandFactory, ServiceCommandFactory.class.getName(), ServiceDependency.Cardinality.MANDATORY_UNARY, ServiceDependency.UpdateStrategy.DYNAMIC, null),
+            new ServiceDependency(theRequestSender, MessageSender.class.getName(), ServiceDependency.Cardinality.MANDATORY_UNARY, ServiceDependency.UpdateStrategy.DYNAMIC, null),
+            new ServiceDependency(theEventsReceiver, MessageAsyncReceiver.class.getName(), ServiceDependency.Cardinality.MANDATORY_UNARY, ServiceDependency.UpdateStrategy.DYNAMIC, null),
+            new ServiceDependency(theRequestFactory, SpeechRequestFactory.class.getName(), ServiceDependency.Cardinality.MANDATORY_UNARY, ServiceDependency.UpdateStrategy.DYNAMIC, null)));
     
-    public List<DependencySpec> getDependencySpecs() {
-        return theDependencySpecs;
+    public List<ServiceDependency> getServiceDependencys() {
+        return theServiceDependencys;
     }
 
     public RemoteSpeechServiceClient createService(Map<String, Object> services) {
@@ -99,5 +99,10 @@ public class RemoteSpeechServiceLifecycle implements ServiceLifecycle<RemoteSpee
 
     public String[] getServiceClassNames() {
         return theClassNames;
+    }
+
+    @Override
+    public List<ServiceDependency> getDependencySpecs() {
+        return theServiceDependencys;
     }
 }

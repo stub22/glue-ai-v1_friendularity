@@ -8,7 +8,7 @@ import javax.swing.UIManager;
 import org.jflux.api.registry.Descriptor;
 import org.jflux.api.registry.basic.BasicDescriptor;
 import org.jflux.api.service.ServiceManager;
-import org.jflux.api.service.binding.BindingSpec;
+import org.jflux.api.service.binding.ServiceBinding;
 import org.jflux.impl.registry.OSGiRegistry;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -42,72 +42,72 @@ public class Activator implements BundleActivator {
         
         // Configure the bindings for the RemoteSpeechServiceLifecycle
         RemoteSpeechServiceLifecycle l = new RemoteSpeechServiceLifecycle();
-        Map<String, BindingSpec> bindings = new HashMap<String, BindingSpec>();
+        Map<String, ServiceBinding> bindings = new HashMap<String, ServiceBinding>();
         
         int i = 0;
         Map<String,String> props = new HashMap<String, String>();
         props.put(Constants.PROP_MESSAGE_SENDER_ID, "speechService_01/RKSpeechGroup/speechCommand/RKMessagingGroup/remoteNotifier");
         props.put(Constants.PROP_MESSAGE_TYPE, ServiceCommand.class.getName());
-        Descriptor d = new BasicDescriptor(l.getDependencySpecs().get(i).getDependencyClassName(), props);
-        bindings.put(l.getDependencySpecs().get(i).getDependencyName(), new BindingSpec(l.getDependencySpecs().get(i), d, BindingSpec.BindingStrategy.LAZY));
+        Descriptor d = new BasicDescriptor(l.getServiceDependencys().get(i).getDependencyClassName(), props);
+        bindings.put(l.getServiceDependencys().get(i).getDependencyName(), new ServiceBinding(l.getServiceDependencys().get(i), d, ServiceBinding.BindingStrategy.LAZY));
         
         i++;
         props = new HashMap<String, String>();
         props.put(Constants.PROP_MESSAGE_SENDER_ID, "speechService_01/RKSpeechGroup/speechConfig/RKMessagingGroup/remoteNotifier");
         props.put(Constants.PROP_MESSAGE_TYPE, SpeechConfig.class.getName());
-        d = new BasicDescriptor(l.getDependencySpecs().get(i).getDependencyClassName(), props);
-        bindings.put(l.getDependencySpecs().get(i).getDependencyName(), new BindingSpec(l.getDependencySpecs().get(i), d, BindingSpec.BindingStrategy.LAZY));
+        d = new BasicDescriptor(l.getServiceDependencys().get(i).getDependencyClassName(), props);
+        bindings.put(l.getServiceDependencys().get(i).getDependencyName(), new ServiceBinding(l.getServiceDependencys().get(i), d, ServiceBinding.BindingStrategy.LAZY));
         
         i++;
         props = new HashMap<String, String>();
         props.put(Constants.PROP_MESSAGE_RECEIVER_ID, "speechService_01/RKSpeechGroup/speechError/RKMessagingGroup/remoteListener");
         props.put(Constants.PROP_MESSAGE_TYPE, ServiceError.class.getName());
-        d = new BasicDescriptor(l.getDependencySpecs().get(i).getDependencyClassName(), props);
-        bindings.put(l.getDependencySpecs().get(i).getDependencyName(), new BindingSpec(l.getDependencySpecs().get(i), d, BindingSpec.BindingStrategy.LAZY));
+        d = new BasicDescriptor(l.getServiceDependencys().get(i).getDependencyClassName(), props);
+        bindings.put(l.getServiceDependencys().get(i).getDependencyName(), new ServiceBinding(l.getServiceDependencys().get(i), d, ServiceBinding.BindingStrategy.LAZY));
         
         i++;
         i++;
         props = new HashMap<String, String>();
         props.put(Constants.PROP_MESSAGE_SENDER_ID, "speechService_01/RKSpeechGroup/speechRequest/RKMessagingGroup/remoteNotifier");
         props.put(Constants.PROP_MESSAGE_TYPE, SpeechRequest.class.getName());
-        d = new BasicDescriptor(l.getDependencySpecs().get(i).getDependencyClassName(), props);
-        bindings.put(l.getDependencySpecs().get(i).getDependencyName(), new BindingSpec(l.getDependencySpecs().get(i), d, BindingSpec.BindingStrategy.LAZY));
+        d = new BasicDescriptor(l.getServiceDependencys().get(i).getDependencyClassName(), props);
+        bindings.put(l.getServiceDependencys().get(i).getDependencyName(), new ServiceBinding(l.getServiceDependencys().get(i), d, ServiceBinding.BindingStrategy.LAZY));
         
         i++;
         props = new HashMap<String, String>();
         props.put(Constants.PROP_MESSAGE_RECEIVER_ID, "speechService_01/RKSpeechGroup/speechEvent/RKMessagingGroup/remoteListener");
         props.put(Constants.PROP_MESSAGE_TYPE, SpeechEventList.class.getName());
-        d = new BasicDescriptor(l.getDependencySpecs().get(i).getDependencyClassName(), props);
-        bindings.put(l.getDependencySpecs().get(i).getDependencyName(), new BindingSpec(l.getDependencySpecs().get(i), d, BindingSpec.BindingStrategy.LAZY));
+        d = new BasicDescriptor(l.getServiceDependencys().get(i).getDependencyClassName(), props);
+        bindings.put(l.getServiceDependencys().get(i).getDependencyName(), new ServiceBinding(l.getServiceDependencys().get(i), d, ServiceBinding.BindingStrategy.LAZY));
         
-        ServiceManager m = new ServiceManager(l, bindings, Collections.EMPTY_MAP);
+        ServiceManager m = new ServiceManager(l, bindings, Collections.EMPTY_MAP, null);
         
         // Configue the bindings for the VisemeEventNotifierLifecycle
         VisemeEventNotifierLifecycle l2 = new VisemeEventNotifierLifecycle();
-        bindings = new HashMap<String, BindingSpec>();
+        bindings = new HashMap<String, ServiceBinding>();
         
         i = 0;
         props = new HashMap<String, String>();
         props.put(SpeechService.PROP_ID, "speechService_01");
 //        props.put(Constants.PROP_MESSAGE_TYPE, SpeechService.class.getName());
-        d = new BasicDescriptor(l2.getDependencySpecs().get(i).getDependencyClassName(), props);
-        bindings.put(l2.getDependencySpecs().get(i).getDependencyName(), new BindingSpec(l2.getDependencySpecs().get(i), d, BindingSpec.BindingStrategy.LAZY));
+        d = new BasicDescriptor(l2.getServiceDependencys().get(i).getDependencyClassName(), props);
+        bindings.put(l2.getServiceDependencys().get(i).getDependencyName(), new ServiceBinding(l2.getServiceDependencys().get(i), d, ServiceBinding.BindingStrategy.LAZY));
         
-        ServiceManager m2 = new ServiceManager(l2, bindings, Collections.EMPTY_MAP);
+        ServiceManager m2 = new ServiceManager(l2, bindings, Collections.EMPTY_MAP, null);
         
         
         // Configue the bindings for the VisemeBindingManagerLifecycle
         VisemeBindingManagerLifecycle l3 = new VisemeBindingManagerLifecycle();
-        bindings = new HashMap<String, BindingSpec>();
+        bindings = new HashMap<String, ServiceBinding>();
         
         i = 0;
         props = new HashMap<String, String>();
 //        props.put(Constants.PROP_MESSAGE_SENDER_ID, "speechService_01");
 //        props.put(Constants.PROP_MESSAGE_TYPE, SpeechService.class.getName());
-        d = new BasicDescriptor(l3.getDependencySpecs().get(i).getDependencyClassName(), props);
-        bindings.put(l3.getDependencySpecs().get(i).getDependencyName(), new BindingSpec(l3.getDependencySpecs().get(i), d, BindingSpec.BindingStrategy.LAZY));
+        d = new BasicDescriptor(l3.getServiceDependencys().get(i).getDependencyClassName(), props);
+        bindings.put(l3.getServiceDependencys().get(i).getDependencyName(), new ServiceBinding(l3.getServiceDependencys().get(i), d, ServiceBinding.BindingStrategy.LAZY));
         
-        ServiceManager m3 = new ServiceManager(l3, bindings, Collections.EMPTY_MAP);
+        ServiceManager m3 = new ServiceManager(l3, bindings, Collections.EMPTY_MAP, null);
         
         /*
         OSGiRegistry o = new OSGiRegistry(context);
