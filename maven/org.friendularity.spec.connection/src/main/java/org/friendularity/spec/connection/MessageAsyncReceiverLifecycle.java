@@ -22,7 +22,6 @@ import static org.jflux.impl.encode.avro.SerializationConfigUtils.*;
  * @author Jason G. Pallack <jgpallack@gmail.com>
  */
 
-
 public class MessageAsyncReceiverLifecycle
     implements ServiceLifecycle<JMSAvroMessageAsyncReceiver> {
     private final static Logger theLogger =
@@ -50,6 +49,9 @@ public class MessageAsyncReceiverLifecycle
     private final static String[] theClassNameArray = {
         JMSAvroMessageAsyncReceiver.class.getName()
     };
+    
+    public MessageAsyncReceiverLifecycle() {
+    }
     
     @Override
     public List<ServiceDependency> getDependencySpecs() {
@@ -107,5 +109,4 @@ public class MessageAsyncReceiverLifecycle
     public String[] getServiceClassNames() {
         return theClassNameArray;
     }
-    
 }
