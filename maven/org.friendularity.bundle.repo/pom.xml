@@ -78,17 +78,6 @@
 			<artifactId>org.cogchar.bundle.bind.joseki</artifactId>
 			<version>${cogchar.version}</version>
 		</dependency>		
-		<dependency>
-			<groupId>org.appdapter</groupId>
-			<artifactId>org.appdapter.bundle.core</artifactId>
-			<version>${appdapter.version}</version>
-		</dependency>		
-		<dependency>
-			<groupId>org.appdapter</groupId>
-			<artifactId>ext.bundle.jena_all_264</artifactId>
-			<type>jar</type>
-			<version>${appdapter.version}</version>
-		</dependency>
 		<!-- We want the same deps as CCRK, but not the full PUMA boot peformed by CCRK activator.
 		-->
 		<dependency>
