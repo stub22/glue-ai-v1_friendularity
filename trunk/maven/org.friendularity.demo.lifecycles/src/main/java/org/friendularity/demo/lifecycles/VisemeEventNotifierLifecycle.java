@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import org.jflux.api.service.DependencySpec;
+import org.jflux.api.service.ServiceDependency;
 import org.jflux.api.service.ServiceLifecycle;
 import org.robokind.api.speech.SpeechService;
 import org.robokind.api.speech.viseme.VisemeEventNotifier;
@@ -21,13 +21,13 @@ public class VisemeEventNotifierLifecycle implements ServiceLifecycle<VisemeEven
 
     private final static String theSpeechService = "speechService";
     
-    private final static List<DependencySpec> theDependencySpecs = new ArrayList<DependencySpec>(Arrays.asList(
-            new DependencySpec(theSpeechService, SpeechService.class.getName(), DependencySpec.Cardinality.MANDATORY_UNARY, DependencySpec.UpdateStrategy.DYNAMIC, null)));
+    private final static List<ServiceDependency> theServiceDependencys = new ArrayList<ServiceDependency>(Arrays.asList(
+            new ServiceDependency(theSpeechService, SpeechService.class.getName(), ServiceDependency.Cardinality.MANDATORY_UNARY, ServiceDependency.UpdateStrategy.DYNAMIC, null)));
  
     private final static String[] theClassNames = new String[]{VisemeEventNotifier.class.getName()};
     
-    public List<DependencySpec> getDependencySpecs() {
-        return theDependencySpecs;
+    public List<ServiceDependency> getServiceDependencys() {
+        return theServiceDependencys;
     }
 
     public VisemeEventNotifier createService(Map<String, Object> services) {
@@ -47,6 +47,11 @@ public class VisemeEventNotifierLifecycle implements ServiceLifecycle<VisemeEven
 
     public String[] getServiceClassNames() {
         return theClassNames;
+    }
+
+    @Override
+    public List<ServiceDependency> getDependencySpecs() {
+        return theServiceDependencys;
     }
     
 }
