@@ -66,7 +66,7 @@
 		</dependency>		
 		<dependency>
 			<groupId>org.appdapter</groupId>
-			<artifactId>ext.bundle.jena_all_264</artifactId>
+			<artifactId>ext.bundle.jena_all_2_10_1</artifactId>
 			<type>jar</type>
 			<version>${appdapter.version}</version>
 		</dependency>
