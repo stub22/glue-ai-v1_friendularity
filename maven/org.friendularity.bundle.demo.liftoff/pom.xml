@@ -224,7 +224,7 @@ MNG-1412 / MNG-3111 introduced deterministic ordering of dependencies on the cla
 						<version>1.6</version>
 						<configuration>
 							<target>
-								<property name="vm.args" value=""/>
+								<property name="vm.args" value="-XX:MaxPermSize=192M"/>
 								<pathconvert property="plugins.jars" pathsep="${path.separator}">
 									<path refid="maven.runtime.classpath"/>
 									<map from="${project.build.directory}${file.separator}classes" to=""/>
