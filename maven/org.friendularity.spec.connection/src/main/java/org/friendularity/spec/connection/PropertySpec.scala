@@ -18,6 +18,7 @@ package org.friendularity.spec.connection
 import org.appdapter.core.component.KnownComponentImpl
 import org.appdapter.bind.rdf.jena.assembly.CachingComponentAssembler
 import org.appdapter.core.item.{Item}
+import org.appdapter.core.name.{Ident}
 import com.hp.hpl.jena.assembler.{Assembler, Mode}
 
 /**
@@ -47,6 +48,11 @@ class PropertySpec extends KnownComponentImpl {
  * @author Jason Randolph Eads <eadsjr@hansonrobokind.com>
  */
 class PropertySpecBuilder extends CachingComponentAssembler[PropertySpec] {
+  
+  override protected def decideComponentClass(ident: Ident, item: Item): Class[PropertySpec] = {
+    return classOf[PropertySpec]
+  }
+  
   override protected def initExtendedFieldsAndLinks(pSpec: PropertySpec, configItem : Item, assmblr : Assembler , mode: Mode ) {
     val itemAssemblyReader = getReader();
     
