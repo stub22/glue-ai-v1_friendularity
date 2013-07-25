@@ -21,6 +21,23 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>1.7.5</version>
+            <scope>runtime</scope>
+            <exclusions>		
+                <exclusion>
+                    <artifactId>log4j</artifactId>
+                    <groupId>log4j</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.log4j</groupId>
+            <artifactId>com.springsource.org.apache.log4j</artifactId>
+            <version>1.2.16</version>		
+        </dependency>
+        <dependency>
             <groupId>org.appdapter</groupId>
             <artifactId>ext.bundle.apache_qpid_010</artifactId>
             <version>1.0.5</version>
@@ -38,7 +55,7 @@
         </dependency>
         <dependency>
             <groupId>org.appdapter</groupId>
-            <artifactId>ext.bundle.jena_all_264</artifactId>
+            <artifactId>ext.bundle.jena_all_2_10_1</artifactId>
             <version>${appdapter.version}</version>
         </dependency>
         <dependency>
@@ -57,19 +74,34 @@
             <version>${jflux.version}</version>
         </dependency>
         <dependency>
-			<groupId>org.jflux</groupId>
-			<artifactId>org.jflux.impl.registry.osgi</artifactId>
-			<version>${jflux.version}</version>
-		</dependency>
+            <groupId>org.jflux</groupId>
+            <artifactId>org.jflux.impl.registry.osgi</artifactId>
+            <version>${jflux.version}</version>
+        </dependency>
         <dependency>
-			<groupId>org.robokind</groupId>
-			<artifactId>org.robokind.impl.messaging</artifactId>
-			<version>${robokind.version}</version>
-		</dependency>
+            <groupId>org.robokind</groupId>
+            <artifactId>org.robokind.impl.messaging</artifactId>
+            <version>${robokind.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
         <plugins>
+<!--            <plugin>
+                <groupId>org.scala-tools</groupId>
+                <artifactId>maven-scala-plugin</artifactId>
+                <version>2.15.2</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>compile</goal>
+                             We're not actually using any scala tests right now
+                            <goal>testCompile</goal>
+                            
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>-->
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
@@ -77,7 +109,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Fragment-Host>org.appdapter.ext.bundle.jena_all_264</Fragment-Host>
+                        <Fragment-Host>org.appdapter.ext.bundle.jena_all_2_10_1</Fragment-Host>
                         <Export-Package>org.friendularity.spec.connection</Export-Package>
                     </instructions>
                 </configuration>
