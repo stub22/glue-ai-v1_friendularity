@@ -16,7 +16,6 @@ import org.jflux.api.service.ServiceDependency.UpdateStrategy;
  * @author Jason G. Pallack <jgpallack@gmail.com>
  */
 
-
 public class ServiceLifecycleSpecBuilder
     extends CachingComponentAssembler<ServiceLifecycleSpec> {
     private final static String theLifecycleJavaFQCN = "lifecycleJavaFQCN";

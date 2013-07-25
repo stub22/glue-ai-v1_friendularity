@@ -9,8 +9,6 @@ import org.appdapter.bind.rdf.jena.assembly.CachingComponentAssembler;
 import org.appdapter.bind.rdf.jena.assembly.ItemAssemblyReader;
 import org.appdapter.core.item.Item;
 import org.appdapter.core.name.Ident;
-import org.jflux.api.registry.Descriptor;
-import org.jflux.api.registry.basic.BasicDescriptor;
 import org.jflux.api.service.DefaultRegistrationStrategy;
 import org.jflux.api.service.RegistrationStrategy;
 import org.jflux.api.service.ServiceLifecycle;
@@ -66,6 +64,10 @@ public class ServiceManagerSpecBuilder
                     mkc.setLifecycle(null);
                 }
                 break;
+            } else {
+                theLogger.log(
+                        Level.WARNING, "Unexpected object found at {0} = {1}",
+                        new Object[]{theLifecycleType, lc.toString()});
             }
         }
         
@@ -88,6 +90,10 @@ public class ServiceManagerSpecBuilder
                         bindingSpec.getBindingStrategy());
                 mkc.addServiceBinding(
                         bindingSpec.getDescriptor().getClassName(), binding);
+            } else {
+                theLogger.log(
+                        Level.WARNING, "Unexpected object found at {0} = {1}",
+                        new Object[]{theServiceBinding, sb.toString()});
             }
         }
         
@@ -101,6 +107,10 @@ public class ServiceManagerSpecBuilder
                         stratSpec.getRegistrationProperties());
                 mkc.setServiceRegistration(strat);
                 break;
+            } else {
+                theLogger.log(
+                        Level.WARNING, "Unexpected object found at {0} = {1}",
+                        new Object[]{theRegistrationStrategy, rs.toString()});
             }
         }
     }

@@ -8,7 +8,6 @@ import org.appdapter.core.component.KnownComponentImpl;
  * @author Jason G. Pallack <jgpallack@gmail.com>
  */
 
-
 public class PropertySpec extends KnownComponentImpl {
     // The stored data definitions
     
