@@ -3,6 +3,12 @@ package org.friendularity.spec.connection;
 import java.util.HashMap;
 import java.util.Map;
 import org.appdapter.core.component.KnownComponentImpl;
+import org.jflux.api.registry.Descriptor;
+import org.jflux.api.registry.basic.BasicDescriptor;
+import org.jflux.api.service.ServiceDependency;
+import org.jflux.api.service.ServiceDependency.Cardinality;
+import org.jflux.api.service.ServiceDependency.UpdateStrategy;
+import org.jflux.api.service.binding.ServiceBinding.BindingStrategy;
 
 /**
  * The data object for the dependency binding properties of a service.
@@ -16,19 +22,33 @@ public class ServiceBindingSpec extends KnownComponentImpl {
     
     private String myClassName;
     private Map<String, String> myProperties;
+    private Cardinality myCardinality;
+    private UpdateStrategy myUpdateStrategy;
+    
+    private Descriptor myDescriptor;
+    private ServiceDependency myServiceDependency;
+    private BindingStrategy myBindingStrategy;
     
     public ServiceBindingSpec() {
         myProperties = new HashMap<String, String>();
+        myCardinality = null;
+        myUpdateStrategy = null;
     }
     
     // Getters for data
     
-    public String getClassName() {
-        return myClassName;
+    public ServiceDependency getServiceDependency() {
+        return new ServiceDependency(
+                myClassName, myClassName, myCardinality, myUpdateStrategy,
+                myProperties);
     }
     
-    public Map<String, String> getProperties() {
-        return myProperties;
+    public Descriptor getDescriptor() {
+        return new BasicDescriptor(myClassName, myProperties);
+    }
+    
+    public BindingStrategy getBindingStrategy() {
+        return myBindingStrategy;
     }
     
     // Setters for data
@@ -37,12 +57,24 @@ public class ServiceBindingSpec extends KnownComponentImpl {
         myClassName = className;
     }
     
+    public void setBindingStrategy(BindingStrategy bindingStrategy) {
+        myBindingStrategy = bindingStrategy;
+    }
+    
+    public void setCardinality(Cardinality cardinality) {
+        myCardinality = cardinality;
+    }
+    
+    public void setUpdateStrategy(UpdateStrategy updateStrategy) {
+        myUpdateStrategy = updateStrategy;
+    }
+    
     // Accumulators for data
     
     public void addProperty(String key, String value) {
         myProperties.put(key, value);
-    }
-    
+     }
+     
     public void removeProperty(String key) {
         myProperties.remove(key);
     }
