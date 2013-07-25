@@ -25,8 +25,6 @@ public class ServiceBindingSpec extends KnownComponentImpl {
     private Cardinality myCardinality;
     private UpdateStrategy myUpdateStrategy;
     
-    private Descriptor myDescriptor;
-    private ServiceDependency myServiceDependency;
     private BindingStrategy myBindingStrategy;
     
     public ServiceBindingSpec() {

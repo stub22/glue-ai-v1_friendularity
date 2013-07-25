@@ -9,7 +9,6 @@ import org.jflux.api.service.ServiceDependency.UpdateStrategy;
  * @author Jason G. Pallack <jgpallack@gmail.com>
  */
 
-
 public class ServiceLifecycleSpec extends KnownComponentImpl {
     private Class myLifecycleClass;
     private Cardinality myCardinality;

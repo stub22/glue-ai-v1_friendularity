@@ -72,9 +72,8 @@ public class ServiceBindingSpecBuilder
                         propertySpec.getName(), propertySpec.getValue());
             } else {
                 theLogger.log(
-                        Level.WARNING,
-                        "Unexpected object found at " + theHasProperty +
-                        " = {0}", o.toString());
+                        Level.WARNING, "Unexpected object found at {0} = {1}",
+                        new Object[]{theHasProperty, o.toString()});
             }
         }
     }
