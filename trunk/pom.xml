@@ -111,7 +111,37 @@ Version-less parent will be allowed in Maven 3.1.
 						 -->
 					</configuration>
 				</plugin>
+				<plugin>
+					<groupId>org.scala-tools</groupId>
+					<artifactId>maven-scala-plugin</artifactId>
+					<configuration>
+		<!-- On Frogbait this option drops Scala proj build time about 20% -->
+						<jvmArgs>
+							<jvmArg>-XX:+TieredCompilation</jvmArg>
+						</jvmArgs>
+						<displayCmd>true</displayCmd>	
+							<!-- Compile ONLY the Scala code.  The Java code is compiled by a previous goal.
+								This works OK as long as we don't refer to Scala classes from Java.
+								
+								Without this instruction, the Scala compiler is unable to handle our
+								Tao/Zen coreferent types.   Don't know why these types are OK if
+								Java is compiled before Scala but not if everything is compiled together.
+								Will return to this issue later.
+							-->
+													
+						<sendJavaToScalac>false</sendJavaToScalac>		
+						<configuration>
+							<args>			
+								<arg>-make:transitive</arg>
+								<arg>-dependencyfile</arg>
+								<arg>${project.build.directory}/.scala_dependencies</arg>
+							</args>
+						</configuration>						
+					</configuration>
+				</plugin>
+		
 			</plugins>
+				
 		</pluginManagement>
 		<plugins>
 
