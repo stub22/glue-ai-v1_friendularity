@@ -113,10 +113,8 @@ public class CCRK_DemoActivator extends BundleActivatorBase {
 		// TODO:  Pay attention to {the set of relevant charIDs and component configs}, as we set up these
 		// motionComputer + estimateVisualizer components.
 		
-		// Start the motion computers local to demo CCRK (which don't do anything yet)
-		startMotionComputers(bundleCtx);
-		// Nonsensically, let's also start a trivial sinusoid-demo implemented in Puma.
-		PumaAppUtils.startSillyMotionComputersDemoForVWorldOnly(bundleCtx); 
+
+
 		// Hey, let's get some fused-sensor-data visualization going too, while we're at it!
 		WorldEstimateRenderModule werm = new WorldEstimateRenderModule();
 		PumaAppUtils.attachVWorldRenderModule(bundleCtx, werm, null);
@@ -128,17 +126,35 @@ public class CCRK_DemoActivator extends BundleActivatorBase {
 		Ident worldEstimID = new FreeIdent(WorldEstimate.ESTIM_NS + "world_estim_31");
 		WorldEstimate we = new WorldEstimate(worldEstimID);
 		werm.setWorldEstimate(we);
+		Robot.Id optRobotID_elseAllRobots = null;		
+		startMotionComputers(bundleCtx, optRobotID_elseAllRobots, we);		
 	}
-	private void startMotionComputers(BundleContext bundleCtx) { 
-		List<CogcharMotionSource> cogMotSrcList = CogcharMotionSource.findCogcharMotionSources(bundleCtx);
+	/**
+	 * 		For each joint robot, robokind.org blends all joint inputs received from RobotMoverFrameSources.
+	 *	Cogchar.org defines the CogcharMotionSource subclass.
+	 *	A cogcharMotionSource has an ordered list of CogcharMotionComputers.
+	 * @param bundleCtx
+	 * @param optRobotID_elseAllRobots 
+	 */
+	private void startMotionComputers(BundleContext bundleCtx, Robot.Id optRobotID_elseAllRobots, WorldEstimate we) { 
+		List<CogcharMotionSource> cogMotSrcList = CogcharMotionSource.findCogcharMotionSources(bundleCtx, optRobotID_elseAllRobots);
+		
 		for (CogcharMotionSource cms : cogMotSrcList) {
 			Robot srcBot = cms.getRobot();
 			Robot.Id srcBotID = srcBot.getRobotId();
-			getLogger().info("Found CogcharMotionSource for Robot-ID: " + srcBotID);
-			CCRK_DemoMotionComputer dmc = new CCRK_DemoMotionComputer();
-			cms.addJointComputer(dmc);
+			if ((optRobotID_elseAllRobots == null)  || optRobotID_elseAllRobots.equals(srcBotID)) {
+				getLogger().info("Found CogcharMotionSource for Robot-ID {} matching pattern {}", srcBotID, optRobotID_elseAllRobots);
+				// Start a motion computer implemented locally in demo CCRK - tries to swing Sinbad around his spine
+				CCRK_DemoMotionComputer dmc = new CCRK_DemoMotionComputer();
+				dmc.setWorldEstimate(we);
+				cms.addJointComputer(dmc);
+				// append a trivial Sinbad-waist-sinusoid-demo implemented in CC-Puma.  Because it acts last, it has last
+				// word, but should not unnecessarily override joint-pos from "earlier" phases=computers.
+				PumaAppUtils.startSillyMotionComputersDemoForVWorldOnly(bundleCtx, srcBotID); 		
+			} else {
+				getLogger().debug("Skipping Robot-ID {} because it doesn't match pattern {}", srcBotID, optRobotID_elseAllRobots);
+			}
 		}
-		
 	}
 	static class DemoMediator extends PumaContextMediator {
 		// Override base class methods to customize the way that PUMA boots + runs, and
