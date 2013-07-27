@@ -30,6 +30,8 @@ import com.jme3.bullet.PhysicsSpace;
 import com.jme3.scene.Node;
 import org.cogchar.render.model.humanoid.HumanoidFigureManager;
 
+import org.friendularity.vworld.MeshTest;
+
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -44,6 +46,9 @@ public class WorldEstimateRenderModule extends RenderModule implements WorldEsti
 	// Symja is function-oriented, and does not obviously/trivially supply an associate-array or record construct.
 	private		MathGate			myMathGate;
 	private		WorldEstimate		myCachedWorldEstim;
+	
+	boolean		myDidThatStuffFlag;
+	
 	public WorldEstimateRenderModule() { 
 		setDebugRateModulus(1000);
 	}
@@ -63,6 +68,10 @@ public class WorldEstimateRenderModule extends RenderModule implements WorldEsti
 		if (myVisualizer != null) {
 			if (myCachedWorldEstim != null) {
 				myVisualizer.renderCurrentEstimates(myCachedWorldEstim);
+			}
+			if (!myDidThatStuffFlag) {
+				myDidThatStuffFlag = true;
+				myVisualizer.makeBonusMeshes();
 			}
 		}
 	}
@@ -92,11 +101,13 @@ public class WorldEstimateRenderModule extends RenderModule implements WorldEsti
 			return myRenderCtx.getPhysicsSpace();
 		}
 
-		private void doMoreStuff() { 
+		public void makeBonusMeshes() { 
 			RenderRegistryClient rrc = getRenderRegistryClient();
 			AssetManager amgr = rrc.getJme3AssetManager(null);
 			Node rootNode = rrc.getJme3RootDeepNode(null);
 			RenderConfigEmitter rce = myRenderCtx.getConfigEmitter();
+			MeshTest mt = new MeshTest();
+			mt.makeStuff(amgr, rootNode);
 		}
 		
 		protected void renderCurrentEstimates(WorldEstimate estimate) { 

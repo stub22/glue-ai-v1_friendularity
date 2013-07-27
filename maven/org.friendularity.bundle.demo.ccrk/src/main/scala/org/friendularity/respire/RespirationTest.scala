@@ -14,9 +14,80 @@
  *  limitations under the License.
  */
 package org.friendularity.respire
+import org.appdapter.core.name.{Ident, FreeIdent}
+import org.appdapter.core.store.{Repo, InitialBinding, ModelClient }
+import org.appdapter.help.repo.{RepoClient, RepoClientImpl, InitialBindingImpl} 
+import org.appdapter.impl.store.{FancyRepo};
+import org.appdapter.core.matdat.{SheetRepo,_}
+import com.hp.hpl.jena.query.{QuerySolution} // Query, QueryFactory, QueryExecution, QueryExecutionFactory, , QuerySolutionMap, Syntax};
+import com.hp.hpl.jena.rdf.model.{Model}
+import org.appdapter.core.log.BasicDebugger;
 
-object RespirationTest {
-  def main(args: Array[String]): Unit = {
-    println("Hay, Hoe, Let's Go : " + 8.8)
-  }
+import org.appdapter.impl.store.{ModelClientImpl, ResourceResolver};
+
+import org.friendularity.api.west.{MathGate, MathSpaceFactory}
+
+object RespirationTest extends BasicDebugger {
+	final val TEST_REPO_SHEET_KEY = "0ArBjkBoH40tndHRFS1JTX200WXNNTjI3MGMxWXBDN1E" 
+	final val DFLT_NAMESPACE_SHEET_NUM = 3
+	final val DFLT_DIRECTORY_SHEET_NUM = 4
+	
+	def makeDfltOSRS() : OnlineSheetRepoSpec = { 
+		val fileResModelCLs = new java.util.ArrayList[ClassLoader]();
+		new OnlineSheetRepoSpec(TEST_REPO_SHEET_KEY, DFLT_NAMESPACE_SHEET_NUM, 
+											DFLT_DIRECTORY_SHEET_NUM, fileResModelCLs);
+	}
+	// import org.cogchar.name.dir.{AssumedQueryDir, AssumedGraphDir};
+	def main(args: Array[String]) : Unit = {
+		// Must enable "compile" or "provided" scope for Log4J dep in order to compile this code.
+		org.apache.log4j.BasicConfigurator.configure();
+		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.ALL);
+		
+		getLogger().info("Why hello there!  Yes, respiration is the order of the hour...")
+		val rspec = makeDfltOSRS();
+		val dfltTestRepo = rspec.makeRepo();
+		
+		//dbRepo.addNamedModel(copyID, lightsModelFromSheet);
+		//val copiedModel = dbRepo.getNamedModel(copyID)	
+		val dfltTestRC = rspec.makeRepoClient(dfltTestRepo); 
+		val spatSheetQN = "ccrti:spatial_sheet_60";
+		val mathSheetQN = "ccrti:math_sheet_60";
+		val spatGraphID = dfltTestRC.makeIdentForQName(spatSheetQN);// AssumedGraphDir.estimVizTestCfgGraphQN);
+		val mathGraphID = dfltTestRC.makeIdentForQName(mathSheetQN);
+		println("viz spatial graphID = " + spatGraphID);
+		val spatGraph = dfltTestRepo.getNamedModel(spatGraphID);
+		println("Fetched spat model: " + spatGraph);
+		val mathGraph  = dfltTestRepo.getNamedModel(mathGraphID); 
+		val mathMCI : ModelClient = new ModelClientImpl(mathGraph);
+		println("Fetched math model: " + mathGraph);
+		val msf = new MathSpaceFactory();
+		val mg : MathGate = msf.makeMathEngine();
+		
+		val eq1_QN = "hevi:test_01"
+		val eq1_Item = mathMCI.makeItemForQName(eq1_QN);
+		println("Got eq1_Item : " + eq1_Item)
+		
+		val exprProp_QN = "hev:expr"
+		val exprProp_ID = mathMCI.makeIdentForQName(exprProp_QN)
+		val eq1_expr = eq1_Item.getValString(exprProp_ID, "NOT_FOUND")
+		println("Got eq1_expr : " + eq1_expr)
+		
+		val outDoubleVec : Array[Double] = mg.readDoubleVec(eq1_expr)
+		
+		println("Math-eval produced array: " + outDoubleVec.deep) 
+		
+		val eq2_QN = "hevi:test_02"
+		val eq2_Item = mathMCI.makeItemForQName(eq2_QN);
+		println("Got eq2_Item : " + eq2_Item)
+		
+		val eq2_expr = eq2_Item.getValString(exprProp_ID, "{-1.0}")
+		println("Got eq2_expr : " + eq2_expr)
+		
+		val outDoubleVec2 : Array[Double] = mg.readDoubleVec(eq2_expr)
+		
+		println("Math-eval produced array: " + outDoubleVec2.deep) 
+		// val exprPropQN = "hev:expr"
+		// val eq1_expr = 
+		
+	}
 }
