@@ -14,8 +14,9 @@
  *  limitations under the License.
  */
 
-package org.friendularity.api.west;
+package org.friendularity.api.goody;
 
+import org.friendularity.api.goody.VizShape;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -66,6 +67,9 @@ public class ShapeAnimator {
 		MatFactory matFactory = rrc.getOpticMaterialFacade(null, null);
 		myStandardMaterial = matFactory.makeMatWithOptTexture("Common/MatDefs/Light/Lighting.j3md", "SpecularMap", null);
 	}
+	public Material getStandardMat() { 
+		return myStandardMaterial;
+	}
 	
 	public void enable_onRendThrd(RenderRegistryClient	rrc) {
 		if (mySubsysNode != null) {
@@ -80,81 +84,13 @@ public class ShapeAnimator {
 		}		
 	}
 	public void attachChild_onRendThrd(RenderRegistryClient	rrc, VizShape child) {
-		myShapesByIdent.put(child.myIdent, child);
-		if (child.myGeom == null) {
+		Ident childID = child.getIdent();
+		Geometry childGeom = child.getGeom();
+		myShapesByIdent.put(childID, child);
+		if (childGeom == null) {
 			child.setupGeom(this, rrc);
+			childGeom = child.getGeom();
 		}
-		mySubsysNode.attachChild(child.myGeom);
+		mySubsysNode.attachChild(childGeom);
 	}
-
-	static class VizShape {
-		private Ident				myIdent;
-		private Vector3f			myPosVec;
-		private float				myRadius;
-		// Strangely it seems RGBA is the only colorspace directly supported by JME3 core API - true? (No HSV, YUV)
-		private ColorRGBA			myColor;
-		
-		private	Geometry			myGeom;
-		// RigidBodyControl	myRigidBodyControl;
-		private	Material			myMaterial;
-
-		
-		VizShape(Ident id, Vector3f initPos, float initRadius, ColorRGBA initColor) {
-			myIdent = id;
-			myPosVec = initPos;
-			myRadius = initRadius;
-			myColor = initColor;
-		} 
-		protected void applyColorsToMat() {
-			myMaterial.setColor("Diffuse", myColor);
-			myMaterial.setColor("Ambient", myColor);
-			myMaterial.setColor("Specular", myColor);
-			myMaterial.setFloat("Shininess", 25f);		
-		}
-		public void setupGeom(ShapeAnimator sa, RenderRegistryClient rrc) {
-			int zSamp = 20, rSamp = 20;
-			// Copied+modified from DataballGoodyBuilder
-			Sphere sphereMesh = new Sphere(zSamp, rSamp, myRadius);
-			myMaterial = sa.myStandardMaterial.clone();
-			myMaterial.setBoolean("UseMaterialColors", true);
-			applyColorsToMat();
-			// 		material.getAdditionalRenderState().setBlendMode(BlendMode.Alpha);
-			//  geometry.setQueueBucket(Bucket.Transparent);
-			RigidBodyControl optRBC = null;
-			// myRigidBodyControl = new RigidBodyControl(sphereShape(size), (float) (pow(size, 3) * MASS_COEFFICIENT));
-			// control.setRestitution(0.5f);
-			String emptySelector = null;
-			GeomFactory geomFactory = rrc.getSceneGeometryFacade(emptySelector);
-			myGeom = geomFactory.makeGeom(myIdent.getLocalName(), sphereMesh, myMaterial, optRBC);
-			myGeom.setLocalTranslation(myPosVec);
-		}
-		public void setPosition(Vector3f pos) {
-			myPosVec = pos;
-			if (myGeom != null) {
-				myGeom.setLocalTranslation(myPosVec);
-			}
-		}
-		public void setColor(ColorRGBA col) {
-			myColor = col;
-			if (myMaterial != null) {
-				applyColorsToMat();
-			}
-		}
- 
-
-	}
-	/*
-			myRenderContext.enqueueCallable(new Callable<Void>() { // Do this on main render thread
-
-				@Override
-				public Void call() throws Exception {
-					//geometry.addControl(control);
-					myPhysics.add(control);
-					myBallsNode.attachChild(geometry);
-					control.setPhysicsLocation(initialPosition); // Probably unnecessary - setting this here, in reset() above, and using resetAllBalls in buildModelFromTurtle because they don't want to go to the initial position! Probably some sort of jME concurrency thing...
-					return null;
-				}
-			});
-		}
-		*/
 }

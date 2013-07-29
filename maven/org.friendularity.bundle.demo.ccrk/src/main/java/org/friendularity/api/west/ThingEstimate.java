@@ -15,6 +15,8 @@
  */
 package org.friendularity.api.west;
 
+import org.friendularity.api.goody.ShapeAnimator;
+import org.friendularity.api.goody.VizShape;
 import com.jme3.math.Vector3f;
 import com.jme3.math.ColorRGBA;
 import org.appdapter.core.log.BasicDebugger;
@@ -28,7 +30,7 @@ public abstract class ThingEstimate extends BasicDebugger {
 
 	public Ident					myIdent;
 	public String					myPosVecExpr;
-	public ShapeAnimator.VizShape	myCachedVizObject;
+	public VizShape	myCachedVizObject;
 	
 	private	Vector3f				myPendingPosVec3f;
 	
@@ -65,7 +67,7 @@ public abstract class ThingEstimate extends BasicDebugger {
 		float initRadius = 5.0f;
 		ColorRGBA initColor = ColorRGBA.Red;
 		Vector3f basePos = new Vector3f(35.0f, 35.0f, -5.0f);
-		myCachedVizObject = new ShapeAnimator.VizShape(myIdent, basePos, initRadius, initColor);
+		myCachedVizObject = new VizShape(myIdent, basePos, initRadius, initColor);
 		RenderRegistryClient rrc = viz.getRenderRegistryClient();
 		ShapeAnimator sa = viz.getShapeAnimator();
 		sa.attachChild_onRendThrd(rrc, myCachedVizObject);

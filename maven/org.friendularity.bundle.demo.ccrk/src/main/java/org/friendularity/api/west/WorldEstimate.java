@@ -15,6 +15,8 @@
  */
 package org.friendularity.api.west;
 
+import org.friendularity.api.goody.ShapeAnimator;
+import org.friendularity.api.goody.VizShape;
 import java.util.HashSet;
 import java.util.Set;
 import org.appdapter.core.name.Ident;
@@ -190,7 +192,7 @@ public class WorldEstimate extends ThingEstimate {
 			float initRadius = 5.0f;
 			ColorRGBA initColor = ColorRGBA.Green;
 			Vector3f basePos = new Vector3f(10.0f, 10.0f, 10.0f);
-			myCachedVizObject = new ShapeAnimator.VizShape(myIdent, basePos, initRadius, initColor);
+			myCachedVizObject = new VizShape(myIdent, basePos, initRadius, initColor);
 			RenderRegistryClient rrc = viz.getRenderRegistryClient();
 			ShapeAnimator sa = viz.getShapeAnimator();
 			sa.attachChild_onRendThrd(rrc, myCachedVizObject);
