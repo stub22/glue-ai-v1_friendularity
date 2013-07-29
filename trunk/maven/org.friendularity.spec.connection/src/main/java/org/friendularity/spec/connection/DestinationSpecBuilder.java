@@ -34,7 +34,7 @@ public class DestinationSpecBuilder
         
         Ident nodePropId = ItemFuncs.getNeighborIdent(
                 item, "http://www.friedularity.org/Connection#" + theNodeType);
-        Item nodeTypeItem = item.getSingleLinkedItem(nodePropId);
+        Item nodeTypeItem = item.getSingleLinkedItem(nodePropId, Item.LinkDirection.FORWARD);
         mkc.setType(nodeTypeItem.getIdent().getLocalName());
     }
 }
