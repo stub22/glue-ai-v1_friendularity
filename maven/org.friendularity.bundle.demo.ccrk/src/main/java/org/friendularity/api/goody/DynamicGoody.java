@@ -26,6 +26,7 @@ import org.appdapter.core.store.ModelClient;
 //import com.hp.hpl.jena.query.{QuerySolution} // Query, QueryFactory, QueryExecution, QueryExecutionFactory, , QuerySolutionMap, Syntax};
 import com.hp.hpl.jena.rdf.model.Model;
 
+import org.appdapter.core.log.BasicDebugger;
 
 /**
  *
@@ -41,7 +42,7 @@ import com.hp.hpl.jena.rdf.model.Model;
  */
 
 
-public class DynamicGoody {
+public class DynamicGoody extends BasicDebugger {
 	public static class Spec {
 		Ident	myKind;
 	}
@@ -71,7 +72,7 @@ public class DynamicGoody {
 	public void updateFromSpecItem(ModelClient mc, Item specItem) {
 		
 		// TODO:  These property names need to come from ontology-generated constants.
-		String posVecExpr_Prop_QN = "hev:hev:expr_pos_vec3f";
+		String posVecExpr_Prop_QN = "hev:expr_pos_vec3f";
 		String colorVecExpr_Prop_QN = "hev:expr_color_vec4f";
 		// This resolution (and hence direct dependence on ModelClient mc) could be done "once", on a per-space or global basis.
 		Ident posVecExpr_Prop_ID = mc.makeIdentForQName(posVecExpr_Prop_QN);
@@ -79,7 +80,8 @@ public class DynamicGoody {
 		
 		// From here on out, we only use Items + Idents (so we're not directly RDF/Jena dependent).
 		String posVecExpr = specItem.getValString(posVecExpr_Prop_ID, "{0, 0, 0}");		
-		String colorVecExpr = specItem.getValString(posVecExpr_Prop_ID, "{0, 0, 0, 0}");		
+		String colorVecExpr = specItem.getValString(colorVecExpr_Prop_ID, "{0, 0, 0, 0}");
+		getLogger().info("posVecExpr=" + posVecExpr + ", colorVecExpr=" + colorVecExpr);
 	}
 	/* public void readSpec
 	public Ident getIdent() { 
