@@ -25,6 +25,9 @@ import org.appdapter.core.log.BasicDebugger;
 import org.cogchar.render.opengl.scene.DeepSceneMgr;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
 
+import java.util.Set;
+import java.util.HashSet;
+
 /**
  *
  * @author Stu B. <www.texpedient.com>
@@ -48,7 +51,7 @@ public class DynamicGoodySpace extends BasicDebugger {
 	// However, "goodyIndex" always starts at 1, so we have to subtract 1
 	private	DynamicGoody	myGoodies[] = new DynamicGoody[0];
 	
-	public void DynamicGoodySpace(Ident specGraphID, Ident specID) { 
+	public DynamicGoodySpace(Ident specGraphID, Ident specID) { 
 		mySpecGraphID = specGraphID;
 		mySpecID = specID;
 		myGroupDisplayNode = new Node(specGraphID.getLocalName());
@@ -78,9 +81,14 @@ public class DynamicGoodySpace extends BasicDebugger {
 		String goodyCount_Prop_QN = "hev:goodyCount";
 		Ident goodyCount_Prop_ID = mc.makeIdentForQName(goodyCount_Prop_QN);
 		Integer goodyCount = specItem.getValInteger(goodyCount_Prop_ID, 0);
+		getLogger().info("goodyCount=" + goodyCount);
 		resizeSpace(goodyCount);
 		
 		// TODO:  Reload Stuff
+	}
+	public Set<Item> getGoodySpecItems() { 
+		Set<Item> specItems = new HashSet<Item>();
+		return specItems;
 	}
 	public void setParentDisplayNode_onRendThrd(Node n) { 
 		// create and/or reparent the GroupDisplayNode
@@ -118,7 +126,7 @@ public class DynamicGoodySpace extends BasicDebugger {
 			return;
 		}
 		DynamicGoody nGoodies[] = new DynamicGoody[size];
-		int maxCopy = Math.max(oldSize, size);
+		int maxCopy = Math.min(oldSize, size);
 		for (int idx =0; idx < maxCopy; idx++) {
 			nGoodies[idx] = myGoodies[idx];
 		}

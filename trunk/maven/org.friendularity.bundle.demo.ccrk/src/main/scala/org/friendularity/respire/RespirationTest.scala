@@ -15,6 +15,7 @@
  */
 package org.friendularity.respire
 import org.appdapter.core.name.{Ident, FreeIdent}
+import org.appdapter.core.item.{Item}
 import org.appdapter.core.store.{Repo, InitialBinding, ModelClient }
 import org.appdapter.help.repo.{RepoClient, RepoClientImpl, InitialBindingImpl} 
 import org.appdapter.impl.store.{FancyRepo};
@@ -26,6 +27,8 @@ import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.impl.store.{ModelClientImpl, ResourceResolver};
 
 import org.friendularity.api.west.{MathGate, MathSpaceFactory}
+
+import org.friendularity.api.goody.{DynamicGoody, DynamicGoodySpace}
 
 object RespirationTest extends BasicDebugger {
 	final val TEST_REPO_SHEET_KEY = "0ArBjkBoH40tndHRFS1JTX200WXNNTjI3MGMxWXBDN1E" 
@@ -67,7 +70,7 @@ object RespirationTest extends BasicDebugger {
 		val eq1_Item = mathMCI.makeItemForQName(eq1_QN);
 		println("Got eq1_Item : " + eq1_Item)
 		
-		val exprProp_QN = "hev:expr"
+		val exprProp_QN = "hev:expr_pos_vec3f"
 		val exprProp_ID = mathMCI.makeIdentForQName(exprProp_QN)
 		val eq1_expr = eq1_Item.getValString(exprProp_ID, "NOT_FOUND")
 		println("Got eq1_expr : " + eq1_expr)
@@ -88,6 +91,38 @@ object RespirationTest extends BasicDebugger {
 		println("Math-eval produced array: " + outDoubleVec2.deep) 
 		// val exprPropQN = "hev:expr"
 		// val eq1_expr = 
+		testGoodySpace(dfltTestRepo, dfltTestRC)
+	}
+	
+	def testGoodySpace(repo : Repo, repoClient : RepoClient) : Unit = { 
+		val graphQN = "ccrti:math_sheet_60";
+		val spaceSpecQN = "hevi:space_01";
+		val spaceLink_PropQN = "hev:goodySpace";
+		
+		val graphID = repoClient.makeIdentForQName(graphQN);
+		val mathModel = repo.getNamedModel(graphID)
+		val mathModelClient = new ModelClientImpl(mathModel)
+		val spaceSpecItem = mathModelClient.makeItemForQName(spaceSpecQN);
+		
+		val dgs = new DynamicGoodySpace(graphID, spaceSpecItem.getIdent);
+		println("Got Goody-Space-Spec Item: " + spaceSpecItem)
+
+		dgs.refreshModelClient(mathModelClient)
+		
+		val spaceLink_Prop = mathModelClient.makeIdentForQName(spaceLink_PropQN);
+		println("Space Link Prop" + spaceLink_Prop)
+		val linkedGSItems = spaceSpecItem.getLinkedItemSet(spaceLink_Prop, Item.LinkDirection.REVERSE);
+		println("linkedGSItems: " + linkedGSItems)
+		val goodyIndex_PropQN = "hev:goodyIndex";
+		val goodyIndex_Prop = mathModelClient.makeIdentForQName(goodyIndex_PropQN);
+
+		import scala.collection.JavaConversions._;	
+		for (gsi <- linkedGSItems) {
+			println("Got Goody-Spec Item: " + gsi)
+			val dgIndex_oneBased = gsi.getValInteger(goodyIndex_Prop, -1)
+			val dg = dgs.getGoodyAtIndex(dgIndex_oneBased)
+			dg.updateFromSpecItem(mathModelClient, gsi);
+		}
 		
 	}
 }
