@@ -22,7 +22,6 @@ import org.appdapter.core.name.Ident;
 import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.assembler.Mode;
 
-import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
 import com.hp.hpl.jena.rdf.model.Resource;
 import org.appdapter.bind.rdf.jena.assembly.ItemAssemblyReader;
 
@@ -32,14 +31,13 @@ import org.appdapter.bind.rdf.jena.assembly.ItemAssemblyReader;
  * @author Jason R. Eads <eadsjr>
  */
 public class ConnectionSpecBuilder extends CachingComponentAssembler<ConnectionSpec> {
-    
-    private final static String   ipAddress = "ipAddress";
-    private final static String   port = "port";
-    private final static String   username = "username";
-    private final static String   password = "password";
-    private final static String   clientName = "clientName";
-    private final static String   virtualHost = "virtualHost";
-    private final static String   connectionOptions = "connectionOptions";
+    private final static String   ipAddress = "http://www.friedularity.org/Connection#ipAddress";
+    private final static String   port = "http://www.friedularity.org/Connection#port";
+    private final static String   username = "http://www.friedularity.org/Connection#username";
+    private final static String   password = "http://www.friedularity.org/Connection#password";
+    private final static String   clientName = "http://www.friedularity.org/Connection#clientName";
+    private final static String   virtualHost = "http://www.friedularity.org/Connection#virtualHost";
+    private final static String   connectionOptions = "http://www.friedularity.org/Connection#connectionOptions";
     
     public ConnectionSpecBuilder( Resource builderConfRes ) {
         super(builderConfRes);

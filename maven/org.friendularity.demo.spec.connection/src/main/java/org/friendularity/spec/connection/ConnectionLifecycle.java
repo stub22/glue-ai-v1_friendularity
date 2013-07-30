@@ -30,10 +30,12 @@ import org.apache.qpid.url.URLSyntaxException;
  * This lifecycle comprises the JFlux object registry interface for the
  * Connection object. JFlux will provide any dependencies that are necessary and 
  * inform this class as they change. JFlux will also provide this object to
- * others once its dependencies are fulfilled.
+ * others once its dependencies are fulfilled. In the case of this example, no
+ * dependencies are needed.
  * 
  * Lifecycles are intended to be stateless, simply providing meta-code for the 
- * object to gracefully handle changes in its environment.
+ * object to gracefully handle changes in its environment. This example is not,
+ * instead providing an example of the extender pattern approach.
  * 
  * @author Jason R. Eads <eadsjr>
  */
@@ -157,7 +159,7 @@ public class ConnectionLifecycle implements ServiceLifecycle<Connection> {
     @Override
     public void disposeService(Connection service, Map<String,Object> availableDependencies) {
         try {
-            service.stop();
+            if(service != null) service.stop();
         } catch (JMSException ex) {
             theLogger.log(Level.WARNING, theFailedToStopConnectionErrorMessage, ex);
         }
