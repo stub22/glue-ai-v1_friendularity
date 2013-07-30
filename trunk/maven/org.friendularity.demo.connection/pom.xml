@@ -46,13 +46,18 @@
 			<version>1.2.16</version>		
 		</dependency>
         <dependency>
+            <groupId>org.rwshop</groupId>
+            <artifactId>org.rwshop.swing.common</artifactId>
+            <version>${rwshop.version}</version>
+        </dependency>
+        <dependency>
 			<groupId>org.cogchar</groupId>
 			<artifactId>org.cogchar.lib.outer.behavior</artifactId>
 			<version>${cogchar.version}</version>
 		</dependency>
         <dependency>
-            <artifactId>org.friendularity.demo.spec.connection</artifactId>
             <groupId>org.friendularity</groupId>
+            <artifactId>org.friendularity.demo.spec.connection</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>
