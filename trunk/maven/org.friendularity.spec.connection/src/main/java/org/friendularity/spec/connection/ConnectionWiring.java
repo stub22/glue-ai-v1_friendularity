@@ -30,28 +30,36 @@ import org.robokind.api.common.lifecycle.ManagedService;
 import org.robokind.api.common.lifecycle.ServiceLifecycleProvider;
 import org.robokind.api.common.lifecycle.utils.SimpleLifecycle;
 import org.robokind.api.common.osgi.lifecycle.OSGiComponent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
+ * Provides the specifications for the connection object creation process,
+ * building the specs up from the provided data source and registering them into
+ * the JFlux services. These can be picked up by other code to produce the final
+ * object.
  *
  * @author Jason R. Eads <eadsjr>
  */
 public class ConnectionWiring {
+    
+    private static Logger logger =
+            LoggerFactory.getLogger(ConnectionWiring.class);
+    private static String LOG_ERROR_FORMAT_STRING = "%s:\n%s";
+    private static String LOG_ASSEBMLER_RETURNED_NOTHING_ERROR_STRING =
+            "The assembler returned null. Ensure provided graphQN is valid in repo.";
 
-    public static final String GROUP_KEY_FOR_CONNECION_SPEC = "connectionSpecGroupId";
+    public static final String GROUP_KEY_FOR_CONNECION_SPEC =
+            "connectionSpecGroupId";
     public static final String CONNECTION_GROUP_QN = "demoConnectionGroup";
-    
-    public static ConnectionSpecExtender startSpecExtender(BundleContext bundleCtx, String optionalSpecFilter) {
-        Registry reg = new OSGiRegistry(bundleCtx);
-//        ConnectionSpecExtender cse = new ConnectionSpecExtender(bundleCtx, reg, optionalSpecFilter);
-//        cse.start();
-//        return cse;
-        return null;
-    }
-    
+
     public static Map<ConnectionSpec,ManagedService> loadAndRegisterSpecs(
-            BundleContext context, EnhancedRepoClient defaultDemoRepoClient, String connectionGraphQN) {
-        Map<ConnectionSpec,ManagedService> specServices = new HashMap<ConnectionSpec, ManagedService>();
-        List<ConnectionSpec> specs = loadConnectionSpecs(defaultDemoRepoClient, connectionGraphQN);
+            BundleContext context, EnhancedRepoClient defaultDemoRepoClient,
+            String connectionGraphQN) {
+        Map<ConnectionSpec,ManagedService> specServices =
+                new HashMap<ConnectionSpec, ManagedService>();
+        List<ConnectionSpec> specs = loadConnectionSpecs(
+                defaultDemoRepoClient, connectionGraphQN);
         for(ConnectionSpec spec : specs){
             if(specServices.containsKey(spec)){
                 continue;
@@ -62,18 +70,40 @@ public class ConnectionWiring {
         return specServices;
     }
     
-    private static List<ConnectionSpec> loadConnectionSpecs(EnhancedRepoClient defaultDemoRepoClient, String connectionGraphQN) {
+    /**
+     * Loads the specs from the data source
+     * 
+     * @param defaultDemoRepoClient the client through which data is drawn
+     * @param connectionGraphQN The qualified name for the graph that will
+     * provide the objects
+     * @return Specs containing the object data
+     */
+    private static List<ConnectionSpec> loadConnectionSpecs(
+            EnhancedRepoClient defaultDemoRepoClient, String connectionGraphQN){
         List<ConnectionSpec> specs = new ArrayList();
-        // Determine the URI for the 'qualified name' which identifies the data in the repo
-        Ident connectionGraphID = defaultDemoRepoClient.makeIdentForQName(connectionGraphQN);
+        // Determine the URI for the 'qualified name' which identifies the data
+        // in the repo
+        Ident connectionGraphID = defaultDemoRepoClient.makeIdentForQName(
+                connectionGraphQN);
+        
         // Collect the objects from the repo, building them from RDF raw data
-        Set<Object> assembledRoots = defaultDemoRepoClient.assembleRootsFromNamedModel(connectionGraphID);
-        for (Object root : assembledRoots) {
-            // Ignore anything that is not a ConnectionSpec
-            if (root == null || !ConnectionSpec.class.isAssignableFrom(root.getClass())) {
-                continue;
+        Set<Object> assembledRoots = 
+                defaultDemoRepoClient.assembleRootsFromNamedModel(
+                connectionGraphID);
+        try {
+            for (Object root : assembledRoots) {
+                // Ignore anything that is not a ConnectionSpec
+                if (root == null ||
+                        !ConnectionSpec.class.isAssignableFrom(
+                        root.getClass())) {
+                    continue;
+                }
+                specs.add((ConnectionSpec) root);
             }
-            specs.add((ConnectionSpec) root);
+        }
+        catch (NullPointerException ex) {
+            logger.error(LOG_ERROR_FORMAT_STRING,
+                    LOG_ASSEBMLER_RETURNED_NOTHING_ERROR_STRING, ex);
         }
         return specs;
     }

@@ -75,11 +75,7 @@ public class ConnectionLifecycle implements ServiceLifecycle<Connection> {
     private final static String theFailedToStopConnectionErrorMessage = "Failed to stop AMQP connection.";
     private final static String theSpecNotAvailableMessage = "The ConnectionSpec was not available to create the Connection service.";
     
-    /**
-     * Lifecycle Constructor
-     * 
-     * @param aConnectionSpec data item to draw raw info from
-     */
+    //Lifecycle Constructor - required for automated assembly
     public ConnectionLifecycle() {}
     
     /**
