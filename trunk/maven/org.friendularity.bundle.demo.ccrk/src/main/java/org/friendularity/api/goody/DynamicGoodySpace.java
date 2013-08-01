@@ -131,7 +131,7 @@ public class DynamicGoodySpace extends BasicDebugger {
 			nGoodies[idx] = myGoodies[idx];
 		}
 		for (int jdx = maxCopy; jdx < size; jdx++) {
-			// jdx is zero-based, so we add one to set the 1-based Goody index.
+			// jdx is zero-based, so we add one to set the 1-based Goody-space index.
 			nGoodies[jdx] = new DynamicGoody(jdx + 1);
 		}
 		myGoodies = nGoodies;

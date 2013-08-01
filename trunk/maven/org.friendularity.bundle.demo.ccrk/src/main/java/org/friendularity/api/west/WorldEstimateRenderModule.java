@@ -78,7 +78,7 @@ public class WorldEstimateRenderModule extends RenderModule implements WorldEsti
 	// Args are all unused at present...
   	public Visualizer setupVisualizer(RepoClient rc, Ident charID, Ident vizConfGraphID) {
 		RenderGateway rg = getRenderGateway();
-		HumanoidRenderContext hrc = rg.getHumanoidRenderContext();
+		HumanoidRenderContext hrc = (HumanoidRenderContext) rg.getCogcharRenderContext();
 		Visualizer viz = new Visualizer(hrc);
 		myVisualizer = viz;
 		return viz;
