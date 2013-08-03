@@ -8,9 +8,7 @@ import org.osgi.framework.BundleContext;
 public class Activator implements BundleActivator {
 
     public void start(BundleContext context) throws Exception {
-        // TODO add activation code here
-		// DemoFrame dframe = new DemoFrame();
-		JVisionLauncher.main(new String[0]);
+		JVisionLauncher.attemptToStartJVision();
     }
 
     public void stop(BundleContext context) throws Exception {
