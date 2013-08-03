@@ -28,7 +28,7 @@ public class JVisionLauncher {
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
         Mat m  = Mat.eye(3, 3, CvType.CV_8UC1);
         System.out.println("m = " + m.dump());
-        
+        /*
         Mat image = Highgui.imread(FileLocations.imageBase() + "duck.jpg", 1);
         Mat grayimage = new Mat();
         // this makes a new matrix
@@ -41,7 +41,7 @@ public class JVisionLauncher {
         
         image.convertTo(someimage, 0, 0.5);
        Highgui.imwrite(FileLocations.imageBase() + "outduck.png", someimage);
-       
+       */
        VideoCapture vc = new VideoCapture();
        
        if(!vc.open(0))
