@@ -23,6 +23,7 @@ public class JVisionLauncher implements Runnable {
 	private VideoCapture myVidCapture;
 	private Mat myCameraImage_Mat;
 	private FilterSequence myFilterSeq;
+	private	Thread			myCamProcThread;
 
 	public static void main(String[] args) {
 		// Can use this to run-file without bundling, if your IDE/env can setup your java.library.path to point at 
@@ -30,18 +31,26 @@ public class JVisionLauncher implements Runnable {
 		attemptToStartJVision();
 	}
 
-	public static boolean attemptToStartJVision() {
+	public static JVisionLauncher attemptToStartJVision() {
 		JVisionLauncher jvl = new JVisionLauncher();
 		boolean connectedOK = jvl.connect();
 		if (connectedOK) {
-			Thread canFrameProcThread = new Thread(jvl);
-			canFrameProcThread.start();
-			return true;
+
+			return jvl;
 		} else {
-			return false;
+			return null;
 		}
 	}
-
+	private void startThread() { 
+		myCamProcThread = new Thread(this);
+		myCamProcThread.start();		
+	}
+	public void requestStop() { 
+		myDemoFrame.setWantsToQuit(true);
+	}
+	public void forceStop() { 
+		myCamProcThread.interrupt();
+	}
 	public boolean connect() {
 		myDemoFrame = new DemoFrame();
 		myFilterSeq = new FilterSequence();
