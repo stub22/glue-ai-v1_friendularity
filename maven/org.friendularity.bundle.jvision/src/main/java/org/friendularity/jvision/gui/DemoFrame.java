@@ -203,7 +203,7 @@ public class DemoFrame extends JFrame implements WindowListener {
 		}
 	}
 	
-	private void setWantsToQuit(boolean x)
+	protected void setWantsToQuit(boolean x)
 	{
 		synchronized(quit_flag)
 		{
