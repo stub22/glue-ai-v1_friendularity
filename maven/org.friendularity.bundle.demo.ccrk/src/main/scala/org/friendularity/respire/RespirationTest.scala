@@ -47,6 +47,13 @@ object RespirationTest extends BasicDebugger {
 		org.apache.log4j.BasicConfigurator.configure();
 		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.ALL);
 		
+		testRespiration();
+		
+		//testWermCalcs();
+		
+		// testDoubleVecFetch();
+	}
+	def testRespiration() : Unit = {
 		getLogger().info("Why hello there!  Yes, respiration is the order of the hour...")
 		val rspec = makeDfltOSRS();
 		val dfltTestRepo = rspec.makeRepo();
@@ -76,7 +83,7 @@ object RespirationTest extends BasicDebugger {
 		val eq1_expr = eq1_Item.getValString(exprProp_ID, "NOT_FOUND")
 		println("Got eq1_expr : " + eq1_expr)
 		
-		val outDoubleVec : Array[Double] = mg.readDoubleVec(eq1_expr)
+		val outDoubleVec : Array[Double] = mg.readDoubleVec(eq1_expr, null)
 		
 		println("Math-eval produced array: " + outDoubleVec.deep) 
 		
@@ -87,7 +94,7 @@ object RespirationTest extends BasicDebugger {
 		val eq2_expr = eq2_Item.getValString(exprProp_ID, "{-1.0}")
 		println("Got eq2_expr : " + eq2_expr)
 		
-		val outDoubleVec2 : Array[Double] = mg.readDoubleVec(eq2_expr)
+		val outDoubleVec2 : Array[Double] = mg.readDoubleVec(eq2_expr, null)
 		
 		println("Math-eval produced array: " + outDoubleVec2.deep) 
 		// val exprPropQN = "hev:expr"
@@ -125,5 +132,40 @@ object RespirationTest extends BasicDebugger {
 			dg.updateFromSpecItem(mathModelClient, gsi);
 		}
 		
+	}
+import org.friendularity.api.west.{ThingEstimate, WorldEstimate, WorldEstimateRenderModule}	
+	def testWermCalcs() : Unit = { 
+		val werm : WorldEstimateRenderModule  = new WorldEstimateRenderModule();
+		// PumaAppUtils.attachVWorldRenderModule(bundleCtx, werm, null);
+		// werm.setupVisualizer(null, null, null);
+		// Needs to be done at least once for the selfEstim to exist.
+		val msf : MathSpaceFactory = new  MathSpaceFactory();
+		val mg : MathGate = msf.makeMathEngine();
+		werm.setMathGate(mg);
+		val worldEstimID : Ident  = new FreeIdent(WorldEstimate.ESTIM_NS + "world_estim_77");
+		val west : WorldEstimate  = new WorldEstimate(worldEstimID);
+		
+		for (idx <- 0 to 10) {
+			println("Loop # " + idx)
+		}
+	}
+	def testDoubleVecFetch() : Unit = {
+		val msf : MathSpaceFactory = new  MathSpaceFactory();
+		val mg : MathGate = msf.makeMathEngine();
+		// for difference implied by the "new" in this case, see:
+		// http://stackoverflow.com/questions/2700175/scala-array-constructor
+		val tgtArray = new Array[Double](4)
+		val baseExpr = "{-4.0, 3.0, -2.0, 1.0}";
+		val oneHundred = 100
+		for (idx <- 0 to oneHundred) {
+			var lastDvec : Array[Double] = new Array[Double](0)
+			val oneMillion = 1000000
+			val fullExpr = "" + idx + " * " + baseExpr;
+			for (jdx <- 0 to oneMillion) {
+				val dvec : Array[Double] = mg.readDoubleVec(fullExpr, tgtArray);
+				lastDvec = dvec;
+			}
+			println("Loop # " + idx + " produced " + lastDvec.deep)
+		}
 	}
 }

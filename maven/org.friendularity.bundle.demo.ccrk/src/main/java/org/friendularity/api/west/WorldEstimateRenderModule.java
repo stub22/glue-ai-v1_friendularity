@@ -59,21 +59,31 @@ public class WorldEstimateRenderModule extends RenderModule implements WorldEsti
 		myMathGate = mg;
 	}
 	@Override protected void doRenderCycle(long runSeqNum, float timePerFrame) {
+
 		if (myMathGate != null) {
 			// optionally do some updates+ refinements to the cached estimate, either in-place or replacing completely.
 			if (myCachedWorldEstim != null) {
+				// 2013-08-01:  Doing just this step alone (with rendering disabled below) 
+				// is enough to leak 2+G of RAM in 15 min [projectile shooting was also enabled in that trial,
+				// but it doesn't leak this fast on its own]
+				
 				myCachedWorldEstim.updateFromMathSpace(myMathGate);
 			}
 		}
+			
 		if (myVisualizer != null) {
 			if (myCachedWorldEstim != null) {
-				myVisualizer.renderCurrentEstimates(myCachedWorldEstim);
+				myVisualizer.renderCurrentEstimates(myCachedWorldEstim, timePerFrame);
 			}
+
 			if (!myDidThatStuffFlag) {
 				myDidThatStuffFlag = true;
 				myVisualizer.makeBonusMeshes();
 			}
+
 		}
+		
+		
 	}
 	// Args are all unused at present...
   	public Visualizer setupVisualizer(RepoClient rc, Ident charID, Ident vizConfGraphID) {
@@ -110,8 +120,8 @@ public class WorldEstimateRenderModule extends RenderModule implements WorldEsti
 			mt.makeStuff(amgr, rootNode);
 		}
 		
-		protected void renderCurrentEstimates(WorldEstimate estimate) { 
-			estimate.renderAsSillyShape(this);
+		protected void renderCurrentEstimates(WorldEstimate estimate, float timePerFrame) { 
+			estimate.renderAsSillyShape(this, timePerFrame);
 		}
 		
 	}	

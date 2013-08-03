@@ -30,7 +30,7 @@ public abstract class ThingEstimate extends BasicDebugger {
 
 	public Ident					myIdent;
 	public String					myPosVecExpr;
-	public VizShape	myCachedVizObject;
+	public VizShape					myCachedVizObject;
 	
 	private	Vector3f				myPendingPosVec3f;
 	
@@ -42,15 +42,20 @@ public abstract class ThingEstimate extends BasicDebugger {
 	}
 
 	public void updateFromMathSpace(MathGate mg) {
+		
 		if (myPosVecExpr != null) {
 			myPendingPosVec3f = mg.readVec3f(myPosVecExpr);
 		}
+		//  Is this color-alloc extra leaky, because maybe ColorRGBA is a "handle" to an OpenGL color object?
 		if (myColorVecExpr != null) {
-			double[] colorVals = mg.readDoubleVec(myColorVecExpr);
+			// TODO:  Set up a double-array cache, taking threads into account.
+			double[] colorVals = mg.readDoubleVec(myColorVecExpr, null);
 			if (colorVals.length == 4) {
 				myPendingColor = new ColorRGBA((float) colorVals[0], (float) colorVals[1], (float) colorVals[2], (float)colorVals[3]);
 			}
 		}
+		
+		
 		// logInfo("Estimate " + myIdent + " of type " + getClass() + " read position: " + myCachedPosVec3f);
 		// First goal is to Get X, Y, Z + Rot-X, Rot-Y, Rot-Z
 		// Formal but costly approach:  Serialize my previous data into MathSpace, calc update, serialize back out.
@@ -73,7 +78,7 @@ public abstract class ThingEstimate extends BasicDebugger {
 		sa.attachChild_onRendThrd(rrc, myCachedVizObject);
 	}
 
-	public void renderAsSillyShape(Visualizer viz) {
+	public void renderAsSillyShape(Visualizer viz, float timePerFrame) {
 		if (myCachedVizObject == null) {
 			attachSimpleVizObj(viz);
 		}
