@@ -35,7 +35,7 @@ public class JVisionLauncher implements Runnable {
 		JVisionLauncher jvl = new JVisionLauncher();
 		boolean connectedOK = jvl.connect();
 		if (connectedOK) {
-
+			jvl.startThread();
 			return jvl;
 		} else {
 			return null;
