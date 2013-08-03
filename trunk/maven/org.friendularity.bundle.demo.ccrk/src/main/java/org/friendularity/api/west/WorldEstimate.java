@@ -24,20 +24,22 @@ import org.appdapter.core.name.FreeIdent;
 import com.jme3.math.Vector3f;
 import com.jme3.math.ColorRGBA;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
-
+import org.friendularity.vworld.VisionTextureMapper;
 /**
  * @author Stu B. <www.texpedient.com>
  */
 public class WorldEstimate extends ThingEstimate {
 
 	public static String ESTIM_NS = "http://friendularity.org/estimate#";
-	public SelfEstimate mySelfEstim;
+	public SelfEstimate					mySelfEstim;
 	// A person estimate is any hypothetical human, animal,  robot, or other "person" with agency for us to 
 	// notice + interact with.  Presumably if we get "picked up" ourselves, it is probly by one of these agents.
-	public Set<PersonEstimate> myPersonEstims = new HashSet<PersonEstimate>();
+	public Set<PersonEstimate>			myPersonEstims = new HashSet<PersonEstimate>();
 	// Anything else is stuff.
-	public Set<StuffEstimate> myStuffEstims = new HashSet<StuffEstimate>();
+	public Set<StuffEstimate>			myStuffEstims = new HashSet<StuffEstimate>();
 
+	private VisionTextureMapper			myVTM;
+	
 	public WorldEstimate(Ident id) {
 		super(id);
 	}
@@ -55,6 +57,8 @@ public class WorldEstimate extends ThingEstimate {
 		if ((myStuffEstims == null) || myStuffEstims.isEmpty()) {
 			myStuffEstims = StuffEstimate.makeSampleSet();
 		}
+		
+
 	}
 	boolean mathNeedsInit = true;
 
@@ -71,10 +75,12 @@ public class WorldEstimate extends ThingEstimate {
 		Object globs1 = mg.evalToIExpr("$elapsed:=$nowSec-$startSec; $cycles:=Floor[$elapsed/$cycleSec]");
 		Object globs2 = mg.evalToIExpr("$phaseFrac:=$elapsed/$cycleSec-$cycles; $phaseAng:=2.0*Pi*$phaseFrac");
 
+		// This reads a new Vector3f and Color4f object every time, which is expensive, and possibly leaky in
+		// some non-obvious way?
 		super.updateFromMathSpace(mg);
 
 		ensureSubpartsExist();
-
+		
 		mySelfEstim.updateFromMathSpace(mg);
 		for (PersonEstimate pest : myPersonEstims) {
 			pest.updateFromMathSpace(mg);
@@ -85,16 +91,22 @@ public class WorldEstimate extends ThingEstimate {
 	}
 
 	@Override
-	public void renderAsSillyShape(Visualizer viz) {
+	public void renderAsSillyShape(Visualizer viz, float timePerFrame) {
 		if (mySelfEstim != null) {
-			mySelfEstim.renderAsSillyShape(viz);
+			mySelfEstim.renderAsSillyShape(viz, timePerFrame);
 		}
 		for (PersonEstimate pest : myPersonEstims) {
-			pest.renderAsSillyShape(viz);
+			pest.renderAsSillyShape(viz, timePerFrame);
 		}
 		for (StuffEstimate sest : myStuffEstims) {
-			sest.renderAsSillyShape(viz);
+			sest.renderAsSillyShape(viz, timePerFrame);
 		}
+		if (myVTM == null) {
+			myVTM = new VisionTextureMapper();
+			RenderRegistryClient rrc = viz.getRenderRegistryClient();
+			myVTM.setup(rrc);
+		}
+		myVTM.simpleUpdate(timePerFrame);
 	}
 
 	public static class SelfEstimate extends ThingEstimate {
@@ -136,8 +148,8 @@ public class WorldEstimate extends ThingEstimate {
 
 	public static class StuffEstimate extends ThingEstimate {
 
-		static int jMax = 22;
-		static int kMax = 18;
+		static int jMax = 12;
+		static int kMax = 8;
 		private Integer myStuffIdx;
 
 		public StuffEstimate(Ident id, Integer stuffIndex) {
@@ -158,8 +170,8 @@ public class WorldEstimate extends ThingEstimate {
 				Ident stuffID = new FreeIdent(ESTIM_NS + "stuff_estim_0" + j);
 				StuffEstimate sest = new StuffEstimate(stuffID, j);
 				double px = 15.0 + j * 3.0, py = 10.0 + j * 3.0, pz = -12.0;
+				// Making use of single-threaded access to MathSpace:
 				// We assume that someone will post our stuffIdx before each eval of the following.
-				// mg.putVar("$stuffIdx", new Integer(j));
 				String baseVecExpr = "{" + px + ", " + py + ", " + pz + "}";
 				sest.myPosVecExpr = "Sin[$phaseAng]*" + baseVecExpr;
 				sest.myColorVecExpr = "{Sin[$stuffIdx * $phaseAng],Sin[3.0 * $phaseAng], Sin[$phaseAng/(2 * $stuffIdx)], $phaseFrac * $stuffIdx}";

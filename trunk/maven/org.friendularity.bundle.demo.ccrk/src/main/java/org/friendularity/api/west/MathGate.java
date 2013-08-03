@@ -64,9 +64,13 @@ public class MathGate extends BasicDebugger {
 		}
 		return result;
 	}
-	public double[] readDoubleVec(String expr) {
-		double[] result = new double[0];
+	// 2013-08-01 - looks like up until now, our impl here has been wasteful in terms of
+	// allocating heap space.  
+	public double[] readDoubleVec(String expr, double[] optStorageToUpdate) {
+		double[] result = (optStorageToUpdate != null) ? optStorageToUpdate:  new double[0];
+
 		IAST treeResult = evalToIAST(expr);
+	
 		if (treeResult != null) {
 			int treeEvalFlags = treeResult.getEvalFlags();
 			ISymbol treeTypeSymbol = treeResult.topHead();
@@ -77,28 +81,47 @@ public class MathGate extends BasicDebugger {
 			if (treeResult.isList()) {
 				if (iastSize > 1) {
 					// Start by assuming all the vals are always double-convertible.
-					result = new double[iastSize - 1];
-					
-					for (int resIdx = 0; resIdx < iastSize - 1; resIdx++) {
+
+					int valCount = iastSize - 1;
+					int tgtSize = result.length;
+					if (valCount !=  tgtSize) { 
+						if (tgtSize == 0) {
+							tgtSize = valCount;
+							result = new double[tgtSize];
+						} else {
+							getLogger().warn("Math result vector size {} does not match tgt storage size {}", valCount, tgtSize);
+						}
+					} else {
+						// getLogger().debug("Hooray, the array sizes match!");
+					}
+					for (int resIdx = 0; (resIdx < valCount) && (resIdx < tgtSize); resIdx++) {
 						INumber resultNumberAny = treeResult.getNumber(resIdx + 1);
 						INum  resultNumDouble = (INum) resultNumberAny;
 						result[resIdx] = resultNumDouble.getRealPart();
 					}
-					/*  Another way:
+					// Another way:
 					// Special iterator() skips over function symbol element #0
-					for (IExpr vExp : treeResult) {
-						logInfo("Got vExp " + vExp + " of type " + vExp.getClass());
-					}
-					*/
+					// for (IExpr vExp : treeResult) {
+					//	logInfo("Got vExp " + vExp + " of type " + vExp.getClass());
+					//}
+					
 				}
 			} else {
 				logWarning("TreeResult is not a list: " + treeResult);
 			}
 		}
+
 		return result; 
 	}
+
 	public Vector3f readVec3f(String expr) {
-		double[] dvals = readDoubleVec(expr);
+		// TODO: Set up a reusable double buffer, and allow a Vector3f to be passed in for update.
+		
+		// It is OK to use an object-level buffer as long as we can truly assume single-threaded access.
+		// Otherwise we need to synchronize (which carrys a penalty) or get wacky.
+		// Also, allow pre-parsed IExpressions to be cached.
+		
+		double[] dvals = readDoubleVec(expr, null);
 		if (dvals.length == 3) {
 			return new Vector3f((float) dvals[0], (float) dvals[1], (float) dvals[2]);
 		} else {

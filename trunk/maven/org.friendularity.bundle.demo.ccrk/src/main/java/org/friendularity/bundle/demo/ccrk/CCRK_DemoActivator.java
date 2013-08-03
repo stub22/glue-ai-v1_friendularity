@@ -20,6 +20,7 @@ import org.friendularity.api.west.ThingEstimate;
 import org.friendularity.api.west.WorldEstimate;
 import org.friendularity.api.west.WorldEstimateRenderModule;
 import org.friendularity.test.symcalc.ScriptEngineExperiment;
+import org.friendularity.vworld.VisionDataFeed;
 import org.robokind.api.motion.Robot;
 // import org.robokind.ui.swing.common.lifecycle.ServicesFrame;
 import org.rwshop.swing.common.lifecycle.ServicesFrame;
@@ -127,7 +128,9 @@ public class CCRK_DemoActivator extends BundleActivatorBase {
 		WorldEstimate we = new WorldEstimate(worldEstimID);
 		werm.setWorldEstimate(we);
 		Robot.Id optRobotID_elseAllRobots = null;		
-		startMotionComputers(bundleCtx, optRobotID_elseAllRobots, we);		
+		startMotionComputers(bundleCtx, optRobotID_elseAllRobots, we);	
+		startVisionMonitors();
+		
 	}
 	/**
 	 * 		For each joint robot, robokind.org blends all joint inputs received from RobotMoverFrameSources.
@@ -154,6 +157,15 @@ public class CCRK_DemoActivator extends BundleActivatorBase {
 			} else {
 				getLogger().debug("Skipping Robot-ID {} because it doesn't match pattern {}", srcBotID, optRobotID_elseAllRobots);
 			}
+		}
+	}
+	private void startVisionMonitors() { 
+		VisionDataFeed vdf = new VisionDataFeed();
+		boolean svcsOK = vdf.connectServices();
+		getLogger().info("vdf.connectServices returned {}", svcsOK);
+		if (svcsOK) {
+			vdf.registerDummyListeners();
+			vdf.startServices();
 		}
 	}
 	static class DemoMediator extends PumaContextMediator {

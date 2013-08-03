@@ -77,6 +77,25 @@
 			<artifactId>org.rwshop.swing.common</artifactId>
 			<version>${rwshop.version}</version>
 		</dependency>		
+		
+		
+		<dependency>
+			<groupId>org.robokind</groupId>
+			<artifactId>org.robokind.api.vision</artifactId>
+			<version>${robokind.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.robokind</groupId>
+			<artifactId>org.robokind.impl.vision</artifactId>
+			<version>${robokind.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>org.friendularity.bundle.jvision</artifactId>
+			<version>${project.version}</version>
+		</dependency>	
+			
 
 	</dependencies>
 
@@ -219,7 +238,7 @@
 						<configuration>
 							<target>
 								<!-- Friendularity custom :  Note the log4j.debug flag -->
-								<property name="vm.args" value="-Dlog4j.debug"/>
+								<property name="vm.args" value="-Dlog4j.debug -XX:MaxHeapSize=512M"/>
 								<pathconvert property="plugins.jars" pathsep="${path.separator}">
 									<path refid="maven.runtime.classpath"/>
 									<map from="${project.build.directory}${file.separator}classes" to=""/>

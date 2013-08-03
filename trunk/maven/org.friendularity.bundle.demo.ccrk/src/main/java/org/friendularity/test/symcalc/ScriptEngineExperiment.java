@@ -84,6 +84,12 @@ public class ScriptEngineExperiment {
 		
 			tse1.go(111);
 		}
+		// Stress test to find RAM leaks
+		/*
+		for (int i = 0; i < 100; i++) {
+			for (int j = 0; <)
+		}
+		*/
 	}
 
 	public Object evalPrint(String script) {
