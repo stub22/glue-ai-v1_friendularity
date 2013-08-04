@@ -15,6 +15,9 @@ public class JVisionBundleActivator  extends BundleActivatorBase {
 		// Print some howdys
 		super.start(context);		
 		
+		// TODO:  Check that our Java version is at least Java 1.6 update-32, and print warnings otherwise!
+		// Versions at u25 and earlier fail with a "can't find native-library" error.
+		
 		myLauncherToStop = new JVisionLauncher();
 		boolean launchedOK = myLauncherToStop.attemptInit();
     }
