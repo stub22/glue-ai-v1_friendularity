@@ -24,6 +24,8 @@ import org.opencv.core.Mat;
 import org.opencv.highgui.Highgui;
 import org.opencv.highgui.VideoCapture;
 import org.appdapter.core.log.BasicDebugger;
+import org.friendularity.jvision.gui.FileLocations;
+import org.opencv.imgproc.Imgproc;
 /**
  *
  * @author Owner
@@ -49,28 +51,18 @@ public class JVisionEngine extends BasicDebugger implements Runnable {
 
 		myFilterSeq = new FilterSequence();
 
-		System.out.println("Welcome to OpenCV " + Core.VERSION);
+		getLogger().info("Opening native library handle for OpenCV " + Core.VERSION);
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 		Mat m = Mat.eye(3, 3, CvType.CV_8UC1);
-		System.out.println("m = " + m.dump());
-		/*
-		 Mat image = Highgui.imread(FileLocations.imageBase() + "duck.jpg", 1);
-		 Mat grayimage = new Mat();
-		 // this makes a new matrix
-		 Imgproc.cvtColor(image, grayimage, Imgproc.COLOR_RGB2GRAY);
-        
-		 Highgui.imwrite(FileLocations.imageBase() + "grayduck.png", grayimage);
-        
-		 Mat someimage = new Mat();
-        
-        
-		 image.convertTo(someimage, 0, 0.5);
-		 Highgui.imwrite(FileLocations.imageBase() + "outduck.png", someimage);
-		 */
+		getLogger().info("m = " + m.dump());
+
+		// testWithSomeDuckFiles();
+		
 		myVidCapture = new VideoCapture();
 
+		getLogger().info("Opening vidCapture stream");
 		if (!myVidCapture.open(0)) {
-			System.out.println("oops problem opening");
+			getLogger().error("Failed to open vidCapture stream");
 			myVidCapture = null;
 			return false;
 		}
@@ -169,15 +161,34 @@ public class JVisionEngine extends BasicDebugger implements Runnable {
 		return image;
 	}
 
-	@Override
-	public void run() {
+	@Override public void run() {
 		if (myQuitter != null) {
+			getLogger().info("JVision Engine beginning frame processing loop");
 			while (!myQuitter.wantsToQuit()) {
+				// TODO:  Every N frames increment k, and print a "processed k*N frames so far" message at info() level.
 				processOneFrame();
 			}
+			getLogger().info("Quitter asked us to end the processing loop");
 		} else {
-			getLogger().warn("OK");
+			getLogger().warn("I don't have a quitter set, so I'm not going to run!");
 		}
+		getLogger().info("Releasing vidCapture");
 		myVidCapture.release();
-	}	
+		getLogger().info("run() complete");
+	}
+	
+	public void testWithSomeDuckFiles() { 
+		 Mat image = Highgui.imread(FileLocations.imageBase() + "duck.jpg", 1);
+		 Mat grayimage = new Mat();
+		 // this makes a new matrix
+		 Imgproc.cvtColor(image, grayimage, Imgproc.COLOR_RGB2GRAY);
+        
+		 Highgui.imwrite(FileLocations.imageBase() + "grayduck.png", grayimage);
+        
+		 Mat someimage = new Mat();
+        
+        
+		 image.convertTo(someimage, 0, 0.5);
+		 Highgui.imwrite(FileLocations.imageBase() + "outduck.png", someimage);		
+	}
 }

@@ -8,7 +8,7 @@ import org.osgi.framework.BundleContext;
 
 public class JVisionBundleActivator  extends BundleActivatorBase {
 
-	JVisionLauncher		myLauncherToStop;
+	JVisionLauncher		myLauncher;
 	
     public void start(BundleContext context) throws Exception {
 		forceLog4jConfig();
@@ -18,15 +18,18 @@ public class JVisionBundleActivator  extends BundleActivatorBase {
 		// TODO:  Check that our Java version is at least Java 1.6 update-32, and print warnings otherwise!
 		// Versions at u25 and earlier fail with a "can't find native-library" error.
 		
-		myLauncherToStop = new JVisionLauncher();
-		boolean launchedOK = myLauncherToStop.attemptInit();
+		myLauncher = new JVisionLauncher();
+		boolean launchedOK = myLauncher.attemptInit();
     }
 
     public void stop(BundleContext context) throws Exception {
         // TODO add deactivation code here
-		if (myLauncherToStop != null) {
-			myLauncherToStop.requestStop();
+		if (myLauncher != null) {
+			getLogger().info("Sending requestStop() to myLauncher.");
+			myLauncher.requestStop();
+			//
 		}
+		super.stop(context);
     }
 
 }

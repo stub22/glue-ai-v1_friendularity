@@ -20,6 +20,6 @@ package org.friendularity.jvision.engine;
  * @author Owner
  */
 public interface Quitter {
-	public void setWantsToQuit(boolean x);
+	public void setWantsToQuit(boolean timeToQuit);
 	public boolean wantsToQuit();
 }
