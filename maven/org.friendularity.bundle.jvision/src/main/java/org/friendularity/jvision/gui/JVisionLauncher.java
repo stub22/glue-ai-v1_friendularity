@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
 import java.util.ArrayList;
 import java.util.Formatter;
+import org.appdapter.core.log.BasicDebugger;
 import org.friendularity.jvision.engine.JVisionEngine;
 import org.friendularity.jvision.engine.Quitter;
 
@@ -18,26 +19,30 @@ import org.opencv.video.Video;
 import org.opencv.utils.Converters;
 import org.friendularity.jvision.gui.DemoFrame;
 import org.friendularity.jvision.filters.FilterSequence;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
 
-public class JVisionLauncher implements Quitter {
+public class JVisionLauncher extends BasicDebugger implements Quitter {
 
-	private DemoFrame		myDemoFrame;
-
-	private	Thread			myCamProcThread;
-	private Boolean			myQuittingFlag  = Boolean.FALSE;
 	private JVisionEngine	myEngine;
+	private	Thread			myCamProcThread;
+	private DemoFrame		myDemoFrame;
+	
+	private Boolean			myFlag_QuittingNow  = Boolean.FALSE;	
+	private	boolean			myFlag_StopOSGiAfterQuit = false;
 
 	public static void main(String[] args) {
 		// Can use this to run-file without bundling, if your IDE/env can setup your java.library.path to point at 
 		// the right native libs (either src/main/resources/native/{platform} or the equiv directory under target/)
 
-		JVisionLauncher jvl = new JVisionLauncher();
+		JVisionLauncher jvl = new JVisionLauncher(false);
 		jvl.attemptInit();
 	}
-	public JVisionLauncher() {
+	public JVisionLauncher(boolean flag_stopOSGiAfterQuit) {
 		myEngine = new JVisionEngine();
 		myDemoFrame = new DemoFrame();
 		myDemoFrame.setQuitter(this);
+		myFlag_StopOSGiAfterQuit = flag_stopOSGiAfterQuit;
 	}
 	
 	public boolean  attemptInit() {
@@ -58,28 +63,53 @@ public class JVisionLauncher implements Quitter {
 		myCamProcThread.start();		
 		return true;
 	}
-	public void requestStop() { 
+	public void requestStop(Boolean optionalFlag_stopOSGiAfterQuit) { 
+		if (optionalFlag_stopOSGiAfterQuit != null) {
+			myFlag_StopOSGiAfterQuit = optionalFlag_stopOSGiAfterQuit;
+		}
+		// This may have already been done, that's OK.
 		setWantsToQuit(true);
 	}
-	public void forceStop() { 
+	// We're going to try to not use this.
+	private void forceStop() { 
 		myCamProcThread.interrupt();
 	}
-
+	
 	@Override public boolean wantsToQuit()
 	{
-		synchronized(myQuittingFlag)
+		synchronized(myFlag_QuittingNow)
 		{
-			return myQuittingFlag;
+			return myFlag_QuittingNow;
 		}
 	}
 	
 	@Override public void setWantsToQuit(boolean x)
 	{
-		synchronized(myQuittingFlag)
+		synchronized(myFlag_QuittingNow)
 		{
-			myQuittingFlag = new Boolean(x);
+			myFlag_QuittingNow = new Boolean(x);
 		}
 		
+	}
+	@Override public void notifyQuitCompleted() {
+		if (myFlag_StopOSGiAfterQuit) { 
+			getLogger().info("Now that quit has completed, we will shutdown our OSGi container");
+			shutdownOurOSGiContainer();
+		}
+	}
+	private void shutdownOurOSGiContainer() { 
+		Bundle anyB = org.osgi.framework.FrameworkUtil.getBundle(getClass());
+		BundleContext anyBC = anyB.getBundleContext();
+		stopOSGiContainer(anyBC);
+	}
+	private void stopOSGiContainer(BundleContext bc) { 
+		Bundle sysB = bc.getBundle(0);
+		getLogger().warn("Asking system bundle to stop(): {}", sysB);
+		try {
+			sysB.stop();
+		} catch (Throwable t) {
+			getLogger().error("Caught exception during sys-bundle.stop() request", t);
+		}
 	}
 	
 

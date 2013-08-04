@@ -17,17 +17,18 @@ public class JVisionBundleActivator  extends BundleActivatorBase {
 		
 		// TODO:  Check that our Java version is at least Java 1.6 update-32, and print warnings otherwise!
 		// Versions at u25 and earlier fail with a "can't find native-library" error.
-		
-		myLauncher = new JVisionLauncher();
+		boolean flag_stopOSGiAfterQuitCompletes = true;
+		myLauncher = new JVisionLauncher(flag_stopOSGiAfterQuitCompletes);
 		boolean launchedOK = myLauncher.attemptInit();
+		getLogger().debug("myLauncher.attemptInit() returned: " + launchedOK);
     }
 
     public void stop(BundleContext context) throws Exception {
-        // TODO add deactivation code here
+        // This handler is important in the case where *some other bundle* (outside JVision) is trying
+		// to stop the JVM/OSGi process.  
 		if (myLauncher != null) {
-			getLogger().info("Sending requestStop() to myLauncher.");
-			myLauncher.requestStop();
-			//
+			getLogger().info("Activator sending requestStop() to myLauncher, in case some *other* bundle is stopping the container.");
+			myLauncher.requestStop(Boolean.FALSE);
 		}
 		super.stop(context);
     }

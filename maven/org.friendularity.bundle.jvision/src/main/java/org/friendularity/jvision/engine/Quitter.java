@@ -22,4 +22,5 @@ package org.friendularity.jvision.engine;
 public interface Quitter {
 	public void setWantsToQuit(boolean timeToQuit);
 	public boolean wantsToQuit();
+	public void notifyQuitCompleted();
 }
