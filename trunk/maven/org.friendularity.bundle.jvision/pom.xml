@@ -44,6 +44,7 @@
 						<Import-Package>sun.misc, *;resolution:=optional</Import-Package>
 						<Export-Package>org.opencv.*, jme3tools.*, org.lwjgl.*, com.bulletphysics.*, javax.vecmath.*, de.jarnbjo.*, Common.*, Interface.*</Export-Package>
 						-->
+            <Export-Package>native.*, org.opencv.*, org.friendularity.jvision.*, org.friendularity.bundle.jvision</Export-Package>
 						<Bundle-NativeCode>
 							native/win_x64/opencv_calib3d246.dll;
 							native/win_x64/opencv_contrib246.dll;
