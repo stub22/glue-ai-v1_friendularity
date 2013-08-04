@@ -24,41 +24,46 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
+import static javax.swing.JFrame.EXIT_ON_CLOSE;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import org.friendularity.jvision.engine.Displayer;
+import org.friendularity.jvision.engine.Quitter;
 
 
-public class DemoFrame extends JFrame implements WindowListener {
+public class DemoFrame extends JFrame implements WindowListener, Displayer {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -2429127330233038194L;
 
-	private ImageIcon image_button = new ImageIcon();
-	private JButton b = new JButton();
-	private Boolean quit_flag  = Boolean.FALSE;
+	private ImageIcon		myImageOutIcon = new ImageIcon();
+	private JButton			myImageOutButton = new JButton();
+	private	Quitter			myQuitter;
+
 	
-	private JPanel controls = new JPanel();
-	private JLabel framerate = new JLabel();
-	private JMenuBar menuBar;
+	private JPanel			myControlsPanel = new JPanel();
+	private JLabel			myLabel_Framerate = new JLabel();
+	private JMenuBar		myMenuBar;
 	
 	// this is just protection, if we have no other we'll use this one
-	FilterSequence filters = new FilterSequence();
+	private	FilterSequence	myBackupFilterSeq = new FilterSequence();
 	
 	public DemoFrame()
 	{
 		this.setSize(640, 640);
-		this.setTitle("OpenCV On Java");
+		this.setTitle("JVision Bundle - OpenCV java demo");
 		
-		b.setIcon(image_button);
-		b.setMinimumSize(new Dimension(640, 480));
-		b.setSize(new Dimension(640, 480));
+		myImageOutButton.setIcon(myImageOutIcon);
+		myImageOutButton.setMinimumSize(new Dimension(640, 480));
+		myImageOutButton.setSize(new Dimension(640, 480));
 		
 		this.getContentPane().setLayout(new BorderLayout());
-		this.getContentPane().add(b, BorderLayout.CENTER);
+		this.getContentPane().add(myImageOutButton, BorderLayout.CENTER);
+		/* This makes the vision close if we merely click in it
 		b.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -67,32 +72,85 @@ public class DemoFrame extends JFrame implements WindowListener {
 				dispose();
 			}
 		});
+		*/
 		
-		controls.setMinimumSize(new Dimension(640, 160));
-		controls.setBackground(new Color(255, 200, 128));
-		controls.add(framerate);
-		this.getContentPane().add(controls, BorderLayout.PAGE_END);
+		myControlsPanel.setMinimumSize(new Dimension(640, 160));
+		myControlsPanel.setBackground(new Color(255, 200, 128));
+		myControlsPanel.add(myLabel_Framerate);
+		this.getContentPane().add(myControlsPanel, BorderLayout.PAGE_END);
 		
+		setupMenus();
 		
+		this.addWindowListener(this);
+		
+		this.setVisible(true);
+		
+		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+	}
+	public void setQuitter(Quitter q) {
+		myQuitter = q;
+	}
+	public void setControlledFilterSequence(FilterSequence filters) {
+		if(filters == null)throw new IllegalArgumentException("dont set the controlled filters to nothing");
+		this.myBackupFilterSeq = filters;		
+	}
+
+	@Override public void setDisplayedImage(BufferedImage img){
+		myImageOutIcon.setImage(img);
+		this.repaint();
+	}
+	
+	@Override public void setFramerateMessage(String string) {
+		myLabel_Framerate.setText(string);
+	}
+	
+	// ========================  Window Listeners  ========================
+	@Override public void windowActivated(WindowEvent arg0) {
+		// TODO Auto-generated method stub
+	}
+	@Override public void windowClosed(WindowEvent arg0) {
+		// TODO Auto-generated method stub
+	}
+	@Override public void windowClosing(WindowEvent arg0) {
+		if (myQuitter != null) {
+			myQuitter.setWantsToQuit(true);
+		}
+	}
+	
+	@Override public void windowDeactivated(WindowEvent arg0) {
+		// TODO Auto-generated method stub
+	}
+	@Override public void windowDeiconified(WindowEvent arg0) {
+		// TODO Auto-generated method stub
+	}
+	@Override	public void windowIconified(WindowEvent arg0) {
+		// TODO Auto-generated method stub
+	}
+	@Override public void windowOpened(WindowEvent arg0) {
+		// TODO Auto-generated method stub
+	}
+	
+	private  void setupMenus() {
 		// ================ setup menus =================
 		JMenu menu;
 		JMenuItem menuItem;
 		JCheckBoxMenuItem cbMenuItem;
 		
-		menuBar = new JMenuBar();
+		myMenuBar = new JMenuBar();
 
 		//Build the first menu.
 		menu = new JMenu("File");
 		menu.setMnemonic(KeyEvent.VK_F);
-		menuBar.add(menu);
+		myMenuBar.add(menu);
 
 		//a group of JMenuItems
-		menuItem = new JMenuItem("Quit",
-		                         KeyEvent.VK_Q);
+		menuItem = new JMenuItem("Quit", KeyEvent.VK_Q);
 		menuItem.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				setWantsToQuit(true);
+				if (myQuitter != null) {
+					myQuitter.setWantsToQuit(true);
+				}
 				setVisible(false);
 				dispose();
 			}
@@ -109,9 +167,9 @@ public class DemoFrame extends JFrame implements WindowListener {
 			@Override
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED)
-				  filters.addOrReplaceByClass(new Grayscale());
+				  myBackupFilterSeq.addOrReplaceByClass(new Grayscale());
 				else if (e.getStateChange() == ItemEvent.DESELECTED)
-				   filters.removeByClass(new Grayscale());
+				   myBackupFilterSeq.removeByClass(new Grayscale());
 			}
 		});
 		menu.add(cbMenuItem);
@@ -122,9 +180,9 @@ public class DemoFrame extends JFrame implements WindowListener {
 			@Override
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED)
-				  filters.addOrReplaceByClass(new Blur());
+				  myBackupFilterSeq.addOrReplaceByClass(new Blur());
 				else if (e.getStateChange() == ItemEvent.DESELECTED)
-				   filters.removeByClass(new Blur());
+				   myBackupFilterSeq.removeByClass(new Blur());
 			}
 		});
 		menu.add(cbMenuItem);
@@ -135,9 +193,9 @@ public class DemoFrame extends JFrame implements WindowListener {
 			@Override
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED)
-				  filters.addOrReplaceByClass(new FaceDetector());
+				  myBackupFilterSeq.addOrReplaceByClass(new FaceDetector());
 				else if (e.getStateChange() == ItemEvent.DESELECTED)
-				   filters.removeByClass(new FaceDetector());
+				   myBackupFilterSeq.removeByClass(new FaceDetector());
 			}
 		});
 		menu.add(cbMenuItem);
@@ -148,9 +206,9 @@ public class DemoFrame extends JFrame implements WindowListener {
 			@Override
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED)
-				  filters.addOrReplaceByClass(new Dilate());
+				  myBackupFilterSeq.addOrReplaceByClass(new Dilate());
 				else if (e.getStateChange() == ItemEvent.DESELECTED)
-				   filters.removeByClass(new Dilate());
+				   myBackupFilterSeq.removeByClass(new Dilate());
 			}
 		});
 		menu.add(cbMenuItem);
@@ -161,9 +219,9 @@ public class DemoFrame extends JFrame implements WindowListener {
 			@Override
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED)
-				  filters.addOrReplaceByClass(new Erode());
+				  myBackupFilterSeq.addOrReplaceByClass(new Erode());
 				else if (e.getStateChange() == ItemEvent.DESELECTED)
-				   filters.removeByClass(new Erode());
+				   myBackupFilterSeq.removeByClass(new Erode());
 			}
 		});
 		menu.add(cbMenuItem);
@@ -174,104 +232,23 @@ public class DemoFrame extends JFrame implements WindowListener {
 			@Override
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED)
-				  filters.addOrReplaceByClass(new ProfileDetector());
+				  myBackupFilterSeq.addOrReplaceByClass(new ProfileDetector());
 				else if (e.getStateChange() == ItemEvent.DESELECTED)
-				   filters.removeByClass(new ProfileDetector());
+				   myBackupFilterSeq.removeByClass(new ProfileDetector());
 			}
 		});
 		menu.add(cbMenuItem);
 		
-		menuBar.add(menu);
+		myMenuBar.add(menu);
 		
 		// =================
 		
-		setJMenuBar(menuBar);
+		setJMenuBar(myMenuBar);
 		
-		this.addWindowListener(this);
-		
-		this.setVisible(true);
-		
-		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+
 		
 	}
 	
-	public boolean wantsToQuit()
-	{
-		synchronized(quit_flag)
-		{
-			return quit_flag;
-		}
-	}
-	
-	protected void setWantsToQuit(boolean x)
-	{
-		synchronized(quit_flag)
-		{
-			quit_flag = new Boolean(x);
-		}
-		
-	}
-	
-	public void setImage(BufferedImage img){
-		image_button.setImage(img);
-		this.repaint();
-	}
-	
-
-	public void setControlledFilterSequence(FilterSequence filters) {
-		if(filters == null)throw new IllegalArgumentException("dont set the controlled filters to nothing");
-		this.filters = filters;
-		
-	}
-
-
-	public void setFramerateMessage(String string) {
-		framerate.setText(string);
-		
-	}
-	
-	// ========================  WindowListener  ========================
-	@Override
-	public void windowActivated(WindowEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void windowClosed(WindowEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void windowClosing(WindowEvent arg0) {
-		setWantsToQuit(true);
-		
-	}
-
-	@Override
-	public void windowDeactivated(WindowEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void windowDeiconified(WindowEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void windowIconified(WindowEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void windowOpened(WindowEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
 
 
 
