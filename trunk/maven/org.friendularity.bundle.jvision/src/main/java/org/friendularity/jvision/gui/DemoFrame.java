@@ -32,9 +32,12 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import org.friendularity.jvision.engine.Displayer;
 import org.friendularity.jvision.engine.Quitter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class DemoFrame extends JFrame implements WindowListener, Displayer {
+	static Logger theLogger = LoggerFactory.getLogger(DemoFrame.class);
 	/**
 	 * 
 	 */
@@ -63,29 +66,24 @@ public class DemoFrame extends JFrame implements WindowListener, Displayer {
 		
 		this.getContentPane().setLayout(new BorderLayout());
 		this.getContentPane().add(myImageOutButton, BorderLayout.CENTER);
-		/* This makes the vision close if we merely click in it
-		b.addActionListener(new ActionListener(){
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				setWantsToQuit(true);
-				setVisible(false);
-				dispose();
-			}
-		});
-		*/
-		
+
 		myControlsPanel.setMinimumSize(new Dimension(640, 160));
 		myControlsPanel.setBackground(new Color(255, 200, 128));
 		myControlsPanel.add(myLabel_Framerate);
 		this.getContentPane().add(myControlsPanel, BorderLayout.PAGE_END);
 		
 		setupMenus();
-		
-		this.addWindowListener(this);
+
+		registerWindowListeners();
 		
 		this.setVisible(true);
 		
-		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+		// We "do nothing" from Swing point of view, but still catch the 
+		// WindowClosing event, which starts our official "quit" process.
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		// Other option is DISPOSE_ON_CLOSE
+		// Useful in standalone java apps, but not super-kosher under OSGi:
+		// this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 	}
 	public void setQuitter(Quitter q) {
 		myQuitter = q;
@@ -112,7 +110,9 @@ public class DemoFrame extends JFrame implements WindowListener, Displayer {
 		// TODO Auto-generated method stub
 	}
 	@Override public void windowClosing(WindowEvent arg0) {
+		theLogger.debug("Caught windowClosing() event");
 		if (myQuitter != null) {
+			theLogger.info("Setting wantsToQuit flag");
 			myQuitter.setWantsToQuit(true);
 		}
 	}
@@ -146,9 +146,10 @@ public class DemoFrame extends JFrame implements WindowListener, Displayer {
 		//a group of JMenuItems
 		menuItem = new JMenuItem("Quit", KeyEvent.VK_Q);
 		menuItem.addActionListener(new ActionListener(){
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
+			@Override	public void actionPerformed(ActionEvent arg0) {
+				theLogger.debug("Handling  explicit quit menu action");
 				if (myQuitter != null) {
+					theLogger.info("Setting wantsToQuit flag");
 					myQuitter.setWantsToQuit(true);
 				}
 				setVisible(false);
@@ -164,8 +165,7 @@ public class DemoFrame extends JFrame implements WindowListener, Displayer {
 		cbMenuItem = new JCheckBoxMenuItem("Grayscale");
 		cbMenuItem.setMnemonic(KeyEvent.VK_G);
 		cbMenuItem.addItemListener(new ItemListener(){
-			@Override
-			public void itemStateChanged(ItemEvent e) {
+			@Override public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED)
 				  myBackupFilterSeq.addOrReplaceByClass(new Grayscale());
 				else if (e.getStateChange() == ItemEvent.DESELECTED)
@@ -238,18 +238,27 @@ public class DemoFrame extends JFrame implements WindowListener, Displayer {
 			}
 		});
 		menu.add(cbMenuItem);
-		
-		myMenuBar.add(menu);
-		
-		// =================
-		
-		setJMenuBar(myMenuBar);
-		
 
-		
+		myMenuBar.add(menu);
+
+		setJMenuBar(myMenuBar);
 	}
 	
 
+	private void registerWindowListeners() { 
+		this.addWindowListener(this);
+
+		/* This makes the vision close if we merely click in it
+		b.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				setWantsToQuit(true);
+				setVisible(false);
+				dispose();
+			}
+		});
+		*/		
+	}
 
 
 	

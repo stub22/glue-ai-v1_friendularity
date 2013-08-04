@@ -174,7 +174,8 @@ public class JVisionEngine extends BasicDebugger implements Runnable {
 		}
 		getLogger().info("Releasing vidCapture");
 		myVidCapture.release();
-		getLogger().info("run() complete");
+		getLogger().info("run() complete, notifying quitter we're done");
+		myQuitter.notifyQuitCompleted();
 	}
 	
 	public void testWithSomeDuckFiles() { 
