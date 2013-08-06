@@ -41,13 +41,18 @@ public class Farneback implements BaseFilter {
     int w = cflowmap.width();
     float[] fbuf = new float[2];
     float scale = 1.0f;
-    
+    float total_x = 0.0f;
+    float total_y = 0.0f;
     for(int y = 0; y < h; y += 16)
+    {
         for(int x = 0; x < w; x += 16)
         {
             
             flow.get(x,y, fbuf);
+            // TODO understand this float structure better
             Point fp = new Point(fbuf[0],fbuf[1]);
+            total_x += fp.x;
+            total_y += fp.y;
             
             Core.line(cflowmap, new Point(x, y), new Point((int)(x + scale * fp.x), (int)(y + scale * fp.y)), new Scalar(128, 255, 128));
             Core.circle(cflowmap, new Point(x, y), 2, new Scalar(128, 128, 128), -1);
@@ -56,6 +61,16 @@ public class Farneback implements BaseFilter {
                  color);
             circle(cflowmap, Point(x,y), 2, color, -1); */
         }
+    }
+    
+    total_x = total_x / h / w * 256.0f;  // normalize to 1 point
+    total_y = total_y / h / w * 256.0f;
+    
+    
+    Core.line(cflowmap, new Point(320, 240), 
+            new Point((int)(320 + 10 * scale * total_x),
+                      (int)(240 + 10 * scale * total_y)), new Scalar(0, 255, 255), 4);
+    
 }
 
 }
