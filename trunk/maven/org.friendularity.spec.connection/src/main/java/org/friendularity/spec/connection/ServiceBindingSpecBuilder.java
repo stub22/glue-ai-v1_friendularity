@@ -4,6 +4,7 @@ import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.assembler.Mode;
 import java.util.HashMap;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -15,11 +16,13 @@ import org.jflux.api.registry.basic.BasicDescriptor;
 import org.jflux.api.service.ServiceDependency;
 import org.jflux.api.service.binding.ServiceBinding.BindingStrategy;
 
+import com.hp.hpl.jena.rdf.model.Resource;
+import org.appdapter.core.item.ItemFuncs;
 /**
  * The builder that is called to make a Spec object from the raw RDF data
  * representing a ServiceBinding.
  * 
- * @author Jason Randolph Eads <eadsjr@hansonrobokind.com>
+ * @author Jason R. Eads <jeads362@gmail.com>
  * @author Jason G. Pallack <jgpallack@gmail.com>
  */
 
@@ -28,9 +31,15 @@ public class ServiceBindingSpecBuilder
     // Defines the relationship "#Property Name" key (aka the Predicate),
     // that is followed from an individual to collect the data
     
-    private final static String theServiceJavaFQCN = "serviceJavaFQCN";
-    private final static String theHasProperty = "hasProperty";
-    private final static String theBinding = "Binding";
+    public ServiceBindingSpecBuilder( Resource builderConfRes ) {
+        super(builderConfRes);
+    }
+    
+    private final static String theServiceJavaFQCN = "http://www.jflux.org/service#serviceJavaFQCN";
+    private final static String theHasProperty = "http://www.cogchar.org/schema/scene#hasProperty";
+    private final static String theBinding = "http://www.cogchar.org/schema/scene#Binding";
+    
+    private final static String BINDING_STRATEGY_INVALID_WARN = "Invalid binding strategy for serviceBinding";
     private final static Logger theLogger =
             Logger.getLogger(ServiceBindingSpecBuilder.class.getName());
 
@@ -48,17 +57,19 @@ public class ServiceBindingSpecBuilder
         // read in the data fields and store them in the Spec
         mkc.setClassName(reader.readConfigValString(
                 item.getIdent(), theServiceJavaFQCN, item, ""));
-        String binding = reader.readConfigValString(
-                item.getIdent(), theBinding, item, "");
         
-        if(binding.equals("lazy")) {
+        // read in the binding strategy
+        Ident bindingIdent = ItemFuncs.getNeighborIdent(item, theBinding);
+        Item bindingStrategy = item.getSingleLinkedItem(bindingIdent, Item.LinkDirection.FORWARD);
+        if(bindingStrategy.getIdent().getLocalName().equals("lazy")) {
             mkc.setBindingStrategy(BindingStrategy.LAZY);
-        } else if(binding.equals("eager")) {
+        }
+        else if(bindingStrategy.getIdent().getLocalName().equals("eager")) {
             mkc.setBindingStrategy(BindingStrategy.EAGER);
-        } else {
-            theLogger.log(
-                    Level.SEVERE, "Unexpected binding strategy: {0}", binding);
-            mkc.setBindingStrategy(null);
+        }
+        else {
+            getLogger().warn(BINDING_STRATEGY_INVALID_WARN);
+            mkc.setBindingStrategy(BindingStrategy.LAZY);
         }
         
         // read in and build the linked properties, and storing each in the Spec

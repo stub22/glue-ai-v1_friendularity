@@ -16,6 +16,7 @@
 package org.friendularity.spec.connection;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 //import java.util.HashMap;
 import java.util.List;
 //import java.util.Map;
@@ -33,7 +34,7 @@ import org.osgi.framework.BundleContext;
 
 /**
  *
- * @author Jason Randolph Eads <eadsjr@hansonrobokind.com>
+ * @author Jason Randolph Eads <jeads362@gmail.com>
  */
 
 
@@ -50,26 +51,90 @@ public class ServiceManagerTestWiring {
 //        return null;
 //    }
     
-    public static void loadServiceBindingSpecs(BundleContext context, EnhancedRepoClient defaultDemoRepoClient, String graphQN) {
-        List<ServiceBindingSpec> SBspecs = loadServiceBindingSpecs(defaultDemoRepoClient, graphQN);
-        int x = 7;
-        int y = 7+5+x;
-        System.out.println(y);
-        //List<ServiceBindingSpec> specs = loadServiceBindingSpecs(defaultDemoRepoClient, graphQN);
+    public static void loadSpecs(
+            BundleContext context,
+            EnhancedRepoClient defaultDemoRepoClient,
+//            String graphQN) {
+            String... graphQNs) {
+    
+    
+    
+//    public static void loadSpecs(
+//            BundleContext context,
+//            EnhancedRepoClient defaultDemoRepoClient,
+//            String pipelineGraphQN,
+//            String mergedModelGraphQN) {
+//        Set<Object> assembledRootOfPipelines = assembleRoots(defaultDemoRepoClient,pipelineGraphQN);
+//        Set<Object> assembledRoots = assembleRoots(defaultDemoRepoClient,mergedModelGraphQN);
+        
+        
+        
+//        Set<Object> assembledRoots = assembleRoots(defaultDemoRepoClient,graphQN);
+//        
+        
+        Set<Object> assembledRoots = new  HashSet<Object>();
+        // Construct RDF objects for each graph
+        for( String graphQN : graphQNs ) {
+            assembledRoots.addAll(assembleRoots(defaultDemoRepoClient,graphQN));
+        }
+        
+        List<PropertySpec> props =
+                loadPropertySpecs(assembledRoots);
+        
+        List<DefaultRegistrationStrategySpec> regStrats =
+                loadDefaultRegistrationStrategySpecs(assembledRoots);
+        
+        List<ServiceBindingSpec> servBindings =
+                loadServiceBindingSpecs(assembledRoots);
+        
+        List<ServiceManagerSpec> servManagers = 
+        loadServiceManagerSpecs(assembledRoots);
     }
     
-
-    private static List<ServiceBindingSpec> loadServiceBindingSpecs(EnhancedRepoClient defaultDemoRepoClient, String graphQN) {
-        List<ServiceBindingSpec> specs = new ArrayList();
-        
-        // Determine the URI for the 'qualified name' which identifies the data in the repo
+    /**
+     * Collects the data from the repo, building it into untyped spec objects
+     * 
+     * @param defaultDemoRepoClient
+     * @param graphQN
+     * @return 
+     */
+    private static Set<Object> assembleRoots(
+            EnhancedRepoClient defaultDemoRepoClient, String graphQN) {
+        // Determine the URI for the 'qualified name' which identifies the data 
+        // in the repo
         Ident graphID = defaultDemoRepoClient.makeIdentForQName(graphQN);
 
         // Collect the objects from the repo, building them from RDF raw data
-        Set<Object> assembledRoots = defaultDemoRepoClient.assembleRootsFromNamedModel(graphID);
+        return defaultDemoRepoClient.assembleRootsFromNamedModel(graphID);
+    }
+    
+    /**
+     * Extracts typed PropertySpecs from the assembled data objects
+     * 
+     * @param assembledRoots
+     * @return 
+     */
+    private static List<PropertySpec> loadPropertySpecs(
+            Set<Object> assembledRoots) {
+        List<PropertySpec> specs = new ArrayList();
         for (Object root : assembledRoots) {
-            // Ignore anything that is not a ConnectionSpec
-            if (root == null || !ServiceBindingSpec.class.isAssignableFrom(root.getClass())) {
+            // Ignore anything that is not a PropertySpec
+            if (root == null || 
+                    !PropertySpec.class.isAssignableFrom(root.getClass())) {
+                continue;
+            }
+            specs.add((PropertySpec) root);
+        }
+        return specs;
+    }
+    
+    private static List<ServiceBindingSpec> loadServiceBindingSpecs(
+            Set<Object> assembledRoots) {
+        List<ServiceBindingSpec> specs = new ArrayList();
+        for (Object root : assembledRoots) {
+            // Ignore anything that is not a PropertySpec
+            if (root == null || 
+                    !ServiceBindingSpec.class.isAssignableFrom(root.getClass())) {
                 continue;
             }
             specs.add((ServiceBindingSpec) root);
@@ -77,36 +142,48 @@ public class ServiceManagerTestWiring {
         return specs;
     }
     
-//    public static Map<ConnectionSpec,ManagedService> loadAndRegisterSpecs(
-//            BundleContext context, EnhancedRepoClient defaultDemoRepoClient, String connectionGraphQN) {
-//        Map<ConnectionSpec,ManagedService> specServices = new HashMap<ConnectionSpec, ManagedService>();
-//        List<ConnectionSpec> specs = loadConnectionSpecs(defaultDemoRepoClient, connectionGraphQN);
-//        for(ConnectionSpec spec : specs){
-//            if(specServices.containsKey(spec)){
-//                continue;
-//            }
-//            ManagedService service = registerConnectionSpec(context, spec);
-//            specServices.put(spec, service);
-//        }
-//        return specServices;
-//    }
-//    
-//    private static List<ConnectionSpec> loadConnectionSpecs(EnhancedRepoClient defaultDemoRepoClient, String connectionGraphQN) {
-//        List<ConnectionSpec> specs = new ArrayList();
-//        // Determine the URI for the 'qualified name' which identifies the data in the repo
-//        Ident connectionGraphID = defaultDemoRepoClient.makeIdentForQName(connectionGraphQN);
-//        // Collect the objects from the repo, building them from RDF raw data
-//        Set<Object> assembledRoots = defaultDemoRepoClient.assembleRootsFromNamedModel(connectionGraphID);
+    private static List<DefaultRegistrationStrategySpec> loadDefaultRegistrationStrategySpecs(
+            Set<Object> assembledRoots) {
+        List<DefaultRegistrationStrategySpec> specs = new ArrayList();
+        for (Object root : assembledRoots) {
+            // Ignore anything that is not a PropertySpec
+            if (root == null || 
+                    !DefaultRegistrationStrategySpec.class.isAssignableFrom(root.getClass())) {
+                continue;
+            }
+            specs.add((DefaultRegistrationStrategySpec) root);
+        }
+        return specs;
+    }
+    
+    private static List<ServiceManagerSpec> loadServiceManagerSpecs(
+            Set<Object> assembledRoots) {
+        List<ServiceManagerSpec> specs = new ArrayList();
+        for (Object root : assembledRoots) {
+            // Ignore anything that is not a PropertySpec
+            if (root == null || 
+                    !ServiceManagerSpec.class.isAssignableFrom(root.getClass())) {
+                continue;
+            }
+            specs.add((ServiceManagerSpec) root);
+        }
+        return specs;
+    }
+    
+//    private static List<ServiceManagerSpec> loadServiceManagerSpecs(
+//            Set<Object> assembledRoots) {
+//        List<ServiceManagerSpec> specs = new ArrayList();
 //        for (Object root : assembledRoots) {
-//            // Ignore anything that is not a ConnectionSpec
-//            if (root == null || !ConnectionSpec.class.isAssignableFrom(root.getClass())) {
+//            // Ignore anything that is not a PropertySpec
+//            if (root == null || 
+//                    !ServiceManagerSpec.class.isAssignableFrom(root.getClass())) {
 //                continue;
 //            }
-//            specs.add((ConnectionSpec) root);
+//            specs.add((ServiceManagerSpec) root);
 //        }
 //        return specs;
 //    }
-//
+    
 //    /**
 //     * Allows JFlux to register connection specs
 //     * @param context the BundleContext used to register the spec
