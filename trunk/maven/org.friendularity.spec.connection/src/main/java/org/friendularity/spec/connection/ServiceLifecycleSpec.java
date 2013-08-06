@@ -10,12 +10,12 @@ import org.jflux.api.service.ServiceDependency.UpdateStrategy;
  */
 
 public class ServiceLifecycleSpec extends KnownComponentImpl {
-    private Class myLifecycleClass;
+    private String myLifecycleClassName;
     private Cardinality myCardinality;
     private UpdateStrategy myUpdateStrategy;
     
-    public Class getLifecycleClass() {
-        return myLifecycleClass;
+    public String getLifecycleClassName() {
+        return myLifecycleClassName;
     }
     
     public Cardinality getCardinality() {
@@ -26,8 +26,8 @@ public class ServiceLifecycleSpec extends KnownComponentImpl {
         return myUpdateStrategy;
     }
     
-    public void setLifecycleClass(Class cls) {
-        myLifecycleClass = cls;
+    public void setLifecycleClassName(String className) {
+        myLifecycleClassName = className;
     }
     
     public void setCardinality(Cardinality cardinality) {

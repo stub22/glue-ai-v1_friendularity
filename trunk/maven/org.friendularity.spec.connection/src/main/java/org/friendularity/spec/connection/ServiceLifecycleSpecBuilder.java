@@ -43,14 +43,7 @@ public class ServiceLifecycleSpecBuilder
                 item.getIdent(), theCountCardinality, item, "");
         String required = reader.readConfigValString(
                 item.getIdent(), theRequired, item, "");
-        ClassLoader loader = ClassLoader.getSystemClassLoader();
-        
-        try {
-            mkc.setLifecycleClass(loader.loadClass(className));
-        } catch(ClassNotFoundException e) {
-            theLogger.log(Level.SEVERE, "Class {0} not found.", className);
-            mkc.setLifecycleClass(null);
-        }
+        mkc.setLifecycleClassName(className);
         
         if(update.equals("static")) {
             mkc.setUpdateStrategy(UpdateStrategy.STATIC);
