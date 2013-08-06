@@ -8,16 +8,22 @@ import org.appdapter.bind.rdf.jena.assembly.ItemAssemblyReader;
 import org.appdapter.core.item.Item;
 import org.appdapter.core.item.ItemFuncs;
 import org.appdapter.core.name.Ident;
+import com.hp.hpl.jena.rdf.model.Resource;
 
 /**
  *
  * @author Jason G. Pallack <jgpallack@gmail.com>
+ * @author Jason R. Eads <jeads362@gmail.com>
  */
 
 public class DestinationSpecBuilder
     extends CachingComponentAssembler<DestinationSpec> {
     private final static String theDestinationName = "destinationName";
     private final static String theNodeType = "nodeType";
+    
+    public DestinationSpecBuilder( Resource builderConfRes ) {
+        super(builderConfRes);
+    }
     
     @Override
     protected Class<DestinationSpec> decideComponentClass(

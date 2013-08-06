@@ -7,6 +7,7 @@ import org.appdapter.bind.rdf.jena.assembly.ItemAssemblyReader;
 import org.appdapter.core.item.Item;
 import org.appdapter.core.name.Ident;
 
+import com.hp.hpl.jena.rdf.model.Resource;
 /**
  * The builder that is called to make a Spec object from the raw RDF data
  * representing a ServiceBinding.
@@ -18,8 +19,12 @@ public class PropertySpecBuilder extends CachingComponentAssembler<PropertySpec>
     // Defines the relationship "#Property Name" key (aka the Predicate),
     // that is followed from an individual to collect the data
     
-    private final static String thePropertyKeyId = "propKey";
-    private final static String thePropertyValueId = "propValue";
+    private final static String thePropertyKeyId = "http://www.cogchar.org/schema/scene#propKey";
+    private final static String thePropertyValueId = "http://www.cogchar.org/schema/scene#propValue";
+    
+    public PropertySpecBuilder( Resource builderConfRes ) {
+        super(builderConfRes);
+    }
     
     @Override
     protected Class<PropertySpec> decideComponentClass(Ident ident, Item item) {

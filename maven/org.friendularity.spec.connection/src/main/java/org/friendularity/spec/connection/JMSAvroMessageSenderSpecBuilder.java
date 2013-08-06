@@ -24,6 +24,7 @@ import org.robokind.impl.messaging.JMSAvroMessageSender;
 
 import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.assembler.Mode;
+import com.hp.hpl.jena.rdf.model.Resource;
 
 import org.appdapter.bind.rdf.jena.assembly.ItemAssemblyReader;
 /**
@@ -34,6 +35,10 @@ public class JMSAvroMessageSenderSpecBuilder extends CachingComponentAssembler<J
 
     private final static String   theSessionId = "session";
     private final static String   theDestinationId = "destination";
+    
+    public JMSAvroMessageSenderSpecBuilder ( Resource builderConfRes ) {
+        super(builderConfRes);
+    }
     
     @Override
     protected Class<JMSAvroMessageSenderSpec> decideComponentClass(Ident ident, Item item) {

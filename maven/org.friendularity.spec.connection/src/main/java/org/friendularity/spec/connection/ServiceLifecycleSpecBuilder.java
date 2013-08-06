@@ -11,19 +11,25 @@ import org.appdapter.core.name.Ident;
 import org.jflux.api.service.ServiceDependency.Cardinality;
 import org.jflux.api.service.ServiceDependency.UpdateStrategy;
 
+import com.hp.hpl.jena.rdf.model.Resource;
 /**
  *
  * @author Jason G. Pallack <jgpallack@gmail.com>
+ * @author Jason Randolph Eads <eadsjr@hansonrobokind.com>
  */
 
 public class ServiceLifecycleSpecBuilder
     extends CachingComponentAssembler<ServiceLifecycleSpec> {
-    private final static String theLifecycleJavaFQCN = "lifecycleJavaFQCN";
-    private final static String theUpdateStrategy = "updateStrategy";
-    private final static String theCountCardinality = "countCardinality";
-    private final static String theRequired = "required";
+    private final static String theLifecycleJavaFQCN = "http://www.appdapter.org/schema/box#lifecycleJavaFQCN";
+    private final static String theUpdateStrategy = "http://www.jflux.org/service/dependency#updateStrategy";
+    private final static String theCountCardinality = "http://www.jflux.org/service/dependency#countCardinality";
+    private final static String theRequired = "http://www.jflux.org/service/dependency#required";
     private final static Logger theLogger =
             Logger.getLogger(ServiceLifecycleSpecBuilder.class.getName());
+    
+    public ServiceLifecycleSpecBuilder ( Resource builderConfRes ) {
+        super(builderConfRes);
+    }
     
     @Override
     protected Class<ServiceLifecycleSpec> decideComponentClass(

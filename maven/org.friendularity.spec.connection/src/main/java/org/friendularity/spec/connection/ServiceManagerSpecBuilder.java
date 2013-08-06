@@ -13,20 +13,29 @@ import org.jflux.api.registry.Descriptor;
 import org.jflux.api.service.DefaultRegistrationStrategy;
 import org.jflux.api.service.RegistrationStrategy;
 import org.jflux.api.service.binding.ServiceBinding;
+import com.hp.hpl.jena.rdf.model.Resource;
 
 /**
  *
  * @author Jason G. Pallack <jgpallack@gmail.com>
+ * @author Jason R. Eads <jeads362@gmail.com>
  */
 
 public class ServiceManagerSpecBuilder
     extends CachingComponentAssembler<ServiceManagerSpec> {
-    private final static String theLifecycleType = "lifecycleType";
-    private final static String theServiceBinding = "serviceBinding";
+    private final static String theLifecycleType = 
+            "http://www.cogchar.org/schema/scene#lifecycleType";
+    private final static String theServiceBinding = 
+            "http://www.cogchar.org/schema/scene#serviceBinding";
     private final static String theRegistrationStrategy =
-            "registrationStrategy";
+            "http://www.cogchar.org/schema/scene#registrationStrategy";
     private final static Logger theLogger =
             Logger.getLogger(ServiceManagerSpecBuilder.class.getName());
+    
+    
+    public ServiceManagerSpecBuilder( Resource builderConfRes ) {
+        super(builderConfRes);
+    }
     
     @Override
     protected Class<ServiceManagerSpec> decideComponentClass(
