@@ -14,7 +14,7 @@ import org.jflux.api.service.binding.ServiceBinding;
  */
 
 public class ServiceManagerSpec extends KnownComponentImpl {
-    private ServiceLifecycle myLifecycle;
+    private String myLifecycleClassName;
     private Map<String, ServiceBinding> myServiceBindings;
     private RegistrationStrategy myServiceRegistration;
     private RegistrationStrategy<ServiceManager> myManagerRegistration;
@@ -24,8 +24,8 @@ public class ServiceManagerSpec extends KnownComponentImpl {
         myManagerRegistration = null;
     }
     
-    public ServiceLifecycle getLifecycle() {
-        return myLifecycle;
+    public String getLifecycleClassName() {
+        return myLifecycleClassName;
     }
     
     public Map<String, ServiceBinding> getServiceBindings() {
@@ -40,8 +40,8 @@ public class ServiceManagerSpec extends KnownComponentImpl {
         return myManagerRegistration;
     }
     
-    public void setLifecycle(ServiceLifecycle lifecycle) {
-        myLifecycle = lifecycle;
+    public void setLifecycleClassName(String lifecycleClassName) {
+        myLifecycleClassName = lifecycleClassName;
     }
     
     public void addServiceBinding(String name, ServiceBinding binding) {

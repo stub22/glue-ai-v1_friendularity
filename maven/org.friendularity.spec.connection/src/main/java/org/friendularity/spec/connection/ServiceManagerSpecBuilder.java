@@ -9,9 +9,9 @@ import org.appdapter.bind.rdf.jena.assembly.CachingComponentAssembler;
 import org.appdapter.bind.rdf.jena.assembly.ItemAssemblyReader;
 import org.appdapter.core.item.Item;
 import org.appdapter.core.name.Ident;
+import org.jflux.api.registry.Descriptor;
 import org.jflux.api.service.DefaultRegistrationStrategy;
 import org.jflux.api.service.RegistrationStrategy;
-import org.jflux.api.service.ServiceLifecycle;
 import org.jflux.api.service.binding.ServiceBinding;
 
 /**
@@ -53,16 +53,8 @@ public class ServiceManagerSpecBuilder
         for(Object lc: linkedLifecycles) {
             if(lc instanceof ServiceLifecycleSpec) {
                 lifecycleSpec = (ServiceLifecycleSpec)lc;
-                Class lifecycleClass = lifecycleSpec.getLifecycleClass();
-                try {
-                    mkc.setLifecycle(
-                            (ServiceLifecycle)lifecycleClass.newInstance());
-                } catch(Exception e) {
-                    theLogger.log(
-                            Level.SEVERE, "Error instantiating lifecycle: {0}",
-                            e.getMessage());
-                    mkc.setLifecycle(null);
-                }
+                String lifecycleClass = lifecycleSpec.getLifecycleClassName();
+                mkc.setLifecycleClassName(lifecycleClass);
                 break;
             } else {
                 theLogger.log(
@@ -84,12 +76,12 @@ public class ServiceManagerSpecBuilder
                             "No source of cardinality or update strategy.");
                 }
                 
-                ServiceBinding binding = new ServiceBinding(
-                        bindingSpec.getServiceDependency(),
-                        bindingSpec.getDescriptor(),
+                Descriptor desc = bindingSpec.getDescriptor();
+                ServiceBinding binding =
+                        new ServiceBinding(
+                        bindingSpec.getServiceDependency(), desc,
                         bindingSpec.getBindingStrategy());
-                mkc.addServiceBinding(
-                        bindingSpec.getDescriptor().getClassName(), binding);
+                mkc.addServiceBinding(desc.getClassName(), binding);
             } else {
                 theLogger.log(
                         Level.WARNING, "Unexpected object found at {0} = {1}",
