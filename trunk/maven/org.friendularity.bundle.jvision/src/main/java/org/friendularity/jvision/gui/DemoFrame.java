@@ -1,13 +1,7 @@
 package org.friendularity.jvision.gui;
 
 
-import org.friendularity.jvision.filters.FaceDetector;
-import org.friendularity.jvision.filters.Blur;
-import org.friendularity.jvision.filters.Grayscale;
-import org.friendularity.jvision.filters.FilterSequence;
-import org.friendularity.jvision.filters.Dilate;
-import org.friendularity.jvision.filters.ProfileDetector;
-import org.friendularity.jvision.filters.Erode;
+import org.friendularity.jvision.filters.*;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -235,6 +229,19 @@ public class DemoFrame extends JFrame implements WindowListener, Displayer {
 				  myBackupFilterSeq.addOrReplaceByClass(new ProfileDetector());
 				else if (e.getStateChange() == ItemEvent.DESELECTED)
 				   myBackupFilterSeq.removeByClass(new ProfileDetector());
+			}
+		});
+		menu.add(cbMenuItem);
+
+		cbMenuItem = new JCheckBoxMenuItem("Farneback Optical Flow");
+		cbMenuItem.setMnemonic(KeyEvent.VK_F);
+		cbMenuItem.addItemListener(new ItemListener(){
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				if (e.getStateChange() == ItemEvent.SELECTED)
+				  myBackupFilterSeq.addOrReplaceByClass(new Farneback());
+				else if (e.getStateChange() == ItemEvent.DESELECTED)
+				   myBackupFilterSeq.removeByClass(new Farneback());
 			}
 		});
 		menu.add(cbMenuItem);
