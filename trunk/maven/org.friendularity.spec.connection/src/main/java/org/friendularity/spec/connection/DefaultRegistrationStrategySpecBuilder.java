@@ -18,8 +18,10 @@ import com.hp.hpl.jena.rdf.model.Resource;
 
 public class DefaultRegistrationStrategySpecBuilder
     extends CachingComponentAssembler<DefaultRegistrationStrategySpec> {
-    private final static String theHasProperty = "http://www.cogchar.org/schema/scene#hasProperty";
-    private final static String theServiceJavaFQCN = "http://www.jflux.org/service#serviceJavaFQCN";
+    private final static String theHasProperty = 
+            "http://www.cogchar.org/schema/scene#hasProperty";
+    private final static String theServiceJavaFQCN = 
+            "http://www.jflux.org/service#serviceJavaFQCN";
     
     public DefaultRegistrationStrategySpecBuilder( Resource builderConfRes ) {
         super(builderConfRes);
