@@ -3,10 +3,6 @@ package org.friendularity.spec.connection;
 import java.util.HashMap;
 import java.util.Map;
 import org.appdapter.core.component.KnownComponentImpl;
-import org.jflux.api.service.RegistrationStrategy;
-import org.jflux.api.service.ServiceLifecycle;
-import org.jflux.api.service.ServiceManager;
-import org.jflux.api.service.binding.ServiceBinding;
 
 /**
  *
@@ -15,12 +11,12 @@ import org.jflux.api.service.binding.ServiceBinding;
 
 public class ServiceManagerSpec extends KnownComponentImpl {
     private String myLifecycleClassName;
-    private Map<String, ServiceBinding> myServiceBindings;
-    private RegistrationStrategy myServiceRegistration;
-    private RegistrationStrategy<ServiceManager> myManagerRegistration;
+    private Map<String, ServiceBindingSpec> myServiceBindings;
+    private DefaultRegistrationStrategySpec myServiceRegistration;
+    private DefaultRegistrationStrategySpec myManagerRegistration;
     
     public ServiceManagerSpec() {
-        myServiceBindings = new HashMap<String, ServiceBinding>();
+        myServiceBindings = new HashMap<String, ServiceBindingSpec>();
         myManagerRegistration = null;
     }
     
@@ -28,15 +24,15 @@ public class ServiceManagerSpec extends KnownComponentImpl {
         return myLifecycleClassName;
     }
     
-    public Map<String, ServiceBinding> getServiceBindings() {
+    public Map<String, ServiceBindingSpec> getServiceBindings() {
         return myServiceBindings;
     }
     
-    public RegistrationStrategy getServiceRegistration() {
+    public DefaultRegistrationStrategySpec getServiceRegistration() {
         return myServiceRegistration;
     }
     
-    public RegistrationStrategy<ServiceManager> getManagerRegistration() {
+    public DefaultRegistrationStrategySpec getManagerRegistration() {
         return myManagerRegistration;
     }
     
@@ -44,7 +40,7 @@ public class ServiceManagerSpec extends KnownComponentImpl {
         myLifecycleClassName = lifecycleClassName;
     }
     
-    public void addServiceBinding(String name, ServiceBinding binding) {
+    public void addServiceBinding(String name, ServiceBindingSpec binding) {
         myServiceBindings.put(name, binding);
     }
     
@@ -52,12 +48,13 @@ public class ServiceManagerSpec extends KnownComponentImpl {
         myServiceBindings.remove(name);
     }
     
-    public void setServiceRegistration(RegistrationStrategy registration) {
+    public void setServiceRegistration(
+            DefaultRegistrationStrategySpec registration) {
         myServiceRegistration = registration;
     }
     
     public void setManagerRegistration(
-            RegistrationStrategy<ServiceManager> registration) {
+            DefaultRegistrationStrategySpec registration) {
         myManagerRegistration = registration;
     }
 }
