@@ -5,9 +5,6 @@ import java.util.Map;
 import org.appdapter.core.component.KnownComponentImpl;
 import org.jflux.api.registry.Descriptor;
 import org.jflux.api.registry.basic.BasicDescriptor;
-import org.jflux.api.service.ServiceDependency;
-import org.jflux.api.service.ServiceDependency.Cardinality;
-import org.jflux.api.service.ServiceDependency.UpdateStrategy;
 import org.jflux.api.service.binding.ServiceBinding.BindingStrategy;
 
 /**
@@ -22,23 +19,17 @@ public class ServiceBindingSpec extends KnownComponentImpl {
     
     private String myClassName;
     private Map<String, String> myProperties;
-    private Cardinality myCardinality;
-    private UpdateStrategy myUpdateStrategy;
-    
+    private ServiceDependencySpec myServiceDependency;
     private BindingStrategy myBindingStrategy;
     
     public ServiceBindingSpec() {
         myProperties = new HashMap<String, String>();
-        myCardinality = null;
-        myUpdateStrategy = null;
     }
     
     // Getters for data
     
-    public ServiceDependency getServiceDependency() {
-        return new ServiceDependency(
-                myClassName, myClassName, myCardinality, myUpdateStrategy,
-                myProperties);
+    public ServiceDependencySpec getServiceDependency() {
+        return myServiceDependency;
     }
     
     public Descriptor getDescriptor() {
@@ -59,12 +50,8 @@ public class ServiceBindingSpec extends KnownComponentImpl {
         myBindingStrategy = bindingStrategy;
     }
     
-    public void setCardinality(Cardinality cardinality) {
-        myCardinality = cardinality;
-    }
-    
-    public void setUpdateStrategy(UpdateStrategy updateStrategy) {
-        myUpdateStrategy = updateStrategy;
+    public void setServiceDependency(ServiceDependencySpec serviceDependency) {
+        myServiceDependency = serviceDependency;
     }
     
     // Accumulators for data

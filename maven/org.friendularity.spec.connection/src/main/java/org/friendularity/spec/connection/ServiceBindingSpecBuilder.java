@@ -35,11 +35,17 @@ public class ServiceBindingSpecBuilder
         super(builderConfRes);
     }
     
-    private final static String theServiceJavaFQCN = "http://www.jflux.org/service#serviceJavaFQCN";
-    private final static String theHasProperty = "http://www.cogchar.org/schema/scene#hasProperty";
-    private final static String theBinding = "http://www.cogchar.org/schema/scene#Binding";
+    private final static String theServiceJavaFQCN =
+            "http://www.jflux.org/service#serviceJavaFQCN";
+    private final static String theHasProperty =
+            "http://www.cogchar.org/schema/scene#hasProperty";
+    private final static String theBinding =
+            "http://www.cogchar.org/schema/scene#Binding";
+    private final static String theDependencyURI = 
+            "http://www.cogchar.org/schema/scene#dependencyURI";
     
-    private final static String BINDING_STRATEGY_INVALID_WARN = "Invalid binding strategy for serviceBinding";
+    private final static String BINDING_STRATEGY_INVALID_WARN =
+            "Invalid binding strategy for serviceBinding";
     private final static Logger theLogger =
             Logger.getLogger(ServiceBindingSpecBuilder.class.getName());
 
@@ -60,7 +66,9 @@ public class ServiceBindingSpecBuilder
         
         // read in the binding strategy
         Ident bindingIdent = ItemFuncs.getNeighborIdent(item, theBinding);
-        Item bindingStrategy = item.getSingleLinkedItem(bindingIdent, Item.LinkDirection.FORWARD);
+        Item bindingStrategy =
+                item.getSingleLinkedItem(
+                bindingIdent, Item.LinkDirection.FORWARD);
         if(bindingStrategy.getIdent().getLocalName().equals("lazy")) {
             mkc.setBindingStrategy(BindingStrategy.LAZY);
         }
@@ -73,19 +81,37 @@ public class ServiceBindingSpecBuilder
         }
         
         // read in and build the linked properties, and storing each in the Spec
-        List linkedProperties = reader.findOrMakeLinkedObjects(
+        List linkedProperties =
+                reader.findOrMakeLinkedObjects(
                 item, theHasProperty, asmblr, mode, null);
+        List linkedDependencies =
+                reader.findOrMakeLinkedObjects(
+                item, theDependencyURI, asmblr, mode, null);
         
-        for(Object o: linkedProperties) {
-            if(o instanceof PropertySpec) {
-                PropertySpec propertySpec = (PropertySpec)o;
-                mkc.addProperty(
-                        propertySpec.getName(), propertySpec.getValue());
-            } else {
+        for(Object lp: linkedProperties) {
+            if(!(lp instanceof PropertySpec)) {
                 theLogger.log(
                         Level.WARNING, "Unexpected object found at {0} = {1}",
-                        new Object[]{theHasProperty, o.toString()});
+                        new Object[]{theHasProperty, lp.toString()});
+                continue;
             }
+
+            PropertySpec propertySpec = (PropertySpec)lp;
+            mkc.addProperty(propertySpec.getName(), propertySpec.getValue());
+        }
+
+        for(Object ld: linkedDependencies) {
+            if(!(ld instanceof ServiceDependencySpec)) {
+                theLogger.log(
+                        Level.WARNING, "Unexpected object found at {0} = {1}",
+                        new Object[]{theDependencyURI, ld.toString()});
+                continue;
+            }
+
+            ServiceDependencySpec dep = (ServiceDependencySpec)ld;
+            mkc.setServiceDependency(dep);
+
+            break;
         }
     }
 }

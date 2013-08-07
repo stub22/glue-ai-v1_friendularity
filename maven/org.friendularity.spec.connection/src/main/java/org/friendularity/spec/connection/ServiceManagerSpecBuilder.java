@@ -12,6 +12,7 @@ import org.appdapter.core.name.Ident;
 import org.jflux.api.registry.Descriptor;
 import org.jflux.api.service.DefaultRegistrationStrategy;
 import org.jflux.api.service.RegistrationStrategy;
+import org.jflux.api.service.ServiceDependency;
 import org.jflux.api.service.binding.ServiceBinding;
 import com.hp.hpl.jena.rdf.model.Resource;
 
@@ -60,59 +61,45 @@ public class ServiceManagerSpecBuilder
                 item, theRegistrationStrategy, asmblr, mode, null);
         
         for(Object lc: linkedLifecycles) {
-            if(lc instanceof ServiceLifecycleSpec) {
-                lifecycleSpec = (ServiceLifecycleSpec)lc;
-                String lifecycleClass = lifecycleSpec.getLifecycleClassName();
-                mkc.setLifecycleClassName(lifecycleClass);
-                break;
-            } else {
+            if(!(lc instanceof ServiceLifecycleSpec)) {
                 theLogger.log(
                         Level.WARNING, "Unexpected object found at {0} = {1}",
                         new Object[]{theLifecycleType, lc.toString()});
+                continue;
             }
+            
+            lifecycleSpec = (ServiceLifecycleSpec)lc;
+            String lifecycleClass = lifecycleSpec.getLifecycleClassName();
+            mkc.setLifecycleClassName(lifecycleClass);
+            break;
         }
         
         for(Object sb: linkedBindings) {
-            if(sb instanceof ServiceBindingSpec) {
-                ServiceBindingSpec bindingSpec = (ServiceBindingSpec)sb;
-                
-                if(lifecycleSpec != null) {
-                    bindingSpec.setCardinality(lifecycleSpec.getCardinality());
-                    bindingSpec.setUpdateStrategy(
-                            lifecycleSpec.getUpdateStrategy());
-                } else {
-                    theLogger.severe(
-                            "No source of cardinality or update strategy.");
-                }
-                
-                Descriptor desc = bindingSpec.getDescriptor();
-                ServiceBinding binding =
-                        new ServiceBinding(
-                        bindingSpec.getServiceDependency(), desc,
-                        bindingSpec.getBindingStrategy());
-                mkc.addServiceBinding(desc.getClassName(), binding);
-            } else {
+            if(!(sb instanceof ServiceBindingSpec)) {
                 theLogger.log(
                         Level.WARNING, "Unexpected object found at {0} = {1}",
                         new Object[]{theServiceBinding, sb.toString()});
+                continue;
             }
+            
+            ServiceBindingSpec bindingSpec = (ServiceBindingSpec)sb;
+            
+            Descriptor desc = bindingSpec.getDescriptor();
+            mkc.addServiceBinding(desc.getClassName(), bindingSpec);
         }
         
         for(Object rs: linkedStrategies) {
-            if(rs instanceof DefaultRegistrationStrategySpec) {
-                DefaultRegistrationStrategySpec stratSpec =
-                        (DefaultRegistrationStrategySpec)rs;
-                RegistrationStrategy strat =
-                        new DefaultRegistrationStrategy(
-                        stratSpec.getClassNames(),
-                        stratSpec.getRegistrationProperties());
-                mkc.setServiceRegistration(strat);
-                break;
-            } else {
+            if(!(rs instanceof DefaultRegistrationStrategySpec)) {
                 theLogger.log(
                         Level.WARNING, "Unexpected object found at {0} = {1}",
                         new Object[]{theRegistrationStrategy, rs.toString()});
+                continue;
             }
+            
+            DefaultRegistrationStrategySpec stratSpec =
+                    (DefaultRegistrationStrategySpec)rs;
+            mkc.setServiceRegistration(stratSpec);
+            break;
         }
     }
 }

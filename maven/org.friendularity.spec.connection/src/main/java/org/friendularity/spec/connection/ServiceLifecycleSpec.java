@@ -1,8 +1,8 @@
 package org.friendularity.spec.connection;
 
+import java.util.LinkedList;
+import java.util.List;
 import org.appdapter.core.component.KnownComponentImpl;
-import org.jflux.api.service.ServiceDependency.Cardinality;
-import org.jflux.api.service.ServiceDependency.UpdateStrategy;
 
 /**
  *
@@ -11,30 +11,29 @@ import org.jflux.api.service.ServiceDependency.UpdateStrategy;
 
 public class ServiceLifecycleSpec extends KnownComponentImpl {
     private String myLifecycleClassName;
-    private Cardinality myCardinality;
-    private UpdateStrategy myUpdateStrategy;
+    private List<ServiceDependencySpec> myDependencies;
+    
+    public ServiceLifecycleSpec() {
+        myDependencies = new LinkedList<ServiceDependencySpec>();
+    }
     
     public String getLifecycleClassName() {
         return myLifecycleClassName;
     }
     
-    public Cardinality getCardinality() {
-        return myCardinality;
-    }
-    
-    public UpdateStrategy getUpdateStrategy() {
-        return myUpdateStrategy;
+    public List<ServiceDependencySpec> getDependencies() {
+        return myDependencies;
     }
     
     public void setLifecycleClassName(String className) {
         myLifecycleClassName = className;
     }
     
-    public void setCardinality(Cardinality cardinality) {
-        myCardinality = cardinality;
+    public void addDependency(ServiceDependencySpec dependency) {
+        myDependencies.add(dependency);
     }
     
-    public void setUpdateStrategy(UpdateStrategy updateStrategy) {
-        myUpdateStrategy = updateStrategy;
+    public void removeDependency(ServiceDependencySpec dependency) {
+        myDependencies.remove(dependency);
     }
 }

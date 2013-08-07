@@ -17,11 +17,16 @@ package org.friendularity.spec.connection;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jflux.api.registry.Registry;
+import org.jflux.api.service.DefaultRegistrationStrategy;
+import org.jflux.api.service.RegistrationStrategy;
+import org.jflux.api.service.ServiceDependency;
 import org.jflux.api.service.ServiceLifecycle;
 import org.jflux.api.service.ServiceManager;
+import org.jflux.api.service.binding.ServiceBinding;
 import org.osgi.framework.BundleContext;
 import org.robokind.api.common.osgi.ServiceClassListener;
 
@@ -59,11 +64,14 @@ public class ServiceManagerSpecExtender
     @Override
     protected void addService(ServiceManagerSpec serviceManagerSpec) {
         ServiceLifecycle lifecycle;
+        Map<String, ServiceBinding> bindings =
+                new HashMap<String, ServiceBinding>();
         
         if(serviceManagerSpec == null ||
                 myManagedServicesMap.containsKey(serviceManagerSpec)) {
             return;
         }
+        
         try {
             Class lifecycleClass =
                     Class.forName(serviceManagerSpec.getLifecycleClassName());
@@ -74,10 +82,31 @@ public class ServiceManagerSpecExtender
                     serviceManagerSpec.getLifecycleClassName());
             return;
         }
+        
+        for(Entry<String, ServiceBindingSpec> specItem:
+                serviceManagerSpec.getServiceBindings().entrySet()) {
+            ServiceBindingSpec spec = specItem.getValue();
+            ServiceDependencySpec depSpec = spec.getServiceDependency();
+            ServiceDependency dep =
+                    new ServiceDependency(
+                    depSpec.getName(), depSpec.getClassName(),
+                    depSpec.getCardinality(), depSpec.getUpdateStrategy(),
+                    depSpec.getProperties());
+            ServiceBinding binding =
+                    new ServiceBinding(
+                    dep, spec.getDescriptor(), spec.getBindingStrategy());
+            bindings.put(specItem.getKey(), binding);
+        }
+        
+        DefaultRegistrationStrategySpec stratSpec =
+                serviceManagerSpec.getServiceRegistration();
+        RegistrationStrategy strat =
+                new DefaultRegistrationStrategy(
+                stratSpec.getClassNames(),
+                stratSpec.getRegistrationProperties());
+        
         ServiceManager serviceManager =
-                new ServiceManager(
-                lifecycle, serviceManagerSpec.getServiceBindings(),
-                serviceManagerSpec.getServiceRegistration(), null);
+                new ServiceManager(lifecycle, bindings, strat, null);
         // Start the service manager
         serviceManager.start(myRegistry);
         // Store the service manager so it may be removed later.
