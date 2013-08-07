@@ -85,7 +85,7 @@ public class ConnectionLifecycle implements ServiceLifecycle<Connection> {
      * @return the dependency spec list.
      */
     @Override
-    public List getDependencySpecs() {
+    public List<ServiceDependency> getDependencySpecs() {
         return Arrays.asList(theDependencyArray);
     }
 
