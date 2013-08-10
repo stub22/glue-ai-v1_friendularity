@@ -40,6 +40,7 @@ public class JVisionEngine extends BasicDebugger implements Runnable {
 	private FilterSequence	myFilterSeq;
 	private	ArrayList<Displayer>		myDisplayerList = new ArrayList<Displayer>();
 	private Quitter			myQuitter;
+  private long mLastFrameTime = 0l;
   
   public static JVisionEngine getDefaultJVisionEngine() {
     if(sDefaultJVisionEngine == null)
@@ -117,13 +118,16 @@ public class JVisionEngine extends BasicDebugger implements Runnable {
 
 		double ns = (new_t - t) / 1000000000.0;  // frametime in sec
 		double rate = 1.0 / ns;
+    double totalRate =  1.0 / ((new_t - mLastFrameTime) / 1000000000.0);
     for(Iterator<Displayer> i = myDisplayerList.iterator() ; i.hasNext(); )
     {
-      i.next().setFramerateMessage(String.format("%4.0f msec/frame, %5.1f frames per second",
+      i.next().setFramerateMessage(String.format("%4.0f msec/frame, %5.1f frames per second (%5.1f fps actual)",
 				(1000.0 * ns),
-				rate));
+				rate,
+        totalRate));
     }
-
+    mLastFrameTime = new_t;
+    
 		Thread.yield();
 	}
 
