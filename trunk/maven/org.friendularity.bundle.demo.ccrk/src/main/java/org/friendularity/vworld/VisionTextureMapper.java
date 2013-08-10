@@ -37,6 +37,9 @@ import com.jme3.scene.Node;
 
 import com.jme3.renderer.RenderManager;
 import com.jme3.asset.AssetManager;
+import com.jme3.texture.Image;
+import com.jme3.texture.plugins.AWTLoader;
+import java.awt.image.BufferedImage;
 import org.cogchar.render.opengl.optic.MatFactory;
 import org.cogchar.render.opengl.optic.TextureFactory;
 import org.cogchar.render.opengl.optic.ViewportFacade;
@@ -46,16 +49,21 @@ import org.cogchar.render.opengl.scene.DeepSceneMgr;
 
 import org.appdapter.core.log.BasicDebugger;
 
+import org.friendularity.jvision.engine.Displayer;
+import org.friendularity.jvision.engine.JVisionEngine;
+
+
 /**
  *
  * @author Owner
  */
-public class VisionTextureMapper extends BasicDebugger {
+public class VisionTextureMapper extends BasicDebugger implements Displayer {
 
 	private static final String TOGGLE_UPDATE = "Toggle Update";
 	private Geometry myOffscreenBoxGeom, myOnscreenBoxGeom;
 	private ViewPort myOffscrenViewport;
-	
+	private Material mCameraMaterial = new Material();
+  
 	private float angle = 0;
 
 	public void setup(RenderRegistryClient rrc) {
@@ -89,6 +97,7 @@ public class VisionTextureMapper extends BasicDebugger {
 		offCamera.setLocation(new Vector3f(0f, 0f, -5f));
 		offCamera.lookAt(new Vector3f(0f, 0f, 0f), Vector3f.UNIT_Y);
 
+    
 		//setup framebuffer's texture
 		Texture2D offTex = new Texture2D(512, 512, Format.RGBA8);
 		offTex.setMinFilter(Texture.MinFilter.Trilinear);
@@ -104,8 +113,13 @@ public class VisionTextureMapper extends BasicDebugger {
 		// setup framebuffer's scene
 		Box boxMesh = new Box(Vector3f.ZERO, 1, 1, 1);
 		Material material = assetMgr.loadMaterial("jme3dat/Interface/Logo/Logo.j3m");
+    mCameraMaterial = material.clone();
+    
 		myOffscreenBoxGeom = new Geometry("boxOff", boxMesh);
-		myOffscreenBoxGeom.setMaterial(material);
+	//	myOffscreenBoxGeom.setMaterial(material);
+    myOffscreenBoxGeom.setMaterial(mCameraMaterial);
+    // TBD ANNIE this is probably horribly the wrong place for this
+    JVisionEngine.getDefaultJVisionEngine().addDisplayer(this); 
 
 		// attach the scene to the viewport to be rendered
 		myOffscrenViewport.attachScene(myOffscreenBoxGeom);
@@ -150,4 +164,22 @@ public class VisionTextureMapper extends BasicDebugger {
 			myOffscreenBoxGeom.updateGeometricState();
 		}
 	}
+
+  @Override
+  public void setDisplayedImage(BufferedImage img) {
+    
+    AWTLoader awtLoader = new AWTLoader();
+    Image cameraImage = awtLoader.load(img, true);
+    Texture2D cameraTex = new Texture2D(cameraImage);
+   
+    mCameraMaterial.setTexture("ColorMap", cameraTex);
+   myOffscreenBoxGeom.setMaterial(mCameraMaterial);
+  }
+
+  @Override
+  public void setFramerateMessage(String string) {
+     
+   }
+  
+   
 }

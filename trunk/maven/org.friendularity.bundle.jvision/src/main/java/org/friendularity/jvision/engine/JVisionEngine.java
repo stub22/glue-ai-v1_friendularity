@@ -17,6 +17,8 @@ package org.friendularity.jvision.engine;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
+import java.util.ArrayList;
+import java.util.Iterator;
 import org.friendularity.jvision.filters.FilterSequence;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
@@ -31,18 +33,30 @@ import org.opencv.imgproc.Imgproc;
  * @author Owner
  */
 public class JVisionEngine extends BasicDebugger implements Runnable {
-
+  private static JVisionEngine sDefaultJVisionEngine = null;
+  
 	private VideoCapture	myVidCapture;
 	private Mat				myCameraImage_Mat;
 	private FilterSequence	myFilterSeq;
-	private	Displayer		myDisplayer;
+	private	ArrayList<Displayer>		myDisplayerList = new ArrayList<Displayer>();
 	private Quitter			myQuitter;
+  
+  public static JVisionEngine getDefaultJVisionEngine() {
+    if(sDefaultJVisionEngine == null)
+      sDefaultJVisionEngine = new JVisionEngine();
+    
+    return sDefaultJVisionEngine;
+  }
+  
+  private JVisionEngine() {
+    super();
+  }
 	
 	public FilterSequence getFilterSeq() { 
 		return myFilterSeq;
 	}
-	public void setDisplayer(Displayer d) {
-		myDisplayer = d;
+	public void addDisplayer(Displayer d) {
+		myDisplayerList.add(d);
 	}
 	public void setQuitter(Quitter q) {
 		myQuitter = q;
@@ -88,21 +102,27 @@ public class JVisionEngine extends BasicDebugger implements Runnable {
 		Mat filtered_camera_image = new Mat();
 		myFilterSeq.apply(myCameraImage_Mat, filtered_camera_image);
 
-		if (myDisplayer != null) {
-			myDisplayer.setDisplayedImage(matToBufferedImage(filtered_camera_image));
-		}
+    BufferedImage frame_as_buffered_image = null;
+            
+    for(Iterator<Displayer> i = myDisplayerList.iterator() ; i.hasNext(); )
+    {
+      if(frame_as_buffered_image == null) {
+        frame_as_buffered_image = matToBufferedImage(filtered_camera_image);
+      }
+      i.next().setDisplayedImage(frame_as_buffered_image);
+    }
 				
 
 		long new_t = System.nanoTime();
 
 		double ns = (new_t - t) / 1000000000.0;  // frametime in sec
 		double rate = 1.0 / ns;
-
-		if (myDisplayer != null) {
-			myDisplayer.setFramerateMessage(String.format("%4.0f msec/frame, %5.1f frames per second",
+    for(Iterator<Displayer> i = myDisplayerList.iterator() ; i.hasNext(); )
+    {
+      i.next().setFramerateMessage(String.format("%4.0f msec/frame, %5.1f frames per second",
 				(1000.0 * ns),
 				rate));
-		}
+    }
 
 		Thread.yield();
 	}
