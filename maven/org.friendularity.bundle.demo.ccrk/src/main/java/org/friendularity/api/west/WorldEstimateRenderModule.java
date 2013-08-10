@@ -80,10 +80,7 @@ public class WorldEstimateRenderModule extends RenderModule implements WorldEsti
 				myDidThatStuffFlag = true;
 				myVisualizer.makeBonusMeshes();
 			}
-
 		}
-		
-		
 	}
 	// Args are all unused at present...
   	public Visualizer setupVisualizer(RepoClient rc, Ident charID, Ident vizConfGraphID) {

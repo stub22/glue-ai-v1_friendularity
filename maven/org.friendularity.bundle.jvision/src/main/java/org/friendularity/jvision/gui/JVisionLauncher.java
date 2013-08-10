@@ -39,7 +39,7 @@ public class JVisionLauncher extends BasicDebugger implements Quitter {
 		jvl.attemptInit();
 	}
 	public JVisionLauncher(boolean flag_stopOSGiAfterQuit) {
-		myEngine = new JVisionEngine();
+		myEngine = JVisionEngine.getDefaultJVisionEngine();
 		myDemoFrame = new DemoFrame();
 		myDemoFrame.setQuitter(this);
 		myFlag_StopOSGiAfterQuit = flag_stopOSGiAfterQuit;
@@ -50,7 +50,7 @@ public class JVisionLauncher extends BasicDebugger implements Quitter {
 		if (connectedOK) {
 			FilterSequence fseq = myEngine.getFilterSeq();
 			myDemoFrame.setControlledFilterSequence(fseq);
-			myEngine.setDisplayer(myDemoFrame);
+			myEngine.addDisplayer(myDemoFrame);
 			myEngine.setQuitter(this);
 			return startThread();
 		} else {
