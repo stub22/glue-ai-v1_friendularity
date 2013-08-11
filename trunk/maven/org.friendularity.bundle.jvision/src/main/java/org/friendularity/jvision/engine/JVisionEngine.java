@@ -28,40 +28,45 @@ import org.opencv.highgui.VideoCapture;
 import org.appdapter.core.log.BasicDebugger;
 import org.friendularity.jvision.gui.FileLocations;
 import org.opencv.imgproc.Imgproc;
+
 /**
  *
  * @author Owner
  */
 public class JVisionEngine extends BasicDebugger implements Runnable {
-  private static JVisionEngine sDefaultJVisionEngine = null;
-  
-	private VideoCapture	myVidCapture;
-	private Mat				myCameraImage_Mat;
-	private FilterSequence	myFilterSeq;
-	private	ArrayList<Displayer>		myDisplayerList = new ArrayList<Displayer>();
-	private Quitter			myQuitter;
-  private long mLastFrameTime = 0l;
-  
-  public static JVisionEngine getDefaultJVisionEngine() {
-    if(sDefaultJVisionEngine == null)
-      sDefaultJVisionEngine = new JVisionEngine();
-    
-    return sDefaultJVisionEngine;
-  }
-  
-  private JVisionEngine() {
-    super();
-  }
-	
-	public FilterSequence getFilterSeq() { 
+
+	private static JVisionEngine sDefaultJVisionEngine = null;
+	private VideoCapture myVidCapture;
+	private Mat myCameraImage_Mat;
+	private FilterSequence myFilterSeq;
+	private ArrayList<Displayer> myDisplayerList = new ArrayList<Displayer>();
+	private Quitter myQuitter;
+	private long mLastFrameTime = 0l;
+
+	public static JVisionEngine getDefaultJVisionEngine() {
+		if (sDefaultJVisionEngine == null) {
+			sDefaultJVisionEngine = new JVisionEngine();
+		}
+
+		return sDefaultJVisionEngine;
+	}
+
+	private JVisionEngine() {
+		super();
+	}
+
+	public FilterSequence getFilterSeq() {
 		return myFilterSeq;
 	}
-	public void addDisplayer(Displayer d) {
+
+	public synchronized void addDisplayer(Displayer d) {
 		myDisplayerList.add(d);
 	}
+
 	public void setQuitter(Quitter q) {
 		myQuitter = q;
 	}
+
 	public boolean connect() {
 
 		myFilterSeq = new FilterSequence();
@@ -72,7 +77,7 @@ public class JVisionEngine extends BasicDebugger implements Runnable {
 		getLogger().info("m = " + m.dump());
 
 		// testWithSomeDuckFiles();
-		
+
 		myVidCapture = new VideoCapture();
 
 		getLogger().info("Opening vidCapture stream");
@@ -93,7 +98,8 @@ public class JVisionEngine extends BasicDebugger implements Runnable {
 
 	}
 
-	public void processOneFrame() {
+	// Without "synchronized", we are vulnerable to crash if displayerList modified during loop below.
+	public synchronized void processOneFrame() {
 		VideoCapture vc = myVidCapture;
 		if (!vc.read(myCameraImage_Mat)) {
 			getLogger().error("Oops bad read");
@@ -103,31 +109,37 @@ public class JVisionEngine extends BasicDebugger implements Runnable {
 		Mat filtered_camera_image = new Mat();
 		myFilterSeq.apply(myCameraImage_Mat, filtered_camera_image);
 
-    BufferedImage frame_as_buffered_image = null;
-            
-    for(Iterator<Displayer> i = myDisplayerList.iterator() ; i.hasNext(); )
-    {
-      if(frame_as_buffered_image == null) {
-        frame_as_buffered_image = matToBufferedImage(filtered_camera_image);
-      }
-      i.next().setDisplayedImage(frame_as_buffered_image);
-    }
-				
+		BufferedImage frame_as_buffered_image = null;
+
+		// This loop expects that displayerList is not modified while it is running.
+		// Before "synchronized", we sometimes get during startup:
+		/*
+     [java] Exception in thread "Thread-3" java.util.ConcurrentModificationException
+     [java] 	at java.util.AbstractList$Itr.checkForComodification(AbstractList.java:372)
+     [java] 	at java.util.AbstractList$Itr.next(AbstractList.java:343)
+     [java] 	at org.friendularity.jvision.engine.JVisionEngine.processOneFrame(JVisionEngine.java:113)
+		 */
+		for (Iterator<Displayer> i = myDisplayerList.iterator(); i.hasNext();) {
+			if (frame_as_buffered_image == null) {
+				frame_as_buffered_image = matToBufferedImage(filtered_camera_image);
+			}
+			i.next().setDisplayedImage(frame_as_buffered_image);
+		}
+
 
 		long new_t = System.nanoTime();
 
 		double ns = (new_t - t) / 1000000000.0;  // frametime in sec
 		double rate = 1.0 / ns;
-    double totalRate =  1.0 / ((new_t - mLastFrameTime) / 1000000000.0);
-    for(Iterator<Displayer> i = myDisplayerList.iterator() ; i.hasNext(); )
-    {
-      i.next().setFramerateMessage(String.format("%4.0f msec/frame, %5.1f frames per second (%5.1f fps actual)",
-				(1000.0 * ns),
-				rate,
-        totalRate));
-    }
-    mLastFrameTime = new_t;
-    
+		double totalRate = 1.0 / ((new_t - mLastFrameTime) / 1000000000.0);
+		for (Iterator<Displayer> i = myDisplayerList.iterator(); i.hasNext();) {
+			i.next().setFramerateMessage(String.format("%4.0f msec/frame, %5.1f frames per second (%5.1f fps actual)",
+					(1000.0 * ns),
+					rate,
+					totalRate));
+		}
+		mLastFrameTime = new_t;
+
 		Thread.yield();
 	}
 
@@ -185,7 +197,8 @@ public class JVisionEngine extends BasicDebugger implements Runnable {
 		return image;
 	}
 
-	@Override public void run() {
+	@Override
+	public void run() {
 		if (myQuitter != null) {
 			getLogger().info("JVision Engine beginning frame processing loop");
 			while (!myQuitter.wantsToQuit()) {
@@ -201,19 +214,19 @@ public class JVisionEngine extends BasicDebugger implements Runnable {
 		getLogger().info("run() complete, notifying quitter we're done");
 		myQuitter.notifyQuitCompleted();
 	}
-	
-	public void testWithSomeDuckFiles() { 
-		 Mat image = Highgui.imread(FileLocations.imageBase() + "duck.jpg", 1);
-		 Mat grayimage = new Mat();
-		 // this makes a new matrix
-		 Imgproc.cvtColor(image, grayimage, Imgproc.COLOR_RGB2GRAY);
-        
-		 Highgui.imwrite(FileLocations.imageBase() + "grayduck.png", grayimage);
-        
-		 Mat someimage = new Mat();
-        
-        
-		 image.convertTo(someimage, 0, 0.5);
-		 Highgui.imwrite(FileLocations.imageBase() + "outduck.png", someimage);		
+
+	public void testWithSomeDuckFiles() {
+		Mat image = Highgui.imread(FileLocations.imageBase() + "duck.jpg", 1);
+		Mat grayimage = new Mat();
+		// this makes a new matrix
+		Imgproc.cvtColor(image, grayimage, Imgproc.COLOR_RGB2GRAY);
+
+		Highgui.imwrite(FileLocations.imageBase() + "grayduck.png", grayimage);
+
+		Mat someimage = new Mat();
+
+
+		image.convertTo(someimage, 0, 0.5);
+		Highgui.imwrite(FileLocations.imageBase() + "outduck.png", someimage);
 	}
 }
