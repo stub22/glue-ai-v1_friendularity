@@ -28,16 +28,9 @@ import org.cogchar.render.sys.registry.RenderRegistryClient;
  */
 public abstract class ThingEstimate extends BasicDebugger {
 
-	public Ident					myIdent;
+	public		Ident							myIdent;
 
-	public VizShape					myCachedVizObject;
-	/*
-	private String					myPosVecExpr;	
-	private	Vector3f				myPendingPosVec3f;
-	
-	private  String					myColorVecExpr;
-	private	 ColorRGBA				myPendingColor;
-	*/
+	public		VizShape						myCachedVizObject;
 
 	private		OscillatorLib.Vec3fOscillator	myPosOscillator;
 	private		OscillatorLib.ColorOscillator	myColorOscillator;
@@ -96,21 +89,12 @@ public abstract class ThingEstimate extends BasicDebugger {
 		if (myCachedVizObject == null) {
 			attachSimpleVizObj(viz);
 		}
-		/*
-		double animPhase = (System.currentTimeMillis() % 2000L) / 2000.0 * 2.0 * Math.PI;
-		double animFract = Math.sin(animPhase);
-		float posOffset = 5.0f * (float) animFract;
-		Vector3f offsetVec = new Vector3f(2.0f * posOffset, posOffset, 3.0f * posOffset);
-		Vector3f totalVec = basePos.add(offsetVec);
-		* 
-		*/ 
+
 		if (myPosOscillator != null) {
 			Vector3f updatedPosVec = myPosOscillator.getVector3f();
-		// 	myPosOscillator.getOutputObject();
 			myCachedVizObject.setPosition(updatedPosVec);
 		}
-	//	if (myPendingColor != null) {
-			// myCachedVizObject.setColor(myPendingColor);		
+
 		if (myColorOscillator != null) { 
 			ColorRGBA updatedColor = myColorOscillator.getColor();
 			myCachedVizObject.setColor(updatedColor);
