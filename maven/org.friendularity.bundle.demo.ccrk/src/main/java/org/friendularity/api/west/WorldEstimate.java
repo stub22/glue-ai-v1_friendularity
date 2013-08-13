@@ -48,14 +48,15 @@ public class WorldEstimate extends ThingEstimate {
 		if (mySelfEstim == null) {
 			Ident selfEstID = new FreeIdent(ESTIM_NS + "self_estim_88");
 			mySelfEstim = new SelfEstimate(selfEstID);
-			mySelfEstim.myPosVecExpr = "{5.0^Sin[$phaseAng], 6.0^(2*Cos[$phaseAng]), $phaseFrac}";
+			String selfPosVecExpr = "{5.0^Sin[$phaseAng], 6.0^(2*Cos[$phaseAng]), $phaseFrac}";
+			mySelfEstim.setPosMathExpr(selfPosVecExpr);
 		}
 		if ((myPersonEstims == null) || myPersonEstims.isEmpty()) {
-			myPersonEstims = PersonEstimate.makeSampleSet();
+			myPersonEstims = EstimateLib.makeFuinPersonEstims();
 		}
 
 		if ((myStuffEstims == null) || myStuffEstims.isEmpty()) {
-			myStuffEstims = StuffEstimate.makeSampleSet();
+			myStuffEstims = EstimateLib.makeFunStuffEstims(12, 8);
 		}
 		
 
@@ -72,6 +73,7 @@ public class WorldEstimate extends ThingEstimate {
 			mg.putVar("$cycleSec", new Double(3.0));
 			mathNeedsInit = false;
 		}
+		// Running these expressions updates some variables within the mathGate, used by demonstration oscillators.
 		Object globs1 = mg.evalToIExpr("$elapsed:=$nowSec-$startSec; $cycles:=Floor[$elapsed/$cycleSec]");
 		Object globs2 = mg.evalToIExpr("$phaseFrac:=$elapsed/$cycleSec-$cycles; $phaseAng:=2.0*Pi*$phaseFrac");
 
@@ -125,76 +127,31 @@ public class WorldEstimate extends ThingEstimate {
 			myPersonIdx = personIdx;
 		}
 
-		@Override
-		public void updateFromMathSpace(MathGate mg) {
+		@Override public void updateFromMathSpace(MathGate mg) {
 			mg.putVar("$personIdx", myPersonIdx);
 			super.updateFromMathSpace(mg);
-		}
-
-		public static Set<PersonEstimate> makeSampleSet() {
-			Set<PersonEstimate> sampleSet = new HashSet<PersonEstimate>();
-			for (int i = 0; i < 10; i++) {
-				Ident personID = new FreeIdent(ESTIM_NS + "person_estim_0" + i);
-				PersonEstimate pest = new PersonEstimate(personID, i);
-				double px = -10.0 - i * 2.0, py = 10.0 + i * 2.0, pz = 4.0;
-				String baseVecExpr = "{" + px + ", " + py + ", " + pz + "}";
-				pest.myPosVecExpr = "Sin[$phaseAng]*Sqrt[1.0 * $personIdx]*" + baseVecExpr;
-				pest.myColorVecExpr = "{Sin[$phaseAng],Sin[3.0*$phaseAng], Sin[$phaseAng/2], $phaseFrac}";
-				sampleSet.add(pest);
-			}
-			return sampleSet;
 		}
 	}
 
 	public static class StuffEstimate extends ThingEstimate {
-
-		static int jMax = 12;
-		static int kMax = 8;
+		public enum Kind {
+			REGULAR,
+			MONSTER
+		}
 		private Integer myStuffIdx;
+		private Kind myKind = Kind.REGULAR;
 
-		public StuffEstimate(Ident id, Integer stuffIndex) {
+		public StuffEstimate(Ident id, Integer stuffIndex, Kind shapeKind) {
 			super(id);
 			myStuffIdx = stuffIndex;
+			myKind = shapeKind;
 		}
-
-		@Override
-		public void updateFromMathSpace(MathGate mg) {
+		@Override public void updateFromMathSpace(MathGate mg) {
 			mg.putVar("$stuffIdx", myStuffIdx);
 			super.updateFromMathSpace(mg);
 		}
-
-		public static Set<StuffEstimate> makeSampleSet() {
-			Set<StuffEstimate> sampleSet = new HashSet<StuffEstimate>();
-			for (int j = 1; j <= jMax; j++) {
-				// TODO - format the index number
-				Ident stuffID = new FreeIdent(ESTIM_NS + "stuff_estim_0" + j);
-				StuffEstimate sest = new StuffEstimate(stuffID, j);
-				double px = 15.0 + j * 3.0, py = 10.0 + j * 3.0, pz = -12.0;
-				// Making use of single-threaded access to MathSpace:
-				// We assume that someone will post our stuffIdx before each eval of the following.
-				String baseVecExpr = "{" + px + ", " + py + ", " + pz + "}";
-				sest.myPosVecExpr = "Sin[$phaseAng]*" + baseVecExpr;
-				sest.myColorVecExpr = "{Sin[$stuffIdx * $phaseAng],Sin[3.0 * $phaseAng], Sin[$phaseAng/(2 * $stuffIdx)], $phaseFrac * $stuffIdx}";
-				sampleSet.add(sest);
-			}
-
-			for (int k = 1; k <= kMax; k++) {
-				int stuffIdx = k + jMax;
-				Ident stuffID = new FreeIdent(ESTIM_NS + "stuff_estim_0" + stuffIdx);
-				StuffEstimate sest = new StuffEstimate(stuffID, stuffIdx);
-				double px = 15.0 + k * 3.0, py = 10.0 + k * 3.0, pz = -25.0;
-				double kFrac = k / (double) kMax;
-				double red = 0.4, green = 0.2, blue = 0.8, alpha = kFrac;
-				sest.myColorVecExpr = "{" + red + ", " + green + ", " + blue + ", " + alpha + "}";
-				double phaseOff = kFrac * 2 * Math.PI;
-				sest.myPosVecExpr = "$phaseTot:=$phaseAng + " + phaseOff + "; {20.0*Cos[$phaseTot], $phaseTot * 5.0, 15.0*Sin[$phaseTot]}"; //  + baseVecExpr;
-				sampleSet.add(sest);
-			}
-			return sampleSet;
-		}
-
 		@Override protected void attachSimpleVizObj(Visualizer viz) {
-			if (myStuffIdx > jMax) {
+			if (myKind == Kind.MONSTER) { 
 				attachMonsterShape(viz);
 			} else {
 				super.attachSimpleVizObj(viz);
