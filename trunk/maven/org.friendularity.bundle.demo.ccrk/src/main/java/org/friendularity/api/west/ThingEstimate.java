@@ -29,32 +29,46 @@ import org.cogchar.render.sys.registry.RenderRegistryClient;
 public abstract class ThingEstimate extends BasicDebugger {
 
 	public Ident					myIdent;
-	public String					myPosVecExpr;
+
 	public VizShape					myCachedVizObject;
-	
+	/*
+	private String					myPosVecExpr;	
 	private	Vector3f				myPendingPosVec3f;
 	
-	public String					myColorVecExpr;
+	private  String					myColorVecExpr;
 	private	 ColorRGBA				myPendingColor;
+	*/
 
+	private		OscillatorLib.Vec3fOscillator	myPosOscillator;
+	private		OscillatorLib.ColorOscillator	myColorOscillator;
+			
 	public ThingEstimate(Ident id) {
 		myIdent = id;
 	}
 
+	public void setPosMathExpr (String mathExpr) {
+		if (myPosOscillator == null) {
+			myPosOscillator  = new OscillatorLib.Vec3fOscillator(mathExpr);			
+		} else {
+			myPosOscillator.setMathExpr(mathExpr);
+		}
+	}
+	public void setColorMathExpr(String mathExpr) {
+		if (myColorOscillator == null) { 
+			myColorOscillator = new OscillatorLib.ColorOscillator(mathExpr);
+		} else {
+			myColorOscillator.setMathExpr(mathExpr);
+		}
+	}
+
 	public void updateFromMathSpace(MathGate mg) {
-		
-		if (myPosVecExpr != null) {
-			myPendingPosVec3f = mg.readVec3f(myPosVecExpr);
+		if (myPosOscillator != null) {
+			myPosOscillator.doUpdate(mg);
 		}
-		//  Is this color-alloc extra leaky, because maybe ColorRGBA is a "handle" to an OpenGL color object?
-		if (myColorVecExpr != null) {
-			// TODO:  Set up a double-array cache, taking threads into account.
-			double[] colorVals = mg.readDoubleVec(myColorVecExpr, null);
-			if (colorVals.length == 4) {
-				myPendingColor = new ColorRGBA((float) colorVals[0], (float) colorVals[1], (float) colorVals[2], (float)colorVals[3]);
-			}
+		if (myColorOscillator != null) {
+			myColorOscillator.doUpdate(mg);
 		}
-		
+
 		
 		// logInfo("Estimate " + myIdent + " of type " + getClass() + " read position: " + myCachedPosVec3f);
 		// First goal is to Get X, Y, Z + Rot-X, Rot-Y, Rot-Z
@@ -90,11 +104,16 @@ public abstract class ThingEstimate extends BasicDebugger {
 		Vector3f totalVec = basePos.add(offsetVec);
 		* 
 		*/ 
-		if (myPendingPosVec3f != null) {
-			myCachedVizObject.setPosition(myPendingPosVec3f);
+		if (myPosOscillator != null) {
+			Vector3f updatedPosVec = myPosOscillator.getVector3f();
+		// 	myPosOscillator.getOutputObject();
+			myCachedVizObject.setPosition(updatedPosVec);
 		}
-		if (myPendingColor != null) {
-			myCachedVizObject.setColor(myPendingColor);
+	//	if (myPendingColor != null) {
+			// myCachedVizObject.setColor(myPendingColor);		
+		if (myColorOscillator != null) { 
+			ColorRGBA updatedColor = myColorOscillator.getColor();
+			myCachedVizObject.setColor(updatedColor);
 		}
 	}
 
