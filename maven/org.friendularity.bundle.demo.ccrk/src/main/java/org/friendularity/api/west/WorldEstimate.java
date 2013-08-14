@@ -74,8 +74,8 @@ public class WorldEstimate extends ThingEstimate {
 			mathNeedsInit = false;
 		}
 		// Running these expressions updates some variables within the mathGate, used by demonstration oscillators.
-		Object globs1 = mg.evalToIExpr("$elapsed:=$nowSec-$startSec; $cycles:=Floor[$elapsed/$cycleSec]");
-		Object globs2 = mg.evalToIExpr("$phaseFrac:=$elapsed/$cycleSec-$cycles; $phaseAng:=2.0*Pi*$phaseFrac");
+		Object globs1 = mg.parseAndEvalExprToIExpr("$elapsed:=$nowSec-$startSec; $cycles:=Floor[$elapsed/$cycleSec]");
+		Object globs2 = mg.parseAndEvalExprToIExpr("$phaseFrac:=$elapsed/$cycleSec-$cycles; $phaseAng:=2.0*Pi*$phaseFrac");
 
 		// This reads a new Vector3f and Color4f object every time, which is expensive, and possibly leaky in
 		// some non-obvious way?

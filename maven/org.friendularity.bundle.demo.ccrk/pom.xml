@@ -238,7 +238,7 @@
 						<configuration>
 							<target>
 								<!-- Friendularity custom :  Note the log4j.debug flag -->
-								<property name="vm.args" value="-Dlog4j.debug -XX:MaxHeapSize=512M"/>
+								<property name="vm.args" value="-Dlog4j.debug -XX:MaxHeapSize=256M -XX:PermSize=192M -XX:+TieredCompilation -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled -XX:+CMSPermGenSweepingEnabled"/>
 								<pathconvert property="plugins.jars" pathsep="${path.separator}">
 									<path refid="maven.runtime.classpath"/>
 									<map from="${project.build.directory}${file.separator}classes" to=""/>

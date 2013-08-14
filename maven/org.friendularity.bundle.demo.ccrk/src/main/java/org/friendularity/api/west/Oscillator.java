@@ -35,7 +35,7 @@ public abstract class Oscillator<OutType> {
 	// Override me to use a different computational approach.
 	protected void readDoublesIntoBuf(MathGate mathGate, double[] buffer) {
 		if (myMathExpr != null) {
-			mathGate.readDoubleVec(myMathExpr, buffer);
+			mathGate.parseAndEvalExprToDoubleVec(myMathExpr, buffer);
 		}
 	}
 	// Override me to update an OutType from a buffer

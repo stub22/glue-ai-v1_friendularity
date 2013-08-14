@@ -31,30 +31,18 @@ import org.appdapter.core.log.BasicDebugger;
  * @author Stu B. <www.texpedient.com>
  */
 
-public class MathGate extends BasicDebugger {
-	ScriptEngine	myMathEng;
+public abstract class MathGate extends BasicDebugger {
+
+	abstract  public IExpr parseAndEvalExprToIExpr(String expr);
+	abstract public void putVar(String name, Object var);
 	
-	public MathGate(ScriptEngine mathScriptEngine) {
-		myMathEng = mathScriptEngine;
-		enableTreeResults();
+	private static void registerFuncPackage(String pkgName) {
+		SystemNamespace.DEFAULT.add(pkgName);
 	}
-	public void enableTreeResults() { 
-		ScriptContext context = myMathEng.getContext();
-		// If we do this, an AST is returned.  Otherwise a String is returned.
-		context.setAttribute(MathScriptEngine.RETURN_OBJECT, Boolean.TRUE,	ScriptContext.ENGINE_SCOPE);
-	}
-	public IExpr evalToIExpr(String expr) {
-		IExpr result = null;
-		try {
-			result = (IExpr) myMathEng.eval(expr);
-		} catch (Throwable t) {
-			t.printStackTrace();
-		}
-		return result;
-	}
-	public IAST evalToIAST(String expr) {
+	
+	public IAST parseAndEvalExprToIAST(String expr) {
 		IAST result = null;
-		IExpr expResult = evalToIExpr(expr);
+		IExpr expResult = parseAndEvalExprToIExpr(expr);
 		if (expResult != null) {
 			if (expResult instanceof IAST) {
 				result = (IAST) expResult;
@@ -63,14 +51,14 @@ public class MathGate extends BasicDebugger {
 			}
 		}
 		return result;
+	} 
+	public double[] parseAndEvalExprToDoubleVec(String expr, double[] optStorageToUpdate) {
+		IAST treeResult = parseAndEvalExprToIAST(expr);
+		return writeTreeResultIntoArray(treeResult, optStorageToUpdate);
 	}
-	// 2013-08-01 - looks like up until now, our impl here has been wasteful in terms of
-	// allocating heap space.  
-	public double[] readDoubleVec(String expr, double[] optStorageToUpdate) {
+	public double[] writeTreeResultIntoArray(IAST treeResult, double[] optStorageToUpdate) {
 		double[] result = (optStorageToUpdate != null) ? optStorageToUpdate:  new double[0];
 
-		IAST treeResult = evalToIAST(expr);
-	
 		if (treeResult != null) {
 			int treeEvalFlags = treeResult.getEvalFlags();
 			ISymbol treeTypeSymbol = treeResult.topHead();
@@ -114,66 +102,5 @@ public class MathGate extends BasicDebugger {
 		return result; 
 	}
 
-	public Vector3f readVec3f(String expr) {
-		// TODO: Set up a reusable double buffer, and allow a Vector3f to be passed in for update.
-		
-		// It is OK to use an object-level buffer as long as we can truly assume single-threaded access.
-		// Otherwise we need to synchronize (which carrys a penalty) or get wacky.
-		// Also, allow pre-parsed IExpressions to be cached.
-		
-		double[] dvals = readDoubleVec(expr, null);
-		if (dvals.length == 3) {
-			return new Vector3f((float) dvals[0], (float) dvals[1], (float) dvals[2]);
-		} else {
-			return null;
-		}
-	}
-	
-	public void putVar(String name, Object var) {
-		myMathEng.put(name, var);
-	}
 
-	private static void registerFuncPackage(String pkgName) {
-		SystemNamespace.DEFAULT.add(pkgName);
-	}	
 }
-/**
- * MathScriptEngine.java
- * public Object eval(final String script, final ScriptContext context) throws ScriptException {
- *              final ArrayList<ISymbol> list = new ArrayList<ISymbol>();
-                try {
-                        // first assign the EvalEngine to the current thread:
-                        fUtility.startRequest();
-
-                        final Bindings bindings = context.getBindings(ScriptContext.ENGINE_SCOPE);
-                        ISymbol symbol;
-                        for (Map.Entry<String, Object> currEntry : bindings.entrySet()) {
-                                symbol = F.$s(currEntry.getKey());
-                                symbol.pushLocalVariable(Object2Expr.CONST.convert(currEntry.getValue()));
-                                list.add(symbol);
-                        }
-
-                        // evaluate an expression
-                        final Object stepwise = get("STEPWISE");
-                        IExpr result;
-                        if (Boolean.TRUE.equals(stepwise)) {
-                                result = fUtility.evalTrace(script, null, F.List());
-                        } else {
-                                result = fUtility.evaluate(script);
-                        }
-                        final Object returnType = context.getAttribute("RETURN_OBJECT");
-                        if ((returnType != null) && returnType.equals(Boolean.TRUE)) {
-                                // return the object "as is"
-                                return result;
-                        } else {
-                                // return the object as String representation
-                                if (result.equals(F.Null)) {
-                                        return "";
-                                }
-                                final StringBufferWriter buf = new StringBufferWriter();
-                                OutputFormFactory.get().convert(buf, result);
-                                // print the result in the console
-                                return buf.toString();
-                        }
-
- */

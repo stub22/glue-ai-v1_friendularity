@@ -72,7 +72,8 @@ object RespirationTest extends BasicDebugger {
 		val mathMCI : ModelClient = new ModelClientImpl(mathGraph);
 		println("Fetched math model: " + mathGraph);
 		val msf = new MathSpaceFactory();
-		val mg : MathGate = msf.makeMathEngine();
+		// val mg : MathGate = msf.makeScriptedMathGate();
+		val mg : MathGate = msf.makeUnscriptedMathGate();
 		
 		val eq1_QN = "hevi:test_01"
 		val eq1_Item = mathMCI.makeItemForQName(eq1_QN);
@@ -83,7 +84,7 @@ object RespirationTest extends BasicDebugger {
 		val eq1_expr = eq1_Item.getValString(exprProp_ID, "NOT_FOUND")
 		println("Got eq1_expr : " + eq1_expr)
 		
-		val outDoubleVec : Array[Double] = mg.readDoubleVec(eq1_expr, null)
+		val outDoubleVec : Array[Double] = mg.parseAndEvalExprToDoubleVec(eq1_expr, null)
 		
 		println("Math-eval produced array: " + outDoubleVec.deep) 
 		
@@ -94,7 +95,7 @@ object RespirationTest extends BasicDebugger {
 		val eq2_expr = eq2_Item.getValString(exprProp_ID, "{-1.0}")
 		println("Got eq2_expr : " + eq2_expr)
 		
-		val outDoubleVec2 : Array[Double] = mg.readDoubleVec(eq2_expr, null)
+		val outDoubleVec2 : Array[Double] = mg.parseAndEvalExprToDoubleVec(eq2_expr, null)
 		
 		println("Math-eval produced array: " + outDoubleVec2.deep) 
 		// val exprPropQN = "hev:expr"
@@ -140,7 +141,7 @@ import org.friendularity.api.west.{ThingEstimate, WorldEstimate, WorldEstimateRe
 		// werm.setupVisualizer(null, null, null);
 		// Needs to be done at least once for the selfEstim to exist.
 		val msf : MathSpaceFactory = new  MathSpaceFactory();
-		val mg : MathGate = msf.makeMathEngine();
+		val mg : MathGate = msf.makeScriptedMathGate();
 		werm.setMathGate(mg);
 		val worldEstimID : Ident  = new FreeIdent(WorldEstimate.ESTIM_NS + "world_estim_77");
 		val west : WorldEstimate  = new WorldEstimate(worldEstimID);
@@ -151,7 +152,7 @@ import org.friendularity.api.west.{ThingEstimate, WorldEstimate, WorldEstimateRe
 	}
 	def testDoubleVecFetch() : Unit = {
 		val msf : MathSpaceFactory = new  MathSpaceFactory();
-		val mg : MathGate = msf.makeMathEngine();
+		val mg : MathGate = msf.makeScriptedMathGate();
 		// for difference implied by the "new" in this case, see:
 		// http://stackoverflow.com/questions/2700175/scala-array-constructor
 		val tgtArray = new Array[Double](4)
@@ -162,7 +163,7 @@ import org.friendularity.api.west.{ThingEstimate, WorldEstimate, WorldEstimateRe
 			val oneMillion = 1000000
 			val fullExpr = "" + idx + " * " + baseExpr;
 			for (jdx <- 0 to oneMillion) {
-				val dvec : Array[Double] = mg.readDoubleVec(fullExpr, tgtArray);
+				val dvec : Array[Double] = mg.parseAndEvalExprToDoubleVec(fullExpr, tgtArray);
 				lastDvec = dvec;
 			}
 			println("Loop # " + idx + " produced " + lastDvec.deep)
