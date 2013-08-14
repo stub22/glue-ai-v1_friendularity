@@ -122,7 +122,8 @@ public class CCRK_DemoActivator extends BundleActivatorBase {
 		werm.setupVisualizer(null, null, null);
 		// Needs to be done at least once for the selfEstim to exist.
 		MathSpaceFactory msf = new MathSpaceFactory();
-		MathGate mg = msf.makeMathEngine();
+		// MathGate mg = msf.makeScriptedMathGate();
+		MathGate mg = msf.makeUnscriptedMathGate();
 		werm.setMathGate(mg);
 		Ident worldEstimID = new FreeIdent(WorldEstimate.ESTIM_NS + "world_estim_31");
 		WorldEstimate we = new WorldEstimate(worldEstimID);

@@ -45,9 +45,14 @@ public class MathSpaceFactory {
 		Config.SERVER_MODE = true;
 		myEngineManager.registerEngineName(ENGINE_FACTORY_NAME, mseFactory);
 	}
-	public MathGate makeMathEngine() { 
+	public MathGate makeScriptedMathGate() { 
 		ScriptEngine engine = myEngineManager.getEngineByName(ENGINE_FACTORY_NAME);
-		MathGate mg = new MathGate(engine);
+		MathGate mg = new MathGateScripted(engine);
 		return mg;
 	}
+	public MathGate makeUnscriptedMathGate() { 
+		MathGate mg = new MathGateUnscripted();
+		return mg;
+	}
+	
 }
