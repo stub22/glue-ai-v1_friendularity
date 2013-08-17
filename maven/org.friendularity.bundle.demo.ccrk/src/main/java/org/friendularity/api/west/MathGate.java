@@ -64,8 +64,8 @@ public abstract class MathGate extends BasicDebugger {
 			ISymbol treeTypeSymbol = treeResult.topHead();
 			int  typeSymAttribs = treeTypeSymbol.getAttributes();
 			int iastSize = treeResult.size();
-		//	logInfo("treeSize=" + iastSize + ", treeTypeSymbol= " + treeTypeSymbol + ", attribs=" + Integer.toHexString(typeSymAttribs) + 
-		//				", evalFlags=" + Integer.toHexString(treeEvalFlags) + ", treeResult=" + treeResult);
+			// logInfo("treeSize=" + iastSize + ", treeTypeSymbol= " + treeTypeSymbol + ", attribs=" + Integer.toHexString(typeSymAttribs) + 
+			// 			", evalFlags=" + Integer.toHexString(treeEvalFlags) + ", treeResult=" + treeResult);
 			if (treeResult.isList()) {
 				if (iastSize > 1) {
 					// Start by assuming all the vals are always double-convertible.

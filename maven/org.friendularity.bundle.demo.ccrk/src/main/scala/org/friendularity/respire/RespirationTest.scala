@@ -51,7 +51,7 @@ object RespirationTest extends BasicDebugger {
 		
 		//testWermCalcs();
 		
-		// testDoubleVecFetch();
+		testDoubleVecFetch();
 	}
 	def testRespiration() : Unit = {
 		getLogger().info("Why hello there!  Yes, respiration is the order of the hour...")
@@ -152,15 +152,15 @@ import org.friendularity.api.west.{ThingEstimate, WorldEstimate, WorldEstimateRe
 	}
 	def testDoubleVecFetch() : Unit = {
 		val msf : MathSpaceFactory = new  MathSpaceFactory();
-		val mg : MathGate = msf.makeScriptedMathGate();
+		val mg : MathGate = msf.makeUnscriptedMathGate();
 		// for difference implied by the "new" in this case, see:
 		// http://stackoverflow.com/questions/2700175/scala-array-constructor
 		val tgtArray = new Array[Double](4)
 		val baseExpr = "{-4.0, 3.0, -2.0, 1.0}";
 		val oneHundred = 100
-		for (idx <- 0 to oneHundred) {
+		for (idx <- 1 to oneHundred) {
 			var lastDvec : Array[Double] = new Array[Double](0)
-			val oneMillion = 1000000
+			val oneMillion = 3 //  1000000
 			val fullExpr = "" + idx + " * " + baseExpr;
 			for (jdx <- 0 to oneMillion) {
 				val dvec : Array[Double] = mg.parseAndEvalExprToDoubleVec(fullExpr, tgtArray);

@@ -13,6 +13,7 @@ import org.appdapter.core.matdat.RepoSpec;
 import org.appdapter.core.matdat.OnlineSheetRepoSpec;
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
+import org.appdapter.gui.demo.DemoBrowser;
 import org.cogchar.bundle.app.puma.PumaAppUtils;
 import org.friendularity.api.west.MathSpaceFactory;
 import org.friendularity.api.west.MathGate;
@@ -131,6 +132,9 @@ public class CCRK_DemoActivator extends BundleActivatorBase {
 		Robot.Id optRobotID_elseAllRobots = null;		
 		startMotionComputers(bundleCtx, optRobotID_elseAllRobots, we);	
 		startVisionMonitors();
+		
+		DemoBrowser.showObject("werm-MG", mg, false, false); // true, true);
+		DemoBrowser.showObject("amazingly accurate estimate", we, false, false);
 		
 	}
 	/**

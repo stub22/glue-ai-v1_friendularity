@@ -237,8 +237,24 @@
 						<version>1.6</version>
 						<configuration>
 							<target>
-								<!-- Friendularity custom :  Note the log4j.debug flag -->
-								<property name="vm.args" value="-Dlog4j.debug -XX:MaxHeapSize=256M -XX:PermSize=192M -XX:+TieredCompilation -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled -XX:+CMSPermGenSweepingEnabled"/>
+								<!-- Friendularity custom :  Note the log4j.debug flag
+					
+					-XX:+PrintGCTimestamps  
+					-XX:+PrintGCTimeStamps
+									-XX:+PrintGCDetails -XX:+PrintTenuringDistribution -XX:+PrintGCTimestamps
+-XX:MaxHeapSize=256M -XX:PermSize=192M 
+-XX:+TieredCompilation 
+-XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode
+-XX:+CMSClassUnloadingEnabled -XX:+CMSPermGenSweepingEnabled
+
+-XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:CMSInitiatingOccupancyFraction=60 -XX:CMSIncrementalSafetyFactor=30
+-XX:+CMSClassUnloadingEnabled -XX:+CMSPermGenSweepingEnabled
+-XX:+PrintGCDetails -XX:+PrintTenuringDistribution -XX:+PrintGCTimeStamps										
+								-->
+								<property name="vm.args" value="-Dlog4j.debug 
+-XX:MaxHeapSize=128M -XX:PermSize=192M 
+-XX:+TieredCompilation -XX:+UseConcMarkSweepGC 
+"/>
 								<pathconvert property="plugins.jars" pathsep="${path.separator}">
 									<path refid="maven.runtime.classpath"/>
 									<map from="${project.build.directory}${file.separator}classes" to=""/>
