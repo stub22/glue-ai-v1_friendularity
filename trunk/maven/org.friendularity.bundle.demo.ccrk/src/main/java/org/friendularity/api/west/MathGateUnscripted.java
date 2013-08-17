@@ -45,6 +45,7 @@ public class MathGateUnscripted extends MathGate {
 		// Symja comment:   get the thread local evaluation engine
 		myEvalEngine = new EvalEngine();
 		// engine.setIterationLimit(10);
+		// The "false" controls some MathML prefixing behavior that we probably don't care about 
 		myEvalUtilityWrapper = new EvalUtilities(myEvalEngine, false);
 	}
 
