@@ -69,36 +69,45 @@ public class JVisionEngine extends BasicDebugger implements Runnable {
 
 	public boolean connect() {
 
-		myFilterSeq = new FilterSequence();
+		boolean connectedFlag = false;
+		try {
 
-		getLogger().info("Opening native library handle for OpenCV " + Core.VERSION);
-		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-		Mat m = Mat.eye(3, 3, CvType.CV_8UC1);
-		getLogger().info("m = " + m.dump());
+			myFilterSeq = new FilterSequence();
 
-		// testWithSomeDuckFiles();
+			getLogger().info("Opening native library handle for OpenCV " + Core.VERSION);
+			System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+			Mat m = Mat.eye(3, 3, CvType.CV_8UC1);
+			getLogger().info("m = " + m.dump());
 
-		myVidCapture = new VideoCapture();
+			// testWithSomeDuckFiles();
 
-		getLogger().info("Opening vidCapture stream");
-		if (!myVidCapture.open(0)) {
-			getLogger().error("Failed to open vidCapture stream");
-			myVidCapture = null;
-			return false;
+			myVidCapture = new VideoCapture();
+
+			getLogger().info("Opening vidCapture stream");
+			if (!myVidCapture.open(0)) {
+				getLogger().error("Failed to open vidCapture stream");
+				myVidCapture = null;
+				return false;
+			}
+
+			double w = myVidCapture.get(Highgui.CV_CAP_PROP_FRAME_WIDTH);
+			double h = myVidCapture.get(Highgui.CV_CAP_PROP_FRAME_HEIGHT);
+
+			System.out.println(Double.toString(w));
+
+			myCameraImage_Mat = new Mat();
+			connectedFlag = true;
+		} catch (Throwable t) {
+			getLogger().error("Problem connecting JVisionEngine: ", t);
 		}
-
-		double w = myVidCapture.get(Highgui.CV_CAP_PROP_FRAME_WIDTH);
-		double h = myVidCapture.get(Highgui.CV_CAP_PROP_FRAME_HEIGHT);
-
-		System.out.println(Double.toString(w));
-
-		myCameraImage_Mat = new Mat();
-
-		return true;
+		return connectedFlag;
 
 	}
 
 	// Without "synchronized", we are vulnerable to crash if displayerList modified during loop below.
+	// Note that this method allows OpenCV exceptions to escape, such as 
+	//	  Unknown exception in JNI code {Mat::n_1copyTo__JJ()} at org.opencv.core.Mat.n_copyTo(Native Method)
+	
 	public synchronized void processOneFrame() {
 		VideoCapture vc = myVidCapture;
 		if (!vc.read(myCameraImage_Mat)) {
@@ -112,12 +121,12 @@ public class JVisionEngine extends BasicDebugger implements Runnable {
 		BufferedImage frame_as_buffered_image = null;
 
 		// This loop expects that displayerList is not modified while it is running.
-		// Before "synchronized", we sometimes get during startup:
+		// Without "synchronized" on our processOneFrame method signature, we sometimes get, during startup:
 		/*
-     [java] Exception in thread "Thread-3" java.util.ConcurrentModificationException
-     [java] 	at java.util.AbstractList$Itr.checkForComodification(AbstractList.java:372)
-     [java] 	at java.util.AbstractList$Itr.next(AbstractList.java:343)
-     [java] 	at org.friendularity.jvision.engine.JVisionEngine.processOneFrame(JVisionEngine.java:113)
+		 [java] Exception in thread "Thread-3" java.util.ConcurrentModificationException
+		 [java] 	at java.util.AbstractList$Itr.checkForComodification(AbstractList.java:372)
+		 [java] 	at java.util.AbstractList$Itr.next(AbstractList.java:343)
+		 [java] 	at org.friendularity.jvision.engine.JVisionEngine.processOneFrame(JVisionEngine.java:113)
 		 */
 		for (Iterator<Displayer> i = myDisplayerList.iterator(); i.hasNext();) {
 			if (frame_as_buffered_image == null) {
@@ -199,11 +208,33 @@ public class JVisionEngine extends BasicDebugger implements Runnable {
 
 	@Override
 	public void run() {
+
 		if (myQuitter != null) {
+			int MAX_ERRORS_ALLOWED = 100;
+			int errorCount = 0;
+			int framesProcessedCount = 0;
 			getLogger().info("JVision Engine beginning frame processing loop");
 			while (!myQuitter.wantsToQuit()) {
 				// TODO:  Every N frames increment k, and print a "processed k*N frames so far" message at info() level.
-				processOneFrame();
+				try {
+					processOneFrame();
+					framesProcessedCount++;
+					if (framesProcessedCount % 1000 == 0) {
+						getLogger().info("JVision system has now processed {} frames, and caught {} errors.", framesProcessedCount, errorCount);
+					}
+				} catch (Throwable t) {
+					errorCount++;
+					// TODO : set a "quit-reason" so outer layers can decide whether to try restart.
+					getLogger().error("Exception # " + errorCount + " (out of " + MAX_ERRORS_ALLOWED + " allowed) caught during processOneFrame", t);
+					if (t instanceof InterruptedException) {
+						getLogger().warn("JVision run() got InterruptedException, run loop will quit.");
+						myQuitter.setWantsToQuit(true);
+					}
+					if (errorCount >= MAX_ERRORS_ALLOWED) {
+						getLogger().warn("JVision run() error count is now {}, run loop will quit.", errorCount);
+						myQuitter.setWantsToQuit(true);
+					}
+				}
 			}
 			getLogger().info("Quitter asked us to end the processing loop");
 		} else {
