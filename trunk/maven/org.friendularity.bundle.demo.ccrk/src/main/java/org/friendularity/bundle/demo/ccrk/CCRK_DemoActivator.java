@@ -14,6 +14,8 @@ import org.appdapter.core.matdat.OnlineSheetRepoSpec;
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
 import org.appdapter.gui.demo.DemoBrowser;
+import org.appdapter.help.repo.RepoClient;
+import org.cogchar.app.puma.boot.PumaAppContext;
 import org.cogchar.bundle.app.puma.PumaAppUtils;
 import org.friendularity.api.west.MathSpaceFactory;
 import org.friendularity.api.west.MathGate;
@@ -110,12 +112,18 @@ public class CCRK_DemoActivator extends BundleActivatorBase {
 	private void startPumaDemo(BundleContext bundleCtx) {
 		PumaBooter pumaBooter = new PumaBooter();
 		PumaContextMediator mediator = PumaGlobalPrebootInjector.getTheInjector().getMediator();
+		
 		PumaBooter.BootResult bootResult = pumaBooter.bootUnderOSGi(bundleCtx, mediator);
 		getLogger().info("Got PUMA BootResult: " + bootResult);
 		// TODO:  Pay attention to {the set of relevant charIDs and component configs}, as we set up these
 		// motionComputer + estimateVisualizer components.
 		
-
+		// Cheaters context is used only for our demo-specific debugging features.
+		// If another mediator took over instead, then we won't try to "cheat" to make those debugging features run.
+		PumaAppContext localDemoCheatersContext = null;
+		if (mediator instanceof DemoMediator) {
+			localDemoCheatersContext = ((DemoMediator) mediator).myDemoPACtx;
+		}
 
 		// Hey, let's get some fused-sensor-data visualization going too, while we're at it!
 		WorldEstimateRenderModule werm = new WorldEstimateRenderModule();
@@ -133,9 +141,19 @@ public class CCRK_DemoActivator extends BundleActivatorBase {
 		startMotionComputers(bundleCtx, optRobotID_elseAllRobots, we);	
 		startVisionMonitors();
 		
+		setupDebuggingScaffold(mg, we);
+		
+		if (localDemoCheatersContext != null) {
+			getLogger().info("We have a cheaters Puma-App-Context, but we're not using it today");
+		}
+		
+	}
+	private void setupDebuggingScaffold(MathGate mg, WorldEstimate we) { 
 		DemoBrowser.showObject("werm-MG", mg, false, false); // true, true);
 		DemoBrowser.showObject("amazingly accurate estimate", we, false, false);
-		
+		PumaAppUtils.GreedyHandleSet greedyHandles = new PumaAppUtils.GreedyHandleSet();
+		DemoBrowser.showObject("our-greedy-handles", greedyHandles, false, false);
+		DemoBrowser.showObject("our-repo-client", greedyHandles.rc, false, false);
 	}
 	/**
 	 * 		For each joint robot, robokind.org blends all joint inputs received from RobotMoverFrameSources.
@@ -180,10 +198,15 @@ public class CCRK_DemoActivator extends BundleActivatorBase {
 		int  DFLT_NAMESPACE_SHEET_NUM = 9;
 		int   DFLT_DIRECTORY_SHEET_NUM = 8;
 		
+		public	PumaAppContext	myDemoPACtx;
+		
 		@Override public RepoSpec getMainConfigRepoSpec() {
 			java.util.List<ClassLoader> fileResModelCLs = new java.util.ArrayList<ClassLoader>();
 			return new OnlineSheetRepoSpec(TEST_REPO_SHEET_KEY, DFLT_NAMESPACE_SHEET_NUM, DFLT_DIRECTORY_SHEET_NUM,
 							fileResModelCLs);
+		}
+		@Override public void notifyBeforeBootComplete(PumaAppContext ctx) throws Throwable {
+			myDemoPACtx = ctx;
 		}
 	}	
 
