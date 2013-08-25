@@ -136,7 +136,7 @@ public class DemoFrame extends JFrame implements WindowListener, Displayer {
 		menu = new JMenu("File");
 		menu.setMnemonic(KeyEvent.VK_F);
 		myMenuBar.add(menu);
-
+    
 		//a group of JMenuItems
 		menuItem = new JMenuItem("Quit", KeyEvent.VK_Q);
 		menuItem.addActionListener(new ActionListener(){
