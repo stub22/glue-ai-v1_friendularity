@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.friendularity.api.west;
+package org.friendularity.math.api;
 
 import javax.script.ScriptContext;
 import javax.script.ScriptEngine;

@@ -17,8 +17,8 @@ import org.appdapter.gui.demo.DemoBrowser;
 import org.appdapter.help.repo.RepoClient;
 import org.cogchar.app.puma.boot.PumaAppContext;
 import org.cogchar.bundle.app.puma.PumaAppUtils;
-import org.friendularity.api.west.MathSpaceFactory;
-import org.friendularity.api.west.MathGate;
+import org.friendularity.math.api.MathSpaceFactory;
+import org.friendularity.math.api.MathGate;
 import org.friendularity.api.west.ThingEstimate;
 import org.friendularity.api.west.WorldEstimate;
 import org.friendularity.api.west.WorldEstimateRenderModule;
@@ -94,9 +94,11 @@ public class CCRK_DemoActivator extends BundleActivatorBase {
      [java] 	at org.friendularity.bundle.demo.ccrk.CCRK_DemoActivator.start(CCRK_DemoActivator.java:63)
 **/
 	}
+	/** Not currently needed
 	protected void startWhackamoleGuiWindow(final BundleContext context) {
 		org.cogchar.impl.trigger.Whackamole.launchWhackamoleGui(null);
 	}
+	*/
 	@Override protected void handleFrameworkStartedEvent(BundleContext bundleCtx) {
 		getLogger().info("Calling startPumaDemo()");
 		startPumaDemo(bundleCtx);

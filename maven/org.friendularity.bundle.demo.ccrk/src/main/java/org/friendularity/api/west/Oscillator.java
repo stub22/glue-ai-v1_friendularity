@@ -15,6 +15,8 @@
  */
 package org.friendularity.api.west;
 
+import org.friendularity.math.api.MathGate;
+
 /**
  *
  * @author Stu B. <www.texpedient.com>

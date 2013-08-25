@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.friendularity.api.west;
+package org.friendularity.math.api;
 
 import java.util.ArrayList;
 import java.util.HashMap;

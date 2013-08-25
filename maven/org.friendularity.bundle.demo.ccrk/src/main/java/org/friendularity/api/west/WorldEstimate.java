@@ -15,6 +15,7 @@
  */
 package org.friendularity.api.west;
 
+import org.friendularity.math.api.MathGate;
 import org.friendularity.api.goody.ShapeAnimator;
 import org.friendularity.api.goody.VizShape;
 import java.util.HashSet;

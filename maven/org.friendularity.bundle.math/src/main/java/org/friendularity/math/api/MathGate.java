@@ -14,11 +14,8 @@
  *  limitations under the License.
  */
 
-package org.friendularity.api.west;
-import com.jme3.math.Vector3f;
-import javax.script.ScriptContext;
-import javax.script.ScriptEngine;
-import org.matheclipse.script.engine.MathScriptEngine;
+package org.friendularity.math.api;
+
 import org.matheclipse.core.eval.SystemNamespace;
 import org.matheclipse.core.interfaces.IAST;
 import org.matheclipse.core.interfaces.IExpr;
