@@ -14,9 +14,24 @@ public class JVisionBundleActivator  extends BundleActivatorBase {
 		forceLog4jConfig();
 		// Print some howdys
 		super.start(context);		
-		
-		// TODO:  Check that our Java version is at least Java 1.6 update-32, and print warnings otherwise!
+    
+    // How to get the cmd line args if we need them
+		// String[] args = (String[])context.getArguments().get("application.args");
+    
+		// Check that our Java version is at least Java 1.6 update-32
 		// Versions at u25 and earlier fail with a "can't find native-library" error.
+    // 1.6.0_32
+    String version = System.getProperty("java.version");
+    
+    if (version == null)
+    {
+        getLogger().error("Cannot determine java version, we need 1.6.0_32, will try to run anyway");
+    } else if (!version.equals("1.6.0_32"))
+    {
+        getLogger().warn("Java version is not 1.6.0_32, Versions at u25 and " + 
+           "earlier fail with a \"can't find native-library\" error.");
+    }
+    
 		boolean flag_stopOSGiAfterQuitCompletes = true;
 		myLauncher = new JVisionLauncher(flag_stopOSGiAfterQuitCompletes);
 		boolean launchedOK = myLauncher.attemptInit();
