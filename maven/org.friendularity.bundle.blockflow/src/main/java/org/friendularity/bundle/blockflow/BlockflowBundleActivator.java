@@ -13,7 +13,6 @@ public class BlockflowBundleActivator extends BundleActivatorBase {
 
     @Override public void start(BundleContext context) throws Exception {
 		// We assume another bundle (e.g. JVision) will configure the SLF4J+Log4J logging system.
-		
 		// Print some howdys
 		super.start(context);		
 		getLogger().info("BlockFlow bundle postponing initialization until other OSGi bundles fully started.");

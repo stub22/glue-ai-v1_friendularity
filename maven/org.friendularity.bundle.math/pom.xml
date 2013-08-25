@@ -14,6 +14,18 @@
 
 
     <dependencies>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+            <version>4.3.0</version>
+            <scope>provided</scope>
+        </dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.5</version>
+		</dependency>			
+		
 		<dependency>
 			<groupId>org.appdapter</groupId>
 			<artifactId>ext.bundle.math.symja_jas</artifactId>
@@ -24,12 +36,8 @@
 			<artifactId>org.appdapter.bundle.core</artifactId>
 			<version>${appdapter.version}</version>
 		</dependency>
-		<!-- Our test programs want a "full" logging setup, at present -->
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>1.7.5</version>
-		</dependency>		
+					
+	
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
@@ -49,13 +57,7 @@
 			<artifactId>com.springsource.org.apache.log4j</artifactId>
 			<version>1.2.16</version>
 			<scope>compile</scope>			
-		</dependency>						
-        <dependency>
-            <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.core</artifactId>
-            <version>4.3.0</version>
-            <scope>provided</scope>
-        </dependency>
+		</dependency>			
     </dependencies>
 
     <build>
@@ -68,7 +70,8 @@
                 <configuration>
                     <instructions>
                         <Bundle-Activator>org.friendularity.bundle.math.Activator</Bundle-Activator>
-                        <Export-Package/>
+						<Export-Package>org.friendularity.math.*</Export-Package>
+                        
                     </instructions>
                 </configuration>
             </plugin>
@@ -187,6 +190,19 @@
                                     <entry key="felix.auto.deploy.action" value="uninstall,install,update,start"/>
                                     <entry key="org.osgi.framework.storage" value="${project.build.directory}${file.separator}felix-cache"/>
                                     <entry key="org.osgi.framework.bootdelegation" value="*"/>
+									<!-- Friendularity customizations : 
+										1) Allow sun.misc package to be used by LWJGL.
+										2) org.w3c.dom.* are wanteed by Jena (+?), and are missing from 
+											default.properties in felix 4.2.1, tho	they are present in 3.0.7 -->
+									<entry key="org.osgi.framework.system.packages.extra" 
+                                           value="sun.misc,
+                                                    org.w3c.dom.css,
+                                                    org.w3c.dom.html,
+                                                    org.w3c.dom.stylesheets,
+                                                    org.w3c.dom.traversal,
+                                                    org.w3c.dom.ranges,
+                                                    org.w3c.dom.views,
+                                                    org.w3c.dom.xpath" />									
                                 </propertyfile>
                                 <makeurl property="run.properties.url" file="${project.build.directory}/run.properties"/>
                                 <java fork="true" jar="${maven.dependency.org.apache.felix.org.apache.felix.main.jar.path}">
