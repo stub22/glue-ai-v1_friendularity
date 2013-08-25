@@ -171,6 +171,7 @@ public class JVisionEngine extends BasicDebugger implements Runnable {
 			bgr.get(0, 0, b);
 
 			for (int y = 0; y < height; y++) {
+  
 				for (int x = 0; x < width; x++) {
 
 					raster.setSample(x, y, 0, b[x + y * width]);
@@ -193,8 +194,13 @@ public class JVisionEngine extends BasicDebugger implements Runnable {
 				int base = y * width * channels;
 
 				for (int x = 0; x < width; x++) {
+          // This is the base of the performance issues with htis routine
+
 					// this operation is really inefficient!
 					//  bgr.get(y,x,px);
+          
+          // this can be improved further by copying back out of the array in some
+          // fancier way
 					rgb[0] = b[base + 3 * x + 2];
 					rgb[1] = b[base + 3 * x + 1];
 					rgb[2] = b[base + 3 * x];
