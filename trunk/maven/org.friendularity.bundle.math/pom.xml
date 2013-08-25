@@ -1,39 +1,55 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
-
 	<parent>
 		<groupId>org.friendularity</groupId>
 		<artifactId>org.friendularity.modules.main</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
 		<relativePath>../org.friendularity.modules.main/pom.xml</relativePath>
-	</parent>		
-    <artifactId>org.friendularity.bundle.blockflow</artifactId>
-
+	</parent>
+    <artifactId>org.friendularity.bundle.math</artifactId>
 	<packaging>bundle</packaging>
 
-	<name>${project.artifactId} - OSGi</name>	
-	
+	<name>${project.artifactId} - OSGi</name>
+
+
     <dependencies>
-		<!-- 2013-08-25 We currently inherit our logger-binding dependencies from JVision -->
 		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>org.friendularity.bundle.jvision</artifactId>
-			<version>${project.version}</version>
+			<groupId>org.appdapter</groupId>
+			<artifactId>ext.bundle.math.symja_jas</artifactId>
+			<version>${appdapter.version}</version>
 		</dependency>
-		<!-- Picks up friendu-level math prototypes, as well as underlying Appdapter, Symja, JAS -->
 		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>org.friendularity.bundle.math</artifactId>
-			<version>${project.version}</version>
+			<groupId>org.appdapter</groupId>
+			<artifactId>org.appdapter.bundle.core</artifactId>
+			<version>${appdapter.version}</version>
+		</dependency>
+		<!-- Our test programs want a "full" logging setup, at present -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.5</version>
 		</dependency>		
-		<!-- Pulls in Cogchar basics, Appdapter (incl Swing-GUI tools), Symja-Math, Jena-RDF -->
 		<dependency>
-			<groupId>org.cogchar</groupId>
-			<artifactId>org.cogchar.bundle.core</artifactId>
-			<version>${cogchar.version}</version>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.7.5</version>
+			<scope>runtime</scope>
+			<exclusions>
+				<!-- This embedded Log4J version is not OSGi friendly, so we exclude it.  -->			
+				<exclusion>
+					<artifactId>log4j</artifactId>
+					<groupId>log4j</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
+		<dependency>
+			<!-- Here is the happy Log4J bundle that we like instead of one excluded above.  -->
+			<groupId>org.apache.log4j</groupId>
+			<artifactId>com.springsource.org.apache.log4j</artifactId>
+			<version>1.2.16</version>
+			<scope>compile</scope>			
+		</dependency>						
         <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.core</artifactId>
@@ -51,7 +67,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Bundle-Activator>org.friendularity.bundle.blockflow.BlockflowBundleActivator</Bundle-Activator>
+                        <Bundle-Activator>org.friendularity.bundle.math.Activator</Bundle-Activator>
                         <Export-Package/>
                     </instructions>
                 </configuration>
@@ -171,19 +187,6 @@
                                     <entry key="felix.auto.deploy.action" value="uninstall,install,update,start"/>
                                     <entry key="org.osgi.framework.storage" value="${project.build.directory}${file.separator}felix-cache"/>
                                     <entry key="org.osgi.framework.bootdelegation" value="*"/>
-								<!-- Friendularity customizations : 
-										1) Allow sun.misc package to be used by LWJGL.
-										2) org.w3c.dom.* are wanteed by Jena (+?), and are missing from 
-											default.properties in felix 4.2.1, tho	they are present in 3.0.7 -->
-									<entry key="org.osgi.framework.system.packages.extra" 
-                                           value="sun.misc,
-                                                    org.w3c.dom.css,
-                                                    org.w3c.dom.html,
-                                                    org.w3c.dom.stylesheets,
-                                                    org.w3c.dom.traversal,
-                                                    org.w3c.dom.ranges,
-                                                    org.w3c.dom.views,
-                                                    org.w3c.dom.xpath" />									
                                 </propertyfile>
                                 <makeurl property="run.properties.url" file="${project.build.directory}/run.properties"/>
                                 <java fork="true" jar="${maven.dependency.org.apache.felix.org.apache.felix.main.jar.path}">

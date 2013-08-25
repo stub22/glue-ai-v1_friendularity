@@ -16,6 +16,7 @@
 
 package org.friendularity.api.west;
 
+import org.friendularity.math.api.MathGate;
 import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.RepoClient;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;

@@ -20,7 +20,13 @@
 			<groupId>org.robokind</groupId>
 			<artifactId>org.robokind.headless.messaging</artifactId>
 			<version>${robokind.version}</version>
-		</dependency>		
+		</dependency>
+		<!-- Picks up friendu-level math prototypes, as well as underlying Appdapter, Symja, JAS -->
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>org.friendularity.bundle.math</artifactId>
+			<version>${project.version}</version>
+		</dependency>			
 		<!--
         <dependency>
             <groupId>org.cogchar</groupId>
