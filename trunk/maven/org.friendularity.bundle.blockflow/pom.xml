@@ -28,12 +28,14 @@
 			<artifactId>org.friendularity.bundle.math</artifactId>
 			<version>${project.version}</version>
 		</dependency>		
-		<!-- Pulls in Cogchar basics, Appdapter (incl Swing-GUI tools), Symja-Math, Jena-RDF -->
+	
+		<!-- Pulls in Cogchar basics, Appdapter (incl Swing-GUI tools), Symja-Math, Jena-RDF 
 		<dependency>
 			<groupId>org.cogchar</groupId>
 			<artifactId>org.cogchar.bundle.core</artifactId>
 			<version>${cogchar.version}</version>
 		</dependency>
+		-->
         <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.core</artifactId>
