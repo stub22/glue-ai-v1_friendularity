@@ -16,11 +16,18 @@
 	<name>${project.artifactId} - OSGi</name>	
 	
     <dependencies>
+		<!-- 2013 We currently inherit our logger-binding dependencies from JVision -->
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>org.friendularity.bundle.jvision</artifactId>
 			<version>${project.version}</version>
-		</dependency>			
+		</dependency>
+
+		<dependency>
+			<groupId>org.cogchar</groupId>
+			<artifactId>org.cogchar.bundle.core</artifactId>
+			<version>${cogchar.version}</version>
+		</dependency>
         <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.core</artifactId>
@@ -158,6 +165,19 @@
                                     <entry key="felix.auto.deploy.action" value="uninstall,install,update,start"/>
                                     <entry key="org.osgi.framework.storage" value="${project.build.directory}${file.separator}felix-cache"/>
                                     <entry key="org.osgi.framework.bootdelegation" value="*"/>
+								<!-- Friendularity customizations : 
+										1) Allow sun.misc package to be used by LWJGL.
+										2) org.w3c.dom.* are wanteed by Jena (+?), and are missing from 
+											default.properties in felix 4.2.1, tho	they are present in 3.0.7 -->
+									<entry key="org.osgi.framework.system.packages.extra" 
+                                           value="sun.misc,
+                                                    org.w3c.dom.css,
+                                                    org.w3c.dom.html,
+                                                    org.w3c.dom.stylesheets,
+                                                    org.w3c.dom.traversal,
+                                                    org.w3c.dom.ranges,
+                                                    org.w3c.dom.views,
+                                                    org.w3c.dom.xpath" />									
                                 </propertyfile>
                                 <makeurl property="run.properties.url" file="${project.build.directory}/run.properties"/>
                                 <java fork="true" jar="${maven.dependency.org.apache.felix.org.apache.felix.main.jar.path}">
