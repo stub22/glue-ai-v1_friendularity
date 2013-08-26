@@ -128,13 +128,13 @@ public class JVisionEngine extends BasicDebugger implements Runnable {
 		 [java] 	at java.util.AbstractList$Itr.next(AbstractList.java:343)
 		 [java] 	at org.friendularity.jvision.engine.JVisionEngine.processOneFrame(JVisionEngine.java:113)
 		 */
+		
 		for (Iterator<Displayer> i = myDisplayerList.iterator(); i.hasNext();) {
 			if (frame_as_buffered_image == null) {
 				frame_as_buffered_image = matToBufferedImage(filtered_camera_image);
 			}
 			i.next().setDisplayedImage(frame_as_buffered_image);
 		}
-
 
 		long new_t = System.nanoTime();
 
@@ -174,7 +174,7 @@ public class JVisionEngine extends BasicDebugger implements Runnable {
   
 				for (int x = 0; x < width; x++) {
 
-					raster.setSample(x, y, 0, b[x + y * width]);
+					raster.setSample(x, y / 2 , 0, b[x + y * width]);
 				}
 			}
 		} else {
