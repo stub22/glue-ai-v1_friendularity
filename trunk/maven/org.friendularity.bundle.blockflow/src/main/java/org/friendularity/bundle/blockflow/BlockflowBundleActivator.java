@@ -33,17 +33,24 @@ public class BlockflowBundleActivator extends BundleActivatorBase {
 		getLogger().info("(unnecessarily!) launching an Appdapter-GUI debug window");
 		// This one line causes the Appdapter-Whackamole GUI to display, with firstMG added to the browse tree.
 		DemoBrowser.showObject("blockflows-first-mathgate", firstMG, false, false); 
+		quickMathDemo(firstMG);
+
+	}
+	private void quickMathDemo(MathGate mg) { 
 		// Let's make a vector math expression
-		String sillyVecExprText = "17 * {-4.0, 3, -2 / 5, 1.0}";
-		// Parse and evaluate.  Will cache the parsed expression for future re-eval (after input vars have changed),
-		// but our silly expr does not have any vars in it.
-		IExpr sillySymbolicOutput = firstMG.parseAndEvalExprToIExpr(sillyVecExprText);
+		String sillyVecExprText = "$coeff * {-4.0, 3, -2 / 5, 1.0}";
+
 		double valBuf[] = new double[4];
-		// This will eval the expr again, but will re-use what was already parsed.
-		// We could instead call firstMG.writeTreeResultIntoArray() to put the sillySymbolicOutput into a double array.
-		firstMG.parseAndEvalExprToDoubleVec(sillyVecExprText, valBuf);
-		getLogger().info("Evaluated [" + sillyVecExprText + "] to symbolic [" + sillySymbolicOutput + "] and then to doubles [" 
-					+ Arrays.toString(valBuf) + "]");
-		
+		for (int i = 0; i < 5 ; i++) {
+			mg.putVar("$coeff", i);
+			// Parse and evaluate.  MathGate instance will cache the parsed expression for future re-eval 
+			IExpr sillySymbolicOutput = mg.parseAndEvalExprToIExpr(sillyVecExprText);			
+			// This will eval the already parsed silly-expr again.
+			// We could instead call firstMG.writeTreeResultIntoArray() to put the sillySymbolicOutput into a double array.
+			mg.parseAndEvalExprToDoubleVec(sillyVecExprText, valBuf);
+
+			getLogger().info("With $coeff=" + i + ", evaluated [" + sillyVecExprText + "] to symbolic [" + sillySymbolicOutput 
+					+ "] and then to doubles [" + Arrays.toString(valBuf) + "]");
+		}		
 	}
 }
