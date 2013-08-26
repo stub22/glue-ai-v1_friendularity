@@ -169,7 +169,9 @@ public class VisionTextureMapper extends BasicDebugger implements Displayer {
   public void setDisplayedImage(BufferedImage img) {
     
     AWTLoader awtLoader = new AWTLoader();
-    Image cameraImage = awtLoader.load(img, true);
+	// CAUTION - this can alter img!
+	// nasty little suprise
+    Image cameraImage = awtLoader.load(img, false);
     Texture2D cameraTex = new Texture2D(cameraImage);
    
     mCameraMaterial.setTexture("ColorMap", cameraTex);
