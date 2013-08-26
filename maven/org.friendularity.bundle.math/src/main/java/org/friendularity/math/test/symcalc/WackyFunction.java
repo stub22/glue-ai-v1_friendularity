@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.friendularity.test.symcalc;
+package org.friendularity.math.test.symcalc;
 
 import org.matheclipse.core.eval.interfaces.AbstractFunctionEvaluator;
 import org.matheclipse.core.expression.F;
