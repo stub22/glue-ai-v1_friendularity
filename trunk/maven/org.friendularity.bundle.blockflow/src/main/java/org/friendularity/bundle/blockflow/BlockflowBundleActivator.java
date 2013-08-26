@@ -1,5 +1,6 @@
 package org.friendularity.bundle.blockflow;
 
+import java.util.Arrays;
 import org.appdapter.gui.demo.DemoBrowser;
 import org.appdapter.osgi.core.BundleActivatorBase;
 import org.friendularity.jvision.gui.JVisionLauncher;
@@ -28,13 +29,21 @@ public class BlockflowBundleActivator extends BundleActivatorBase {
 		getLogger().info("BlockFlow bundle is notified that all OSGi bundles have started.");		
 		getLogger().info("Initializing a MathSpaceFactory, and a first mathGate");
 		MathSpaceFactory msf = new MathSpaceFactory();
-		MathGate firstMathgate = msf.makeUnscriptedMathGate();
+		MathGate firstMG = msf.makeUnscriptedMathGate();
 		getLogger().info("(unnecessarily!) launching an Appdapter-GUI debug window");
-		DemoBrowser.showObject("blockflows-first-mathgate", firstMathgate, false, false); 
+		// This one line causes the Appdapter-Whackamole GUI to display, with firstMG added to the browse tree.
+		DemoBrowser.showObject("blockflows-first-mathgate", firstMG, false, false); 
+		// Let's make a vector math expression
 		String sillyVecExprText = "17 * {-4.0, 3, -2 / 5, 1.0}";
-		// Will reuse a pre-parsed version if this input string has been seen before.
-		IExpr sillySymbolicOutput = firstMathgate.parseAndEvalExprToIExpr(sillyVecExprText);
-		getLogger().info("Evaluated [" + sillyVecExprText + "] to [" + sillySymbolicOutput + "]");
+		// Parse and evaluate.  Will cache the parsed expression for future re-eval (after input vars have changed),
+		// but our silly expr does not have any vars in it.
+		IExpr sillySymbolicOutput = firstMG.parseAndEvalExprToIExpr(sillyVecExprText);
+		double valBuf[] = new double[4];
+		// This will eval the expr again, but will re-use what was already parsed.
+		// We could instead call firstMG.writeTreeResultIntoArray() to put the sillySymbolicOutput into a double array.
+		firstMG.parseAndEvalExprToDoubleVec(sillyVecExprText, valBuf);
+		getLogger().info("Evaluated [" + sillyVecExprText + "] to [" + sillySymbolicOutput + "] and then to [" 
+					+ Arrays.toString(valBuf) + "]");
 		
 	}
 }

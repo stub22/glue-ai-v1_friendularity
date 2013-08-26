@@ -26,7 +26,7 @@ public class JVisionBundleActivator extends BundleActivatorBase {
 		super.stop(context);
 	}
 	@Override protected void handleFrameworkStartedEvent(BundleContext bundleCtx) {
-		getLogger().debug("In framework callback, initialization of JVision starts now");
+		getLogger().info("In OSGi framework-started callback, initialization of JVision starting");
 		// How to get the cmd line args if we need them
 		// String[] args = (String[])context.getArguments().get("application.args");
 
@@ -45,7 +45,7 @@ public class JVisionBundleActivator extends BundleActivatorBase {
 		boolean flag_stopOSGiAfterQuitCompletes = true;
 		myLauncher = new JVisionLauncher(flag_stopOSGiAfterQuitCompletes);
 		boolean launchedOK = myLauncher.attemptInit();
-		getLogger().debug("myLauncher.attemptInit() returned: " + launchedOK);
+		getLogger().info("myLauncher.attemptInit() returned: " + launchedOK);
 	}
 
 
