@@ -22,7 +22,7 @@ import org.friendularity.math.api.MathGate;
 import org.friendularity.api.west.ThingEstimate;
 import org.friendularity.api.west.WorldEstimate;
 import org.friendularity.api.west.WorldEstimateRenderModule;
-import org.friendularity.test.symcalc.ScriptEngineExperiment;
+import org.friendularity.math.test.symcalc.ScriptEngineExperiment;
 import org.friendularity.vworld.VisionDataFeed;
 import org.robokind.api.motion.Robot;
 // import org.robokind.ui.swing.common.lifecycle.ServicesFrame;
