@@ -42,7 +42,7 @@ public class BlockflowBundleActivator extends BundleActivatorBase {
 		// This will eval the expr again, but will re-use what was already parsed.
 		// We could instead call firstMG.writeTreeResultIntoArray() to put the sillySymbolicOutput into a double array.
 		firstMG.parseAndEvalExprToDoubleVec(sillyVecExprText, valBuf);
-		getLogger().info("Evaluated [" + sillyVecExprText + "] to [" + sillySymbolicOutput + "] and then to [" 
+		getLogger().info("Evaluated [" + sillyVecExprText + "] to symbolic [" + sillySymbolicOutput + "] and then to doubles [" 
 					+ Arrays.toString(valBuf) + "]");
 		
 	}
