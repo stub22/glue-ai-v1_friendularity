@@ -28,6 +28,8 @@ import org.robokind.integration.motion_speech.VisemeMotionUtils;
 import org.rwshop.swing.common.lifecycle.ServicesFrame;
 
 public class Activator implements BundleActivator {
+    
+    public final static String SPEECH_DEFAULT_PREFIX = "speech";
 
     public void start(BundleContext context) throws Exception {
         OSGiComponentFactory factory = new OSGiComponentFactory(context);
@@ -37,7 +39,7 @@ public class Activator implements BundleActivator {
         String ipAddress = "127.0.0.1";
         String visemeConfigPath = "VisemeConf.json";
         startServiceFrame(context);
-        startSpeech(context, factory, speechConnectionConfigId, ipAddress, speechServiceId);
+        startSpeech(factory, speechConnectionConfigId, ipAddress, speechServiceId);
         startVisemes(factory, robotId, speechServiceId, visemeConfigPath);
         
         // Configure the bindings for the RemoteSpeechServiceLifecycle
@@ -137,12 +139,12 @@ public class Activator implements BundleActivator {
         });
     }
     
-    public static void startSpeech(BundleContext context, 
+    public static void startSpeech( 
             ManagedServiceFactory fact, String speechConnectConfigId, 
             String ipAddress, String speechServiceId){
         RKMessagingConfigUtils.registerConnectionConfig(
                 speechConnectConfigId, ipAddress, null, fact);
-        RemoteSpeechUtils.connect(context, speechServiceId, speechConnectConfigId);
+        RemoteSpeechUtils.connect(fact, speechServiceId, SPEECH_DEFAULT_PREFIX, speechConnectConfigId);
     }
     
     public static void startVisemes(
