@@ -22,10 +22,11 @@ public class FaceDetector implements BaseFilter {
 	static {
 		InputStream inputStream = null;
 		BufferedReader br = null;
-
+		FileWriter fw = null;
+		File outputs = null;
 		try {
-			File outputs = File.createTempFile("File", ".lbpcascade_frontalface.xml");
-			FileWriter fw = new FileWriter(outputs);
+			outputs = File.createTempFile("File", ".lbpcascade_frontalface.xml");
+			fw = new FileWriter(outputs);
 
 			// read this file into InputStream
 			inputStream = CascadeClassifier.class.getResourceAsStream("/opencv/lbpcascade/lbpcascade_frontalface.xml");
@@ -38,7 +39,7 @@ public class FaceDetector implements BaseFilter {
 			while ((line = br.readLine()) != null) {
 				fw.write(line + "\n");
 			}
-		
+			faceDetector = new CascadeClassifier(outputs.getAbsolutePath());
 			System.out.println("\nDone!");
 
 		} catch (IOException e) {
@@ -53,7 +54,7 @@ public class FaceDetector implements BaseFilter {
 			}
 			if (br != null) {
 				try {
-					br.close();
+					fw.close();
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
