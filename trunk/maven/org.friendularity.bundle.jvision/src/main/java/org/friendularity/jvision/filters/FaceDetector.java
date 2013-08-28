@@ -18,8 +18,11 @@ import org.opencv.objdetect.CascadeClassifier;
 public class FaceDetector implements BaseFilter {
 	// Create a face detector from the cascade file in the resources
 	// directory.
-	private static CascadeClassifier faceDetector;
-	static {
+	private static CascadeClassifier faceDetector = null;
+
+	void ensureTransient() {
+		if (faceDetector != null)
+			return;
 		InputStream inputStream = null;
 		BufferedReader br = null;
 		FileWriter fw = null;
@@ -39,6 +42,13 @@ public class FaceDetector implements BaseFilter {
 			while ((line = br.readLine()) != null) {
 				fw.write(line + "\n");
 			}
+			if (fw != null) {
+				try {
+					fw.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 			faceDetector = new CascadeClassifier(outputs.getAbsolutePath());
 			System.out.println("\nDone!");
 
@@ -52,27 +62,27 @@ public class FaceDetector implements BaseFilter {
 					e.printStackTrace();
 				}
 			}
-			if (br != null) {
-				try {
-					fw.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
+
 		}
 	}
 
 	@Override public void apply(Mat in, Mat out) {
-		// Detect faces in the image.
-		// MatOfRect is a special container class for Rect.
-		MatOfRect faceDetections = new MatOfRect();
-		faceDetector.detectMultiScale(in, faceDetections);
+		try {
+			ensureTransient();
+			// Detect faces in the image.
+			// MatOfRect is a special container class for Rect.
+			MatOfRect faceDetections = new MatOfRect();
+			faceDetector.detectMultiScale(in, faceDetections);
 
-		in.clone().copyTo(out);
+			in.clone().copyTo(out);
 
-		// Draw a bounding box around each face.
-		for (Rect rect : faceDetections.toArray()) {
-			Core.rectangle(out, new Point(rect.x, rect.y), new Point(rect.x + rect.width, rect.y + rect.height), new Scalar(0, 255, 0));
+			// Draw a bounding box around each face.
+			for (Rect rect : faceDetections.toArray()) {
+				Core.rectangle(out, new Point(rect.x, rect.y), new Point(rect.x + rect.width, rect.y + rect.height), new Scalar(0, 255, 0));
+			}
+		} catch (Throwable t) {
+			t.printStackTrace();
+			in.clone().copyTo(out);
 		}
 	}
 
