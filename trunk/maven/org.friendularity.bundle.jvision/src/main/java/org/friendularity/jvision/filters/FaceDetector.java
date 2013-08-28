@@ -3,6 +3,7 @@ package org.friendularity.jvision.filters;
 import java.io.*;
 import java.util.*;
 import java.io.FileWriter;
+import org.friendularity.jvision.gui.FileLocations;
 
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
@@ -15,75 +16,8 @@ import org.opencv.objdetect.CascadeClassifier;
 /*
  * blur with kernal size 5
  */
-public class FaceDetector implements BaseFilter {
-	// Create a face detector from the cascade file in the resources
-	// directory.
-	private static CascadeClassifier faceDetector = null;
-
-	void ensureTransient() {
-		if (faceDetector != null)
-			return;
-		InputStream inputStream = null;
-		BufferedReader br = null;
-		FileWriter fw = null;
-		File outputs = null;
-		try {
-			outputs = File.createTempFile("File", ".lbpcascade_frontalface.xml");
-			fw = new FileWriter(outputs);
-
-			// read this file into InputStream
-			inputStream = CascadeClassifier.class.getResourceAsStream("/opencv/lbpcascade/lbpcascade_frontalface.xml");
-
-			br = new BufferedReader(new InputStreamReader(inputStream));
-
-			StringBuilder sb = new StringBuilder();
-
-			String line;
-			while ((line = br.readLine()) != null) {
-				fw.write(line + "\n");
-			}
-			if (fw != null) {
-				try {
-					fw.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-			faceDetector = new CascadeClassifier(outputs.getAbsolutePath());
-			System.out.println("\nDone!");
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			if (inputStream != null) {
-				try {
-					inputStream.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-
-		}
+public class FaceDetector extends CascadeDetector {
+	protected FileLocations.CascadeType cascadeType() {
+		return FileLocations.CascadeType.FRONTAL_CASCADE;
 	}
-
-	@Override public void apply(Mat in, Mat out) {
-		try {
-			ensureTransient();
-			// Detect faces in the image.
-			// MatOfRect is a special container class for Rect.
-			MatOfRect faceDetections = new MatOfRect();
-			faceDetector.detectMultiScale(in, faceDetections);
-
-			in.clone().copyTo(out);
-
-			// Draw a bounding box around each face.
-			for (Rect rect : faceDetections.toArray()) {
-				Core.rectangle(out, new Point(rect.x, rect.y), new Point(rect.x + rect.width, rect.y + rect.height), new Scalar(0, 255, 0));
-			}
-		} catch (Throwable t) {
-			t.printStackTrace();
-			in.clone().copyTo(out);
-		}
-	}
-
 }
