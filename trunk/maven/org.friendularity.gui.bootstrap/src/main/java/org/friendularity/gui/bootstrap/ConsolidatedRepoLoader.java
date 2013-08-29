@@ -25,10 +25,12 @@ import org.cogchar.outer.behav.demo.RepoConnector;
 import org.osgi.framework.BundleContext;
 
 /**
+ * This repo loader simplifies the interface for repo loading, allowing a single
+ * call to load a repo regardless of its underlying type.
  *
  * @author Jason Randolph Eads <jeads362@gmail.com>
  */
-public class consolidatedRepoLoader {
+public class ConsolidatedRepoLoader {
 
     /**
      * The list of handled repo types.
@@ -37,7 +39,8 @@ public class consolidatedRepoLoader {
         GOOGLE_SHEET_REPO,
         XLSX_FILE_REPO,
         TURTLE_FILE_REPO,
-        SQL_DISK_REPO
+        SQL_DISK_REPO,
+        CSS_FILE_REPO
     };
 
     /**
@@ -136,7 +139,8 @@ public class consolidatedRepoLoader {
         
         // Connect to the repo.
         RepoConnector rc = new RepoConnector();
-        EnhancedRepoClient enhancedRepoSpec = rc.connectDemoRepoClient(repoSpec);
+        EnhancedRepoClient enhancedRepoSpec =
+                rc.connectDemoRepoClient(repoSpec);
         
         return enhancedRepoSpec;
     }
@@ -150,8 +154,13 @@ public class consolidatedRepoLoader {
     /**
      * This connects to a SQL Disk repo, given the raw data to do so.
      */
-//    private EnhancedRepoClient connectTurtleFileRepo(
+//    private EnhancedRepoClient connectSQLDiskRepo(
     
+    
+    /**
+     * This connects to a CSS File repo, given the raw data to do so.
+     */
+//    private EnhancedRepoClient connectCSSFileRepo(
     
      /**
      * This connects to a XLSX File repo, given the raw data to do so.
