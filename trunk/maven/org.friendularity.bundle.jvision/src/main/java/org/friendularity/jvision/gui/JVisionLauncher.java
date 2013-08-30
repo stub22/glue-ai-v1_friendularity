@@ -1,23 +1,9 @@
 package org.friendularity.jvision.gui;
 
-import org.friendularity.jvision.gui.FileLocations;
-import java.awt.color.ColorSpace;
-import java.awt.image.BufferedImage;
-import java.awt.image.WritableRaster;
-import java.util.ArrayList;
-import java.util.Formatter;
 import org.appdapter.core.log.BasicDebugger;
 import org.friendularity.jvision.engine.JVisionEngine;
 import org.friendularity.jvision.engine.Quitter;
 
-import org.opencv.core.Core;
-import org.opencv.core.CvType;
-import org.opencv.core.Mat;
-import org.opencv.highgui.*;
-import org.opencv.imgproc.Imgproc;
-import org.opencv.video.Video;
-import org.opencv.utils.Converters;
-import org.friendularity.jvision.gui.DemoFrame;
 import org.friendularity.jvision.filters.FilterSequence;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
