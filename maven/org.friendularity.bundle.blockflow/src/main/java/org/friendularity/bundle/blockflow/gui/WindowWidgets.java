@@ -32,6 +32,8 @@ import org.friendularity.bundle.blockflow.util.OSGi_ImageLoader;
 
 /**
  * decorator that handles the more funnified drag bar
+ * and resizers. Usually dealing with this stuff is painful
+ * in swing anyway, so why not have it exactly like we want?
  * 
  * @author Annie
  *
@@ -81,7 +83,8 @@ class WindowWidgets implements ComponentListener {
 	{
 		bfp.repaint(REPAINT_MAX_TIME, 0, 0, bfp.getWidth(), DRAG_HEIGHT);	
 		bfp.repaint(REPAINT_MAX_TIME, 0, bfp.getHeight() - RESIZER_HEIGHT, RESIZER_HEIGHT, RESIZER_WIDTH);
-		bfp.repaint(REPAINT_MAX_TIME, bfp.getWidth() - RESIZER_WIDTH, bfp.getHeight() - RESIZER_HEIGHT, RESIZER_HEIGHT, RESIZER_WIDTH);
+		bfp.repaint(REPAINT_MAX_TIME, bfp.getWidth() - RESIZER_WIDTH, bfp.getHeight() - RESIZER_HEIGHT, 
+				RESIZER_HEIGHT, RESIZER_WIDTH);
 	}
 
 	@Override
@@ -112,6 +115,8 @@ class WindowWidgets implements ComponentListener {
 		g2.drawImage(dragBarRightIcons, bfp.getWidth() - RIGHT_ICONS_WIDTH, 0, bfp);
 		g2.drawImage(leftResizer, 0, bfp.getHeight() - RESIZER_HEIGHT, bfp);
 		g2.drawImage(rightResizer, bfp.getWidth() - RESIZER_WIDTH, bfp.getHeight() - RESIZER_HEIGHT, bfp);
+		g2.setColor(Color.black);
+		g2.drawRect(0,0, bfp.getWidth() - 1, DRAG_HEIGHT);
 	}
 
 	boolean handlesMouseEvent(MouseEvent e) {
@@ -173,6 +178,8 @@ class WindowWidgets implements ComponentListener {
 
 			commanded_size = new Dimension(commanded_size.width - dx, commanded_size.height + dy);
 			bfp.beSize(commanded_size.width, commanded_size.height);
+			
+			bfp.getViewport().offsetPixels(dx, 0);
 			
 			// we now just keep the dragPoint under the last cursor pos in global
 			dragPoint.x += dx;

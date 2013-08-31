@@ -26,7 +26,11 @@ import org.friendularity.bundle.blockflow.engine.BlockflowEngine;
 import org.friendularity.bundle.blockflow.util.OSGi_ImageLoader;
 
 /**
- *
+ *   The main UI panel
+ * 
+ *  With the current UI design it's the 'only' panel visually,
+ * Though sometimes it actually has children - e.g. if you add a block with a text entry field
+ * 
  * @author Annie
  */
 class BlockflowPanel extends JPanel implements MouseListener, MouseMotionListener, MouseWheelListener {
@@ -76,7 +80,12 @@ class BlockflowPanel extends JPanel implements MouseListener, MouseMotionListene
 				g2.drawImage(theBackground, pos.x, pos.y, pos.width, pos.height, this);
 			}
 		
+		// paint the window widgets
 		myWW.paint(g2);
+		
+		// paint the border
+		g2.setColor(Color.black);
+		g2.drawRect(0, 0, this.getWidth() - 1, this.getHeight() - 1);
 	}
 
 	@Override
@@ -119,6 +128,17 @@ class BlockflowPanel extends JPanel implements MouseListener, MouseMotionListene
 		if(myWW.handlesMouseEvent(e))return;
 	}
 
+	// TODO memoize this
+	private JFrame getFrame() {
+		Container c = this;
+		
+		do
+		{
+			c = c.getParent();
+		} while(c != null && ! (c instanceof JFrame));
+
+		return (JFrame)c;
+	}
 	/**
 	 * Make the window resize so I'm this big
 	 * 
@@ -126,17 +146,7 @@ class BlockflowPanel extends JPanel implements MouseListener, MouseMotionListene
 	 * @param y 
 	 */
 	void beSize(int x, int y) {
-	//	this.setSize(x, y);
-		
-		Container c = this;
-		
-		do
-		{
-
-			c = c.getParent();
-		} while(c != null && ! (c instanceof JFrame));
-
-		((JFrame)c).setSize(x,y);
+		getFrame().setSize(x,y);
 	}
 
 	/**
@@ -146,62 +156,28 @@ class BlockflowPanel extends JPanel implements MouseListener, MouseMotionListene
 	 * @param y 
 	 */
 	void beLocation(int x, int y) {
-				
-		Container c = this;
+		Point oldLoc = getFrame().getLocation();
 		
-		do
-		{
-
-			c = c.getParent();
-		} while(c != null && ! (c instanceof JFrame));
-
-		Point oldLoc = ((JFrame)c).getLocation();
-		
-		((JFrame)c).setLocation(oldLoc.x + x, oldLoc.y + y);
+		getFrame().setLocation(oldLoc.x + x, oldLoc.y + y);
 	}
 
 	void iconize() {
-		Container c = this;
-		
-		do
-		{
-			c = c.getParent();
-		} while(c != null && ! (c instanceof JFrame));
-
-		((JFrame)c).setExtendedState(JFrame.ICONIFIED);
-		
+		getFrame().setExtendedState(JFrame.ICONIFIED);
 	}
 
 	void maximize() {	
-		Container c = this;
-		
-		do
-		{
-			c = c.getParent();
-		} while(c != null && ! (c instanceof JFrame));
-
-		((JFrame)c).setExtendedState(JFrame.MAXIMIZED_BOTH);
+		getFrame().setExtendedState(JFrame.MAXIMIZED_BOTH);
 	}
 
 	void close() {			
-		Container c = this;
-		
-		do
-		{
-			c = c.getParent();
-		} while(c != null && ! (c instanceof JFrame));
-
-		((JFrame)c).setVisible(false);
+		getFrame().setVisible(false);
 	}
 
 	void deMaximize() {
-		Container c = this;
-		
-		do
-		{
-			c = c.getParent();
-		} while(c != null && ! (c instanceof JFrame));
+		getFrame().setExtendedState(JFrame.NORMAL);
+	}
 
-		((JFrame)c).setExtendedState(JFrame.NORMAL);
+	BlockViewport getViewport() {
+		return myEngine.getViewport();
 	}
 }

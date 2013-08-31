@@ -12,8 +12,7 @@ import org.slf4j.LoggerFactory;
 /**
  *  Main frame for Blockflow
  * 
- * note - eventually the engine should have a state, that allows us to get an action delegate
- * that handles events depending on state
+ * This frame delegates most of it's behavior to BlockflowPanel
  * 
  * @author Annie
  */
@@ -26,14 +25,10 @@ public class BlockflowFrame extends JFrame implements WindowListener {
 	private	Quitter			myQuitter;
 	
 	private BlockflowPanel  mainPanel;
-	
-	private BlockflowEngine myEngine;
 
 	@SuppressWarnings("LeakingThisInConstructor")
 
 	BlockflowFrame(BlockflowEngine myEngine) {
-		
-		this.myEngine = myEngine;
 		
 		this.setSize(800, 640);
 		this.setUndecorated(true);
