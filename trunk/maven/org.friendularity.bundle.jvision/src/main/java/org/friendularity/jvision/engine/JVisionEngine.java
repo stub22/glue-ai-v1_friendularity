@@ -174,7 +174,7 @@ public class JVisionEngine extends BasicDebugger implements Runnable {
   
 				for (int x = 0; x < width; x++) {
 
-					raster.setSample(x, y / 2 , 0, b[x + y * width]);
+					raster.setSample(x, y , 0, b[x + y * width]);
 				}
 			}
 		} else {
