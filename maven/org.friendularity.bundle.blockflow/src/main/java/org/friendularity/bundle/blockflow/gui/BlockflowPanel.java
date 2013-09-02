@@ -5,6 +5,7 @@
  */
 package org.friendularity.bundle.blockflow.gui;
 
+import org.friendularity.bundle.blockflow.engine.BlockModelChangedListener;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Graphics;
@@ -33,12 +34,18 @@ import org.friendularity.bundle.blockflow.util.OSGi_ImageLoader;
  * 
  * @author Annie
  */
-class BlockflowPanel extends JPanel implements MouseListener, MouseMotionListener, MouseWheelListener {
-	BufferedImage theBackground = null;
+class BlockflowPanel extends JPanel implements 
+		MouseListener, 
+		MouseMotionListener, 
+		MouseWheelListener,
+		BlockModelChangedListener {
+	private BufferedImage theBackground = null;
 	
-	BlockflowEngine myEngine;
+	private BlockflowEngine myEngine;
 	
-	WindowWidgets myWW;
+	private WindowWidgets myWW;
+	
+	private BlockViewportController myVPController;
 	
 	public BlockflowPanel(BlockflowEngine anEngine)
 	{
@@ -46,6 +53,7 @@ class BlockflowPanel extends JPanel implements MouseListener, MouseMotionListene
 		this.setLayout(null);
 		
 		myEngine = anEngine;
+		myEngine.addView(this);
 
 		try {
 			theBackground = OSGi_ImageLoader.getDefaultImageLoader().getImageResource("/img/background.png");
@@ -55,7 +63,8 @@ class BlockflowPanel extends JPanel implements MouseListener, MouseMotionListene
 		
 		// yup, thats a leeking this - squish squish
 		myWW = new WindowWidgets(this);
-		
+		myVPController = new BlockViewportController(myEngine);
+				
 		this.addMouseListener(this);
 		this.addMouseMotionListener(this);
 		this.addMouseWheelListener(this);
@@ -126,6 +135,7 @@ class BlockflowPanel extends JPanel implements MouseListener, MouseMotionListene
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e) {
 		if(myWW.handlesMouseEvent(e))return;
+		if(myVPController.mouseWheelMoved(e))return;
 	}
 
 	// TODO memoize this
@@ -140,7 +150,7 @@ class BlockflowPanel extends JPanel implements MouseListener, MouseMotionListene
 		return (JFrame)c;
 	}
 	/**
-	 * Make the window resize so I'm this big
+	 * Make the window resize so this panel is this big
 	 * 
 	 * @param x
 	 * @param y 
@@ -161,23 +171,25 @@ class BlockflowPanel extends JPanel implements MouseListener, MouseMotionListene
 		getFrame().setLocation(oldLoc.x + x, oldLoc.y + y);
 	}
 
-	void iconize() {
-		getFrame().setExtendedState(JFrame.ICONIFIED);
-	}
-
-	void maximize() {	
-		getFrame().setExtendedState(JFrame.MAXIMIZED_BOTH);
-	}
-
 	void close() {			
 		getFrame().setVisible(false);
 	}
 
-	void deMaximize() {
-		getFrame().setExtendedState(JFrame.NORMAL);
-	}
-
 	BlockViewport getViewport() {
 		return myEngine.getViewport();
+	}
+
+	/**
+	 * Set the window state - eg if its maximized, iconified, etd
+	 * 
+	 * @param state the window extended state, as defined in JFrame
+	 */
+	void setState(int state) {
+		getFrame().setExtendedState(state);
+	}
+
+	@Override
+	public void modelChanged(BlockflowEngine engine) {
+		repaint();
 	}
 }
