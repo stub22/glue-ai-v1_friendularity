@@ -5,6 +5,7 @@
  */
 package org.friendularity.bundle.blockflow.gui;
 
+import org.friendularity.bundle.blockflow.engine.BlockishThing;
 import org.friendularity.bundle.blockflow.engine.BlockModelChangedListener;
 import java.awt.Color;
 import java.awt.Container;
@@ -40,12 +41,25 @@ class BlockflowPanel extends JPanel implements
 		MouseWheelListener,
 		BlockModelChangedListener {
 	private BufferedImage theBackground = null;
+	private BufferedImage theBackgroundSmall = null;
+	private BufferedImage theBackgroundTiny = null;
+	
+	private BufferedImage theBackgroundMarkers = null;
 	
 	private BlockflowEngine myEngine;
 	
 	private WindowWidgets myWW;
 	
 	private BlockViewportController myVPController;
+	
+	private static final int MARKER_WIDTH = 8000;
+	public static final int MARKER_HEIGHT = 3724;
+	
+	/**
+	 * max number of blocks across the viewport before we greek them out
+	 * 
+	 */
+	private static final int MAX_BKGND_TO_DRAW = 30;
 	
 	public BlockflowPanel(BlockflowEngine anEngine)
 	{
@@ -57,6 +71,9 @@ class BlockflowPanel extends JPanel implements
 
 		try {
 			theBackground = OSGi_ImageLoader.getDefaultImageLoader().getImageResource("/img/background.png");
+			theBackgroundSmall = OSGi_ImageLoader.getDefaultImageLoader().getImageResource("/img/backgroundsmall.png");
+			theBackgroundTiny = OSGi_ImageLoader.getDefaultImageLoader().getImageResource("/img/backgroundtiny.png");
+			theBackgroundMarkers = OSGi_ImageLoader.getDefaultImageLoader().getImageResource("/img/backgroundmarkers.png");
 		} catch (IOException ex) {
 			Logger.getLogger(BlockflowPanel.class.getName()).log(Level.SEVERE, "CANT FIND BACKGROUND ", ex);
 		}
@@ -71,8 +88,8 @@ class BlockflowPanel extends JPanel implements
 	}
 
 	@Override
-	public void paint(Graphics g) {
-		super.paint(g); //To change body of generated methods, choose Tools | Templates.
+	public void paintComponent(Graphics g) {
+		super.paintComponent(g); 
 		
 		Graphics2D g2 = (Graphics2D)g;
 		
@@ -82,11 +99,36 @@ class BlockflowPanel extends JPanel implements
 		Rectangle pos = new Rectangle();
 
 		// paint the background
+		BufferedImage bkgnd;
+		if(myEngine.getViewport().getZoom() < 0.5)
+			bkgnd = theBackgroundTiny;
+		else if (myEngine.getViewport().getZoom() < 1.0)
+			bkgnd = theBackgroundSmall;
+		else
+			bkgnd = theBackground;
+		
+		// omit altogether if we're zoomed out too far
+		if(r.width < MAX_BKGND_TO_DRAW)
+			for(int i = r.x ; i < r.x + r.width ; i++)
+				for(int j = r.y ; j < r.y + r.height ; j++)
+				{
+					myEngine.getViewport().blockLocation(i, j, pos);
+					g2.drawImage(bkgnd, pos.x, pos.y, pos.width, pos.height, this);
+				}
+		
+		// paint the background markers
+		myEngine.getViewport().blockLocation(0, 0, pos);
+		g2.drawImage(theBackgroundMarkers, pos.x, pos.y, 
+				(int)(myEngine.getViewport().getZoom() * MARKER_WIDTH), 
+				(int)(myEngine.getViewport().getZoom() * MARKER_HEIGHT), this);
+		
+		// paint the components
 		for(int i = r.x ; i < r.x + r.width ; i++)
 			for(int j = r.y ; j < r.y + r.height ; j++)
 			{
 				myEngine.getViewport().blockLocation(i, j, pos);
-				g2.drawImage(theBackground, pos.x, pos.y, pos.width, pos.height, this);
+				BlockishThing thing = myEngine.getModel().getThing(i, j);
+				thing.paint(g2, pos, this);
 			}
 		
 		// paint the window widgets
@@ -105,11 +147,13 @@ class BlockflowPanel extends JPanel implements
 	@Override
 	public void mousePressed(MouseEvent e) {
 		if(myWW.handlesMouseEvent(e))return;
+		if(myVPController.mousePressed(e))return;
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		if(myWW.handlesMouseEvent(e))return;
+		if(myVPController.mouseReleased(e))return;
 	}
 
 	@Override
@@ -125,6 +169,7 @@ class BlockflowPanel extends JPanel implements
 	@Override
 	public void mouseDragged(MouseEvent e) {
 		if(myWW.handlesMouseEvent(e))return;
+		if(myVPController.mouseDragged(e))return;
 	}
 
 	@Override
@@ -190,6 +235,6 @@ class BlockflowPanel extends JPanel implements
 
 	@Override
 	public void modelChanged(BlockflowEngine engine) {
-		repaint();
+		repaint(50L);
 	}
 }
