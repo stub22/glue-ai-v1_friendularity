@@ -17,17 +17,16 @@ package org.friendularity.bundle.blockflow.gui;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Event;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.MouseEvent;
-import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFrame;
 import org.friendularity.bundle.blockflow.util.OSGi_ImageLoader;
 
 /**
@@ -216,15 +215,15 @@ class WindowWidgets implements ComponentListener {
 		int from_left_of_icons = e.getX() - bfp.getWidth() + RIGHT_ICONS_WIDTH;
 		
 		if( from_left_of_icons < ICONIZE_RIGHT_EDGE)
-			bfp.iconize();
+			bfp.setState(JFrame.ICONIFIED);
 		else if (from_left_of_icons < MAXIMIZE_RIGHT_EDGE && isMaximized)
 		{
-			bfp.deMaximize();
+			bfp.setState(JFrame.NORMAL);
 			isMaximized = false;
 		}
 		else if (from_left_of_icons < MAXIMIZE_RIGHT_EDGE)
 		{
-			bfp.maximize();
+			bfp.setState(JFrame.MAXIMIZED_BOTH);
 			isMaximized = true;
 		}
 		else

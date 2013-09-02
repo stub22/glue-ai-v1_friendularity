@@ -6,6 +6,8 @@
 package org.friendularity.bundle.blockflow.gui;
 
 import java.awt.Rectangle;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * handles irrotational mapping between 'blocks' which are anisotropic AABB's 
@@ -21,24 +23,26 @@ public class BlockViewport {
 	
 	// the pixel location of the 
 	// UL corner of block 0,0
-	int pixelsOfBlockOriginX = 0;
-	int pixelsOfBlockOriginY = 0;
-	double scale = 1.0d;   // the magnication - so > 1.0 is zoomed way in
+	private int pixelsOfBlockOriginX = 0;
+	private int pixelsOfBlockOriginY = 0;
+	private double zoom = 1.0d;   // the magnication - so > 1.0 is zoomed way in
+	
+	private ArrayList<ViewListener> listenerList = new ArrayList<ViewListener>();
 	
 	private double pixelToBlockX(int pixelX) {
-		return   (pixelX - pixelsOfBlockOriginX) / (scale * BLOCK_WIDTH);
+		return   (pixelX - pixelsOfBlockOriginX) / (zoom * BLOCK_WIDTH);
 	}
 	
 	private int blockToPixelX(double blockX) {
-		return (int) (scale * BLOCK_WIDTH * blockX + pixelsOfBlockOriginX);
+		return (int) (zoom * BLOCK_WIDTH * blockX + pixelsOfBlockOriginX);
 	}
 	
 	private double pixelToBlockY(int pixelY) {
-		return   (pixelY - pixelsOfBlockOriginY) / (scale * BLOCK_HEIGHT);
+		return   (pixelY - pixelsOfBlockOriginY) / (zoom * BLOCK_HEIGHT);
 	}
 	
 	private int blockToPixelY(double blockY) {
-		return (int) (scale * BLOCK_HEIGHT * blockY + pixelsOfBlockOriginY);
+		return (int) (zoom * BLOCK_HEIGHT * blockY + pixelsOfBlockOriginY);
 	}
 	
 	/**
@@ -68,8 +72,8 @@ public class BlockViewport {
 	void blockLocation(int i, int j, Rectangle pos) {
 		pos.x = blockToPixelX(i);
 		pos.y = blockToPixelY(j);
-		pos.width = (int) Math.round(BLOCK_WIDTH * scale);
-		pos.height = (int) Math.round(BLOCK_HEIGHT * scale);
+		pos.width = (int) Math.round(BLOCK_WIDTH * zoom);
+		pos.height = (int) Math.round(BLOCK_HEIGHT * zoom);
 	}
 
 	/**
@@ -83,6 +87,28 @@ public class BlockViewport {
 	void offsetPixels(int dx, int dy) {
 		pixelsOfBlockOriginX -= dx;
 		pixelsOfBlockOriginY -= dy;
+		viewportChange();
+	}
+
+	double getZoom() {
+		return zoom;
+	}
+
+	void setZoom(double zoom) {
+		this.zoom = zoom;
+		viewportChange();
+	}
+
+	private void viewportChange() {
+		for(Iterator<ViewListener>i = listenerList.iterator() ; i.hasNext() ; )
+		{
+			i.next().viewChanged(this);
+		}
+	}
+	
+	public void addViewListener(ViewListener listens)
+	{
+		listenerList.add(listens);
 	}
 	
 }

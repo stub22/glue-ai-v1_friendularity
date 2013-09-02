@@ -9,20 +9,25 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.vocabulary.VCARD;
+import java.util.ArrayList;
+import java.util.Iterator;
 import org.friendularity.bundle.blockflow.gui.BlockViewport;
+import org.friendularity.bundle.blockflow.gui.ViewListener;
 
 /**
  *
  * @author Annie
  */
-public class BlockflowEngine {
+public class BlockflowEngine implements ViewListener {
 
 	private BlockViewport myViewport;
+	
+	private ArrayList<BlockModelChangedListener> views = new ArrayList<BlockModelChangedListener>();
 	
 	public BlockflowEngine()
 	{
 		myViewport = new BlockViewport();
-		
+		myViewport.addViewListener(this);
 		testJena();
 	}
 	
@@ -43,5 +48,17 @@ public class BlockflowEngine {
 
 		// add the property
 		 johnSmith.addProperty(VCARD.FN, fullName);
+	}
+
+	@Override
+	public void viewChanged(BlockViewport view) {
+		for(Iterator<BlockModelChangedListener>i = views.iterator() ; i.hasNext(); )
+		{
+			i.next().modelChanged(this);
+		}
+	}
+
+	public void addView(BlockModelChangedListener view) {
+		views.add(view);
 	}
 }
