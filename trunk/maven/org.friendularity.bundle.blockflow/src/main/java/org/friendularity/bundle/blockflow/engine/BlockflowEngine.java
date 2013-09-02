@@ -23,11 +23,14 @@ public class BlockflowEngine implements ViewListener {
 	private BlockViewport myViewport;
 	
 	private ArrayList<BlockModelChangedListener> views = new ArrayList<BlockModelChangedListener>();
+	private BlockflowModel myModel;
 	
 	public BlockflowEngine()
 	{
 		myViewport = new BlockViewport();
 		myViewport.addViewListener(this);
+		myModel = new BlockflowModel();
+		
 		testJena();
 	}
 	
@@ -60,5 +63,9 @@ public class BlockflowEngine implements ViewListener {
 
 	public void addView(BlockModelChangedListener view) {
 		views.add(view);
+	}
+
+	public BlockflowModel getModel() {
+		return myModel;
 	}
 }
