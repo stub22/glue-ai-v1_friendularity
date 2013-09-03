@@ -71,13 +71,14 @@ public class ServiceManagerWiring {
      * @param context The bundle context to register them in
      * @param defaultDemoRepoClient The Repo client to pull RDF data from
      * @param lifecycleDefSheetQN The QName for the lifecycle definitions
-     * @param ServiceManagerSheetQN The QName for the serviceManager definitions
+     * @param serviceManagerSheetQN The QName for the serviceManager definitions
      */
     public static List<ManagedService> loadAndRegisterSpecs(
             BundleContext context,
             EnhancedRepoClient defaultDemoRepoClient,
             String lifecycleDefSheetQN,
-            String ServiceManagerSheetQN) {
+            String serviceManagerSheetQN,
+            String mergedSheetQN) {
         
         // This list provides access to all the services created in this process
         List<ManagedService> managedServicesForServiceManagerSpecs =
@@ -88,21 +89,21 @@ public class ServiceManagerWiring {
                 loadSpecs(defaultDemoRepoClient, lifecycleDefSheetQN);
         
         // Filter and Type check the specs
-        List<ServiceLifecycleSpec> lifecycleSpecs =
-                filterSpecs(ServiceLifecycleSpec.class, lifecycleSheetSpecs);
-        
-        // Register the filtered specs
-        for( ServiceLifecycleSpec lifecycleSheetSpec : lifecycleSpecs ) {
-            ManagedService<ServiceLifecycleSpec> lifecycleSpecManagedService = 
-                    registerSpec(
-                        context, 
-                        ServiceLifecycleSpec.class, 
-                        lifecycleSheetSpec, 
-                        GROUP_KEY_FOR_LIFECYCLE_SPEC, 
-                        LIFECYCLE_GROUP_QN);
-            managedServicesForServiceManagerSpecs.add(
-                    lifecycleSpecManagedService);
-        }
+//        List<ServiceLifecycleSpec> lifecycleSpecs =
+//                filterSpecs(ServiceLifecycleSpec.class, lifecycleSheetSpecs);
+//        
+//        // Register the filtered specs
+//        for( ServiceLifecycleSpec lifecycleSheetSpec : lifecycleSpecs ) {
+//            ManagedService<ServiceLifecycleSpec> lifecycleSpecManagedService = 
+//                    registerSpec(
+//                        context, 
+//                        ServiceLifecycleSpec.class, 
+//                        lifecycleSheetSpec, 
+//                        GROUP_KEY_FOR_LIFECYCLE_SPEC, 
+//                        LIFECYCLE_GROUP_QN);
+//            managedServicesForServiceManagerSpecs.add(
+//                    lifecycleSpecManagedService);
+//        }
         
         // Now with the lifecycles registered and available, the serviceManagers
         // can be created.
@@ -110,7 +111,14 @@ public class ServiceManagerWiring {
         // Load the serviceManagers and thier components, triggering the related
         // builders
         Set<Object> serviceManagerSheetSpecs = loadSpecs(
-                defaultDemoRepoClient, ServiceManagerSheetQN);
+                defaultDemoRepoClient, serviceManagerSheetQN);
+        
+        
+        Set<Object> lifecycleSheetSpecs2 =
+                loadSpecs(defaultDemoRepoClient, mergedSheetQN);
+        
+        Set<Object> serviceManagerSheetSpecs2 = loadSpecs(
+                defaultDemoRepoClient, mergedSheetQN);
         
         // Filter and Type check the specs
         List<PropertySpec> propertySpecs =
@@ -213,10 +221,10 @@ public class ServiceManagerWiring {
             EnhancedRepoClient defaultDemoRepoClient, String graphQN) {
         // Determine the URI for the 'qualified name' which identifies the data 
         // in the repo
-        Ident graphID = defaultDemoRepoClient.makeIdentForQName(graphQN);
+//        Ident graphID = defaultDemoRepoClient.makeIdentForQName(graphQN);
         
         // Collect the objects from the repo, building them from RDF raw data
-        return defaultDemoRepoClient.assembleRootsFromNamedModel(graphID);
+        return defaultDemoRepoClient.assembleRootsFromNamedModel(graphQN);
     }
     
     /**
