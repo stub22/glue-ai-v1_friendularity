@@ -22,7 +22,7 @@ public class ServiceLifecycleSpecBuilder
     private final static String theLifecycleJavaFQCN =
             "http://www.appdapter.org/schema/box#lifecycleJavaFQCN";
     private final static String theHasDependency =
-            "http://www.appdapter.org/schema/box#hasDependency";
+            "http://www.jflux.org/service/dependency#hasDependency";
     private final static Logger theLogger =
             Logger.getLogger(ServiceLifecycleSpecBuilder.class.getName());
     
