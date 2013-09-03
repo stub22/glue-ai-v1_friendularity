@@ -11,13 +11,18 @@
 :- rdf_register_prefix(flo, 'http://www.friendularity.org/ontology/flo#').
 
 
+:- rdf_meta assert_rdf_list(o, r, r, +, r, +).
+
+
 convert(Outfile) :-
+	rdf_retractall(_, _, _),
 	setof(BlockType, Section^section(BlockType, Section), BlockTypes),
 	add_rdf(BlockTypes),
 	write_rdf(Outfile).
 
 add_rdf([]).
 add_rdf([H|T]) :-
+	writeln(H),
 	rdf_global_id(flo:H, HGlobal),
 	rdf_assert(HGlobal, rdf:type, flo:'BlockType'),
 	subsection(H, SubSection),
@@ -38,10 +43,16 @@ add_rdf([H|T]) :-
 	assert_rdf_list(HGlobal, flo:outputFor,
 			flo:outputName, OutputList,
 			flo:outputType, OutputTypeList),
-
+	(   image_name(H, ImageName) ->
+	    rdf_assert(HGlobal, flo:imageResource, literal(ImageName))
+	;
+	    true),
+	(   prototype_coordinates(H, X, Y) ->
+	    rdf_assert(HGlobal, flo:prototypeCoordinateX, literal(X)),
+	    rdf_assert(HGlobal, flo:prototypeCoordinateY, literal(Y))
+	;
+	    true),
 	add_rdf(T).
-
-:- rdf_meta assert_rdf_list(o, r, r, +, r, +).
 
 assert_rdf_list(_, _, _, [], _, _).
 assert_rdf_list(Subj, PredLinkingSubj, Type1, [required(H1)|T1], Type2, [H2|T2]) :- !,

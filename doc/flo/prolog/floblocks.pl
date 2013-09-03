@@ -195,7 +195,7 @@ visual_style(eyes,  normal).
 inputs(eyes, [required('x'), required('y')]).
 outputs(eyes, ['OL', 'OR']).
 input_types(eyes, [proportion, proportion]).
-output_types(eyes, []).
+output_types(eyes, [rgb, rgb]).
 
 
 %  ===== videoplayer ===========
@@ -206,7 +206,7 @@ visual_style(videoplayer,  visual_style7).
 inputs(videoplayer, []).
 outputs(videoplayer, ['O', 'S']).
 input_types(videoplayer, []).
-output_types(videoplayer, []).
+output_types(videoplayer, [rgb, sample]).
 
 
 %  ===== videorecord ===========

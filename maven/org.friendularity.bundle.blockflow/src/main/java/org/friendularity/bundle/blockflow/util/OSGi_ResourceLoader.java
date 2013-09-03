@@ -5,6 +5,7 @@
  */
 package org.friendularity.bundle.blockflow.util;
 
+import com.hp.hpl.jena.rdf.model.Model;
 import java.awt.Cursor;
 import java.awt.Image;
 import java.awt.Point;
@@ -16,6 +17,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import org.friendularity.bundle.blockflow.gui.BlockViewportController;
+import org.openjena.riot.Lang;
 
 /**
  *
@@ -75,5 +77,14 @@ public class OSGi_ResourceLoader {
 			Logger.getLogger(BlockViewportController.class.getName()).log(Level.SEVERE, null, ex);
 			return Cursor.getDefaultCursor();
 		}		
+	}
+
+	/**
+	 * load a 
+	 * @param model
+	 * @param resourceName 
+	 */
+	public void loadModelFromTurtleResource(Model model, String resourceName) {
+		model.read(OSGi_ResourceLoader.class.getResourceAsStream(resourceName), null, "TURTLE");
 	}
 }
