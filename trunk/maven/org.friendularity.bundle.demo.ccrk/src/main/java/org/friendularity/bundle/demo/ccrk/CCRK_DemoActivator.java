@@ -178,7 +178,7 @@ public class CCRK_DemoActivator extends BundleActivatorBase {
 				cms.addJointComputer(dmc);
 				// append a trivial Sinbad-waist-sinusoid-demo implemented in CC-Puma.  Because it acts last, it has last
 				// word, but should not unnecessarily override joint-pos from "earlier" phases=computers.
-				PumaAppUtils.startSillyMotionComputersDemoForVWorldOnly(bundleCtx, srcBotID); 		
+				// PumaAppUtils.startSillyMotionComputersDemoForVWorldOnly(bundleCtx, srcBotID); 		
 			} else {
 				getLogger().debug("Skipping Robot-ID {} because it doesn't match pattern {}", srcBotID, optRobotID_elseAllRobots);
 			}
