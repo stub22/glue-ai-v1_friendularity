@@ -13,21 +13,27 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.friendularity.bundle.blockflow.engine;
-
-import java.awt.Graphics2D;
-import java.awt.Rectangle;
-import java.awt.image.ImageObserver;
+package org.friendularity.bundle.blockflow.util;
 
 /**
- *  Anything that can occupy a cell
- * 
+ *  a bunch of utility functions for working with RDFish stuff
+ * Notably it converts a qname to a global name in our normal namespaces
+ *  
  * @author Annie
  */
-public abstract class BlockishThing {
-
-	public void paint(Graphics2D g2, Rectangle pos, ImageObserver observer) {
-		// default behavior does nothing
+public class QN {
+	public static String flo(String qname)
+	{
+		return "http://www.friendularity.org/ontology/flo#".concat(qname);
 	}
 	
+	public static String rdf(String qname)
+	{
+		return "http://www.w3.org/1999/02/22-rdf-syntax-ns#".concat(qname);
+	}
+	
+	public static String rdfs(String qname)
+	{
+		return "http://www.w3.org/2000/01/rdf-schema#".concat(qname);	
+	}
 }
