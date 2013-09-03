@@ -15,9 +15,17 @@
  */
 package org.friendularity.bundle.blockflow.gui;
 
+import java.awt.Cursor;
+import java.awt.Image;
+import java.awt.Point;
+import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.friendularity.bundle.blockflow.engine.BlockflowEngine;
+import org.friendularity.bundle.blockflow.util.OSGi_ResourceLoader;
 import org.friendularity.bundle.blockflow.util.ProportionUtils;
 
 /**
@@ -31,12 +39,18 @@ public class BlockViewportController {
 	
 	private BlockflowEngine myEngine;
 	
+	private Cursor myGrabber = null;
+	
 	private int global_drag_x;
 	private int global_drag_y;
 	
 	public BlockViewportController(BlockflowEngine engine)
 	{
 		myEngine = engine;
+		myGrabber = OSGi_ResourceLoader.getDefaultImageLoader().getCursorResource(
+				"/img/grabbercursor.png", 
+				16, 16, 
+				"RobokindGrabber");
 	}
 	
 	public boolean mouseWheelMoved(MouseWheelEvent e) {
@@ -71,6 +85,7 @@ public class BlockViewportController {
 					global_drag_y - e.getYOnScreen());
 			global_drag_x = e.getXOnScreen();
 			global_drag_y = e.getYOnScreen();
+			e.getComponent().setCursor(Cursor.getDefaultCursor());
 			return true;
 		}
 		return false;
@@ -87,6 +102,7 @@ public class BlockViewportController {
 					global_drag_y - e.getYOnScreen());
 			global_drag_x = e.getXOnScreen();
 			global_drag_y = e.getYOnScreen();
+			e.getComponent().setCursor(myGrabber);
 			return true;
 		}
 		return false;
