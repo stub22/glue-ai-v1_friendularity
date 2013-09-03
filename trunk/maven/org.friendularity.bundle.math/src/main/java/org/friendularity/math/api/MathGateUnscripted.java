@@ -53,7 +53,11 @@ public class MathGateUnscripted extends MathGate {
 		// The "false" controls some MathML prefixing behavior that we probably don't care about 
 		// myEvalUtilityWrapper = new EvalUtilities(myEvalEngine, false);
 	}
-
+/**
+ * Stores a value to be pushed when 
+ * @param name
+ * @param var 
+ */
 	@Override public void putVar(String name, Object var) {
 		myVarBindings.put(name, var);
 		int bindingMapSize = myVarBindings.size();
@@ -70,6 +74,13 @@ public class MathGateUnscripted extends MathGate {
 	// * action evaluation in this thread affects the EvalEngine in this class.		
 		
 		// myEvalUtilityWrapper.startRequest();
+		
+		// Here is the part of Symja/Matheclipse that still seems kinda weak.
+		// We are in some ways "globally" registering our current set of variables.
+		// It is not fully clear how parallel threads can independently and simultaneously
+		// use separate sets of symbols.   This issue is discussed some in the "Scripted"
+		// engine docs on Symja site, but we need to go deeper in documenting our understanding.
+		
 		evalEngineAttach();
 		
 		for (Map.Entry<String, Object> currEntry : myVarBindings.entrySet()) {

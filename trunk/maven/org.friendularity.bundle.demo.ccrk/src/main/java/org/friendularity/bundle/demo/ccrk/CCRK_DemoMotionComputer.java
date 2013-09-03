@@ -37,17 +37,26 @@ public class CCRK_DemoMotionComputer extends CogcharMotionComputer {
 		myWorldEstimate = we;
 	}
 	int sinbadJointNums[] = {
+			// WholeBody, waist, Neck + Face - these are mostly workin
 			42, 100,
 			200, 201, 202, 
 			300, 301, 
 			310, 311, 312, 
 			320, 321, 322,
+			// Arms - Some of these are workin
 			400, 401, 410, 411, 420,
 			500, 501, 510, 511, 520,
+			// Legs - appears we are gettin nuttin on these
 			600, 601, 602, 610, 620, 621,
 			700, 701, 702, 710, 720, 721
 	};
 
+	
+	
+	static int		FULL_CYCLE_LENGTH = 80;
+	static float	HALF_CYCLE_LENGTH = FULL_CYCLE_LENGTH / 2.0f;
+	static int		CYCLES_PER_BLOCK = 2;
+			
 	@Override public void notifySourceComputingCycle(CogcharMotionSource source, long currentTimeUTC, long moveLengthMilliSec) {
 		myCycleCount++;
 		Robot srcBot = source.getRobot();
@@ -65,23 +74,32 @@ public class CCRK_DemoMotionComputer extends CogcharMotionComputer {
 			int jointCount = sinbadJointNums.length;
 			// int spineJointNum = 42;
 			
+			long cycleNumber = myCycleCount / FULL_CYCLE_LENGTH;		
+			long phaseStepNumber = myCycleCount % FULL_CYCLE_LENGTH;
+			// 0.0 = first step of cycle, 2.0 = last step of cycle.  Multiply by PI to get radian angle.
+			double phase_zeroToTwo = phaseStepNumber / HALF_CYCLE_LENGTH;
+			double phaseAngleRad = Math.PI * phase_zeroToTwo;
 
-			double zeroToTwoCycle = (myCycleCount % 250) / 125.0;
-			long loopCount = myCycleCount / 250;
-			int jointIndex = (int) (loopCount / 3) % jointCount;
-			int someJointNum = sinbadJointNums[jointIndex];
+			long blockNumber = (int) (cycleNumber / CYCLES_PER_BLOCK);
+			long showStepNumber = cycleNumber % CYCLES_PER_BLOCK;
+
+			long jointIndex = blockNumber % jointCount;	
+			
+			int someJointNum = sinbadJointNums[(int) jointIndex];
 			Joint.Id someJointID = new Joint.Id(someJointNum);
 			Robot.JointId someRJID = new Robot.JointId(srcBotID, someJointID);
 			NormalizedDouble oldJPos = rpm.get(someRJID);
 			
-			NormalizedDouble nextJPos = new NormalizedDouble (0.5 + 0.5 * Math.sin(Math.PI * zeroToTwoCycle));
+			NormalizedDouble nextJPos = new NormalizedDouble (0.5 + 0.5 * Math.sin(phaseAngleRad));
 			Robot.RobotPositionHashMap goalPosMap = new Robot.RobotPositionHashMap();
 			goalPosMap.put(someRJID, nextJPos);
 			source.move(goalPosMap, moveLengthMilliSec);
-			if ((myCycleCount % 200) == 1) {
+		//	if ((myCycleCount % 200) == 1) {
+			if ((phaseStepNumber == 7) && (showStepNumber == 0)) {
 				theLogger.info("notify[cycle=" + myCycleCount + ", currentTime" + currentTimeUTC + ", moveLen="
-					+ moveLengthMilliSec + ", src=" + source + ", botID=" + srcBotID + ", joinID" + someRJID 
+					+ moveLengthMilliSec + ", src=" + source + ", botID=" + srcBotID + ", jointID" + someRJID 
 					+ ", oldJPos=" + oldJPos + ", nextJPos=" + nextJPos + ", curPosMap=" + rpm + "]");
+					
 			}
 		}		
 	}
