@@ -2,6 +2,7 @@
 package org.friendularity.connection;
 
 import java.util.List;
+import javax.swing.UIManager;
 import org.cogchar.outer.behav.demo.RepoConnector;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -9,6 +10,7 @@ import org.osgi.framework.BundleContext;
 import org.appdapter.core.matdat.*;
 import org.cogchar.platform.util.ClassLoaderUtils;
 import org.friendularity.spec.connection.ServiceManagerWiring;
+import org.rwshop.swing.common.lifecycle.ServicesFrame;
 
 /**
  * Bundle Activator for the demo connection package. This project serves as an 
@@ -27,10 +29,12 @@ public class Activator implements BundleActivator {
     private final static String LIFECYCLE_DEFINITION_GRAPH_QN =
             "csi:lifecycle_1";
 //    private final static String PIPELINE_QN = "csi:pipeline_sheet_77";
-//    private final static String MERGED_MODEL_MANAGER_QN =
-//            "csi:merged_manager_1001";
+    private final static String MERGED_MODEL_MANAGER_QN =
+            "csi:merged_manager_1001";
     
     public void start(BundleContext context) throws Exception {
+        setLookAndFeel();
+        startServicePanel(context);
         // Setup to connect to a GoogSheet repo
         List<ClassLoader> classloaders = 
                 ClassLoaderUtils.getFileResourceClassLoaders(
@@ -59,10 +63,28 @@ public class Activator implements BundleActivator {
                 context,
                 enhancedRepoSpec,
                 LIFECYCLE_DEFINITION_GRAPH_QN,
-                SERVICE_BINDING_GRAPH_QN);
+                SERVICE_BINDING_GRAPH_QN,
+                MERGED_MODEL_MANAGER_QN);
         
         //Extender listens for specs and creates objects from them
         ServiceManagerWiring.startSpecExtender(context, null);
+    }
+    private void setLookAndFeel() {
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception ex) {
+        }
+    }
+
+    private void startServicePanel(final BundleContext context) {
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                ServicesFrame sf = new ServicesFrame();
+                sf.setBundleContext(context);
+                sf.setVisible(true);
+            }
+        });
     }
     
     @Override
