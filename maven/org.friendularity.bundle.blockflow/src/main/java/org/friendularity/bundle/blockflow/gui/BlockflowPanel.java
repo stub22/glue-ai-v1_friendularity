@@ -25,7 +25,7 @@ import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import org.friendularity.bundle.blockflow.engine.BlockflowEngine;
-import org.friendularity.bundle.blockflow.util.OSGi_ImageLoader;
+import org.friendularity.bundle.blockflow.util.OSGi_ResourceLoader;
 
 /**
  *   The main UI panel
@@ -70,10 +70,10 @@ class BlockflowPanel extends JPanel implements
 		myEngine.addView(this);
 
 		try {
-			theBackground = OSGi_ImageLoader.getDefaultImageLoader().getImageResource("/img/background.png");
-			theBackgroundSmall = OSGi_ImageLoader.getDefaultImageLoader().getImageResource("/img/backgroundsmall.png");
-			theBackgroundTiny = OSGi_ImageLoader.getDefaultImageLoader().getImageResource("/img/backgroundtiny.png");
-			theBackgroundMarkers = OSGi_ImageLoader.getDefaultImageLoader().getImageResource("/img/backgroundmarkers.png");
+			theBackground = OSGi_ResourceLoader.getDefaultImageLoader().getImageResource("/img/background.png");
+			theBackgroundSmall = OSGi_ResourceLoader.getDefaultImageLoader().getImageResource("/img/backgroundsmall.png");
+			theBackgroundTiny = OSGi_ResourceLoader.getDefaultImageLoader().getImageResource("/img/backgroundtiny.png");
+			theBackgroundMarkers = OSGi_ResourceLoader.getDefaultImageLoader().getImageResource("/img/backgroundmarkers.png");
 		} catch (IOException ex) {
 			Logger.getLogger(BlockflowPanel.class.getName()).log(Level.SEVERE, "CANT FIND BACKGROUND ", ex);
 		}

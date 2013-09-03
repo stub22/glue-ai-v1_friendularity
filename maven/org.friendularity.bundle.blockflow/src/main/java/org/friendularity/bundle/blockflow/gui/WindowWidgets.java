@@ -27,7 +27,7 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
-import org.friendularity.bundle.blockflow.util.OSGi_ImageLoader;
+import org.friendularity.bundle.blockflow.util.OSGi_ResourceLoader;
 
 /**
  * decorator that handles the more funnified drag bar
@@ -69,10 +69,10 @@ class WindowWidgets implements ComponentListener {
 		bfp.addComponentListener(this);
 		
 		try {
-			dragBar = OSGi_ImageLoader.getDefaultImageLoader().getImageResource("/img/dragbar.png");
-			dragBarRightIcons = OSGi_ImageLoader.getDefaultImageLoader().getImageResource("/img/righticons.png");
-			leftResizer = OSGi_ImageLoader.getDefaultImageLoader().getImageResource("/img/leftresizer.png");
-			rightResizer = OSGi_ImageLoader.getDefaultImageLoader().getImageResource("/img/rightresizer.png");
+			dragBar = OSGi_ResourceLoader.getDefaultImageLoader().getImageResource("/img/dragbar.png");
+			dragBarRightIcons = OSGi_ResourceLoader.getDefaultImageLoader().getImageResource("/img/righticons.png");
+			leftResizer = OSGi_ResourceLoader.getDefaultImageLoader().getImageResource("/img/leftresizer.png");
+			rightResizer = OSGi_ResourceLoader.getDefaultImageLoader().getImageResource("/img/rightresizer.png");
 		} catch (IOException ex) {
 			Logger.getLogger(WindowWidgets.class.getName()).log(Level.SEVERE, null, ex);
 		}
