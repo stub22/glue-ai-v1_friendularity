@@ -25,6 +25,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import org.friendularity.jvision.engine.Displayer;
+import org.friendularity.jvision.engine.JVisionEngine;
 import org.friendularity.jvision.engine.Quitter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,6 +65,7 @@ public class DemoFrame extends JFrame implements WindowListener, Displayer {
 		myControlsPanel.setMinimumSize(new Dimension(640, 160));
 		myControlsPanel.setBackground(new Color(255, 200, 128));
 		myControlsPanel.add(myLabel_Framerate);
+	
 		this.getContentPane().add(myControlsPanel, BorderLayout.PAGE_END);
 		
 		setupMenus();
@@ -247,6 +249,73 @@ public class DemoFrame extends JFrame implements WindowListener, Displayer {
 		menu.add(cbMenuItem);
 
 		myMenuBar.add(menu);
+		
+		/* ========= */
+				//Build the camera menu
+		menu = new JMenu("Camera");
+		myMenuBar.add(menu);
+    
+
+		menuItem = new JCheckBoxMenuItem("0");
+
+		((JCheckBoxMenuItem)menuItem).setSelected(true);
+		
+		menuItem.addActionListener(new ActionListener(){
+			@Override	public void actionPerformed(ActionEvent e) {
+				theLogger.debug("Change to camera 0");
+				JVisionEngine.getDefaultJVisionEngine().changeCamera(0);
+				((JCheckBoxMenuItem)(DemoFrame.this.myMenuBar.getMenu(2).getMenuComponent(0))).setSelected(true);
+				((JCheckBoxMenuItem)(DemoFrame.this.myMenuBar.getMenu(2).getMenuComponent(1))).setSelected(false);
+				((JCheckBoxMenuItem)(DemoFrame.this.myMenuBar.getMenu(2).getMenuComponent(2))).setSelected(false);
+				((JCheckBoxMenuItem)(DemoFrame.this.myMenuBar.getMenu(2).getMenuComponent(3))).setSelected(false);
+				
+			}
+		});
+		
+		menu.add(menuItem);
+		
+		menuItem = new JCheckBoxMenuItem("1");
+
+		menuItem.addActionListener(new ActionListener(){
+			@Override	public void actionPerformed(ActionEvent e) {
+				theLogger.debug("Change to camera 1");
+				JVisionEngine.getDefaultJVisionEngine().changeCamera(1);
+				((JCheckBoxMenuItem)(DemoFrame.this.myMenuBar.getMenu(2).getMenuComponent(0))).setSelected(false);
+				((JCheckBoxMenuItem)(DemoFrame.this.myMenuBar.getMenu(2).getMenuComponent(1))).setSelected(true);
+				((JCheckBoxMenuItem)(DemoFrame.this.myMenuBar.getMenu(2).getMenuComponent(2))).setSelected(false);
+				((JCheckBoxMenuItem)(DemoFrame.this.myMenuBar.getMenu(2).getMenuComponent(3))).setSelected(false);
+			}
+		});
+		menu.add(menuItem);
+		
+		menuItem = new JCheckBoxMenuItem("2");
+
+		menuItem.addActionListener(new ActionListener(){
+			@Override	public void actionPerformed(ActionEvent e) {
+				theLogger.debug("Change to camera 2");
+				JVisionEngine.getDefaultJVisionEngine().changeCamera(2);
+				((JCheckBoxMenuItem)(DemoFrame.this.myMenuBar.getMenu(2).getMenuComponent(0))).setSelected(false);
+				((JCheckBoxMenuItem)(DemoFrame.this.myMenuBar.getMenu(2).getMenuComponent(1))).setSelected(false);
+				((JCheckBoxMenuItem)(DemoFrame.this.myMenuBar.getMenu(2).getMenuComponent(2))).setSelected(true);
+				((JCheckBoxMenuItem)(DemoFrame.this.myMenuBar.getMenu(2).getMenuComponent(3))).setSelected(false);
+			}
+		});
+		menu.add(menuItem);
+		
+		menuItem = new JCheckBoxMenuItem("3");
+
+		menuItem.addActionListener(new ActionListener(){
+			@Override	public void actionPerformed(ActionEvent e) {
+				theLogger.debug("Change to camera 3");
+				JVisionEngine.getDefaultJVisionEngine().changeCamera(3);
+				((JCheckBoxMenuItem)(DemoFrame.this.myMenuBar.getMenu(2).getMenuComponent(0))).setSelected(false);
+				((JCheckBoxMenuItem)(DemoFrame.this.myMenuBar.getMenu(2).getMenuComponent(1))).setSelected(false);
+				((JCheckBoxMenuItem)(DemoFrame.this.myMenuBar.getMenu(2).getMenuComponent(2))).setSelected(false);
+				((JCheckBoxMenuItem)(DemoFrame.this.myMenuBar.getMenu(2).getMenuComponent(3))).setSelected(true);
+			}
+		});
+		menu.add(menuItem);		
+		/* ============= */
 
 		setJMenuBar(myMenuBar);
 	}

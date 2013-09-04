@@ -42,6 +42,8 @@ public class JVisionEngine extends BasicDebugger implements Runnable {
 	private ArrayList<Displayer> myDisplayerList = new ArrayList<Displayer>();
 	private Quitter myQuitter;
 	private long mLastFrameTime = 0l;
+	
+	private final Object cameraToken = new Object();
 
 	public static JVisionEngine getDefaultJVisionEngine() {
 		if (sDefaultJVisionEngine == null) {
@@ -66,6 +68,20 @@ public class JVisionEngine extends BasicDebugger implements Runnable {
 	public void setQuitter(Quitter q) {
 		myQuitter = q;
 	}
+	
+	public void changeCamera(int camera) {
+		getLogger().info("Changing vidCapture stream to " + camera);
+		synchronized(cameraToken)
+		{
+			myVidCapture.release();
+			myVidCapture = new VideoCapture();
+
+			if (!myVidCapture.open(camera)) {
+				getLogger().error("Failed to open vidCapture stream");
+				myVidCapture = null;
+			}
+		}
+	}
 
 	public boolean connect() {
 
@@ -79,20 +95,24 @@ public class JVisionEngine extends BasicDebugger implements Runnable {
 			Mat m = Mat.eye(3, 3, CvType.CV_8UC1);
 			getLogger().info("m = " + m.dump());
 
+			double w;
+			double h;
 			// testWithSomeDuckFiles();
+			synchronized(cameraToken)
+			{
+				myVidCapture = new VideoCapture();
 
-			myVidCapture = new VideoCapture();
+				getLogger().info("Opening vidCapture stream");
+				if (!myVidCapture.open(0)) {
+					getLogger().error("Failed to open vidCapture stream");
+					myVidCapture = null;
+					return false;
+				}
 
-			getLogger().info("Opening vidCapture stream");
-			if (!myVidCapture.open(0)) {
-				getLogger().error("Failed to open vidCapture stream");
-				myVidCapture = null;
-				return false;
+				w = myVidCapture.get(Highgui.CV_CAP_PROP_FRAME_WIDTH);
+				h = myVidCapture.get(Highgui.CV_CAP_PROP_FRAME_HEIGHT);
 			}
-
-			double w = myVidCapture.get(Highgui.CV_CAP_PROP_FRAME_WIDTH);
-			double h = myVidCapture.get(Highgui.CV_CAP_PROP_FRAME_HEIGHT);
-
+			
 			System.out.println(Double.toString(w));
 
 			myCameraImage_Mat = new Mat();
@@ -110,8 +130,11 @@ public class JVisionEngine extends BasicDebugger implements Runnable {
 	
 	public synchronized void processOneFrame() {
 		VideoCapture vc = myVidCapture;
-		if (!vc.read(myCameraImage_Mat)) {
-			getLogger().error("Oops bad read");
+		synchronized(cameraToken)
+		{
+			if (!vc.read(myCameraImage_Mat)) {
+				getLogger().error("Oops bad read");
+			}
 		}
 
 		long t = System.nanoTime();
@@ -247,7 +270,9 @@ public class JVisionEngine extends BasicDebugger implements Runnable {
 			getLogger().warn("I don't have a quitter set, so I'm not going to run!");
 		}
 		getLogger().info("Releasing vidCapture");
-		myVidCapture.release();
+		synchronized(cameraToken) {
+			myVidCapture.release();
+		}
 		getLogger().info("run() complete, notifying quitter we're done");
 		myQuitter.notifyQuitCompleted();
 	}
