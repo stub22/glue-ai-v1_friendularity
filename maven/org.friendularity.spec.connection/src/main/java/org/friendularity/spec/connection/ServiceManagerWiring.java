@@ -20,7 +20,10 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 import org.appdapter.core.component.KnownComponentImpl;
+import org.appdapter.core.matdat.BoundModelProvider;
 import org.appdapter.core.matdat.EnhancedRepoClient;
+import org.appdapter.core.matdat.ModelProviderFactory;
+import org.appdapter.core.matdat.PipelineQuerySpec;
 import org.appdapter.core.name.Ident;
 import org.jflux.api.registry.Registry;
 import org.jflux.impl.registry.OSGiRegistry;
@@ -62,6 +65,12 @@ public class ServiceManagerWiring {
             "ServiceManagerSpecGroupId";
     public static final String SERVICE_MANAGER_GROUP_QN = "ServiceManagerGroup";
     
+	public final static String  PIPELINE_GRAPH_QN = "csi:pipeline_sheet_22";
+	public final static String  PIPE_QUERY_QN = "ccrt:find_pipes_77";
+	public final static String  PIPE_SOURCE_QUERY_QN = "ccrt:find_pipe_sources_99";
+	public final static PipelineQuerySpec myDefaultPipelineQuerySpec = new PipelineQuerySpec(
+            PIPE_QUERY_QN, PIPE_SOURCE_QUERY_QN, PIPELINE_GRAPH_QN);
+    
     /**
      * Load up the Specs for all the components needed to build the
      * serviceManagers. Build them and register them with the JFlux system.
@@ -83,11 +92,18 @@ public class ServiceManagerWiring {
         // This list provides access to all the services created in this process
         List<ManagedService> managedServicesForServiceManagerSpecs =
                 new ArrayList();
+        
+		Ident derivedBehavGraphID =   defaultDemoRepoClient.makeIdentForQName(mergedSheetQN);
+		BoundModelProvider derivedBMP = 
+                ModelProviderFactory.makeOneDerivedModelProvider(
+                        defaultDemoRepoClient, myDefaultPipelineQuerySpec, derivedBehavGraphID);
+        
+        Set<Object> allSpecs = derivedBMP.assembleModelRoots();
 
         // Load the lifecycles, triggering the ServiceLifecycleSpecBuilder 
-        Set<Object> lifecycleSheetSpecs =
-                loadSpecs(defaultDemoRepoClient, lifecycleDefSheetQN);
-        
+//        Set<Object> lifecycleSheetSpecs =
+//                loadSpecs(defaultDemoRepoClient, lifecycleDefSheetQN);
+//        
         // Filter and Type check the specs
 //        List<ServiceLifecycleSpec> lifecycleSpecs =
 //                filterSpecs(ServiceLifecycleSpec.class, lifecycleSheetSpecs);
@@ -110,70 +126,70 @@ public class ServiceManagerWiring {
         
         // Load the serviceManagers and thier components, triggering the related
         // builders
-        Set<Object> serviceManagerSheetSpecs = loadSpecs(
-                defaultDemoRepoClient, serviceManagerSheetQN);
-        
-        
-        Set<Object> lifecycleSheetSpecs2 =
-                loadSpecs(defaultDemoRepoClient, mergedSheetQN);
-        
-        Set<Object> serviceManagerSheetSpecs2 = loadSpecs(
-                defaultDemoRepoClient, mergedSheetQN);
+//        Set<Object> serviceManagerSheetSpecs = loadSpecs(
+//                defaultDemoRepoClient, serviceManagerSheetQN);
+//        
+//        
+//        Set<Object> lifecycleSheetSpecs2 =
+//                loadSpecs(defaultDemoRepoClient, mergedSheetQN);
+//        
+//        Set<Object> serviceManagerSheetSpecs2 = loadSpecs(
+//                defaultDemoRepoClient, mergedSheetQN);
         
         // Filter and Type check the specs
-        List<PropertySpec> propertySpecs =
-                filterSpecs(PropertySpec.class, serviceManagerSheetSpecs);
-        
-        List<DefaultRegistrationStrategySpec> registrationStrategySpecs =
-                filterSpecs(
-                    DefaultRegistrationStrategySpec.class,
-                    serviceManagerSheetSpecs);
-        
-        List<ServiceBindingSpec> serviceBindingSpecs =
-                filterSpecs(ServiceBindingSpec.class, serviceManagerSheetSpecs);
-        
+//        List<PropertySpec> propertySpecs =
+//                filterSpecs(PropertySpec.class, allSpecs);
+//        
+//        List<DefaultRegistrationStrategySpec> registrationStrategySpecs =
+//                filterSpecs(
+//                    DefaultRegistrationStrategySpec.class,
+//                    allSpecs);
+//        
+//        List<ServiceBindingSpec> serviceBindingSpecs =
+//                filterSpecs(ServiceBindingSpec.class, allSpecs);
+//        
         List<ServiceManagerSpec> serviceManagerSpecs = 
-                filterSpecs(ServiceManagerSpec.class, serviceManagerSheetSpecs);
+                filterSpecs(ServiceManagerSpec.class, allSpecs);
         
         // Register the filtered Specs
-        for( PropertySpec propertySpec : propertySpecs ) {
-            ManagedService<PropertySpec> propertySpecManagedService = 
-                    registerSpec(
-                        context,
-                        PropertySpec.class, 
-                        propertySpec, 
-                        GROUP_KEY_FOR_LIFECYCLE_SPEC, 
-                        LIFECYCLE_GROUP_QN);
-            managedServicesForServiceManagerSpecs.add(
-                    propertySpecManagedService);
-        }
-
-        for( DefaultRegistrationStrategySpec registrationStrategySpec :
-                registrationStrategySpecs ) {
-            
-            ManagedService<DefaultRegistrationStrategySpec>
-                    registrationStrategySpecManagedService = 
-                        registerSpec(
-                            context,
-                            DefaultRegistrationStrategySpec.class, 
-                            registrationStrategySpec, 
-                            GROUP_KEY_FOR_LIFECYCLE_SPEC, 
-                            LIFECYCLE_GROUP_QN);
-            managedServicesForServiceManagerSpecs.add(
-                    registrationStrategySpecManagedService);
-        }
-        
-        for( ServiceBindingSpec serviceBindingSpec : serviceBindingSpecs ) {
-            ManagedService<ServiceBindingSpec> serviceBindingSpecManagedService= 
-                    registerSpec(
-                        context,
-                        ServiceBindingSpec.class, 
-                        serviceBindingSpec, 
-                        GROUP_KEY_FOR_LIFECYCLE_SPEC, 
-                        LIFECYCLE_GROUP_QN);
-            managedServicesForServiceManagerSpecs.add(
-                    serviceBindingSpecManagedService);
-        }
+//        for( PropertySpec propertySpec : propertySpecs ) {
+//            ManagedService<PropertySpec> propertySpecManagedService = 
+//                    registerSpec(
+//                        context,
+//                        PropertySpec.class, 
+//                        propertySpec, 
+//                        GROUP_KEY_FOR_LIFECYCLE_SPEC, 
+//                        LIFECYCLE_GROUP_QN);
+//            managedServicesForServiceManagerSpecs.add(
+//                    propertySpecManagedService);
+//        }
+//
+//        for( DefaultRegistrationStrategySpec registrationStrategySpec :
+//                registrationStrategySpecs ) {
+//            
+//            ManagedService<DefaultRegistrationStrategySpec>
+//                    registrationStrategySpecManagedService = 
+//                        registerSpec(
+//                            context,
+//                            DefaultRegistrationStrategySpec.class, 
+//                            registrationStrategySpec, 
+//                            GROUP_KEY_FOR_LIFECYCLE_SPEC, 
+//                            LIFECYCLE_GROUP_QN);
+//            managedServicesForServiceManagerSpecs.add(
+//                    registrationStrategySpecManagedService);
+//        }
+//        
+//        for( ServiceBindingSpec serviceBindingSpec : serviceBindingSpecs ) {
+//            ManagedService<ServiceBindingSpec> serviceBindingSpecManagedService= 
+//                    registerSpec(
+//                        context,
+//                        ServiceBindingSpec.class, 
+//                        serviceBindingSpec, 
+//                        GROUP_KEY_FOR_LIFECYCLE_SPEC, 
+//                        LIFECYCLE_GROUP_QN);
+//            managedServicesForServiceManagerSpecs.add(
+//                    serviceBindingSpecManagedService);
+//        }
 
         for( ServiceManagerSpec serviceManagerSpec : serviceManagerSpecs ) {
             ManagedService<ServiceManagerSpec> serviceManagerSpecManagedService= 
