@@ -22,8 +22,7 @@ import java.util.HashSet;
 import java.util.Set;
 import org.appdapter.core.name.Ident;
 import org.appdapter.core.name.FreeIdent;
-import com.jme3.math.Vector3f;
-import com.jme3.math.ColorRGBA;
+
 import org.cogchar.render.sys.registry.RenderRegistryClient;
 import org.friendularity.vworld.VisionTextureMapper;
 /**
@@ -39,7 +38,7 @@ public class WorldEstimate extends ThingEstimate {
 	// Anything else is stuff.
 	public Set<StuffEstimate>			myStuffEstims = new HashSet<StuffEstimate>();
 
-	private VisionTextureMapper			myVTM;
+	
 	
 	public WorldEstimate(Ident id) {
 		super(id);
@@ -53,7 +52,7 @@ public class WorldEstimate extends ThingEstimate {
 			mySelfEstim.setPosMathExpr(selfPosVecExpr);
 		}
 		if ((myPersonEstims == null) || myPersonEstims.isEmpty()) {
-			myPersonEstims = EstimateLib.makeFuinPersonEstims();
+			myPersonEstims = EstimateLib.makeFunPersonEstims();
 		}
 
 		if ((myStuffEstims == null) || myStuffEstims.isEmpty()) {
@@ -64,8 +63,8 @@ public class WorldEstimate extends ThingEstimate {
 	}
 	boolean mathNeedsInit = true;
 
-	@Override
-	public void updateFromMathSpace(MathGate mg) {
+
+	@Override public void updateFromMathSpace(MathGate mg) {
 		long nowMsec = System.currentTimeMillis();
 		double nowSec = nowMsec / 1000.0;
 		mg.putVar("$nowSec", new Double(nowSec));
@@ -78,97 +77,23 @@ public class WorldEstimate extends ThingEstimate {
 		Object globs1 = mg.parseAndEvalExprToIExpr("$elapsed:=$nowSec-$startSec; $cycles:=Floor[$elapsed/$cycleSec]");
 		Object globs2 = mg.parseAndEvalExprToIExpr("$phaseFrac:=$elapsed/$cycleSec-$cycles; $phaseAng:=2.0*Pi*$phaseFrac");
 
+		ensureSubpartsExist();
+
 		// This reads a new Vector3f and Color4f object every time, which is expensive, and possibly leaky in
 		// some non-obvious way?
-		super.updateFromMathSpace(mg);
-
+		super.updateFromMathSpace(mg);	
+	}
+	
+	@Override public Set<ThingEstimate> getSubEstimates() { 
 		ensureSubpartsExist();
-		
-		mySelfEstim.updateFromMathSpace(mg);
-		for (PersonEstimate pest : myPersonEstims) {
-			pest.updateFromMathSpace(mg);
-		}
-		for (StuffEstimate sest : myStuffEstims) {
-			sest.updateFromMathSpace(mg);
-		}
-	}
-
-	@Override
-	public void renderAsSillyShape(Visualizer viz, float timePerFrame) {
+		Set<ThingEstimate> subs = new HashSet<ThingEstimate>();
 		if (mySelfEstim != null) {
-			mySelfEstim.renderAsSillyShape(viz, timePerFrame);
+			subs.add(mySelfEstim);
 		}
-		for (PersonEstimate pest : myPersonEstims) {
-			pest.renderAsSillyShape(viz, timePerFrame);
-		}
-		for (StuffEstimate sest : myStuffEstims) {
-			sest.renderAsSillyShape(viz, timePerFrame);
-		}
-		if (myVTM == null) {
-			myVTM = new VisionTextureMapper();
-			RenderRegistryClient rrc = viz.getRenderRegistryClient();
-			myVTM.setup(rrc);
-		}
-		myVTM.simpleUpdate(timePerFrame);
+		subs.addAll(myPersonEstims);
+		subs.addAll(myStuffEstims);
+		return subs;
 	}
-
-	public static class SelfEstimate extends ThingEstimate {
-
-		public SelfEstimate(Ident id) {
-			super(id);
-		}
-	}
-
-	public static class PersonEstimate extends ThingEstimate {
-
-		private Integer myPersonIdx;
-
-		public PersonEstimate(Ident id, Integer personIdx) {
-			super(id);
-			myPersonIdx = personIdx;
-		}
-
-		@Override public void updateFromMathSpace(MathGate mg) {
-			mg.putVar("$personIdx", myPersonIdx);
-			super.updateFromMathSpace(mg);
-		}
-	}
-
-	public static class StuffEstimate extends ThingEstimate {
-		public enum Kind {
-			REGULAR,
-			MONSTER
-		}
-		private Integer myStuffIdx;
-		private Kind myKind = Kind.REGULAR;
-
-		public StuffEstimate(Ident id, Integer stuffIndex, Kind shapeKind) {
-			super(id);
-			myStuffIdx = stuffIndex;
-			myKind = shapeKind;
-		}
-		@Override public void updateFromMathSpace(MathGate mg) {
-			mg.putVar("$stuffIdx", myStuffIdx);
-			super.updateFromMathSpace(mg);
-		}
-		@Override protected void attachSimpleVizObj(Visualizer viz) {
-			if (myKind == Kind.MONSTER) { 
-				attachMonsterShape(viz);
-			} else {
-				super.attachSimpleVizObj(viz);
-			}
-		} 
-		public void attachMonsterShape(Visualizer viz) {
-			float initRadius = 5.0f;
-			ColorRGBA initColor = ColorRGBA.Green;
-			Vector3f basePos = new Vector3f(10.0f, 10.0f, 10.0f);
-			myCachedVizObject = new VizShape(myIdent, basePos, initRadius, initColor);
-			RenderRegistryClient rrc = viz.getRenderRegistryClient();
-			ShapeAnimator sa = viz.getShapeAnimator();
-			sa.attachChild_onRendThrd(rrc, myCachedVizObject);
-		}
-	}
-
 	public static interface Consumer {
 
 		public void setWorldEstimate(WorldEstimate worldEstim);
