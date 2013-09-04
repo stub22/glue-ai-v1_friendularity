@@ -29,30 +29,42 @@ import org.friendularity.bundle.blockflow.util.OSGi_ResourceLoader;
 import org.friendularity.bundle.blockflow.util.QN;
 
 /**
- *
- * TODO - refactor this so it's the owner of the model off proto.ttl
+ * We implement two patterns, Builder and flyweight, 
+ * A few blocks carry state. Those blocks we make a new instance.
+ * But most blocktypes have no state, and hence we can make all references point
+ * to the same block instance.
  * 
- * and change the name of prototypeCoordinateX to defaultPrototypeCoordinateX
  * then this becomes immutable facts about the blocks only
  * 
- * BlockflowModel knows all the mutable stuff, including the locations of BlockProtoRepresentation instances
- * 
+ * BlockflowModel knows all the mutable stuff,
  * But this class is the fly provider for flyweight pattern
+ * 
+ * This classes 'smarts' are in proto.ttl
  * 
  * @author Annie
  */
 final class BlockBuilder {
 	public static final int BACKGROUND = 0;
 
+	// the background, what fills in places where there's nothing else
 	private static BlockishThing bkgnd = new BackgroundBlock();
 	
+	// we implement singleton
 	private static BlockBuilder defaultBB = null;
 	
+	// The RDF model loaded from proto.ttl
 	private Model protoModel = null;
 	
+	// we lazily instantiate prototypes, and to make
+	// sure we only have one we hold them here
 	private HashMap<Resource, BlockProto>prototypes = new HashMap<Resource, BlockProto>();
 	
-	
+	/**
+	 * Return a thing that can fill in a block, based on the constants at top of this class
+	 * 
+	 * @param type  type of thing to return, currently only BACKGROUND
+	 * @return the BlockishThing
+	 */
 	public BlockishThing getBlockishThing(int type) {
 		if(type == BACKGROUND)
 			return bkgnd;
@@ -67,16 +79,26 @@ final class BlockBuilder {
 		return defaultBB;
 	}
 	
-	// don't instantiate me
+	/**
+	 * we implement singleton so this is private
+	 * 
+	 * Instantiating the singleton instance loads the model
+	 * 
+	 */
 	private BlockBuilder()
 	{
-				// create an empty Model
 		protoModel = ModelFactory.createDefaultModel();
 		OSGi_ResourceLoader.getDefaultImageLoader().loadModelFromTurtleResource(
 				 protoModel, "/ttl/protos.ttl");
 	}
 
-	public BlockishThing getPrototype(Resource subject) {
+	/**
+	 * Gets the BlockProto for an RDF class of block
+	 * 
+	 * @param subject   an RDF Resource (must be a flo:BlockType)
+	 * @return the prototype
+	 */
+	public BlockProto getPrototype(Resource subject) {
 		BlockProto bp = prototypes.get(subject);
 		if(bp == null)
 		{
@@ -90,6 +112,13 @@ final class BlockBuilder {
 			return bp;
 	}			
 
+	/**
+	 * Populate a completely blank BlockflowModel with the default 'new' contents
+	 * Typically this is will in turn be overridden by the user's new file template
+	 * In short, make the default default model.
+	 * 
+	 * @param bfmodel the model to populate
+	 */
 	void populateNewBlockflowModel(BlockflowModel bfmodel) {
 		// list the statements in the Model
 		ResIterator iter = protoModel.listSubjectsWithProperty(

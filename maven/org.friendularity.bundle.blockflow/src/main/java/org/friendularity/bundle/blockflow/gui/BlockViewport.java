@@ -57,8 +57,8 @@ public class BlockViewport {
 		blocks.x = (int) Math.floor(pixelToBlockX(viewBounds.x));
 		blocks.y = (int) Math.floor(pixelToBlockY(viewBounds.y));
 		// no -1 here because we want the right side of that pixel
-		blocks.width = (int) Math.ceil(pixelToBlockX(viewBounds.x + viewBounds.width));
-		blocks.height = (int) Math.ceil(pixelToBlockY(viewBounds.y + viewBounds.height));
+		blocks.width = (int) Math.ceil(pixelToBlockX(viewBounds.x + viewBounds.width)) - blocks.x + 1;
+		blocks.height = (int) Math.ceil(pixelToBlockY(viewBounds.y + viewBounds.height)) - blocks.y + 1;
 	}
 
 	/**
@@ -94,7 +94,9 @@ public class BlockViewport {
 		return zoom;
 	}
 
-	void setZoom(double zoom) {
+	void setZoom(double zoom, int aboutX, int aboutY) {
+		pixelsOfBlockOriginX  = (int)(zoom / this.zoom * (pixelsOfBlockOriginX - aboutX) + aboutX);
+		pixelsOfBlockOriginY = (int)(zoom / this.zoom * (pixelsOfBlockOriginY - aboutY) + aboutY);
 		this.zoom = zoom;
 		viewportChange();
 	}

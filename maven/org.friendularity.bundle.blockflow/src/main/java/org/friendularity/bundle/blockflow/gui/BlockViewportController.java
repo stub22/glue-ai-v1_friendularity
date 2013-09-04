@@ -60,7 +60,7 @@ public class BlockViewportController {
 					myEngine.getViewport().getZoom() *  (1.0d + ZOOM_SPEED * e.getWheelRotation()),
 					ZOOM_ALL_WAY_IN);
 			
-			myEngine.getViewport().setZoom(zoom);
+			myEngine.getViewport().setZoom(zoom, e.getX(), e.getY());
 
 			return true;		
 		}
