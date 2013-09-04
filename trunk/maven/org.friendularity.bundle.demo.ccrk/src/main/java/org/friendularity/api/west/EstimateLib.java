@@ -28,11 +28,11 @@ import static org.friendularity.api.west.WorldEstimate.ESTIM_NS;
  */
 public class EstimateLib {
 
-	public static Set<WorldEstimate.PersonEstimate> makeFuinPersonEstims() {
-		Set<WorldEstimate.PersonEstimate> sampleSet = new HashSet<WorldEstimate.PersonEstimate>();
+	public static Set<PersonEstimate> makeFunPersonEstims() {
+		Set<PersonEstimate> sampleSet = new HashSet<PersonEstimate>();
 		for (int i = 0; i < 10; i++) {
 			Ident personID = new FreeIdent(ESTIM_NS + "person_estim_0" + i);
-			WorldEstimate.PersonEstimate pest = new WorldEstimate.PersonEstimate(personID, i);
+			PersonEstimate pest = new PersonEstimate(personID, i);
 			double px = -10.0 - i * 2.0, py = 10.0 + i * 2.0, pz = 4.0;
 			String baseVecExpr = "{" + px + ", " + py + ", " + pz + "}";
 			pest.setPosMathExpr("Sin[$phaseAng]*Sqrt[1.0 * $personIdx]*" + baseVecExpr);
@@ -42,12 +42,13 @@ public class EstimateLib {
 		return sampleSet;
 	}
 
-	public static Set<WorldEstimate.StuffEstimate> makeFunStuffEstims(int jMax, int kMax) {
-		Set<WorldEstimate.StuffEstimate> sampleSet = new HashSet<WorldEstimate.StuffEstimate>();
+	public static Set<StuffEstimate> makeFunStuffEstims(int jMax, int kMax) {
+		Set<StuffEstimate> sampleSet = new HashSet<StuffEstimate>();
 		for (int j = 1; j <= jMax; j++) {
 			// TODO - format the index number
 			Ident stuffID = new FreeIdent(ESTIM_NS + "stuff_estim_0" + j);
-			WorldEstimate.StuffEstimate sest = new WorldEstimate.StuffEstimate(stuffID, j, WorldEstimate.StuffEstimate.Kind.REGULAR);
+			StuffEstimate sest = new StuffEstimate(stuffID, j);
+						// WorldEstimate.StuffEstimate.Kind.REGULAR);
 			double px = 15.0 + j * 3.0, py = 10.0 + j * 3.0, pz = -12.0;
 			// Making use of single-threaded access to MathSpace:
 			// We assume that someone will post our stuffIdx before each eval of the following.
@@ -60,7 +61,8 @@ public class EstimateLib {
 		for (int k = 1; k <= kMax; k++) {
 			int stuffIdx = k + jMax;
 			Ident stuffID = new FreeIdent(ESTIM_NS + "stuff_estim_0" + stuffIdx);
-			WorldEstimate.StuffEstimate sest = new WorldEstimate.StuffEstimate(stuffID, stuffIdx, WorldEstimate.StuffEstimate.Kind.MONSTER);
+			StuffEstimate sest = new StuffEstimate(stuffID, stuffIdx); 
+					// , WorldEstimate.StuffEstimate.Kind.MONSTER);
 			double px = 15.0 + k * 3.0, py = 10.0 + k * 3.0, pz = -25.0;
 			double kFrac = k / (double) kMax;
 			double red = 0.4, green = 0.2, blue = 0.8, alpha = kFrac;

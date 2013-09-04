@@ -13,13 +13,15 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.friendularity.api.west;
+	package org.friendularity.api.west;
 
 import org.friendularity.math.api.MathGate;
 import org.friendularity.api.goody.ShapeAnimator;
 import org.friendularity.api.goody.VizShape;
 import com.jme3.math.Vector3f;
 import com.jme3.math.ColorRGBA;
+import java.util.HashSet;
+import java.util.Set;
 import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.core.name.Ident;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
@@ -30,9 +32,7 @@ import org.cogchar.render.sys.registry.RenderRegistryClient;
 public abstract class ThingEstimate extends BasicDebugger {
 
 	public		Ident							myIdent;
-
-	public		VizShape						myCachedVizObject;
-
+	
 	private		OscillatorLib.Vec3fOscillator	myPosOscillator;
 	private		OscillatorLib.ColorOscillator	myColorOscillator;
 			
@@ -54,6 +54,28 @@ public abstract class ThingEstimate extends BasicDebugger {
 			myColorOscillator.setMathExpr(mathExpr);
 		}
 	}
+	public Ident getIdent()  {
+		return myIdent;
+	}
+	public Set<ThingEstimate> getSubEstimates() { 
+		return new HashSet<ThingEstimate>();
+	}
+	
+	public Vector3f getVisualPos() {
+		// Dummy impl uses "oscillator"
+		if (myPosOscillator != null) {
+			Vector3f posVec = myPosOscillator.getVector3f();
+			return posVec;
+		}
+		return null;
+	}
+	public ColorRGBA getVisualColor() {
+		if (myColorOscillator != null) { 
+			ColorRGBA color = myColorOscillator.getColor();
+			return color;
+		}
+		return null;
+	}
 
 	public void updateFromMathSpace(MathGate mg) {
 		if (myPosOscillator != null) {
@@ -63,6 +85,10 @@ public abstract class ThingEstimate extends BasicDebugger {
 			myColorOscillator.doUpdate(mg);
 		}
 
+		Set<ThingEstimate> subEstims = getSubEstimates();
+		for (ThingEstimate subEstim : subEstims) {
+			subEstim.updateFromMathSpace(mg);
+		}
 		
 		// logInfo("Estimate " + myIdent + " of type " + getClass() + " read position: " + myCachedPosVec3f);
 		// First goal is to Get X, Y, Z + Rot-X, Rot-Y, Rot-Z
@@ -74,58 +100,12 @@ public abstract class ThingEstimate extends BasicDebugger {
 		// to update symbol tables on each pass, only the data that our custom function accesses.
 	}
 
-	
-
-	protected void attachSimpleVizObj(Visualizer viz) {
-		float initRadius = 5.0f;
-		ColorRGBA initColor = ColorRGBA.Red;
-		Vector3f basePos = new Vector3f(35.0f, 35.0f, -5.0f);
-		myCachedVizObject = new VizShape(myIdent, basePos, initRadius, initColor);
-		RenderRegistryClient rrc = viz.getRenderRegistryClient();
-		ShapeAnimator sa = viz.getShapeAnimator();
-		sa.attachChild_onRendThrd(rrc, myCachedVizObject);
-	}
-
-	public void renderAsSillyShape(Visualizer viz, float timePerFrame) {
-		if (myCachedVizObject == null) {
-			attachSimpleVizObj(viz);
-		}
-
-		if (myPosOscillator != null) {
-			Vector3f updatedPosVec = myPosOscillator.getVector3f();
-			myCachedVizObject.setPosition(updatedPosVec);
-		}
-
-		if (myColorOscillator != null) { 
-			ColorRGBA updatedColor = myColorOscillator.getColor();
-			myCachedVizObject.setColor(updatedColor);
-		}
-	}
 
 	public static abstract class CoordinateFrame {
 
 		public Ident myIdent;
 		public CoordinateFrame myParent;
 	}
+	
 
-	public static class Jme3CoordinateFrame extends CoordinateFrame {
-		// Vector loc + Quat rot
-	}
-
-	public static abstract class Visualizer {
-
-		private ShapeAnimator myShapeAnimator;
-
-		public ShapeAnimator getShapeAnimator() {
-			if (myShapeAnimator == null) {
-				RenderRegistryClient rrc = getRenderRegistryClient();
-				myShapeAnimator = new ShapeAnimator();
-				myShapeAnimator.setupMaterials(rrc);
-				myShapeAnimator.enable_onRendThrd(rrc);
-			}
-			return myShapeAnimator;
-		}
-
-		protected abstract RenderRegistryClient getRenderRegistryClient();
-	}
 }

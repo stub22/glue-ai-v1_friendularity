@@ -144,6 +144,80 @@ HominoidBodySchema
 710	RtKnee_Pitch
 720	RtAnkle_Pitch
 721	RtAnkle_Roll
+* 
+* 
+* 
+* 
+[java] Root bone
+     [java] -Thigh.R bone
+     [java] --Calf.R bone
+     [java] ---Foot.R bone
+     [java] ----Toe.R bone
+     [java] -Thigh.L bone
+     [java] --Calf.L bone
+     [java] ---Foot.L bone
+     [java] ----Toe.L bone
+     [java] -Waist bone
+     [java] --Stomach bone
+     [java] ---Chest bone
+     [java] ----Sheath.R bone
+     [java] ----Sheath.L bone
+     [java] ----Clavicle.R bone
+     [java] -----Humerus.R bone
+     [java] ------Ulna.R bone
+     [java] -------Hand.R bone
+     [java] --------Handle.R bone
+     [java] --------PinkyProx.R bone
+     [java] ---------PinkyMed.R bone
+     [java] ----------PinkyDist.R bone
+     [java] --------RingFingerProx.R bone
+     [java] ---------RingFingerMed.R bone
+     [java] ----------RingFingerDist.R bone
+     [java] --------MiddleFingerProx.R bone
+     [java] ---------MiddleFingerMed.R bone
+     [java] ----------MiddleFingerDist.R bone
+     [java] --------IndexFingerProx.R bone
+     [java] ---------IndexFingerMed.R bone
+     [java] ----------IndexFingerDist.R bone
+     [java] --------ThumbProx.R bone
+     [java] ---------ThumbMed.R bone
+     [java] ----------ThumbDist.R bone
+     [java] ----Clavicle.L bone
+     [java] -----Humerus.L bone
+     [java] ------Ulna.L bone
+     [java] -------Hand.L bone
+     [java] --------Handle.L bone
+     [java] --------PinkyProx.L bone
+     [java] ---------PinkyMed.L bone
+     [java] ----------PinkyDist.L bone
+     [java] --------RingFingerProx.L bone
+     [java] ---------RingFingerMed.L bone
+     [java] ----------RingFingerDist.L bone
+     [java] --------MiddleFingerProx.L bone
+     [java] ---------MiddleFingerMed.L bone
+     [java] ----------MiddleFingerDist.L bone
+     [java] --------IndexFingerProx.L bone
+     [java] ---------IndexFingerMed.L bone
+     [java] ----------IndexFingerDist.L bone
+     [java] --------ThumbProx.L bone
+     [java] ---------ThumbMed.L bone
+     [java] ----------ThumbDist.L bone
+     [java] ----Neck bone
+     [java] -----Head bone
+     [java] ------Eye.L bone
+     [java] ------Eye.R bone
+     [java] ------Brow.C bone
+     [java] ------Brow.L bone
+     [java] ------Brow.R bone
+     [java] ------Cheek.L bone
+     [java] ------Cheek.R bone
+     [java] ------UpperLip bone
+     [java] ------Jaw bone
+     [java] -------TongueBase bone
+     [java] --------TongueMid bone
+     [java] ---------TongueTip bone
+     [java] -------LowerLip bone
+
 				 */
 	}
 
