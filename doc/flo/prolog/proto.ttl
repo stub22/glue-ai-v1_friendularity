@@ -1,0 +1,830 @@
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix  rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix  flo: <http://www.friendularity.org/ontology/flo#> .
+
+# Named toplevel resources (48)
+
+flo:adaptivehistoequal
+	a flo:BlockType ;
+	flo:optionalInput [ flo:outputFor flo:adaptivehistoequal ;
+			    flo:outputName "O" ;
+			    flo:outputType "image"
+			  ] ;
+	flo:requiresInput [ flo:inputFor flo:adaptivehistoequal ;
+			    flo:inputName "A" ;
+			    flo:inputType "image"
+			  ] ,
+			  [ flo:inputFor flo:adaptivehistoequal ;
+			    flo:inputName "Prop" ;
+			    flo:inputType "proportion"
+			  ] ,
+			  [ flo:inputFor flo:adaptivehistoequal ;
+			    flo:inputName "Block" ;
+			    flo:inputType "int"
+			  ] ;
+	flo:section "CV" ;
+	flo:subsection "Image Processing" ;
+	flo:visual_style "normal" ;
+	rdfs:comment "apply adaptive histogram equalization with blocksize Block and proportion Prop" ;
+	rdfs:label "adaptivehistoequal" .
+
+flo:aschannels
+	a flo:BlockType ;
+	flo:optionalInput [ flo:outputFor flo:aschannels ;
+			    flo:outputName "R" ;
+			    flo:outputType "gray"
+			  ] ,
+			  [ flo:outputFor flo:aschannels ;
+			    flo:outputName "G" ;
+			    flo:outputType "gray"
+			  ] ,
+			  [ flo:outputFor flo:aschannels ;
+			    flo:outputName "B" ;
+			    flo:outputType "gray"
+			  ] ;
+	flo:requiresInput [ flo:inputFor flo:aschannels ;
+			    flo:inputName "A" ;
+			    flo:inputType "rgb"
+			  ] ;
+	flo:section "CV" ;
+	flo:subsection "Image Processing" ;
+	flo:visual_style "normal" ;
+	rdfs:comment "takes an RGB image and produces 3 grayscale images, one for each channel" ;
+	rdfs:label "aschannels" .
+
+flo:black
+	a flo:BlockType ;
+	flo:optionalInput [ flo:outputFor flo:black ;
+			    flo:outputName "O" ;
+			    flo:outputType "mask"
+			  ] ;
+	flo:section "CV" ;
+	flo:subsection "Image Processing" ;
+	flo:visual_style "normal" ;
+	rdfs:comment "outputs a solid black frame the camera size" ;
+	rdfs:label "black" .
+
+flo:bodymask
+	a flo:BlockType ;
+	flo:optionalInput [ flo:outputFor flo:bodymask ;
+			    flo:outputName "O" ;
+			    flo:outputType "mask"
+			  ] ;
+	flo:section "I/O" ;
+	flo:subsection "body" ;
+	flo:visual_style "visual_style13" ;
+	rdfs:comment "output is a vector of booleans for joints" ;
+	rdfs:label "bodymask" .
+
+flo:bodyposition
+	a flo:BlockType ;
+	flo:optionalInput [ flo:outputFor flo:bodyposition ;
+			    flo:outputName "O" ;
+			    flo:outputType "joints"
+			  ] ;
+	flo:section "I/O" ;
+	flo:subsection "body" ;
+	flo:visual_style "normal" ;
+	rdfs:comment "output is a vector of joint positions from physivcal bot" ;
+	rdfs:label "bodyposition" .
+
+flo:bodypossim
+	a flo:BlockType ;
+	flo:optionalInput [ flo:outputFor flo:bodypossim ;
+			    flo:outputName "O" ;
+			    flo:outputType "joints"
+			  ] ;
+	flo:section "I/O" ;
+	flo:subsection "body" ;
+	flo:visual_style "normal" ;
+	rdfs:comment "as per bodyposition but from the simulator" ;
+	rdfs:label "bodypossim" .
+
+flo:camera
+	a flo:BlockType ;
+	flo:optionalInput [ flo:outputFor flo:camera ;
+			    flo:outputName "O" ;
+			    flo:outputType "rgb"
+			  ] ,
+			  [ flo:outputFor flo:camera ;
+			    flo:outputName "K" ;
+			    flo:outputType "intrinsics"
+			  ] ;
+	flo:section "I/O" ;
+	flo:subsection "imaging" ;
+	flo:visual_style "visual_style6" ;
+	rdfs:comment "O is frames out of camera, K is camera intrinsics" ;
+	rdfs:label "camera" .
+
+flo:channels
+	a flo:BlockType ;
+	flo:optionalInput [ flo:outputFor flo:channels ;
+			    flo:outputName "O" ;
+			    flo:outputType "image"
+			  ] ;
+	flo:requiresInput [ flo:inputFor flo:channels ;
+			    flo:inputName "R" ;
+			    flo:inputType "gray"
+			  ] ,
+			  [ flo:inputFor flo:channels ;
+			    flo:inputName "G" ;
+			    flo:inputType "gray"
+			  ] ,
+			  [ flo:inputFor flo:channels ;
+			    flo:inputName "B" ;
+			    flo:inputType "gray"
+			  ] ;
+	flo:section "CV" ;
+	flo:subsection "Image Processing" ;
+	flo:visual_style "normal" ;
+	rdfs:comment "takes 3 grayscale images and an optional mask or grayscale image and produces an RGB/RGBA image" ;
+	rdfs:label "channels" .
+
+flo:composite
+	a flo:BlockType ;
+	flo:optionalInput [ flo:outputFor flo:composite ;
+			    flo:outputName "O" ;
+			    flo:outputType "image"
+			  ] ;
+	flo:requiresInput [ flo:inputFor flo:composite ;
+			    flo:inputName "A" ;
+			    flo:inputType "image"
+			  ] ,
+			  [ flo:inputFor flo:composite ;
+			    flo:inputName "B" ;
+			    flo:inputType "image"
+			  ] ,
+			  [ flo:inputFor flo:composite ;
+			    flo:inputName "Mask" ;
+			    flo:inputType "gray"
+			  ] ;
+	flo:section "CV" ;
+	flo:subsection "Image Processing" ;
+	flo:visual_style "normal" ;
+	rdfs:comment "Output is A where Mask is white and B where it is black, and proportional mix in between" ;
+	rdfs:label "composite" .
+
+flo:convolve
+	a flo:BlockType ;
+	flo:optionalInput [ flo:outputFor flo:convolve ;
+			    flo:outputName "O" ;
+			    flo:outputType "image"
+			  ] ;
+	flo:requiresInput [ flo:inputFor flo:convolve ;
+			    flo:inputName "A" ;
+			    flo:inputType "image"
+			  ] ,
+			  [ flo:inputFor flo:convolve ;
+			    flo:inputName "Kernal" ;
+			    flo:inputType "kernal"
+			  ] ;
+	flo:section "CV" ;
+	flo:subsection "Image Processing" ;
+	flo:visual_style "normal" ;
+	rdfs:comment "" ;
+	rdfs:label "convolve" .
+
+flo:cross
+	a flo:BlockType ;
+	flo:defaultPrototypeCoordinateX 20 ;
+	flo:defaultPrototypeCoordinateY 3 ;
+	flo:imageResource "/img/blocks/blocksheet0-_05.png" ;
+	flo:optionalInput [ flo:outputFor flo:cross ;
+			    flo:outputName "OA" ;
+			    flo:outputType "any"
+			  ] ,
+			  [ flo:outputFor flo:cross ;
+			    flo:outputName "OB" ;
+			    flo:outputType "any"
+			  ] ;
+	flo:requiresInput [ flo:inputFor flo:cross ;
+			    flo:inputName "A" ;
+			    flo:inputType "any"
+			  ] ,
+			  [ flo:inputFor flo:cross ;
+			    flo:inputName "B" ;
+			    flo:inputType "any"
+			  ] ;
+	flo:section "connector" ;
+	flo:subsection "pipe" ;
+	flo:visual_style "visual_style17" ;
+	rdfs:comment "bidi pipe connection" ;
+	rdfs:label "cross" .
+
+flo:dehdr
+	a flo:BlockType ;
+	flo:optionalInput [ flo:outputFor flo:dehdr ;
+			    flo:outputName "O" ;
+			    flo:outputType "image"
+			  ] ;
+	flo:requiresInput [ flo:inputFor flo:dehdr ;
+			    flo:inputName "A" ;
+			    flo:inputType "hdr"
+			  ] ;
+	flo:section "CV" ;
+	flo:subsection "Image Processing" ;
+	flo:visual_style "normal" ;
+	rdfs:comment "converts HDR image to RGB" ;
+	rdfs:label "dehdr" .
+
+flo:delay
+	a flo:BlockType ;
+	flo:optionalInput [ flo:outputFor flo:delay ;
+			    flo:outputName "O" ;
+			    flo:outputType "object"
+			  ] ;
+	flo:requiresInput [ flo:inputFor flo:delay ;
+			    flo:inputName "A" ;
+			    flo:inputType "object"
+			  ] ;
+	flo:section "Misc" ;
+	flo:subsection "Misc" ;
+	flo:visual_style "normal" ;
+	rdfs:comment "O is the previous stable value of A" ;
+	rdfs:label "delay" .
+
+flo:distributor
+	a flo:BlockType ;
+	flo:defaultPrototypeCoordinateX 20 ;
+	flo:defaultPrototypeCoordinateY 6 ;
+	flo:imageResource "/img/blocks/blocksheet0-_09.png" ;
+	flo:optionalInput [ flo:outputFor flo:distributor ;
+			    flo:outputName "OA" ;
+			    flo:outputType "any"
+			  ] ,
+			  [ flo:outputFor flo:distributor ;
+			    flo:outputName "OB" ;
+			    flo:outputType "any"
+			  ] ,
+			  [ flo:outputFor flo:distributor ;
+			    flo:outputName "OC" ;
+			    flo:outputType "any"
+			  ] ;
+	flo:requiresInput [ flo:inputFor flo:distributor ;
+			    flo:inputName "A" ;
+			    flo:inputType "any"
+			  ] ;
+	flo:section "connector" ;
+	flo:subsection "pipe" ;
+	flo:visual_style "visual_style20" ;
+	rdfs:comment "bidi pipe connection" ;
+	rdfs:label "distributor" .
+
+flo:dlbend
+	a flo:BlockType ;
+	flo:defaultPrototypeCoordinateX 20 ;
+	flo:defaultPrototypeCoordinateY 1 ;
+	flo:imageResource "/img/blocks/blocksheet0-_03.png" ;
+	flo:optionalInput [ flo:outputFor flo:dlbend ;
+			    flo:outputName "O" ;
+			    flo:outputType "any"
+			  ] ;
+	flo:requiresInput [ flo:inputFor flo:dlbend ;
+			    flo:inputName "A" ;
+			    flo:inputType "any"
+			  ] ;
+	flo:section "connector" ;
+	flo:subsection "pipe" ;
+	flo:visual_style "visual_style15" ;
+	rdfs:comment "bidi pipe connection" ;
+	rdfs:label "dlbend" .
+
+flo:draw_tool
+	a flo:BlockType ;
+	flo:optionalInput [ flo:outputFor flo:draw_tool ;
+			    flo:outputName "O" ;
+			    flo:outputType "rgb"
+			  ] ;
+	flo:section "I/O" ;
+	flo:subsection "imaging" ;
+	flo:visual_style "visual_style10" ;
+	rdfs:comment "output frame each time updated" ;
+	rdfs:label "draw_tool" .
+
+flo:drbend
+	a flo:BlockType ;
+	flo:defaultPrototypeCoordinateX 20 ;
+	flo:defaultPrototypeCoordinateY 0 ;
+	flo:imageResource "/img/blocks/blocksheet0-_02.png" ;
+	flo:optionalInput [ flo:outputFor flo:drbend ;
+			    flo:outputName "O" ;
+			    flo:outputType "any"
+			  ] ;
+	flo:requiresInput [ flo:inputFor flo:drbend ;
+			    flo:inputName "A" ;
+			    flo:inputType "any"
+			  ] ;
+	flo:section "connector" ;
+	flo:subsection "pipe" ;
+	flo:visual_style "visual_style14" ;
+	rdfs:comment "bidi pipe connection" ;
+	rdfs:label "drbend" .
+
+flo:eyes
+	a flo:BlockType ;
+	flo:optionalInput [ flo:outputFor flo:eyes ;
+			    flo:outputName "OL" ;
+			    flo:outputType "rgb"
+			  ] ,
+			  [ flo:outputFor flo:eyes ;
+			    flo:outputName "OR" ;
+			    flo:outputType "rgb"
+			  ] ;
+	flo:requiresInput [ flo:inputFor flo:eyes ;
+			    flo:inputName "x" ;
+			    flo:inputType "proportion"
+			  ] ,
+			  [ flo:inputFor flo:eyes ;
+			    flo:inputName "y" ;
+			    flo:inputType "proportion"
+			  ] ;
+	flo:section "I/O" ;
+	flo:subsection "imaging" ;
+	flo:visual_style "normal" ;
+	rdfs:comment "input is commanded eye position, output is left and right eye cams" ;
+	rdfs:label "eyes" .
+
+flo:fft
+	a flo:BlockType ;
+	flo:optionalInput [ flo:outputFor flo:fft ;
+			    flo:outputName "O" ;
+			    flo:outputType "complex16"
+			  ] ;
+	flo:requiresInput [ flo:inputFor flo:fft ;
+			    flo:inputName "A" ;
+			    flo:inputType "image"
+			  ] ;
+	flo:section "CV" ;
+	flo:subsection "FrequencyDomain" ;
+	flo:visual_style "normal" ;
+	rdfs:comment "Output is the forward fourier transform as complex16" ;
+	rdfs:label "fft" .
+
+flo:flipflop
+	a flo:BlockType ;
+	flo:optionalInput [ flo:outputFor flo:flipflop ;
+			    flo:outputName "O" ;
+			    flo:outputType "int"
+			  ] ;
+	flo:requiresInput [ flo:inputFor flo:flipflop ;
+			    flo:inputName "J" ;
+			    flo:inputType "pulse"
+			  ] ,
+			  [ flo:inputFor flo:flipflop ;
+			    flo:inputName "K" ;
+			    flo:inputType "pulse"
+			  ] ;
+	flo:section "Control" ;
+	flo:subsection "Control" ;
+	flo:visual_style "normal" ;
+	rdfs:comment "a jk flipflop" ;
+	rdfs:label "flipflop" .
+
+flo:floatval
+	a flo:BlockType ;
+	flo:optionalInput [ flo:outputFor flo:floatval ;
+			    flo:outputName "O" ;
+			    flo:outputType "float"
+			  ] ;
+	flo:section "I/O" ;
+	flo:subsection "scalar" ;
+	flo:visual_style "visual_style4" ;
+	rdfs:comment "float value that varies over -inf to +inf" ;
+	rdfs:label "floatval" .
+
+flo:func
+	a flo:BlockType ;
+	flo:optionalInput [ flo:outputFor flo:func ;
+			    flo:outputName "O" ;
+			    flo:outputType "object"
+			  ] ;
+	flo:requiresInput [ flo:inputFor flo:func ;
+			    flo:inputName "A" ;
+			    flo:inputType "scalar"
+			  ] ,
+			  [ flo:inputFor flo:func ;
+			    flo:inputName "B" ;
+			    flo:inputType "scalar"
+			  ] ,
+			  [ flo:inputFor flo:func ;
+			    flo:inputName "C" ;
+			    flo:inputType "scalar"
+			  ] ;
+	flo:section "Math" ;
+	flo:subsection "Math" ;
+	flo:visual_style "normal" ;
+	rdfs:comment "This special block has a textbox for a formula. So if you type 3x+2 you see an input parameter x. Operator meaning depends on whats connected to x (scalar or vector). Understands LSL angle bracket quat syntax" ;
+	rdfs:label "func" .
+
+flo:gray
+	a flo:BlockType ;
+	flo:optionalInput [ flo:outputFor flo:gray ;
+			    flo:outputName "O" ;
+			    flo:outputType "gray"
+			  ] ;
+	flo:requiresInput [ flo:inputFor flo:gray ;
+			    flo:inputName "A" ;
+			    flo:inputType "image"
+			  ] ;
+	flo:section "CV" ;
+	flo:subsection "Image Processing" ;
+	flo:visual_style "normal" ;
+	rdfs:comment "desaturates an image andoutputs grayscale image" ;
+	rdfs:label "gray" .
+
+flo:hdr
+	a flo:BlockType ;
+	flo:optionalInput [ flo:outputFor flo:hdr ;
+			    flo:outputName "O" ;
+			    flo:outputType "hdr"
+			  ] ;
+	flo:requiresInput [ flo:inputFor flo:hdr ;
+			    flo:inputName "A" ;
+			    flo:inputType "image"
+			  ] ;
+	flo:section "CV" ;
+	flo:subsection "Image Processing" ;
+	flo:visual_style "normal" ;
+	rdfs:comment "converts image to high dynamic range from RGB or gray" ;
+	rdfs:label "hdr" .
+
+flo:horpipe
+	a flo:BlockType ;
+	flo:defaultPrototypeCoordinateX 20 ;
+	flo:defaultPrototypeCoordinateY 2 ;
+	flo:imageResource "/img/blocks/blocksheet0-_04.png" ;
+	flo:optionalInput [ flo:outputFor flo:horpipe ;
+			    flo:outputName "O" ;
+			    flo:outputType "any"
+			  ] ;
+	flo:requiresInput [ flo:inputFor flo:horpipe ;
+			    flo:inputName "A" ;
+			    flo:inputType "any"
+			  ] ;
+	flo:section "connector" ;
+	flo:subsection "pipe" ;
+	flo:visual_style "visual_style16" ;
+	rdfs:comment "bidi pipe connection" ;
+	rdfs:label "horpipe" .
+
+flo:if
+	a flo:BlockType ;
+	flo:optionalInput [ flo:outputFor flo:if ;
+			    flo:outputName "O" ;
+			    flo:outputType "object"
+			  ] ;
+	flo:requiresInput [ flo:inputFor flo:if ;
+			    flo:inputName "Cond" ;
+			    flo:inputType "scalar"
+			  ] ,
+			  [ flo:inputFor flo:if ;
+			    flo:inputName "A" ;
+			    flo:inputType "object"
+			  ] ,
+			  [ flo:inputFor flo:if ;
+			    flo:inputName "B" ;
+			    flo:inputType "object"
+			  ] ;
+	flo:section "Control" ;
+	flo:subsection "Control" ;
+	flo:visual_style "normal" ;
+	rdfs:comment "If Cond is true, O is A, else O is B" ;
+	rdfs:label "if" .
+
+flo:ifvar
+	a flo:BlockType ;
+	flo:optionalInput [ flo:outputFor flo:ifvar ;
+			    flo:outputName "O" ;
+			    flo:outputType "object"
+			  ] ;
+	flo:requiresInput [ flo:inputFor flo:ifvar ;
+			    flo:inputName "Cond" ;
+			    flo:inputType "string"
+			  ] ,
+			  [ flo:inputFor flo:ifvar ;
+			    flo:inputName "A" ;
+			    flo:inputType "object"
+			  ] ,
+			  [ flo:inputFor flo:ifvar ;
+			    flo:inputName "B" ;
+			    flo:inputType "object"
+			  ] ;
+	flo:section "Control" ;
+	flo:subsection "Control" ;
+	flo:visual_style "normal" ;
+	rdfs:comment "If the value of Va is true, O is A, else O is B. Var is some compile time variable (eg. DEV for development version)." ;
+	rdfs:label "ifvar" .
+
+flo:inputparam
+	a flo:BlockType ;
+	flo:optionalInput [ flo:outputFor flo:inputparam ;
+			    flo:outputName "O" ;
+			    flo:outputType "object"
+			  ] ;
+	flo:section "Editor Support" ;
+	flo:subsection "Editor Support" ;
+	flo:visual_style "visual_style0" ;
+	rdfs:comment "used when defining new blocks" ;
+	rdfs:label "inputparam" .
+
+flo:inv_fft
+	a flo:BlockType ;
+	flo:optionalInput [ flo:outputFor flo:inv_fft ;
+			    flo:outputName "O" ;
+			    flo:outputType "gray"
+			  ] ;
+	flo:requiresInput [ flo:inputFor flo:inv_fft ;
+			    flo:inputName "A" ;
+			    flo:inputType "complex16"
+			  ] ;
+	flo:section "CV" ;
+	flo:subsection "FrequencyDomain" ;
+	flo:visual_style "normal" ;
+	rdfs:comment "Input is the ft spectrum as complex16, Output is the inverse fourier transform as gray" ;
+	rdfs:label "inv_fft" .
+
+flo:isolate
+	a flo:BlockType ;
+	flo:optionalInput [ flo:outputFor flo:isolate ;
+			    flo:outputName "O" ;
+			    flo:outputType "object"
+			  ] ;
+	flo:requiresInput [ flo:inputFor flo:isolate ;
+			    flo:inputName "A" ;
+			    flo:inputType "object"
+			  ] ,
+			  [ flo:inputFor flo:isolate ;
+			    flo:inputName "Default" ;
+			    flo:inputType "object"
+			  ] ;
+	flo:section "Editor Support" ;
+	flo:subsection "Editor Support" ;
+	flo:visual_style "normal" ;
+	rdfs:comment "if the connection to A is visible, runs the network beyond A and passes A to O. Otherwise passes default to O. Used during development to prevent, for example, having to run the entire sound system because the sound system sends a hint to the CV system." ;
+	rdfs:label "isolate" .
+
+flo:kernal
+	a flo:BlockType ;
+	flo:optionalInput [ flo:outputFor flo:kernal ;
+			    flo:outputName "O" ;
+			    flo:outputType "kernal"
+			  ] ;
+	flo:section "I/O" ;
+	flo:subsection "imaging" ;
+	flo:visual_style "visual_style12" ;
+	rdfs:comment "kernal UI for defining kernals" ;
+	rdfs:label "kernal" .
+
+flo:listen
+	a flo:BlockType ;
+	flo:requiresInput [ flo:inputFor flo:listen ;
+			    flo:inputName "A" ;
+			    flo:inputType "sample"
+			  ] ;
+	flo:section "I/O" ;
+	flo:subsection "sound" ;
+	flo:visual_style "visual_style5" ;
+	rdfs:comment "Sends sound to default output" ;
+	rdfs:label "listen" .
+
+flo:mic
+	a flo:BlockType ;
+	flo:optionalInput [ flo:outputFor flo:mic ;
+			    flo:outputName "O" ;
+			    flo:outputType "sample"
+			  ] ;
+	flo:section "I/O" ;
+	flo:subsection "sound" ;
+	flo:visual_style "normal" ;
+	rdfs:comment "samples from mic" ;
+	rdfs:label "mic" .
+
+flo:motors
+	a flo:BlockType ;
+	flo:requiresInput [ flo:inputFor flo:motors ;
+			    flo:inputName "A" ;
+			    flo:inputType "joints"
+			  ] ,
+			  [ flo:inputFor flo:motors ;
+			    flo:inputName "Mask" ;
+			    flo:inputType "jointmask"
+			  ] ;
+	flo:section "I/O" ;
+	flo:subsection "body" ;
+	flo:visual_style "normal" ;
+	rdfs:comment "Send channels of vector A matching Mask to robot servos" ;
+	rdfs:label "motors" .
+
+flo:motorsim
+	a flo:BlockType ;
+	flo:requiresInput [ flo:inputFor flo:motorsim ;
+			    flo:inputName "A" ;
+			    flo:inputType "joints"
+			  ] ,
+			  [ flo:inputFor flo:motorsim ;
+			    flo:inputName "Mask" ;
+			    flo:inputType "jointmask"
+			  ] ;
+	flo:section "I/O" ;
+	flo:subsection "body" ;
+	flo:visual_style "normal" ;
+	rdfs:comment "As per motors, but to simulator" ;
+	rdfs:label "motorsim" .
+
+flo:outputparam
+	a flo:BlockType ;
+	flo:requiresInput [ flo:inputFor flo:outputparam ;
+			    flo:inputName "A" ;
+			    flo:inputType "object"
+			  ] ;
+	flo:section "Editor Support" ;
+	flo:subsection "Editor Support" ;
+	flo:visual_style "visual_style1" ;
+	rdfs:comment "used when defining new blocks" ;
+	rdfs:label "outputparam" .
+
+flo:pixel
+	a flo:BlockType ;
+	flo:optionalInput [ flo:inputFor flo:pixel ;
+			    flo:inputName "M" ;
+			    flo:inputType "mask"
+			  ] ,
+			  [ flo:outputFor flo:pixel ;
+			    flo:outputName "O" ;
+			    flo:outputType "image"
+			  ] ;
+	flo:requiresInput [ flo:inputFor flo:pixel ;
+			    flo:inputName "A" ;
+			    flo:inputType "image"
+			  ] ;
+	flo:section "CV" ;
+	flo:subsection "Image Processing" ;
+	flo:visual_style "visual_style22" ;
+	rdfs:comment "as func, but has three formula boxes. Each one knows about r,g,b,m variables. Runs this formula for each pixel in image." ;
+	rdfs:label "pixel" .
+
+flo:proportion
+	a flo:BlockType ;
+	flo:optionalInput [ flo:outputFor flo:proportion ;
+			    flo:outputName "O" ;
+			    flo:outputType "proportion"
+			  ] ;
+	flo:section "I/O" ;
+	flo:subsection "scalar" ;
+	flo:visual_style "visual_style3" ;
+	rdfs:comment "slider value from 0-1" ;
+	rdfs:label "proportion" .
+
+flo:pulse
+	a flo:BlockType ;
+	flo:optionalInput [ flo:outputFor flo:pulse ;
+			    flo:outputName "O" ;
+			    flo:outputType "pulse"
+			  ] ;
+	flo:section "I/O" ;
+	flo:subsection "scalar" ;
+	flo:visual_style "visual_style2" ;
+	rdfs:comment "Is 1 on the next frame after mouseup" ;
+	rdfs:label "pulse" .
+
+flo:spectrum
+	a flo:BlockType ;
+	flo:requiresInput [ flo:inputFor flo:spectrum ;
+			    flo:inputName "A" ;
+			    flo:inputType "sample"
+			  ] ;
+	flo:section "I/O" ;
+	flo:subsection "imaging" ;
+	flo:visual_style "visual_style9" ;
+	rdfs:comment "dancing spectrum display" ;
+	rdfs:label "spectrum" .
+
+flo:threshold
+	a flo:BlockType ;
+	flo:optionalInput [ flo:outputFor flo:threshold ;
+			    flo:outputName "O" ;
+			    flo:outputType "mask"
+			  ] ;
+	flo:requiresInput [ flo:inputFor flo:threshold ;
+			    flo:inputName "A" ;
+			    flo:inputType "image"
+			  ] ,
+			  [ flo:inputFor flo:threshold ;
+			    flo:inputName "Thresh" ;
+			    flo:inputType "proportion"
+			  ] ;
+	flo:section "CV" ;
+	flo:subsection "Image Processing" ;
+	flo:visual_style "normal" ;
+	rdfs:comment "out is mask with black in areas above threshold" ;
+	rdfs:label "threshold" .
+
+flo:ulbend
+	a flo:BlockType ;
+	flo:defaultPrototypeCoordinateX 20 ;
+	flo:defaultPrototypeCoordinateY 5 ;
+	flo:imageResource "/img/blocks/blocksheet0-_11.png" ;
+	flo:optionalInput [ flo:outputFor flo:ulbend ;
+			    flo:outputName "O" ;
+			    flo:outputType "any"
+			  ] ;
+	flo:requiresInput [ flo:inputFor flo:ulbend ;
+			    flo:inputName "A" ;
+			    flo:inputType "any"
+			  ] ;
+	flo:section "connector" ;
+	flo:subsection "pipe" ;
+	flo:visual_style "visual_style19" ;
+	rdfs:comment "bidi pipe connection" ;
+	rdfs:label "ulbend" .
+
+flo:urbend
+	a flo:BlockType ;
+	flo:defaultPrototypeCoordinateX 20 ;
+	flo:defaultPrototypeCoordinateY 4 ;
+	flo:imageResource "/img/blocks/blocksheet0-_14.png" ;
+	flo:optionalInput [ flo:outputFor flo:urbend ;
+			    flo:outputName "O" ;
+			    flo:outputType "any"
+			  ] ;
+	flo:requiresInput [ flo:inputFor flo:urbend ;
+			    flo:inputName "A" ;
+			    flo:inputType "any"
+			  ] ;
+	flo:section "connector" ;
+	flo:subsection "pipe" ;
+	flo:visual_style "visual_style18" ;
+	rdfs:comment "bidi pipe connection" ;
+	rdfs:label "urbend" .
+
+flo:vertpipe
+	a flo:BlockType ;
+	flo:optionalInput [ flo:outputFor flo:vertpipe ;
+			    flo:outputName "OA" ;
+			    flo:outputType "any"
+			  ] ;
+	flo:requiresInput [ flo:inputFor flo:vertpipe ;
+			    flo:inputName "A" ;
+			    flo:inputType "any"
+			  ] ;
+	flo:section "connector" ;
+	flo:subsection "pipe" ;
+	flo:visual_style "visual_style21" ;
+	rdfs:comment "bidi pipe connection" ;
+	rdfs:label "vertpipe" .
+
+flo:videoplayer
+	a flo:BlockType ;
+	flo:optionalInput [ flo:outputFor flo:videoplayer ;
+			    flo:outputName "O" ;
+			    flo:outputType "rgb"
+			  ] ,
+			  [ flo:outputFor flo:videoplayer ;
+			    flo:outputName "S" ;
+			    flo:outputType "sample"
+			  ] ;
+	flo:section "I/O" ;
+	flo:subsection "imaging" ;
+	flo:visual_style "visual_style7" ;
+	rdfs:comment "Sends frames out O, sound out S" ;
+	rdfs:label "videoplayer" .
+
+flo:videorecord
+	a flo:BlockType ;
+	flo:optionalInput [ flo:inputFor flo:videorecord ;
+			    flo:inputName "Vid" ;
+			    flo:inputType "image"
+			  ] ,
+			  [ flo:inputFor flo:videorecord ;
+			    flo:inputName "Snd" ;
+			    flo:inputType "sample"
+			  ] ;
+	flo:section "I/O" ;
+	flo:subsection "imaging" ;
+	flo:visual_style "visual_style8" ;
+	rdfs:comment "Records frames to file. Figures out what to record from filetype and what's connected." ;
+	rdfs:label "videorecord" .
+
+flo:viewer
+	a flo:BlockType ;
+	flo:requiresInput [ flo:inputFor flo:viewer ;
+			    flo:inputName "A" ;
+			    flo:inputType "image"
+			  ] ;
+	flo:section "I/O" ;
+	flo:subsection "imaging" ;
+	flo:visual_style "visual_style11" ;
+	rdfs:comment "displays image" ;
+	rdfs:label "viewer" .
+
+flo:white
+	a flo:BlockType ;
+	flo:optionalInput [ flo:outputFor flo:white ;
+			    flo:outputName "O" ;
+			    flo:outputType "mask"
+			  ] ;
+	flo:section "CV" ;
+	flo:subsection "Image Processing" ;
+	flo:visual_style "normal" ;
+	rdfs:comment "outputs a solid white frame the camera size" ;
+	rdfs:label "white" .

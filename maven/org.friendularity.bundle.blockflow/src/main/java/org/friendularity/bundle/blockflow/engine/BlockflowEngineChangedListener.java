@@ -19,6 +19,6 @@ package org.friendularity.bundle.blockflow.engine;
  *
  * @author Annie
  */
-public interface BlockModelChangedListener {
-	public void modelChanged(BlockflowEngine engine);
+public interface BlockflowEngineChangedListener {
+	public void engineChanged(BlockflowEngine engine);
 }
