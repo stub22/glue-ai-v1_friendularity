@@ -48,8 +48,8 @@ add_rdf([H|T]) :-
 	;
 	    true),
 	(   prototype_coordinates(H, X, Y) ->
-	    rdf_assert(HGlobal, flo:prototypeCoordinateX, literal(X)),
-	    rdf_assert(HGlobal, flo:prototypeCoordinateY, literal(Y))
+	    rdf_assert(HGlobal, flo:defaultPrototypeCoordinateX, literal(X)),
+	    rdf_assert(HGlobal, flo:defaultPrototypeCoordinateY, literal(Y))
 	;
 	    true),
 	add_rdf(T).

@@ -16,11 +16,29 @@
 package org.friendularity.bundle.blockflow.engine;
 
 import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.RDFNode;
+import com.hp.hpl.jena.rdf.model.ResIterator;
 import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.rdf.model.Statement;
+import java.awt.Point;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.friendularity.bundle.blockflow.util.OSGi_ResourceLoader;
+import org.friendularity.bundle.blockflow.util.QN;
 
 /**
  *
+ * TODO - refactor this so it's the owner of the model off proto.ttl
+ * 
+ * and change the name of prototypeCoordinateX to defaultPrototypeCoordinateX
+ * then this becomes immutable facts about the blocks only
+ * 
+ * BlockflowModel knows all the mutable stuff, including the locations of BlockProtoRepresentation instances
+ * 
+ * But this class is the fly provider for flyweight pattern
+ * 
  * @author Annie
  */
 final class BlockBuilder {
@@ -30,9 +48,10 @@ final class BlockBuilder {
 	
 	private static BlockBuilder defaultBB = null;
 	
-	private Model theRDFModel = null;
+	private Model protoModel = null;
 	
-	private HashMap<Resource, BlockProtoReprentation>prototypes = new HashMap<Resource, BlockProtoReprentation>();
+	private HashMap<Resource, BlockProto>prototypes = new HashMap<Resource, BlockProto>();
+	
 	
 	public BlockishThing getBlockishThing(int type) {
 		if(type == BACKGROUND)
@@ -51,34 +70,70 @@ final class BlockBuilder {
 	// don't instantiate me
 	private BlockBuilder()
 	{
-		
+				// create an empty Model
+		protoModel = ModelFactory.createDefaultModel();
+		OSGi_ResourceLoader.getDefaultImageLoader().loadModelFromTurtleResource(
+				 protoModel, "/ttl/protos.ttl");
 	}
 
 	public BlockishThing getPrototype(Resource subject) {
-		BlockProtoReprentation bp = prototypes.get(subject);
+		BlockProto bp = prototypes.get(subject);
 		if(bp == null)
 		{
-			if(theRDFModel == null)
+			if(protoModel == null)
 				throw new IllegalAccessError("You cannot get prototypes while the model is null");
-			bp = new BlockProtoReprentation(subject);
+			bp = new BlockProto(subject);
 			prototypes.put(subject, bp);
 			return bp;
 		}
 		else
 			return bp;
+	}			
+
+	void populateNewBlockflowModel(BlockflowModel bfmodel) {
+		// list the statements in the Model
+		ResIterator iter = protoModel.listSubjectsWithProperty(
+				protoModel.getProperty(QN.rdf("type")),
+				protoModel.getResource(QN.flo("BlockType")));
+
+		// print out the predicate, subject and object of each statement
+		while (iter.hasNext()) {
+			Resource subject = iter.next();
+			Statement imageResourceStatement = subject.getProperty(
+					protoModel.getProperty(QN.flo("imageResource")));
+			Statement prototypeCoordinateXStatement = 
+					subject.getProperty(
+						protoModel.getProperty(QN.flo("defaultPrototypeCoordinateX")));
+			Statement prototypeCoordinateYStatement = 
+					subject.getProperty(
+						protoModel.getProperty(QN.flo("defaultPrototypeCoordinateY")));			
+
+		    if(imageResourceStatement != null && 
+					prototypeCoordinateXStatement != null &&
+					prototypeCoordinateYStatement != null)
+			{
+				Logger.getLogger(BlockflowEngine.class.getName()).log(Level.INFO, 
+						subject.toString() + " " +
+						imageResourceStatement.getObject().toString() + " (" +
+						prototypeCoordinateXStatement.getObject().asLiteral().getInt() + ", " +
+						prototypeCoordinateYStatement.getObject().asLiteral().getInt() + ")"
+						);
+				bfmodel.setThingAtLocation(
+						prototypeCoordinateXStatement.getObject().asLiteral().getInt(),
+						prototypeCoordinateYStatement.getObject().asLiteral().getInt(),
+						BlockBuilder.getDefaultBlockBuilder().getPrototype(subject));
+			}
+		}
 	}
 
-	void setRDFModel(Model m) {
-		if(m == null)
-			throw new IllegalArgumentException("You cannot set BlockBuilders model to null");
-		theRDFModel = m;
+	RDFNode getPropertyOf(String classOfThing, String propertyQName) {
+		Resource r = protoModel.getResource(classOfThing);
+		if (r == null)return null;
+		
+		Statement stmt = r.getProperty(
+			protoModel.getProperty(QN.flo(propertyQName)));
+		if (stmt == null)return null;
+		
+		return stmt.getObject();
 	}
-	
-	
-	Model getRDFModel() {
-		if(theRDFModel == null)
-			throw new IllegalArgumentException("You cannot set BlockBuilders model to null");
-		return theRDFModel;
-	}
-			
 }

@@ -30,16 +30,18 @@ import org.friendularity.bundle.blockflow.util.OSGi_ResourceLoader;
 import org.friendularity.bundle.blockflow.util.QN;
 
 /**
- *  A block prototype representation
+ *  A block prototype
+ * 
+ * Part of BlockBuilder's flies.
  * 
  * @author Annie
  */
-class BlockProtoReprentation extends BlockishThing {
+class BlockProto extends BlockishThing {
 
 	private String classOfThing = null;
 	private Image  componentImage = null;
 	
-	BlockProtoReprentation(Resource subject) {
+	BlockProto(Resource subject) {
 		classOfThing = subject.toString();  // don't hold onto Resource, model might change under us
 	}
 
@@ -73,20 +75,14 @@ class BlockProtoReprentation extends BlockishThing {
 		
 		//  more than slightly bogus but it's what we're doing
 		
-		Model m = BlockBuilder.getDefaultBlockBuilder().getRDFModel();
-		Resource r = m.getResource(classOfThing);
-		if (r == null)return null;
+		String resourceName =  BlockBuilder.getDefaultBlockBuilder()
+				.getPropertyOf(classOfThing, "imageResource").asLiteral().getString();
 		
-		Statement imageResourceStatement = r.getProperty(
-			m.getProperty(QN.flo("imageResource")));
-		if (imageResourceStatement == null)return null;
-		
-		String resourceName = imageResourceStatement.getObject().asLiteral().getString();
 		if (resourceName == null)return null;
 		try {
 			componentImage = OSGi_ResourceLoader.getDefaultImageLoader().getImageResource(resourceName);
 		} catch (IOException ex) {
-			Logger.getLogger(BlockProtoReprentation.class.getName()).log(Level.SEVERE, 
+			Logger.getLogger(BlockProto.class.getName()).log(Level.SEVERE, 
 					"Resource" + resourceName + " is missing", ex);
 			return null;
 		}

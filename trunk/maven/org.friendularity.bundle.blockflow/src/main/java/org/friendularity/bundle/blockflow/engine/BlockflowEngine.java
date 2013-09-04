@@ -31,7 +31,7 @@ public class BlockflowEngine implements ViewListener {
 
 	private BlockViewport myViewport;
 	
-	private ArrayList<BlockModelChangedListener> views = new ArrayList<BlockModelChangedListener>();
+	private ArrayList<BlockflowEngineChangedListener> modelListeners = new ArrayList<BlockflowEngineChangedListener>();
 	private BlockflowModel myModel;
 	
 	public BlockflowEngine()
@@ -39,82 +39,22 @@ public class BlockflowEngine implements ViewListener {
 		myViewport = new BlockViewport();
 		myViewport.addViewListener(this);
 		myModel = new BlockflowModel();
-		
-		testJena();
 	}
 	
 	public BlockViewport getViewport() {
 		return myViewport;
 	}
-	
-	void testJena() {
-		// some definitions
-		String personURI    = "http://www.pathwayslms.com/JohnSmith";
-		String fullName     = "John Smith";
-
-		// create an empty Model
-		Model model = ModelFactory.createDefaultModel();
-
-		// create the resource
-		Resource johnSmith = model.createResource(personURI);
-
-		// add the property
-		 johnSmith.addProperty(VCARD.FN, fullName);
-		 
-		 OSGi_ResourceLoader.getDefaultImageLoader().loadModelFromTurtleResource(model, "/ttl/protos.ttl");
-		 
-		 Resource  dlbend = model.getResource(QN.flo("dlbend"));
-		 
-		 Property imageResourceProp = model.getProperty(QN.flo("imageResource"));
-		 
-		 // returns null if doesn't have this prop
-		 Statement imageResourceName = dlbend.getProperty(imageResourceProp);
-		 
-		 imageResourceName.getObject().toString();
-		 
-		 System.out.println("WAHOOOOOOOOO " + imageResourceName.getObject().toString());
-		
-		// list the statements in the Model
-		ResIterator iter = model.listSubjectsWithProperty(
-				model.getProperty(QN.rdf("type")),
-				model.getResource(QN.flo("BlockType")));
-
-		// print out the predicate, subject and object of each statement
-		while (iter.hasNext()) {
-			Resource subject = iter.next();
-			Statement imageResourceStatement = subject.getProperty(
-					model.getProperty(QN.flo("imageResource")));
-			Statement prototypeCoordinateXStatement = 
-					subject.getProperty(
-						model.getProperty(QN.flo("prototypeCoordinateX")));
-			Statement prototypeCoordinateYStatement = 
-					subject.getProperty(
-						model.getProperty(QN.flo("prototypeCoordinateY")));			
-
-		    if(imageResourceStatement != null && 
-					prototypeCoordinateXStatement != null &&
-					prototypeCoordinateYStatement != null)
-			{
-				Logger.getLogger(BlockflowEngine.class.getName()).log(Level.INFO, 
-						subject.toString() + " " +
-						imageResourceStatement.getObject().toString() + " (" +
-						prototypeCoordinateXStatement.getObject().asLiteral().getInt() + ", " +
-						prototypeCoordinateYStatement.getObject().asLiteral().getInt() + ")"
-						);
-			}
-		}
-	}
 
 	@Override
 	public void viewChanged(BlockViewport view) {
-		for(Iterator<BlockModelChangedListener>i = views.iterator() ; i.hasNext(); )
+		for(Iterator<BlockflowEngineChangedListener>i = modelListeners.iterator() ; i.hasNext(); )
 		{
-			i.next().modelChanged(this);
+			i.next().engineChanged(this);
 		}
 	}
 
-	public void addView(BlockModelChangedListener view) {
-		views.add(view);
+	public void addEngineListener(BlockflowEngineChangedListener engineListener) {
+		modelListeners.add(engineListener);
 	}
 
 	public BlockflowModel getModel() {

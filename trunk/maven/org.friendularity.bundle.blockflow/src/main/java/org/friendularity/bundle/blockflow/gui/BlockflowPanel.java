@@ -6,7 +6,7 @@
 package org.friendularity.bundle.blockflow.gui;
 
 import org.friendularity.bundle.blockflow.engine.BlockishThing;
-import org.friendularity.bundle.blockflow.engine.BlockModelChangedListener;
+import org.friendularity.bundle.blockflow.engine.BlockflowEngineChangedListener;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Graphics;
@@ -39,7 +39,7 @@ class BlockflowPanel extends JPanel implements
 		MouseListener, 
 		MouseMotionListener, 
 		MouseWheelListener,
-		BlockModelChangedListener {
+		BlockflowEngineChangedListener {
 	private BufferedImage theBackground = null;
 	private BufferedImage theBackgroundSmall = null;
 	private BufferedImage theBackgroundTiny = null;
@@ -67,7 +67,7 @@ class BlockflowPanel extends JPanel implements
 		this.setLayout(null);
 		
 		myEngine = anEngine;
-		myEngine.addView(this);
+		myEngine.addEngineListener(this);
 
 		try {
 			theBackground = OSGi_ResourceLoader.getDefaultImageLoader().getImageResource("/img/background.png");
@@ -234,7 +234,7 @@ class BlockflowPanel extends JPanel implements
 	}
 
 	@Override
-	public void modelChanged(BlockflowEngine engine) {
+	public void engineChanged(BlockflowEngine engine) {
 		repaint(50L);
 	}
 }
