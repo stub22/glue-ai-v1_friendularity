@@ -4,6 +4,11 @@ import org.friendularity.bundle.blockflow.gui.BlockflowLauncher;
 import org.appdapter.osgi.core.BundleActivatorBase;
 import org.osgi.framework.BundleContext;
 
+/**
+ * Needed link object for OSGi
+ * 
+ * @author Annie
+ */
 public class BlockflowBundleActivator extends BundleActivatorBase {
 	
 	BlockflowLauncher myLauncher;

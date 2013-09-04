@@ -16,7 +16,10 @@
 package org.friendularity.bundle.blockflow.engine;
 
 /**
- *
+ * An empty space
+ * 
+ * Part of the flyweight pattern
+ * 
  * @author Annie
  */
 class BackgroundBlock extends BlockishThing {
