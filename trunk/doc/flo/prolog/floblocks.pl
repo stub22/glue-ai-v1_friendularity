@@ -25,7 +25,6 @@
 	prototype_coordinates/3.
 
 
-
 %  ===== if ===========
 section(if, 'Control').
 subsection(if, 'Control').
@@ -57,6 +56,7 @@ inputs(flipflop, [required('J'), required('K')]).
 outputs(flipflop, ['O']).
 input_types(flipflop, [pulse, pulse]).
 output_types(flipflop, [int]).
+image_name(flipflop, '/img/blocks/blocksheet1_01.png').
 
 
 
@@ -128,6 +128,8 @@ inputs(pulse, []).
 outputs(pulse, ['O']).
 input_types(pulse, []).
 output_types(pulse, [pulse]).
+image_name(pulse, '/img/blocks/blocksheet1_01.png').
+prototype_coordinates(pulse, 21, 0).
 
 
 %  ===== proportion ===========
@@ -139,6 +141,8 @@ inputs(proportion, []).
 outputs(proportion, ['O']).
 input_types(proportion, []).
 output_types(proportion, [proportion]).
+image_name(proportion, '/img/blocks/blocksheet1_02.png').
+prototype_coordinates(proportion, 21, 1).
 
 
 %  ===== floatval ===========
@@ -150,6 +154,8 @@ inputs(floatval, []).
 outputs(floatval, ['O']).
 input_types(floatval, []).
 output_types(floatval, [float]).
+image_name(floatval, '/img/blocks/blocksheet1_03.png').
+prototype_coordinates(floatval, 21, 2).
 
 
 
@@ -162,6 +168,8 @@ inputs(mic, []).
 outputs(mic, ['O']).
 input_types(mic, []).
 output_types(mic, [sample]).
+image_name(mic, '/img/blocks/blocksheet1_04.png').
+prototype_coordinates(mic, 21, 3).
 
 
 %  ===== listen ===========
@@ -173,6 +181,8 @@ inputs(listen, [required('A')]).
 outputs(listen, []).
 input_types(listen, [sample]).
 output_types(listen, []).
+image_name(listen, '/img/blocks/blocksheet1_05.png').
+prototype_coordinates(listen, 21, 4).
 
 
 
@@ -185,6 +195,8 @@ inputs(camera, []).
 outputs(camera, ['O', 'K']).
 input_types(camera, []).
 output_types(camera, [rgb, intrinsics]).
+image_name(camera, '/img/blocks/blocksheet1_06.png').
+prototype_coordinates(camera, 21, 5).
 
 
 %  ===== eyes ===========
@@ -196,6 +208,8 @@ inputs(eyes, [required('x'), required('y')]).
 outputs(eyes, ['OL', 'OR']).
 input_types(eyes, [proportion, proportion]).
 output_types(eyes, [rgb, rgb]).
+image_name(eyes, '/img/blocks/blocksheet1_07.png').
+prototype_coordinates(eyes, 21, 6).
 
 
 %  ===== videoplayer ===========
@@ -229,6 +243,8 @@ inputs(spectrum, [required('A')]).
 outputs(spectrum, []).
 input_types(spectrum, [sample]).
 output_types(spectrum, []).
+image_name(spectrum, '/img/blocks/blocksheet1_09.png').
+prototype_coordinates(spectrum, 21, 7).
 
 
 %  ===== draw_tool ===========
@@ -251,6 +267,8 @@ inputs(viewer, [required('A')]).
 outputs(viewer, []).
 input_types(viewer, [image]).
 output_types(viewer, []).
+image_name(viewer, '/img/blocks/blocksheet1_13.png').
+prototype_coordinates(viewer, 21, 8).
 
 
 %  ===== kernal ===========
@@ -262,6 +280,8 @@ inputs(kernal, []).
 outputs(kernal, ['O']).
 input_types(kernal, []).
 output_types(kernal, [kernal]).
+image_name(kernal, '/img/blocks/blocksheet1_14.png').
+prototype_coordinates(kernal, 21, 9).
 
 
 
@@ -274,6 +294,8 @@ inputs(bodymask, []).
 outputs(bodymask, ['O']).
 input_types(bodymask, []).
 output_types(bodymask, [mask]).
+image_name(bodymask, '/img/blocks/blocksheet1_10.png').
+prototype_coordinates(bodymask, 21, 10).
 
 
 %  ===== bodyposition ===========
@@ -285,6 +307,8 @@ inputs(bodyposition, []).
 outputs(bodyposition, ['O']).
 input_types(bodyposition, []).
 output_types(bodyposition, [joints]).
+image_name(bodyposition, '/img/blocks/blocksheet1_11.png').
+prototype_coordinates(bodyposition, 21, 11).
 
 
 %  ===== bodypossim ===========
@@ -296,6 +320,8 @@ inputs(bodypossim, []).
 outputs(bodypossim, ['O']).
 input_types(bodypossim, []).
 output_types(bodypossim, [joints]).
+image_name(bodypossim, '/img/blocks/blocksheet1_16.png').
+prototype_coordinates(bodypossim, 21, 12).
 
 
 %  ===== motors ===========
@@ -307,6 +333,8 @@ inputs(motors, [required('A'), required('Mask')]).
 outputs(motors, []).
 input_types(motors, [joints, jointmask]).
 output_types(motors, []).
+image_name(motors, '/img/blocks/blocksheet1_15.png').
+prototype_coordinates(motors, 21, 13).
 
 
 %  ===== motorsim ===========
@@ -318,6 +346,8 @@ inputs(motorsim, [required('A'), required('Mask')]).
 outputs(motorsim, []).
 input_types(motorsim, [joints, jointmask]).
 output_types(motorsim, []).
+image_name(motorsim, '/img/blocks/blocksheet1_17.png').
+prototype_coordinates(motorsim, 21, 14).
 
 
 
@@ -422,6 +452,8 @@ inputs(vertpipe, [required('A')]).
 outputs(vertpipe, ['OA']).
 input_types(vertpipe, [any]).
 output_types(vertpipe, [any]).
+image_name(vertpipe, '/img/blocks/blocksheet0-_08.png').
+prototype_coordinates(vertpipe, 20, 7).
 
 
 
@@ -579,60 +611,5 @@ inputs(inv_fft, [required('A')]).
 outputs(inv_fft, ['O']).
 input_types(inv_fft, [complex16]).
 output_types(inv_fft, [gray]).
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
