@@ -35,7 +35,7 @@ public class EstimateLib {
 			PersonEstimate pest = new PersonEstimate(personID, i);
 			double px = -10.0 - i * 2.0, py = 10.0 + i * 2.0, pz = 4.0;
 			String baseVecExpr = "{" + px + ", " + py + ", " + pz + "}";
-			pest.setPosMathExpr("Sin[$phaseAng]*Sqrt[1.0 * $personIdx]*" + baseVecExpr);
+			pest.setPosMathExpr("$multA * Sin[$phaseAng]*Sqrt[1.0 * $personIdx]*" + baseVecExpr);
 			pest.setColorMathExpr("{Sin[$phaseAng],Sin[3.0*$phaseAng], Sin[$phaseAng/2], $phaseFrac}");
 			sampleSet.add(pest);
 		}
@@ -53,7 +53,7 @@ public class EstimateLib {
 			// Making use of single-threaded access to MathSpace:
 			// We assume that someone will post our stuffIdx before each eval of the following.
 			String baseVecExpr = "{" + px + ", " + py + ", " + pz + "}";
-			sest.setPosMathExpr("Sin[$phaseAng]*" + baseVecExpr);
+			sest.setPosMathExpr("$multA*Sin[$phaseAng]*" + baseVecExpr);
 			sest.setColorMathExpr("{Sin[$stuffIdx * $phaseAng],Sin[3.0 * $phaseAng], Sin[$phaseAng/(2 * $stuffIdx)], $phaseFrac * $stuffIdx}");
 			sampleSet.add(sest);
 		}

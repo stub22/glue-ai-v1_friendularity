@@ -55,9 +55,11 @@ public class WorldEstimateRenderModule extends RenderModule implements WorldEsti
 		setDebugRateModulus(1000);
 	}
 
-	@Override
-	public void setWorldEstimate(WorldEstimate worldEstim) {
+	@Override public void setWorldEstimate(WorldEstimate worldEstim) {
 		myCachedWorldEstim = worldEstim;
+	}
+	public WorldEstimate getWorldEstimate() { 
+		return myCachedWorldEstim;
 	}
 
 	public void setMathGate(MathGate mg) {
