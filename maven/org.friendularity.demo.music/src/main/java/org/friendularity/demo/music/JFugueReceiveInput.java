@@ -46,13 +46,14 @@ public class JFugueReceiveInput {
 			System.out.println("Checking:  " + info.toString());
 			Transmitter t = getTransmitter(info);
 			if (t != null) {
+				String name = info.getName();
 				System.out.println("FOUND TRANSMITTER: " + t);
 				MidiDevice device = MidiSystem.getMidiDevice(info);
 				System.out.println("ON DEVICE: " + device);
 				System.out.println("Vendor: " + info.getVendor());
-				System.out.println("Name: " + info.getName());
+				System.out.println("Name: " + name);
 				System.out.println("Description: " + info.getDescription());
-				if (info.getName().equals("USB Audio Device")) {
+				if (name.equals("USB Audio Device") || name.equals("MPK mini")) {
 					System.out.println("MATCH\n===============");
 					return info;
 				}

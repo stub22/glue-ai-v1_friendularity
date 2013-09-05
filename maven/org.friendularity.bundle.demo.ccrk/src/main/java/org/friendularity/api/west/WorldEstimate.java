@@ -64,10 +64,14 @@ public class WorldEstimate extends ThingEstimate {
 	boolean mathNeedsInit = true;
 
 
+	public double mult_A = 1.0;
+	
 	@Override public void updateFromMathSpace(MathGate mg) {
 		long nowMsec = System.currentTimeMillis();
 		double nowSec = nowMsec / 1000.0;
 		mg.putVar("$nowSec", new Double(nowSec));
+		mg.putVar("$multA", new Double(mult_A));
+		
 		if (mathNeedsInit) {
 			mg.putVar("$startSec", new Double(nowSec));
 			mg.putVar("$cycleSec", new Double(3.0));
@@ -76,6 +80,7 @@ public class WorldEstimate extends ThingEstimate {
 		// Running these expressions updates some variables within the mathGate, used by demonstration oscillators.
 		Object globs1 = mg.parseAndEvalExprToIExpr("$elapsed:=$nowSec-$startSec; $cycles:=Floor[$elapsed/$cycleSec]");
 		Object globs2 = mg.parseAndEvalExprToIExpr("$phaseFrac:=$elapsed/$cycleSec-$cycles; $phaseAng:=2.0*Pi*$phaseFrac");
+		
 
 		ensureSubpartsExist();
 

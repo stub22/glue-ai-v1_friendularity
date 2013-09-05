@@ -22,6 +22,7 @@ import org.friendularity.math.api.MathGate;
 import org.friendularity.api.west.ThingEstimate;
 import org.friendularity.api.west.WorldEstimate;
 import org.friendularity.api.west.WorldEstimateRenderModule;
+import org.friendularity.impl.midi.FunMidiEventRouter;
 import org.friendularity.math.test.symcalc.ScriptEngineExperiment;
 import org.friendularity.vworld.VisionDataFeed;
 import org.robokind.api.motion.Robot;
@@ -142,13 +143,14 @@ public class CCRK_DemoActivator extends BundleActivatorBase {
 		Robot.Id optRobotID_elseAllRobots = null;		
 		startMotionComputers(bundleCtx, optRobotID_elseAllRobots, we);	
 		startVisionMonitors();
+		startMidiRouters(werm);
 		
 		setupDebuggingScaffold(mg, we);
 		
 		if (localDemoCheatersContext != null) {
 			getLogger().info("We have a cheaters Puma-App-Context, but we're not using it today");
 		}
-		
+
 	}
 	private void setupDebuggingScaffold(MathGate mg, WorldEstimate we) { 
 		DemoBrowser.showObject("werm-MG", mg, false, false); // true, true);
@@ -192,6 +194,15 @@ public class CCRK_DemoActivator extends BundleActivatorBase {
 			vdf.registerDummyListeners();
 			vdf.startServices();
 		}
+	}
+	private void startMidiRouters(WorldEstimateRenderModule werm) { 
+		FunMidiEventRouter fmer = new FunMidiEventRouter();
+		MidiCommandMapper mcm = new MidiCommandMapper();
+		mcm.myWERM = werm;
+		fmer.registerListener(mcm);
+		//FunMidiEventRouter.FunListener fl = new FunMidiEventRouter.FunListener();
+		//fmer.registerListener(fl);			
+		fmer.startPumpingMidiEvents();		
 	}
 	static class DemoMediator extends PumaContextMediator {
 		// Override base class methods to customize the way that PUMA boots + runs, and
