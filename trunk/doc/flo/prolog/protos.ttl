@@ -6,19 +6,23 @@
 
 flo:adaptivehistoequal
 	a flo:BlockType ;
-	flo:optionalInput [ flo:outputFor flo:adaptivehistoequal ;
-			    flo:outputName "O" ;
-			    flo:outputType "image"
-			  ] ;
-	flo:requiresInput [ flo:inputFor flo:adaptivehistoequal ;
+	flo:hasOutput [ a flo:BlockOutput ;
+			flo:outputFor flo:adaptivehistoequal ;
+			flo:outputName "O" ;
+			flo:outputType "image"
+		      ] ;
+	flo:requiresInput [ a flo:BlockInput ;
+			    flo:inputFor flo:adaptivehistoequal ;
 			    flo:inputName "A" ;
 			    flo:inputType "image"
 			  ] ,
-			  [ flo:inputFor flo:adaptivehistoequal ;
+			  [ a flo:BlockInput ;
+			    flo:inputFor flo:adaptivehistoequal ;
 			    flo:inputName "Prop" ;
 			    flo:inputType "proportion"
 			  ] ,
-			  [ flo:inputFor flo:adaptivehistoequal ;
+			  [ a flo:BlockInput ;
+			    flo:inputFor flo:adaptivehistoequal ;
 			    flo:inputName "Block" ;
 			    flo:inputType "int"
 			  ] ;
@@ -30,19 +34,23 @@ flo:adaptivehistoequal
 
 flo:aschannels
 	a flo:BlockType ;
-	flo:optionalInput [ flo:outputFor flo:aschannels ;
-			    flo:outputName "R" ;
-			    flo:outputType "gray"
-			  ] ,
-			  [ flo:outputFor flo:aschannels ;
-			    flo:outputName "G" ;
-			    flo:outputType "gray"
-			  ] ,
-			  [ flo:outputFor flo:aschannels ;
-			    flo:outputName "B" ;
-			    flo:outputType "gray"
-			  ] ;
-	flo:requiresInput [ flo:inputFor flo:aschannels ;
+	flo:hasOutput [ a flo:BlockOutput ;
+			flo:outputFor flo:aschannels ;
+			flo:outputName "R" ;
+			flo:outputType "gray"
+		      ] ,
+		      [ a flo:BlockOutput ;
+			flo:outputFor flo:aschannels ;
+			flo:outputName "G" ;
+			flo:outputType "gray"
+		      ] ,
+		      [ a flo:BlockOutput ;
+			flo:outputFor flo:aschannels ;
+			flo:outputName "B" ;
+			flo:outputType "gray"
+		      ] ;
+	flo:requiresInput [ a flo:BlockInput ;
+			    flo:inputFor flo:aschannels ;
 			    flo:inputName "A" ;
 			    flo:inputType "rgb"
 			  ] ;
@@ -54,10 +62,11 @@ flo:aschannels
 
 flo:black
 	a flo:BlockType ;
-	flo:optionalInput [ flo:outputFor flo:black ;
-			    flo:outputName "O" ;
-			    flo:outputType "mask"
-			  ] ;
+	flo:hasOutput [ a flo:BlockOutput ;
+			flo:outputFor flo:black ;
+			flo:outputName "O" ;
+			flo:outputType "mask"
+		      ] ;
 	flo:section "CV" ;
 	flo:subsection "Image Processing" ;
 	flo:visual_style "normal" ;
@@ -68,11 +77,12 @@ flo:bodymask
 	a flo:BlockType ;
 	flo:defaultPrototypeCoordinateX 21 ;
 	flo:defaultPrototypeCoordinateY 10 ;
+	flo:hasOutput [ a flo:BlockOutput ;
+			flo:outputFor flo:bodymask ;
+			flo:outputName "O" ;
+			flo:outputType "mask"
+		      ] ;
 	flo:imageResource "/img/blocks/blocksheet1_10.png" ;
-	flo:optionalInput [ flo:outputFor flo:bodymask ;
-			    flo:outputName "O" ;
-			    flo:outputType "mask"
-			  ] ;
 	flo:section "I/O" ;
 	flo:subsection "body" ;
 	flo:visual_style "visual_style13" ;
@@ -83,11 +93,12 @@ flo:bodyposition
 	a flo:BlockType ;
 	flo:defaultPrototypeCoordinateX 21 ;
 	flo:defaultPrototypeCoordinateY 11 ;
+	flo:hasOutput [ a flo:BlockOutput ;
+			flo:outputFor flo:bodyposition ;
+			flo:outputName "O" ;
+			flo:outputType "joints"
+		      ] ;
 	flo:imageResource "/img/blocks/blocksheet1_11.png" ;
-	flo:optionalInput [ flo:outputFor flo:bodyposition ;
-			    flo:outputName "O" ;
-			    flo:outputType "joints"
-			  ] ;
 	flo:section "I/O" ;
 	flo:subsection "body" ;
 	flo:visual_style "normal" ;
@@ -98,11 +109,12 @@ flo:bodypossim
 	a flo:BlockType ;
 	flo:defaultPrototypeCoordinateX 21 ;
 	flo:defaultPrototypeCoordinateY 12 ;
+	flo:hasOutput [ a flo:BlockOutput ;
+			flo:outputFor flo:bodypossim ;
+			flo:outputName "O" ;
+			flo:outputType "joints"
+		      ] ;
 	flo:imageResource "/img/blocks/blocksheet1_16.png" ;
-	flo:optionalInput [ flo:outputFor flo:bodypossim ;
-			    flo:outputName "O" ;
-			    flo:outputType "joints"
-			  ] ;
 	flo:section "I/O" ;
 	flo:subsection "body" ;
 	flo:visual_style "normal" ;
@@ -113,15 +125,17 @@ flo:camera
 	a flo:BlockType ;
 	flo:defaultPrototypeCoordinateX 21 ;
 	flo:defaultPrototypeCoordinateY 5 ;
+	flo:hasOutput [ a flo:BlockOutput ;
+			flo:outputFor flo:camera ;
+			flo:outputName "O" ;
+			flo:outputType "rgb"
+		      ] ,
+		      [ a flo:BlockOutput ;
+			flo:outputFor flo:camera ;
+			flo:outputName "K" ;
+			flo:outputType "intrinsics"
+		      ] ;
 	flo:imageResource "/img/blocks/blocksheet1_06.png" ;
-	flo:optionalInput [ flo:outputFor flo:camera ;
-			    flo:outputName "O" ;
-			    flo:outputType "rgb"
-			  ] ,
-			  [ flo:outputFor flo:camera ;
-			    flo:outputName "K" ;
-			    flo:outputType "intrinsics"
-			  ] ;
 	flo:section "I/O" ;
 	flo:subsection "imaging" ;
 	flo:visual_style "visual_style6" ;
@@ -130,19 +144,23 @@ flo:camera
 
 flo:channels
 	a flo:BlockType ;
-	flo:optionalInput [ flo:outputFor flo:channels ;
-			    flo:outputName "O" ;
-			    flo:outputType "image"
-			  ] ;
-	flo:requiresInput [ flo:inputFor flo:channels ;
+	flo:hasOutput [ a flo:BlockOutput ;
+			flo:outputFor flo:channels ;
+			flo:outputName "O" ;
+			flo:outputType "image"
+		      ] ;
+	flo:requiresInput [ a flo:BlockInput ;
+			    flo:inputFor flo:channels ;
 			    flo:inputName "R" ;
 			    flo:inputType "gray"
 			  ] ,
-			  [ flo:inputFor flo:channels ;
+			  [ a flo:BlockInput ;
+			    flo:inputFor flo:channels ;
 			    flo:inputName "G" ;
 			    flo:inputType "gray"
 			  ] ,
-			  [ flo:inputFor flo:channels ;
+			  [ a flo:BlockInput ;
+			    flo:inputFor flo:channels ;
 			    flo:inputName "B" ;
 			    flo:inputType "gray"
 			  ] ;
@@ -154,19 +172,23 @@ flo:channels
 
 flo:composite
 	a flo:BlockType ;
-	flo:optionalInput [ flo:outputFor flo:composite ;
-			    flo:outputName "O" ;
-			    flo:outputType "image"
-			  ] ;
-	flo:requiresInput [ flo:inputFor flo:composite ;
+	flo:hasOutput [ a flo:BlockOutput ;
+			flo:outputFor flo:composite ;
+			flo:outputName "O" ;
+			flo:outputType "image"
+		      ] ;
+	flo:requiresInput [ a flo:BlockInput ;
+			    flo:inputFor flo:composite ;
 			    flo:inputName "A" ;
 			    flo:inputType "image"
 			  ] ,
-			  [ flo:inputFor flo:composite ;
+			  [ a flo:BlockInput ;
+			    flo:inputFor flo:composite ;
 			    flo:inputName "B" ;
 			    flo:inputType "image"
 			  ] ,
-			  [ flo:inputFor flo:composite ;
+			  [ a flo:BlockInput ;
+			    flo:inputFor flo:composite ;
 			    flo:inputName "Mask" ;
 			    flo:inputType "gray"
 			  ] ;
@@ -178,15 +200,18 @@ flo:composite
 
 flo:convolve
 	a flo:BlockType ;
-	flo:optionalInput [ flo:outputFor flo:convolve ;
-			    flo:outputName "O" ;
-			    flo:outputType "image"
-			  ] ;
-	flo:requiresInput [ flo:inputFor flo:convolve ;
+	flo:hasOutput [ a flo:BlockOutput ;
+			flo:outputFor flo:convolve ;
+			flo:outputName "O" ;
+			flo:outputType "image"
+		      ] ;
+	flo:requiresInput [ a flo:BlockInput ;
+			    flo:inputFor flo:convolve ;
 			    flo:inputName "A" ;
 			    flo:inputType "image"
 			  ] ,
-			  [ flo:inputFor flo:convolve ;
+			  [ a flo:BlockInput ;
+			    flo:inputFor flo:convolve ;
 			    flo:inputName "Kernal" ;
 			    flo:inputType "kernal"
 			  ] ;
@@ -200,20 +225,24 @@ flo:cross
 	a flo:BlockType ;
 	flo:defaultPrototypeCoordinateX 20 ;
 	flo:defaultPrototypeCoordinateY 3 ;
+	flo:hasOutput [ a flo:BlockOutput ;
+			flo:outputFor flo:cross ;
+			flo:outputName "OA" ;
+			flo:outputType "any"
+		      ] ,
+		      [ a flo:BlockOutput ;
+			flo:outputFor flo:cross ;
+			flo:outputName "OB" ;
+			flo:outputType "any"
+		      ] ;
 	flo:imageResource "/img/blocks/blocksheet0-_05.png" ;
-	flo:optionalInput [ flo:outputFor flo:cross ;
-			    flo:outputName "OA" ;
-			    flo:outputType "any"
-			  ] ,
-			  [ flo:outputFor flo:cross ;
-			    flo:outputName "OB" ;
-			    flo:outputType "any"
-			  ] ;
-	flo:requiresInput [ flo:inputFor flo:cross ;
+	flo:requiresInput [ a flo:BlockInput ;
+			    flo:inputFor flo:cross ;
 			    flo:inputName "A" ;
 			    flo:inputType "any"
 			  ] ,
-			  [ flo:inputFor flo:cross ;
+			  [ a flo:BlockInput ;
+			    flo:inputFor flo:cross ;
 			    flo:inputName "B" ;
 			    flo:inputType "any"
 			  ] ;
@@ -225,11 +254,13 @@ flo:cross
 
 flo:dehdr
 	a flo:BlockType ;
-	flo:optionalInput [ flo:outputFor flo:dehdr ;
-			    flo:outputName "O" ;
-			    flo:outputType "image"
-			  ] ;
-	flo:requiresInput [ flo:inputFor flo:dehdr ;
+	flo:hasOutput [ a flo:BlockOutput ;
+			flo:outputFor flo:dehdr ;
+			flo:outputName "O" ;
+			flo:outputType "image"
+		      ] ;
+	flo:requiresInput [ a flo:BlockInput ;
+			    flo:inputFor flo:dehdr ;
 			    flo:inputName "A" ;
 			    flo:inputType "hdr"
 			  ] ;
@@ -241,11 +272,13 @@ flo:dehdr
 
 flo:delay
 	a flo:BlockType ;
-	flo:optionalInput [ flo:outputFor flo:delay ;
-			    flo:outputName "O" ;
-			    flo:outputType "object"
-			  ] ;
-	flo:requiresInput [ flo:inputFor flo:delay ;
+	flo:hasOutput [ a flo:BlockOutput ;
+			flo:outputFor flo:delay ;
+			flo:outputName "O" ;
+			flo:outputType "object"
+		      ] ;
+	flo:requiresInput [ a flo:BlockInput ;
+			    flo:inputFor flo:delay ;
 			    flo:inputName "A" ;
 			    flo:inputType "object"
 			  ] ;
@@ -259,20 +292,24 @@ flo:distributor
 	a flo:BlockType ;
 	flo:defaultPrototypeCoordinateX 20 ;
 	flo:defaultPrototypeCoordinateY 6 ;
+	flo:hasOutput [ a flo:BlockOutput ;
+			flo:outputFor flo:distributor ;
+			flo:outputName "OA" ;
+			flo:outputType "any"
+		      ] ,
+		      [ a flo:BlockOutput ;
+			flo:outputFor flo:distributor ;
+			flo:outputName "OB" ;
+			flo:outputType "any"
+		      ] ,
+		      [ a flo:BlockOutput ;
+			flo:outputFor flo:distributor ;
+			flo:outputName "OC" ;
+			flo:outputType "any"
+		      ] ;
 	flo:imageResource "/img/blocks/blocksheet0-_09.png" ;
-	flo:optionalInput [ flo:outputFor flo:distributor ;
-			    flo:outputName "OA" ;
-			    flo:outputType "any"
-			  ] ,
-			  [ flo:outputFor flo:distributor ;
-			    flo:outputName "OB" ;
-			    flo:outputType "any"
-			  ] ,
-			  [ flo:outputFor flo:distributor ;
-			    flo:outputName "OC" ;
-			    flo:outputType "any"
-			  ] ;
-	flo:requiresInput [ flo:inputFor flo:distributor ;
+	flo:requiresInput [ a flo:BlockInput ;
+			    flo:inputFor flo:distributor ;
 			    flo:inputName "A" ;
 			    flo:inputType "any"
 			  ] ;
@@ -286,12 +323,14 @@ flo:dlbend
 	a flo:BlockType ;
 	flo:defaultPrototypeCoordinateX 20 ;
 	flo:defaultPrototypeCoordinateY 1 ;
+	flo:hasOutput [ a flo:BlockOutput ;
+			flo:outputFor flo:dlbend ;
+			flo:outputName "O" ;
+			flo:outputType "any"
+		      ] ;
 	flo:imageResource "/img/blocks/blocksheet0-_03.png" ;
-	flo:optionalInput [ flo:outputFor flo:dlbend ;
-			    flo:outputName "O" ;
-			    flo:outputType "any"
-			  ] ;
-	flo:requiresInput [ flo:inputFor flo:dlbend ;
+	flo:requiresInput [ a flo:BlockInput ;
+			    flo:inputFor flo:dlbend ;
 			    flo:inputName "A" ;
 			    flo:inputType "any"
 			  ] ;
@@ -303,10 +342,11 @@ flo:dlbend
 
 flo:draw_tool
 	a flo:BlockType ;
-	flo:optionalInput [ flo:outputFor flo:draw_tool ;
-			    flo:outputName "O" ;
-			    flo:outputType "rgb"
-			  ] ;
+	flo:hasOutput [ a flo:BlockOutput ;
+			flo:outputFor flo:draw_tool ;
+			flo:outputName "O" ;
+			flo:outputType "rgb"
+		      ] ;
 	flo:section "I/O" ;
 	flo:subsection "imaging" ;
 	flo:visual_style "visual_style10" ;
@@ -317,12 +357,14 @@ flo:drbend
 	a flo:BlockType ;
 	flo:defaultPrototypeCoordinateX 20 ;
 	flo:defaultPrototypeCoordinateY 0 ;
+	flo:hasOutput [ a flo:BlockOutput ;
+			flo:outputFor flo:drbend ;
+			flo:outputName "O" ;
+			flo:outputType "any"
+		      ] ;
 	flo:imageResource "/img/blocks/blocksheet0-_02.png" ;
-	flo:optionalInput [ flo:outputFor flo:drbend ;
-			    flo:outputName "O" ;
-			    flo:outputType "any"
-			  ] ;
-	flo:requiresInput [ flo:inputFor flo:drbend ;
+	flo:requiresInput [ a flo:BlockInput ;
+			    flo:inputFor flo:drbend ;
 			    flo:inputName "A" ;
 			    flo:inputType "any"
 			  ] ;
@@ -336,20 +378,24 @@ flo:eyes
 	a flo:BlockType ;
 	flo:defaultPrototypeCoordinateX 21 ;
 	flo:defaultPrototypeCoordinateY 6 ;
+	flo:hasOutput [ a flo:BlockOutput ;
+			flo:outputFor flo:eyes ;
+			flo:outputName "OL" ;
+			flo:outputType "rgb"
+		      ] ,
+		      [ a flo:BlockOutput ;
+			flo:outputFor flo:eyes ;
+			flo:outputName "OR" ;
+			flo:outputType "rgb"
+		      ] ;
 	flo:imageResource "/img/blocks/blocksheet1_07.png" ;
-	flo:optionalInput [ flo:outputFor flo:eyes ;
-			    flo:outputName "OL" ;
-			    flo:outputType "rgb"
-			  ] ,
-			  [ flo:outputFor flo:eyes ;
-			    flo:outputName "OR" ;
-			    flo:outputType "rgb"
-			  ] ;
-	flo:requiresInput [ flo:inputFor flo:eyes ;
+	flo:requiresInput [ a flo:BlockInput ;
+			    flo:inputFor flo:eyes ;
 			    flo:inputName "x" ;
 			    flo:inputType "proportion"
 			  ] ,
-			  [ flo:inputFor flo:eyes ;
+			  [ a flo:BlockInput ;
+			    flo:inputFor flo:eyes ;
 			    flo:inputName "y" ;
 			    flo:inputType "proportion"
 			  ] ;
@@ -361,11 +407,13 @@ flo:eyes
 
 flo:fft
 	a flo:BlockType ;
-	flo:optionalInput [ flo:outputFor flo:fft ;
-			    flo:outputName "O" ;
-			    flo:outputType "complex16"
-			  ] ;
-	flo:requiresInput [ flo:inputFor flo:fft ;
+	flo:hasOutput [ a flo:BlockOutput ;
+			flo:outputFor flo:fft ;
+			flo:outputName "O" ;
+			flo:outputType "complex16"
+		      ] ;
+	flo:requiresInput [ a flo:BlockInput ;
+			    flo:inputFor flo:fft ;
 			    flo:inputName "A" ;
 			    flo:inputType "image"
 			  ] ;
@@ -377,16 +425,19 @@ flo:fft
 
 flo:flipflop
 	a flo:BlockType ;
+	flo:hasOutput [ a flo:BlockOutput ;
+			flo:outputFor flo:flipflop ;
+			flo:outputName "O" ;
+			flo:outputType "int"
+		      ] ;
 	flo:imageResource "/img/blocks/blocksheet1_01.png" ;
-	flo:optionalInput [ flo:outputFor flo:flipflop ;
-			    flo:outputName "O" ;
-			    flo:outputType "int"
-			  ] ;
-	flo:requiresInput [ flo:inputFor flo:flipflop ;
+	flo:requiresInput [ a flo:BlockInput ;
+			    flo:inputFor flo:flipflop ;
 			    flo:inputName "J" ;
 			    flo:inputType "pulse"
 			  ] ,
-			  [ flo:inputFor flo:flipflop ;
+			  [ a flo:BlockInput ;
+			    flo:inputFor flo:flipflop ;
 			    flo:inputName "K" ;
 			    flo:inputType "pulse"
 			  ] ;
@@ -400,11 +451,12 @@ flo:floatval
 	a flo:BlockType ;
 	flo:defaultPrototypeCoordinateX 21 ;
 	flo:defaultPrototypeCoordinateY 2 ;
+	flo:hasOutput [ a flo:BlockOutput ;
+			flo:outputFor flo:floatval ;
+			flo:outputName "O" ;
+			flo:outputType "float"
+		      ] ;
 	flo:imageResource "/img/blocks/blocksheet1_03.png" ;
-	flo:optionalInput [ flo:outputFor flo:floatval ;
-			    flo:outputName "O" ;
-			    flo:outputType "float"
-			  ] ;
 	flo:section "I/O" ;
 	flo:subsection "scalar" ;
 	flo:visual_style "visual_style4" ;
@@ -413,19 +465,23 @@ flo:floatval
 
 flo:func
 	a flo:BlockType ;
-	flo:optionalInput [ flo:outputFor flo:func ;
-			    flo:outputName "O" ;
-			    flo:outputType "object"
-			  ] ;
-	flo:requiresInput [ flo:inputFor flo:func ;
+	flo:hasOutput [ a flo:BlockOutput ;
+			flo:outputFor flo:func ;
+			flo:outputName "O" ;
+			flo:outputType "object"
+		      ] ;
+	flo:requiresInput [ a flo:BlockInput ;
+			    flo:inputFor flo:func ;
 			    flo:inputName "A" ;
 			    flo:inputType "scalar"
 			  ] ,
-			  [ flo:inputFor flo:func ;
+			  [ a flo:BlockInput ;
+			    flo:inputFor flo:func ;
 			    flo:inputName "B" ;
 			    flo:inputType "scalar"
 			  ] ,
-			  [ flo:inputFor flo:func ;
+			  [ a flo:BlockInput ;
+			    flo:inputFor flo:func ;
 			    flo:inputName "C" ;
 			    flo:inputType "scalar"
 			  ] ;
@@ -437,11 +493,13 @@ flo:func
 
 flo:gray
 	a flo:BlockType ;
-	flo:optionalInput [ flo:outputFor flo:gray ;
-			    flo:outputName "O" ;
-			    flo:outputType "gray"
-			  ] ;
-	flo:requiresInput [ flo:inputFor flo:gray ;
+	flo:hasOutput [ a flo:BlockOutput ;
+			flo:outputFor flo:gray ;
+			flo:outputName "O" ;
+			flo:outputType "gray"
+		      ] ;
+	flo:requiresInput [ a flo:BlockInput ;
+			    flo:inputFor flo:gray ;
 			    flo:inputName "A" ;
 			    flo:inputType "image"
 			  ] ;
@@ -453,11 +511,13 @@ flo:gray
 
 flo:hdr
 	a flo:BlockType ;
-	flo:optionalInput [ flo:outputFor flo:hdr ;
-			    flo:outputName "O" ;
-			    flo:outputType "hdr"
-			  ] ;
-	flo:requiresInput [ flo:inputFor flo:hdr ;
+	flo:hasOutput [ a flo:BlockOutput ;
+			flo:outputFor flo:hdr ;
+			flo:outputName "O" ;
+			flo:outputType "hdr"
+		      ] ;
+	flo:requiresInput [ a flo:BlockInput ;
+			    flo:inputFor flo:hdr ;
 			    flo:inputName "A" ;
 			    flo:inputType "image"
 			  ] ;
@@ -471,12 +531,14 @@ flo:horpipe
 	a flo:BlockType ;
 	flo:defaultPrototypeCoordinateX 20 ;
 	flo:defaultPrototypeCoordinateY 2 ;
+	flo:hasOutput [ a flo:BlockOutput ;
+			flo:outputFor flo:horpipe ;
+			flo:outputName "O" ;
+			flo:outputType "any"
+		      ] ;
 	flo:imageResource "/img/blocks/blocksheet0-_04.png" ;
-	flo:optionalInput [ flo:outputFor flo:horpipe ;
-			    flo:outputName "O" ;
-			    flo:outputType "any"
-			  ] ;
-	flo:requiresInput [ flo:inputFor flo:horpipe ;
+	flo:requiresInput [ a flo:BlockInput ;
+			    flo:inputFor flo:horpipe ;
 			    flo:inputName "A" ;
 			    flo:inputType "any"
 			  ] ;
@@ -488,19 +550,23 @@ flo:horpipe
 
 flo:if
 	a flo:BlockType ;
-	flo:optionalInput [ flo:outputFor flo:if ;
-			    flo:outputName "O" ;
-			    flo:outputType "object"
-			  ] ;
-	flo:requiresInput [ flo:inputFor flo:if ;
+	flo:hasOutput [ a flo:BlockOutput ;
+			flo:outputFor flo:if ;
+			flo:outputName "O" ;
+			flo:outputType "object"
+		      ] ;
+	flo:requiresInput [ a flo:BlockInput ;
+			    flo:inputFor flo:if ;
 			    flo:inputName "Cond" ;
 			    flo:inputType "scalar"
 			  ] ,
-			  [ flo:inputFor flo:if ;
+			  [ a flo:BlockInput ;
+			    flo:inputFor flo:if ;
 			    flo:inputName "A" ;
 			    flo:inputType "object"
 			  ] ,
-			  [ flo:inputFor flo:if ;
+			  [ a flo:BlockInput ;
+			    flo:inputFor flo:if ;
 			    flo:inputName "B" ;
 			    flo:inputType "object"
 			  ] ;
@@ -512,19 +578,23 @@ flo:if
 
 flo:ifvar
 	a flo:BlockType ;
-	flo:optionalInput [ flo:outputFor flo:ifvar ;
-			    flo:outputName "O" ;
-			    flo:outputType "object"
-			  ] ;
-	flo:requiresInput [ flo:inputFor flo:ifvar ;
+	flo:hasOutput [ a flo:BlockOutput ;
+			flo:outputFor flo:ifvar ;
+			flo:outputName "O" ;
+			flo:outputType "object"
+		      ] ;
+	flo:requiresInput [ a flo:BlockInput ;
+			    flo:inputFor flo:ifvar ;
 			    flo:inputName "Cond" ;
 			    flo:inputType "string"
 			  ] ,
-			  [ flo:inputFor flo:ifvar ;
+			  [ a flo:BlockInput ;
+			    flo:inputFor flo:ifvar ;
 			    flo:inputName "A" ;
 			    flo:inputType "object"
 			  ] ,
-			  [ flo:inputFor flo:ifvar ;
+			  [ a flo:BlockInput ;
+			    flo:inputFor flo:ifvar ;
 			    flo:inputName "B" ;
 			    flo:inputType "object"
 			  ] ;
@@ -536,10 +606,11 @@ flo:ifvar
 
 flo:inputparam
 	a flo:BlockType ;
-	flo:optionalInput [ flo:outputFor flo:inputparam ;
-			    flo:outputName "O" ;
-			    flo:outputType "object"
-			  ] ;
+	flo:hasOutput [ a flo:BlockOutput ;
+			flo:outputFor flo:inputparam ;
+			flo:outputName "O" ;
+			flo:outputType "object"
+		      ] ;
 	flo:section "Editor Support" ;
 	flo:subsection "Editor Support" ;
 	flo:visual_style "visual_style0" ;
@@ -548,11 +619,13 @@ flo:inputparam
 
 flo:inv_fft
 	a flo:BlockType ;
-	flo:optionalInput [ flo:outputFor flo:inv_fft ;
-			    flo:outputName "O" ;
-			    flo:outputType "gray"
-			  ] ;
-	flo:requiresInput [ flo:inputFor flo:inv_fft ;
+	flo:hasOutput [ a flo:BlockOutput ;
+			flo:outputFor flo:inv_fft ;
+			flo:outputName "O" ;
+			flo:outputType "gray"
+		      ] ;
+	flo:requiresInput [ a flo:BlockInput ;
+			    flo:inputFor flo:inv_fft ;
 			    flo:inputName "A" ;
 			    flo:inputType "complex16"
 			  ] ;
@@ -564,15 +637,18 @@ flo:inv_fft
 
 flo:isolate
 	a flo:BlockType ;
-	flo:optionalInput [ flo:outputFor flo:isolate ;
-			    flo:outputName "O" ;
-			    flo:outputType "object"
-			  ] ;
-	flo:requiresInput [ flo:inputFor flo:isolate ;
+	flo:hasOutput [ a flo:BlockOutput ;
+			flo:outputFor flo:isolate ;
+			flo:outputName "O" ;
+			flo:outputType "object"
+		      ] ;
+	flo:requiresInput [ a flo:BlockInput ;
+			    flo:inputFor flo:isolate ;
 			    flo:inputName "A" ;
 			    flo:inputType "object"
 			  ] ,
-			  [ flo:inputFor flo:isolate ;
+			  [ a flo:BlockInput ;
+			    flo:inputFor flo:isolate ;
 			    flo:inputName "Default" ;
 			    flo:inputType "object"
 			  ] ;
@@ -586,11 +662,12 @@ flo:kernal
 	a flo:BlockType ;
 	flo:defaultPrototypeCoordinateX 21 ;
 	flo:defaultPrototypeCoordinateY 9 ;
+	flo:hasOutput [ a flo:BlockOutput ;
+			flo:outputFor flo:kernal ;
+			flo:outputName "O" ;
+			flo:outputType "kernal"
+		      ] ;
 	flo:imageResource "/img/blocks/blocksheet1_14.png" ;
-	flo:optionalInput [ flo:outputFor flo:kernal ;
-			    flo:outputName "O" ;
-			    flo:outputType "kernal"
-			  ] ;
 	flo:section "I/O" ;
 	flo:subsection "imaging" ;
 	flo:visual_style "visual_style12" ;
@@ -602,7 +679,8 @@ flo:listen
 	flo:defaultPrototypeCoordinateX 21 ;
 	flo:defaultPrototypeCoordinateY 4 ;
 	flo:imageResource "/img/blocks/blocksheet1_05.png" ;
-	flo:requiresInput [ flo:inputFor flo:listen ;
+	flo:requiresInput [ a flo:BlockInput ;
+			    flo:inputFor flo:listen ;
 			    flo:inputName "A" ;
 			    flo:inputType "sample"
 			  ] ;
@@ -616,11 +694,12 @@ flo:mic
 	a flo:BlockType ;
 	flo:defaultPrototypeCoordinateX 21 ;
 	flo:defaultPrototypeCoordinateY 3 ;
+	flo:hasOutput [ a flo:BlockOutput ;
+			flo:outputFor flo:mic ;
+			flo:outputName "O" ;
+			flo:outputType "sample"
+		      ] ;
 	flo:imageResource "/img/blocks/blocksheet1_04.png" ;
-	flo:optionalInput [ flo:outputFor flo:mic ;
-			    flo:outputName "O" ;
-			    flo:outputType "sample"
-			  ] ;
 	flo:section "I/O" ;
 	flo:subsection "sound" ;
 	flo:visual_style "normal" ;
@@ -632,11 +711,13 @@ flo:motors
 	flo:defaultPrototypeCoordinateX 21 ;
 	flo:defaultPrototypeCoordinateY 13 ;
 	flo:imageResource "/img/blocks/blocksheet1_15.png" ;
-	flo:requiresInput [ flo:inputFor flo:motors ;
+	flo:requiresInput [ a flo:BlockInput ;
+			    flo:inputFor flo:motors ;
 			    flo:inputName "A" ;
 			    flo:inputType "joints"
 			  ] ,
-			  [ flo:inputFor flo:motors ;
+			  [ a flo:BlockInput ;
+			    flo:inputFor flo:motors ;
 			    flo:inputName "Mask" ;
 			    flo:inputType "jointmask"
 			  ] ;
@@ -651,11 +732,13 @@ flo:motorsim
 	flo:defaultPrototypeCoordinateX 21 ;
 	flo:defaultPrototypeCoordinateY 14 ;
 	flo:imageResource "/img/blocks/blocksheet1_17.png" ;
-	flo:requiresInput [ flo:inputFor flo:motorsim ;
+	flo:requiresInput [ a flo:BlockInput ;
+			    flo:inputFor flo:motorsim ;
 			    flo:inputName "A" ;
 			    flo:inputType "joints"
 			  ] ,
-			  [ flo:inputFor flo:motorsim ;
+			  [ a flo:BlockInput ;
+			    flo:inputFor flo:motorsim ;
 			    flo:inputName "Mask" ;
 			    flo:inputType "jointmask"
 			  ] ;
@@ -667,7 +750,8 @@ flo:motorsim
 
 flo:outputparam
 	a flo:BlockType ;
-	flo:requiresInput [ flo:inputFor flo:outputparam ;
+	flo:requiresInput [ a flo:BlockInput ;
+			    flo:inputFor flo:outputparam ;
 			    flo:inputName "A" ;
 			    flo:inputType "object"
 			  ] ;
@@ -679,15 +763,18 @@ flo:outputparam
 
 flo:pixel
 	a flo:BlockType ;
-	flo:optionalInput [ flo:inputFor flo:pixel ;
+	flo:hasOutput [ a flo:BlockOutput ;
+			flo:outputFor flo:pixel ;
+			flo:outputName "O" ;
+			flo:outputType "image"
+		      ] ;
+	flo:optionalInput [ a flo:BlockInput ;
+			    flo:inputFor flo:pixel ;
 			    flo:inputName "M" ;
 			    flo:inputType "mask"
-			  ] ,
-			  [ flo:outputFor flo:pixel ;
-			    flo:outputName "O" ;
-			    flo:outputType "image"
 			  ] ;
-	flo:requiresInput [ flo:inputFor flo:pixel ;
+	flo:requiresInput [ a flo:BlockInput ;
+			    flo:inputFor flo:pixel ;
 			    flo:inputName "A" ;
 			    flo:inputType "image"
 			  ] ;
@@ -701,11 +788,12 @@ flo:proportion
 	a flo:BlockType ;
 	flo:defaultPrototypeCoordinateX 21 ;
 	flo:defaultPrototypeCoordinateY 1 ;
+	flo:hasOutput [ a flo:BlockOutput ;
+			flo:outputFor flo:proportion ;
+			flo:outputName "O" ;
+			flo:outputType "proportion"
+		      ] ;
 	flo:imageResource "/img/blocks/blocksheet1_02.png" ;
-	flo:optionalInput [ flo:outputFor flo:proportion ;
-			    flo:outputName "O" ;
-			    flo:outputType "proportion"
-			  ] ;
 	flo:section "I/O" ;
 	flo:subsection "scalar" ;
 	flo:visual_style "visual_style3" ;
@@ -716,11 +804,12 @@ flo:pulse
 	a flo:BlockType ;
 	flo:defaultPrototypeCoordinateX 21 ;
 	flo:defaultPrototypeCoordinateY 0 ;
+	flo:hasOutput [ a flo:BlockOutput ;
+			flo:outputFor flo:pulse ;
+			flo:outputName "O" ;
+			flo:outputType "pulse"
+		      ] ;
 	flo:imageResource "/img/blocks/blocksheet1_01.png" ;
-	flo:optionalInput [ flo:outputFor flo:pulse ;
-			    flo:outputName "O" ;
-			    flo:outputType "pulse"
-			  ] ;
 	flo:section "I/O" ;
 	flo:subsection "scalar" ;
 	flo:visual_style "visual_style2" ;
@@ -732,7 +821,8 @@ flo:spectrum
 	flo:defaultPrototypeCoordinateX 21 ;
 	flo:defaultPrototypeCoordinateY 7 ;
 	flo:imageResource "/img/blocks/blocksheet1_09.png" ;
-	flo:requiresInput [ flo:inputFor flo:spectrum ;
+	flo:requiresInput [ a flo:BlockInput ;
+			    flo:inputFor flo:spectrum ;
 			    flo:inputName "A" ;
 			    flo:inputType "sample"
 			  ] ;
@@ -744,15 +834,18 @@ flo:spectrum
 
 flo:threshold
 	a flo:BlockType ;
-	flo:optionalInput [ flo:outputFor flo:threshold ;
-			    flo:outputName "O" ;
-			    flo:outputType "mask"
-			  ] ;
-	flo:requiresInput [ flo:inputFor flo:threshold ;
+	flo:hasOutput [ a flo:BlockOutput ;
+			flo:outputFor flo:threshold ;
+			flo:outputName "O" ;
+			flo:outputType "mask"
+		      ] ;
+	flo:requiresInput [ a flo:BlockInput ;
+			    flo:inputFor flo:threshold ;
 			    flo:inputName "A" ;
 			    flo:inputType "image"
 			  ] ,
-			  [ flo:inputFor flo:threshold ;
+			  [ a flo:BlockInput ;
+			    flo:inputFor flo:threshold ;
 			    flo:inputName "Thresh" ;
 			    flo:inputType "proportion"
 			  ] ;
@@ -766,12 +859,14 @@ flo:ulbend
 	a flo:BlockType ;
 	flo:defaultPrototypeCoordinateX 20 ;
 	flo:defaultPrototypeCoordinateY 5 ;
+	flo:hasOutput [ a flo:BlockOutput ;
+			flo:outputFor flo:ulbend ;
+			flo:outputName "O" ;
+			flo:outputType "any"
+		      ] ;
 	flo:imageResource "/img/blocks/blocksheet0-_11.png" ;
-	flo:optionalInput [ flo:outputFor flo:ulbend ;
-			    flo:outputName "O" ;
-			    flo:outputType "any"
-			  ] ;
-	flo:requiresInput [ flo:inputFor flo:ulbend ;
+	flo:requiresInput [ a flo:BlockInput ;
+			    flo:inputFor flo:ulbend ;
 			    flo:inputName "A" ;
 			    flo:inputType "any"
 			  ] ;
@@ -785,12 +880,14 @@ flo:urbend
 	a flo:BlockType ;
 	flo:defaultPrototypeCoordinateX 20 ;
 	flo:defaultPrototypeCoordinateY 4 ;
+	flo:hasOutput [ a flo:BlockOutput ;
+			flo:outputFor flo:urbend ;
+			flo:outputName "O" ;
+			flo:outputType "any"
+		      ] ;
 	flo:imageResource "/img/blocks/blocksheet0-_14.png" ;
-	flo:optionalInput [ flo:outputFor flo:urbend ;
-			    flo:outputName "O" ;
-			    flo:outputType "any"
-			  ] ;
-	flo:requiresInput [ flo:inputFor flo:urbend ;
+	flo:requiresInput [ a flo:BlockInput ;
+			    flo:inputFor flo:urbend ;
 			    flo:inputName "A" ;
 			    flo:inputType "any"
 			  ] ;
@@ -804,12 +901,14 @@ flo:vertpipe
 	a flo:BlockType ;
 	flo:defaultPrototypeCoordinateX 20 ;
 	flo:defaultPrototypeCoordinateY 7 ;
+	flo:hasOutput [ a flo:BlockOutput ;
+			flo:outputFor flo:vertpipe ;
+			flo:outputName "OA" ;
+			flo:outputType "any"
+		      ] ;
 	flo:imageResource "/img/blocks/blocksheet0-_08.png" ;
-	flo:optionalInput [ flo:outputFor flo:vertpipe ;
-			    flo:outputName "OA" ;
-			    flo:outputType "any"
-			  ] ;
-	flo:requiresInput [ flo:inputFor flo:vertpipe ;
+	flo:requiresInput [ a flo:BlockInput ;
+			    flo:inputFor flo:vertpipe ;
 			    flo:inputName "A" ;
 			    flo:inputType "any"
 			  ] ;
@@ -821,14 +920,16 @@ flo:vertpipe
 
 flo:videoplayer
 	a flo:BlockType ;
-	flo:optionalInput [ flo:outputFor flo:videoplayer ;
-			    flo:outputName "O" ;
-			    flo:outputType "rgb"
-			  ] ,
-			  [ flo:outputFor flo:videoplayer ;
-			    flo:outputName "S" ;
-			    flo:outputType "sample"
-			  ] ;
+	flo:hasOutput [ a flo:BlockOutput ;
+			flo:outputFor flo:videoplayer ;
+			flo:outputName "O" ;
+			flo:outputType "rgb"
+		      ] ,
+		      [ a flo:BlockOutput ;
+			flo:outputFor flo:videoplayer ;
+			flo:outputName "S" ;
+			flo:outputType "sample"
+		      ] ;
 	flo:section "I/O" ;
 	flo:subsection "imaging" ;
 	flo:visual_style "visual_style7" ;
@@ -837,11 +938,13 @@ flo:videoplayer
 
 flo:videorecord
 	a flo:BlockType ;
-	flo:optionalInput [ flo:inputFor flo:videorecord ;
+	flo:optionalInput [ a flo:BlockInput ;
+			    flo:inputFor flo:videorecord ;
 			    flo:inputName "Vid" ;
 			    flo:inputType "image"
 			  ] ,
-			  [ flo:inputFor flo:videorecord ;
+			  [ a flo:BlockInput ;
+			    flo:inputFor flo:videorecord ;
 			    flo:inputName "Snd" ;
 			    flo:inputType "sample"
 			  ] ;
@@ -856,7 +959,8 @@ flo:viewer
 	flo:defaultPrototypeCoordinateX 21 ;
 	flo:defaultPrototypeCoordinateY 8 ;
 	flo:imageResource "/img/blocks/blocksheet1_13.png" ;
-	flo:requiresInput [ flo:inputFor flo:viewer ;
+	flo:requiresInput [ a flo:BlockInput ;
+			    flo:inputFor flo:viewer ;
 			    flo:inputName "A" ;
 			    flo:inputType "image"
 			  ] ;
@@ -868,10 +972,11 @@ flo:viewer
 
 flo:white
 	a flo:BlockType ;
-	flo:optionalInput [ flo:outputFor flo:white ;
-			    flo:outputName "O" ;
-			    flo:outputType "mask"
-			  ] ;
+	flo:hasOutput [ a flo:BlockOutput ;
+			flo:outputFor flo:white ;
+			flo:outputName "O" ;
+			flo:outputType "mask"
+		      ] ;
 	flo:section "CV" ;
 	flo:subsection "Image Processing" ;
 	flo:visual_style "normal" ;
