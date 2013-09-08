@@ -74,16 +74,16 @@ add_rdf([H|T]) :-
 	rdf_assert(HGlobal, rdfs:comment, literal(Desc)),
 	rdf_assert(HGlobal, rdfs:label, literal(H)),
 	visual_style(H, Style),
-	rdf_assert(HGlobal, flo:visual_style, literal(Style)),
+	rdf_assert(HGlobal, flo:visualStyle, literal(Style)),
 	inputs(H, InputList),
 	input_types(H, InputTypeList),
-	assert_rdf_list(HGlobal, flo:inputFor, flo:inputName, InputList,
-					     flo:inputType, InputTypeList),
+	assert_rdf_list(HGlobal, flo:inputFor, flo:name, InputList,
+					     flo:dataType, InputTypeList),
 	outputs(H, OutputList),
 	output_types(H, OutputTypeList),
 	assert_rdf_list(HGlobal, flo:outputFor,
-			flo:outputName, OutputList,
-			flo:outputType, OutputTypeList),
+			flo:name, OutputList,
+			flo:dataType, OutputTypeList),
 	(   image_name(H, ImageName) ->
 	    rdf_assert(HGlobal, flo:imageResource, literal(ImageName))
 	;
@@ -101,7 +101,8 @@ assert_rdf_list(Subj, PredLinkingSubj, Type1, [required(H1)|T1], Type2, [H2|T2])
 	rdf_assert(BNode, rdf:type, flo:'BlockInput'),
 	rdf_assert(BNode, PredLinkingSubj, Subj),
 	rdf_assert(BNode, Type1, literal(H1)),
-	rdf_assert(BNode, Type2, literal(H2)),
+	rdf_global_id(flo:H2, H2Global),
+	rdf_assert(BNode, Type2, H2Global),
 	rdf_assert(Subj, flo:requiresInput, BNode),
 	assert_rdf_list(Subj, PredLinkingSubj, Type1, T1, Type2, T2).
 assert_rdf_list(Subj, PredLinkingSubj, Type1, [optional(H1)|T1], Type2, [H2|T2]) :- !,
@@ -109,7 +110,8 @@ assert_rdf_list(Subj, PredLinkingSubj, Type1, [optional(H1)|T1], Type2, [H2|T2])
 	rdf_assert(BNode, rdf:type, flo:'BlockInput'),
 	rdf_assert(BNode, PredLinkingSubj, Subj),
 	rdf_assert(BNode, Type1, literal(H1)),
-	rdf_assert(BNode, Type2, literal(H2)),
+	rdf_global_id(flo:H2, H2Global),
+	rdf_assert(BNode, Type2, H2Global),
 	rdf_assert(Subj, flo:optionalInput, BNode),
 	assert_rdf_list(Subj, PredLinkingSubj, Type1, T1, Type2, T2).
 assert_rdf_list(Subj, PredLinkingSubj, Type1, [H1|T1], Type2, [H2|T2]) :-
@@ -117,7 +119,8 @@ assert_rdf_list(Subj, PredLinkingSubj, Type1, [H1|T1], Type2, [H2|T2]) :-
 	rdf_assert(BNode, rdf:type, flo:'BlockOutput'),
 	rdf_assert(BNode, PredLinkingSubj, Subj),
 	rdf_assert(BNode, Type1, literal(H1)),
-	rdf_assert(BNode, Type2, literal(H2)),
+	rdf_global_id(flo:H2, H2Global),
+	rdf_assert(BNode, Type2, H2Global),
 	rdf_assert(Subj, flo:hasOutput, BNode),
 	assert_rdf_list(Subj, PredLinkingSubj, Type1, T1, Type2, T2).
 
