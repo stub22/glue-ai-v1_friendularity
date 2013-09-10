@@ -160,7 +160,7 @@ import org.friendularity.api.west.{ThingEstimate, WorldEstimate, WorldEstimateRe
 		val oneHundred = 100
 		for (idx <- 1 to oneHundred) {
 			var lastDvec : Array[Double] = new Array[Double](0)
-			val oneMillion = 3 //  1000000
+			val oneMillion = 1000000
 			val fullExpr = "" + idx + " * " + baseExpr;
 			for (jdx <- 0 to oneMillion) {
 				val dvec : Array[Double] = mg.parseAndEvalExprToDoubleVec(fullExpr, tgtArray);
