@@ -46,7 +46,7 @@ public class CCRK_DemoMotionComputer extends CogcharMotionComputer {
 			// Arms - Some of these are workin
 			400, 401, 410, 411, 420,
 			500, 501, 510, 511, 520,
-			// Legs - appears we are gettin nuttin on these
+			// Legs - we now got a few of these workin in unconfigured directions.
 			600, 601, 602, 610, 620, 621,
 			700, 701, 702, 710, 720, 721
 	};
