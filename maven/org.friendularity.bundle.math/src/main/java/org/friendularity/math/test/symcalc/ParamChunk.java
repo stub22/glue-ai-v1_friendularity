@@ -16,14 +16,20 @@
 
 package org.friendularity.math.test.symcalc;
 
+import org.appdapter.core.log.BasicDebugger;
 import org.friendularity.math.api.MathGate;
+import org.friendularity.math.api.MathGateUnscripted;
+import org.matheclipse.core.interfaces.IAST;
 import org.matheclipse.core.interfaces.IExpr;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
 
-public abstract class ParamChunk {
+public abstract class ParamChunk  {
+
 // 	public String mySymbols[] = {"sym00", "sym01", "sym02", "sym03", "sym04", "sym05", "sym06", "sym07", "sym08", "sym09"}; 
 	public String mySymPrefix = "$sym0";
 	public void pushToMathGate(MathGate mg) {		
@@ -69,5 +75,6 @@ public abstract class ParamChunk {
 			mg.putVar(getSymName(8), num_08);
 			mg.putVar(getSymName(9), num_09);
 		}
-	}	
+	}
+
 }
