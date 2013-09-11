@@ -45,6 +45,14 @@ flo:defaultPrototypeCoordinateY rdf:type owl:ObjectProperty ;
 
 
 
+###  http://www.friendularity.org/ontology/flo#hasOrdinal
+
+flo:hasOrdinal rdf:type owl:ObjectProperty ;
+               
+               rdfs:domain flo:BlockIO .
+
+
+
 ###  http://www.friendularity.org/ontology/flo#hasOutput
 
 flo:hasOutput rdf:type owl:ObjectProperty ;
@@ -97,6 +105,8 @@ flo:lhs rdf:type owl:ObjectProperty ;
 
 flo:lhsParm rdf:type owl:ObjectProperty ;
             
+            rdfs:domain flo:Connection ;
+            
             rdfs:subPropertyOf owl:topObjectProperty .
 
 
@@ -147,7 +157,9 @@ flo:rhs rdf:type owl:ObjectProperty ;
 
 ###  http://www.friendularity.org/ontology/flo#rhsParm
 
-flo:rhsParm rdf:type owl:ObjectProperty .
+flo:rhsParm rdf:type owl:ObjectProperty ;
+            
+            rdfs:domain flo:Connection .
 
 
 

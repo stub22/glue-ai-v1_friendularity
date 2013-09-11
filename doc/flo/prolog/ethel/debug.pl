@@ -25,6 +25,7 @@ license:license(apache, lgpl,
                 ]).
 
 :- license(apache).
+:- use_module(library(http/http_path)).
 
 :- portray_text(true).
 
@@ -32,7 +33,13 @@ license:license(apache, lgpl,
 
 :- use_module(ethel_compiler).
 
+http:location(pldoc, root('help/source'), [priority(10)]).
+
 go :- compile('examples/testcase.eth', 'testcaseout.flo').
+
+:- doc_server(5000).
+
+:- www_open_url('http://localhost:5000/help/source').
 
 
 
