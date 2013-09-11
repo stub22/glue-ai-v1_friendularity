@@ -14,7 +14,7 @@
 :- rdf_register_prefix(flo, 'http://www.friendularity.org/ontology/flo#').
 
 
-:- rdf_meta assert_rdf_list(o, r, r, +, r, +).
+:- rdf_meta assert_rdf_list(+, o, r, r, +, r, +).
 
 /*
 how to get csv from googledocs
@@ -77,11 +77,11 @@ add_rdf([H|T]) :-
 	rdf_assert(HGlobal, flo:visualStyle, literal(Style)),
 	inputs(H, InputList),
 	input_types(H, InputTypeList),
-	assert_rdf_list(HGlobal, flo:inputFor, flo:name, InputList,
+	assert_rdf_list(0, HGlobal, flo:inputFor, flo:name, InputList,
 					     flo:dataType, InputTypeList),
 	outputs(H, OutputList),
 	output_types(H, OutputTypeList),
-	assert_rdf_list(HGlobal, flo:outputFor,
+	assert_rdf_list(0, HGlobal, flo:outputFor,
 			flo:name, OutputList,
 			flo:dataType, OutputTypeList),
 	(   image_name(H, ImageName) ->
@@ -95,35 +95,40 @@ add_rdf([H|T]) :-
 	    true),
 	add_rdf(T).
 
-assert_rdf_list(_, _, _, [], _, _).
-assert_rdf_list(Subj, PredLinkingSubj, Type1, [required(H1)|T1], Type2, [H2|T2]) :- !,
+assert_rdf_list(_, _, _, _, [], _, _).
+assert_rdf_list(Index, Subj, PredLinkingSubj, Type1, [required(H1)|T1], Type2, [H2|T2]) :- !,
 	rdf_bnode(BNode),
 	rdf_assert(BNode, rdf:type, flo:'BlockInput'),
 	rdf_assert(BNode, PredLinkingSubj, Subj),
 	rdf_assert(BNode, Type1, literal(H1)),
+	rdf_assert(BNode, flo:hasOrdinal, literal(Index)),
 	rdf_global_id(flo:H2, H2Global),
 	rdf_assert(BNode, Type2, H2Global),
 	rdf_assert(Subj, flo:requiresInput, BNode),
-	assert_rdf_list(Subj, PredLinkingSubj, Type1, T1, Type2, T2).
-assert_rdf_list(Subj, PredLinkingSubj, Type1, [optional(H1)|T1], Type2, [H2|T2]) :- !,
+	NewIndex is Index + 1,
+	assert_rdf_list(NewIndex, Subj, PredLinkingSubj, Type1, T1, Type2, T2).
+assert_rdf_list(Index, Subj, PredLinkingSubj, Type1, [optional(H1)|T1], Type2, [H2|T2]) :- !,
 	rdf_bnode(BNode),
 	rdf_assert(BNode, rdf:type, flo:'BlockInput'),
 	rdf_assert(BNode, PredLinkingSubj, Subj),
 	rdf_assert(BNode, Type1, literal(H1)),
+	rdf_assert(BNode, flo:hasOrdinal, literal(Index)),
 	rdf_global_id(flo:H2, H2Global),
 	rdf_assert(BNode, Type2, H2Global),
 	rdf_assert(Subj, flo:optionalInput, BNode),
-	assert_rdf_list(Subj, PredLinkingSubj, Type1, T1, Type2, T2).
-assert_rdf_list(Subj, PredLinkingSubj, Type1, [H1|T1], Type2, [H2|T2]) :-
+	NewIndex is Index + 1,
+	assert_rdf_list(NewIndex, Subj, PredLinkingSubj, Type1, T1, Type2, T2).
+assert_rdf_list(Index, Subj, PredLinkingSubj, Type1, [H1|T1], Type2, [H2|T2]) :-
 	rdf_bnode(BNode),
 	rdf_assert(BNode, rdf:type, flo:'BlockOutput'),
 	rdf_assert(BNode, PredLinkingSubj, Subj),
 	rdf_assert(BNode, Type1, literal(H1)),
+	rdf_assert(BNode, flo:hasOrdinal, literal(Index)),
 	rdf_global_id(flo:H2, H2Global),
 	rdf_assert(BNode, Type2, H2Global),
 	rdf_assert(Subj, flo:hasOutput, BNode),
-	assert_rdf_list(Subj, PredLinkingSubj, Type1, T1, Type2, T2).
-
+	NewIndex is Index + 1,
+	assert_rdf_list(NewIndex, Subj, PredLinkingSubj, Type1, T1, Type2, T2).
 
 write_rdf(Outfile) :-
 	rdf_save_turtle(Outfile, []).

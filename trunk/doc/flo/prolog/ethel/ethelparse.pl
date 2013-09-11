@@ -8,6 +8,10 @@
 :- use_module(library(dcg/basics)).
 :- use_module(flo).
 
+%%	ethel_program// is det
+%
+%	main DCG for the Ethel parser
+%
 ethel_program -->
 	settings_section,
 	blanks,
@@ -15,7 +19,7 @@ ethel_program -->
 	blanks,
 	ethel_body(none).
 
-ethel_body(_) --> basics:eos.
+ethel_body(_) --> dcg_basics:eos.
 ethel_body(Default) -->
 	blank,
 	ethel_body(Default).
@@ -28,7 +32,6 @@ ethel_body(Default) -->
 ethel_body(Default) -->
 	error,
 	ethel_body(Default).
-
 
 comment -->
 	"/*",
@@ -97,31 +100,41 @@ connection(Default, RHS) -->
 	blanks,
 	terminal_name(Default, RHS),
 	{
-	    create_connection(LHS, RHS)  % might backtrack
+	    terminal_to_atom(LHS, ALHS),
+	    terminal_to_atom(RHS, ARHS),
+	    create_connection(ALHS, ARHS)  % might backtrack
 	}.
+
+terminal_to_atom(terminal(CName, CParm), terminal(AName, AParm)) :-
+	atom_codes(AName, CName),
+	atom_codes(AParm, CParm).
 
 terminal_name(_, terminal(Name, Parm)) -->
 	id(Name),
 	blanks,
 	"!",
-	prolog_var_name(Type),
-	blanks,
-	":",
-	blanks,
-	{
-	    create_named_block(Name, Type)
-	},
-	id(Parm).
-terminal_name(_, terminal(Name, Parm)) -->
-	"_!",
-	blanks,
-	prolog_var_name(Type),
+	prolog_atom_name(Type),
 	blanks,
 	":",
 	blanks,
 	id(Parm),
 	{
-	    create_anonymous_block(Type, Name)
+	    atom_codes(AName, Name),
+	    atom_codes(AType, Type),
+	    create_named_block(AName, AType)
+	}.
+terminal_name(_, terminal(Name, Parm)) -->
+	"_!",
+	blanks,
+	prolog_atom_name(Type),
+	blanks,
+	":",
+	blanks,
+	id(Parm),
+	{
+	    atom_codes(AType, Type),
+	    create_anonymous_block(AType, AName),
+	    atom_codes(AName, Name)
 	}.
 terminal_name(_, terminal(Name, Parm)) -->
 	id(Name),
@@ -130,10 +143,12 @@ terminal_name(_, terminal(Name, Parm)) -->
 	blanks,
 	id(Parm).
 terminal_name(terminal(Name, _), terminal(Name, Parm)) -->
+	":",
 	{
-            open_terminal(Name, Parm)
-        },
-	":".
+	    atom_codes(AName, Name),
+            open_terminal(AName, AParm),
+	    atom_codes(AParm, Parm)
+        }.
 terminal_name(terminal(Name, _), terminal(Name, Parm)) -->
 	":",
 	blanks,
@@ -141,11 +156,11 @@ terminal_name(terminal(Name, _), terminal(Name, Parm)) -->
 
 terminal_name(_, terminal(Name, Parm)) -->
 	id(Name),
+	blanks,
+	":",
 	{
 	   open_terminal(Name, Parm)
-        },
-	blanks,
-	":".
+        }.
 
 terminal_name(_, java_terminal(Name, Type)) -->
 	"j",
@@ -173,3 +188,19 @@ parser_restart -->
 	parser_restart.
 
 settings_section --> [].
+
+
+prolog_atom_name([H|T]) -->
+	[H],
+	{
+	    code_type(H, prolog_atom_start)
+	},
+	prolog_atom_rest(T).
+
+prolog_atom_rest([H|T]) -->
+	[H],
+	{
+	    code_type(H, prolog_atom_start)
+	},
+	prolog_atom_rest(T).
+prolog_atom_rest([]) --> [].

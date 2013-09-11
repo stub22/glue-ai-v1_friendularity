@@ -45,6 +45,14 @@ flo:defaultPrototypeCoordinateY rdf:type owl:ObjectProperty ;
 
 
 
+###  http://www.friendularity.org/ontology/flo#hasOrdinal
+
+flo:hasOrdinal rdf:type owl:ObjectProperty ;
+               
+               rdfs:domain flo:BlockIO .
+
+
+
 ###  http://www.friendularity.org/ontology/flo#hasOutput
 
 flo:hasOutput rdf:type owl:ObjectProperty ;
@@ -52,6 +60,16 @@ flo:hasOutput rdf:type owl:ObjectProperty ;
               rdfs:range flo:BlockOutput ;
               
               rdfs:domain flo:BlockType .
+
+
+
+###  http://www.friendularity.org/ontology/flo#hasType
+
+flo:hasType rdf:type owl:ObjectProperty ;
+            
+            rdfs:domain flo:Block ;
+            
+            rdfs:range flo:BlockType .
 
 
 
@@ -70,6 +88,26 @@ flo:inputFor rdf:type owl:ObjectProperty ;
              rdfs:domain flo:BlockInput ;
              
              rdfs:range flo:BlockType .
+
+
+
+###  http://www.friendularity.org/ontology/flo#lhs
+
+flo:lhs rdf:type owl:ObjectProperty ;
+        
+        rdfs:range flo:BlockOutput ;
+        
+        rdfs:domain flo:Connection .
+
+
+
+###  http://www.friendularity.org/ontology/flo#lhsParm
+
+flo:lhsParm rdf:type owl:ObjectProperty ;
+            
+            rdfs:domain flo:Connection ;
+            
+            rdfs:subPropertyOf owl:topObjectProperty .
 
 
 
@@ -107,6 +145,24 @@ flo:requiresInput rdf:type owl:ObjectProperty ;
 
 
 
+###  http://www.friendularity.org/ontology/flo#rhs
+
+flo:rhs rdf:type owl:ObjectProperty ;
+        
+        rdfs:range flo:BlockInput ;
+        
+        rdfs:domain flo:Connection .
+
+
+
+###  http://www.friendularity.org/ontology/flo#rhsParm
+
+flo:rhsParm rdf:type owl:ObjectProperty ;
+            
+            rdfs:domain flo:Connection .
+
+
+
 ###  http://www.friendularity.org/ontology/flo#section
 
 flo:section rdf:type owl:ObjectProperty ;
@@ -140,6 +196,12 @@ flo:visualStyle rdf:type owl:ObjectProperty ;
 #################################################################
 
 
+###  http://www.friendularity.org/ontology/flo#Block
+
+flo:Block rdf:type owl:Class .
+
+
+
 ###  http://www.friendularity.org/ontology/flo#BlockIO
 
 flo:BlockIO rdf:type owl:Class .
@@ -165,6 +227,12 @@ flo:BlockOutput rdf:type owl:Class ;
 ###  http://www.friendularity.org/ontology/flo#BlockType
 
 flo:BlockType rdf:type owl:Class .
+
+
+
+###  http://www.friendularity.org/ontology/flo#Connection
+
+flo:Connection rdf:type owl:Class .
 
 
 
