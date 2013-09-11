@@ -15,6 +15,7 @@
  */
 package org.friendularity.api.west;
 
+import org.friendularity.math.test.symcalc.ParamChunk;
 import org.friendularity.math.api.MathGate;
 import org.friendularity.api.goody.ShapeAnimator;
 import org.friendularity.api.goody.VizShape;
@@ -38,7 +39,11 @@ public class WorldEstimate extends ThingEstimate {
 	// Anything else is stuff.
 	public Set<StuffEstimate>			myStuffEstims = new HashSet<StuffEstimate>();
 
+	boolean mathNeedsInit = true;
+
+	public double mult_A = 1.0;
 	
+	public ParamChunk myNumChunk = new ParamChunk.Number(), myTxtChunk = new ParamChunk.Text();
 	
 	public WorldEstimate(Ident id) {
 		super(id);
@@ -58,13 +63,8 @@ public class WorldEstimate extends ThingEstimate {
 		if ((myStuffEstims == null) || myStuffEstims.isEmpty()) {
 			myStuffEstims = EstimateLib.makeFunStuffEstims(12, 8);
 		}
-		
-
 	}
-	boolean mathNeedsInit = true;
 
-
-	public double mult_A = 1.0;
 	
 	@Override public void updateFromMathSpace(MathGate mg) {
 		long nowMsec = System.currentTimeMillis();
