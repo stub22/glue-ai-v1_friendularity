@@ -1,4 +1,4 @@
-:- module(debug, []).
+:- module(debug, [go/0]).
 /** <module> Consult this file to start in dev mode
 
 */
@@ -27,5 +27,13 @@ license:license(apache, lgpl,
 :- license(apache).
 
 :- portray_text(true).
+
+:- ensure_loaded(load).
+
+:- use_module(ethel_compiler).
+
+go :- compile('examples/testcase.eth', 'testcaseout.flo').
+
+
 
 

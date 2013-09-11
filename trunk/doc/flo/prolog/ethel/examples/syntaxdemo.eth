@@ -5,6 +5,8 @@
 // if we're asked to make java, make this class in this package
 javaclass  org.friendularity.EthelDemo
 
+connect
+
 // create an aschannels block c and connect to the argument in of type Mat
 // in the apply method in EthelDemo
 j image in => c!aschannels

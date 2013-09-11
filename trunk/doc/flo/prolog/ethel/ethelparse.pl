@@ -1,23 +1,33 @@
-:- module(ethelparse, []).
+:- module(ethelparse, [ethel_program//0]).
+/** <module> Language definition for Ethel
+
+    Ethel is a simple non visual language that compiles to flo.
+
+*/
 
 :- use_module(library(dcg/basics)).
+:- use_module(flo).
 
-ethel_program(_, _) --> basics:eos.
-ethel_program(Settings, State) -->
+ethel_program -->
+	settings_section,
+	blanks,
+	"connect",
+	blanks,
+	ethel_body(none).
+
+ethel_body(_) --> basics:eos.
+ethel_body(Default) -->
 	blank,
-	ethel_program(Settings, State).
-ethel_program(Settings, State) -->
+	ethel_body(Default).
+ethel_body(Default) -->
 	comment,
-	ethel_program(Settings, State).
-ethel_program(Settings, State) -->
-	setting_stmt(Settings, NewSettings),
-	ethel_program(NewSettings, State).
-ethel_program(Settings, State) -->
-	connection(Settings, State, NewState),
-	ethel_program(Settings, NewState).
-ethel_program(Settings, State) -->
+	ethel_body(Default).
+ethel_body(Default) -->
+	connection(Default, NewDefault),
+	ethel_body(NewDefault).
+ethel_body(Default) -->
 	error,
-	ethel_program(Settings, State).
+	ethel_body(Default).
 
 
 comment -->
@@ -35,18 +45,13 @@ comment_body -->
 	comment_body.
 
 line_comment -->
-	[X],
-	{
-	    code_type(X, end_of_line)
-	}.
+	eol.
 line_comment -->
 	[X],
 	{
 	    \+ code_type(X, end_of_line)
 	},
 	line_comment.
-
-
 
 setting_stmt(Settings, [generate_java_as(Pkg, Name) | NewSettings]) -->
 	"javaclass",
@@ -61,7 +66,6 @@ fully_qualified_java_name(Pkg, Name) -->
 	    flatten(PkgParts, Pkg)
 	},
 	id(Name).
-
 
 id([H|T]) -->
 	[H],
@@ -79,30 +83,93 @@ id_rest([H|T]) -->
 
 id_rest([]) --> [].
 
-package_part([H|T]) -->
+package_part([H, "." |T]) -->
 	id(H),
 	".",
 	package_part(T).
 package_part([]) --> [].
 
-% TODO semantics
-connection(Settings, State, NNState) -->
+connection(Default, RHS) -->
 	blanks,
-	terminal_name(State, NState, LHS),
+	terminal_name(Default, LHS),
 	blanks,
 	"=>",
 	blanks,
-	terminal_name(NState, NNState, RHS).
+	terminal_name(Default, RHS),
+	{
+	    create_connection(LHS, RHS)  % might backtrack
+	}.
 
-/*
-	DONE TO HERE
-terminal_name(State, NState, terminal(Name, Parm)) -->
+terminal_name(_, terminal(Name, Parm)) -->
 	id(Name),
+	blanks,
+	"!",
+	prolog_var_name(Type),
+	blanks,
 	":",
-*/
+	blanks,
+	{
+	    create_named_block(Name, Type)
+	},
+	id(Parm).
+terminal_name(_, terminal(Name, Parm)) -->
+	"_!",
+	blanks,
+	prolog_var_name(Type),
+	blanks,
+	":",
+	blanks,
+	id(Parm),
+	{
+	    create_anonymous_block(Type, Name)
+	}.
+terminal_name(_, terminal(Name, Parm)) -->
+	id(Name),
+	blanks,
+	":",
+	blanks,
+	id(Parm).
+terminal_name(terminal(Name, _), terminal(Name, Parm)) -->
+	{
+            open_terminal(Name, Parm)
+        },
+	":".
+terminal_name(terminal(Name, _), terminal(Name, Parm)) -->
+	":",
+	blanks,
+	id(Parm).
 
+terminal_name(_, terminal(Name, Parm)) -->
+	id(Name),
+	{
+	   open_terminal(Name, Parm)
+        },
+	blanks,
+	":".
 
+terminal_name(_, java_terminal(Name, Type)) -->
+	"j",
+	blank,
+	blanks,
+	id(Type),
+	blank,
+	blanks,
+	id(Name).
 
+eol -->
+	[X],
+	{
+	    code_type(X, end_of_line)
+	}.
 
+error -->
+	[_],
+	parser_restart.
 
+parser_restart -->
+	eol.
+parser_restart -->
+	[_],
+	parser_restart.
 
+settings_section --> [].
