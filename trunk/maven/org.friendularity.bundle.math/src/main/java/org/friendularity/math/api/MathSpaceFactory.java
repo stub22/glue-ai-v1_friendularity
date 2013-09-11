@@ -50,8 +50,8 @@ public class MathSpaceFactory {
 		MathGate mg = new MathGateScripted(engine);
 		return mg;
 	}
-	public MathGate makeUnscriptedMathGate() { 
-		MathGate mg = new MathGateUnscripted();
+	public MathGateUnscripted makeUnscriptedMathGate() { 
+		MathGateUnscripted mg = new MathGateUnscripted();
 		return mg;
 	}
 	

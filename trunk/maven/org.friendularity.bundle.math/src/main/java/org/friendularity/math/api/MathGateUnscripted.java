@@ -128,7 +128,7 @@ public class MathGateUnscripted extends MathGate {
 				//		result = fUtility.evalTrace(script, null, F.List());
 				//	} else {
 				// resultExpr = myEvalUtilityWrapper.evaluate(cachedExpr);
-				resultExpr = evalParsedExpr(cachedExpr);
+				resultExpr = evalParsedExpr(cachedExpr, true, true);
 
 			} else {
 				getLogger().error("Cannot parse expr [" + exprText + "]");
@@ -168,23 +168,19 @@ public class MathGateUnscripted extends MathGate {
 			evalEngineAttach();
 			myEvalEngine.reset();
 			parsedExpression = myEvalEngine.parse(inTextExpr);
-			if (parsedExpression != null) {
-				myEvalEngine.reset();
-				IExpr temp = myEvalEngine.evaluate(parsedExpression);
-				// Stu B22 - Commented out this line as recommended by Axel.
-				// It is keeping a history of values for future access via the Out[] function.
-				// But this causes RAM usage to grow over time!
-				// fEvalEngine.addOut(temp);
-				return temp;
-			}
+			return evalParsedExpr(parsedExpression, false, true);
 		}
 		return null;
 	}
 
-	public IExpr evalParsedExpr(final IExpr parsedExpr) throws RuntimeException {
+	public IExpr evalParsedExpr(final IExpr parsedExpr, boolean attachFlag, boolean resetFlag) throws RuntimeException {
 		if (parsedExpr != null) {
-			evalEngineAttach();
-			myEvalEngine.reset();
+			if (attachFlag) {
+				evalEngineAttach();
+			}
+			if (resetFlag) {
+				myEvalEngine.reset();
+			}
 			IExpr temp = myEvalEngine.evaluate(parsedExpr);
 			// Stu B22 - Commented out this line as recommended by Axel.
 			// It is keeping a history of values for future access via the Out[] function.

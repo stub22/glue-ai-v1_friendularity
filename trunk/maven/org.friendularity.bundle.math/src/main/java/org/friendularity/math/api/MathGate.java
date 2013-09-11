@@ -24,6 +24,10 @@ import org.matheclipse.core.interfaces.INumber;
 import org.matheclipse.core.interfaces.INum;
 
 import org.appdapter.core.log.BasicDebugger;
+import org.matheclipse.core.expression.IntegerSym;
+import org.matheclipse.core.interfaces.IBigNumber;
+import org.matheclipse.core.interfaces.IInteger;
+import org.matheclipse.core.interfaces.ISignedNumber;
 /**
  * @author Stu B. <www.texpedient.com>
  */
@@ -80,9 +84,25 @@ public abstract class MathGate extends BasicDebugger {
 						// getLogger().debug("Hooray, the array sizes match!");
 					}
 					for (int resIdx = 0; (resIdx < valCount) && (resIdx < tgtSize); resIdx++) {
-						INumber resultNumberAny = treeResult.getNumber(resIdx + 1);
-						INum  resultNumDouble = (INum) resultNumberAny;
-						result[resIdx] = resultNumDouble.getRealPart();
+						int subExprIdx = resIdx + 1;
+						IExpr subExpr = treeResult.get(subExprIdx);
+				
+					//	INumber resultNumberAny = treeResult.getNumber(resIdx + 1);
+					/*  // INum defines   getRealPart, and extends ISignedNumber, which defines doubleValue()
+						// IRational extends ISignedNumber, IBigNumber {
+						public IInteger getDenominator()    	public IInteger getNumerator(); 
+						* 
+					*/
+						if (subExpr instanceof INum) {
+							INum  resultINum = (INum) subExpr;
+							// Would always give the same result as "doubleValue()" ?
+							result[resIdx] = resultINum.getRealPart();
+						} else if (subExpr instanceof ISignedNumber) {
+							ISignedNumber resultSignedNum = (ISignedNumber) subExpr;
+							result[resIdx] = resultSignedNum.doubleValue();
+						} else {
+							getLogger().error("Cannot map value to double : {}", subExpr);
+						}
 					}
 					// Another way:
 					// Special iterator() skips over function symbol element #0
