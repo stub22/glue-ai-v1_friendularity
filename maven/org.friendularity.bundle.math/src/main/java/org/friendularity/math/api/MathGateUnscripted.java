@@ -35,16 +35,15 @@ import org.matheclipse.core.interfaces.ISymbol;
  *
  * @author Stu B22 <stub22@appstract.com>
  *
- * Uses code + comments copied from Symja's "MathScriptEngine"
+ * Uses code + comments copied from Symja's "MathScriptEngine" and "EvalUtilities" classes.
+ * We avoid using EvalUtilities itself, because it likes to keep a cache that grows in memory.
+ * 
  */
 public class MathGateUnscripted extends MathGate {
-	private EvalEngine	 myEvalEngine;
-	// We are dropping EvalUtilities since it likes to keep a cache that grows in memories.
-	// But we copy in the 
-	//	private EvalUtilities myEvalUtilityWrapper;
+
+	private EvalEngine myEvalEngine;
 	private Map<String, Object> myVarBindings = new HashMap<String, Object>();
-	
-	private	Map<String,	IExpr> myParsedExprCache = new HashMap<String, IExpr>();
+	private Map<String, IExpr> myParsedExprCache = new HashMap<String, IExpr>();
 
 	public MathGateUnscripted() {
 		// Symja comment:   get the thread local evaluation engine
@@ -53,36 +52,38 @@ public class MathGateUnscripted extends MathGate {
 		// The "false" controls some MathML prefixing behavior that we probably don't care about 
 		// myEvalUtilityWrapper = new EvalUtilities(myEvalEngine, false);
 	}
-/**
- * Stores a value to be pushed when 
- * @param name
- * @param var 
- */
+
+	/**
+	 * Stores a value to be pushed when
+	 *
+	 * @param name
+	 * @param var
+	 */
 	@Override public void putVar(String name, Object var) {
 		myVarBindings.put(name, var);
 		int bindingMapSize = myVarBindings.size();
 		if ((bindingMapSize % 100) == 0) {
 			getLogger().warn("Binding Map Size is now: " + bindingMapSize);
-		}		
+		}
 	}
-	
+
 	public List<ISymbol> pushValuesForBoundSymbols() {
-		
+
 		final ArrayList<ISymbol> pushedSymsToPopLater = new ArrayList<ISymbol>(myVarBindings.size());
-		
-	// * Assign the associated EvalEngine to the current thread. Every subsequent
-	// * action evaluation in this thread affects the EvalEngine in this class.		
-		
+
+		// * Assign the associated EvalEngine to the current thread. Every subsequent
+		// * action evaluation in this thread affects the EvalEngine in this class.		
+
 		// myEvalUtilityWrapper.startRequest();
-		
+
 		// Here is the part of Symja/Matheclipse that still seems kinda weak.
 		// We are in some ways "globally" registering our current set of variables.
 		// It is not fully clear how parallel threads can independently and simultaneously
 		// use separate sets of symbols.   This issue is discussed some in the "Scripted"
 		// engine docs on Symja site, but we need to go deeper in documenting our understanding.
-		
+
 		evalEngineAttach();
-		
+
 		for (Map.Entry<String, Object> currEntry : myVarBindings.entrySet()) {
 			ISymbol symbol = F.$s(currEntry.getKey());
 			// Now we must trust the caller to pop these values!
@@ -92,12 +93,26 @@ public class MathGateUnscripted extends MathGate {
 
 		return pushedSymsToPopLater;
 	}
-	public IExpr parseExpression(String expr) { 
+
+	public IExpr parseExpression(String expr) {
 		return myEvalEngine.parse(expr);
 	}
 
+	public IExpr parseCachableExpr(String exprText) {
+		IExpr cachedExpr = myParsedExprCache.get(exprText);
+		if (cachedExpr == null) {
+			cachedExpr = parseExpression(exprText);
+			if (cachedExpr != null) {
+				myParsedExprCache.put(exprText, cachedExpr);
+				int exprCachSize = myParsedExprCache.size();
+				if ((exprCachSize % 100) == 0) {
+					getLogger().warn("Expr Cache Size is now: " + exprCachSize);
+				}
+			}
+		}
+		return cachedExpr;
+	}
 
-	
 	@Override public IExpr parseAndEvalExprToIExpr(String exprText) {
 		IExpr resultExpr = null;
 		List<ISymbol> pushedSymsToPopLater = null;
@@ -107,23 +122,13 @@ public class MathGateUnscripted extends MathGate {
 			// so we repeat that structure.
 			pushedSymsToPopLater = pushValuesForBoundSymbols();
 
-			IExpr cachedExpr = myParsedExprCache.get(exprText);
-			if (cachedExpr == null) {
-				cachedExpr = parseExpression(exprText);
-				if (cachedExpr != null) {
-					myParsedExprCache.put(exprText, cachedExpr);
-					int exprCachSize = myParsedExprCache.size();
-					if ((exprCachSize % 100) == 0) {
-						getLogger().warn("Expr Cache Size is now: " + exprCachSize);
-					}
-				} 
-			}
+			IExpr cachedExpr = parseCachableExpr(exprText);
 			if (cachedExpr != null) {
-			//	if (Boolean.TRUE.equals(stepwise)) {
-			//		result = fUtility.evalTrace(script, null, F.List());
-			//	} else {
-					// resultExpr = myEvalUtilityWrapper.evaluate(cachedExpr);
-					resultExpr = evalParsedExpr(cachedExpr);
+				//	if (Boolean.TRUE.equals(stepwise)) {
+				//		result = fUtility.evalTrace(script, null, F.List());
+				//	} else {
+				// resultExpr = myEvalUtilityWrapper.evaluate(cachedExpr);
+				resultExpr = evalParsedExpr(cachedExpr);
 
 			} else {
 				getLogger().error("Cannot parse expr [" + exprText + "]");
@@ -140,23 +145,23 @@ public class MathGateUnscripted extends MathGate {
 		return resultExpr;
 	}
 
-		/** Copied from MathMLUtilities.startRequest() - the parent class of EvalUtilities:
-	 * Assign the associated EvalEngine to the current thread. Every subsequent
-	 * action evaluation in this thread affects the EvalEngine in this class.
+	/**
+	 * Copied from MathMLUtilities.startRequest() - the parent class of EvalUtilities: Assign the associated EvalEngine
+	 * to the current thread. Every subsequent action evaluation in this thread affects the EvalEngine in this class.
 	 */
 	public void evalEngineAttach() {
 		EvalEngine.set(myEvalEngine);
 	}
 
-	/** Copied from MathMLUtilities.stopRequest() - the parent class of EvalUtilities:
-	 * Stop the current evaluation thread, by setting stopRequested to true in the EvalEngine.
-	 * Actual impacts are outside EvalEngine, apparently.  Speculation:  Seems to be "interrupt 
-	 * - stop trying to solve", and perhaps also triggers some explicit cleanup? 
+	/**
+	 * Copied from MathMLUtilities.stopRequest() - the parent class of EvalUtilities: Stop the current evaluation
+	 * thread, by setting stopRequested to true in the EvalEngine. Actual impacts are outside EvalEngine, apparently.
+	 * Speculation: Seems to be "interrupt - stop trying to solve", and perhaps also triggers some explicit cleanup?
 	 */
 	public void evalEngineStop() {
 		myEvalEngine.stopRequest();
 	}
-	
+
 	public IExpr evalMathText(final String inTextExpr) throws Exception {
 		IExpr parsedExpression = null;
 		if (inTextExpr != null) {
@@ -187,43 +192,39 @@ public class MathGateUnscripted extends MathGate {
 			return temp;
 		}
 		return null;
-	}	
+	}
 	/**
-	 * Evaluate the <code>inputExpression</code> and return the
-	 * <code>Trace[inputExpression]</code> (i.e. all (sub-)expressions needed to
-	 * calculate the result).
-	 * 
-	 * @param inputExpression
-	 *          the expression which should be evaluated.
-	 * @param matcher
-	 *          a filter which determines the expressions which should be traced,
-	 *          If the matcher is set to <code>null</code>, all expressions are
-	 *          traced.
-	 * @param list
-	 *          an IAST object which will be cloned for containing the traced
-	 *          expressions. Typically a <code>F.List()</code> will be used.
+	 * Evaluate the
+	 * <code>inputExpression</code> and return the
+	 * <code>Trace[inputExpression]</code> (i.e. all (sub-)expressions needed to calculate the result).
+	 *
+	 * @param inputExpression the expression which should be evaluated.
+	 * @param matcher a filter which determines the expressions which should be traced, If the matcher is set
+	 * to <code>null</code>, all expressions are traced.
+	 * @param list an IAST object which will be cloned for containing the traced expressions. Typically
+	 * a <code>F.List()</code> will be used.
 	 * @return
 	 */
 	// Disabling because it requires Guava classes - need to add them as export from ext.bundle.math.symja_jas
 	/*
-	public IAST traceEvalMathText(final String inputExpression, com.google.common.base.Predicate<IExpr> matcher, IAST list) throws Exception {
-		IExpr parsedExpression = null;
-		if (inputExpression != null) {
-			// try {
-			evalEngineAttach();
-			myEvalEngine.reset();
-			parsedExpression = myEvalEngine.parse(inputExpression);
-			if (parsedExpression != null) {
-				myEvalEngine.reset();
-				IAST temp = myEvalEngine.evalTrace(parsedExpression, matcher, list);
-				// Stu B22 - Commented out this line as recommended by Axel.
-				// It is keeping a history of values for future access via the Out[] function.
-				// But this causes RAM usage to grow over time!
-				// fEvalEngine.addOut(temp);
-				return temp;
-			}
-		}
-		return null;
-	}	
-	*/
+	 public IAST traceEvalMathText(final String inputExpression, com.google.common.base.Predicate<IExpr> matcher, IAST list) throws Exception {
+	 IExpr parsedExpression = null;
+	 if (inputExpression != null) {
+	 // try {
+	 evalEngineAttach();
+	 myEvalEngine.reset();
+	 parsedExpression = myEvalEngine.parse(inputExpression);
+	 if (parsedExpression != null) {
+	 myEvalEngine.reset();
+	 IAST temp = myEvalEngine.evalTrace(parsedExpression, matcher, list);
+	 // Stu B22 - Commented out this line as recommended by Axel.
+	 // It is keeping a history of values for future access via the Out[] function.
+	 // But this causes RAM usage to grow over time!
+	 // fEvalEngine.addOut(temp);
+	 return temp;
+	 }
+	 }
+	 return null;
+	 }	
+	 */
 }
