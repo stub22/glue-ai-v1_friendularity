@@ -110,6 +110,20 @@ terminal_to_atom(terminal(CName, CParm), terminal(AName, AParm)) :-
 	atom_codes(AParm, CParm).
 
 terminal_name(_, terminal(Name, Parm)) -->
+	"_!",
+	!,
+	blanks,
+	prolog_atom_name(Type),
+	blanks,
+	":",
+	blanks,
+	id(Parm),
+	{
+	    atom_codes(AType, Type),
+	    create_anonymous_block(AType, AName),
+	    atom_codes(AName, Name)
+	}.
+terminal_name(_, terminal(Name, Parm)) -->
 	id(Name),
 	blanks,
 	"!",
@@ -122,19 +136,6 @@ terminal_name(_, terminal(Name, Parm)) -->
 	    atom_codes(AName, Name),
 	    atom_codes(AType, Type),
 	    create_named_block(AName, AType)
-	}.
-terminal_name(_, terminal(Name, Parm)) -->
-	"_!",
-	blanks,
-	prolog_atom_name(Type),
-	blanks,
-	":",
-	blanks,
-	id(Parm),
-	{
-	    atom_codes(AType, Type),
-	    create_anonymous_block(AType, AName),
-	    atom_codes(AName, Name)
 	}.
 terminal_name(_, terminal(Name, Parm)) -->
 	id(Name),

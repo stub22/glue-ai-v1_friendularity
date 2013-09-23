@@ -91,6 +91,22 @@ flo:inputFor rdf:type owl:ObjectProperty ;
 
 
 
+###  http://www.friendularity.org/ontology/flo#javaName
+
+flo:javaName rdf:type owl:ObjectProperty ;
+             
+             rdfs:domain flo:JavaBinding .
+
+
+
+###  http://www.friendularity.org/ontology/flo#javaPackage
+
+flo:javaPackage rdf:type owl:ObjectProperty ;
+                
+                rdfs:domain flo:JavaBinding .
+
+
+
 ###  http://www.friendularity.org/ontology/flo#lhs
 
 flo:lhs rdf:type owl:ObjectProperty ;
@@ -198,13 +214,17 @@ flo:visualStyle rdf:type owl:ObjectProperty ;
 
 ###  http://www.friendularity.org/ontology/flo#Block
 
-flo:Block rdf:type owl:Class .
+flo:Block rdf:type owl:Class ;
+          
+          rdfs:comment "an individual block" .
 
 
 
 ###  http://www.friendularity.org/ontology/flo#BlockIO
 
-flo:BlockIO rdf:type owl:Class .
+flo:BlockIO rdf:type owl:Class ;
+            
+            rdfs:comment "One of the terminals on a BlockType, either input or output" .
 
 
 
@@ -212,7 +232,9 @@ flo:BlockIO rdf:type owl:Class .
 
 flo:BlockInput rdf:type owl:Class ;
                
-               rdfs:subClassOf flo:BlockIO .
+               rdfs:subClassOf flo:BlockIO ;
+               
+               rdfs:comment "One of the input terminals on a blocktype" .
 
 
 
@@ -220,25 +242,41 @@ flo:BlockInput rdf:type owl:Class ;
 
 flo:BlockOutput rdf:type owl:Class ;
                 
-                rdfs:subClassOf flo:BlockIO .
+                rdfs:subClassOf flo:BlockIO ;
+                
+                rdfs:comment "One of the output terminals on a blocktype" .
 
 
 
 ###  http://www.friendularity.org/ontology/flo#BlockType
 
-flo:BlockType rdf:type owl:Class .
+flo:BlockType rdf:type owl:Class ;
+              
+              rdfs:comment "A kind of block" .
 
 
 
 ###  http://www.friendularity.org/ontology/flo#Connection
 
-flo:Connection rdf:type owl:Class .
+flo:Connection rdf:type owl:Class ;
+               
+               rdfs:comment "an individual 'wire' connecting an output on one block to an input on another" .
 
 
 
 ###  http://www.friendularity.org/ontology/flo#DataType
 
-flo:DataType rdf:type owl:Class .
+flo:DataType rdf:type owl:Class ;
+             
+             rdfs:comment "One of the kinds of data that can flow through a Connection" .
+
+
+
+###  http://www.friendularity.org/ontology/flo#JavaBinding
+
+flo:JavaBinding rdf:type owl:Class ;
+                
+                rdfs:comment "A java class that could be made from a flo net" .
 
 
 
