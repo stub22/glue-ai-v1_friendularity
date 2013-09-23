@@ -1,5 +1,5 @@
 connect
 
 c!camera:O => g!gray:A
-g:O => _:viewer:A
+g:O => _!viewer:A
 

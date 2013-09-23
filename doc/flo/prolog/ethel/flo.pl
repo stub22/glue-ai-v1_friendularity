@@ -61,14 +61,19 @@ create_connection(terminal(LHName, LHParm), terminal(RHName, RHParm)) :-
 %
 %	create a block named this
 %
-%	fails silently if Type is unknown
+%	fails silently if Type is unknown or Name or Type arent atoms
+%
+%	@arg Name the name of the block
+%	@arg Type the type of the block (name from excel)
 %
 create_named_block(Name, Type) :-
 	atom(Name),
 	atom(Type),
 	rdf_global_id(flo:Type, TypeNodeName),
+	% make sure the type really exists
 	rdf(TypeNodeName, rdf:type, flo:'BlockType'),
 	rdf_global_id(flo:Name, BlockNode),
+	assert_rdf_default(BlockNode, rdf:type, flo:'Block'),
 	assert_rdf_default(BlockNode, flo:hasType, TypeNodeName).
 
 %%	create_anonymous_block(+Type:atom, -Name:atom) is nondet
@@ -126,9 +131,17 @@ ethel_name(Type, Name) :-
 
 :- dynamic flostate:default_graph/1.
 
+%%	set_current_graph_name(+Graph:atom) is det
+%
+%	set the graph name used by assert_rdf_default
+%
 set_current_graph_name(Graph) :-
 	flostate:asserta(default_graph(Graph)).
 
+%%	assert_rdf_default(+S:r, +P:r, +O:o) is det
+%
+%	Assert a triple into the 'current' graph
+%
 assert_rdf_default(S, P, O) :-
 	flostate:default_graph(Graph),
 	rdf_assert(S, P, O, Graph).

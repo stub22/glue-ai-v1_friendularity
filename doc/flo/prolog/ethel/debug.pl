@@ -35,7 +35,7 @@ license:license(apache, lgpl,
 
 http:location(pldoc, root('help/source'), [priority(10)]).
 
-go :- compile('examples/testcase.eth', 'testcaseout.flo').
+go :- compile('examples/testcase.eth', 'examples/testcaseout.flo').
 
 :- doc_server(5000).
 
