@@ -35,7 +35,7 @@ license:license(apache, lgpl,
 
 % during debugging we want to see the mangled remains
 % of the java file
-:- floj_compiler:always_retain_files.
+floj_compiler:always_retain_files.
 
 http:location(pldoc, root('help/source'), [priority(10)]).
 
@@ -43,9 +43,9 @@ go :- compile('examples/testcaseout.flo',
 	      'examples/TestCase.java',
 	      flo:'JavaBindingTestCase').
 
-:- doc_server(7000).
+:- initialization doc_server(7000).
 
-:- www_open_url('http://localhost:7000/help/source').
+:- initialization www_open_url('http://localhost:7000/help/source').
 
 
 
