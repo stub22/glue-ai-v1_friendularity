@@ -14,7 +14,12 @@
 :- rdf_register_prefix(flo, 'http://www.friendularity.org/ontology/flo#').
 
 
-:- rdf_meta assert_rdf_list(+, o, r, r, +, r, +).
+:- rdf_meta assert_parameter_list_as_rdf(+, o, r, r, +, r, +).
+
+		 /*******************************
+		 *   Get Data from Google Sheet  *
+		 *   (Not working)              *
+		 *******************************/
 
 /*
 how to get csv from googledocs
@@ -54,13 +59,25 @@ unsecure_get_google_sheet :-
 	close(Out).
 
 
-
+%%	convert(+Outfile:atom) is det
+%
+%	1. Open Blocks.xlsx and find the column with these instructions
+%	2. Copy that column
+%	3. Paste into text editor and s/<>/\n/
+%	4. Copy/Paste replace the old code in floblocks.pl with the new
+%	prolog definitions
+%	5. Run this (usually with convert('protos.ttl').   )
+%
 convert(Outfile) :-
 	rdf_retractall(_, _, _),
 	setof(BlockType, Section^section(BlockType, Section), BlockTypes),
 	add_rdf(BlockTypes),
 	write_rdf(Outfile).
 
+%%	add_rdf(+List:list) is det
+%
+%	add this list of blocktypes, given a list of names
+%
 add_rdf([]).
 add_rdf([H|T]) :-
 	writeln(H),
@@ -77,11 +94,11 @@ add_rdf([H|T]) :-
 	rdf_assert(HGlobal, flo:visualStyle, literal(Style)),
 	inputs(H, InputList),
 	input_types(H, InputTypeList),
-	assert_rdf_list(0, HGlobal, flo:inputFor, flo:name, InputList,
+	assert_parameter_list_as_rdf(0, HGlobal, flo:inputFor, flo:name, InputList,
 					     flo:dataType, InputTypeList),
 	outputs(H, OutputList),
 	output_types(H, OutputTypeList),
-	assert_rdf_list(0, HGlobal, flo:outputFor,
+	assert_parameter_list_as_rdf(0, HGlobal, flo:outputFor,
 			flo:name, OutputList,
 			flo:dataType, OutputTypeList),
 	(   image_name(H, ImageName) ->
@@ -95,8 +112,29 @@ add_rdf([H|T]) :-
 	    true),
 	add_rdf(T).
 
-assert_rdf_list(_, _, _, _, [], _, _).
-assert_rdf_list(Index, Subj, PredLinkingSubj, Type1, [required(H1)|T1], Type2, [H2|T2]) :- !,
+%%	assert_parameter_list_as_rdf(+Index:int, +Subj:r, +PredLinkingSubj:r,
+%	+Type1:r, +Params:list_of_params, +Type2:r,
+%	+ParamTypes:list_of_types) is det
+%
+%	Create blank flo:BlockInput nodes that link the Subj to the
+%	Param and ParamType for each element of the lists numbering them
+%	with flo:hasOrdinal
+%
+%	Notice the rdf_meta for this pred at top of file
+%
+%	@arg Index  the index of the parameter
+%	@arg Subj   the resource we're adding parameters to
+%	@arg PredLinkingSubj The kind of parameter (eg flo:inputFor)
+%	@arg Type1 the linking rdf predicate for the Params list
+%	(usually flo:name)
+%	@arg Params the list of parameters, as terms like required('A')
+%	or atoms
+%       @arg Type2 the linking rdf predicate for the ParamTypes
+%	list
+%	@arg ParamTypes the type resources
+%
+assert_parameter_list_as_rdf(_, _, _, _, [], _, _).
+assert_parameter_list_as_rdf(Index, Subj, PredLinkingSubj, Type1, [required(H1)|T1], Type2, [H2|T2]) :- !,
 	rdf_bnode(BNode),
 	rdf_assert(BNode, rdf:type, flo:'BlockInput'),
 	rdf_assert(BNode, PredLinkingSubj, Subj),
@@ -106,8 +144,8 @@ assert_rdf_list(Index, Subj, PredLinkingSubj, Type1, [required(H1)|T1], Type2, [
 	rdf_assert(BNode, Type2, H2Global),
 	rdf_assert(Subj, flo:requiresInput, BNode),
 	NewIndex is Index + 1,
-	assert_rdf_list(NewIndex, Subj, PredLinkingSubj, Type1, T1, Type2, T2).
-assert_rdf_list(Index, Subj, PredLinkingSubj, Type1, [optional(H1)|T1], Type2, [H2|T2]) :- !,
+	assert_parameter_list_as_rdf(NewIndex, Subj, PredLinkingSubj, Type1, T1, Type2, T2).
+assert_parameter_list_as_rdf(Index, Subj, PredLinkingSubj, Type1, [optional(H1)|T1], Type2, [H2|T2]) :- !,
 	rdf_bnode(BNode),
 	rdf_assert(BNode, rdf:type, flo:'BlockInput'),
 	rdf_assert(BNode, PredLinkingSubj, Subj),
@@ -117,8 +155,8 @@ assert_rdf_list(Index, Subj, PredLinkingSubj, Type1, [optional(H1)|T1], Type2, [
 	rdf_assert(BNode, Type2, H2Global),
 	rdf_assert(Subj, flo:optionalInput, BNode),
 	NewIndex is Index + 1,
-	assert_rdf_list(NewIndex, Subj, PredLinkingSubj, Type1, T1, Type2, T2).
-assert_rdf_list(Index, Subj, PredLinkingSubj, Type1, [H1|T1], Type2, [H2|T2]) :-
+	assert_parameter_list_as_rdf(NewIndex, Subj, PredLinkingSubj, Type1, T1, Type2, T2).
+assert_parameter_list_as_rdf(Index, Subj, PredLinkingSubj, Type1, [H1|T1], Type2, [H2|T2]) :-
 	rdf_bnode(BNode),
 	rdf_assert(BNode, rdf:type, flo:'BlockOutput'),
 	rdf_assert(BNode, PredLinkingSubj, Subj),
@@ -128,8 +166,12 @@ assert_rdf_list(Index, Subj, PredLinkingSubj, Type1, [H1|T1], Type2, [H2|T2]) :-
 	rdf_assert(BNode, Type2, H2Global),
 	rdf_assert(Subj, flo:hasOutput, BNode),
 	NewIndex is Index + 1,
-	assert_rdf_list(NewIndex, Subj, PredLinkingSubj, Type1, T1, Type2, T2).
+	assert_parameter_list_as_rdf(NewIndex, Subj, PredLinkingSubj, Type1, T1, Type2, T2).
 
+%%	write_rdf(+Outfile:atom) is det
+%
+%	Save the rdf as turtle
+%
 write_rdf(Outfile) :-
 	rdf_save_turtle(Outfile, []).
 
