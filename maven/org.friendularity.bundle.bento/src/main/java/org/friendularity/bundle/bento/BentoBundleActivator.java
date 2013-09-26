@@ -43,8 +43,8 @@ public class BentoBundleActivator extends BundleActivatorBase {
 	}
 
 	protected void dispatchFrameworkStartedEvent(Bundle bundle, Throwable t) {
-		if (bundle != this)
-			return;
+		//if (bundle != this) 			return;
+				
 		getLogger().info("In OSGi framework-started callback, initialization of BentoLauncher");
 		// How to get the cmd line args if we need them
 		String args = getProperty(bundle, "", "bento.args", "application.args", "launcher.arguments");
