@@ -53,7 +53,7 @@
 		<module>../org.friendularity.bundle.vision</module>
 		<module>../org.friendularity.bundle.jvision</module>
 		<module>../org.friendularity.bundle.blockflow</module>
-		
+        <module>../org.friendularity.bundle.bento</module>
 		<module>../org.friendularity.bundle.sight</module>
 		<module>../org.friendularity.bundle.gaze</module>
 <!--
