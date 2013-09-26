@@ -2,12 +2,17 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.friendularity</groupId>
+    <parent>
+        <groupId>org.friendularity</groupId>
+        <artifactId>org.friendularity.modules.main</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <relativePath>../org.friendularity.modules.main/pom.xml</relativePath>
+    </parent>
+
     <artifactId>org.friendularity.bundle.bento</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
     <packaging>bundle</packaging>
 
-    <name>${project.artifactId} OSGi Bundle</name>
+    <name>${project.artifactId} - OSGi</name>	
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -23,7 +28,7 @@
         <dependency>
             <groupId>org.appdapter</groupId>
             <artifactId>org.appdapter.bundle.core</artifactId>
-            <version>1.1.1</version>
+            <version>${appdapter.version}</version>
             <type>jar</type>
         </dependency>
         <dependency>
@@ -44,6 +49,7 @@
                 <configuration>
                     <instructions>
                         <Bundle-Activator>org.friendularity.bundle.bento.BentoBundleActivator</Bundle-Activator>
+                        <!-- did we need this? Export-Package>org.friendularity.bundle.bento.*</Export-Package -->
                     </instructions>
                 </configuration>
             </plugin>
@@ -162,7 +168,7 @@
                                     <entry key="felix.auto.deploy.action" value="uninstall,install,update,start"/>
                                     <entry key="org.osgi.framework.storage" value="${project.build.directory}${file.separator}felix-cache"/>
                                     <entry key="org.osgi.framework.bootdelegation" value="*"/>
-									<!-- HRK Customization:   Allow sun.misc package to be used by LWJGL under OSGi -->
+<!-- HRK Customization:   Allow sun.misc package to be used by LWJGL under OSGi -->
                                     <!-- org.w3c.dom.* are missing from default.properties in felix 4.2.1, they are present in 3.0.7 -->
                                     <entry key="org.osgi.framework.system.packages.extra" 
                                            value="sun.misc,
