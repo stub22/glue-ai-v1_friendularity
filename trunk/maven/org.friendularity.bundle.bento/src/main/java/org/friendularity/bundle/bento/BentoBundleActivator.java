@@ -1,79 +1,55 @@
 package org.friendularity.bundle.bento;
 
+import org.appdapter.osgi.core.BundleActivatorBase;
 import org.friendularity.bundle.bento.gui.BentoLauncher;
-import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.FrameworkEvent;
-import org.osgi.framework.FrameworkListener;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-public class BentoBundleActivator implements BundleActivator {
-	// this was a Missing File (or didn't make it onto the SVN) 
+public class BentoBundleActivator extends BundleActivatorBase {
+
+	BentoLauncher myLauncher;
 	
-	Logger theLogger = LoggerFactory.getLogger(BentoBundleActivator.class);
-	private BentoLauncher myBento;
-
+	@Override 
 	public void start(BundleContext context) throws Exception {
-		myBento = new BentoLauncher(false);
-		context.addFrameworkListener(new GotFrameworkStartEvent());
-	}
+		forceLog4jConfig();
+		// Print some howdys
+		super.start(context);
+		scheduleFrameworkStartEventHandler(context);
+		
+        System.err.println("It started");
+    }
 
-	final class GotFrameworkStartEvent implements FrameworkListener {
-		public void frameworkEvent(FrameworkEvent fe) {
-			int eventType = fe.getType();
-			getLogger().info("************************ Got frameworkEvent with eventType=" + eventType + ", bundle=" + fe.getBundle());
-			if (eventType == FrameworkEvent.STARTED) {
-				getLogger().info("********  OSGi Framework has STARTED, calling dispatchFrameworkStartedEvent()");
-				dispatchFrameworkStartedEvent(fe.getBundle(), fe.getThrowable());
-			}
-		}
-	}
-
-	public void stop(BundleContext context) throws Exception {
-		// This handler is important in the case where *some other bundle* (outside JVision) is trying
+    public void stop(BundleContext context) throws Exception {
+		// This handler is important in the case where *some other bundle* (outside Bento) is trying
 		// to stop the JVM/OSGi process.  
-		getLogger().info("Activator sending requestStop() to myLauncher, in case some *other* bundle is stopping the container.");
-		myBento.requestStop(Boolean.FALSE);
-	}
-
-	public Logger getLogger() {
-		return theLogger;
-	}
-
-	protected void dispatchFrameworkStartedEvent(Bundle bundle, Throwable t) {
-		if (bundle != this)
-			return;
-		getLogger().info("In OSGi framework-started callback, initialization of BentoLauncher");
-		// How to get the cmd line args if we need them
-		String args = getProperty(bundle, "", "bento.args", "application.args", "launcher.arguments");
-		// call main
-		myBento.attemptInit();
-		BentoLauncher.main(args.split(" "));
-		getLogger().info("BentoLauncher complete");
-	}
-
-	private String getProperty(Bundle bundle, String defult, String... tryFrom) {
-		BundleContext context = bundle.getBundleContext();
-		boolean blankString = false;
-		for (String s : tryFrom) {
-
-			String args = context.getProperty(s);
-			if (args != null) {
-				if (args.length() == 0) {
-					blankString = true;
-					continue;
-				}
-				return args;
-			}
-			args = System.getProperty(s, null);
-			if (args != null)
-				return args;
+		if (myLauncher != null) {
+			getLogger().info("BentoBundleActivator sending requestStop() to myLauncher, in case some *other* bundle is stopping the container.");
+			myLauncher.requestStop(Boolean.FALSE);
 		}
-		if (blankString)
-			return "";
-		return defult;
-	}
+    }
+	
+	@Override 
+	protected void handleFrameworkStartedEvent(BundleContext bundleCtx) {
+		getLogger().info("In OSGi framework-started callback, initialization of JVision starting");
+		// How to get the cmd line args if we need them
+		// String[] args = (String[])context.getArguments().get("application.args");
 
+		// Check that our Java version is at least Java 1.6 update-32
+		// Versions at u25 and earlier fail with a "can't find native-library" error.
+		// 1.6.0_32
+		String version = System.getProperty("java.version");
+
+		if (version == null) {
+			getLogger().error("Cannot determine java version, we need 1.6.0_32, will try to run anyway");
+		} else if (!version.equals("1.6.0_32")) {
+			getLogger().warn("Java version is not 1.6.0_32, Versions at u25 and "
+				+ "earlier fail with a \"can't find native-library\" error.");
+		}
+
+		boolean flag_stopOSGiAfterQuitCompletes = true;
+		myLauncher = new BentoLauncher(flag_stopOSGiAfterQuitCompletes);
+		boolean launchedOK = myLauncher.attemptInit();
+		getLogger().info("myLauncher.attemptInit() returned: " + launchedOK);
+	}
+	
 }
