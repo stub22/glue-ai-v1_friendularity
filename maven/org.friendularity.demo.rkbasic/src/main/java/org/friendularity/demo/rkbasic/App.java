@@ -36,12 +36,12 @@ public class App {
         //     MAKE SURE IT'S NOT IN A STAND
         //     SERIOUSLY, DO NOT DO THIS IF THE ROBOT'S MOVEMENTS ARE RESTRICTED
         JointId waist = new JointId(myRobot.getRobotId(), new Joint.Id(WAIST));
-        JointId leg = new JointId(
+        JointId arm = new JointId(
                 myRobot.getRobotId(), new Joint.Id(RIGHT_SHOULDER_ROLL));
         
         myGoalPositions = new RobotPositionHashMap();
         myGoalPositions.put(waist, new NormalizedDouble(1.0));
-        myGoalPositions.put(leg, new NormalizedDouble(0.5));
+        myGoalPositions.put(arm, new NormalizedDouble(0.5));
         myRobot.move(myGoalPositions, 1000);
         
         Animation introAnim = Robokind.loadAnimation("intro.anim.xml");
