@@ -16,6 +16,8 @@ public class BentoBundleActivator extends BundleActivatorBase {
 	private BentoLauncher myBento;
 
 	public void start(BundleContext context) throws Exception {
+		// forceLog4jConfig();
+		
 		myBento = new BentoLauncher(false);
 		context.addFrameworkListener(new GotFrameworkStartEvent());
 	}
@@ -43,14 +45,16 @@ public class BentoBundleActivator extends BundleActivatorBase {
 	}
 
 	protected void dispatchFrameworkStartedEvent(Bundle bundle, Throwable t) {
-		//if (bundle != this) 			return;
-				
 		getLogger().info("In OSGi framework-started callback, initialization of BentoLauncher");
 		// How to get the cmd line args if we need them
 		String args = getProperty(bundle, "", "bento.args", "application.args", "launcher.arguments");
 		// call main
 		myBento.attemptInit();
 		//BentoLauncher.main(args.split(" "));
+		getLogger().debug("this is from debug");
+		getLogger().error("this is from error");
+		getLogger().info("this is from info");
+		getLogger().warn("this is from warn");
 		getLogger().info("BentoLauncher complete");
 		System.err.println("It started");
 	}
