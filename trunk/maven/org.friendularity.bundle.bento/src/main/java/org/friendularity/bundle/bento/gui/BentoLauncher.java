@@ -1,15 +1,19 @@
 package org.friendularity.bundle.bento.gui;
 
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import org.appdapter.core.log.BasicDebugger;
 import org.friendularity.bundle.bento.engine.Quitter;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
-public class BentoLauncher extends BasicDebugger implements Quitter {
+public class BentoLauncher extends BasicDebugger implements Quitter, WindowListener {
 
 	private Boolean			myFlag_QuittingNow  = Boolean.FALSE;	
 	private	boolean			myFlag_StopOSGiAfterQuit = false;
+	
+	private BentoFrame  myBentoFrame = null;
 
 	public static void main(String[] args) {
 		// Can use this to run-file without bundling, if your IDE/env can setup your java.library.path to point at 
@@ -24,6 +28,8 @@ public class BentoLauncher extends BasicDebugger implements Quitter {
 	
 	public boolean  attemptInit() {
 		// @TODO start up engine, return true if successful
+		myBentoFrame = new BentoFrame();
+		myBentoFrame.addWindowListener(this);
 		return true;
 	}
 	
@@ -72,5 +78,40 @@ public class BentoLauncher extends BasicDebugger implements Quitter {
 		} catch (Throwable t) {
 			getLogger().error("Caught exception during sys-bundle.stop() request", t);
 		}
+	}
+
+	@Override
+	public void windowOpened(WindowEvent e) {
+		
+	}
+
+	@Override
+	public void windowClosing(WindowEvent e) {
+		
+	}
+
+	@Override
+	public void windowClosed(WindowEvent e) {
+		setWantsToQuit(true);
+	}
+
+	@Override
+	public void windowIconified(WindowEvent e) {
+		
+	}
+
+	@Override
+	public void windowDeiconified(WindowEvent e) {
+		
+	}
+
+	@Override
+	public void windowActivated(WindowEvent e) {
+		
+	}
+
+	@Override
+	public void windowDeactivated(WindowEvent e) {
+		
 	}
 }
