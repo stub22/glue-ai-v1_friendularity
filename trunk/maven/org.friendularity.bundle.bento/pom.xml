@@ -71,8 +71,13 @@
 			<groupId>${project.groupId}</groupId>
 			<artifactId>org.friendularity.bundle.jvision</artifactId>
 			<version>${project.version}</version>
-		</dependency>	
-				
+		</dependency>
+        <dependency>
+            <groupId>org.appdapter</groupId>
+            <artifactId>ext.bundle.jena_all_2_10_1</artifactId>
+            <version>1.1.1</version>
+            <type>jar</type>
+        </dependency>
     </dependencies>
 
     <build>
