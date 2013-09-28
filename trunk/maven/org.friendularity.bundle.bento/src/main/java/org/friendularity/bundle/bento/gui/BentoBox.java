@@ -16,6 +16,9 @@
 package org.friendularity.bundle.bento.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
+import javax.swing.JSplitPane;
+import javax.swing.SwingUtilities;
 
 /**
  *
@@ -25,6 +28,37 @@ class BentoBox extends BentoPlugin {
 
 	public BentoBox(BentoPlugin center) {
 		this.add(center, BorderLayout.CENTER);
+	    center.init();
+	}
+
+	/**
+	 * Do a bento command - this must be called from the event dispatch thread
+	 * 
+	 * @param source  source of the command - what handled the right menu
+	 * @param actionCommand - essentially, the text of the menu
+	 */
+	void doCommand(BentoPlugin source, String actionCommand) {
+		
+		// TODO currently only handles case wehre we've never split before
+		Component parent = source.getParent();
+		
+		if(actionCommand.equals(BentoPlugin.HTWO_MENU))
+		{
+			BentoPlugin cv = new CameraViewer();
+
+			remove(source);
+			add(
+					new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
+						source, 
+						cv)
+					);
+			cv.init();
+
+			source.invalidate();
+			cv.invalidate();
+			this.validate();
+			this.repaint();
+		}
 	}
 	
 }
