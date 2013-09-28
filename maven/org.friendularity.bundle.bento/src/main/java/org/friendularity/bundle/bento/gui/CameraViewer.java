@@ -31,17 +31,23 @@ class CameraViewer extends BentoPlugin  implements Displayer {
 
 	private BufferedImage mImage = null;
 	private String mFrameMessage = "";
+	private int noImage = 0;
 	
 	public CameraViewer() {
 		this.setPreferredSize(new Dimension(640, 480));
-	//	JVisionEngine.getDefaultJVisionEngine().addDisplayer(this);
+		JVisionEngine.getDefaultJVisionEngine().addDisplayer(this);
 	}
 
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g); 
 		
-	//	g.drawImage(mImage, 0, 0, this);
+		if(mImage != null)
+			g.drawImage(mImage, 0, 0, this);
+		else if (++noImage % 1000 == 0)
+		{
+			System.err.println("no image");
+		}
 		g.setColor(Color.red);
 		g.drawLine(0, 0, 100, 100);
 		
