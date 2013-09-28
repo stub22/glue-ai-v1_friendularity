@@ -34,6 +34,8 @@ class CameraViewer extends BentoPlugin  implements Displayer {
 	private int noImage = 0;
 	
 	public CameraViewer() {
+		super();
+		
 		this.setPreferredSize(new Dimension(640, 480));
 		JVisionEngine.getDefaultJVisionEngine().addDisplayer(this);
 	}
