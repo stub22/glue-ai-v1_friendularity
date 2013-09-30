@@ -72,7 +72,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Fragment-Host>org.appdapter.ext.bundle.jena_all_264</Fragment-Host>
+                        <Fragment-Host>org.appdapter.ext.bundle.jena_all_2_10_1</Fragment-Host>
                         <Export-Package>org.friendularity.spec.connection</Export-Package>
                     </instructions>
                 </configuration>
