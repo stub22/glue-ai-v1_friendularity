@@ -35,8 +35,13 @@ class CameraViewer extends BentoPlugin  implements Displayer {
 	private String mFrameMessage = "";
 	private int noImage = 0;
 	
+	private static int nextImageNum = 1;
+	
+	private int thisImageNum;
+	
 	public CameraViewer() {
 		super();
+		thisImageNum = nextImageNum++;
 		
 		this.setPreferredSize(new Dimension(640, 480));
 		this.setMinimumSize(new Dimension(160, 120));
@@ -53,6 +58,10 @@ class CameraViewer extends BentoPlugin  implements Displayer {
 			Rectangle destRect = new Rectangle();
 			bestAntiAliasedFit(this.getVisibleRect(), mImage.getWidth(), mImage.getHeight(), destRect);
 			g.drawImage(mImage, destRect.x, destRect.y, destRect.width, destRect.height, this);
+			g.setColor(Color.green);
+			g.drawString(Integer.toString(thisImageNum), 
+					destRect.x + 30, 
+					destRect.y + destRect.height - 30);
 		}
 		else if (++noImage % 1000 == 0)
 		{
@@ -66,6 +75,7 @@ class CameraViewer extends BentoPlugin  implements Displayer {
 		*/
 		// mFrameMessage has a valid message
 	}
+	
 
 	@Override
 	public void setDisplayedImage(BufferedImage img) {

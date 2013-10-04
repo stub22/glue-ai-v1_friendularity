@@ -44,20 +44,64 @@ class BentoBox extends BentoPlugin {
 		
 		if(actionCommand.equals(BentoPlugin.HTWO_MENU))
 		{
-			BentoPlugin cv = new CameraViewer();
+			if(parent instanceof BentoBox)
+			{
+				BentoPlugin cv = new CameraViewer();
 
-			remove(source);
-			add(
-					new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-						source, 
-						cv)
-					);
-			cv.init();
+				remove(source);
+				add(
+						new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
+							source, 
+							cv)
+						);
+				cv.init();
 
-			source.invalidate();
-			cv.invalidate();
-			this.validate();
-			this.repaint();
+				source.revalidate();
+				cv.revalidate();
+				this.revalidate();
+				this.repaint();
+			} else if (parent instanceof JSplitPane && 
+					((JSplitPane)parent).getLeftComponent() == source){
+				JSplitPane parentSplit = ((JSplitPane)parent);
+				BentoPlugin cv = new CameraViewer();
+				
+				JSplitPane newSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
+							source, 
+							cv);
+
+				parentSplit.setLeftComponent(newSplit);
+				
+			//	newSplit.setDividerLocation(0.5);
+			//	parentSplit.setDividerLocation(0.66);
+				cv.init();
+
+				source.revalidate();
+				cv.revalidate();
+				newSplit.revalidate();
+				this.revalidate();
+				this.repaint();				
+			} else if (parent instanceof JSplitPane &&
+					((JSplitPane)parent).getRightComponent() == source) {
+				JSplitPane parentSplit = ((JSplitPane)parent);
+				BentoPlugin cv = new CameraViewer();
+				
+				JSplitPane newSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
+							source, 
+							cv);
+
+				parentSplit.setRightComponent(newSplit);
+				newSplit.setDividerLocation(0.5);
+				parentSplit.setDividerLocation(0.66);
+				cv.init();
+
+				source.revalidate();
+				cv.revalidate();
+				this.revalidate();
+				this.repaint();					
+			}
+		} else if (actionCommand.equals(BentoPlugin.REMOVE_MENU))
+		{
+			// this is just all horribly wrong
 		}
 	}
 	

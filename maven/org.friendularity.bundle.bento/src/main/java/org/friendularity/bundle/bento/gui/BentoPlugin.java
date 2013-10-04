@@ -109,6 +109,7 @@ class BentoPlugin  extends JPanel implements ActionListener {
 	static final String VTWO_MENU = "V Two";
 	static final String VTHREE_MENU = "V Three";
 	static final String VFOUR_MENU = "V Four";
+	static final String REMOVE_MENU = "Remove";
 	
 	/**
 	 * Override only to completely replace popup menu
@@ -158,6 +159,10 @@ class BentoPlugin  extends JPanel implements ActionListener {
 			menuItem.addActionListener(this);
 			subMenu.add(menuItem);
 			popup.add(subMenu);
+			
+			menuItem = new JMenuItem(REMOVE_MENU);
+			menuItem.addActionListener(this);
+			popup.add(menuItem);
 		}
 		
 		addAdditionalMenuItems(popup);
