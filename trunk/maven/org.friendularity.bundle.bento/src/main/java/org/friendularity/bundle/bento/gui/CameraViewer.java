@@ -15,10 +15,13 @@
  */
 package org.friendularity.bundle.bento.gui;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.Stroke;
 import java.awt.image.BufferedImage;
 import javax.swing.JSplitPane;
 
@@ -29,7 +32,7 @@ import org.friendularity.jvision.engine.JVisionEngine;
  *
  * @author Annie
  */
-class CameraViewer extends BentoPlugin  implements Displayer {
+public class CameraViewer extends BentoPlugin  implements Displayer {
 
 	private BufferedImage mImage = null;
 	private String mFrameMessage = "";
@@ -44,9 +47,40 @@ class CameraViewer extends BentoPlugin  implements Displayer {
 		thisImageNum = nextImageNum++;
 		
 		this.setPreferredSize(new Dimension(640, 480));
+		this.setMaximumSize(new Dimension(640, 480));
 		this.setMinimumSize(new Dimension(160, 120));
+		this.setLayout(null);
+		this.setSize(new Dimension(640, 480));
 		JVisionEngine.getDefaultJVisionEngine().addDisplayer(this);
 	}
+
+	@Override
+	protected void paintBorder(Graphics g) {
+		super.paintBorder(g); 
+		
+		Graphics2D g2 = (Graphics2D)g;
+		
+		Stroke s = g2.getStroke();
+		Color c = g2.getColor();
+		
+		g2.setStroke(new BasicStroke(5));
+		g2.setColor(Color.red.darker().darker());
+		
+		g2.drawRect(this.getX() + 2, this.getY() + 2, this.getWidth() - 3, this.getHeight() - 3);
+		if (thisImageNum == 1)
+			g2.setColor(Color.RED);
+		if (thisImageNum == 2)
+			g2.setColor(Color.green);
+		if (thisImageNum == 3)
+			g2.setColor(Color.YELLOW);
+		
+		g2.drawLine((int)(this.getWidth() * Math.random()), (int)(this.getHeight() * Math.random()), 
+				(int)(this.getWidth() * Math.random()), (int)(this.getHeight() * Math.random()));
+		
+		g2.setStroke(s);
+		g2.setColor(c);
+	}
+	
 	
 
 	@Override

@@ -15,20 +15,37 @@
  */
 package org.friendularity.bundle.bento.gui;
 
+import org.friendularity.bundle.bento.engine.BentoAction;
 import java.awt.BorderLayout;
-import java.awt.Component;
-import javax.swing.JSplitPane;
-import javax.swing.SwingUtilities;
+import java.util.ArrayList;
+import java.util.ListIterator;
+import org.friendularity.bundle.bento.engine.actions.TwoSplitHorFromSingular;
 
 /**
  *
  * @author Annie
  */
-class BentoBox extends BentoPlugin {
+public class BentoBox extends BentoPlugin {
 
+	public enum Direction {
+		SINGULAR,
+		HORIZONTAL,
+		VERTICAL
+	};
+	
+	private Direction myDirection = Direction.SINGULAR;
+	
+	private static final ArrayList<BentoAction>theActions = new ArrayList<BentoAction>();
+	
+	static {
+		theActions.add(new TwoSplitHorFromSingular());
+	}
+			
 	public BentoBox(BentoPlugin center) {
 		this.add(center, BorderLayout.CENTER);
-	    center.init();
+		this.setLayout(new HorizontalBentoLayoutManager());
+		
+	    center.init(this);  // 8cD fun with leaking this! Kernighan & Plauger forever!
 	}
 
 	/**
@@ -39,69 +56,12 @@ class BentoBox extends BentoPlugin {
 	 */
 	void doCommand(BentoPlugin source, String actionCommand) {
 		
-		// TODO currently only handles case wehre we've never split before
-		Component parent = source.getParent();
-		
-		if(actionCommand.equals(BentoPlugin.HTWO_MENU))
+		for(ListIterator<BentoAction> i = theActions.listIterator(); 
+				i.hasNext() ; )
 		{
-			if(parent instanceof BentoBox)
-			{
-				BentoPlugin cv = new CameraViewer();
-
-				remove(source);
-				add(
-						new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-							source, 
-							cv)
-						);
-				cv.init();
-
-				source.revalidate();
-				cv.revalidate();
-				this.revalidate();
-				this.repaint();
-			} else if (parent instanceof JSplitPane && 
-					((JSplitPane)parent).getLeftComponent() == source){
-				JSplitPane parentSplit = ((JSplitPane)parent);
-				BentoPlugin cv = new CameraViewer();
-				
-				JSplitPane newSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-							source, 
-							cv);
-
-				parentSplit.setLeftComponent(newSplit);
-				
-			//	newSplit.setDividerLocation(0.5);
-			//	parentSplit.setDividerLocation(0.66);
-				cv.init();
-
-				source.revalidate();
-				cv.revalidate();
-				newSplit.revalidate();
-				this.revalidate();
-				this.repaint();				
-			} else if (parent instanceof JSplitPane &&
-					((JSplitPane)parent).getRightComponent() == source) {
-				JSplitPane parentSplit = ((JSplitPane)parent);
-				BentoPlugin cv = new CameraViewer();
-				
-				JSplitPane newSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-							source, 
-							cv);
-
-				parentSplit.setRightComponent(newSplit);
-				newSplit.setDividerLocation(0.5);
-				parentSplit.setDividerLocation(0.66);
-				cv.init();
-
-				source.revalidate();
-				cv.revalidate();
-				this.revalidate();
-				this.repaint();					
-			}
-		} else if (actionCommand.equals(BentoPlugin.REMOVE_MENU))
-		{
-			// this is just all horribly wrong
+			BentoAction ba = i.next();
+			
+			if(ba.handle(source, actionCommand))return;
 		}
 	}
 	

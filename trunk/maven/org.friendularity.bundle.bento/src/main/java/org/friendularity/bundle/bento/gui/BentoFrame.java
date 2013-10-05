@@ -16,13 +16,13 @@
 package org.friendularity.bundle.bento.gui;
 
 import java.awt.BorderLayout;
-import java.awt.Container;
-import java.awt.Dimension;
 import java.awt.GraphicsConfiguration;
 import java.awt.HeadlessException;
-import javax.swing.JButton;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 
 /**
  *
@@ -31,6 +31,8 @@ import javax.swing.JLabel;
 public class BentoFrame extends JFrame {
 
 	private static final String DEFAULT_TITLE = "Bento";
+	
+	private MergeGrid myGrid;
 	
 	public BentoFrame() throws HeadlessException {
 		super();
@@ -55,10 +57,19 @@ public class BentoFrame extends JFrame {
 	private void initialize(String title) {
 		this.setTitle(title);
 		
+		myGrid = new MergeGrid();
 		this.getContentPane().add(
-				new BentoBox(new CameraViewer()), 
+				myGrid, 
 				BorderLayout.CENTER);
+		CameraViewer cv = new CameraViewer();
 		
+		myGrid.addColumn(0, cv.getPreferredSize().width);
+		myGrid.addRow(0, cv.getPreferredSize().height);
+		try {
+			myGrid.setCell(cv, 0, 0, 1, 1);
+		} catch (ItsBentoBoxesNotBentoTetrisException ex) {
+			Logger.getLogger(BentoFrame.class.getName()).log(Level.SEVERE, null, ex);
+		}
 		this.pack();
 		this.setVisible(true);
 	}
