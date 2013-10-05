@@ -72,7 +72,6 @@
 				<configuration>
 					<instructions>
 						<Bundle-Activator>org.friendularity.connection.Activator</Bundle-Activator>
-                        <Export-Package>org.cogchar.outer.behav.*, org.apache.http.*</Export-Package>
 					</instructions>
 				</configuration>
 			</plugin>
