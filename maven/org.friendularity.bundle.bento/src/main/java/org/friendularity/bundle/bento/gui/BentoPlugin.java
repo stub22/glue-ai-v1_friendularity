@@ -39,11 +39,15 @@ import org.friendularity.bundle.bento.util.Bento_OSGi_ResourceLoader;
  *
  * @author Annie
  */
-class BentoPlugin  extends JPanel implements ActionListener {
-	public BentoPlugin() {
+public abstract class BentoPlugin  extends JPanel implements ActionListener {
 
-	}
+	private BentoBox myBentoController;
 	
+	public BentoPlugin()
+	{
+		this.setLayout(null);
+	}
+
 	protected void handleActions(ActionEvent e)
 	{
 		System.err.println(e.getActionCommand());
@@ -54,7 +58,10 @@ class BentoPlugin  extends JPanel implements ActionListener {
 	 * call after adding to hierarchy
 	 * 
 	 */
-	void init() {
+	
+	void init(BentoBox aController) {
+		myBentoController = aController;
+
 		try {
 			initPopup();
 		} catch (IOException ex) {
@@ -103,13 +110,14 @@ class BentoPlugin  extends JPanel implements ActionListener {
 		return containingBox() != null;
 	}
 	
-	static final String HTWO_MENU = "H Two";
-	static final String HTHREE_MENU = "H Three";
-	static final String HFOUR_MENU = "H Four";
-	static final String VTWO_MENU = "V Two";
-	static final String VTHREE_MENU = "V Three";
-	static final String VFOUR_MENU = "V Four";
-	static final String REMOVE_MENU = "Remove";
+	// @TODO move menu to BentoAction
+	public static final String HTWO_MENU = "H Two";
+	public static final String HTHREE_MENU = "H Three";
+	public static final String HFOUR_MENU = "H Four";
+	public static final String VTWO_MENU = "V Two";
+	public static final String VTHREE_MENU = "V Three";
+	public static final String VFOUR_MENU = "V Four";
+	public static final String REMOVE_MENU = "Remove";
 	
 	/**
 	 * Override only to completely replace popup menu
@@ -191,6 +199,10 @@ class BentoPlugin  extends JPanel implements ActionListener {
    {
 	   return popup;
    }
+
+	public BentoBox getBentoBox() {
+		return myBentoController;
+	}
 	
 	class PopupListener extends MouseAdapter {
 		public void mousePressed(MouseEvent e) {

@@ -1,0 +1,185 @@
+ /*
+ *  Copyright 2013 by The Friendularity Project (www.friendularity.org).
+ * 
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ * 
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+package org.friendularity.bundle.bento.gui;
+
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.LayoutManager2;
+import java.awt.Point;
+import javax.swing.JComponent;
+
+/**
+ *
+ * @author Annie
+ */
+class MergeGridLayout implements LayoutManager2,
+		java.io.Serializable {
+	private Dimension oldCellSums = new Dimension(0,0);
+	
+	public MergeGridLayout() {
+
+	}
+
+	@Override
+	public void addLayoutComponent(Component comp, Object constraints) {
+		;
+	}
+
+	@Override
+	public float getLayoutAlignmentX(Container target) {
+		return 0.0f;
+	}
+
+	@Override
+	public float getLayoutAlignmentY(Container target) {
+		return 0.0f;
+	}
+
+	  /**
+     * Invalidates the layout, indicating that if the layout manager
+     * has cached information it should be discarded.
+     */
+	@Override
+	public void invalidateLayout(Container target) {
+		
+	}
+
+	@Override
+	public void addLayoutComponent(String name, Component comp) {
+		
+	}
+
+	@Override
+	public void removeLayoutComponent(Component comp) {
+		
+	}
+
+	@Override
+	public Dimension maximumLayoutSize(Container target) {
+		Dimension d = new Dimension(0,0);
+		
+		if(!(target instanceof MergeGrid))
+			throw new IllegalArgumentException("MergeGridLayout requires a MergeGrid");
+		
+		MergeGrid mg = (MergeGrid)target;
+		
+		for(int i = 0 ; i < mg.getNumColumns() ; i++)
+		{
+			d.width += mg.getWidth(i);
+		}
+		d.width += mg.getNumColumns() * MergeGrid.SEPARATOR_WIDTH;
+		for(int i = 0 ; i < mg.getNumRows() ; i++)
+		{
+			d.height += mg.getHeight(i);
+		}
+		d.height += mg.getNumRows() * MergeGrid.SEPARATOR_HEIGHT;
+		return d;
+	}
+	
+	@Override
+	public Dimension preferredLayoutSize(Container parent) {
+		return maximumLayoutSize(parent);
+	}
+
+	@Override
+	public Dimension minimumLayoutSize(Container parent) {
+		return maximumLayoutSize(parent);
+	}
+
+	// this is where we do the real work. We do some computation
+	// and then call setbounds on each component in the parent
+	// we don't actually dink with parent
+	@Override
+	public void layoutContainer(Container parent) {
+		if(!(parent instanceof MergeGrid))
+			throw new IllegalArgumentException("MergeGridLayout requires a MergeGrid");
+		
+		MergeGrid mg = ((MergeGrid)parent);
+		
+		if(oldCellSums.height > 0 &&
+		   oldCellSums.width > 0)
+		{
+			int widthSum = parent.getWidth() - mg.getNumColumns() * MergeGrid.SEPARATOR_WIDTH;
+			int heightSum = parent.getHeight() - mg.getNumColumns() * MergeGrid.SEPARATOR_HEIGHT;
+			
+			if (widthSum > 0 && 
+			    heightSum > 0 &&
+			    (widthSum != oldCellSums.width || heightSum != oldCellSums.height))
+			{
+				float widthRatio = widthSum / (float)oldCellSums.width;
+				float heightRatio = heightSum / (float)oldCellSums.height;
+				
+				mg.stretchWidth(widthRatio);
+				mg.stretchHeight(heightRatio);
+
+				oldCellSums.width = widthSum;
+				oldCellSums.height = heightSum;
+			}
+		} else {
+			oldCellSums.width = parent.getWidth() - mg.getNumColumns() * MergeGrid.SEPARATOR_WIDTH;
+			oldCellSums.height = parent.getHeight() - mg.getNumColumns() * MergeGrid.SEPARATOR_HEIGHT;
+		}
+		
+		Point p = new Point(0,0);
+		
+		p.x = 0;
+		for(int col = 0 ; col < mg.getNumColumns() ; col++)
+		{
+			p.y = 0;
+			for(int row = 0; row < mg.getNumRows() ; row++)
+			{
+				JComponent c = mg.getCellAt(col, row);
+				if (c != null)
+				{
+					Dimension d = mg.sizeAt(col, row);
+					Dimension size = new Dimension(0,0);
+					
+					for(int cc = col ; cc < col + d.width ; cc++)
+						size.width += mg.getWidth(cc);
+					size.width += MergeGrid.SEPARATOR_WIDTH * (d.width - 1);
+					for(int rr = row ; rr < row + d.height ; rr++)
+						size.height +=mg.getHeight(rr);
+					size.height += MergeGrid.SEPARATOR_HEIGHT * (d.height - 1);
+					
+					c.setLocation(p);
+					c.setSize(size);
+					
+				}
+				
+				p.y += mg.getHeight(row);
+				p.y += MergeGrid.SEPARATOR_HEIGHT;
+			}
+			p.x += mg.getWidth(col);
+			p.x += MergeGrid.SEPARATOR_WIDTH;
+		}
+		int x = 0;
+		for(int col = 0 ; col < mg.getNumColumns() ; col++)
+		{
+			x += mg.getWidth(col);
+			mg.getColSplitter(col).setLocation(x, 0);
+			x += MergeGrid.SEPARATOR_WIDTH;
+		}
+		int y = 0;
+		for(int row = 0; row < mg.getNumRows() ; row++)
+		{
+			y += mg.getHeight(row);
+			mg.getRowSplitter(row).setLocation(0, y);
+			y += MergeGrid.SEPARATOR_HEIGHT;
+		}
+	}
+	
+}
