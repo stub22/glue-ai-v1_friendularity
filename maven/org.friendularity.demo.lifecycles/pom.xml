@@ -20,8 +20,8 @@
 
   If this fails....
 
-        <robokind.version>0.9.2-SNAPSHOT</robokind.version>
-        <rwshop.version>0.9.2-SNAPSHOT</rwshop.version>
+        <robokind.version>0.9.2</robokind.version>
+        <rwshop.version>0.9.2</rwshop.version>
         <jflux.version>0.1.6</jflux.version>
 
 or 
@@ -36,7 +36,7 @@ or
 
 -->		
         <robokind.version>0.9.2</robokind.version>
-        <rwshop.version>0.9.2-SNAPSHOT</rwshop.version>
+        <rwshop.version>0.9.2</rwshop.version>
         <jflux.version>0.1.6</jflux.version>
 
     </properties>
