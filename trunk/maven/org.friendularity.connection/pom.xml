@@ -58,7 +58,7 @@
         <dependency>
             <groupId>org.rwshop</groupId>
             <artifactId>org.rwshop.swing.common</artifactId>
-            <version>0.9.2-SNAPSHOT</version>
+            <version>${rwshop.version}</version>
         </dependency>
     </dependencies>
     
