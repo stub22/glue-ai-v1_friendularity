@@ -2,8 +2,8 @@ package org.friendularity.bundle.demo.liftoff;
 
 import org.appdapter.osgi.core.BundleActivatorBase;
 import org.cogchar.bind.lift.LifterLifecycle;
-import org.cogchar.bundle.app.puma.PumaAppUtils;
-import org.osgi.framework.BundleActivator;
+import org.cogchar.bundle.app.puma.GruesomeTAProcessingFuncs;
+
 import org.osgi.framework.BundleContext;
 import org.robokind.api.common.osgi.lifecycle.OSGiComponent;
 import org.cogchar.joswrap.RepoUpdateCallbackAdapter;
@@ -35,7 +35,7 @@ public class Activator extends BundleActivatorBase {
 		RepoUpdateCallbackAdapter.registerCallback(new RepoUpdateCallbackAdapter.Callback() {
 			public void repoUpdateCompleted() {
 				getLogger().info("o.f.b.demo.liftoff activator got SPARQL-UPDATE callback, now pumping Goody Updates!");
-				PumaAppUtils.processPendingThingActions();
+				GruesomeTAProcessingFuncs.processPendingThingActions();
 			}
 		});
 	}

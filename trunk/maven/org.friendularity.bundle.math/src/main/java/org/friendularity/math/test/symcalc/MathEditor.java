@@ -34,7 +34,14 @@ public class MathEditor extends BasicDebugger {
 	public ParamChunk myNumChunk = new ParamChunk.Number();
 	public ParamChunk myTxtChunk = new ParamChunk.Text();
 	public CalcParamChunk myCalcChunk = new CalcParamChunk();
+	public CalcParamChunk myOtherChunks[] = new CalcParamChunk[3];
 	
+	public MathEditor() { 
+		myOtherChunks[0] = new CalcParamChunk(); 
+		myOtherChunks[1] = new CalcParamChunk();
+		myOtherChunks[2] = new CalcParamChunk();
+	}
+		
 	public void doCalcs(MathGateUnscripted mgu) {
 		myCalcChunk.doCalcs(mgu);
 	}

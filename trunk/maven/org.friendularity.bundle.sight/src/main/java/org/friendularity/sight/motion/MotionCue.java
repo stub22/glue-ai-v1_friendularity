@@ -10,7 +10,6 @@ import org.friendularity.sight.motion.PeakTracker;
 
 
 /**
- *
  * @author Stu B. <www.texpedient.com>
  */
 public class MotionCue extends SightCue {
