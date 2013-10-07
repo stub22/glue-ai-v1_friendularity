@@ -53,7 +53,8 @@ public class JFugueReceiveInput {
 				System.out.println("Vendor: " + info.getVendor());
 				System.out.println("Name: " + name);
 				System.out.println("Description: " + info.getDescription());
-				if (name.equals("USB Audio Device") || name.equals("MPK mini")) {
+				// stuMidi_01 and stuMidi_02 are virtual MIDI devices used for testing on Stu's machine!
+				if (name.equals("USB Audio Device") || name.equals("MPK mini") || name.equals("stuMidi_02")) {
 					System.out.println("MATCH\n===============");
 					return info;
 				}
