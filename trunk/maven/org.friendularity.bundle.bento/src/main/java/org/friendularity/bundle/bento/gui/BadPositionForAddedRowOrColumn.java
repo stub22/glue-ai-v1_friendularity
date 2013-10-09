@@ -15,26 +15,13 @@
  */
 package org.friendularity.bundle.bento.gui;
 
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import javax.swing.JPanel;
-
 /**
  *
  * @author Annie
  */
-abstract public class BentoSplitter extends JPanel {
+class BadPositionForAddedRowOrColumn extends Exception {
 
-	protected abstract void setMoveCursor();
-	
-	
-	@Override
-	public boolean isOptimizedDrawingEnabled() {
-		return false; // ensures that z order happens properly
+	public BadPositionForAddedRowOrColumn(int x) {
 	}
 	
-	public BentoSplitter() 
-	{
-
-	}
 }

@@ -15,9 +15,14 @@
  */
 package org.friendularity.bundle.bento.gui;
 
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -29,7 +34,7 @@ import org.friendularity.bundle.bento.util.Bento_OSGi_ResourceLoader;
  * 
  * @author Annie
  */
-public class HorBentoSplitter extends BentoSplitter {
+public class HorBentoSplitter extends BentoSplitter implements MouseListener, MouseMotionListener {
 
 	private static final int REALLY_TALL = 32768;
 	
@@ -37,8 +42,12 @@ public class HorBentoSplitter extends BentoSplitter {
 	private static BufferedImage textop = null;
 	
 	public HorBentoSplitter() {
+		super();
+		
 		this.setLayout(null);
 		this.setSize(getPreferredSize());
+		this.addMouseListener(this);
+		this.addMouseMotionListener(this);
 	}
 
 	@Override
@@ -98,5 +107,71 @@ public class HorBentoSplitter extends BentoSplitter {
 		// we don't want a border
 	}
 	
+	@Override
+	protected void setMoveCursor() {
+
+		// suboptimal, but the glass pane is only one who gets to actually control cursor
+		((MergeGrid)this.getParent()).getGlassPane().setHorMoveCursor();
+	}
+
+	protected void setDragCursor() {
+		// suboptimal, but the glass pane is only one who gets to actually control cursor
+		((MergeGrid)this.getParent()).getGlassPane().setHorDragCursor();
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		setDragCursor();
+		/*
+		if((e.getModifiers() & MouseEvent.CTRL_DOWN_MASK) != 0)
+			startDuplicate(e);
+		else if (((MergeGrid)this.getParent()).isLastRowOrColumnSplitter(this))
+			startDuplicate(e);
+		else
+		*/
+		startMove(e);
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		setMoveCursor();
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		
+	}
+
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		setDragCursor();
+		attemptMoveMe(e.getXOnScreen() - prevXOnScreen);
+		prevXOnScreen = e.getXOnScreen();
+	}
+
+	@Override
+	public void mouseMoved(MouseEvent e) {
+		setMoveCursor();
+	}
+
+	private void startMove(MouseEvent e) {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	private int prevXOnScreen;
+
+	private void attemptMoveMe(int i) {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
 	
 }
