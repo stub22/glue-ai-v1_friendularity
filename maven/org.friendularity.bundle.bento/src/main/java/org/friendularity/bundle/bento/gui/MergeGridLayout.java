@@ -20,6 +20,12 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.LayoutManager2;
 import java.awt.Point;
+import java.awt.Rectangle;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JComponent;
 
 /**
@@ -100,6 +106,8 @@ class MergeGridLayout implements LayoutManager2,
 		return maximumLayoutSize(parent);
 	}
 
+	Dimension oldSize = new Dimension(0,0);
+	
 	// this is where we do the real work. We do some computation
 	// and then call setbounds on each component in the parent
 	// we don't actually dink with parent
@@ -111,7 +119,8 @@ class MergeGridLayout implements LayoutManager2,
 		MergeGrid mg = ((MergeGrid)parent);
 		
 		if(oldCellSums.height > 0 &&
-		   oldCellSums.width > 0)
+		   oldCellSums.width > 0 &&
+			!mg.getSize().equals(oldSize))
 		{
 			int widthSum = parent.getWidth() - mg.getNumColumns() * MergeGrid.SEPARATOR_WIDTH;
 			int heightSum = parent.getHeight() - mg.getNumColumns() * MergeGrid.SEPARATOR_HEIGHT;
@@ -132,9 +141,15 @@ class MergeGridLayout implements LayoutManager2,
 		} else {
 			oldCellSums.width = parent.getWidth() - mg.getNumColumns() * MergeGrid.SEPARATOR_WIDTH;
 			oldCellSums.height = parent.getHeight() - mg.getNumColumns() * MergeGrid.SEPARATOR_HEIGHT;
+			oldSize = parent.getSize();
 		}
 		
 		Point p = new Point(0,0);
+		
+		// the z order index for the components
+		int curZOrder = mg.getNumCells() + 
+				mg.getNumColumns() + mg.getNumRows() + // # of splitters
+				1 - 1;  // 1 for glasspane, -1 for last index one less than count
 		
 		p.x = 0;
 		for(int col = 0 ; col < mg.getNumColumns() ; col++)
@@ -157,7 +172,7 @@ class MergeGridLayout implements LayoutManager2,
 					
 					c.setLocation(p);
 					c.setSize(size);
-					
+					mg.setComponentZOrder(c, curZOrder--);
 				}
 				
 				p.y += mg.getHeight(row);
@@ -172,6 +187,7 @@ class MergeGridLayout implements LayoutManager2,
 			x += mg.getWidth(col);
 			mg.getColSplitter(col).setLocation(x, 0);
 			x += MergeGrid.SEPARATOR_WIDTH;
+			mg.setComponentZOrder(mg.getColSplitter(col), curZOrder--);
 		}
 		int y = 0;
 		for(int row = 0; row < mg.getNumRows() ; row++)
@@ -179,7 +195,18 @@ class MergeGridLayout implements LayoutManager2,
 			y += mg.getHeight(row);
 			mg.getRowSplitter(row).setLocation(0, y);
 			y += MergeGrid.SEPARATOR_HEIGHT;
+			mg.setComponentZOrder(mg.getRowSplitter(row), curZOrder--);
 		}
+		
+		MergeGridGlassPane g = mg.getGlassPane();
+
+	    if(curZOrder != 0)
+			Logger.getLogger(MergeGridLayout.class.getName()).log(Level.SEVERE, "curZOrder not at zero, something wrong");
+		
+		mg.setComponentZOrder(g, 0);
+		
+		// when ctrl is down all interaction is with the glasspane
+		g.setBounds(mg.getBounds());
 	}
 	
 }

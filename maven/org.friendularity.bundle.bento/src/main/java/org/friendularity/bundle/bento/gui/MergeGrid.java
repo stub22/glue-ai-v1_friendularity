@@ -15,6 +15,7 @@
  */
 package org.friendularity.bundle.bento.gui;
 
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 /**
  *   A Swing component consisting of a resizeable grid of components, some of which can
@@ -30,8 +32,9 @@ import javax.swing.JPanel;
  * @author Annie
  */
 public class MergeGrid extends JPanel {
-	static int SEPARATOR_WIDTH = 10;
-	static int SEPARATOR_HEIGHT = 10;
+	static final int SEPARATOR_WIDTH = 10;
+	static final int SEPARATOR_HEIGHT = 10;
+	private static final int SOME_MINIMAL_CELL_DIM = 4;
 	
 	// points are col,row
 	private HashMap<Point, MergeGridEntry>myCells = new HashMap<Point, MergeGridEntry>();
@@ -42,10 +45,22 @@ public class MergeGrid extends JPanel {
 	private ArrayList<HorBentoSplitter>colsplitters = new ArrayList<HorBentoSplitter>();
 	private ArrayList<VertBentoSplitter>rowsplitters = new ArrayList<VertBentoSplitter>();
 	
+	private MergeGridGlassPane theGlass;
+	private boolean createColumnMode = false;
+	
 	public MergeGrid()
 	{
 		this.setLayout(new MergeGridLayout());
+		theGlass = new MergeGridGlassPane();
+		
+		this.add(theGlass);
 	}
+
+	@Override
+	public boolean isOptimizedDrawingEnabled() {
+		return false; // ensures that z order happens properly
+	}
+	
 
 	int getNumColumns() {
 		return columns.size();
@@ -137,7 +152,9 @@ public class MergeGrid extends JPanel {
 	}
 
 	JComponent getCellAt(int col, int row) {
-		return myCells.get(new Point(col, row)).component;
+		MergeGridEntry mge = myCells.get(new Point(col, row));
+		if (mge == null)return null;
+		return mge.component;
 	}
 
 	HorBentoSplitter getColSplitter(int col) {
@@ -168,6 +185,111 @@ public class MergeGrid extends JPanel {
 		return new Dimension(mge.colsize, mge.rowsize);
 	}
 
+	boolean isLastRowOrColumnSplitter(HorBentoSplitter aThis) {
+		if(colsplitters.size() < 1)return false;
+		
+		return colsplitters.get(colsplitters.size() - 1) == aThis;
+	}
+	boolean isLastRowOrColumnSplitter(VertBentoSplitter aThis) {
+		if(rowsplitters.size() < 1) return false;
+		
+		return rowsplitters.get(rowsplitters.size() - 1) == aThis;
+	}
+	
+	int indexOfHorSplitter(HorBentoSplitter aThis) {
+		int i = colsplitters.indexOf(aThis);
+		if (i >= 0)return i;
+		
+		throw new IllegalArgumentException("Attempt to find index of HorBentoSplitter not in MergeGrid");
+	}
+
+	boolean okToDuplicateLeft(HorBentoSplitter aThis) {
+		return  columns.get(indexOfHorSplitter(aThis)) > SEPARATOR_WIDTH + SOME_MINIMAL_CELL_DIM * 2;
+	}
+
+	boolean okToDuplicateRight(HorBentoSplitter aThis) {
+		if(isLastRowOrColumnSplitter(aThis))
+			return false;
+		return  columns.get(1 + indexOfHorSplitter(aThis)) > SEPARATOR_WIDTH + SOME_MINIMAL_CELL_DIM * 2;
+	}
+
+	HorBentoSplitter duplicateLeft(HorBentoSplitter aThis) {
+		int i = this.indexOfHorSplitter(aThis);
+		if(columns.get(i) < SOME_MINIMAL_CELL_DIM + SEPARATOR_WIDTH)
+			throw new IllegalArgumentException("Trying to make too narrow a column");
+		
+		int width = (int)(columns.get(i) - SOME_MINIMAL_CELL_DIM - SEPARATOR_WIDTH);
+		
+		columns.set(i, new Float(SOME_MINIMAL_CELL_DIM));
+		// Oh fiddles - this is all wrong - we need to be like shift dragging a prim, where the new one
+		// is left (only if we're goign left, depressingly!)
+		this.addColumn(i, width);
+		return colsplitters.get(i);
+	}
+
+	int getNumCells() {
+		return myCells.size();
+	}
+
+	MergeGridGlassPane getGlassPane() {
+		return theGlass;
+	}
+
+	boolean interactWithGlassPane() {
+		return createColumnMode;
+	}
+
+	Component getNonGlassComponentAt(Point epoint) {
+		for(int i = 0 ; i < this.getComponentCount() ; i++)
+		{
+			Component c = this.getComponent(i);
+			
+			Point cpoint = SwingUtilities.convertPoint(this, epoint , c);
+			if(c.contains(cpoint) &&
+			  !(c instanceof MergeGridGlassPane))return c;
+		}
+		return null;
+	}
+
+	/**
+	 * Insert a column here
+	 * 
+	 * @param x 
+	 * 
+	 * @throws BadPositionForAddedRowOrColumn if we can't add the column
+	 */
+	void insertColAt(int x) throws BadPositionForAddedRowOrColumn {
+		if(x < 0)
+			throw new BadPositionForAddedRowOrColumn(x);
+		if(x > this.getWidth() - 2 * MergeGrid.SEPARATOR_WIDTH - MergeGrid.SOME_MINIMAL_CELL_DIM)
+			throw new BadPositionForAddedRowOrColumn(x);
+		
+		float colx = 0.0f;
+		
+		for(int i = 0 ; i < columns.size() ; i++)
+		{
+			if (colx + MergeGrid.SOME_MINIMAL_CELL_DIM <= x && 
+				colx + columns.get(i) >= x + MergeGrid.SEPARATOR_WIDTH + MergeGrid.SOME_MINIMAL_CELL_DIM)
+			{
+				float colwas = columns.get(i);
+				
+				float leftside = x - colx;
+				float rightside = columns.get(i) - leftside - MergeGrid.SEPARATOR_WIDTH;
+				columns.set(i, leftside);
+				columns.add(i + 1, rightside);
+				HorBentoSplitter h = new HorBentoSplitter();
+				colsplitters.add(i+1, h);
+				this.add(h);
+				this.revalidate();
+				return;
+			}
+			colx += columns.get(i);
+			colx += MergeGrid.SEPARATOR_WIDTH;
+		}
+		// no location works, we throw
+		throw new BadPositionForAddedRowOrColumn(x);
+	}
+	
 	private static class MergeGridEntry {
 		int col;
 		int row;

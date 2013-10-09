@@ -15,9 +15,12 @@
  */
 package org.friendularity.bundle.bento.gui;
 
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -25,7 +28,8 @@ import java.util.logging.Logger;
 import org.friendularity.bundle.bento.util.Bento_OSGi_ResourceLoader;
 
 /**
- *
+ * This is the wide, flat splitter used to split things vertically
+ * 
  * @author Annie
  */
 public class VertBentoSplitter extends BentoSplitter {
@@ -36,6 +40,8 @@ public class VertBentoSplitter extends BentoSplitter {
 	private static BufferedImage textop = null;
 	
 	public VertBentoSplitter() {
+		super();
+		
 		this.setLayout(null);
 		this.setSize(getPreferredSize());
 	}
@@ -96,6 +102,15 @@ public class VertBentoSplitter extends BentoSplitter {
 	protected void paintBorder(Graphics g) {
 		// we don't want a border
 	}
+
+	private static Cursor upDownCursor = null;
 	
-	
+	@Override
+	protected void setMoveCursor() {
+		if(upDownCursor == null)
+			upDownCursor = Bento_OSGi_ResourceLoader.getDefaultImageLoader().getCursorResource(
+					"/img/updownarrow.png", 16, 16, "updownarrow");
+		
+		this.setCursor(upDownCursor);
+	}
 }

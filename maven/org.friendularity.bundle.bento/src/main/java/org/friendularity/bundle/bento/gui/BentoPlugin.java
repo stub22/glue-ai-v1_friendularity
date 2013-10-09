@@ -16,6 +16,7 @@
 package org.friendularity.bundle.bento.gui;
 
 import java.awt.Container;
+import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -46,8 +47,22 @@ public abstract class BentoPlugin  extends JPanel implements ActionListener {
 	public BentoPlugin()
 	{
 		this.setLayout(null);
+		this.addMouseMotionListener(new MouseAdapter(){
+
+			@Override
+			public void mouseMoved(MouseEvent e) {
+				super.mouseMoved(e); 
+				BentoPlugin.this.setMoveCursor();
+			}
+		});
 	}
 
+	
+	@Override
+	public boolean isOptimizedDrawingEnabled() {
+		return false; // ensures that z order happens properly
+	}
+	
 	protected void handleActions(ActionEvent e)
 	{
 		System.err.println(e.getActionCommand());
@@ -202,6 +217,10 @@ public abstract class BentoPlugin  extends JPanel implements ActionListener {
 
 	public BentoBox getBentoBox() {
 		return myBentoController;
+	}
+
+	private void setMoveCursor() {
+		((MergeGrid)this.getParent()).getGlassPane().setCursor(Cursor.getDefaultCursor());
 	}
 	
 	class PopupListener extends MouseAdapter {
