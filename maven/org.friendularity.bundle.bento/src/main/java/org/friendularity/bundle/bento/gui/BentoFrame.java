@@ -16,6 +16,7 @@
 package org.friendularity.bundle.bento.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.GraphicsConfiguration;
 import java.awt.HeadlessException;
 import java.awt.event.WindowEvent;
@@ -57,6 +58,7 @@ public class BentoFrame extends JFrame {
 	private void initialize(String title) {
 		this.setTitle(title);
 		
+		this.setMinimumSize(new Dimension(320, 240));
 		myGrid = new MergeGrid();
 		this.getContentPane().add(
 				myGrid, 

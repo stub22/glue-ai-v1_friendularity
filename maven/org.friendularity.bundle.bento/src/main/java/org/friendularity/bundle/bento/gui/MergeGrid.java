@@ -214,6 +214,13 @@ public class MergeGrid extends JPanel {
 		throw new IllegalArgumentException("Attempt to find index of HorBentoSplitter not in MergeGrid");
 	}
 
+	int indexOfVertSplitter(VertBentoSplitter aThis) {
+		int i = rowsplitters.indexOf(aThis);
+		if (i >= 0)return i;
+		
+		throw new IllegalArgumentException("Attempt to find index of VertBentoSplitter not in MergeGrid");
+	}
+
 	boolean okToDuplicateLeft(HorBentoSplitter aThis) {
 		return  columns.get(indexOfHorSplitter(aThis)) > SEPARATOR_WIDTH + SOME_MINIMAL_CELL_DIM * 2;
 	}
@@ -301,6 +308,43 @@ public class MergeGrid extends JPanel {
 		throw new BadPositionForAddedRowOrColumn(x);
 	}
 
+	/**
+	 * Insert a row here
+	 * 
+	 * @param y
+	 * 
+	 * @throws BadPositionForAddedRowOrColumn if we can't add the column
+	 */
+	void insertRowAt(int y) throws BadPositionForAddedRowOrColumn {
+		if(y < 0)
+			throw new BadPositionForAddedRowOrColumn(y);
+		if(y > this.getHeight() - 2 * MergeGrid.SEPARATOR_WIDTH - MergeGrid.SOME_MINIMAL_CELL_DIM)
+			throw new BadPositionForAddedRowOrColumn(y);
+		
+		float rowy = 0.0f;
+		
+		for(int i = 0 ; i < rows.size() ; i++)
+		{
+			if (rowy + MergeGrid.SOME_MINIMAL_CELL_DIM <= y && 
+				rowy + rows.get(i) >= y + MergeGrid.SEPARATOR_HEIGHT + MergeGrid.SOME_MINIMAL_CELL_DIM)
+			{
+				float upperside = y - rowy;
+				float lowerside = rows.get(i) - upperside - MergeGrid.SEPARATOR_HEIGHT;
+				rows.set(i, upperside);
+				rows.add(i + 1, lowerside);
+				VertBentoSplitter v = new VertBentoSplitter();
+				rowsplitters.add(i+1, v);
+				this.add(v);
+				this.revalidate();
+				return;
+			}
+			rowy += rows.get(i);
+			rowy += MergeGrid.SEPARATOR_HEIGHT;
+		}
+		// no location works, we throw
+		throw new BadPositionForAddedRowOrColumn(y);
+	}
+	
 	int resizeColumns(int index, int delta) {
 		int newdelta;
 		
@@ -321,6 +365,28 @@ public class MergeGrid extends JPanel {
 		return newdelta;
 	}
 
+
+	int resizeRows(int index, int delta) {
+		int newdelta;
+		
+		if (delta == 0)
+			return 0;
+		else if (delta > 0)
+		{
+			newdelta = (int)Math.min(delta, 
+					rows.get(index + 1) - MergeGrid.SOME_MINIMAL_CELL_DIM);			
+		} else {
+			newdelta = (int)Math.max(delta,
+					MergeGrid.SOME_MINIMAL_CELL_DIM - rows.get(index));
+		}
+		
+		rows.set(index, rows.get(index) + newdelta);
+		rows.set(index + 1, rows.get(index + 1) - newdelta);
+		revalidate();
+		
+		return newdelta;
+	}
+	
 	int getSumOfColSizes() {
 		int w = 0;
 		

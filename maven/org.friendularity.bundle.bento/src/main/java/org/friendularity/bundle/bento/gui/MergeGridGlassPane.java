@@ -60,6 +60,11 @@ class MergeGridGlassPane extends JPanel implements MouseListener, MouseMotionLis
 			g2.setColor(new Color(128, 128,128, 128));
 			g2.fillRect(curHorSplitterWidgetX, 0, MergeGrid.SEPARATOR_WIDTH, this.getHeight());
 		}
+		if(isVertSplitDragging)
+		{
+			g2.setColor(new Color(128, 128,128, 128));
+			g2.fillRect(0, curVertSplitterWidgetY, this.getWidth(), MergeGrid.SEPARATOR_HEIGHT);
+		}
 	}
 
 	@Override
@@ -186,6 +191,8 @@ class MergeGridGlassPane extends JPanel implements MouseListener, MouseMotionLis
 			startRCDragSelect(e);
 		else if (target instanceof HorBentoSplitter)
 			startHorSplit(e, (HorBentoSplitter)target);
+		else if (target instanceof VertBentoSplitter)
+			startVertSplit(e, (VertBentoSplitter)target);
 	}
 
 	private void startRCDragSelect(MouseEvent e) {
@@ -193,8 +200,11 @@ class MergeGridGlassPane extends JPanel implements MouseListener, MouseMotionLis
 	}
 
 	private int splitCursorFromLeft;
+	private int splitCursorFromTop;
 	private int curHorSplitterWidgetX = 0;
+	private int curVertSplitterWidgetY = 0;
 	private boolean isHorSplitDragging = false;
+	private boolean isVertSplitDragging = false;
 	
 	private void startHorSplit(MouseEvent e, HorBentoSplitter target) {
  		iHandleEvents = true;
@@ -206,12 +216,29 @@ class MergeGridGlassPane extends JPanel implements MouseListener, MouseMotionLis
 		target.setDragCursor();
 		this.repaint(50L);
 	}
-
+	
+	private void startVertSplit(MouseEvent e, VertBentoSplitter target) {
+ 		iHandleEvents = true;
+		isVertSplitDragging = true;
+		
+		splitCursorFromTop = e.getY() - target.getY();
+		curVertSplitterWidgetY = target.getY();
+		
+		target.setDragCursor();
+		this.repaint(50L);
+	}
+	
 	private void localDrag(MouseEvent e) {
 		if(isHorSplitDragging)
 		{
 			curHorSplitterWidgetX = e.getX() - splitCursorFromLeft;
 			this.setHorDragCursor();
+			this.repaint(50L);
+		}
+		if(isVertSplitDragging)
+		{
+			curVertSplitterWidgetY = e.getY() - splitCursorFromTop;
+			this.setVertDragCursor();
 			this.repaint(50L);
 		}
 	}
@@ -228,9 +255,12 @@ class MergeGridGlassPane extends JPanel implements MouseListener, MouseMotionLis
 			setMergeCursor();
 		else if (target instanceof HorBentoSplitter)
 			setHorMoveCursor();
+		else if (target instanceof VertBentoSplitter)
+			setVertMoveCursor();
 
 		iHandleEvents = false;
 		isHorSplitDragging = false;
+		isVertSplitDragging = false;
 	}
 
 	private void localUp(MouseEvent e) {
@@ -243,16 +273,28 @@ class MergeGridGlassPane extends JPanel implements MouseListener, MouseMotionLis
 			} catch (BadPositionForAddedRowOrColumn ex) {
 				Logger.getLogger(MergeGridGlassPane.class.getName()).log(Level.INFO, "Attempt to drop column in invalid location");
 			}
-
-			
 		}
 		
+		if(isVertSplitDragging)
+		{
+			MergeGrid mg = ((MergeGrid)this.getParent());
+			try {
+				mg.insertRowAt(curVertSplitterWidgetY);
+				repaint(50L);
+			} catch (BadPositionForAddedRowOrColumn ex) {
+				Logger.getLogger(MergeGridGlassPane.class.getName()).log(Level.INFO, "Attempt to drop row in invalid location");
+			}
+		}
+				
 		iHandleEvents = false;
 		isHorSplitDragging = false;
+		isVertSplitDragging = false;
 	}
 	
 	private static Cursor sideSideArrow = null;
 	private static Cursor activeSideSideArrow = null;
+	private static Cursor updownArrow = null;
+	private static Cursor activeUpdownArrow = null;
 	private static Cursor mergeCursor = null;
 	
 	void setHorMoveCursor() {
@@ -272,6 +314,23 @@ class MergeGridGlassPane extends JPanel implements MouseListener, MouseMotionLis
 		((MergeGrid)this.getParent()).getGlassPane().setCursor(activeSideSideArrow);
 	}
 
+
+	void setVertMoveCursor() {
+		if(updownArrow == null)
+			updownArrow = Bento_OSGi_ResourceLoader.getDefaultImageLoader().getCursorResource(
+					"/img/updownarrow.png", 16, 16, "updownarrow");
+		// suboptimal, but the glass pane is only one who gets to actually control cursor
+		((MergeGrid)this.getParent()).getGlassPane().setCursor(updownArrow);
+	}
+
+	void setVertDragCursor() {
+		if(activeUpdownArrow == null)
+			activeUpdownArrow = Bento_OSGi_ResourceLoader.getDefaultImageLoader().getCursorResource(
+					"/img/activeupdownarrow.png", 16, 16, "activeupdownarrow");
+		// suboptimal, but the glass pane is only one who gets to actually control cursor
+		((MergeGrid)this.getParent()).getGlassPane().setCursor(activeUpdownArrow);
+	}
+	
 	private void setMergeCursor() {
 		if(mergeCursor == null)
 			mergeCursor = Bento_OSGi_ResourceLoader.getDefaultImageLoader().getCursorResource(

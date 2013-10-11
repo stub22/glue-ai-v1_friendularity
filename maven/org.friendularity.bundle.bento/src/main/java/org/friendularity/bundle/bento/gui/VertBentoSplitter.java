@@ -21,6 +21,8 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -32,7 +34,7 @@ import org.friendularity.bundle.bento.util.Bento_OSGi_ResourceLoader;
  * 
  * @author Annie
  */
-public class VertBentoSplitter extends BentoSplitter {
+public class VertBentoSplitter extends BentoSplitter implements MouseListener, MouseMotionListener {
 	
 	private static final int REALLY_WIDE = 32768;
 	
@@ -44,6 +46,8 @@ public class VertBentoSplitter extends BentoSplitter {
 		
 		this.setLayout(null);
 		this.setSize(getPreferredSize());
+		this.addMouseListener(this);
+		this.addMouseMotionListener(this);
 	}
 
 	@Override
@@ -61,8 +65,7 @@ public class VertBentoSplitter extends BentoSplitter {
 		return getPreferredSize();
 	}
 
-	private static final int IMAGE_HEIGHT = 10;
-	private static final int IMAGE_LEFT_WIDTH = 26;
+	private static final int IMAGE_TOP_WIDTH = 26;
 	private static final int IMAGE_WIDTH = 168;
 	
 	@Override
@@ -76,7 +79,7 @@ public class VertBentoSplitter extends BentoSplitter {
 			try {
 				texture = Bento_OSGi_ResourceLoader.getDefaultImageLoader().getImageResource("/img/vertsplittermain.png");
 			} catch (IOException ex) {
-				Logger.getLogger(HorBentoSplitter.class.getName()).log(Level.SEVERE, null, ex);
+				Logger.getLogger(VertBentoSplitter.class.getName()).log(Level.SEVERE, null, ex);
 				return;
 			}
 		}
@@ -86,12 +89,12 @@ public class VertBentoSplitter extends BentoSplitter {
 			try {
 				textop = Bento_OSGi_ResourceLoader.getDefaultImageLoader().getImageResource("/img/vertsplittertop.png");
 			} catch (IOException ex) {
-				Logger.getLogger(HorBentoSplitter.class.getName()).log(Level.SEVERE, null, ex);
+				Logger.getLogger(VertBentoSplitter.class.getName()).log(Level.SEVERE, null, ex);
 				return;
 			}
 		}
 		
-		for(int x = IMAGE_LEFT_WIDTH ; x < g2.getClipBounds().x + g2.getClipBounds().width; x += IMAGE_WIDTH)
+		for(int x = IMAGE_TOP_WIDTH ; x < g2.getClipBounds().x + g2.getClipBounds().width; x += IMAGE_WIDTH)
 		{
 			g2.drawImage(texture, x, 0, this);
 		}
@@ -102,15 +105,77 @@ public class VertBentoSplitter extends BentoSplitter {
 	protected void paintBorder(Graphics g) {
 		// we don't want a border
 	}
-
-	private static Cursor upDownCursor = null;
+	
+	/**
+	 * Convenience method
+	 * 
+	 * @return my MergeGrid
+	 */
+	protected MergeGrid mg()
+	{
+		return ((MergeGrid)this.getParent());
+	}
 	
 	@Override
 	protected void setMoveCursor() {
-		if(upDownCursor == null)
-			upDownCursor = Bento_OSGi_ResourceLoader.getDefaultImageLoader().getCursorResource(
-					"/img/updownarrow.png", 16, 16, "updownarrow");
-		
-		this.setCursor(upDownCursor);
+
+		// suboptimal, but the glass pane is only one who gets to actually control cursor
+		mg().getGlassPane().setVertMoveCursor();
 	}
+
+	protected void setDragCursor() {
+		// suboptimal, but the glass pane is only one who gets to actually control cursor
+		mg().getGlassPane().setVertDragCursor();
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		setDragCursor();
+		
+		MergeGrid mg = mg();
+		
+		if (mg().isLastRowOrColumnSplitter(this))
+		{
+			throw new IllegalArgumentException("I'm the last column don't try to move me");
+		}
+		
+		prevYOnScreen = e.getYOnScreen();
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		setMoveCursor();
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		
+	}
+
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		setDragCursor();
+		int delta = e.getYOnScreen() - prevYOnScreen;
+		
+		int newdelta = mg().resizeRows(mg().indexOfVertSplitter(this), delta);
+
+		prevYOnScreen = prevYOnScreen + newdelta;
+	}
+
+	@Override
+	public void mouseMoved(MouseEvent e) {
+		setMoveCursor();
+	}
+
+	private int prevYOnScreen;
 }
