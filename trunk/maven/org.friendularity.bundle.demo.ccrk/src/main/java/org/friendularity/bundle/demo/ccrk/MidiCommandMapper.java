@@ -18,11 +18,11 @@ package org.friendularity.bundle.demo.ccrk;
 import org.appdapter.core.log.BasicDebugger;
 import org.friendularity.api.west.WorldEstimate;
 import org.friendularity.api.west.WorldEstimateRenderModule;
-import org.friendularity.impl.midi.InterestingMidiEvent;
-import org.friendularity.impl.midi.InterestingMidiEvent.NoteOn;
-import org.friendularity.impl.midi.InterestingMidiEvent.NoteOff;
-import org.friendularity.impl.midi.InterestingMidiEvent.ControlChange;
-import org.friendularity.impl.midi.MidiEventReporter;
+import org.cogchar.bind.midi.InterestingMidiEvent;
+import org.cogchar.bind.midi.InterestingMidiEvent.NoteOn;
+import org.cogchar.bind.midi.InterestingMidiEvent.NoteOff;
+import org.cogchar.bind.midi.InterestingMidiEvent.ControlChange;
+import org.cogchar.bind.midi.MidiEventReporter;
 
 /**
  * @author Stu B. <www.texpedient.com>

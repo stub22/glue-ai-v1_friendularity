@@ -22,9 +22,9 @@ import org.appdapter.api.trigger.Box;
 import org.appdapter.api.trigger.Trigger;
 import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.gui.demo.DemoBrowser;
-import org.friendularity.math.api.MathGate;
-import org.friendularity.math.api.MathGateUnscripted;
-import org.friendularity.math.api.MathSpaceFactory;
+import org.cogchar.bind.symja.MathGate;
+import org.cogchar.bind.symja.MathGateUnscripted;
+import org.cogchar.bind.symja.MathSpaceFactory;
 
 /**
  * @author Stu B. <www.texpedient.com>

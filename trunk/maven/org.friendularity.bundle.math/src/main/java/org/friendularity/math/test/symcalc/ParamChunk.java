@@ -17,8 +17,8 @@
 package org.friendularity.math.test.symcalc;
 
 import org.appdapter.core.log.BasicDebugger;
-import org.friendularity.math.api.MathGate;
-import org.friendularity.math.api.MathGateUnscripted;
+import org.cogchar.bind.symja.MathGate;
+import org.cogchar.bind.symja.MathGateUnscripted;
 import org.matheclipse.core.interfaces.IAST;
 import org.matheclipse.core.interfaces.IExpr;
 import org.slf4j.Logger;

@@ -20,7 +20,7 @@ import org.appdapter.core.name.Ident;
 import org.appdapter.core.item.Item;
 
 import org.appdapter.core.store.ModelClient;
-import org.friendularity.math.api.MathGate;
+import org.cogchar.bind.symja.MathGate;
 import org.appdapter.core.log.BasicDebugger;
 import org.cogchar.render.opengl.scene.DeepSceneMgr;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
