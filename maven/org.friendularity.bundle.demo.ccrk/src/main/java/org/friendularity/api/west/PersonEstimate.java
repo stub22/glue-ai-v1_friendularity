@@ -16,7 +16,7 @@
 package org.friendularity.api.west;
 
 import org.appdapter.core.name.Ident;
-import org.friendularity.math.api.MathGate;
+import org.cogchar.bind.symja.MathGate;
 
 /**
  *

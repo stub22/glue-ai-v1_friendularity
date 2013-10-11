@@ -15,7 +15,7 @@
  */
 package org.friendularity.math.test.symcalc;
 
-import org.friendularity.math.api.MathGateUnscripted;
+import org.cogchar.bind.symja.MathGateUnscripted;
 import org.matheclipse.core.interfaces.IAST;
 import org.matheclipse.core.interfaces.IExpr;
 import org.slf4j.Logger;

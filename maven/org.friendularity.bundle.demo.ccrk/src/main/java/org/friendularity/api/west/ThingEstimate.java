@@ -15,7 +15,7 @@
  */
 	package org.friendularity.api.west;
 
-import org.friendularity.math.api.MathGate;
+import org.cogchar.bind.symja.MathGate;
 import org.friendularity.api.goody.ShapeAnimator;
 import org.friendularity.api.goody.VizShape;
 import com.jme3.math.Vector3f;

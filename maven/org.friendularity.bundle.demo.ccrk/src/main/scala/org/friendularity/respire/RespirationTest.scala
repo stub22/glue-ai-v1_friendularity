@@ -26,7 +26,7 @@ import org.appdapter.core.log.BasicDebugger;
 
 import org.appdapter.impl.store.{ModelClientImpl, ResourceResolver};
 
-import org.friendularity.math.api.{MathGate, MathSpaceFactory}
+import org.cogchar.bind.symja.{MathGate, MathSpaceFactory}
 
 import org.friendularity.api.goody.{DynamicGoody, DynamicGoodySpace}
 
