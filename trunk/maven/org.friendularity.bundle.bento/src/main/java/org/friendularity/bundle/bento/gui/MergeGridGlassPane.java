@@ -104,7 +104,11 @@ class MergeGridGlassPane extends JPanel implements MouseListener, MouseMotionLis
 
 	private boolean handleEventLocally(MouseEvent e)
 	{
-		if(e.isControlDown() || iHandleEvents)
+		MergeGrid mg = ((MergeGrid)this.getParent());
+		
+		if(e.isControlDown() || 
+				iHandleEvents ||
+				mg.isLastRowOrColumnSplitter(mg.getNonGlassComponentAt(e.getPoint())))
 		{
 			switch(e.getID())
 			{
@@ -130,6 +134,8 @@ class MergeGridGlassPane extends JPanel implements MouseListener, MouseMotionLis
 		return false;
 	}
 	
+	private Component draggingComponent = null;
+	
 	private void redispatchEvent(MouseEvent e) {
 		if(handleEventLocally(e))
 			return;
@@ -139,6 +145,16 @@ class MergeGridGlassPane extends JPanel implements MouseListener, MouseMotionLis
 		Point epoint = SwingUtilities.convertPoint(this, e.getPoint(), mg);
 		
 		Component target = mg.getNonGlassComponentAt(epoint);
+		
+		// Make sure we keep tracking same component during drag
+		if (e.getID() == MouseEvent.MOUSE_RELEASED)
+			draggingComponent = null;
+		
+		if (draggingComponent != null)
+			target = draggingComponent;
+		
+		if (e.getID() == MouseEvent.MOUSE_PRESSED)
+			draggingComponent = target;
 		
 		if (target == null)
 		{
@@ -181,7 +197,7 @@ class MergeGridGlassPane extends JPanel implements MouseListener, MouseMotionLis
 	private boolean isHorSplitDragging = false;
 	
 	private void startHorSplit(MouseEvent e, HorBentoSplitter target) {
-		iHandleEvents = true;
+ 		iHandleEvents = true;
 		isHorSplitDragging = true;
 		
 		splitCursorFromLeft = e.getX() - target.getX();
@@ -211,7 +227,10 @@ class MergeGridGlassPane extends JPanel implements MouseListener, MouseMotionLis
 		else if (target instanceof BentoPlugin)
 			setMergeCursor();
 		else if (target instanceof HorBentoSplitter)
-			startHorSplit(e, (HorBentoSplitter)target);
+			setHorMoveCursor();
+
+		iHandleEvents = false;
+		isHorSplitDragging = false;
 	}
 
 	private void localUp(MouseEvent e) {

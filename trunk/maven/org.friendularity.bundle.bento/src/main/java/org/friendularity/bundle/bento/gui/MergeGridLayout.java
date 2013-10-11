@@ -34,7 +34,6 @@ import javax.swing.JComponent;
  */
 class MergeGridLayout implements LayoutManager2,
 		java.io.Serializable {
-	private Dimension oldCellSums = new Dimension(0,0);
 	
 	public MergeGridLayout() {
 
@@ -118,29 +117,29 @@ class MergeGridLayout implements LayoutManager2,
 		
 		MergeGrid mg = ((MergeGrid)parent);
 		
-		if(oldCellSums.height > 0 &&
-		   oldCellSums.width > 0 &&
-			!mg.getSize().equals(oldSize))
+		int oldSumOfColSizes = mg.getSumOfColSizes();
+		int oldSumOfRowSizes = mg.getSumOfRowSizes();
+		
+		if(oldSize.width != 0 &&
+		   oldSize.height != 0 &&
+		   !mg.getSize().equals(oldSize))
 		{
 			int widthSum = parent.getWidth() - mg.getNumColumns() * MergeGrid.SEPARATOR_WIDTH;
-			int heightSum = parent.getHeight() - mg.getNumColumns() * MergeGrid.SEPARATOR_HEIGHT;
+			int heightSum = parent.getHeight() - mg.getNumRows() * MergeGrid.SEPARATOR_HEIGHT;
 			
 			if (widthSum > 0 && 
 			    heightSum > 0 &&
-			    (widthSum != oldCellSums.width || heightSum != oldCellSums.height))
+			    (widthSum != oldSumOfColSizes || heightSum != oldSumOfRowSizes))
 			{
-				float widthRatio = widthSum / (float)oldCellSums.width;
-				float heightRatio = heightSum / (float)oldCellSums.height;
+				float widthRatio = widthSum / (float)oldSumOfColSizes;
+				float heightRatio = heightSum / (float)oldSumOfRowSizes;
 				
 				mg.stretchWidth(widthRatio);
 				mg.stretchHeight(heightRatio);
 
-				oldCellSums.width = widthSum;
-				oldCellSums.height = heightSum;
+				oldSize = parent.getSize();
 			}
 		} else {
-			oldCellSums.width = parent.getWidth() - mg.getNumColumns() * MergeGrid.SEPARATOR_WIDTH;
-			oldCellSums.height = parent.getHeight() - mg.getNumColumns() * MergeGrid.SEPARATOR_HEIGHT;
 			oldSize = parent.getSize();
 		}
 		
