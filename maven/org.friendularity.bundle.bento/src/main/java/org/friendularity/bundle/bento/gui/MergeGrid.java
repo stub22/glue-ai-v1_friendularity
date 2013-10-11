@@ -34,7 +34,7 @@ import javax.swing.SwingUtilities;
 public class MergeGrid extends JPanel {
 	static final int SEPARATOR_WIDTH = 10;
 	static final int SEPARATOR_HEIGHT = 10;
-	private static final int SOME_MINIMAL_CELL_DIM = 4;
+	static final int SOME_MINIMAL_CELL_DIM = 4;
 	
 	// points are col,row
 	private HashMap<Point, MergeGridEntry>myCells = new HashMap<Point, MergeGridEntry>();
@@ -170,6 +170,7 @@ public class MergeGrid extends JPanel {
 		{
 			columns.set(i, new Float(columns.get(i) * widthRatio));
 		}
+		
 	}
 
 	void stretchHeight(float heightRatio) {
@@ -178,6 +179,7 @@ public class MergeGrid extends JPanel {
 			rows.set(i, new Float(
 					rows.get(i) * heightRatio));
 		}
+
 	}
 
 	Dimension sizeAt(int col, int row) {
@@ -185,15 +187,24 @@ public class MergeGrid extends JPanel {
 		return new Dimension(mge.colsize, mge.rowsize);
 	}
 
-	boolean isLastRowOrColumnSplitter(HorBentoSplitter aThis) {
-		if(colsplitters.size() < 1)return false;
-		
-		return colsplitters.get(colsplitters.size() - 1) == aThis;
-	}
-	boolean isLastRowOrColumnSplitter(VertBentoSplitter aThis) {
-		if(rowsplitters.size() < 1) return false;
-		
-		return rowsplitters.get(rowsplitters.size() - 1) == aThis;
+	/**
+	 * We always want to answer the question.
+	 * 
+	 * @param aThis
+	 * @return 
+	 */
+	boolean isLastRowOrColumnSplitter(Object aThis) {
+		if(aThis == null)
+			return false;
+		else if (aThis instanceof HorBentoSplitter) {
+			if(colsplitters.size() < 1)return false;
+
+			return colsplitters.get(colsplitters.size() - 1) == aThis;
+		} else if (aThis instanceof VertBentoSplitter) {
+			if(rowsplitters.size() < 1) return false;
+
+			return rowsplitters.get(rowsplitters.size() - 1) == aThis;			
+		} else return false;
 	}
 	
 	int indexOfHorSplitter(HorBentoSplitter aThis) {
@@ -288,6 +299,48 @@ public class MergeGrid extends JPanel {
 		}
 		// no location works, we throw
 		throw new BadPositionForAddedRowOrColumn(x);
+	}
+
+	int resizeColumns(int index, int delta) {
+		int newdelta;
+		
+		if (delta == 0)
+			return 0;
+		else if (delta > 0)
+		{
+			newdelta = (int)Math.min(delta, 
+					columns.get(index + 1) - MergeGrid.SOME_MINIMAL_CELL_DIM);			
+		} else {
+			newdelta = (int)Math.max(delta,
+					MergeGrid.SOME_MINIMAL_CELL_DIM - columns.get(index));
+		}
+		
+		columns.set(index, columns.get(index) + newdelta);
+		columns.set(index + 1, columns.get(index + 1) - newdelta);
+		revalidate();
+		return newdelta;
+	}
+
+	int getSumOfColSizes() {
+		int w = 0;
+		
+		for(int i = 0 ; i < columns.size() ; i++)
+		{
+			w +=  Math.floor(columns.get(i));
+		}
+		
+		return w;
+	}
+
+	int getSumOfRowSizes() {
+		int h = 0;
+		
+		for(int i = 0 ; i < rows.size() ; i++)
+		{
+			h += Math.floor(rows.get(i));
+		}
+		
+		return h;
 	}
 	
 	private static class MergeGridEntry {

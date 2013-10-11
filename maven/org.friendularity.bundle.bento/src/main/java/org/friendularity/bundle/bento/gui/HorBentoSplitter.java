@@ -107,16 +107,26 @@ public class HorBentoSplitter extends BentoSplitter implements MouseListener, Mo
 		// we don't want a border
 	}
 	
+	/**
+	 * Convenience method
+	 * 
+	 * @return my MergeGrid
+	 */
+	protected MergeGrid mg()
+	{
+		return ((MergeGrid)this.getParent());
+	}
+	
 	@Override
 	protected void setMoveCursor() {
 
 		// suboptimal, but the glass pane is only one who gets to actually control cursor
-		((MergeGrid)this.getParent()).getGlassPane().setHorMoveCursor();
+		mg().getGlassPane().setHorMoveCursor();
 	}
 
 	protected void setDragCursor() {
 		// suboptimal, but the glass pane is only one who gets to actually control cursor
-		((MergeGrid)this.getParent()).getGlassPane().setHorDragCursor();
+		mg().getGlassPane().setHorDragCursor();
 	}
 
 	@Override
@@ -127,14 +137,15 @@ public class HorBentoSplitter extends BentoSplitter implements MouseListener, Mo
 	@Override
 	public void mousePressed(MouseEvent e) {
 		setDragCursor();
-		/*
-		if((e.getModifiers() & MouseEvent.CTRL_DOWN_MASK) != 0)
-			startDuplicate(e);
-		else if (((MergeGrid)this.getParent()).isLastRowOrColumnSplitter(this))
-			startDuplicate(e);
-		else
-		*/
-		startMove(e);
+		
+		MergeGrid mg = mg();
+		
+		if (mg().isLastRowOrColumnSplitter(this))
+		{
+			throw new IllegalArgumentException("I'm the last column don't try to move me");
+		}
+		
+		prevXOnScreen = e.getXOnScreen();
 	}
 
 	@Override
@@ -155,8 +166,11 @@ public class HorBentoSplitter extends BentoSplitter implements MouseListener, Mo
 	@Override
 	public void mouseDragged(MouseEvent e) {
 		setDragCursor();
-		attemptMoveMe(e.getXOnScreen() - prevXOnScreen);
-		prevXOnScreen = e.getXOnScreen();
+		int delta = e.getXOnScreen() - prevXOnScreen;
+		
+		int newdelta = mg().resizeColumns(mg().indexOfHorSplitter(this), delta);
+
+		prevXOnScreen = prevXOnScreen + newdelta;
 	}
 
 	@Override
@@ -164,14 +178,5 @@ public class HorBentoSplitter extends BentoSplitter implements MouseListener, Mo
 		setMoveCursor();
 	}
 
-	private void startMove(MouseEvent e) {
-		throw new UnsupportedOperationException("Not supported yet.");
-	}
-
 	private int prevXOnScreen;
-
-	private void attemptMoveMe(int i) {
-		throw new UnsupportedOperationException("Not supported yet.");
-	}
-	
 }
