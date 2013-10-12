@@ -408,6 +408,23 @@ public class MergeGrid extends JPanel {
 		
 		return h;
 	}
+
+	void removeCell(JComponent aThis) {
+		for(Iterator<Point>i = myCells.keySet().iterator() ; i.hasNext() ; )
+		{
+			Point p = i.next();
+			MergeGridEntry mge = myCells.get(p);
+			
+			if(mge.component == aThis)
+			{
+				this.remove(aThis);
+				myCells.remove(p);
+				revalidate();
+				repaint();
+				return;
+			}
+		}
+	}
 	
 	private static class MergeGridEntry {
 		int col;

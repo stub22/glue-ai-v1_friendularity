@@ -19,11 +19,18 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GraphicsConfiguration;
 import java.awt.HeadlessException;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.KeyStroke;
 
 /**
  *
@@ -32,17 +39,31 @@ import javax.swing.JFrame;
 public class BentoFrame extends JFrame {
 
 	private static final String DEFAULT_TITLE = "Bento";
+
+	private static int unusedTitleInt = 0;
+	
+	private static String getUnusedTitle() {
+		if(unusedTitleInt == 0)
+		{
+			unusedTitleInt = 1;
+			return DEFAULT_TITLE;
+		}
+		else
+		{
+			return DEFAULT_TITLE + (unusedTitleInt++);
+		}
+	}
 	
 	private MergeGrid myGrid;
 	
 	public BentoFrame() throws HeadlessException {
 		super();
-		initialize(DEFAULT_TITLE);
+		initialize(getUnusedTitle());
 	}
 
 	public BentoFrame(GraphicsConfiguration gc) {
 		super(gc);
-		initialize(DEFAULT_TITLE);
+		initialize(getUnusedTitle());
 	}
 
 	public BentoFrame(String title) throws HeadlessException {
@@ -58,6 +79,8 @@ public class BentoFrame extends JFrame {
 	private void initialize(String title) {
 		this.setTitle(title);
 		
+		// the mergegrid needs a minimum size so we don't get weird roundoff
+		// behavior so don't remove this
 		this.setMinimumSize(new Dimension(320, 240));
 		myGrid = new MergeGrid();
 		this.getContentPane().add(
@@ -72,7 +95,47 @@ public class BentoFrame extends JFrame {
 		} catch (ItsBentoBoxesNotBentoTetrisException ex) {
 			Logger.getLogger(BentoFrame.class.getName()).log(Level.SEVERE, null, ex);
 		}
+		
+		setupMenus();
+		
 		this.pack();
 		this.setVisible(true);
+		BentoLauncher.getDefaultLauncher().addWindow(this);
+	}
+	
+	private void setupMenus()
+	{
+		JMenuItem item;
+		JMenuBar bar = new JMenuBar();
+		
+		JMenu menu = new JMenu("File");
+		menu.setMnemonic(KeyEvent.VK_F);
+		menu.getAccessibleContext().setAccessibleDescription("file");
+		bar.add(menu);
+		
+		item = new JMenuItem("New",
+                         KeyEvent.VK_N);
+		item.setAccelerator(KeyStroke.getKeyStroke(
+				KeyEvent.VK_N, ActionEvent.CTRL_MASK));
+		item.getAccessibleContext().setAccessibleDescription(
+				"New Bento Window");
+		item.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				BentoFrame bf = new BentoFrame(BentoFrame.getUnusedTitle());
+			}
+		});
+		menu.add(item);
+		
+		item = new JMenuItem("Open",
+                         KeyEvent.VK_O);
+		item.setAccelerator(KeyStroke.getKeyStroke(
+				KeyEvent.VK_O, ActionEvent.CTRL_MASK));
+		item.getAccessibleContext().setAccessibleDescription(
+				"New Bento Window");
+		menu.add(item);
+		
+		this.setJMenuBar(bar);
 	}
 }

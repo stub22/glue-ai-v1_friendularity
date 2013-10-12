@@ -21,22 +21,28 @@ import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.ImageIcon;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JSeparator;
 import javax.swing.SwingUtilities;
 import org.friendularity.bundle.bento.util.Bento_OSGi_ResourceLoader;
-
-
 
 /**
  *
  * @author Annie
  */
-class MergeGridGlassPane extends JPanel implements MouseListener, MouseMotionListener {
+class MergeGridGlassPane extends JPanel implements MouseListener, MouseMotionListener, ActionListener {
 	private boolean iHandleEvents = false;
 
 	public MergeGridGlassPane() {
@@ -109,7 +115,16 @@ class MergeGridGlassPane extends JPanel implements MouseListener, MouseMotionLis
 
 	private boolean handleEventLocally(MouseEvent e)
 	{
+					
 		MergeGrid mg = ((MergeGrid)this.getParent());
+		
+		if (e.isPopupTrigger()) {
+			initPopup(mg.getNonGlassComponentAt(e.getPoint())); // reinit to get rid of old refs
+			popup.show(e.getComponent(),
+					   e.getX(), e.getY());
+			draggingComponent = null;
+			return true;
+		}
 		
 		if(e.isControlDown() || 
 				iHandleEvents ||
@@ -339,4 +354,133 @@ class MergeGridGlassPane extends JPanel implements MouseListener, MouseMotionLis
 		// suboptimal, but the glass pane is only one who gets to actually control cursor
 		((MergeGrid)this.getParent()).getGlassPane().setCursor(mergeCursor);
 	}
+	
+	//===============  Menu handling ========================================
+	
+	
+	// @TODO move menu to BentoAction
+	public static final String HTWO_MENU = "H Two";
+	public static final String HTHREE_MENU = "H Three";
+	public static final String HFOUR_MENU = "H Four";
+	public static final String VTWO_MENU = "V Two";
+	public static final String VTHREE_MENU = "V Three";
+	public static final String VFOUR_MENU = "V Four";
+	public static final String REMOVE_MENU = "Remove";
+	
+	private boolean canSplit()
+	{
+		return true;
+	}
+	
+	/**
+	 * Override only to completely replace popup menu
+	 * 
+	 * you probably want addAdditionalMenuItems
+	 * 
+	 * 
+	 */
+	protected void initPopup(final Component c)
+	{		
+		popup = new JPopupMenu();
+		
+		// @TODO change all to anonymous ActionListener handlers, we don't want to get the actions
+		// for things the plugin adds
+
+		try {
+			JMenu subMenu = new JMenu("Hor. Split");
+			ImageIcon ii = new ImageIcon(
+					Bento_OSGi_ResourceLoader.getDefaultImageLoader().getImageResource("/img/twohor.png"));
+			JMenuItem menuItem = new JMenuItem(HTWO_MENU, ii);
+			menuItem.addActionListener(this);
+			subMenu.add(menuItem);
+			ii = new ImageIcon(
+					Bento_OSGi_ResourceLoader.getDefaultImageLoader().getImageResource("/img/threehor.png"));
+			menuItem = new JMenuItem(HTHREE_MENU, ii);
+			menuItem.addActionListener(this);
+			subMenu.add(menuItem);
+			ii = new ImageIcon(
+					Bento_OSGi_ResourceLoader.getDefaultImageLoader().getImageResource("/img/fourhor.png"));
+			menuItem = new JMenuItem(HFOUR_MENU, ii);
+			menuItem.addActionListener(this);
+			subMenu.add(menuItem);
+			popup.add(subMenu);
+
+			subMenu = new JMenu("Vert. Split");
+			ii = new ImageIcon(
+					Bento_OSGi_ResourceLoader.getDefaultImageLoader().getImageResource("/img/twovert.png"));
+			menuItem = new JMenuItem(VTWO_MENU, ii);
+			menuItem.addActionListener(this);
+			subMenu.add(menuItem);
+			ii = new ImageIcon(
+					Bento_OSGi_ResourceLoader.getDefaultImageLoader().getImageResource("/img/threevert.png"));
+			menuItem = new JMenuItem(VTHREE_MENU, ii);
+			menuItem.addActionListener(this);
+			subMenu.add(menuItem);
+			ii = new ImageIcon(
+					Bento_OSGi_ResourceLoader.getDefaultImageLoader().getImageResource("/img/fourvert.png"));
+			menuItem = new JMenuItem(VFOUR_MENU, ii);
+			menuItem.addActionListener(this);
+			subMenu.add(menuItem);
+			popup.add(subMenu);
+			
+			if (c instanceof BentoPlugin)
+			{
+				popup.add(new JSeparator());
+				
+				menuItem = new JMenuItem(REMOVE_MENU);
+				menuItem.addActionListener(new ActionListener(){
+
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						draggingComponent = null;
+						((BentoPlugin)c).removeFromMergeGrid();
+					}
+				});
+				
+				popup.add(menuItem);
+			}
+			
+			if (c == null)
+			{
+				popup.add(new JSeparator());
+				
+				menuItem = new JMenuItem("this will be the add");
+				popup.add(menuItem);
+			}
+		} catch (IOException ex) {
+			Logger.getLogger(MergeGridGlassPane.class.getName()).log(Level.SEVERE, null, ex);
+		}
+		
+		if (c instanceof BentoPlugin)
+		{
+			((BentoPlugin)c).addAdditionalMenuItems(popup);
+		}
+	}
+	
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		handleActions(e);
+	}
+	
+		
+	protected void handleActions(ActionEvent e)
+	{
+		System.err.println(e.getActionCommand());
+		//containingBox().doCommand(this, e.getActionCommand());
+	}
+	
+   private JPopupMenu popup;
+   
+   /**
+	* get the right click menu
+	* 
+	* If you modify it, do it on swingworker thread
+	* 
+	* @return popup menu
+	*/
+   protected JPopupMenu getPopup()
+   {
+	   return popup;
+   }
+
 }

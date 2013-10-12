@@ -2,6 +2,7 @@ package org.friendularity.bundle.bento.gui;
 
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.util.ArrayList;
 import org.appdapter.core.log.BasicDebugger;
 import org.friendularity.bundle.bento.engine.Quitter;
 
@@ -13,24 +14,38 @@ public class BentoLauncher extends BasicDebugger implements Quitter, WindowListe
 	private Boolean			myFlag_QuittingNow  = Boolean.FALSE;	
 	private	boolean			myFlag_StopOSGiAfterQuit = false;
 	
-	private BentoFrame  myBentoFrame = null;
+	private static BentoLauncher defBentoLauncher = null;
+	
+	private ArrayList<BentoFrame> bframes = new ArrayList<BentoFrame>();
+	
+	public static BentoLauncher getDefaultLauncher() {
+		if (defBentoLauncher == null)
+		{
+			defBentoLauncher = new BentoLauncher(false);
+		}
+		return defBentoLauncher;
+	}
 
 	public static void main(String[] args) {
 		// Can use this to run-file without bundling, if your IDE/env can setup your java.library.path to point at 
 		// the right native libs (either src/main/resources/native/{platform} or the equiv directory under target/)
 
-		BentoLauncher jvl = new BentoLauncher(false);
-		jvl.attemptInit();
+		getDefaultLauncher().attemptInit();
 	}
+	
 	public BentoLauncher(boolean flag_stopOSGiAfterQuit) {
 		myFlag_StopOSGiAfterQuit = flag_stopOSGiAfterQuit;
 	}
 	
 	public boolean  attemptInit() {
 		// @TODO start up engine, return true if successful
-		myBentoFrame = new BentoFrame();
-		myBentoFrame.addWindowListener(this);
+		addWindow(new BentoFrame());
 		return true;
+	}
+
+	void addWindow(BentoFrame bf) {
+		bframes.add(bf);
+		bf.addWindowListener(this);
 	}
 	
 	public void requestStop(Boolean optionalFlag_stopOSGiAfterQuit) { 
@@ -92,7 +107,12 @@ public class BentoLauncher extends BasicDebugger implements Quitter, WindowListe
 
 	@Override
 	public void windowClosed(WindowEvent e) {
-		setWantsToQuit(true);
+		if(bframes.indexOf(e.getComponent()) >= 0)
+		{
+			bframes.remove(e.getComponent());
+		}
+		if(bframes.size() == 0)
+			setWantsToQuit(true);
 	}
 
 	@Override
