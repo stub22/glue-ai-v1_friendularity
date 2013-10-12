@@ -220,7 +220,22 @@ public abstract class BentoPlugin  extends JPanel implements ActionListener {
 	}
 
 	private void setMoveCursor() {
-		((MergeGrid)this.getParent()).getGlassPane().setCursor(Cursor.getDefaultCursor());
+		try {
+			((MergeGrid)this.getParent()).getGlassPane().setCursor(Cursor.getDefaultCursor());
+		} catch (Exception e) {
+			System.err.println("vastly painful");
+		}
+			
+	}
+
+	void removeFromMergeGrid() {
+		((MergeGrid)this.getParent()).removeCell(this);
+		pluginRemoved();
+	}
+	
+	protected void pluginRemoved()
+	{
+		
 	}
 	
 	class PopupListener extends MouseAdapter {
