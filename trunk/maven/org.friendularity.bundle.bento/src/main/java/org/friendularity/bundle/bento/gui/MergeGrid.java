@@ -21,6 +21,8 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
@@ -76,6 +78,32 @@ public class MergeGrid extends JPanel {
 	
 	int getHeight(int i) {
 		return (int)(rows.get(i).floatValue());
+	}
+	
+	int getColumnAt(int x)
+	{
+		float myx = 0.0f;
+		for(int i = 0 ; i < columns.size() ; i++)
+		{
+			if (myx <= x && x < myx + columns.get(i) + MergeGrid.SEPARATOR_WIDTH )
+				return i;
+			myx += columns.get(i) + MergeGrid.SEPARATOR_WIDTH;
+		}
+		
+		throw new IllegalArgumentException("pixel x=" + x + " is not in a column");
+	}
+	
+	int getRowAt(int y)
+	{
+		float myy = 0.0f;
+		for(int i = 0 ; i < rows.size() ; i++)
+		{
+			if (myy <= y && y < myy + rows.get(i) + MergeGrid.SEPARATOR_HEIGHT )
+				return i;
+			myy += rows.get(i) + MergeGrid.SEPARATOR_HEIGHT;
+		}
+		
+		throw new IllegalArgumentException("pixel y=" + y + " is not in a row");
 	}
 
 	void addColumn(int i, int width) {
@@ -424,6 +452,112 @@ public class MergeGrid extends JPanel {
 				return;
 			}
 		}
+	}
+
+	void attemptDeleteColumn(int col) {
+		if(columns.size() < 2)
+			return;  // can't delete last column
+		
+		float amountToHandOut = (columns.get(col) + MergeGrid.SEPARATOR_WIDTH) / (columns.size() - 1);
+		
+		HashMap<Point, MergeGridEntry>newCells = new HashMap<Point, MergeGridEntry>();
+		
+		for(Iterator<Point>i = myCells.keySet().iterator() ; i.hasNext() ; )
+		{
+			Point p = i.next();
+			MergeGridEntry mge = myCells.get(p);
+			
+			// it's on left
+			if(mge.col + mge.colsize - 1 < col)
+				newCells.put(p, mge);
+			// spans into or past col
+			else if (mge.col < col && mge.col + mge.colsize - 1 >= col)
+			{
+				mge.colsize--;
+				newCells.put(p, mge);
+			}
+			// its' on right
+			else if (mge.col > col)
+			{
+				mge.col -= 1;
+				
+				newCells.put(new Point(p.x - 1, p.y), mge);
+			}
+			// it's to be removed
+			else if (mge.col == col && mge.colsize == 1)
+			{
+				this.remove(mge.component);
+			}
+			// this should be all
+			else
+			{
+				Logger.getLogger(MergeGrid.class.getName()).log(Level.SEVERE, 
+						"unhandled case deleting column " + col + " from mge.col = " + mge.col +
+						" mge.colsize = " + mge.colsize);
+			}
+		}
+		
+		myCells = newCells;
+		this.remove(this.getColSplitter(col));
+		columns.remove(col);
+		
+		for(int i = 0 ; i < columns.size() ; i++)
+			columns.set(i, columns.get(i) + amountToHandOut);
+		
+		revalidate();
+	}
+
+	void attemptDeleteRow(int row) {
+		if(rows.size() < 2)
+			return;  // can't delete last row
+		
+		HashMap<Point, MergeGridEntry>newCells = new HashMap<Point, MergeGridEntry>();
+		
+		float amountToHandOut = (rows.get(row) + MergeGrid.SEPARATOR_HEIGHT) / (rows.size() - 1);
+		
+		for(Iterator<Point>i = myCells.keySet().iterator() ; i.hasNext() ; )
+		{
+			Point p = i.next();
+			MergeGridEntry mge = myCells.get(p);
+			
+			// it's above
+			if(mge.row + mge.rowsize - 1 < row)
+				newCells.put(p, mge);
+			// spans into or past row
+			else if (mge.row < row && mge.row + mge.rowsize - 1 >= row)
+			{
+				mge.rowsize--;
+				newCells.put(p, mge);
+			}
+			// its' below
+			else if (mge.row > row)
+			{
+				mge.row -= 1;
+				
+				newCells.put(new Point(p.x, p.y - 1), mge);
+			}
+			// it's to be removed
+			else if (mge.row == row && mge.rowsize == 1)
+			{
+				this.remove(mge.component);
+			}
+			// this should be all
+			else
+			{
+				Logger.getLogger(MergeGrid.class.getName()).log(Level.SEVERE, 
+						"unhandled case deleting row " + row + " from mge.row = " + mge.row +
+						" mge.rowsize = " + mge.rowsize);
+			}
+		}
+		
+		myCells = newCells;
+		this.remove(this.getRowSplitter(row));
+		rows.remove(row);
+		
+		for(int i = 0 ; i < rows.size() ; i++)
+			rows.set(i, rows.get(i) + amountToHandOut);
+		
+		revalidate();
 	}
 	
 	private static class MergeGridEntry {

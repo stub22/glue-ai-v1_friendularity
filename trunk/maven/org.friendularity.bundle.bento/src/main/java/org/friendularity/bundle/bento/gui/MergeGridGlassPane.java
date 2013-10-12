@@ -115,16 +115,26 @@ class MergeGridGlassPane extends JPanel implements MouseListener, MouseMotionLis
 
 	private boolean handleEventLocally(MouseEvent e)
 	{
-					
+				
 		MergeGrid mg = ((MergeGrid)this.getParent());
 		
 		if (e.isPopupTrigger()) {
-			initPopup(mg.getNonGlassComponentAt(e.getPoint())); // reinit to get rid of old refs
+			initPopup(mg.getNonGlassComponentAt(e.getPoint()),
+					mg.getColumnAt(e.getPoint().x),
+					mg.getRowAt(e.getPoint().y)); // reinit to get rid of old refs
 			popup.show(e.getComponent(),
 					   e.getX(), e.getY());
+			
+			// it's on mouseup
 			draggingComponent = null;
+			iHandleEvents = false;
+			isHorSplitDragging = false;
+			isVertSplitDragging = false;
 			return true;
 		}
+		
+		if (e.getID() == MouseEvent.MOUSE_PRESSED)
+			System.err.println("down in handleEventLocally");
 		
 		if(e.isControlDown() || 
 				iHandleEvents ||
@@ -366,20 +376,16 @@ class MergeGridGlassPane extends JPanel implements MouseListener, MouseMotionLis
 	public static final String VTHREE_MENU = "V Three";
 	public static final String VFOUR_MENU = "V Four";
 	public static final String REMOVE_MENU = "Remove";
+	public static final String DELETE_COLUMN = "Delete Column";
+	public static final String DELETE_ROW = "Delete Row";
 	
 	private boolean canSplit()
 	{
 		return true;
 	}
 	
-	/**
-	 * Override only to completely replace popup menu
-	 * 
-	 * you probably want addAdditionalMenuItems
-	 * 
-	 * 
-	 */
-	protected void initPopup(final Component c)
+
+	protected void initPopup(final Component c, final int col, final int row)
 	{		
 		popup = new JPopupMenu();
 		
@@ -422,6 +428,32 @@ class MergeGridGlassPane extends JPanel implements MouseListener, MouseMotionLis
 			menuItem.addActionListener(this);
 			subMenu.add(menuItem);
 			popup.add(subMenu);
+			
+			if (c == null || !(c instanceof BentoSplitter))
+			{
+				popup.add(new JSeparator());
+				
+				menuItem = new JMenuItem(DELETE_COLUMN);
+				menuItem.addActionListener(new ActionListener(){
+
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						MergeGridGlassPane.this.draggingComponent = null;
+						((MergeGrid)(MergeGridGlassPane.this.getParent())).attemptDeleteColumn(col);
+					}
+				});
+				popup.add(menuItem);
+				menuItem = new JMenuItem(DELETE_ROW);
+				menuItem.addActionListener(new ActionListener(){
+
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						MergeGridGlassPane.this.draggingComponent = null;
+						((MergeGrid)(MergeGridGlassPane.this.getParent())).attemptDeleteRow(row);
+					}
+				});
+				popup.add(menuItem);
+			}
 			
 			if (c instanceof BentoPlugin)
 			{
