@@ -16,8 +16,8 @@
 package org.friendularity.impl.visual;
 
 import org.cogchar.render.sys.registry.RenderRegistryClient;
-import org.friendularity.api.goody.ShapeAnimator;
-import org.friendularity.api.goody.VizShape;
+import org.cogchar.render.goody.dynamic.ShapeAnimator;
+import org.cogchar.render.goody.dynamic.VizShape;
 import org.friendularity.api.west.ThingEstimate;
 import org.friendularity.api.west.StuffEstimate;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
