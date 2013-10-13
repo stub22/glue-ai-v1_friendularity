@@ -28,7 +28,7 @@ import org.appdapter.impl.store.{ModelClientImpl, ResourceResolver};
 
 import org.cogchar.bind.symja.{MathGate, MathSpaceFactory}
 
-import org.friendularity.api.goody.{DynamicGoody, DynamicGoodySpace}
+import org.cogchar.render.goody.dynamic.{DynamicGoody, DynamicGoodySpace}
 
 object RespirationTest extends BasicDebugger {
 	// This is the "Glue_EstimVizDemo" test sheet:
