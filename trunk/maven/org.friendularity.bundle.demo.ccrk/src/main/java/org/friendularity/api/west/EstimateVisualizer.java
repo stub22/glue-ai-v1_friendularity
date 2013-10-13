@@ -16,7 +16,7 @@
 package org.friendularity.api.west;
 
 import org.cogchar.render.sys.registry.RenderRegistryClient;
-import org.friendularity.api.goody.ShapeAnimator;
+import org.cogchar.render.goody.dynamic.ShapeAnimator;
 
 /**
  *

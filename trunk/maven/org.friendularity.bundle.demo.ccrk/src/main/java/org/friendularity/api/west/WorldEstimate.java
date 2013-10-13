@@ -17,8 +17,8 @@ package org.friendularity.api.west;
 
 // import org.cogchar.test.symcalc.ParamChunk;
 import org.cogchar.bind.symja.MathGate;
-import org.friendularity.api.goody.ShapeAnimator;
-import org.friendularity.api.goody.VizShape;
+import org.cogchar.render.goody.dynamic.ShapeAnimator;
+import org.cogchar.render.goody.dynamic.VizShape;
 import java.util.HashSet;
 import java.util.Set;
 import org.appdapter.core.name.Ident;
