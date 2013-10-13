@@ -23,7 +23,7 @@ import org.friendularity.api.west.ThingEstimate;
 import org.friendularity.api.west.WorldEstimate;
 import org.friendularity.api.west.WorldEstimateRenderModule;
 import org.cogchar.bind.midi.FunMidiEventRouter;
-import org.cogchar.test.symcalc.ScriptEngineExperiment;
+// import org.cogchar.test.symcalc.ScriptEngineExperiment;
 import org.friendularity.vworld.VisionDataFeed;
 import org.robokind.api.motion.Robot;
 // import org.robokind.ui.swing.common.lifecycle.ServicesFrame;
@@ -77,7 +77,7 @@ public class CCRK_DemoActivator extends BundleActivatorBase {
 		// New bugs in ScreenBoxImpl are preventing this window from launching.
 		// startWhackamoleGuiWindow(context);
 		
-		ScriptEngineExperiment.main(null);
+		// ScriptEngineExperiment.main(null);
 
 	}
 	protected void startLifecycleMonitorGuiWindow(final BundleContext context) {

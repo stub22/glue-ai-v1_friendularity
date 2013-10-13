@@ -15,7 +15,7 @@
  */
 package org.friendularity.api.west;
 
-import org.cogchar.test.symcalc.ParamChunk;
+// import org.cogchar.test.symcalc.ParamChunk;
 import org.cogchar.bind.symja.MathGate;
 import org.friendularity.api.goody.ShapeAnimator;
 import org.friendularity.api.goody.VizShape;
@@ -43,7 +43,7 @@ public class WorldEstimate extends ThingEstimate {
 
 	public double mult_A = 1.0;
 	
-	public ParamChunk myNumChunk = new ParamChunk.Number(), myTxtChunk = new ParamChunk.Text();
+//	public ParamChunk myNumChunk = new ParamChunk.Number(), myTxtChunk = new ParamChunk.Text();
 	
 	public WorldEstimate(Ident id) {
 		super(id);
