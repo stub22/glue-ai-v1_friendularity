@@ -48,8 +48,7 @@
         <module>../org.friendularity.bundle.messagemonitor</module>
         <module>../org.friendularity.bundle.messageplayer</module>
         <module>../org.friendularity.bundle.test.facedetect.r50</module>
-        <module>../org.friendularity.bundle.ui.swing.animation</module>
-		<module>../org.friendularity.bundle.math</module>		
+        <module>../org.friendularity.bundle.ui.swing.animation</module>	
 		<module>../org.friendularity.bundle.vision</module>
 		<module>../org.friendularity.bundle.jvision</module>
 		<module>../org.friendularity.bundle.blockflow</module>
