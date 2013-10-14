@@ -1,7 +1,7 @@
 package org.friendularity.bundle.demo.liftoff;
 
 import org.appdapter.osgi.core.BundleActivatorBase;
-import org.cogchar.bind.lift.LifterLifecycle;
+import org.cogchar.app.puma.web.LifterLifecycle;
 import org.cogchar.bundle.app.puma.GruesomeTAProcessingFuncs;
 
 import org.osgi.framework.BundleContext;
