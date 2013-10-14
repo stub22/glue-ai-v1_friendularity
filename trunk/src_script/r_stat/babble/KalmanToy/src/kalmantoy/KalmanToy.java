@@ -4,6 +4,8 @@
  */
 package kalmantoy;
 //import org.apache.commons.math3.util.*;
+import java.io.*;
+import java.io.FileOutputStream;
 import org.apache.commons.math3.filter.*;
 import org.apache.commons.math3.linear.*;
 import org.apache.commons.math3.random.*;
@@ -15,10 +17,15 @@ import org.apache.commons.math3.analysis.function.*;
  */
 public class KalmanToy {
 
-
+    /**
+     * @param args the command line arguments
+     */
     // this code is to simulate the closed-loop / semi-supervised learning of a robot
-    public static void main(String[] args) {
+    public static void main(String[] args) throws FileNotFoundException {
         System.out.println("BEGIN The algorithm...");
+        
+          
+        
  //       double constantvalue = 1d;
         double measurementNoise = 0.4;
         double processNoise = 0.5;
@@ -47,7 +54,6 @@ public class KalmanToy {
 // process and measurement noise vectors
         RealVector pNoise = new ArrayRealVector(new double[2]);
         RealVector mNoise = new ArrayRealVector(new double[1]);
-// the u should be a command series set to the 'robot'
         RealVector u = new ArrayRealVector(new double[]{input});
 
         RealVector z = new ArrayRealVector(new double[600]);
@@ -57,10 +63,8 @@ public class KalmanToy {
         double[] erroriter= new double[10];
         Pow po= new Pow();
 
-// the targeted observation S
-
-// iterate 60 time steps
         // simulate the process
+        double[] realstate= new double[600];
         System.out.println("Start Simulation...");
         for (int i = 0; i < 600; i++) {
             
@@ -71,65 +75,38 @@ public class KalmanToy {
 
 // x = A * x + B*u + p_noise
             x = A.operate(x).add(B.operate(u.mapMultiply(1))).add(pNoise);
-
+            realstate[i]=x.getEntry(0);
+            x =x.add(pNoise);
+//System.out.println("after adding pNoise");
 // simulate the measurement
             mNoise.setEntry(0, measurementNoise * rand.nextGaussian());
 
+//System.out.println("after 2nd setEntry");
 // z = H * x + m_noise
             z.setSubVector(i, H.operate(x).add(mNoise));
             s.setEntry(i, x.getEntry(0));
         }
-        System.out.println("Start Iterative EM algorithm...");
-        for (int iter = 0; iter < 4; iter++) {
-// E-step as kalman filter
+        System.out.println("Use Kalman filter as predictor...");
+ 
         RealMatrix R1 = new Array2DRowRealMatrix(new double[2][2]);
         RealMatrix R0 = new Array2DRowRealMatrix(new double[2][2]);
         RealMatrix Rxy = new Array2DRowRealMatrix(new double[2][1]);
         filter.predict();
         filter.correct(z.getSubVector(0, 1));
+        // initialized with some prior knowledge
+        
+       File file = new File("test.txt");  
+        FileOutputStream fis = new FileOutputStream(file);  
+        PrintStream out = new PrintStream(fis);
+        System.setOut(out); 
         x1 = filter.getStateEstimation();
             for (int i = 1; i < 600; i++) {
                 filter.predict();
+                //when observation Zk is available
                 filter.correct(z.getSubVector(i, 1));
-
-// compute the Rxx(0) and Rxx(1)
-                RealVector tmpx1 = new ArrayRealVector(filter.getStateEstimation());
-                RealMatrix tmpR1 = tmpx1.outerProduct(new ArrayRealVector(x1));
-                R1 = R1.add(tmpR1);
-                RealMatrix tmpR0 = tmpx1.outerProduct(tmpx1);
-                R0 = R0.add(tmpR0);
-
-// compute the Rxy(0)
-                RealMatrix tmpRxy1 = tmpx1.outerProduct(z.getSubVector(i, 1));
-                Rxy = Rxy.add(tmpRxy1);
                 x1 = filter.getStateEstimation();
-
-                //for(int ii=0; ii<filter.getStateEstimation().length ;ii++ )
-                  
-                //error of underlying state
-                erroriter[iter] += po.value(filter.getStateEstimation()[0]-s.getEntry(i),2);
-                
-            }
-            System.out.println(erroriter[iter]/600);
-// M-step: update A and Q with AR model
-// A= R(1)/R(0), Q= E(X(t)*e(t))= R(0)+a*R(1)- (B*u)'*(B*u)
-            RealMatrix R0Inverse = new LUDecomposition(R0).getSolver().getInverse();
-            A = R1.multiply(R0Inverse);
-            Q = R0.add(A.multiply(R1)).subtract(B.multiply(B.transpose()).scalarMultiply(input * input));
-
-// M-step: update H and R with regression method
-// H = inv(Rxx)* Rxy, R= Rxy(0)-h*Rxx(0)
-            H = R0Inverse.multiply(Rxy);
-            H = H.transpose();
-            // haven't finish this equation, R=...
-            
-            //System.out.println(H.getColumn(0)[1]);
-//Update the parameter
-        pm = new DefaultProcessModel(A, B, Q, x, P0);
-        mm = new DefaultMeasurementModel(H, R);
-        filter = new KalmanFilter(pm, mm);
-        }
-    }//end of the EM algorithm
-    
-// choose the input u in order to minimize E[(s-z)^2]
+                //plot the real value and estimated value
+                System.out.println(realstate[i]+" "+x1[0]);             
+            }      
+    }
 }
