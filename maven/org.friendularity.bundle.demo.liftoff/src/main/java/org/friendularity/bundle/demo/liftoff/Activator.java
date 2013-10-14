@@ -25,7 +25,7 @@ public class Activator extends BundleActivatorBase {
         OSGiComponent lifterComp = new OSGiComponent(context, lifecycle);
         lifterComp.start();
     }
-	
+
 	public void setupRepoUpdateCallback() {
 		/**
 		 * This is a giant hack around the topic of properly notifying our VWorld (or any other aspect of Cogchar)
