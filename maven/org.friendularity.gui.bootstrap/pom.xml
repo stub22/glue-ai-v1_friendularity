@@ -31,7 +31,7 @@
         </dependency>
         <dependency>
             <groupId>org.cogchar</groupId>
-            <artifactId>org.cogchar.lib.core</artifactId>
+            <artifactId>org.cogchar.lib.core.api</artifactId>
             <version>${cogchar.version}</version>
         </dependency>
         <dependency>
