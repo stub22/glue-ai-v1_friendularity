@@ -55,6 +55,7 @@
         <module>../org.friendularity.bundle.bento</module>
 		<module>../org.friendularity.bundle.sight</module>
 		<module>../org.friendularity.bundle.gaze</module>
+        <module>../org.friendularity.bundle.math</module>
 <!--
 		<module>../org.friendularity.demo.egosphere</module>
 -->
