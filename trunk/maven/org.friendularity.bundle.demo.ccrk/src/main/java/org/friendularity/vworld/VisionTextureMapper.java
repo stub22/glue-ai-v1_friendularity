@@ -48,8 +48,9 @@ import org.cogchar.render.sys.registry.RenderRegistryClient;
 import org.cogchar.render.opengl.scene.DeepSceneMgr;
 
 import org.appdapter.core.log.BasicDebugger;
+import org.friendularity.jvision.broker.ImageStreamBroker;
 
-import org.friendularity.jvision.engine.Displayer;
+import org.friendularity.jvision.broker.ImageStreamConsumer;
 import org.friendularity.jvision.engine.JVisionEngine;
 
 
@@ -57,7 +58,7 @@ import org.friendularity.jvision.engine.JVisionEngine;
  *
  * @author Owner
  */
-public class VisionTextureMapper extends BasicDebugger implements Displayer {
+public class VisionTextureMapper extends BasicDebugger implements ImageStreamConsumer {
 
 	private static final String TOGGLE_UPDATE = "Toggle Update";
 	private Geometry myOffscreenBoxGeom, myOnscreenBoxGeom;
@@ -119,7 +120,8 @@ public class VisionTextureMapper extends BasicDebugger implements Displayer {
 	//	myOffscreenBoxGeom.setMaterial(material);
     myOffscreenBoxGeom.setMaterial(mCameraMaterial);
     // TBD ANNIE this is probably horribly the wrong place for this
-    JVisionEngine.getDefaultJVisionEngine().addDisplayer(this); 
+    ImageStreamBroker.getDefaultImageStreamBroker().addImageStreamConsumer(
+				JVisionEngine.JVISION_IS_NAME, this);
 
 		// attach the scene to the viewport to be rendered
 		myOffscrenViewport.attachScene(myOffscreenBoxGeom);
@@ -166,7 +168,7 @@ public class VisionTextureMapper extends BasicDebugger implements Displayer {
 	}
 
   @Override
-  public void setDisplayedImage(BufferedImage img) {
+  public void setConsumedImage(BufferedImage img) {
     
     AWTLoader awtLoader = new AWTLoader();
 	// CAUTION - this can alter img!
@@ -179,9 +181,14 @@ public class VisionTextureMapper extends BasicDebugger implements Displayer {
   }
 
   @Override
-  public void setFramerateMessage(String string) {
+  public void setConsumedMessage(String string) {
      
    }
+
+	@Override
+	public void sourceIsEnding() {
+		
+	}
   
    
 }

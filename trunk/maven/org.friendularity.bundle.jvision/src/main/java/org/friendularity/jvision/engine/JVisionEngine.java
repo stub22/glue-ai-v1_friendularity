@@ -17,8 +17,6 @@ package org.friendularity.jvision.engine;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
-import java.util.ArrayList;
-import java.util.Iterator;
 import org.friendularity.jvision.filters.FilterSequence;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
@@ -26,6 +24,8 @@ import org.opencv.core.Mat;
 import org.opencv.highgui.Highgui;
 import org.opencv.highgui.VideoCapture;
 import org.appdapter.core.log.BasicDebugger;
+import org.friendularity.jvision.broker.ImageStreamBroker;
+import org.friendularity.jvision.broker.SimpleImageStreamProducer;
 import org.friendularity.jvision.gui.FileLocations;
 import org.opencv.imgproc.Imgproc;
 
@@ -35,11 +35,15 @@ import org.opencv.imgproc.Imgproc;
  */
 public class JVisionEngine extends BasicDebugger implements Runnable {
 
+	public static final String JVISION_IS_NAME = "jvision";
+	
 	private static JVisionEngine sDefaultJVisionEngine = null;
 	private VideoCapture myVidCapture;
 	private Mat myCameraImage_Mat;
 	private FilterSequence myFilterSeq;
-	private ArrayList<Displayer> myDisplayerList = new ArrayList<Displayer>();
+	private SimpleImageStreamProducer myISP = new SimpleImageStreamProducer(JVISION_IS_NAME);
+	// when starbucks closed I was here, removing myDisplayerList Annie
+	// private ArrayList<ImageStreamConsumer> myDisplayerList = new ArrayList<ImageStreamConsumer>();
 	private Quitter myQuitter;
 	private long mLastFrameTime = 0l;
 	
@@ -55,14 +59,12 @@ public class JVisionEngine extends BasicDebugger implements Runnable {
 
 	private JVisionEngine() {
 		super();
+		
+		ImageStreamBroker.getDefaultImageStreamBroker().addImageStreamProducer(myISP);
 	}
 
 	public FilterSequence getFilterSeq() {
 		return myFilterSeq;
-	}
-
-	public synchronized void addDisplayer(Displayer d) {
-		myDisplayerList.add(d);
 	}
 
 	public void setQuitter(Quitter q) {
@@ -152,24 +154,43 @@ public class JVisionEngine extends BasicDebugger implements Runnable {
 		 [java] 	at org.friendularity.jvision.engine.JVisionEngine.processOneFrame(JVisionEngine.java:113)
 		 */
 		
-		for (Iterator<Displayer> i = myDisplayerList.iterator(); i.hasNext();) {
+		if(myISP.hasConsumers())
+		{
+			try
+			{
+				myISP.setConsumedImage(matToBufferedImage(filtered_camera_image));
+			} catch(IllegalArgumentException e) {
+				getLogger().warn("Could not create BufferedImage (usually height/width zero)");
+			}
+		}
+		
+		/* TBD - bet this issue reappears
+		for (Iterator<ImageStreamConsumer> i = myDisplayerList.iterator(); i.hasNext();) {
 			if (frame_as_buffered_image == null) {
 				frame_as_buffered_image = matToBufferedImage(filtered_camera_image);
 			}
-			i.next().setDisplayedImage(frame_as_buffered_image);
+			i.next().setConsumedImage(frame_as_buffered_image);
 		}
+		*/
 
 		long new_t = System.nanoTime();
 
 		double ns = (new_t - t) / 1000000000.0;  // frametime in sec
 		double rate = 1.0 / ns;
 		double totalRate = 1.0 / ((new_t - mLastFrameTime) / 1000000000.0);
-		for (Iterator<Displayer> i = myDisplayerList.iterator(); i.hasNext();) {
-			i.next().setFramerateMessage(String.format("%4.0f msec/frame, %5.1f frames per second (%5.1f fps actual)",
+		/*
+		for (Iterator<ImageStreamConsumer> i = myDisplayerList.iterator(); i.hasNext();) {
+			i.next().setConsumedMessage(String.format("%4.0f msec/frame, %5.1f frames per second (%5.1f fps actual)",
 					(1000.0 * ns),
 					rate,
 					totalRate));
 		}
+		*/
+		myISP.setConsumedMessage(String.format("%4.0f msec/frame, %5.1f frames per second (%5.1f fps actual)",
+					(1000.0 * ns),
+					rate,
+					totalRate));
+		
 		mLastFrameTime = new_t;
 
 		Thread.yield();

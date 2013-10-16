@@ -498,8 +498,12 @@ public class MergeGrid extends JPanel {
 		}
 		
 		myCells = newCells;
-		this.remove(this.getColSplitter(col));
+		HorBentoSplitter sp = this.getColSplitter(col);
+		colsplitters.remove(sp); // ANNIE - just did this, off to lunch with Shakti
+		this.remove(sp);
+
 		columns.remove(col);
+		
 		
 		for(int i = 0 ; i < columns.size() ; i++)
 			columns.set(i, columns.get(i) + amountToHandOut);
@@ -551,7 +555,9 @@ public class MergeGrid extends JPanel {
 		}
 		
 		myCells = newCells;
-		this.remove(this.getRowSplitter(row));
+		VertBentoSplitter sp = this.getRowSplitter(row);
+		rowsplitters.remove(sp);
+		this.remove(sp);
 		rows.remove(row);
 		
 		for(int i = 0 ; i < rows.size() ; i++)
