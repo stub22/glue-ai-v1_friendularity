@@ -24,14 +24,14 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-import org.friendularity.jvision.engine.Displayer;
+import org.friendularity.jvision.broker.ImageStreamConsumer;
 import org.friendularity.jvision.engine.JVisionEngine;
 import org.friendularity.jvision.engine.Quitter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-public class DemoFrame extends JFrame implements WindowListener, Displayer {
+public class DemoFrame extends JFrame implements WindowListener, ImageStreamConsumer {
 	static Logger theLogger = LoggerFactory.getLogger(DemoFrame.class);
 	/**
 	 * 
@@ -89,12 +89,12 @@ public class DemoFrame extends JFrame implements WindowListener, Displayer {
 		this.myBackupFilterSeq = filters;		
 	}
 
-	@Override public void setDisplayedImage(BufferedImage img){
+	@Override public void setConsumedImage(BufferedImage img){
 		myImageOutIcon.setImage(img);
 		this.repaint();
 	}
 	
-	@Override public void setFramerateMessage(String string) {
+	@Override public void setConsumedMessage(String string) {
 		myLabel_Framerate.setText(string);
 	}
 	
@@ -334,6 +334,11 @@ public class DemoFrame extends JFrame implements WindowListener, Displayer {
 			}
 		});
 		*/		
+	}
+
+	@Override
+	public void sourceIsEnding() {
+		
 	}
 
 

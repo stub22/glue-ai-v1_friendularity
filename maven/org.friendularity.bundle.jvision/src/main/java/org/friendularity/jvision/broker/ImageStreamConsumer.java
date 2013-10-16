@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.friendularity.jvision.engine;
+package org.friendularity.jvision.broker;
 
 import java.awt.image.BufferedImage;
 
@@ -21,7 +21,9 @@ import java.awt.image.BufferedImage;
  *
  * @author Owner
  */
-public interface Displayer {
-	public void setDisplayedImage(BufferedImage img);
-	public void setFramerateMessage(String string);	
+public interface ImageStreamConsumer {
+	public void setConsumedImage(BufferedImage img);
+	public void setConsumedMessage(String string);	
+
+	public void sourceIsEnding();
 }

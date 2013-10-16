@@ -23,16 +23,20 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.Stroke;
 import java.awt.image.BufferedImage;
-import javax.swing.JSplitPane;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.friendularity.bundle.bento.util.Bento_OSGi_ResourceLoader;
+import org.friendularity.jvision.broker.ImageStreamBroker;
 
-import org.friendularity.jvision.engine.Displayer;
+import org.friendularity.jvision.broker.ImageStreamConsumer;
 import org.friendularity.jvision.engine.JVisionEngine;
 
 /**
  *
  * @author Annie
  */
-public class CameraViewer extends BentoPlugin  implements Displayer {
+public class CameraViewer extends BentoPlugin  implements ImageStreamConsumer {
 
 	private BufferedImage mImage = null;
 	private String mFrameMessage = "";
@@ -51,12 +55,14 @@ public class CameraViewer extends BentoPlugin  implements Displayer {
 		this.setMinimumSize(new Dimension(160, 120));
 		this.setLayout(null);
 		this.setSize(new Dimension(640, 480));
-		JVisionEngine.getDefaultJVisionEngine().addDisplayer(this);
+
+		ImageStreamBroker.getDefaultImageStreamBroker().addImageStreamConsumer(
+				JVisionEngine.JVISION_IS_NAME, this);
 	}
 
 	@Override
 	protected void paintBorder(Graphics g) {
-		super.paintBorder(g); 
+	/*	super.paintBorder(g); 
 		
 		Graphics2D g2 = (Graphics2D)g;
 		
@@ -78,14 +84,18 @@ public class CameraViewer extends BentoPlugin  implements Displayer {
 				(int)(this.getWidth() * Math.random()), (int)(this.getHeight() * Math.random()));
 		
 		g2.setStroke(s);
-		g2.setColor(c);
+		g2.setColor(c);   */
 	}
 	
 	
 
 	@Override
 	protected void paintComponent(Graphics g) {
-		super.paintComponent(g); 
+		// super.paintComponent(g); 
+		
+		g.setColor(Color.DARK_GRAY);
+		Rectangle vis = this.getVisibleRect();
+		g.fillRect(vis.x, vis.y, vis.width, vis.height);
 		
 		if(mImage != null)
 		{
@@ -112,14 +122,14 @@ public class CameraViewer extends BentoPlugin  implements Displayer {
 	
 
 	@Override
-	public void setDisplayedImage(BufferedImage img) {
+	public void setConsumedImage(BufferedImage img) {
 		mImage = img;
 		
 		this.repaint();
 	}
 
 	@Override
-	public void setFramerateMessage(String string) {
+	public void setConsumedMessage(String string) {
 		mFrameMessage = string;
 	}
 
@@ -147,5 +157,14 @@ public class CameraViewer extends BentoPlugin  implements Displayer {
 		
 		destRect.x = layoutArea.x + layoutArea.width / 2 - destRect.width / 2;
 		destRect.y = layoutArea.y + layoutArea.height / 2 - destRect.height / 2;
+	}
+
+	@Override
+	public void sourceIsEnding() {
+		try {
+			mImage = Bento_OSGi_ResourceLoader.getDefaultImageLoader().getImageResource("/img/testpattern.png");
+		} catch (IOException ex) {
+			Logger.getLogger(CameraViewer.class.getName()).log(Level.SEVERE, null, ex);
+		}
 	}
 }

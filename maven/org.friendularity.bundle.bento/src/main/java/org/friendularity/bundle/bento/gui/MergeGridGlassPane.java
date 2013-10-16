@@ -26,10 +26,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.ImageIcon;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
@@ -42,7 +40,7 @@ import org.friendularity.bundle.bento.util.Bento_OSGi_ResourceLoader;
  *
  * @author Annie
  */
-class MergeGridGlassPane extends JPanel implements MouseListener, MouseMotionListener, ActionListener {
+class MergeGridGlassPane extends JPanel implements MouseListener, MouseMotionListener {
 	private boolean iHandleEvents = false;
 
 	public MergeGridGlassPane() {
@@ -71,6 +69,17 @@ class MergeGridGlassPane extends JPanel implements MouseListener, MouseMotionLis
 			g2.setColor(new Color(128, 128,128, 128));
 			g2.fillRect(0, curVertSplitterWidgetY, this.getWidth(), MergeGrid.SEPARATOR_HEIGHT);
 		}
+		
+/*
+		g2.setColor(Color.red);
+		String[] s = debugStr.split(":");
+		int yy = this.getHeight() / 2;
+		for(int i = 0; i <s.length ; i++)
+		{
+			g2.drawString(s[i], this.getWidth() / 2, yy);
+			yy += 16;
+		}
+		*/
 	}
 
 	@Override
@@ -133,9 +142,6 @@ class MergeGridGlassPane extends JPanel implements MouseListener, MouseMotionLis
 			return true;
 		}
 		
-		if (e.getID() == MouseEvent.MOUSE_PRESSED)
-			System.err.println("down in handleEventLocally");
-		
 		if(e.isControlDown() || 
 				iHandleEvents ||
 				mg.isLastRowOrColumnSplitter(mg.getNonGlassComponentAt(e.getPoint())))
@@ -167,7 +173,7 @@ class MergeGridGlassPane extends JPanel implements MouseListener, MouseMotionLis
 	private Component draggingComponent = null;
 	
 	private void redispatchEvent(MouseEvent e) {
-		if(handleEventLocally(e))
+		if(debugEvent(e, handleEventLocally(e)))
 			return;
 		
 		MergeGrid mg = ((MergeGrid)this.getParent());
@@ -389,14 +395,20 @@ class MergeGridGlassPane extends JPanel implements MouseListener, MouseMotionLis
 	{		
 		popup = new JPopupMenu();
 		
-		// @TODO change all to anonymous ActionListener handlers, we don't want to get the actions
-		// for things the plugin adds
 
-		try {
-			JMenu subMenu = new JMenu("Hor. Split");
+		JMenuItem menuItem;
+		JMenu subMenu;
+		
+			/*			
+		try {		
+		// @TODO if you reenable this
+		// change all to anonymous ActionListener handlers, we don't want to get the actions
+		// for things the plugin adds
+		* 
+			subMenu = new JMenu("Hor. Split");
 			ImageIcon ii = new ImageIcon(
 					Bento_OSGi_ResourceLoader.getDefaultImageLoader().getImageResource("/img/twohor.png"));
-			JMenuItem menuItem = new JMenuItem(HTWO_MENU, ii);
+			menuItem = new JMenuItem(HTWO_MENU, ii);
 			menuItem.addActionListener(this);
 			subMenu.add(menuItem);
 			ii = new ImageIcon(
@@ -428,11 +440,17 @@ class MergeGridGlassPane extends JPanel implements MouseListener, MouseMotionLis
 			menuItem.addActionListener(this);
 			subMenu.add(menuItem);
 			popup.add(subMenu);
-			
-			if (c == null || !(c instanceof BentoSplitter))
+
+		} catch (IOException ex) {
+			Logger.getLogger(MergeGridGlassPane.class.getName()).log(Level.SEVERE, null, ex);
+		}	
+		*/		
+		if (c == null || !(c instanceof BentoSplitter))
+		{
+			popup.add(new JSeparator());
+
+			if (((MergeGrid)(MergeGridGlassPane.this.getParent())).getNumColumns() > 1)
 			{
-				popup.add(new JSeparator());
-				
 				menuItem = new JMenuItem(DELETE_COLUMN);
 				menuItem.addActionListener(new ActionListener(){
 
@@ -443,6 +461,10 @@ class MergeGridGlassPane extends JPanel implements MouseListener, MouseMotionLis
 					}
 				});
 				popup.add(menuItem);
+			}
+			
+			if(((MergeGrid)(MergeGridGlassPane.this.getParent())).getNumRows() > 1)
+			{
 				menuItem = new JMenuItem(DELETE_ROW);
 				menuItem.addActionListener(new ActionListener(){
 
@@ -454,51 +476,37 @@ class MergeGridGlassPane extends JPanel implements MouseListener, MouseMotionLis
 				});
 				popup.add(menuItem);
 			}
-			
-			if (c instanceof BentoPlugin)
-			{
-				popup.add(new JSeparator());
-				
-				menuItem = new JMenuItem(REMOVE_MENU);
-				menuItem.addActionListener(new ActionListener(){
+		}
 
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						draggingComponent = null;
-						((BentoPlugin)c).removeFromMergeGrid();
-					}
-				});
-				
-				popup.add(menuItem);
-			}
-			
-			if (c == null)
-			{
-				popup.add(new JSeparator());
-				
-				menuItem = new JMenuItem("this will be the add");
-				popup.add(menuItem);
-			}
-		} catch (IOException ex) {
-			Logger.getLogger(MergeGridGlassPane.class.getName()).log(Level.SEVERE, null, ex);
+		if (c instanceof BentoPlugin)
+		{
+			popup.add(new JSeparator());
+
+			menuItem = new JMenuItem(REMOVE_MENU);
+			menuItem.addActionListener(new ActionListener(){
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					draggingComponent = null;
+					((BentoPlugin)c).removeFromMergeGrid();
+				}
+			});
+
+			popup.add(menuItem);
+		}
+
+		if (c == null)
+		{
+			popup.add(new JSeparator());
+
+			menuItem = new JMenuItem("this will be the add");
+			popup.add(menuItem);
 		}
 		
 		if (c instanceof BentoPlugin)
 		{
 			((BentoPlugin)c).addAdditionalMenuItems(popup);
 		}
-	}
-	
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		handleActions(e);
-	}
-	
-		
-	protected void handleActions(ActionEvent e)
-	{
-		System.err.println(e.getActionCommand());
-		//containingBox().doCommand(this, e.getActionCommand());
 	}
 	
    private JPopupMenu popup;
@@ -514,5 +522,22 @@ class MergeGridGlassPane extends JPanel implements MouseListener, MouseMotionLis
    {
 	   return popup;
    }
+
+   private String debugStr = "";
+   /**
+	* print 
+	* @param handleEventLocally
+	* @return 
+	*/
+	private boolean debugEvent(MouseEvent e, boolean handledLocally) {
+		debugStr = e.toString() + ":";
+		if(iHandleEvents)debugStr += "iHandleEvents:";
+		if(isHorSplitDragging)debugStr += "isHorSplitDragging:";
+		if(isVertSplitDragging)debugStr += "isVertSplitDragging:";
+		if(draggingComponent != null)debugStr += draggingComponent.getClass().getSimpleName();
+				
+		this.repaint(50L);
+		return handledLocally;
+	}
 
 }

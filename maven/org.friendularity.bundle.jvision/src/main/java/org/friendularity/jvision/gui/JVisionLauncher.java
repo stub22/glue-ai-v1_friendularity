@@ -1,6 +1,7 @@
 package org.friendularity.jvision.gui;
 
 import org.appdapter.core.log.BasicDebugger;
+import org.friendularity.jvision.broker.ImageStreamBroker;
 import org.friendularity.jvision.engine.JVisionEngine;
 import org.friendularity.jvision.engine.Quitter;
 
@@ -36,7 +37,9 @@ public class JVisionLauncher extends BasicDebugger implements Quitter {
 		if (connectedOK) {
 			FilterSequence fseq = myEngine.getFilterSeq();
 			myDemoFrame.setControlledFilterSequence(fseq);
-			myEngine.addDisplayer(myDemoFrame);
+			ImageStreamBroker.getDefaultImageStreamBroker().addImageStreamConsumer(
+					JVisionEngine.JVISION_IS_NAME, myDemoFrame);
+
 			myEngine.setQuitter(this);
 			return startThread();
 		} else {
