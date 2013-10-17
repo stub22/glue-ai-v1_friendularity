@@ -16,6 +16,8 @@
 package org.friendularity.jvision.broker;
 
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -36,22 +38,55 @@ public class ImageStreamBroker {
 	
 	public void addImageStreamProducer(ImageStreamProducer isp)
 	{
-		if(imageStreams.containsKey(isp.getSourceName()))
-			throw new IllegalArgumentException("Image Stream " + isp.getSourceName() + " already exists");
-		
-		imageStreams.put(isp.getSourceName(), isp);
+		synchronized(imageStreams)
+		{
+			if(imageStreams.containsKey(isp.getSourceName()))
+				throw new IllegalArgumentException("Image Stream " + isp.getSourceName() + " already exists");
+
+			imageStreams.put(isp.getSourceName(), isp);
+			imageStreams.notifyAll();
+		}
 	}
 	
 	public void removeImageStreamProducer(String name)
 	{
-		imageStreams.get(name).removeAllConsumers();
-		imageStreams.remove(name);
+		synchronized(imageStreams)
+		{
+			imageStreams.get(name).removeAllConsumers();
+			imageStreams.remove(name);
+			imageStreams.notifyAll();
+		}
 	}
 	
 	public void addImageStreamConsumer(String name, ImageStreamConsumer isc)
 	{
-		ImageStreamProducer isp = imageStreams.get(name);
+		synchronized(imageStreams)
+		{
+			ImageStreamProducer isp = imageStreams.get(name);
+
+			isp.addConsumer(isc);
+		}
+	}
+	
+	public void waitAndAddImageStreamConsumer(String name, ImageStreamConsumer isc)
+	{
+		ImageStreamProducer isp;
 		
+		synchronized(imageStreams)
+		{
+			isp = imageStreams.get(name);
+
+			while(isp == null)
+			{
+				try {
+					Logger.getLogger(ImageStreamBroker.class.getName()).log(Level.INFO, "Waiting for stream " + name);
+					imageStreams.wait(1000L);
+				} catch (InterruptedException ex) {
+					Logger.getLogger(ImageStreamBroker.class.getName()).log(Level.SEVERE, null, ex);
+				}
+				isp = imageStreams.get(name);
+			}
+		}
 		isp.addConsumer(isc);
 	}
 }
