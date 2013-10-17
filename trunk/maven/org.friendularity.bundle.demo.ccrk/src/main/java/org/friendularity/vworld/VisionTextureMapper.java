@@ -120,7 +120,7 @@ public class VisionTextureMapper extends BasicDebugger implements ImageStreamCon
 	//	myOffscreenBoxGeom.setMaterial(material);
     myOffscreenBoxGeom.setMaterial(mCameraMaterial);
     // TBD ANNIE this is probably horribly the wrong place for this
-    ImageStreamBroker.getDefaultImageStreamBroker().addImageStreamConsumer(
+    ImageStreamBroker.getDefaultImageStreamBroker().waitAndAddImageStreamConsumer(
 				JVisionEngine.JVISION_IS_NAME, this);
 
 		// attach the scene to the viewport to be rendered
