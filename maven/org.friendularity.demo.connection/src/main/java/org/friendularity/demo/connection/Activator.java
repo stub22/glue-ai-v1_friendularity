@@ -3,11 +3,16 @@ package org.friendularity.demo.connection;
 
 import org.friendularity.spec.connection.ConnectionWiring;
 import java.util.List;
-import org.cogchar.outer.behav.demo.RepoConnector;
+
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
-import org.appdapter.core.matdat.*;
+import org.appdapter.core.matdat.OnlineSheetRepoSpec;
+import org.appdapter.core.matdat.EnhancedRepoClient;
+import org.appdapter.core.store.Repo;
+import org.cogchar.impl.scene.read.BehavMasterConfigTest;
+
+
 import org.cogchar.platform.util.ClassLoaderUtils;
 import org.rwshop.swing.common.lifecycle.ServicesFrame;
 
@@ -33,9 +38,15 @@ public class Activator implements BundleActivator {
                 new OnlineSheetRepoSpec(
                 "0AsAJ7pzOB_F2dGlOTmxWVlQ2cVhRR1RjdE53cjF5VkE", 1, 2,
                 classloaders);
-        RepoConnector rc = new RepoConnector();
-        EnhancedRepoClient enhancedRepoSpec =
-                rc.connectDemoRepoClient(repoSpec);
+		
+       // It is inappropriate to instantiate this object as a general piece
+		// of test infrastructure.  Without this crutch, there is no need
+		// for a dependence on o.c.lib.outer.behavior.    
+		//          RepoConnector rc = new RepoConnector();
+		//       rc.connectDemoRepoClient(repoSpec);
+        Repo.WithDirectory bmcMemoryRepoHandle = repoSpec.makeRepo();
+		EnhancedRepoClient enhancedRepoSpec = new EnhancedRepoClient(repoSpec, bmcMemoryRepoHandle, 
+					BehavMasterConfigTest.TGT_GRAPH_SPARQL_VAR(), BehavMasterConfigTest.QUERY_SOURCE_GRAPH_QN());    
         
         //Extender listens for specs and creates lifecycles
         ConnectionWiring.startSpecExtender(context, null);

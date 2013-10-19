@@ -45,6 +45,7 @@
 			<artifactId>com.springsource.org.apache.log4j</artifactId>
 			<version>1.2.16</version>		
 		</dependency>
+	
         <dependency>
             <groupId>org.rwshop</groupId>
             <artifactId>org.rwshop.swing.common</artifactId>
@@ -52,7 +53,7 @@
         </dependency>
         <dependency>
 			<groupId>org.cogchar</groupId>
-			<artifactId>org.cogchar.lib.outer.behavior</artifactId>
+			<artifactId>org.cogchar.bundle.core</artifactId>
 			<version>${cogchar.version}</version>
 		</dependency>
         <dependency>
