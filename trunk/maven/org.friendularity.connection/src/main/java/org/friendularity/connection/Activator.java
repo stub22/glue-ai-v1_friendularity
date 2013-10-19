@@ -3,11 +3,17 @@ package org.friendularity.connection;
 
 import java.util.List;
 import javax.swing.UIManager;
-import org.cogchar.outer.behav.demo.RepoConnector;
+// import org.cogchar.outer.behav.demo.RepoConnector;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
-import org.appdapter.core.matdat.*;
+// import org.appdapter.core.matdat.*;
+
+import org.appdapter.core.matdat.OnlineSheetRepoSpec;
+import org.appdapter.core.matdat.EnhancedRepoClient;
+import org.appdapter.core.store.Repo;
+import org.cogchar.impl.scene.read.BehavMasterConfigTest;
+
 import org.cogchar.platform.util.ClassLoaderUtils;
 import org.friendularity.spec.connection.ServiceManagerWiring;
 import org.rwshop.swing.common.lifecycle.ServicesFrame;
@@ -53,9 +59,14 @@ public class Activator implements BundleActivator {
                     9,
                     8,
                     classloaders);
-        RepoConnector rc = new RepoConnector();
-        EnhancedRepoClient enhancedRepoSpec =
-                rc.connectDemoRepoClient(repoSpec);
+		
+       // RepoConnector rc = new RepoConnector();
+        //EnhancedRepoClient enhancedRepoSpec =  rc.connectDemoRepoClient(repoSpec);
+
+		Repo.WithDirectory bmcMemoryRepoHandle = repoSpec.makeRepo();
+		EnhancedRepoClient enhancedRepoSpec = new EnhancedRepoClient(repoSpec, bmcMemoryRepoHandle, 
+					BehavMasterConfigTest.TGT_GRAPH_SPARQL_VAR(), BehavMasterConfigTest.QUERY_SOURCE_GRAPH_QN());    
+		
 
         
         // Load the specs from the repo, and register them with JFlux
