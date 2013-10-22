@@ -15,7 +15,7 @@ import org.appdapter.core.store.Repo;
 import org.cogchar.impl.scene.read.BehavMasterConfigTest;
 
 import org.cogchar.platform.util.ClassLoaderUtils;
-import org.friendularity.spec.connection.ServiceManagerWiring;
+import org.cogchar.bundle.temp.wire.ServiceManagerWiring;
 import org.rwshop.swing.common.lifecycle.ServicesFrame;
 
 /**
