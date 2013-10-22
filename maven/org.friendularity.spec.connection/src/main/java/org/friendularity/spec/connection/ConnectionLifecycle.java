@@ -40,7 +40,8 @@ import org.jflux.api.service.ServiceDependency;
  * @author Jason R. Eads <eadsjr>
  */
 public class ConnectionLifecycle implements ServiceLifecycle<Connection> {
-    private final static Logger theLogger = Logger.getLogger(ConnectionLifecycle.class.getName());
+    private final static Logger theLogger = Logger.getLogger(
+            ConnectionLifecycle.class.getName());
     /**
      * This is the format string for Advanced Message Queuing Protocol (AMQP).
      * AMQP is a language agnostic implementation similar to Java Messaging
@@ -48,7 +49,8 @@ public class ConnectionLifecycle implements ServiceLifecycle<Connection> {
      *
      * This is used to make a connection to the QPID server.
      */
-    private final static String theAMQPFormatString = "amqp://%s:%s@%s/%s?brokerlist='%s'";
+    private final static String theAMQPFormatString = 
+            "amqp://%s:%s@%s/%s?brokerlist='%s'";
 
     /**
      * This formats the address to properly extend the ampqURL.
@@ -58,13 +60,19 @@ public class ConnectionLifecycle implements ServiceLifecycle<Connection> {
     /**
      * This provides the classnames for use in JFlux.
      */
-    private final static String[] theClassNameArray = new String[]{Connection.class.getName()};
+    private final static String[] theClassNameArray = 
+            new String[]{Connection.class.getName()};
     
     /**
      * This provides the dependencies which JFlux will provide.
      */
     private final static ServiceDependency[] theDependencyArray = {
-        new ServiceDependency("ConnectionSpec", ConnectionSpec.class.getName(), ServiceDependency.Cardinality.MANDATORY_UNARY, ServiceDependency.UpdateStrategy.STATIC, Collections.EMPTY_MAP)
+        new ServiceDependency(
+            "ConnectionSpec",
+            ConnectionSpec.class.getName(), 
+            ServiceDependency.Cardinality.MANDATORY_UNARY,
+            ServiceDependency.UpdateStrategy.STATIC,
+            Collections.EMPTY_MAP)
     };
     
     /**
@@ -154,7 +162,13 @@ public class ConnectionLifecycle implements ServiceLifecycle<Connection> {
      * @return Returns the service.
      */
     @Override
-    public Connection handleDependencyChange(Connection service, String changeType, String dependencyName, Object dependency, Map<String,Object> availableDependencies) {
+    public Connection handleDependencyChange(
+            Connection service, 
+            String changeType, 
+            String dependencyName,
+            Object dependency, 
+            Map<String,Object> availableDependencies) {
+        
         /**
          * If the spec is lost, tear down the service.
          */
@@ -162,12 +176,14 @@ public class ConnectionLifecycle implements ServiceLifecycle<Connection> {
             this.disposeService(service, availableDependencies);
             return null;
         }
+        
         /**
          * If the spec becomes available, build the connection.
          */
         else if( changeType.equals(ServiceLifecycle.PROP_DEPENDENCY_AVAILABLE) ) {
             return this.createService(availableDependencies);
         }
+        
         /**
          * If the spec has changed, attempt to handle the change.
          * As the Connection object does not allow fine-grain changes, re-create it.

@@ -37,7 +37,7 @@ import org.apache.qpid.url.URLSyntaxException;
  * object to gracefully handle changes in its environment. This example is not,
  * instead providing an example of the extender pattern approach.
  * 
- * @author Jason R. Eads <eadsjr>
+ * @author Jason R. Eads <jeads362@gmail.com>
  */
 public class ConnectionLifecycle implements ServiceLifecycle<Connection> {
     private final static Logger theLogger = Logger.getLogger(ConnectionLifecycle.class.getName());
