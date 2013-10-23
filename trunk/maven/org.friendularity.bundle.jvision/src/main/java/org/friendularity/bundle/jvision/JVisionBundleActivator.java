@@ -9,6 +9,9 @@ import org.osgi.framework.BundleContext;
 public class JVisionBundleActivator extends BundleActivatorBase {
 
 	JVisionLauncher myLauncher;
+	
+	// Set this to false to stop JVision from launching itself. 
+	public static boolean LAUNCH_MYSELF = true;
 
 	@Override public void start(BundleContext context) throws Exception {
 		forceLog4jConfig();
@@ -16,7 +19,7 @@ public class JVisionBundleActivator extends BundleActivatorBase {
 		super.start(context);
 		scheduleFrameworkStartEventHandler(context);
 	}
-	public void stop(BundleContext context) throws Exception {
+	@Override public void stop(BundleContext context) throws Exception {
 		// This handler is important in the case where *some other bundle* (outside JVision) is trying
 		// to stop the JVM/OSGi process.  
 		if (myLauncher != null) {
@@ -27,6 +30,14 @@ public class JVisionBundleActivator extends BundleActivatorBase {
 	}
 	@Override protected void handleFrameworkStartedEvent(BundleContext bundleCtx) {
 		getLogger().info("In OSGi framework-started callback, initialization of JVision starting");
+		if (LAUNCH_MYSELF) {
+			launchJVisionDemo();
+		} else {
+			getLogger().info("Aborting JVision Launch because LAUNCH_MYSELF is false");
+			return;
+		}
+	} 
+	private void launchJVisionDemo() { 
 		// How to get the cmd line args if we need them
 		// String[] args = (String[])context.getArguments().get("application.args");
 
