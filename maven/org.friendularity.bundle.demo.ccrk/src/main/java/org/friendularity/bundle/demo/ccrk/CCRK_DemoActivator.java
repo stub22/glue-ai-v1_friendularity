@@ -78,6 +78,8 @@ public class CCRK_DemoActivator extends BundleActivatorBase {
 		// startWhackamoleGuiWindow(context);
 		
 		// ScriptEngineExperiment.main(null);
+		
+		org.friendularity.bundle.jvision.JVisionBundleActivator.LAUNCH_MYSELF = false;
 
 	}
 	protected void startLifecycleMonitorGuiWindow(final BundleContext context) {
@@ -130,6 +132,9 @@ public class CCRK_DemoActivator extends BundleActivatorBase {
 
 		// Hey, let's get some fused-sensor-data visualization going too, while we're at it!
 		WorldEstimateRenderModule werm = new WorldEstimateRenderModule();
+		if (false) {
+			werm.setFlag_visionTextureRoutingEnabled(true);
+		}
 		PumaAppUtils.attachVWorldRenderModule(bundleCtx, werm, null);
 		werm.setupVisualizer(null, null, null);
 		// Needs to be done at least once for the selfEstim to exist.
@@ -142,7 +147,7 @@ public class CCRK_DemoActivator extends BundleActivatorBase {
 		werm.setWorldEstimate(we);
 		Robot.Id optRobotID_elseAllRobots = null;		
 		startMotionComputers(bundleCtx, optRobotID_elseAllRobots, we);	
-		startVisionMonitors();
+	//	startVisionMonitors();
 		startMidiRouters(werm);
 		
 		setupDebuggingScaffold(mg, we);

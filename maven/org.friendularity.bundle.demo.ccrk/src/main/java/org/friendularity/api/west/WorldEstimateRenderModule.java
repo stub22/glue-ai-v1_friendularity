@@ -50,6 +50,7 @@ public class WorldEstimateRenderModule extends RenderModule implements WorldEsti
 	private WorldEstimate myCachedWorldEstim;
 	boolean myDidThatStuffFlag = false;
 	private VisionTextureMapper myVTM;
+	private boolean myFlag_visionTextureRoutingEnabled = false;
 
 	public WorldEstimateRenderModule() {
 		setDebugRateModulus(1000);
@@ -64,6 +65,9 @@ public class WorldEstimateRenderModule extends RenderModule implements WorldEsti
 
 	public void setMathGate(MathGate mg) {
 		myMathGate = mg;
+	}
+	public void setFlag_visionTextureRoutingEnabled(boolean flag) {
+		myFlag_visionTextureRoutingEnabled = flag;
 	}
 
 	@Override
@@ -90,13 +94,15 @@ public class WorldEstimateRenderModule extends RenderModule implements WorldEsti
 				myDidThatStuffFlag = true;
 				((BonusVisualizer) myWorldEstimVisualizer).makeBonusMeshes();
 			}
-			if (myVTM == null) {
-				getLogger().info("One time setup for vision-texture-mappper");
-				myVTM = new VisionTextureMapper();
-				RenderRegistryClient rrc = myWorldEstimVisualizer.getRenderRegistryClient();
-				myVTM.setup(rrc);
+			if (myFlag_visionTextureRoutingEnabled) {
+				if (myVTM == null) {
+					getLogger().info("One time setup for vision-texture-mappper");
+					myVTM = new VisionTextureMapper();
+					RenderRegistryClient rrc = myWorldEstimVisualizer.getRenderRegistryClient();
+					myVTM.setup(rrc);
+				}
+				myVTM.simpleUpdate(timePerFrame);
 			}
-			myVTM.simpleUpdate(timePerFrame);
 		}
 
 	}
