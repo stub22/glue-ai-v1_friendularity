@@ -231,14 +231,8 @@
 						<configuration>
 							<target>
 								<!-- Friendularity custom :  Note the log4j.debug flag
-					
-					-XX:+PrintGCTimestamps  
-									-XX:+PrintGCDetails -XX:+PrintTenuringDistribution -XX:+PrintGCTimestamps
--XX:MaxHeapSize=256M -XX:PermSize=192M 
--XX:+TieredCompilation 
--XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode
--XX:+CMSClassUnloadingEnabled -XX:+CMSPermGenSweepingEnabled
-
+Some other options we aint presently using:													
+-XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:+CMSClassUnloadingEnabled -XX:+CMSPermGenSweepingEnabled
 -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:CMSInitiatingOccupancyFraction=60 -XX:CMSIncrementalSafetyFactor=30
 -XX:+CMSClassUnloadingEnabled -XX:+CMSPermGenSweepingEnabled
 -XX:+PrintGCDetails -XX:+PrintTenuringDistribution -XX:+PrintGCTimeStamps										
