@@ -40,7 +40,7 @@ public class ConnectionSpecBuilder extends CachingComponentAssembler<ConnectionS
     private final static String   clientName = "http://www.friedularity.org/Connection#clientName";
     private final static String   virtualHost = "http://www.friedularity.org/Connection#virtualHost";
     private final static String   connectionOptions = "http://www.friedularity.org/Connection#connectionOptions";
-    
+   
     public ConnectionSpecBuilder( Resource builderConfRes ) {
         super(builderConfRes);
     }
