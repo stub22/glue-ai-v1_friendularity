@@ -12,6 +12,7 @@ import org.osgi.framework.BundleContext;
 import org.appdapter.core.matdat.OnlineSheetRepoSpec;
 import org.appdapter.core.matdat.EnhancedRepoClient;
 import org.appdapter.core.store.Repo;
+import org.appdapter.osgi.core.BundleActivatorBase;
 import org.cogchar.impl.scene.read.BehavMasterConfigTest;
 
 import org.friendularity.spec.connection.RegisterWiring;
@@ -26,7 +27,7 @@ import org.rwshop.swing.common.lifecycle.ServicesFrame;
  *
  * @author Yishuai Li & Jason Eads
  */
-public class Activator implements BundleActivator {
+public class Activator extends BundleActivatorBase {
 
 //    private final static String CONNECTION_GRAPH_QN =
 //            "fc:connection_sheet_1";
@@ -41,6 +42,7 @@ public class Activator implements BundleActivator {
             "csi:merged_manager_1002";
 
     public void start(BundleContext context) throws Exception {
+        forceLog4jConfig();
         setLookAndFeel();
         startServicePanel(context);
         // Setup to connect to a GoogSheet repo
@@ -63,7 +65,7 @@ public class Activator implements BundleActivator {
                 //                    classloaders);
 
                 new OnlineSheetRepoSpec(
-                "0AivIV8RvlFTvdGdCZkQ5Q1k1ZnkwMzg4UkZqbmZfa0E",
+                "0AlpQRNQ-L8QUdGpCYktydHNsTXB6LVI2NmYydE9LbXc",
                 1,
                 12,
                 classloaders);
