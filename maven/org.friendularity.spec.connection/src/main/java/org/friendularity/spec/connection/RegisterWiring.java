@@ -1,3 +1,18 @@
+/*
+ * Copyright 2013 The Friendularity Project (www.friendularity.org).
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.friendularity.spec.connection;
 
 import java.util.ArrayList;
@@ -20,7 +35,7 @@ import org.robokind.api.common.osgi.lifecycle.OSGiComponent;
 
 /**
  *
- * @author robokind
+ * @author Major Jacquote II <mjacquote@gmail.com>
  */
 public class RegisterWiring {
 
@@ -38,13 +53,27 @@ public class RegisterWiring {
                 defaultDemoRepoClient, myDefaultPipelineQuerySpec, derivedBehavGraphID);
 
         Set<Object> allSpecs = derivedBMP.assembleModelRoots();
-
+      
         List<RegistrationSpec> registrationSpecs = filterSpecs(RegistrationSpec.class, allSpecs);
 
         for (RegistrationSpec root : registrationSpecs) {
-            if (root instanceof RegistrationSpec) {
-                ManagedService<RegistrationSpec> rs =
-                        registerSpec(context, root);
+            if (root.getSpec() instanceof ConnectionSpec) {
+                
+                ManagedService<ConnectionSpec> rs =
+                        registerSpec(context,ConnectionSpec.class,(ConnectionSpec) root.getSpec(), root.getProperties());
+                managedServices.add(rs);
+            }
+            if (root.getSpec() instanceof DestinationSpec) {
+                
+                ManagedService<DestinationSpec> rs =
+                        registerSpec(context,DestinationSpec.class,(DestinationSpec) root.getSpec(), root.getProperties());
+                managedServices.add(rs);
+            }
+            
+             if (root.getSpec() instanceof JMSAvroMessageSenderSpec) {
+                
+                ManagedService<JMSAvroMessageSenderSpec> rs =
+                        registerSpec(context,JMSAvroMessageSenderSpec.class,(JMSAvroMessageSenderSpec) root.getSpec(), root.getProperties());
                 managedServices.add(rs);
             }
         }
@@ -62,6 +91,20 @@ public class RegisterWiring {
             specs.add((T) root);
         }
         return specs;
+    }
+    
+    private static <T extends KnownComponentImpl> ManagedService<T> registerSpec(
+            BundleContext context,
+            Class<T> specClass,
+            T spec,   Properties props) {
+
+      
+        ServiceLifecycleProvider<T> lifecycle =
+                new SimpleLifecycle<T>(spec, specClass);
+
+        ManagedService<T> ms = new OSGiComponent<T>(context, lifecycle, props);
+        ms.start();
+        return ms;
     }
 
     private static ManagedService<RegistrationSpec> registerSpec(BundleContext context, RegistrationSpec spec) {
