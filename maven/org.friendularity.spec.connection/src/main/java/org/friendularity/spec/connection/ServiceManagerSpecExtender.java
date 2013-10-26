@@ -87,11 +87,15 @@ public class ServiceManagerSpecExtender
                 serviceManagerSpec.getServiceBindings().entrySet()) {
             ServiceBindingSpec spec = specItem.getValue();
             ServiceDependencySpec depSpec = spec.getServiceDependency();
-            ServiceDependency dep =
-                    new ServiceDependency(
-                    depSpec.getName(), depSpec.getClassName(),
-                    depSpec.getCardinality(), depSpec.getUpdateStrategy(),
-                    depSpec.getProperties());
+            ServiceDependency dep = getDep(depSpec.getName(), lifecycle);
+//                    new ServiceDependency(
+//                    depSpec.getName(), depSpec.getClassName(),
+//                    depSpec.getCardinality(), depSpec.getUpdateStrategy(),
+//                    depSpec.getProperties());
+            if(dep == null){
+                theLogger.log(Level.SEVERE, "Dependency with name: {0} was not found.", depSpec.getName());
+                continue;
+            }
             ServiceBinding binding =
                     new ServiceBinding(
                     dep, spec.getDescriptor(), spec.getBindingStrategy());
@@ -111,6 +115,15 @@ public class ServiceManagerSpecExtender
         serviceManager.start(myRegistry);
         // Store the service manager so it may be removed later.
         myManagedServicesMap.put(serviceManagerSpec, serviceManager);
+    }
+    
+    private ServiceDependency getDep(String name, ServiceLifecycle<?> l){
+        for(ServiceDependency d : l.getDependencySpecs()){
+            if(d.getDependencyName().equals(name)){
+                return d;
+            }
+        }
+        return null;
     }
     
     /**

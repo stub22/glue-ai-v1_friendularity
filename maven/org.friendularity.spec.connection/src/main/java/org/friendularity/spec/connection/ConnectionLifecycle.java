@@ -60,11 +60,12 @@ public class ConnectionLifecycle implements ServiceLifecycle<Connection> {
      */
     private final static String[] theClassNameArray = new String[]{Connection.class.getName()};
     
+    public final static String theConnectionSpec = "connectionSpec";
     /**
      * This provides the dependencies which JFlux will provide.
      */
     private final static ServiceDependency[] theDependencyArray = {
-        new ServiceDependency("ConnectionSpec", ConnectionSpec.class.getName(), ServiceDependency.Cardinality.MANDATORY_UNARY, ServiceDependency.UpdateStrategy.STATIC, Collections.EMPTY_MAP)
+        new ServiceDependency(theConnectionSpec, ConnectionSpec.class.getName(), ServiceDependency.Cardinality.MANDATORY_UNARY, ServiceDependency.UpdateStrategy.STATIC, Collections.EMPTY_MAP)
     };
     
     /**
@@ -73,7 +74,6 @@ public class ConnectionLifecycle implements ServiceLifecycle<Connection> {
     private final static String theFailedToCreateFactoryErrorMessage = "AMQP URL failed to create AMQConnectionFactory.";
     private final static String theFailedToProduceOrStartErrorMessage = "AMQP URL failed to produce or start an AMQconnection.";
     private final static String theFailedToStopConnectionErrorMessage = "Failed to stop AMQP connection.";
-    private final static String theSpecNotAvailableMessage = "The ConnectionSpec was not available to create the Connection service.";
     
     //Lifecycle Constructor - required for automated assembly
     public ConnectionLifecycle() {}
@@ -99,14 +99,7 @@ public class ConnectionLifecycle implements ServiceLifecycle<Connection> {
     public Connection createService(Map<String,Object> dependencyMap) {
         
         // Collect the connection specification 
-        ConnectionSpec myConnectionSpec = null;
-        if( dependencyMap.get("connectionSpec") != null) {
-             myConnectionSpec = (ConnectionSpec)dependencyMap.get("connectionSpec");
-        }
-        else {
-            theLogger.log(Level.SEVERE, theSpecNotAvailableMessage);
-            return null;
-        }
+        ConnectionSpec myConnectionSpec = (ConnectionSpec)dependencyMap.get(theConnectionSpec);
         
         // The address extension to the url
         String address = String.format(theTCPAddressFormatString,

@@ -50,6 +50,11 @@
 			<artifactId>org.cogchar.bundle.core</artifactId>
 			<version>${cogchar.version}</version>
 		</dependency>
+<!--        <dependency>
+			<groupId>org.cogchar</groupId>
+			<artifactId>org.cogchar.bundle.temp.wire</artifactId>
+			<version>${cogchar.version}</version>
+		</dependency>-->
         <dependency>
             <artifactId>org.friendularity.spec.connection</artifactId>
             <groupId>org.friendularity</groupId>
