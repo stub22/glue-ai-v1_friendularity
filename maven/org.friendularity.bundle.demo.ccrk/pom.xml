@@ -254,7 +254,7 @@ value="-Dlog4j.debug -XX:MaxHeapSize=128M -XX:MaxPermSize=384M -XX:+TieredCompil
 									<entry key="org.osgi.framework.bootdelegation" value="*"/>
 									<!-- Friendularity customizations : 
 										1) Allow sun.misc package to be used by LWJGL.
-										2) org.w3c.dom.* are wanteed by Jena (+?), and are missing from 
+										2) org.w3c.dom.* are wanteed by Jena, Xerces, (+?), and are missing from 
 											default.properties in felix 4.2.1, tho	they are present in 3.0.7 -->
 									<entry key="org.osgi.framework.system.packages.extra" 
                                            value="sun.misc,
