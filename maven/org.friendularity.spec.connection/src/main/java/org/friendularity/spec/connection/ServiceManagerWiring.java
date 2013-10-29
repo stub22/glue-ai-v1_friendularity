@@ -28,10 +28,10 @@ import org.appdapter.core.name.Ident;
 import org.jflux.api.registry.Registry;
 import org.jflux.impl.registry.OSGiRegistry;
 import org.osgi.framework.BundleContext;
-import org.robokind.api.common.lifecycle.ManagedService;
-import org.robokind.api.common.lifecycle.ServiceLifecycleProvider;
-import org.robokind.api.common.lifecycle.utils.SimpleLifecycle;
-import org.robokind.api.common.osgi.lifecycle.OSGiComponent;
+import org.jflux.impl.services.rk.lifecycle.ManagedService;
+import org.jflux.impl.services.rk.lifecycle.ServiceLifecycleProvider;
+import org.jflux.impl.services.rk.lifecycle.utils.SimpleLifecycle;
+import org.jflux.impl.services.rk.osgi.lifecycle.OSGiComponent;
 
 /**
  * Wires up the ServiceManager system, pulling in the data from the spreadsheet and building up the

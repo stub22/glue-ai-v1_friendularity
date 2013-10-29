@@ -28,7 +28,7 @@ import org.jflux.api.service.ServiceLifecycle;
 import org.jflux.api.service.ServiceManager;
 import org.jflux.api.service.binding.ServiceBinding;
 import org.osgi.framework.BundleContext;
-import org.robokind.api.common.osgi.ServiceClassListener;
+import org.jflux.impl.services.rk.osgi.ServiceClassListener;
 
 /**
  * @author Jason G. Pallack <jgpallack@gmail.com>

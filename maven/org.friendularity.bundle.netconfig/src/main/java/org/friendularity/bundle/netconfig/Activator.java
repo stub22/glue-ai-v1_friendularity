@@ -3,9 +3,9 @@ package org.friendularity.bundle.netconfig;
 import org.cogchar.bind.lift.LiftAmbassador;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
-import org.robokind.api.common.lifecycle.ServiceLifecycleProvider;
-import org.robokind.api.common.lifecycle.utils.SimpleLifecycle;
-import org.robokind.api.common.osgi.lifecycle.OSGiComponent;
+import org.jflux.impl.services.rk.lifecycle.ServiceLifecycleProvider;
+import org.jflux.impl.services.rk.lifecycle.utils.SimpleLifecycle;
+import org.jflux.impl.services.rk.osgi.lifecycle.OSGiComponent;
 
 public class Activator implements BundleActivator {
 
