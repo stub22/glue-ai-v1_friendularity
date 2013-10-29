@@ -47,12 +47,6 @@ or
             <name>sonatype public</name>
             <url>https://oss.sonatype.org/content/groups/public/</url>
         </repository>
-        <!-- Needed for "good" log4J bundle -->
-        <repository>
-            <id>com.springsource.repository.bundles.external</id>
-            <name>Spring EBR External Release Repository</name>
-            <url>http://repository.springsource.com/maven/bundles/external</url>
-        </repository>
     </repositories>
     
 
@@ -82,32 +76,6 @@ or
             <groupId>org.rwshop</groupId>
             <artifactId>org.rwshop.swing.common</artifactId>
             <version>${rwshop.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>1.7.5</version>
-            <scope>runtime</scope>
-            <exclusions>
-                <!-- We exclude the normally embedded Log4J version, because it is not OSGi friendly.
-                    We instead use the bundled version supplied by SpringSource below.
-                -->				
-                <exclusion>
-                    <artifactId>log4j</artifactId>
-                    <groupId>log4j</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <!-- Here is an OSGi-friendly Log4J bundle, which we presume can be initialized through
-                the methods provided by Appdapter, which assumes a log4j.properties file at
-                root of this bundle.  To initialize Log4J differently, we could make this a
-                compile-scoped dependency, and then do any Log4J config using code, e.g.
-                using "BasicConfigurator".
-            -->
-            <groupId>org.apache.log4j</groupId>
-            <artifactId>com.springsource.org.apache.log4j</artifactId>
-            <version>1.2.16</version>		
         </dependency>
         <dependency>
             <groupId>org.jflux</groupId>
