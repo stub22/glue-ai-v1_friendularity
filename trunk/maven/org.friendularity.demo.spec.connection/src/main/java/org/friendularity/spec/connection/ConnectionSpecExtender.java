@@ -21,7 +21,7 @@ import java.util.Map;
 import org.jflux.api.registry.Registry;
 import org.jflux.api.service.ServiceManager;
 import org.osgi.framework.BundleContext;
-import org.robokind.api.common.osgi.ServiceClassListener;
+import org.jflux.impl.services.rk.osgi.ServiceClassListener;
 
 /**
  * @author Jason R. Eads <eadsjr>

@@ -5,7 +5,7 @@ import org.cogchar.app.puma.web.LifterLifecycle;
 import org.cogchar.bundle.app.puma.GruesomeTAProcessingFuncs;
 
 import org.osgi.framework.BundleContext;
-import org.robokind.api.common.osgi.lifecycle.OSGiComponent;
+import org.jflux.impl.services.rk.osgi.lifecycle.OSGiComponent;
 import org.cogchar.joswrap.RepoUpdateCallbackAdapter;
 
 public class Activator extends BundleActivatorBase {
