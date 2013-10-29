@@ -2,49 +2,8 @@
 <projectDescription>
   <name>org.friendularity.demo.repo</name>
   <comment>All libraries and OSGi bundles. NO_M2ECLIPSE_SUPPORT: Project files created with the maven-eclipse-plugin are not supported in M2Eclipse.</comment>
-  <projects>
-    <project>org.cogchar.bundle.bind.lift</project>
-    <project>org.cogchar.bundle.core</project>
-    <project>org.appdapter.bundle.core</project>
-    <project>ext.bundle.osgi.common</project>
-    <project>ext.bundle.jena_all_2_10_1</project>
-    <project>ext.bundle.xml.dom4j_161</project>
-    <project>ext.bundle.math.symja_jas</project>
-    <project>org.cogchar.lib.outer.client</project>
-    <project>org.cogchar.lib.core</project>
-    <project>org.cogchar.lib.onto</project>
-    <project>org.cogchar.lib.render</project>
-    <project>ext.bundle.opengl.jmonkey</project>
-    <project>org.cogchar.lib.animoid</project>
-    <project>org.robokind.api.common</project>
-    <project>org.jflux.api.core</project>
-    <project>org.jflux.api.services</project>
-    <project>org.jflux.api.registry</project>
-    <project>org.jflux.api.data</project>
-    <project>org.cogchar.bundle.bind.joseki</project>
-    <project>org.cogchar.bundle.app.puma</project>
-    <project>org.cogchar.bundle.bind.robokind</project>
-    <project>org.cogchar.bundle.render.opengl</project>
-    <project>org.robokind.api.speech</project>
-    <project>org.robokind.api.messaging</project>
-    <project>org.robokind.impl.speech</project>
-    <project>org.jflux.impl.encode.avro</project>
-    <project>org.robokind.impl.messaging</project>
-    <project>org.robokind.extern.utils.messaging</project>
-    <project>org.jflux.impl.transport.qpid</project>
-    <project>org.robokind.api.motion</project>
-    <project>org.robokind.api.animation</project>
-    <project>org.robokind.api.vision</project>
-    <project>org.robokind.impl.motion</project>
-    <project>org.robokind.extern.utils.apache_commons_configuration</project>
-    <project>org.robokind.extern.utils.xpp3</project>
-    <project>org.robokind.integration.animation_motion</project>
-    <project>org.robokind.impl.animation</project>
-    <project>org.robokind.integration.motion_speech</project>
-    <project>org.cogchar.bundle.render.resources</project>
-    <project>org.friendularity.bundle.netconfig</project>
-  </projects>
-  <buildSpec>
+  <projects/>
+      <buildSpec>
     <buildCommand>
       <name>org.eclipse.jdt.core.javabuilder</name>
     </buildCommand>

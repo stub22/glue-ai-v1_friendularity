@@ -1,6 +1,6 @@
 package org.friendularity.spec.connection;
 
-import org.appdapter.core.component.KnownComponentImpl;
+import org.appdapter.bind.rdf.jena.assembly.KnownComponentImpl;
 import java.util.Map;
 import java.util.Properties;
 

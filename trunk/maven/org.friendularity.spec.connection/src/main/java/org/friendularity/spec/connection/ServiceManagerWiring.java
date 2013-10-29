@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
-import org.appdapter.core.component.KnownComponentImpl;
+import org.appdapter.bind.rdf.jena.assembly.KnownComponentImpl;
 import org.appdapter.core.matdat.BoundModelProvider;
 import org.appdapter.core.matdat.EnhancedRepoClient;
 import org.appdapter.core.matdat.ModelProviderFactory;

@@ -2,7 +2,7 @@ package org.friendularity.spec.connection;
 
 import java.util.LinkedList;
 import java.util.List;
-import org.appdapter.core.component.KnownComponentImpl;
+import org.appdapter.bind.rdf.jena.assembly.KnownComponentImpl;
 
 /**
  *
