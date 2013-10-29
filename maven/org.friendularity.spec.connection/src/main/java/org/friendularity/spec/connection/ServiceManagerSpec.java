@@ -2,7 +2,7 @@ package org.friendularity.spec.connection;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.appdapter.core.component.KnownComponentImpl;
+import org.appdapter.bind.rdf.jena.assembly.KnownComponentImpl;
 
 /**
  *

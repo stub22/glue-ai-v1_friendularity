@@ -16,7 +16,7 @@
 
 package org.friendularity.anim.loader;
 
-import org.appdapter.core.component.KnownComponentImpl;
+import org.appdapter.bind.rdf.jena.assembly.KnownComponentImpl;
 
 /**
  * Data Object representing a ConnectionSpec
