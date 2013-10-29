@@ -14,17 +14,6 @@
 
     <name>org.friendularity.bundle.demo.convo.response OSGi Bundle</name>
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
-    
-    <repositories>
-		<repository>
-			<id>com.springsource.repository.bundles.external</id>
-			<name>Spring EBR External Release Repository</name>
-			<url>http://repository.springsource.com/maven/bundles/external</url>
-		</repository>
-    </repositories>
 
     <dependencies>
         <dependency>
@@ -47,25 +36,6 @@
 			<groupId>org.robokind</groupId>
 			<artifactId>org.robokind.impl.speechrec</artifactId>
 			<version>${robokind.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<version>1.7.5</version>
-			<scope>runtime</scope>
-		    <exclusions>
-				<!-- This embedded Log4J version is not OSGi friendly -->				
-		        <exclusion>
-		            <artifactId>log4j</artifactId>
-		            <groupId>log4j</groupId>
-		        </exclusion>
-		    </exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.log4j</groupId>
-			<artifactId>com.springsource.org.apache.log4j</artifactId>
-			<version>1.2.16</version>
-			<scope>runtime</scope>			
 		</dependency>
     </dependencies>
 

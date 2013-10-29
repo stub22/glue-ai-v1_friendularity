@@ -15,10 +15,6 @@
 
 	<name>${project.artifactId} - OSGi</name>
 
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
-
 	<dependencies>
 		<dependency>
 			<groupId>org.rwshop</groupId>
@@ -52,50 +48,13 @@
 			<groupId>org.cogchar</groupId>
 			<artifactId>org.cogchar.bundle.bind.robokind</artifactId>
 			<version>${cogchar.version}</version>
-		</dependency>	
-
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<version>1.7.5</version>
-			<scope>runtime</scope>
-			<exclusions>
-				<!-- This embedded Log4J version is not OSGi friendly -->				
-				<exclusion>
-					<artifactId>log4j</artifactId>
-					<groupId>log4j</groupId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.log4j</groupId>
-			<artifactId>com.springsource.org.apache.log4j</artifactId>
-			<version>1.2.16</version>
-			<scope>runtime</scope>			
 		</dependency>		
 		<dependency>
 			<groupId>org.apache.felix</groupId>
 			<artifactId>org.osgi.core</artifactId>
 			<version>1.4.0</version>
 			<scope>provided</scope>
-		</dependency>
-
-
-
-		<dependency>
-			<!-- ARQ.cmdline wants the http-core.  We don't need ARQ.cmdline, generally, so
-			could mark it optional in Appdapter-wrapper import (or supply this lib there).  -->			
-			<groupId>org.apache.httpcomponents</groupId>
-			<artifactId>httpcore-osgi</artifactId>
-			<version>4.2.4</version>
-		</dependency>	
-		<dependency>
-			<!-- ARQ.cmdline wants the http-client.  We don't need ARQ.cmdline, generally, so
-			could mark it optional in Appdapter-wrapper import (or supply this lib there).  -->			
-			<groupId>org.apache.httpcomponents</groupId>
-			<artifactId>httpclient-osgi</artifactId>
-			<version>4.2.4</version>
-		</dependency>			
+		</dependency>		
 	</dependencies>
 
 	<build>

@@ -35,34 +35,6 @@
 			<artifactId>org.appdapter.bundle.core</artifactId>
 			<version>${appdapter.version}</version>
 		</dependency>
-		<!-- 2013-08-04:  This JVision bundle is currently asserting itself to be an application, with right to configure 
-		its own logging, using the log4j binding of SLF4J.  
-		-->
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>1.7.5</version>
-		</dependency>		
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<version>1.7.5</version>
-			<scope>runtime</scope>
-			<exclusions>
-				<!-- This embedded Log4J version is not OSGi friendly, so we exclude it.  -->				
-				<exclusion>
-					<artifactId>log4j</artifactId>
-					<groupId>log4j</groupId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<!-- Here is the happy Log4J bundle that we like instead of one excluded above.  -->
-			<groupId>org.apache.log4j</groupId>
-			<artifactId>com.springsource.org.apache.log4j</artifactId>
-			<version>1.2.16</version>
-			<scope>compile</scope>			
-		</dependency>		
 	</dependencies>
 
 	<build>
