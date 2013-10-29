@@ -73,7 +73,6 @@
 				<configuration>
 					<instructions>
 						<Bundle-Activator>org.friendularity.demo.connection.Activator</Bundle-Activator>
-                        <Private-Package>org.apache.http.*</Private-Package>
 					</instructions>
 				</configuration>
 			</plugin>
