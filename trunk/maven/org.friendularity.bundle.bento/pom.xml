@@ -75,7 +75,7 @@
         <dependency>
             <groupId>org.appdapter</groupId>
             <artifactId>ext.bundle.jena_all_2_10_1</artifactId>
-            <version>1.1.1</version>
+            <version>1.1.3-SNAPSHOT</version>
             <type>jar</type>
         </dependency>
     </dependencies>

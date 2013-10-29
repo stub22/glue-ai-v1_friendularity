@@ -26,7 +26,12 @@
         </dependency>
         <dependency>
             <groupId>org.appdapter</groupId>
-            <artifactId>org.appdapter.lib.core</artifactId>
+            <artifactId>org.appdapter.bundle.core</artifactId>
+            <version>${appdapter.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.appdapter</groupId>
+            <artifactId>org.appdapter.bundle.gui</artifactId>
             <version>${appdapter.version}</version>
         </dependency>
         <dependency>
