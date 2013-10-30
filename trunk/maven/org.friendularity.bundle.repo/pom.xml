@@ -117,7 +117,10 @@
 			-->
 
 						<Web-ContextPath>${web.contextPath}</Web-ContextPath>
-						<Export-Package>etc.*, Data.*</Export-Package>						
+						<Export-Package>
+							etc.*;-split-package:=merge-first, 
+							Data.*;-split-package:=merge-first
+						</Export-Package>						
 						<Bundle-Activator>org.friendularity.bundle.repo.Activator</Bundle-Activator>
 					</instructions>
 				</configuration>
