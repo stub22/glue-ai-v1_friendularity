@@ -13,7 +13,7 @@ import org.appdapter.core.matdat.RepoSpec;
 import org.appdapter.core.matdat.OnlineSheetRepoSpec;
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
-import org.appdapter.gui.demo.DemoBrowser;
+// import org.appdapter.gui.demo.DemoBrowser;
 import org.appdapter.help.repo.RepoClient;
 import org.cogchar.app.puma.boot.PumaAppContext;
 import org.cogchar.bundle.app.puma.PumaAppUtils;
@@ -157,13 +157,17 @@ public class CCRK_DemoActivator extends BundleActivatorBase {
 		}
 
 	}
+
 	private void setupDebuggingScaffold(MathGate mg, WorldEstimate we) { 
+	/*		
 		DemoBrowser.showObject("werm-MG", mg, false, false); // true, true);
 		DemoBrowser.showObject("amazingly accurate estimate", we, false, false);
 		PumaAppUtils.GreedyHandleSet greedyHandles = new PumaAppUtils.GreedyHandleSet();
 		DemoBrowser.showObject("our-greedy-handles", greedyHandles, false, false);
 		DemoBrowser.showObject("our-repo-client", greedyHandles.rc, false, false);
+	*/
 	}
+
 	/**
 	 * 		For each joint robot, robokind.org blends all joint inputs received from RobotMoverFrameSources.
 	 *	Cogchar.org defines the CogcharMotionSource subclass.
