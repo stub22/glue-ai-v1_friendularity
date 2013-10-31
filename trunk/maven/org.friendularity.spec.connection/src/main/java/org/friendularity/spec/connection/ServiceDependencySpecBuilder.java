@@ -48,7 +48,7 @@ public class ServiceDependencySpecBuilder
                 item.getIdent(), theCountCardinality, item, "");
         String required = reader.readConfigValString(
                 item.getIdent(), theRequired, item, "");
-        
+
         mkc.setClassName(className);
         mkc.setName(item.getIdent().getLocalName());
         

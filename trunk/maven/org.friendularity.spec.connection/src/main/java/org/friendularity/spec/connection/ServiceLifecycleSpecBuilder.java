@@ -46,7 +46,6 @@ public class ServiceLifecycleSpecBuilder
         
         List linkedDependencies = reader.findOrMakeLinkedObjects(
                 item, theHasDependency, asmblr, mode, null);
-        
         for(Object o: linkedDependencies) {
             if(o instanceof ServiceDependencySpec) {
                 ServiceDependencySpec depSpec = (ServiceDependencySpec)o;

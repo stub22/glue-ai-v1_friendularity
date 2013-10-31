@@ -34,7 +34,8 @@ import org.jflux.impl.services.rk.osgi.ServiceClassListener;
  * @author Jason G. Pallack <jgpallack@gmail.com>
  */
 public class ServiceManagerSpecExtender
-    extends ServiceClassListener<ServiceManagerSpec> {
+        extends ServiceClassListener<ServiceManagerSpec> {
+
     /**
      * Stores the managed connections for later removal
      */
@@ -48,7 +49,7 @@ public class ServiceManagerSpecExtender
      */
     private final static Logger theLogger =
             Logger.getLogger(ServiceManagerSpecExtender.class.getName());
-    
+
     public ServiceManagerSpecExtender(
             BundleContext context, Registry registry, String serviceFilter) {
         super(ServiceManagerSpec.class, context, serviceFilter);
@@ -56,9 +57,10 @@ public class ServiceManagerSpecExtender
         myManagedServicesMap =
                 new HashMap<ServiceManagerSpec, ServiceManager>();
     }
-    
+
     /**
      * Creates and starts a service manager.
+     *
      * @param serviceManagerSpec data object used to generate connection
      */
     @Override
@@ -66,25 +68,25 @@ public class ServiceManagerSpecExtender
         ServiceLifecycle lifecycle;
         Map<String, ServiceBinding> bindings =
                 new HashMap<String, ServiceBinding>();
-        
-        if(serviceManagerSpec == null ||
-                myManagedServicesMap.containsKey(serviceManagerSpec)) {
+
+        if (serviceManagerSpec == null
+                || myManagedServicesMap.containsKey(serviceManagerSpec)) {
             return;
         }
-        
+
         try {
             Class lifecycleClass =
                     Class.forName(serviceManagerSpec.getLifecycleClassName());
-            lifecycle = (ServiceLifecycle)lifecycleClass.newInstance();
-        } catch(Exception e) {
+            lifecycle = (ServiceLifecycle) lifecycleClass.newInstance();
+        } catch (Exception e) {
             theLogger.log(
                     Level.SEVERE, "Unable to instantiate class: {0}",
                     serviceManagerSpec.getLifecycleClassName());
             return;
         }
-        
-        for(Entry<String, ServiceBindingSpec> specItem:
-                serviceManagerSpec.getServiceBindings().entrySet()) {
+
+        for (Entry<String, ServiceBindingSpec> specItem
+                : serviceManagerSpec.getServiceBindings().entrySet()) {
             ServiceBindingSpec spec = specItem.getValue();
             ServiceDependencySpec depSpec = spec.getServiceDependency();
             ServiceDependency dep = getDep(depSpec.getName(), lifecycle);
@@ -92,23 +94,23 @@ public class ServiceManagerSpecExtender
 //                    depSpec.getName(), depSpec.getClassName(),
 //                    depSpec.getCardinality(), depSpec.getUpdateStrategy(),
 //                    depSpec.getProperties());
-            if(dep == null){
+            if (dep == null) {
                 theLogger.log(Level.SEVERE, "Dependency with name: {0} was not found.", depSpec.getName());
                 continue;
-            }
+            } 
             ServiceBinding binding =
                     new ServiceBinding(
                     dep, spec.getDescriptor(), spec.getBindingStrategy());
             bindings.put(specItem.getKey(), binding);
         }
-        
+
         DefaultRegistrationStrategySpec stratSpec =
                 serviceManagerSpec.getServiceRegistration();
         RegistrationStrategy strat =
                 new DefaultRegistrationStrategy(
                 stratSpec.getClassNames(),
                 stratSpec.getRegistrationProperties());
-        
+
         ServiceManager serviceManager =
                 new ServiceManager(lifecycle, bindings, strat, null);
         // Start the service manager
@@ -116,29 +118,30 @@ public class ServiceManagerSpecExtender
         // Store the service manager so it may be removed later.
         myManagedServicesMap.put(serviceManagerSpec, serviceManager);
     }
-    
-    private ServiceDependency getDep(String name, ServiceLifecycle<?> l){
-        for(ServiceDependency d : l.getDependencySpecs()){
-            if(d.getDependencyName().equals(name)){
+
+    private ServiceDependency getDep(String name, ServiceLifecycle<?> l) {
+        for (ServiceDependency d : l.getDependencySpecs()) {
+            if (d.getDependencyName().equals(name)) {
                 return d;
             }
         }
         return null;
     }
-    
+
     /**
      * Stops a service manager.
+     *
      * @param serviceManagerSpec data object used to generate connection
      */
     @Override
     protected void removeService(ServiceManagerSpec serviceManagerSpec) {
-        if(serviceManagerSpec == null ||
-                !myManagedServicesMap.containsKey(serviceManagerSpec)) {
+        if (serviceManagerSpec == null
+                || !myManagedServicesMap.containsKey(serviceManagerSpec)) {
             return;
         }
         ServiceManager manager =
                 myManagedServicesMap.remove(serviceManagerSpec);
-        if(manager != null){
+        if (manager != null) {
             manager.stop();
         }
     }
