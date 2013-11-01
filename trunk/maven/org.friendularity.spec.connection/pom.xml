@@ -47,6 +47,11 @@
             <version>${robokind.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.robokind</groupId>
+            <artifactId>org.robokind.api.speech</artifactId>
+            <version>${robokind.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.jflux</groupId>
             <artifactId>org.jflux.api.core</artifactId>
             <version>${jflux.version}</version>

@@ -53,27 +53,34 @@ public class RegisterWiring {
                 defaultDemoRepoClient, myDefaultPipelineQuerySpec, derivedBehavGraphID);
 
         Set<Object> allSpecs = derivedBMP.assembleModelRoots();
-      
-        List<RegistrationSpec> registrationSpecs = filterSpecs(RegistrationSpec.class, allSpecs);
 
+        List<RegistrationSpec> registrationSpecs = filterSpecs(RegistrationSpec.class, allSpecs);
+       
         for (RegistrationSpec root : registrationSpecs) {
             if (root.getSpec() instanceof ConnectionSpec) {
-                
+
                 ManagedService<ConnectionSpec> rs =
-                        registerSpec(context,ConnectionSpec.class,(ConnectionSpec) root.getSpec(), root.getProperties());
+                        registerSpec(context, ConnectionSpec.class, (ConnectionSpec) root.getSpec(), root.getProperties());
                 managedServices.add(rs);
             }
             if (root.getSpec() instanceof DestinationSpec) {
-                
+
                 ManagedService<DestinationSpec> rs =
-                        registerSpec(context,DestinationSpec.class,(DestinationSpec) root.getSpec(), root.getProperties());
+                        registerSpec(context, DestinationSpec.class, (DestinationSpec) root.getSpec(), root.getProperties());
                 managedServices.add(rs);
             }
-            
-             if (root.getSpec() instanceof JMSAvroMessageSenderSpec) {
-                
+
+            if (root.getSpec() instanceof JMSAvroMessageSenderSpec) {
+
                 ManagedService<JMSAvroMessageSenderSpec> rs =
-                        registerSpec(context,JMSAvroMessageSenderSpec.class,(JMSAvroMessageSenderSpec) root.getSpec(), root.getProperties());
+                        registerSpec(context, JMSAvroMessageSenderSpec.class, (JMSAvroMessageSenderSpec) root.getSpec(), root.getProperties());
+                managedServices.add(rs);
+            }
+
+            if (root.getSpec() instanceof RemoteClientPropertySpec) {
+
+                ManagedService<RemoteClientPropertySpec> rs =
+                        registerSpec(context, RemoteClientPropertySpec.class, (RemoteClientPropertySpec) root.getSpec(), root.getProperties());
                 managedServices.add(rs);
             }
         }
@@ -92,13 +99,13 @@ public class RegisterWiring {
         }
         return specs;
     }
-    
+
     private static <T extends KnownComponentImpl> ManagedService<T> registerSpec(
             BundleContext context,
             Class<T> specClass,
-            T spec,   Properties props) {
+            T spec, Properties props) {
 
-      
+
         ServiceLifecycleProvider<T> lifecycle =
                 new SimpleLifecycle<T>(spec, specClass);
 
