@@ -57,6 +57,12 @@ import org.rwshop.swing.common.lifecycle.ServicesFrame;
  */
 public class CCRK_DemoActivator extends BundleActivatorBase {
 
+	private	boolean		myFlag_connectJVision = true;
+	private	boolean		myFlag_connectMidiIn = true;
+	private	boolean		myFlag_connectMidiOut = false;
+	private	boolean		myFlag_connectSwingDebugGUI = false;
+	private boolean		myFlag_monitorLifecycles = true;
+	
 	@Override public void start(final BundleContext context) throws Exception {
 		// Will look for log4j.properties at root of this bundle.
 		// Any top-level OSGi app that wants to enable Log4J (and thereby make Jena happy, while
@@ -73,13 +79,15 @@ public class CCRK_DemoActivator extends BundleActivatorBase {
 		injector.setMediator(mediator, false);
 		// Schedule our callback to the handle method below.
 		scheduleFrameworkStartEventHandler(context);
-		startLifecycleMonitorGuiWindow(context);
+		if (myFlag_monitorLifecycles) {
+			startLifecycleMonitorGuiWindow(context);
+		}
 		// New bugs in ScreenBoxImpl are preventing this window from launching.
 		// startWhackamoleGuiWindow(context);
 		
 		// ScriptEngineExperiment.main(null);
 		
-		org.friendularity.bundle.jvision.JVisionBundleActivator.LAUNCH_MYSELF = false;
+		org.friendularity.bundle.jvision.JVisionBundleActivator.LAUNCH_MYSELF = myFlag_connectJVision;
 
 	}
 	protected void startLifecycleMonitorGuiWindow(final BundleContext context) {
@@ -132,9 +140,12 @@ public class CCRK_DemoActivator extends BundleActivatorBase {
 
 		// Hey, let's get some fused-sensor-data visualization going too, while we're at it!
 		WorldEstimateRenderModule werm = new WorldEstimateRenderModule();
-		if (false) {
-			werm.setFlag_visionTextureRoutingEnabled(true);
-		}
+		
+		// Enable/Disable this texture flow based on whether we are launching JVision or not.
+		// Should be a dont-care whether this happens before/after   startVisionMonitors() below.
+		// TODO:  Re-verify in detail.
+		werm.setFlag_visionTextureRoutingEnabled(myFlag_connectJVision);
+		
 		PumaAppUtils.attachVWorldRenderModule(bundleCtx, werm, null);
 		werm.setupVisualizer(null, null, null);
 		// Needs to be done at least once for the selfEstim to exist.
@@ -147,13 +158,20 @@ public class CCRK_DemoActivator extends BundleActivatorBase {
 		werm.setWorldEstimate(we);
 		Robot.Id optRobotID_elseAllRobots = null;		
 		startMotionComputers(bundleCtx, optRobotID_elseAllRobots, we);	
-	//	startVisionMonitors();
-		startMidiRouters(werm);
 		
-		setupDebuggingScaffold(mg, we);
+		if (myFlag_connectJVision) {
+			//	Startup the optional JVision connection
+			startVisionMonitors();
+		}
+		if (myFlag_connectMidiIn) {
+			startMidiRouters(werm);
+		}
+		if (myFlag_connectSwingDebugGUI) {
+			setupDebuggingScaffold(mg, we);
+		}
 		
 		if (localDemoCheatersContext != null) {
-			getLogger().info("We have a cheaters Puma-App-Context, but we're not using it today");
+			getLogger().info("We have a cheater's Puma-App-Context, but we're not cheatin with it today");
 		}
 
 	}
