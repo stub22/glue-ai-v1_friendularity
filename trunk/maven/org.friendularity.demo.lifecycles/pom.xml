@@ -35,9 +35,9 @@ or
   
 
 -->		
-        <robokind.version>0.9.3-SNAPSHOT</robokind.version>
-        <rwshop.version>0.9.3-SNAPSHOT</rwshop.version>
-        <jflux.version>0.1.7-SNAPSHOT</jflux.version>
+        <robokind.version>0.9.3</robokind.version>
+        <rwshop.version>0.9.3</rwshop.version>
+        <jflux.version>0.1.7</jflux.version>
 
     </properties>
 
