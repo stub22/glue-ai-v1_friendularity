@@ -1,0 +1,263 @@
+<!-- See bottom for copyright and license info -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.friendularity</groupId>
+		<artifactId>org.friendularity.modules.main</artifactId>
+		<version>1.0.0</version>
+		<relativePath>../org.friendularity.modules.main/pom.xml</relativePath>
+	</parent>	
+
+	<artifactId>org.friendularity.demo.jme3.maven</artifactId>
+	<packaging>jar</packaging>
+
+	<name>${project.artifactId} - jME3 demo wrapper project</name>
+
+<!-- 
+Updated:	2012-05-13
+Maintainer:	stub22  AT  appstract.com
+
+Demonstration of a JMonkeyEngine-3 game pom.xml file,
+with direct dependencies on all jars in the jME3 nightly build.
+
+The jmonkey.version variable is set in the parent pom to the following value.
+Set it in the properties of your own pom.
+
+		<jmonkey.version>3.0.0.20120512-SNAPSHOT</jmonkey.version>
+		
+This game has one class in it, LaunchJME3TestChooser, which 
+merely invokes the jME3 TestChooser demo.  Running all of the
+demos (some of which fail) requires using most or all of the
+dependencies in this pom.xml project.  
+
+If you are resource constrained, you may want to comment out the 
+jME3-testdata (40M) and nifty-examples (20M) dependencies, although
+many demos require some pieces of jME3-testdata.   So removing
+these dependencies means you will have to manage your own classpath 
+resource situation.
+
+Currently all of these deps below are pulled from the community-maintained
+com.jme3 repo on sonatype-snapshots, yielding a complete copy of all 
+ordinary lib jars in the jme3-nightly-build of 2012-05-12.  You can browse
+the snapshot file tree via the web here:
+
+http://oss.sonatype.org/content/repositories/snapshots/com/jme3/
+
+About half of these artifacts from the nightly-build are actually
+3rd party jars which can eventually be replaced with dependencies 
+on the jars supplied directly by these vendors.   After jME3 reaches 
+GA release 3.0, we can create a "release" version of 
+these dependencies, using the available third party jars. 
+
+To use the dependencies from this project, copy the "repository" and
+"dependency" items below into your pom.xml.  Leave out the ones YOU
+don't want ;-)
+
+-->
+
+	<repositories>
+		<repository>
+			<id>sonatype-public</id>
+			<name>sonatype public</name>
+			<url>https://oss.sonatype.org/content/groups/public/</url>
+		</repository>	  
+	</repositories>
+
+	<!-- Note that the jmonkey.version variable is set in our parent pom.xml.
+		Currently the value is   3.0.0.20120512-SNAPSHOT
+	-->
+	<dependencies>
+
+		<dependency>
+			<!-- Contains just the jme3test demo classes, with main methods -->
+			<groupId>com.jme3</groupId>
+			<artifactId>jmonkeyengine3</artifactId>
+			<version>${jmonkey.version}</version>
+		</dependency>
+				
+		<dependency>
+			<!-- WARNING:  Large (40M) block of test data.  Disable this
+				dependency when not needed.
+			-->
+			<groupId>com.jme3</groupId>
+			<artifactId>jME3-testdata</artifactId>
+			<version>${jmonkey.version}</version>
+		</dependency>
+
+		
+		<!-- The core library -->
+		<dependency>
+			<groupId>com.jme3</groupId>
+			<artifactId>jME3-core</artifactId>
+			<version>${jmonkey.version}</version>
+		</dependency>		
+		
+		<!-- LWJGL stuff -->
+		<dependency>
+			<groupId>com.jme3</groupId>
+			<artifactId>jME3-lwjgl</artifactId>
+			<version>${jmonkey.version}</version>
+		</dependency>		
+		<dependency>
+			<groupId>com.jme3</groupId>
+			<artifactId>jME3-lwjgl-natives</artifactId>
+			<version>${jmonkey.version}</version>
+		</dependency>		
+		<dependency>
+			<groupId>com.jme3</groupId>
+			<artifactId>lwjgl</artifactId>
+			<version>${jmonkey.version}</version>
+		</dependency>	
+		
+		<!-- Bullet stuff -->
+		<dependency>
+			<groupId>com.jme3</groupId>
+			<artifactId>jME3-jbullet</artifactId>
+			<version>${jmonkey.version}</version>
+		</dependency>		
+		<dependency>
+			<groupId>com.jme3</groupId>
+			<artifactId>jbullet</artifactId>
+			<version>${jmonkey.version}</version>
+		</dependency>		
+
+		
+		<!-- Feature libs -->
+		<dependency>
+			<groupId>com.jme3</groupId>
+			<artifactId>jME3-blender</artifactId>
+			<version>${jmonkey.version}</version>
+		</dependency>		
+		<dependency>
+			<groupId>com.jme3</groupId>
+			<artifactId>jME3-desktop</artifactId>
+			<version>${jmonkey.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.jme3</groupId>
+			<artifactId>jME3-effects</artifactId>
+			<version>${jmonkey.version}</version>
+		</dependency>		
+		<dependency>
+			<groupId>com.jme3</groupId>
+			<artifactId>jME3-networking</artifactId>
+			<version>${jmonkey.version}</version>
+		</dependency>		
+		<dependency>
+			<groupId>com.jme3</groupId>
+			<artifactId>jME3-plugins</artifactId>
+			<version>${jmonkey.version}</version>
+		</dependency>		
+		<dependency>
+			<groupId>com.jme3</groupId>
+			<artifactId>jME3-terrain</artifactId>
+			<version>${jmonkey.version}</version>
+		</dependency>	
+		
+		<!-- Ogg audio stuff -->
+		<dependency>
+			<groupId>com.jme3</groupId>
+			<artifactId>jME3-jogg</artifactId>
+			<version>${jmonkey.version}</version>
+		</dependency>		
+		<dependency>
+			<groupId>com.jme3</groupId>
+			<artifactId>j-ogg-oggd</artifactId>
+			<version>${jmonkey.version}</version>
+		</dependency>		
+		<dependency>
+			<groupId>com.jme3</groupId>
+			<artifactId>j-ogg-vorbisd</artifactId>
+			<version>${jmonkey.version}</version>
+		</dependency>		
+		
+		<!-- Third party libs -->
+		<dependency>
+			<groupId>com.jme3</groupId>
+			<artifactId>jinput</artifactId>
+			<version>${jmonkey.version}</version>
+		</dependency>		
+		<dependency>
+			<groupId>com.jme3</groupId>
+			<artifactId>eventbus</artifactId>
+			<version>${jmonkey.version}</version>
+		</dependency>		
+		<dependency>
+			<groupId>com.jme3</groupId>
+			<artifactId>stack-alloc</artifactId>
+			<version>${jmonkey.version}</version>
+		</dependency>		
+		<dependency>
+			<groupId>com.jme3</groupId>
+			<artifactId>vecmath</artifactId>
+			<version>${jmonkey.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.jme3</groupId>
+			<artifactId>xmlpull-xpp3</artifactId>
+			<version>${jmonkey.version}</version>
+		</dependency>			
+		
+		<!-- Nifty GUI -->
+		<dependency>
+			<groupId>com.jme3</groupId>
+			<artifactId>jME3-niftygui</artifactId>
+			<version>${jmonkey.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.jme3</groupId>
+			<artifactId>nifty</artifactId>
+			<version>${jmonkey.version}</version>
+		</dependency>			
+		<dependency>
+			<groupId>com.jme3</groupId>
+			<artifactId>nifty-default-controls</artifactId>
+			<version>${jmonkey.version}</version>
+		</dependency>
+		<dependency>
+			<!-- WARNING : Large - about 20M -->
+			<groupId>com.jme3</groupId>
+			<artifactId>nifty-examples</artifactId>
+			<version>${jmonkey.version}</version>
+		</dependency>	
+		<dependency>
+			<groupId>com.jme3</groupId>
+			<artifactId>nifty-style-black</artifactId>
+			<version>${jmonkey.version}</version>
+		</dependency>	
+
+		<!-- Test-phase-only dependencies -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>3.8.1</version>
+			<scope>test</scope>
+		</dependency>		
+	</dependencies>
+</project>
+
+<!--
+/*
+ *  Copyright 2011 by The Friendularity Project (www.friendularity.org).
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ * 
+ * 
+ * This file depends on and contains pieces of the JMonkeyEngine3 software,
+ * and all software it includes.   You must manage your own compliance
+ * with all license agreements.  See "AS IS" BASIS provisions above.
+ *
+ * See http://www.jmonkeyengine.org
+ */
+ -->

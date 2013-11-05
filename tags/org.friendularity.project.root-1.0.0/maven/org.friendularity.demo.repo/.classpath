@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+  <classpathentry exported="true" kind="src" exported="true" path="src/main/java" including="**/*.java"/>
+  <classpathentry exported="true" kind="src" exported="true" path="src/main/resources" excluding="**/*.java"/>
+  <classpathentry kind="output" path="target/eclipse-classes"/>
+  <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk"/>
+  <classpathentry exported="true" kind="src" exported="true" path="/org.cogchar.bundle.bind.lift"/>
+  <classpathentry exported="true" kind="src" exported="true" path="/org.cogchar.bundle.core"/>
+  <classpathentry exported="true" kind="src" exported="true" path="/org.appdapter.bundle.core"/>
+  <classpathentry exported="true" kind="src" exported="true" path="/ext.bundle.osgi.common"/>
+  <classpathentry exported="true" kind="src" exported="true" path="/ext.bundle.jena_all_2_10_1"/>
+  <classpathentry exported="true" kind="src" exported="true" path="/ext.bundle.xml.dom4j_161"/>
+  <classpathentry exported="true" kind="src" exported="true" path="/ext.bundle.math.symja_jas"/>
+  <classpathentry exported="true" kind="src" exported="true" path="/org.cogchar.lib.core.impl"/>
+  <classpathentry exported="true" kind="src" exported="true" path="/org.cogchar.lib.core.api"/>
+  <classpathentry exported="true" kind="src" exported="true" path="/org.cogchar.lib.onto"/>
+  <classpathentry exported="true" kind="src" exported="true" path="/org.cogchar.lib.render"/>
+  <classpathentry exported="true" kind="src" exported="true" path="/ext.bundle.opengl.jmonkey"/>
+  <classpathentry exported="true" kind="src" exported="true" path="/org.cogchar.lib.animoid"/>
+  <classpathentry exported="true" kind="src" exported="true" path="/org.robokind.api.common"/>
+  <classpathentry exported="true" kind="src" exported="true" path="/org.jflux.api.core"/>
+  <classpathentry exported="true" kind="src" exported="true" path="/org.jflux.api.services"/>
+  <classpathentry exported="true" kind="src" exported="true" path="/org.jflux.api.registry"/>
+  <classpathentry exported="true" kind="src" exported="true" path="/org.jflux.api.data"/>
+  <classpathentry exported="true" kind="src" exported="true" path="/org.cogchar.bundle.bind.joseki"/>
+  <classpathentry exported="true" kind="src" exported="true" path="/org.cogchar.bundle.app.puma"/>
+  <classpathentry exported="true" kind="src" exported="true" path="/org.cogchar.bundle.bind.robokind"/>
+  <classpathentry exported="true" kind="src" exported="true" path="/org.cogchar.bundle.render.opengl"/>
+  <classpathentry exported="true" kind="src" exported="true" path="/org.robokind.api.speech"/>
+  <classpathentry exported="true" kind="src" exported="true" path="/org.robokind.api.messaging"/>
+  <classpathentry exported="true" kind="src" exported="true" path="/org.robokind.impl.speech"/>
+  <classpathentry exported="true" kind="src" exported="true" path="/org.jflux.impl.encode.avro"/>
+  <classpathentry exported="true" kind="src" exported="true" path="/org.robokind.impl.messaging"/>
+  <classpathentry exported="true" kind="src" exported="true" path="/org.robokind.extern.utils.messaging"/>
+  <classpathentry exported="true" kind="src" exported="true" path="/org.jflux.impl.transport.qpid"/>
+  <classpathentry exported="true" kind="src" exported="true" path="/org.robokind.api.motion"/>
+  <classpathentry exported="true" kind="src" exported="true" path="/org.robokind.api.animation"/>
+  <classpathentry exported="true" kind="src" exported="true" path="/org.robokind.api.vision"/>
+  <classpathentry exported="true" kind="src" exported="true" path="/org.robokind.impl.motion"/>
+  <classpathentry exported="true" kind="src" exported="true" path="/org.robokind.extern.utils.apache_commons_configuration"/>
+  <classpathentry exported="true" kind="src" exported="true" path="/org.robokind.extern.utils.xpp3"/>
+  <classpathentry exported="true" kind="src" exported="true" path="/org.robokind.integration.animation_motion"/>
+  <classpathentry exported="true" kind="src" exported="true" path="/org.robokind.impl.animation"/>
+  <classpathentry exported="true" kind="src" exported="true" path="/org.robokind.integration.motion_speech"/>
+  <classpathentry exported="true" kind="src" exported="true" path="/org.cogchar.bundle.render.resources"/>
+  <classpathentry exported="true" kind="src" exported="true" path="/org.friendularity.bundle.netconfig"/>
+<classpathentry exported="true" kind="src" path="/org.storychat.bundle.osgi"/></classpath>

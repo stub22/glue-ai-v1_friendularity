@@ -1,0 +1,45 @@
+//      Demo Ethel program
+      
+//      a color negative filter
+
+// if we're asked to make java, make this class in this package
+javaclass  org.friendularity.EthelDemo
+
+connect
+
+// create an aschannels block c and connect to the argument in of type Mat
+// in the apply method in EthelDemo
+j image in => c!aschannels
+
+// connect the G output of the most recently defined block (c in this case)
+// with the first unconnected input of a new block named cyan
+// if we wished to be more explicit we could have used cyan!imgadd:R
+:G => cyan!imgadd
+c:B => :B
+
+c:R => yellow!imgadd
+c:G => :B
+
+c:R => magenta!imgadd
+c:B => :B
+
+// we can omit the output param name on cyan since there's only one
+// this is an anonymous block
+cyan => _!channels
+magenta => :G
+yellow => :B
+
+// this block can be referred to by default, and has only one 
+// output channel
+: => j image out
+
+
+
+
+
+
+
+
+
+
+

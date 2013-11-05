@@ -1,0 +1,138 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.friendularity</groupId>
+		<artifactId>org.friendularity.modules.main</artifactId>
+		<version>1.0.0</version>
+		<relativePath>../org.friendularity.modules.main/pom.xml</relativePath>
+	</parent>
+	<artifactId>org.friendularity.bundle.jvision</artifactId>
+	<packaging>bundle</packaging>
+
+	<name>${project.artifactId} - OSGi</name>
+
+
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.osgi.core</artifactId>
+			<version>1.4.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>3.8.1</version>
+			<scope>test</scope>
+		</dependency>
+		<!-- 
+		2013-08-04:  JVision is currently not using any of the Cogchar or Robokind libraries, but it does use Appdapter 
+		-->
+		<dependency>
+			<groupId>org.appdapter</groupId>
+			<artifactId>org.appdapter.bundle.core</artifactId>
+			<version>${appdapter.version}</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<version>2.2.0</version>
+				<extensions>true</extensions>
+				<configuration>
+					<instructions>
+						<Bundle-Activator>org.friendularity.bundle.jvision.JVisionBundleActivator</Bundle-Activator>
+						<!--   Example of a tricky Import-Package statement, which we don't currently need in this bundle.
+						<Import-Package>sun.misc, *;resolution:=optional</Import-Package>
+						-->
+						<!-- Omitting this "Export-Package" should actually work fine as long as we don't have deps.  
+						"native" is not exported by default, but it seems Felix doesn't care about that "package" 
+						being formally "exported" (in our Manifest.MF) when it looks for the native libs using 
+						directives below in Bundle-NativeCode (which also wind up in Manifest.MF).  
+						
+						Formally, it actually seems we would prefer to *not* export "native.*" if it's not needed,
+						since this would let other bundles smell our DLLs directly (as "files"), which should 
+						never be necessary.
+						
+						OK, taking it out:   native.*,
+						-->
+						<Export-Package>org.friendularity.jvision.*, org.friendularity.bundle.jvision, org.opencv.*</Export-Package>
+						<Bundle-NativeCode>
+							native/win_x64/opencv_calib3d246.dll;
+							native/win_x64/opencv_contrib246.dll;
+							native/win_x64/opencv_core246.dll;
+							native/win_x64/opencv_features2d246.dll;
+							native/win_x64/opencv_ffmpeg246_64.dll;
+							native/win_x64/opencv_flann246.dll;
+							native/win_x64/opencv_gpu246.dll;
+							native/win_x64/opencv_highgui246.dll;
+							native/win_x64/opencv_imgproc246.dll;
+							native/win_x64/opencv_java246.dll;
+							native/win_x64/opencv_legacy246.dll;
+							native/win_x64/opencv_ml246.dll;
+							native/win_x64/opencv_nonfree246.dll;
+							native/win_x64/opencv_objdetect246.dll;
+							native/win_x64/opencv_ocl246.dll;
+							native/win_x64/opencv_photo246.dll;
+							native/win_x64/opencv_stitching246.dll;
+							native/win_x64/opencv_superres246.dll;
+							native/win_x64/opencv_ts246.dll;
+							native/win_x64/opencv_video246.dll;
+							native/win_x64/opencv_videostab246.dll;
+							osname=win32;
+							processor=x86-64
+						</Bundle-NativeCode>						
+
+						<!--
+                            native/linux/liblwjgl.so;
+							native/linux/libjinput-linux.so;
+							native/linux/libopenal.so;
+                            osname=linux;
+                            processor=x86,
+							
+                            native/linux/liblwjgl64.so;
+							native/linux/libjinput-linux.so;
+							native/linux/libopenal64.so;
+                            osname=linux;
+                            processor=x86-64,
+													
+                            native/windows/lwjgl.dll;
+							native/windows/jinput-dx8.dll;
+							native/windows/jinput-raw.dll;
+							native/windows/OpenAL32.dll;
+                            osname=win32;
+                            processor=x86,
+
+                            native/windows/lwjgl64.dll;
+							native/windows/jinput-dx8_64.dll;
+							native/windows/jinput-raw_64.dll;
+							native/windows/OpenAL64.dll;
+                            osname=win32;
+                            processor=x86-64,
+                
+                           
+                            native/macosx/liblwjgl.jnilib;
+							native/macosx/libjinput-osx.jnilib;
+							native/macosx/openal.dylib;
+                            osname=mac os x;
+                            processor=x86;
+                            processor=ppc
+						-->
+					</instructions>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.15</version>
+				<configuration>
+					<skipTests>true</skipTests>
+				</configuration>
+			</plugin>			
+		</plugins>
+	</build>
+</project>
