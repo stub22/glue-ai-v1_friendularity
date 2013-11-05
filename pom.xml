@@ -33,7 +33,7 @@ Version-less parent will be allowed in Maven 3.1.
 -->
 	<groupId>org.friendularity</groupId>
 	<artifactId>org.friendularity.project.root</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>${project.artifactId} - Root pom, linked to Sonatype repo parent</name>
 	<description>Project Root Folder pom.xml - includes all code + doc directories when snapped.</description>
@@ -92,9 +92,9 @@ Version-less parent will be allowed in Maven 3.1.
 -->
 	
 	<scm>
-		<connection>scm:svn:https://subversion.assembla.com/svn/friendularity/tags/org.friendularity.project.root-1.0.0</connection>
-		<developerConnection>scm:svn:https://subversion.assembla.com/svn/friendularity/tags/org.friendularity.project.root-1.0.0</developerConnection>
-		<url>https://www.assembla.com/code/friendularity/subversion/nodes/tags/org.friendularity.project.root-1.0.0</url>
+		<connection>scm:svn:https://subversion.assembla.com/svn/friendularity/trunk</connection>
+		<developerConnection>scm:svn:https://subversion.assembla.com/svn/friendularity/trunk</developerConnection>
+		<url>https://www.assembla.com/code/friendularity/subversion/nodes/trunk</url>
 	</scm>
 	<build>
 		
