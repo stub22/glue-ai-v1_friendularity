@@ -32,7 +32,6 @@
 	</repositories>
 	
 	<modules>
-		<module>../org.friendularity.bundle.animplayer</module>
 		<module>../org.friendularity.bundle.demo.ccrk</module>
 		<module>../org.friendularity.bundle.demo.convo.dictation</module>
 		<module>../org.friendularity.bundle.demo.convo.response</module>
@@ -43,6 +42,7 @@
         <module>../org.friendularity.bundle.messageplayer</module>
         <module>../org.friendularity.bundle.test.facedetect.r50</module>
         <module>../org.friendularity.bundle.ui.swing.animation</module>	
+		<module>../org.friendularity.bundle.animplayer</module>
 		<module>../org.friendularity.bundle.vision</module>
 		<module>../org.friendularity.bundle.jvision</module>
 		<module>../org.friendularity.bundle.blockflow</module>
