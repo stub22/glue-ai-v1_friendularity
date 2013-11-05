@@ -60,7 +60,7 @@ Version-less parent will be allowed in Maven 3.1.
 		<!--  We are directly using the "headless" part of Robokind-core. -->
 		<robokind.version>0.9.3</robokind.version>
 
-		<rwshop.version>0.9.3-SNAPSHOT</rwshop.version>
+		<rwshop.version>0.9.3</rwshop.version>
 
 		<freckler.version>1.0.0-SNAPSHOT</freckler.version>
         
