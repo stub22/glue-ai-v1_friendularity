@@ -23,10 +23,13 @@ import org.robokind.client.basic.UserSettings;
  */
 public class App {
     public static void main(String[] args) {
-        UserSettings.setSensorAddress("192.168.2.140");
-        UserSettings.setAccelerometerAddress("192.168.2.140");
-        UserSettings.setGyroscopeAddress("192.168.2.140");
-        UserSettings.setCompassAddress("192.168.2.140");
+//        Sensors won't work on an avatar; you must use an actual robot.
+//        Make sure the robot's sensor service is running!
+//        Set the following to the robot's IP:
+//        UserSettings.setSensorAddress("127.0.0.1");
+//        UserSettings.setAccelerometerAddress("127.0.0.1");
+//        UserSettings.setGyroscopeAddress("127.0.0.1");
+//        UserSettings.setCompassAddress("127.0.0.1");
         UserSettings.setRobotId("myRobot");
         
         RemoteGpioServiceClient sensors = Robokind.connectSensors();
