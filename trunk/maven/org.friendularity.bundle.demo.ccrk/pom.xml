@@ -211,7 +211,7 @@ Some other options we aint presently using:
 -XX:+CMSClassUnloadingEnabled -XX:+CMSPermGenSweepingEnabled
 -XX:+PrintGCDetails -XX:+PrintTenuringDistribution -XX:+PrintGCTimeStamps										
 								-->
-								<property name="vm.args" value="-Dlog4j.debug -XX:MaxHeapSize=128M -XX:MaxPermSize=384M -XX:+TieredCompilation -XX:+UseConcMarkSweepGC" />
+								<property name="vm.args" value="-Dlog4j.debug -XX:MaxHeapSize=512M -XX:MaxPermSize=384M -XX:+TieredCompilation -XX:+UseConcMarkSweepGC" />
 								<pathconvert property="plugins.jars" pathsep="${path.separator}">
 									<path refid="maven.runtime.classpath" />
 									<map from="${project.build.directory}${file.separator}classes" to="" />
