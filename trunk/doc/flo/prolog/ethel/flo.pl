@@ -3,7 +3,8 @@
 	       set_current_graph_name/1,
 	       create_named_block/2,
 	       create_anonymous_block/2,
-	       open_terminal/2]).
+	       open_terminal/2,
+	       create_java_class/3]).
 /** <module> Predicates for manipulating the Flo rdf language
 
 */
@@ -19,7 +20,8 @@
 	input_terminal(+, +, r, r),
 	output_terminal(+, +, r, r),
 	not_connected_input(r, -),
-	not_connected_output(r, -).
+	not_connected_output(r, -),
+	create_java_class_def(+, +, -).
 
 %%	ensure_normal_setup is det
 %
@@ -33,6 +35,17 @@ ensure_normal_setup :-
 	rdf_load('blockflow.ttl', [format(turtle)]),
 	rdf_load('protos.ttl', [format(turtle)]),
 	flostate:asserta(setup_normally(true)).
+
+
+%%	create_java_class_def(+Pkg:atom, +Name:atom, -URI:r)
+%
+create_java_class(Pkg, Name, URI) :-
+	atom(Pkg),
+	atom(Name),
+	rdf_bnode(URI),
+	assert_rdf_default(URI, rdf:type, flo:'JavaBinding'),
+	assert_rdf_default(URI, flo:javaName, literal(Name)),
+	assert_rdf_default(URI, flo:javaPackage, literal(Pkg)).
 
 %%	create_connection(+LHS:terminal, +RHS:terminal) is det
 %
