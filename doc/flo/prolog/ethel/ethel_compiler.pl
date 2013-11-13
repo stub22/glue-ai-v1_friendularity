@@ -10,8 +10,15 @@
 
 %%	compile(+InFile:file, OutFile:file) is det
 %
-%	@arg InFile is one of stream(Stream), a stream handle, a file-URL or an atom that denotes a filename
-%	@arg OutFile is one of stream(Stream), a stream handle, a file-URL or an atom that denotes a filename
+%	Compile an input file to an output file.
+%	The input file should be in Ethel format, the output will be
+%	turtle representation of a flo graph
+%
+%       @arg InFile is one of
+%	stream(Stream), a stream handle, a file-URL or an atom that
+%	denotes a filename.
+%       @arg OutFile is one of stream(Stream), a
+%	stream handle, a file-URL or an atom that denotes a filename
 
 compile(InFile, OutFile) :-
 	file_graph_name(InFile, Graph),
@@ -21,15 +28,20 @@ compile(InFile, OutFile) :-
 
 %%	file_graph_name(?FileName:atom, ?GraphName:atom) is det
 %
+%	Convert the file name to a graph name.
+%
 %	@arg the name of the file
 %	@arg the corresponding graph
 %
-file_graph_name(File, File) :-
-	File \= 'protos.ttl',
-	File \= 'blockflow.ttl'.
-file_graph_name(File, _) :-
+file_graph_name('protos.ttl', File) :-
 	format(user_error, 'ILLEGAL FILE: The names protos.ttl and blockflow.ttl are reserved, don\'t use ~w~n', [File]),
+	!,
 	fail.
+file_graph_name('blockflow.ttl', File) :-
+	format(user_error, 'ILLEGAL FILE: The names protos.ttl and blockflow.ttl are reserved, don\'t use ~w~n', [File]),
+	!,
+	fail.
+file_graph_name(File, File).
 
 %%	prep_for_file(+Graph:atom) is det
 %

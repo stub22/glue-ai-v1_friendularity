@@ -19,6 +19,12 @@ ethel_program -->
 	blanks,
 	ethel_body(none).
 
+%%	ethel_body(+Current_Block)// is det
+%
+%	Generate the rest of the body
+%	The current block is which block will be
+%	used for references
+%
 ethel_body(_) --> dcg_basics:eos.
 ethel_body(Default) -->
 	blank,
@@ -56,17 +62,31 @@ line_comment -->
 	},
 	line_comment.
 
-setting_stmt(Settings, [generate_java_as(Pkg, Name) | NewSettings]) -->
-	"javaclass",
+settings_section -->
+	java_class_stmt,
+	settings_section.
+settings_section --> [].
+
+:- dynamic user:java_class/3.
+
+java_class_stmt -->
+	"java",
+	blank,
+	blanks,
 	fully_qualified_java_name(Pkg, Name),
+	blanks_to_nl,
 	{
-	    subtract(Settings, [generate_java_as(_,_)], NewSettings)
+	    atom_codes(APkg, Pkg),
+	    atom_codes(AName, Name),
+	    create_java_class(APkg, AName, URI),
+	    asserta(user:java_class(APkg, AName, URI))
 	}.
 
 fully_qualified_java_name(Pkg, Name) -->
 	package_part(PkgParts),
 	{
-	    flatten(PkgParts, Pkg)
+	    flatten(PkgParts, PkgDot),
+	    append(Pkg, ".", PkgDot)
 	},
 	id(Name).
 
@@ -188,9 +208,6 @@ parser_restart -->
 	[_],
 	parser_restart.
 
-settings_section --> [].
-
-
 prolog_atom_name([H|T]) -->
 	[H],
 	{
@@ -205,3 +222,6 @@ prolog_atom_rest([H|T]) -->
 	},
 	prolog_atom_rest(T).
 prolog_atom_rest([]) --> [].
+
+nl --> "\r\n".
+nl --> "\n".

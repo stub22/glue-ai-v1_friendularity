@@ -1,4 +1,5 @@
-:- module(debug, [go/0]).
+:- module(debug, [go/0,
+		  go2/0]).
 /** <module> Consult this file to start in dev mode
 
 */
@@ -36,6 +37,7 @@ license:license(apache, lgpl,
 http:location(pldoc, root('help/source'), [priority(10)]).
 
 go :- compile('examples/testcase.eth', 'examples/testcaseout.flo').
+go2 :- compile('examples/testcase2.eth', 'examples/testcaseout2.flo').
 
 :- doc_server(5000).
 
