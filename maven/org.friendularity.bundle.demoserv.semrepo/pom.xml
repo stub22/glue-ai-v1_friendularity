@@ -1,0 +1,160 @@
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.friendularity</groupId>
+        <artifactId>org.friendularity.modules.main</artifactId>
+        <version>1.0.1-SNAPSHOT</version>
+        <relativePath>../org.friendularity.modules.main/pom.xml</relativePath>
+    </parent>	
+	
+
+    <artifactId>org.friendularity.bundle.demoserv.semrepo</artifactId>	
+
+	<packaging>bundle</packaging>
+
+	<name>${project.artifactId} - OSGi</name>
+
+	<properties>
+	<!-- Important: Establish the Web URL, which is used in OSGi spec
+			Web-ContextPath instruction far below, in maven-bundle-plugin.instructions
+			
+		When starting from a "New bundle project", to create a webapp, besides the
+		PAX-Web dependencies we need those instructions (and optionally this 
+		highly-visible web.contextPath variable.
+	-->
+        <web.contextPath>friendu_semrepo</web.contextPath>
+
+        <force-imports>
+               org.joseki.servlets, org.joseki.http, org.joseki.validation, org.joseki, org.joseki.module, org.joseki.vocabulary, javax.servlet, javax.servlet.http,
+               org.cogchar.app.puma.boot, org.cogchar.app.puma.config, org.cogchar.app.puma.web, org.cogchar.joswrap,org.cogchar.name.dir
+        </force-imports>
+	</properties>
+	
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.osgi.core</artifactId>
+			<version>1.4.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<!-- This is a big honking hunk of code, but so far is working better than trying
+				to mix-and-match our own version of Jetty + PAX.
+			-->
+			<groupId>org.ops4j.pax.web</groupId>
+			<artifactId>pax-web-jetty-bundle</artifactId>
+			<version>1.1.2</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<!--  		http://team.ops4j.org/wiki/display/paxweb/WAR+Extender
+			"Once installed the war extender will watch over the bundles that get started / stopped. 
+			Once your war bundle gets deployed and started, the war extender will parse your web.xml 
+			and registers all elements with http service."
+			-->
+
+			<groupId>org.ops4j.pax.web</groupId>
+			<artifactId>pax-web-extender-war</artifactId>
+			<version>1.1.2</version>
+			<scope>runtime</scope>
+		</dependency>
+
+		<dependency>
+			<!--  We do not use JSP technology, but apparently pax-web-jsp is needed, to resolve:
+				org.ops4j.pax.web.pax-web-jetty-bundle imports (package=org.eclipse.jdt.core.compiler)
+			-->			
+			<groupId>org.ops4j.pax.web</groupId>
+			<artifactId>pax-web-jsp</artifactId>
+			<version>1.1.2</version>
+			<scope>runtime</scope>
+		</dependency>
+
+				
+        <!-- Our Lift-based webapp, which we expect PAX services above to find and launch to HTTP for us  -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>org.friendularity.bundle.webapp.semrepo</artifactId>
+            <version>${project.version}</version>
+            <scope>runtime</scope>
+        </dependency>   
+
+        <dependency>
+            <groupId>org.cogchar</groupId>
+            <artifactId>org.cogchar.bundle.bind.joseki</artifactId>
+            <version>${cogchar.version}</version>
+            <scope>compile</scope>
+        </dependency>   
+		<dependency>
+			<groupId>org.cogchar</groupId>
+			<artifactId>org.cogchar.bundle.bind.lift</artifactId>
+			<version>${cogchar.version}</version>
+            <scope>provided</scope>  <!--  *is* "provided" above by org.friendularity.bundle.webapp.semrepo at "runtime"-->
+		</dependency> 
+       
+
+		<!-- We want the same deps as CCRK, but not the full PUMA boot peformed by CCRK activator.
+		-->
+		<dependency>
+			<groupId>org.cogchar</groupId>
+			<artifactId>org.cogchar.bundle.app.puma</artifactId>
+			<version>${cogchar.version}</version>
+		</dependency>
+        <!--
+		<dependency>
+			<groupId>org.cogchar</groupId>
+			<artifactId>org.cogchar.bundle.render.resources</artifactId>
+			<version>${cogchar.version}</version>
+		</dependency>
+        -->
+        <!-- Note that o.f.project.root and o.f.modules.main must also have been built and avail in local repo,
+            in order for variables like "robokind.version" to resolve when applied *transitively*
+            (The built main+root is not required to resolve the variables used directly in this pom; 
+                those are allowed to come from the source-tree poms).
+        -->
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>org.friendularity.bundle.netconfig</artifactId>
+			<version>${project.version}</version>
+            <scope>runtime</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<version>2.3.7</version>
+				<extensions>true</extensions>
+                <configuration>
+                    <instructions>
+            <!--				Web-ContextPath is from the OSGi spec.
+                                With no Web-ContextPath, PAX assigns a default context path like:
+                                http://localhost:8080/org.cogchar.org.cogchar.lifter/
+            ${questionalbe.depends},
+
+            -->
+
+                        <Bundle-Activator>${project.artifactId}.Activator</Bundle-Activator>                        
+                        <!-- 
+
+                          <Web-ContextPath>${web.contextPath}</Web-ContextPath>
+
+                           not sure we want to do anything but wrap the webapp here .. decide later
+
+						<Export-Package>${project.artifactId},
+                            etc.*;-split-package:=merge-first,
+							Data.*;-split-package:=merge-first,                            
+						</Export-Package>
+                        -->						
+                        <Bundle-Activator>${project.artifactId}.Activator</Bundle-Activator>
+                        <Import-Package>${force-imports},javax.security.auth.x500,*</Import-Package>
+					</instructions>
+				</configuration>
+			</plugin>
+
+		</plugins>	  
+	</build>
+</project>
