@@ -582,10 +582,11 @@ public class MergeGrid extends JPanel {
 		}
 
 		private boolean clashesWith(int acol, int arow, int acolsize, int arowsize) {
-			return (col < acol && col + colsize >= acol) ||
-					(col  < acol + acolsize && col + colsize >= acol + acolsize) ||
-					(row < arow && row + rowsize > arow) ||
-					(row < arow + arowsize && row + rowsize >= arow + arowsize);
+			return (
+					(col < acol && col + colsize > acol) ||
+					     (col  < acol + acolsize && col + colsize >= acol + acolsize)) &&
+					((row < arow && row + rowsize > arow) ||
+					     (row < arow + arowsize && row + rowsize >= arow + arowsize));
 		}
 
 		private boolean coveredBy(int acol, int arow, int acolsize, int arowsize) {
