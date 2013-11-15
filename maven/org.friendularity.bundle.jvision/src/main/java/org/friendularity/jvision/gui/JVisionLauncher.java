@@ -37,6 +37,7 @@ public class JVisionLauncher extends BasicDebugger implements Quitter {
 		if (connectedOK) {
 			FilterSequence fseq = myEngine.getFilterSeq();
 			myDemoFrame.setControlledFilterSequence(fseq);
+			
 			ImageStreamBroker.getDefaultImageStreamBroker().addImageStreamConsumer(
 					JVisionEngine.JVISION_IS_NAME, myDemoFrame);
 

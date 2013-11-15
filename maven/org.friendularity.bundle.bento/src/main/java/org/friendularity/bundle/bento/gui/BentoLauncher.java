@@ -5,6 +5,7 @@ import java.awt.event.WindowListener;
 import java.util.ArrayList;
 import org.appdapter.core.log.BasicDebugger;
 import org.friendularity.bundle.bento.engine.Quitter;
+import org.friendularity.jvision.engine.JVisionEngine;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -38,7 +39,8 @@ public class BentoLauncher extends BasicDebugger implements Quitter, WindowListe
 	}
 	
 	public boolean  attemptInit() {
-		// @TODO start up engine, return true if successful
+		JVisionEngine.getDefaultJVisionEngine();  // starts the engine
+		
 		addWindow(new BentoFrame());
 		return true;
 	}
