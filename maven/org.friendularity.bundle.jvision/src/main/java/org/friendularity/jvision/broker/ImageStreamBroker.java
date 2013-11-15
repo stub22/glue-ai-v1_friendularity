@@ -16,6 +16,7 @@
 package org.friendularity.jvision.broker;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -88,5 +89,9 @@ public class ImageStreamBroker {
 			}
 		}
 		isp.addConsumer(isc);
+	}
+
+	public Iterator<String> imageStreamNames() {
+		return imageStreams.keySet().iterator();
 	}
 }

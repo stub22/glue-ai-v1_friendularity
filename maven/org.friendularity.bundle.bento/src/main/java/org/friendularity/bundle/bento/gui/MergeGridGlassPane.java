@@ -26,6 +26,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JMenu;
@@ -35,6 +36,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
 import javax.swing.SwingUtilities;
 import org.friendularity.bundle.bento.util.Bento_OSGi_ResourceLoader;
+import org.friendularity.jvision.broker.ImageStreamBroker;
 
 /**
  *
@@ -42,6 +44,8 @@ import org.friendularity.bundle.bento.util.Bento_OSGi_ResourceLoader;
  */
 class MergeGridGlassPane extends JPanel implements MouseListener, MouseMotionListener {
 	private boolean iHandleEvents = false;
+	private int newComponentCol;
+	private int newComponentRow;
 
 	public MergeGridGlassPane() {
 		this.setOpaque(false);
@@ -128,9 +132,13 @@ class MergeGridGlassPane extends JPanel implements MouseListener, MouseMotionLis
 		MergeGrid mg = ((MergeGrid)this.getParent());
 		
 		if (e.isPopupTrigger()) {
-			initPopup(mg.getNonGlassComponentAt(e.getPoint()),
-					mg.getColumnAt(e.getPoint().x),
-					mg.getRowAt(e.getPoint().y)); // reinit to get rid of old refs
+			Component cmpnt = mg.getNonGlassComponentAt(e.getPoint());
+			newComponentCol = mg.getColumnAt(e.getPoint().x);
+			newComponentRow = mg.getRowAt(e.getPoint().y);
+			
+			initPopup(cmpnt,
+					newComponentCol,
+					newComponentRow); // reinit to get rid of old refs
 			popup.show(e.getComponent(),
 					   e.getX(), e.getY());
 			
@@ -499,8 +507,24 @@ class MergeGridGlassPane extends JPanel implements MouseListener, MouseMotionLis
 		{
 			popup.add(new JSeparator());
 
-			menuItem = new JMenuItem("this will be the add");
-			popup.add(menuItem);
+			subMenu = new JMenu("Add Item");
+			
+			for(Iterator<String> i = ImageStreamBroker.getDefaultImageStreamBroker().imageStreamNames() ;
+				i.hasNext() ; )
+			{
+				String name = i.next();
+				menuItem = new JMenuItem(name);
+				menuItem.addActionListener(new ActionListener(){
+
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						MergeGridGlassPane.this.addElementAction(e);
+					}
+				});
+				
+				subMenu.add(menuItem);
+			}
+			popup.add(subMenu);
 		}
 		
 		if (c instanceof BentoPlugin)
@@ -538,6 +562,18 @@ class MergeGridGlassPane extends JPanel implements MouseListener, MouseMotionLis
 				
 		this.repaint(50L);
 		return handledLocally;
+	}
+
+	private void addElementAction(ActionEvent e) {
+		MergeGrid mg  = ((MergeGrid)(MergeGridGlassPane.this.getParent()));
+		
+		CameraViewer cv = new CameraViewer();
+
+		try {
+			mg.setCell(cv, newComponentCol, newComponentRow, 1, 1);
+		} catch (ItsBentoBoxesNotBentoTetrisException ex) {
+			Logger.getLogger(BentoFrame.class.getName()).log(Level.SEVERE, null, ex);
+		}
 	}
 
 }
