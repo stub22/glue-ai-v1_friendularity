@@ -39,6 +39,8 @@ import org.jflux.impl.services.rk.osgi.lifecycle.OSGiComponent;
  */
 public class RegisterWiring {
 
+    private final static String contextKey = "bundleContextSpec";
+    private final static String contextURI = "http://www.w3.org/2002/07/owl#bundleContextSpec";
     public final static String PIPELINE_GRAPH_QN = "csi:pipeline_sheet_0";
     public final static String PIPE_QUERY_QN = "ccrt:find_pipes_77"; //"ccrt:find_sheets_77";
     public final static String PIPE_SOURCE_QUERY_QN = "ccrt:find_pipe_sources_99";
@@ -55,7 +57,13 @@ public class RegisterWiring {
         Set<Object> allSpecs = derivedBMP.assembleModelRoots();
 
         List<RegistrationSpec> registrationSpecs = filterSpecs(RegistrationSpec.class, allSpecs);
-       
+
+        BundleContextSpec contextSpec = new BundleContextSpec();
+        contextSpec.setContext(context);
+        Properties bundleProps = new Properties();
+        bundleProps.put(contextKey, contextURI);
+        ManagedService<BundleContextSpec> bcs = registerSpec(context, BundleContextSpec.class, contextSpec, bundleProps);
+        
         for (RegistrationSpec root : registrationSpecs) {
             if (root.getSpec() instanceof ConnectionSpec) {
 
@@ -81,6 +89,13 @@ public class RegisterWiring {
 
                 ManagedService<RemoteClientPropertySpec> rs =
                         registerSpec(context, RemoteClientPropertySpec.class, (RemoteClientPropertySpec) root.getSpec(), root.getProperties());
+                managedServices.add(rs);
+            }
+
+            if (root.getSpec() instanceof AnimationLibrarySpec) {
+
+                ManagedService<AnimationLibrarySpec> rs =
+                        registerSpec(context, AnimationLibrarySpec.class, (AnimationLibrarySpec) root.getSpec(), root.getProperties());
                 managedServices.add(rs);
             }
         }

@@ -47,6 +47,11 @@
         </dependency>
         <dependency>
             <groupId>org.robokind</groupId>
+            <artifactId>org.robokind.api.animation</artifactId>
+            <version>${robokind.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.robokind</groupId>
             <artifactId>org.robokind.api.speech</artifactId>
             <version>${robokind.version}</version>
         </dependency>
