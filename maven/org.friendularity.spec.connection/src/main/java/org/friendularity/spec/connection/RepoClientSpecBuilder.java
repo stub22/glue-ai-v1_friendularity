@@ -13,10 +13,9 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package org.friendularity.spec.connection;
- 
- import com.hp.hpl.jena.assembler.Assembler;
+
+import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.assembler.Mode;
 import java.util.Set;
 import org.appdapter.bind.rdf.jena.assembly.CachingComponentAssembler;
@@ -30,25 +29,21 @@ import com.hp.hpl.jena.rdf.model.Resource;
  *
  * @author Major Jacquote II <mjacquote@gmail.com>
  */
-
-
 public class RepoClientSpecBuilder extends CachingComponentAssembler<RepoClientSpec> {
-    
-    public RepoClientSpecBuilder(Resource builderConfRes)
-    {
+
+    public RepoClientSpecBuilder(Resource builderConfRes) {
         super(builderConfRes);
     }
-    
+
     protected Class<RepoClientSpec> decideComponentClass(
             Ident ident, Item item) {
         return RepoClientSpec.class;
     }
-    
+
     protected void initExtendedFieldsAndLinks(RepoClientSpec repoClientSpec, Item item, Assembler asmblr, Mode mode) {
         ItemAssemblyReader reader = getReader();
-      
-     
+
+
 
     }
 }
-

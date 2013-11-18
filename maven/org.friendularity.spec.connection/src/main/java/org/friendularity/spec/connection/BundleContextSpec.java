@@ -13,31 +13,27 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
-
 package org.friendularity.spec.connection;
 
 import org.osgi.framework.BundleContext;
 import org.appdapter.bind.rdf.jena.assembly.KnownComponentImpl;
+
 /**
  *
  * @author Major Jacquote II <mjacquote@gmail.com>
  */
-
 public class BundleContextSpec extends KnownComponentImpl {
-    
+
     private BundleContext context;
-    
-    public BundleContextSpec()
-    {}
-    
-    public void setContext(BundleContext context)
-    {
-        this.context=context;
+
+    public BundleContextSpec() {
     }
-    
-    public BundleContext getContext()
-    {
+
+    public void setContext(BundleContext context) {
+        this.context = context;
+    }
+
+    public BundleContext getContext() {
         return this.context;
     }
 }
