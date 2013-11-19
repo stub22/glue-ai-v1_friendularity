@@ -18,7 +18,7 @@ public class AnimationLibraryLifecycle implements ServiceLifecycle<AnimationLibr
     private static final String theSpecName = "anmationIDSpec";
     private final static ServiceDependency[] theDependencyArray = {
         new ServiceDependency(
-        theSpecName, DestinationSpec.class.getName(),
+        theSpecName, AnimationLibrarySpec.class.getName(),
         ServiceDependency.Cardinality.MANDATORY_UNARY,
         ServiceDependency.UpdateStrategy.STATIC, Collections.EMPTY_MAP)
     };
