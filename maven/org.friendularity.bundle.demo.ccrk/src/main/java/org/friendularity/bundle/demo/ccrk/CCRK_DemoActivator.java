@@ -46,7 +46,7 @@ import org.rwshop.swing.common.lifecycle.ServicesFrame;
  *		</li><li>Robokind animation and speech
  *		</li><li>Optional Cogchar OpenGL rendering</li></ul>
 
-*  The actual subset is determined through the intervation of a customizable PumaContextMediator object.
+*  The actual subset is determined through the mediation of a customizable PumaContextMediator object.
 
 * L1) This bundle does not try to start a lifter webapp, which is currently initialized
  * orthogonally to the PUMA system.  See the o.f.b.demo.liftoff project.
@@ -131,7 +131,8 @@ public class CCRK_DemoActivator extends BundleActivatorBase {
 		// TODO:  Pay attention to {the set of relevant charIDs and component configs}, as we set up these
 		// motionComputer + estimateVisualizer components.
 		
-		// Cheaters context is used only for our demo-specific debugging features.
+		// Cheaters context is available locally only for our demo-specific debugging features.
+		// [It is currently unused]
 		// If another mediator took over instead, then we won't try to "cheat" to make those debugging features run.
 		PumaAppContext localDemoCheatersContext = null;
 		if (mediator instanceof DemoMediator) {
