@@ -27,6 +27,13 @@ import org.friendularity.api.west.ThingEstimate;
 import org.friendularity.api.west.WorldEstimate;
 import org.friendularity.vworld.MeshTest;
 
+import org.cogchar.render.trial.TrialContent;
+import org.cogchar.render.trial.TrialCameras;
+import org.cogchar.render.trial.TempMidiBridge;
+
+import org.cogchar.render.opengl.optic.ViewportFacade;
+
+
 /**
  *
  * @author Stu B22 <stub22@appstract.com>
@@ -46,8 +53,31 @@ public class BonusVisualizer extends ShapeAnimVisualizer<WorldEstimate> {
 		RenderConfigEmitter rce = getConfigEmitter();
 		MeshTest mt = new MeshTest();
 		mt.makeStuff(amgr, rootNode);
+		showTrialContent();
 	}
 
-
+	public void showTrialContent() { 
+		TempMidiBridge tmb = new TempMidiBridge();
+		TrialContent trialCont = new TrialContent();
+		RenderRegistryClient rrc = getRenderRegistryClient();
+		
+		Node rootDeepNode = rrc.getJme3RootDeepNode(null);
+		ViewportFacade vf = rrc.getOpticViewportFacade(null);
+		AssetManager assetMgr = rrc.getJme3AssetManager(null);
+		
+		Node guiNode = rrc.getJme3RootOverlayNode(null);
+		
+		// trialCont.shedLight_onRendThread(crc);
+		trialCont.initContent3D_onRendThread(rrc, rootDeepNode);
+		
+		// Camera-viewports are placed in the screen coordinate system, so we might consider them to be a kind
+		// of 2-D content.  They are part of that layout, anyhoo.
+		trialCont.initContent2D_onRendThread(rrc, guiNode, assetMgr);
+		// trialCont.attachMidiCCs(tmb);  // was protected access
+		// CogcharRenderContext crc = getRenderContext();
+		// TrialCameras tcam = new TrialCameras();
+		// tcam.setupCamerasAndViews(rrc, crc, trialCont);
+		// tcam.attachMidiCCs(myTMB);		
+	}
 
 }
