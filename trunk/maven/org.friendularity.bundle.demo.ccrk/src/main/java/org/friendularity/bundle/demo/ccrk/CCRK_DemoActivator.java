@@ -26,6 +26,7 @@ import org.cogchar.bind.midi.FunMidiEventRouter;
 // import org.cogchar.test.symcalc.ScriptEngineExperiment;
 import org.friendularity.vworld.VisionDataFeed;
 import org.robokind.api.motion.Robot;
+
 // import org.robokind.ui.swing.common.lifecycle.ServicesFrame;
 import org.rwshop.swing.common.lifecycle.ServicesFrame;
 /**
@@ -62,6 +63,7 @@ public class CCRK_DemoActivator extends BundleActivatorBase {
 	private	boolean		myFlag_connectMidiOut = false;
 	private	boolean		myFlag_connectSwingDebugGUI = false;
 	private boolean		myFlag_monitorLifecycles = true;
+	private boolean		myFlag_deicticVisualization = true;
 	
 	@Override public void start(final BundleContext context) throws Exception {
 		// Will look for log4j.properties at root of this bundle.
@@ -170,13 +172,18 @@ public class CCRK_DemoActivator extends BundleActivatorBase {
 		if (myFlag_connectSwingDebugGUI) {
 			setupDebuggingScaffold(mg, we);
 		}
-		
+		if (myFlag_deicticVisualization) {
+			startDeicticVisualizer();
+		}
 		if (localDemoCheatersContext != null) {
 			getLogger().info("We have a cheater's Puma-App-Context, but we're not cheatin with it today");
 		}
 
 	}
-
+	private void startDeicticVisualizer() { 
+		DeicticVisualizer gs = new DeicticVisualizer();
+		gs.forceHeadCameraOntoSinbad();
+	}
 	private void setupDebuggingScaffold(MathGate mg, WorldEstimate we) { 
 	/*		
 		DemoBrowser.showObject("werm-MG", mg, false, false); // true, true);
@@ -232,6 +239,7 @@ public class CCRK_DemoActivator extends BundleActivatorBase {
 		//fmer.registerListener(fl);			
 		fmer.startPumpingMidiEvents();		
 	}
+	// These mediators decorate the application lifecycle as needed.
 	static class DemoMediator extends PumaContextMediator {
 		// Override base class methods to customize the way that PUMA boots + runs, and
 		// to receive notifications of progress during the boot / re-boot process.
@@ -248,7 +256,9 @@ public class CCRK_DemoActivator extends BundleActivatorBase {
 		}
 		@Override public void notifyBeforeBootComplete(PumaAppContext ctx) throws Throwable {
 			myDemoPACtx = ctx;
+			// We could do some additional init here, if desired.
 		}
 	}	
+
 
 }
