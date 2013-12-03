@@ -75,6 +75,11 @@
             <artifactId>org.robokind.impl.messaging</artifactId>
             <version>${robokind.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.rwshop</groupId>
+            <artifactId>org.rwshop.swing.common</artifactId>
+            <version>${rwshop.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
