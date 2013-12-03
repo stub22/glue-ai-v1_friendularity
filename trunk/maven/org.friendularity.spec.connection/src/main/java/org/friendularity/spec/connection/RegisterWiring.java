@@ -58,12 +58,6 @@ public class RegisterWiring {
 
         List<RegistrationSpec> registrationSpecs = filterSpecs(RegistrationSpec.class, allSpecs);
 
-        BundleContextSpec contextSpec = new BundleContextSpec();
-        contextSpec.setContext(context);
-        Properties bundleProps = new Properties();
-        bundleProps.put(contextKey, contextURI);
-        ManagedService<BundleContextSpec> bcs = registerSpec(context, BundleContextSpec.class, contextSpec, bundleProps);
-        
         for (RegistrationSpec root : registrationSpecs) {
             if (root.getSpec() instanceof ConnectionSpec) {
 
@@ -98,6 +92,17 @@ public class RegisterWiring {
                         registerSpec(context, AnimationLibrarySpec.class, (AnimationLibrarySpec) root.getSpec(), root.getProperties());
                 managedServices.add(rs);
             }
+
+            if (root.getSpec() instanceof BundleContextSpec) {
+                ((BundleContextSpec) root.getSpec()).setContext(context);
+                ManagedService<BundleContextSpec> bcs =
+                        registerSpec(context, BundleContextSpec.class, (BundleContextSpec) root.getSpec(), root.getProperties());
+                managedServices.add(bcs);
+            }
+//            System.out.println(root.getSpec().getClass().getName());
+//            ManagedService<AnimationLibrarySpec> rs =
+//                    registerSpec(context, AnimationLibrarySpec.class, (AnimationLibrarySpec) root.getSpec(), root.getProperties());
+//            managedServices.add(rs);
         }
         return managedServices;
 
@@ -123,6 +128,20 @@ public class RegisterWiring {
 
         ServiceLifecycleProvider<T> lifecycle =
                 new SimpleLifecycle<T>(spec, specClass);
+
+        ManagedService<T> ms = new OSGiComponent<T>(context, lifecycle, props);
+        ms.start();
+        return ms;
+    }
+
+    private static <T extends KnownComponentImpl> ManagedService<T> registerSpec(
+            BundleContext context,
+            String specClassName,
+            T spec, Properties props) {
+
+
+        ServiceLifecycleProvider<T> lifecycle =
+                new SimpleLifecycle<T>(spec, specClassName);
 
         ManagedService<T> ms = new OSGiComponent<T>(context, lifecycle, props);
         ms.start();

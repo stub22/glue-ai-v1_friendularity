@@ -43,8 +43,8 @@ public class Activator extends BundleActivatorBase {
 
     public void start(BundleContext context) throws Exception {
         forceLog4jConfig();
-        setLookAndFeel();
-        startServicePanel(context);
+        //setLookAndFeel();
+
         // Setup to connect to a GoogSheet repo
         List<ClassLoader> classloaders =
                 ClassLoaderUtils.getFileResourceClassLoaders(
@@ -64,12 +64,23 @@ public class Activator extends BundleActivatorBase {
                 //                    8,
                 //                    classloaders);
 
+                //                new OnlineSheetRepoSpec(
+                //                "0AlpQRNQ-L8QUdGpCYktydHNsTXB6LVI2NmYydE9LbXc",
+                //                1,
+                //                12,
+                //                classloaders);
+                //        
+//                                new OnlineSheetRepoSpec(
+//                                "0AivIV8RvlFTvdGlqNVlMUkQyd0szb1VMSGtYSDBfNHc",
+//                                0,
+//                                7,
+//                                classloaders);
                 new OnlineSheetRepoSpec(
-                "0AlpQRNQ-L8QUdGpCYktydHNsTXB6LVI2NmYydE9LbXc",
-                1,
-                12,
+                "0AivIV8RvlFTvdGduX29BTF9BZVhISjYyMkp5c2JxcXc",
+                0,
+                7,
                 classloaders);
-        
+
         Repo.WithDirectory bmcMemoryRepoHandle = repoSpec.makeRepo();
         EnhancedRepoClient enhancedRepoSpec = new EnhancedRepoClient(repoSpec, bmcMemoryRepoHandle,
                 BehavMasterConfigTest.TGT_GRAPH_SPARQL_VAR(), BehavMasterConfigTest.QUERY_SOURCE_GRAPH_QN());
@@ -78,7 +89,7 @@ public class Activator extends BundleActivatorBase {
         //EnhancedRepoClient enhancedRepoSpec =  rc.connectDemoRepoClient(repoSpec);
 
         RegisterWiring.loadAndRegisterSpec(context, enhancedRepoSpec, MERGED_MODEL_MANAGER_QN);
-
+        
 
         // Load the specs from the repo, and register them with JFlux
         ServiceManagerWiring.loadAndRegisterSpecs(
@@ -97,17 +108,6 @@ public class Activator extends BundleActivatorBase {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception ex) {
         }
-    }
-
-    private void startServicePanel(final BundleContext context) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                ServicesFrame sf = new ServicesFrame();
-                sf.setBundleContext(context);
-                sf.setVisible(true);
-            }
-        });
     }
 
     @Override
