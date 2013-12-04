@@ -35,15 +35,16 @@ import org.opencv.imgproc.Imgproc;
  */
 public class JVisionEngine extends BasicDebugger implements Runnable {
 
-	public static final String JVISION_IS_NAME = "jvision";
+	public static final String JVISION_IS_NAME = "jvision.out";
+	public static final String CAMERA_NAME = "jvision.camera";
 	
 	private static JVisionEngine sDefaultJVisionEngine = null;
 	private VideoCapture myVidCapture;
 	private Mat myCameraImage_Mat;
 	private FilterSequence myFilterSeq;
 	private SimpleImageStreamProducer myISP = new SimpleImageStreamProducer(JVISION_IS_NAME);
-	// when starbucks closed I was here, removing myDisplayerList Annie
-	// private ArrayList<ImageStreamConsumer> myDisplayerList = new ArrayList<ImageStreamConsumer>();
+	private SimpleImageStreamProducer myCameraISP = new SimpleImageStreamProducer(CAMERA_NAME);
+
 	private Quitter myQuitter;
 	private long mLastFrameTime = 0l;
 	
@@ -61,6 +62,7 @@ public class JVisionEngine extends BasicDebugger implements Runnable {
 		super();
 		
 		ImageStreamBroker.getDefaultImageStreamBroker().addImageStreamProducer(myISP);
+		ImageStreamBroker.getDefaultImageStreamBroker().addImageStreamProducer(myCameraISP);
 	}
 
 	public FilterSequence getFilterSeq() {
@@ -138,21 +140,21 @@ public class JVisionEngine extends BasicDebugger implements Runnable {
 				getLogger().error("Oops bad read");
 			}
 		}
-
+		
+		if(myCameraISP.hasConsumers())
+		{
+			try
+			{
+				myCameraISP.setConsumedImage(matToBufferedImage(myCameraImage_Mat));
+				myCameraISP.setConsumedMessage("Live From The Moon");
+			} catch(IllegalArgumentException e) {
+				getLogger().warn("Could not create BufferedImage for jvision.camera (usually height/width zero)");
+			}
+		}
+		
 		long t = System.nanoTime();
 		Mat filtered_camera_image = new Mat();
 		myFilterSeq.apply(myCameraImage_Mat, filtered_camera_image);
-
-		BufferedImage frame_as_buffered_image = null;
-
-		// This loop expects that displayerList is not modified while it is running.
-		// Without "synchronized" on our processOneFrame method signature, we sometimes get, during startup:
-		/*
-		 [java] Exception in thread "Thread-3" java.util.ConcurrentModificationException
-		 [java] 	at java.util.AbstractList$Itr.checkForComodification(AbstractList.java:372)
-		 [java] 	at java.util.AbstractList$Itr.next(AbstractList.java:343)
-		 [java] 	at org.friendularity.jvision.engine.JVisionEngine.processOneFrame(JVisionEngine.java:113)
-		 */
 		
 		if(myISP.hasConsumers())
 		{
@@ -163,29 +165,13 @@ public class JVisionEngine extends BasicDebugger implements Runnable {
 				getLogger().warn("Could not create BufferedImage (usually height/width zero)");
 			}
 		}
-		
-		/* TBD - bet this issue reappears
-		for (Iterator<ImageStreamConsumer> i = myDisplayerList.iterator(); i.hasNext();) {
-			if (frame_as_buffered_image == null) {
-				frame_as_buffered_image = matToBufferedImage(filtered_camera_image);
-			}
-			i.next().setConsumedImage(frame_as_buffered_image);
-		}
-		*/
 
 		long new_t = System.nanoTime();
 
 		double ns = (new_t - t) / 1000000000.0;  // frametime in sec
 		double rate = 1.0 / ns;
 		double totalRate = 1.0 / ((new_t - mLastFrameTime) / 1000000000.0);
-		/*
-		for (Iterator<ImageStreamConsumer> i = myDisplayerList.iterator(); i.hasNext();) {
-			i.next().setConsumedMessage(String.format("%4.0f msec/frame, %5.1f frames per second (%5.1f fps actual)",
-					(1000.0 * ns),
-					rate,
-					totalRate));
-		}
-		*/
+		
 		myISP.setConsumedMessage(String.format("%4.0f msec/frame, %5.1f frames per second (%5.1f fps actual)",
 					(1000.0 * ns),
 					rate,
@@ -265,7 +251,7 @@ public class JVisionEngine extends BasicDebugger implements Runnable {
 			int framesProcessedCount = 0;
 			getLogger().info("JVision Engine beginning frame processing loop");
 			while (!myQuitter.wantsToQuit()) {
-				// TODO:  Every N frames increment k, and print a "processed k*N frames so far" message at info() level.
+				//  Every N frames increment k, and print a "processed k*N frames so far" message at info() level.
 				try {
 					processOneFrame();
 					framesProcessedCount++;

@@ -567,7 +567,7 @@ class MergeGridGlassPane extends JPanel implements MouseListener, MouseMotionLis
 	private void addElementAction(ActionEvent e) {
 		MergeGrid mg  = ((MergeGrid)(MergeGridGlassPane.this.getParent()));
 		
-		CameraViewer cv = new CameraViewer();
+		CameraViewer cv = new CameraViewer(e.getActionCommand());
 
 		try {
 			mg.setCell(cv, newComponentCol, newComponentRow, 1, 1);

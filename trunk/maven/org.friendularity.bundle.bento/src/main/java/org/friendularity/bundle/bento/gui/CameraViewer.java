@@ -46,7 +46,7 @@ public class CameraViewer extends BentoPlugin  implements ImageStreamConsumer {
 	
 	private int thisImageNum;
 	
-	public CameraViewer() {
+	public CameraViewer(String name) {
 		super();
 		thisImageNum = nextImageNum++;
 		
@@ -57,7 +57,7 @@ public class CameraViewer extends BentoPlugin  implements ImageStreamConsumer {
 		this.setSize(new Dimension(640, 480));
 
 		ImageStreamBroker.getDefaultImageStreamBroker().alwaysAddImageStreamConsumer(
-				JVisionEngine.JVISION_IS_NAME, this);
+				name, this);
 	}
 
 	@Override

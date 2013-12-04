@@ -16,6 +16,7 @@
 package org.friendularity.jvision.broker;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -36,6 +37,7 @@ class UrOffAirImageStreamProducer implements ImageStreamProducer, Runnable {
 	private static final int IMAGE_HEIGHT = 480;
 	private static final int BIG_DOT_R = 150;
 	private static final int SMALL_DOT_R = 110;
+	private static Font myFont;
 	
 	private UrOffAirImageStreamProducer() {
 		img = new BufferedImage(IMAGE_WIDTH, IMAGE_HEIGHT, BufferedImage.TYPE_3BYTE_BGR);
@@ -79,7 +81,7 @@ class UrOffAirImageStreamProducer implements ImageStreamProducer, Runnable {
 			{
 				Thread.sleep(100L);
 				
-				paintImage(i, img.getGraphics());
+				paintImage(i++, img.getGraphics());
 				sisp.setConsumedImage(img);
 				sisp.setConsumedMessage(Integer.toString(i));
 			}
@@ -94,16 +96,24 @@ class UrOffAirImageStreamProducer implements ImageStreamProducer, Runnable {
 		g.setColor(Color.white);
 		g.fillRect(0, 0, IMAGE_WIDTH, IMAGE_HEIGHT);
 		g.setColor(Color.gray);
-		g.fillOval(IMAGE_WIDTH / 2 - BIG_DOT_R, IMAGE_HEIGHT / 2 - BIG_DOT_R, BIG_DOT_R, BIG_DOT_R);
+		g.fillOval(IMAGE_WIDTH / 2 - BIG_DOT_R, IMAGE_HEIGHT / 2 - BIG_DOT_R, 2 * BIG_DOT_R, 2 * BIG_DOT_R);
 		g.setColor(Color.gray.brighter());
-		g.fillOval(IMAGE_WIDTH / 2 - SMALL_DOT_R, IMAGE_HEIGHT / 2 - SMALL_DOT_R, SMALL_DOT_R, SMALL_DOT_R);
+		g.fillOval(IMAGE_WIDTH / 2 - SMALL_DOT_R, IMAGE_HEIGHT / 2 - SMALL_DOT_R, 2 * SMALL_DOT_R, 2 * SMALL_DOT_R);
 		g.setColor(Color.black);
-		g.drawOval(IMAGE_WIDTH / 2 - BIG_DOT_R, IMAGE_HEIGHT / 2 - BIG_DOT_R, BIG_DOT_R, BIG_DOT_R);
-		g.drawOval(IMAGE_WIDTH / 2 - SMALL_DOT_R, IMAGE_HEIGHT / 2 - SMALL_DOT_R, SMALL_DOT_R, SMALL_DOT_R);
+		g.drawOval(IMAGE_WIDTH / 2 - BIG_DOT_R, IMAGE_HEIGHT / 2 - BIG_DOT_R, 2 * BIG_DOT_R, 2 * BIG_DOT_R);
+		g.drawOval(IMAGE_WIDTH / 2 - SMALL_DOT_R, IMAGE_HEIGHT / 2 - SMALL_DOT_R, 2 * SMALL_DOT_R, 2 * SMALL_DOT_R);
 		g.drawLine(IMAGE_WIDTH / 2, 
 				IMAGE_HEIGHT / 2, 
 				(int)(IMAGE_WIDTH / 2 + IMAGE_WIDTH * Math.sin((i % 10) * Math.PI * 2.0f)), 
 				(int)(IMAGE_HEIGHT / 2 + IMAGE_WIDTH * Math.cos((i % 10) * Math.PI * 2.0f)));
+		String s = Integer.toString(i);
+		if(myFont == null)
+		{
+			myFont = new Font("Arial", Font.BOLD, BIG_DOT_R);
+		}
+		g.setFont(myFont);
+		g.drawString(s, IMAGE_WIDTH / 2 - g.getFontMetrics().stringWidth(s) / 2, IMAGE_HEIGHT  / 2 -
+				(g.getFontMetrics().getAscent() + g.getFontMetrics().getDescent()) / 2);
 	}
 	
 }
