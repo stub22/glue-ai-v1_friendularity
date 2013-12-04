@@ -4,7 +4,9 @@
 	       create_named_block/2,
 	       create_anonymous_block/2,
 	       open_terminal/2,
-	       create_java_class/3]).
+	       create_java_class/3,
+	       create_publish_node/2,
+	       create_subscribe_node/2]).
 /** <module> Predicates for manipulating the Flo rdf language
 
 */
@@ -42,7 +44,11 @@ ensure_normal_setup :-
 create_java_class(Pkg, Name, URI) :-
 	atom(Pkg),
 	atom(Name),
-	rdf_bnode(URI),
+	www_form_encode(Pkg, FormPkg),
+	www_form_encode(Name, FormName),
+	format(atom(URI),
+	       'http://www.friendularity.org/ontology/flo#~w.~w',
+	       [FormPkg, FormName]),
 	assert_rdf_default(URI, rdf:type, flo:'JavaBinding'),
 	assert_rdf_default(URI, flo:javaName, literal(Name)),
 	assert_rdf_default(URI, flo:javaPackage, literal(Pkg)).
@@ -98,6 +104,24 @@ create_named_block(Name, Type) :-
 create_anonymous_block(Type, Name) :-
 	ethel_name(Type, Name),
 	create_named_block(Name, Type).
+
+%%	create_publish_node(+Name:terminal, +Terminal:codes) is det
+%
+%	Create a publish node
+%
+%	@arg Name   the name to publish in ImageStreamBroker
+%	@arg Terminal a terminal of form terminal(Name:codes,
+%	Parm:codes)
+%
+create_publish_node(Name, terminal(Name, Parm)) :-
+	is_list(Name),
+	is_list(Parm),
+	atom_codes(AName, Name),
+	atom_codes(AParm, Parm),
+	output_terminal(AName, AParm, BlockNode, ParmNode).
+% TODO - finished here
+
+
 
 %%	input_terminal(+Name:atom, +Parm:atom, -BlockNode:resource,
 %	-ParmNode:resource) is nondet
