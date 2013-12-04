@@ -29,6 +29,17 @@ import org.cogchar.render.opengl.optic.CameraMgr;
 import org.cogchar.render.sys.context.CogcharRenderContext;
 
 import org.cogchar.render.sys.module.RenderGateway;
+
+import org.cogchar.render.app.entity.CameraBinding;
+
+
+import org.cogchar.render.trial.TrialContent;
+
+import com.jme3.scene.Node;
+import com.jme3.scene.CameraNode;
+import com.jme3.asset.AssetManager;
+
+
 /**
  * @author Stu B. <www.texpedient.com>
  */
@@ -67,7 +78,20 @@ public class DeicticVisualizer extends BasicDebugger {
 		RenderRegistryClient rrc = crc.getRenderRegistryClient();
 		
 		hardHeadCC.setAttachmentNodeParams(sinbadRobotID, leftEyeBoneName);
-		CameraMgr cmgr = rrc.getOpticCameraFacade(null);
-		cmgr.applyCameraConfig(hardHeadCC, rrc,  crc);
+		CameraMgr camMgr = rrc.getOpticCameraFacade(null);
+		camMgr.applyCameraConfig(hardHeadCC, rrc,  crc);
+		
+		CameraBinding	sinbadEyeCamBind = camMgr.getCameraBinding(camID);
+		CameraNode sinbadEyeCamNode = sinbadEyeCamBind.getCameraNode();
+
+		TrialContent trialCont = new TrialContent();
+		AssetManager assetMgr = rrc.getJme3AssetManager(null);		
+		Node sinbadVizPyrNode = trialCont.makeVisionPyramidNode(assetMgr, "sinbadEyeCam");
+		sinbadEyeCamNode.attachChild(sinbadVizPyrNode);
+		
+		CameraBinding	defFlyByCamBind = camMgr.getDefaultCameraBinding();
+		Node dfbVizPyrNode = trialCont.makeVisionPyramidNode(assetMgr, "defFlyBy");
+		Node rootDeepNode = rrc.getJme3RootDeepNode(null);
+		defFlyByCamBind.attachSceneNodeToCamera(dfbVizPyrNode, rootDeepNode);
 	}
 }
