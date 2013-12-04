@@ -3,6 +3,24 @@
 
     Ethel is a simple non visual language that compiles to flo.
 
+==
+// An Ethel program - comments can be C style, at stmt level
+// or double slash end of line style
+
+java com.example.ExampleBlock
+
+connect
+
+_!camera:O => _!gray:A => t!threshold:A
+publish t:O as ghosty
+float(0.5) => t:T
+
+==
+
+An Ethel program has two sections, a 'settings' section and a
+'connections' section
+
+
 */
 
 :- use_module(library(dcg/basics)).
@@ -11,6 +29,10 @@
 %%	ethel_program// is det
 %
 %	main DCG for the Ethel parser
+%
+%	An Ethel program consists of settings
+%	the keyword "connect"
+%	and a series of connections
 %
 ethel_program -->
 	settings_section,
@@ -35,6 +57,12 @@ ethel_body(Default) -->
 ethel_body(Default) -->
 	connection(Default, NewDefault),
 	ethel_body(NewDefault).
+ethel_body(Default) -->
+	publish_cmd(Default),
+	ethel_body(Default).
+ethel_body(Default) -->
+	subscribe_cmd(Default),
+	ethel_body(Default).
 ethel_body(Default) -->
 	error,
 	ethel_body(Default).
@@ -125,6 +153,34 @@ connection(Default, RHS) -->
 	    create_connection(ALHS, ARHS)  % might backtrack
 	}.
 
+publish_cmd(Default) -->
+	blanks,
+	"publish",
+	blanks,
+	terminal_name(Default, Terminal),
+	blanks,
+	"as",
+	blanks,
+	id(Name),
+	blanks,
+	{
+	    create_publish_node(Name, Terminal)
+	}.
+
+subscribe_cmd(Default) -->
+	blanks,
+	"subscribe",
+	blanks,
+	id(Name),
+	blanks,
+	"to",
+	terminal_name(Default, Terminal),
+	blanks,
+	{
+	    create_subscribe_node(Name, Terminal)
+	}.
+
+
 terminal_to_atom(terminal(CName, CParm), terminal(AName, AParm)) :-
 	atom_codes(AName, CName),
 	atom_codes(AParm, CParm).
@@ -182,15 +238,6 @@ terminal_name(_, terminal(Name, Parm)) -->
 	{
 	   open_terminal(Name, Parm)
         }.
-
-terminal_name(_, java_terminal(Name, Type)) -->
-	"j",
-	blank,
-	blanks,
-	id(Type),
-	blank,
-	blanks,
-	id(Name).
 
 eol -->
 	[X],

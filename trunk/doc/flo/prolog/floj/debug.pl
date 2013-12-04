@@ -39,9 +39,9 @@ floj_compiler:always_retain_files.
 
 http:location(pldoc, root('help/source'), [priority(10)]).
 
-go :- compile('examples/testcaseout.flo',
-	      'examples/TestCase.java',
-	      flo:'JavaBindingTestCase').
+go :- compile('examples/testcaseout2.flo',
+	      'examples/TestCaseTwo.java',
+	      flo:'org.friendularity.test.block.TestCaseTwo').
 
 :- initialization doc_server(7000).
 

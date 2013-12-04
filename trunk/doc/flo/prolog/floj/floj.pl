@@ -44,7 +44,10 @@ write_java_class(Node) :-
 write_java_class(_) :-
 	format(user_error, 'Could not write valid java class', []).
 
-
+%%	java_class(+Node)// is nondet
+%
+%	define a java class based on Node
+%
 java_class(Node) -->
 	java_prefix(Node),
 	java_guts(Node),
@@ -120,3 +123,5 @@ name_of(Node) -->
         },
 	CName.
 
+java_guts(_Node) -->
+	"The guts will go here".
