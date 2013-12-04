@@ -22,6 +22,21 @@ import java.util.logging.Logger;
 
 /**
  *
+ * ImageStreamBroker
+ * 
+ * A singleton class. The ImageStreamBroker allows systems that produce 'video' (a stream of images) to register
+ * via a name (at some point this will be refactored to a URI). 
+ * 
+ * Image consumers can then register as ImageStreamConsumers via the name. 
+ * 
+ * Typical ImageStreamProducers would be JVision's filters, the physical robot's eyes, various virtual cameras
+ * in ccrk, or various points in the image processing chain. 
+ * 
+ * At system startup, image consumers and producers may come online in any order. To avoid complex logic dealing
+ * with the short period while the system is 'warming up', it is possible to register as a consumer of an 'always on'
+ * producer. If the producer doesn't exist, the consumer will be attached to a default fallback producer that shows
+ * an animated filmstrip leader. When the real producer appears, it takes over from the default.
+ * 
  * @author Annie
  */
 public class ImageStreamBroker {
@@ -42,7 +57,18 @@ public class ImageStreamBroker {
 		synchronized(imageStreams)
 		{
 			if(imageStreams.containsKey(isp.getSourceName()))
-				throw new IllegalArgumentException("Image Stream " + isp.getSourceName() + " already exists");
+			{
+				ImageStreamProducer previsp = imageStreams.get(isp.getSourceName());
+				
+				if (previsp instanceof OffAirImageStreamProducer)
+				{
+					OffAirImageStreamProducer offair = (OffAirImageStreamProducer) previsp;
+					offair.switchTo(isp);
+					offair.dispose();
+				}
+				else
+					throw new IllegalArgumentException("Image Stream " + isp.getSourceName() + " already exists");
+			}
 
 			imageStreams.put(isp.getSourceName(), isp);
 			imageStreams.notifyAll();
@@ -53,12 +79,58 @@ public class ImageStreamBroker {
 	{
 		synchronized(imageStreams)
 		{
-			imageStreams.get(name).removeAllConsumers();
-			imageStreams.remove(name);
+			if(imageStreams.get(name) instanceof SwitchableImageStreamProducer)
+			{
+				SwitchableImageStreamProducer sisp = (SwitchableImageStreamProducer) imageStreams.get(name);
+				OffAirImageStreamProducer offair = new OffAirImageStreamProducer(name);
+				
+				sisp.switchTo(offair);
+				imageStreams.put(name, offair);
+			}
+			else
+			{
+				imageStreams.get(name).removeAllConsumers();
+				imageStreams.remove(name);
+			}
 			imageStreams.notifyAll();
 		}
 	}
 	
+	/**
+	 * Add the consumer as a listener to image stream 'name'
+	 * creates a matching OffAirImageStreamProducer if the stream doesn't exist,
+	 * so this always succeeds
+	 * 
+	 * @param name
+	 * @param isc
+	 */
+	public void alwaysAddImageStreamConsumer(String name, ImageStreamConsumer isc)
+	{
+		synchronized(imageStreams)
+		{
+			ImageStreamProducer isp = imageStreams.get(name);
+			
+			if (isp == null)
+			{
+				isp = new OffAirImageStreamProducer(name);
+				imageStreams.put(name, isp);
+			}
+
+			isp.addConsumer(isc);
+		}		
+	}
+	
+	/**
+	 * Add the consumer as a listener to image stream 'name'
+	 * Throws nullpointerexception if name does not exist
+	 * 
+	 * Deprecated  - consider alwaysAddImageStreamConsumer instead
+	 * 
+	 * @param name
+	 * @param isc
+	 * @deprecated
+	 */
+	@Deprecated
 	public void addImageStreamConsumer(String name, ImageStreamConsumer isc)
 	{
 		synchronized(imageStreams)
@@ -69,6 +141,17 @@ public class ImageStreamBroker {
 		}
 	}
 	
+	/**
+	 * Add the consumer as a listener to image stream 'name'
+	 * Waits until the producer is available
+	 * 
+	 * Deprecated  - consider alwaysAddImageStreamConsumer instead
+	 * 
+	 * @param name
+	 * @param isc
+	 * @deprecated
+	 */
+	@Deprecated
 	public void waitAndAddImageStreamConsumer(String name, ImageStreamConsumer isc)
 	{
 		ImageStreamProducer isp;

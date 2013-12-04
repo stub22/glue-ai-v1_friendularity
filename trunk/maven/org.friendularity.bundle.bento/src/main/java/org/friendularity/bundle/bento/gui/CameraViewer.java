@@ -56,7 +56,7 @@ public class CameraViewer extends BentoPlugin  implements ImageStreamConsumer {
 		this.setLayout(null);
 		this.setSize(new Dimension(640, 480));
 
-		ImageStreamBroker.getDefaultImageStreamBroker().waitAndAddImageStreamConsumer(
+		ImageStreamBroker.getDefaultImageStreamBroker().alwaysAddImageStreamConsumer(
 				JVisionEngine.JVISION_IS_NAME, this);
 	}
 
