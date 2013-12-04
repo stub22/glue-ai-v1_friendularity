@@ -20,10 +20,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 /**
- *
+ * An ImageStreamProducer that is also a consumer. You can instantiate one of these and
+ * feed the consumer interface images as a simple way of being an image producer
+ * 
  * @author Annie
  */
-public class SimpleImageStreamProducer implements ImageStreamProducer, ImageStreamConsumer {
+public class SimpleImageStreamProducer implements ImageStreamConsumer, SwitchableImageStreamProducer {
 
 	private ArrayList<ImageStreamConsumer>consumers = new ArrayList<ImageStreamConsumer>();
 
@@ -94,6 +96,18 @@ public class SimpleImageStreamProducer implements ImageStreamProducer, ImageStre
 	
 	public boolean hasConsumers() {
 		return consumers.size() > 0;
+	}
+
+	@Override
+	public void switchTo(ImageStreamProducer p) {
+		for(Iterator<ImageStreamConsumer>i = consumers.iterator() ; i.hasNext() ; )
+		{
+			ImageStreamConsumer isc = i.next();
+
+			p.addConsumer(isc);
+		}
+		
+		removeAllConsumers();
 	}
 			
 }
