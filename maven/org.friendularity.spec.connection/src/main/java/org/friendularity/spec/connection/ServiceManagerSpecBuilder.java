@@ -84,7 +84,8 @@ public class ServiceManagerSpecBuilder
             
             ServiceBindingSpec bindingSpec = (ServiceBindingSpec)sb;
             Descriptor desc = bindingSpec.getDescriptor();
-            mkc.addServiceBinding(desc.getClassName(), bindingSpec);
+            String depName = bindingSpec.getServiceDependency().getName();
+            mkc.addServiceBinding(depName, bindingSpec);
         }
         
         for(Object rs: linkedStrategies) {
