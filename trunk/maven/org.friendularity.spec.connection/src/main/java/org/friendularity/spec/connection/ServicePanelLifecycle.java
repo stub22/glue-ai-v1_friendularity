@@ -16,8 +16,6 @@ import org.rwshop.swing.common.lifecycle.ServicesFrame;
  */
 public class ServicePanelLifecycle implements ServiceLifecycle<ServicesFrame> {
 
-    private static BundleContext myContext;
-    private static ServicesFrame sf;
     private final static String contextDependency = "bundlecontext_dep";
     private final static ServiceDependency[] theDependencyArray = {
         new ServiceDependency(contextDependency, BundleContextSpec.class.getName(), ServiceDependency.Cardinality.MANDATORY_UNARY,
@@ -40,12 +38,9 @@ public class ServicePanelLifecycle implements ServiceLifecycle<ServicesFrame> {
     @Override
     public ServicesFrame createService(Map<String, Object> dependencyMap) {
 
-        myContext = ((BundleContextSpec) dependencyMap.get(contextDependency)).getContext();
+        BundleContext context = ((BundleContextSpec) dependencyMap.get(contextDependency)).getContext();
         setLookAndFeel();
-        startServicePanel(myContext);
-
-        return sf;
-
+        return startServicePanel(context);
     }
 
     @Override
@@ -54,6 +49,7 @@ public class ServicePanelLifecycle implements ServiceLifecycle<ServicesFrame> {
             Map<String, Object> availableDependencies) {
 
         if (service != null) {
+            service.setVisible(false);
             service=null;
         }
     }
@@ -67,15 +63,16 @@ public class ServicePanelLifecycle implements ServiceLifecycle<ServicesFrame> {
 
     }
 
-    private void startServicePanel(final BundleContext context) {
+    private ServicesFrame startServicePanel(final BundleContext context) {
+        final ServicesFrame sf = new ServicesFrame();
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
-                sf = new ServicesFrame();
                 sf.setBundleContext(context);
                 sf.setVisible(true);
             }
         });
+        return sf;
     }
     
     private void setLookAndFeel() {
