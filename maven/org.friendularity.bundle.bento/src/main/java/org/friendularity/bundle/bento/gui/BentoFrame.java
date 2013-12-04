@@ -31,6 +31,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
+import org.friendularity.jvision.engine.JVisionEngine;
 
 /**
  *
@@ -86,7 +87,7 @@ public class BentoFrame extends JFrame {
 		this.getContentPane().add(
 				myGrid, 
 				BorderLayout.CENTER);
-		CameraViewer cv = new CameraViewer();
+		CameraViewer cv = new CameraViewer(JVisionEngine.CAMERA_NAME);
 		
 		myGrid.addColumn(0, cv.getPreferredSize().width);
 		myGrid.addRow(0, cv.getPreferredSize().height);

@@ -18,6 +18,7 @@ package org.friendularity.bundle.bento.engine.actions;
 import org.friendularity.bundle.bento.engine.BentoAction;
 import org.friendularity.bundle.bento.gui.BentoPlugin;
 import org.friendularity.bundle.bento.gui.CameraViewer;
+import org.friendularity.jvision.engine.JVisionEngine;
 
 /**
  *
@@ -29,7 +30,7 @@ public class TwoSplitHorFromSingular implements BentoAction {
 	public boolean handle(BentoPlugin source, String actionCommand) {
 		
 		if (!actionCommand.equals(BentoPlugin.HTWO_MENU))return false;
-		source.getBentoBox().add(new CameraViewer(), 0.5f);
+		source.getBentoBox().add(new CameraViewer(JVisionEngine.CAMERA_NAME), 0.5f);
 		source.getBentoBox().revalidate();
 		
 		return true;
