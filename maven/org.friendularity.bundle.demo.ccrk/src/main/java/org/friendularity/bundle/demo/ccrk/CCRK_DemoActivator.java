@@ -181,8 +181,8 @@ public class CCRK_DemoActivator extends BundleActivatorBase {
 
 	}
 	private void startDeicticVisualizer() { 
-		DeicticVisualizer gs = new DeicticVisualizer();
-		gs.forceHeadCameraOntoSinbad();
+		DeicticVisualizer deictViz = new DeicticVisualizer();
+		deictViz.forceHeadCameraOntoSinbad();
 	}
 	private void setupDebuggingScaffold(MathGate mg, WorldEstimate we) { 
 	/*		
