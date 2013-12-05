@@ -18,6 +18,7 @@ package org.friendularity.bundle.bento.gui;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
@@ -45,6 +46,7 @@ public class CameraViewer extends BentoPlugin  implements ImageStreamConsumer {
 	private static int nextImageNum = 1;
 	
 	private int thisImageNum;
+	private static Font cameraViewerFont = new Font(Font.SERIF, Font.PLAIN, 18);
 	
 	public CameraViewer(String name) {
 		super();
@@ -59,34 +61,6 @@ public class CameraViewer extends BentoPlugin  implements ImageStreamConsumer {
 		ImageStreamBroker.getDefaultImageStreamBroker().alwaysAddImageStreamConsumer(
 				name, this);
 	}
-
-	@Override
-	protected void paintBorder(Graphics g) {
-	/*	super.paintBorder(g); 
-		
-		Graphics2D g2 = (Graphics2D)g;
-		
-		Stroke s = g2.getStroke();
-		Color c = g2.getColor();
-		
-		g2.setStroke(new BasicStroke(5));
-		g2.setColor(Color.red.darker().darker());
-		
-		g2.drawRect(this.getX() + 2, this.getY() + 2, this.getWidth() - 3, this.getHeight() - 3);
-		if (thisImageNum == 1)
-			g2.setColor(Color.RED);
-		if (thisImageNum == 2)
-			g2.setColor(Color.green);
-		if (thisImageNum == 3)
-			g2.setColor(Color.YELLOW);
-		
-		g2.drawLine((int)(this.getWidth() * Math.random()), (int)(this.getHeight() * Math.random()), 
-				(int)(this.getWidth() * Math.random()), (int)(this.getHeight() * Math.random()));
-		
-		g2.setStroke(s);
-		g2.setColor(c);   */
-	}
-	
 	
 
 	@Override
@@ -96,28 +70,21 @@ public class CameraViewer extends BentoPlugin  implements ImageStreamConsumer {
 		g.setColor(Color.DARK_GRAY);
 		Rectangle vis = this.getVisibleRect();
 		g.fillRect(vis.x, vis.y, vis.width, vis.height);
-		
+		g.setFont(cameraViewerFont);
 		if(mImage != null)
 		{
 			Rectangle destRect = new Rectangle();
 			bestAntiAliasedFit(this.getVisibleRect(), mImage.getWidth(), mImage.getHeight(), destRect);
 			g.drawImage(mImage, destRect.x, destRect.y, destRect.width, destRect.height, this);
-			g.setColor(Color.green);
-			g.drawString(Integer.toString(thisImageNum), 
-					destRect.x + 30, 
-					destRect.y + destRect.height - 30);
+			drawLabel(g, this.getHeight() - 30,
+					"(" + Integer.toString(thisImageNum) +
+					") " + mFrameMessage);
 		}
-		else if (++noImage % 1000 == 0)
+		else 
 		{
-			System.err.println("no image");
+			drawLabel(g, this.getHeight() - 30,
+					"no image " + mFrameMessage);
 		}
-		/*
-		g.setColor(Color.red);	
-		g.drawString("size: " + this.getSize().toString(), 200, 50);
-		g.drawString("loc: " + this.getLocation().toString(), 200, 75);
-		g.drawString("clip: " + this.getVisibleRect().toString(), 200, 100);
-		*/
-		// mFrameMessage has a valid message
 	}
 	
 
@@ -166,5 +133,17 @@ public class CameraViewer extends BentoPlugin  implements ImageStreamConsumer {
 		} catch (IOException ex) {
 			Logger.getLogger(CameraViewer.class.getName()).log(Level.SEVERE, null, ex);
 		}
+	}
+
+	private void drawLabel(Graphics g, int vertPos, String s) {
+		g.setColor(Color.WHITE);
+		g.setFont(cameraViewerFont);
+		int x = this.getWidth() / 2 - g.getFontMetrics().stringWidth(s) / 2;
+		g.drawString(s, x -1 , vertPos - 1);
+		g.drawString(s, x + 1 , vertPos + 1);
+		g.drawString(s, x -1 , vertPos + 1);
+		g.drawString(s, x + 1 , vertPos - 1);
+		g.setColor(Color.black);
+		g.drawString(s, x , vertPos);
 	}
 }
