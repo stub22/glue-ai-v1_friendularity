@@ -1,15 +1,6 @@
 package org.friendularity.jvision.filters;
 
-import java.io.*;
-import java.util.*;
-import java.io.FileWriter;
 import org.friendularity.jvision.gui.FileLocations;
-
-import org.opencv.core.Core;
-import org.opencv.core.Mat;
-import org.opencv.core.MatOfRect;
-import org.opencv.core.Point;
-import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.objdetect.CascadeClassifier;
 
@@ -19,5 +10,29 @@ import org.opencv.objdetect.CascadeClassifier;
 public class FaceDetector extends CascadeDetector {
 	protected FileLocations.CascadeType cascadeType() {
 		return FileLocations.CascadeType.FRONTAL_CASCADE;
+	}
+
+	@Override
+	protected Scalar boxColor() {
+		return new Scalar(0, 255, 0);
+	}
+	
+	
+	// Create a face detector from the cascade file in the resources
+	// directory.
+	protected static CascadeClassifier detector = null;
+	
+	/**
+	 * @return the detector
+	 */
+	protected CascadeClassifier getDetector() {
+		return detector;
+	}
+
+	/**
+	 * @param aDetector the detector to set
+	 */
+	protected void setDetector(CascadeClassifier aDetector) {
+		detector = aDetector;
 	}
 }

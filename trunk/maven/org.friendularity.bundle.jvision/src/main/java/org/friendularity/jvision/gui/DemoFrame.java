@@ -235,6 +235,30 @@ public class DemoFrame extends JFrame implements WindowListener, ImageStreamCons
 		});
 		menu.add(cbMenuItem);
 
+		cbMenuItem = new JCheckBoxMenuItem("EyeGlasses");
+		cbMenuItem.addItemListener(new ItemListener(){
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				if (e.getStateChange() == ItemEvent.SELECTED)
+				  myBackupFilterSeq.addOrReplaceByClass(new GlassesDetector());
+				else if (e.getStateChange() == ItemEvent.DESELECTED)
+				   myBackupFilterSeq.removeByClass(new GlassesDetector());
+			}
+		});
+		menu.add(cbMenuItem);
+
+		cbMenuItem = new JCheckBoxMenuItem("Banana");
+		cbMenuItem.addItemListener(new ItemListener(){
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				if (e.getStateChange() == ItemEvent.SELECTED)
+				  myBackupFilterSeq.addOrReplaceByClass(new BananaDetector());
+				else if (e.getStateChange() == ItemEvent.DESELECTED)
+				   myBackupFilterSeq.removeByClass(new BananaDetector());
+			}
+		});
+		menu.add(cbMenuItem);
+		
 		cbMenuItem = new JCheckBoxMenuItem("Farneback Optical Flow");
 		cbMenuItem.setMnemonic(KeyEvent.VK_F);
 		cbMenuItem.addItemListener(new ItemListener(){
