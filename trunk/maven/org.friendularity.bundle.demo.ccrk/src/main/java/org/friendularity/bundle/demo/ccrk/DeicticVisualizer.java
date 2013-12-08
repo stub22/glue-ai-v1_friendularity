@@ -39,7 +39,13 @@ import com.jme3.scene.Node;
 import com.jme3.scene.CameraNode;
 import com.jme3.asset.AssetManager;
 
+import org.cogchar.render.app.humanoid.HumanoidRenderContext;
+import org.cogchar.render.model.humanoid.HumanoidFigureManager;
 
+import java.util.Map;
+import java.util.HashMap;
+
+import com.jme3.math.Quaternion;
 /**
  * @author Stu B. <www.texpedient.com>
  */
@@ -55,15 +61,27 @@ public class DeicticVisualizer extends BasicDebugger {
 		// registry objects (so that HumanoidRenderMapper and other key high-level 
 		// objects are easy to pick up, under appropriate conditions).  
 		
-	public void forceHeadCameraOntoSinbad() {
-		Ident optVWorldSpecID = null;
-		PumaAppUtils.GreedyHandleSet greedyHandles = new PumaAppUtils.GreedyHandleSet();
-		PumaVirtualWorldMapper pvwm = greedyHandles.pumaRegClient.getVWorldMapper(optVWorldSpecID);
-		forceHeadCameraOntoSinbad(pvwm);
+	// Note that a PumaVirtualWorldMapper is a RenderGateway!	
+	private RenderGateway		myRenderGateway;
+	private	TrialContent		myTrialContent;
+	public void connectToTrialContent(TrialContent tc) {
+		myTrialContent = tc;
 	}
-	public void forceHeadCameraOntoSinbad(RenderGateway rg) {
-		// Note that a PumaVirtualWorldMapper is a RenderGateway!
-		CogcharRenderContext crc = rg.getCogcharRenderContext();
+	private void ensureSetup() {
+		if (myRenderGateway == null) {
+			Ident optVWorldSpecID = null;
+			PumaAppUtils.GreedyHandleSet greedyHandles = new PumaAppUtils.GreedyHandleSet();
+			PumaVirtualWorldMapper pvwm = greedyHandles.pumaRegClient.getVWorldMapper(optVWorldSpecID);	
+			myRenderGateway = pvwm;		
+			
+		}	
+		if (myTrialContent == null) {
+			myTrialContent = new TrialContent();
+		}
+	}
+	public void forceHeadCameraOntoSinbad() {
+		ensureSetup();
+		CogcharRenderContext crc = myRenderGateway.getCogcharRenderContext();
 		forceHeadCameraOntoSinbad(crc);
 	}
 	public void forceHeadCameraOntoSinbad(CogcharRenderContext crc) {
@@ -84,14 +102,119 @@ public class DeicticVisualizer extends BasicDebugger {
 		CameraBinding	sinbadEyeCamBind = camMgr.getCameraBinding(camID);
 		CameraNode sinbadEyeCamNode = sinbadEyeCamBind.getCameraNode();
 
-		TrialContent trialCont = new TrialContent();
-		AssetManager assetMgr = rrc.getJme3AssetManager(null);		
-		Node sinbadVizPyrNode = trialCont.makeVisionPyramidNode(assetMgr, "sinbadEyeCam");
-		sinbadEyeCamNode.attachChild(sinbadVizPyrNode);
+		// World transforms have not yet been calculated.  Remember this node for later.
+		mySinbadEyeCamNode = sinbadEyeCamNode;
 		
+		Node sinbadVizPyrNode = myTrialContent.makePointerCone(rrc, "sinbadEyeCam");
+		sinbadEyeCamNode.attachChild(sinbadVizPyrNode);
+	}
+	private boolean myFlag_NeutralizationComplete = false;
+	private CameraNode mySinbadEyeCamNode;
+	
+	public void neutralizeEyeCamRotation(CameraNode eyeCamNode) { 
+		
+		// When does the world translation actually become available? 
+		
+		/* Another approach is to use Node.lookAt, but note this bug from the
+		 * Javadoc, reportedly fixed after our last JME3 snapshot:
+		 * 
+		 * lookAt is a convenience method for auto-setting the local rotation 
+		 * based on a position in world space and an up vector. It computes 
+		 * the rotation to transform the z-axis to point onto 'position' and 
+		 * the y-axis to 'up'. Unlike Quaternion.lookAt(com.jme3.math.Vector3f, 
+		 * com.jme3.math.Vector3f) this method takes a world position to look at 
+		 * and not a relative direction. Note : 28/01/2013 this method has been 
+		 * fixed as it was not taking into account the parent rotation. This was 
+		 * resulting in improper rotation when the spatial had rotated parent nodes. 
+		 * This method is intended to work in world space, so no matter what parent 
+		 * graph the spatial has, it will look at the given position in world space.
+		 */
+		Quaternion eyeCamWorldRot = eyeCamNode.getWorldRotation();
+		//  (0.5573061, 0.44985783, 0.49981913, 0.4870509)
+		getLogger().info("EyeCam world rotation: {}", eyeCamWorldRot);
+		Quaternion fixupRot = eyeCamWorldRot.inverse();
+		eyeCamNode.setLocalRotation(fixupRot);	
+		myFlag_NeutralizationComplete = true;
+	}
+	public void putVizPyramidOnDefaultCam() {	
+		ensureSetup();
+		CogcharRenderContext crc = myRenderGateway.getCogcharRenderContext();
+		RenderRegistryClient rrc = crc.getRenderRegistryClient();
+		putVizPyramidOnDefaultCam(rrc);
+	}
+	public void putVizPyramidOnDefaultCam(RenderRegistryClient rrc) {	
+		CameraMgr camMgr = rrc.getOpticCameraFacade(null);
+		AssetManager assetMgr = rrc.getJme3AssetManager(null);	
 		CameraBinding	defFlyByCamBind = camMgr.getDefaultCameraBinding();
-		Node dfbVizPyrNode = trialCont.makeVisionPyramidNode(assetMgr, "defFlyBy");
+		Node dfbVizPyrNode = myTrialContent.makePointerCone(rrc, "defFlyBy");
 		Node rootDeepNode = rrc.getJme3RootDeepNode(null);
 		defFlyByCamBind.attachSceneNodeToCamera(dfbVizPyrNode, rootDeepNode);
+		
+	}
+	
+	private Map<String, Node>	myAttachNodesByName = new HashMap<String, Node>();
+	
+	String[] interestingBoneNames = 
+		{"Eye.R", "Head", "Root"}; //, "Chest", "Hand.R", "Hand.L", "IndexFingerDist.R",
+				// "Toe.L", "Toe.R"};
+	
+	private void registerBoneNodesOfInterest(CogcharRenderContext crc) { 
+		HumanoidRenderContext hrc = (HumanoidRenderContext) crc;
+		HumanoidFigureManager hfm = hrc.getHumanoidFigureManager();
+		Ident sinbadRobotID = new FreeIdent(ThingCN.CCRT_NS + "char_sinbad_88");
+		for (String boneName : interestingBoneNames) {
+			Node attachNode = hfm.findHumanoidBoneAttachNode(hrc, sinbadRobotID, boneName);
+			myAttachNodesByName.put(boneName, attachNode);
+		}
+	}
+	
+	private void putDeicticPointingRayOnBone(RenderRegistryClient rrc, String boneName) { 
+		Node boneAttachNode = myAttachNodesByName.get(boneName);
+		
+		AssetManager assetMgr = rrc.getJme3AssetManager(null);		
+		Node pointNode = myTrialContent.makePointerCone(rrc, "viz_" + boneName);
+		boneAttachNode.attachChild(pointNode);		
+	}
+	
+	public void setupNiftyPointingRays() { 
+		ensureSetup();
+		CogcharRenderContext crc = myRenderGateway.getCogcharRenderContext();
+		registerBoneNodesOfInterest(crc);
+		RenderRegistryClient rrc = crc.getRenderRegistryClient();
+		for (String boneName : interestingBoneNames) {
+			putDeicticPointingRayOnBone(rrc, boneName);
+		}
+	}
+	public void doUpdate(RenderRegistryClient rrc, float tpf)	{
+		if ((!myFlag_NeutralizationComplete) && (mySinbadEyeCamNode != null)) {
+			neutralizeEyeCamRotation(mySinbadEyeCamNode);
+		}
 	}
 }
+/**
+ * 
+ 		<bone id="46" name="Eye.L">
+			<position x="-0.269563" y="0.636877" z="-0.660801"/>
+			<rotation angle="2.234008">
+				<axis x="-0.567339" y="-0.527655" z="0.632224"/>
+			</rotation>
+		</bone>
+		<bone id="56" name="Eye.R">
+			<position x="0.269568" y="0.636878" z="-0.660801"/>
+			<rotation angle="2.511607">
+				<axis x="-0.395561" y="-0.595988" z="0.698806"/>
+			</rotation>
+		</bone>
+ * 
+ * 
+ In some animations we see
+ * for L
+ * 							<rotate angle="0.002762">
+								<axis x="0.988286" y="-0.120859" z="-0.093184"/>
+							</rotate>
+							* 	<axis x="0.927962" y="-0.337441" z="0.158176"/>
+for R
+					<axis x="0.843820" y="-0.120862" z="-0.522838"/>* 
+					* 		<axis x="-0.842785" y="0.004418" z="0.538232"/>
+							* 
+ */ 
