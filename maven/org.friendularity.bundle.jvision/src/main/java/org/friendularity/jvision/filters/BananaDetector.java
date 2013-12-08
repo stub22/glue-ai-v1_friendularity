@@ -11,19 +11,19 @@ import org.opencv.objdetect.CascadeClassifier;
  * Delete the comment at the top of yours
  * 
  */
-public class ProfileDetector extends CascadeDetector {
+public class BananaDetector extends CascadeDetector {
     
 	@Override
 	protected FileLocations.CascadeType cascadeType() {
-		return FileLocations.CascadeType.PROFILE_CASCADE;
+		return FileLocations.CascadeType.BANANA_CASCADE;
 	}
 
 	@Override
 	protected Scalar boxColor() {
-		return new Scalar(255, 0, 255);
+		return new Scalar(0, 255, 255);
 	}
 	
-	
+
 	// Create a face detector from the cascade file in the resources
 	// directory.
 	protected static CascadeClassifier detector = null;

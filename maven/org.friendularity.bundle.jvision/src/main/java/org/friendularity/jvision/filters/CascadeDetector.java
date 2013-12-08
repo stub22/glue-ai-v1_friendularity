@@ -24,14 +24,26 @@ import org.opencv.objdetect.CascadeClassifier;
 
 public abstract class CascadeDetector implements BaseFilter {
 	
+	/**
+	 * @return the detector
+	 */
+	protected abstract CascadeClassifier getDetector();
+
+	/**
+	 * @param aDetector the detector to set
+	 */
+	protected abstract void setDetector(CascadeClassifier aDetector);
+	
 	protected abstract FileLocations.CascadeType cascadeType();
 	
-	// Create a face detector from the cascade file in the resources
-	// directory.
-	protected static CascadeClassifier faceDetector = null;
-	
+	/*
+	 * The classifier insists on reading from a file.
+	 * We're getting info from a resource bundle, so we have to write a temp file and
+	 * read it
+	 * 
+	 */
 	protected void ensureTransient() {
-		if (faceDetector != null)
+		if (getDetector() != null)
 			return;
 		InputStream inputStream = null;
 		BufferedReader br = null;
@@ -58,7 +70,7 @@ public abstract class CascadeDetector implements BaseFilter {
 				e.printStackTrace();
 			}
 			
-			faceDetector = new CascadeClassifier(outputs.getAbsolutePath());
+			setDetector(new CascadeClassifier(outputs.getAbsolutePath()));
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -80,17 +92,20 @@ public abstract class CascadeDetector implements BaseFilter {
 			// Detect faces in the image.
 			// MatOfRect is a special container class for Rect.
 			MatOfRect faceDetections = new MatOfRect();
-			faceDetector.detectMultiScale(in, faceDetections);
+			getDetector().detectMultiScale(in, faceDetections);
 
 			in.clone().copyTo(out);
 
+			Scalar color = this.boxColor();
 			// Draw a bounding box around each face.
 			for (Rect rect : faceDetections.toArray()) {
-				Core.rectangle(out, new Point(rect.x, rect.y), new Point(rect.x + rect.width, rect.y + rect.height), new Scalar(0, 255, 0));
+				Core.rectangle(out, new Point(rect.x, rect.y), new Point(rect.x + rect.width, rect.y + rect.height), color);
 			}
 		} catch (Throwable t) {
 			t.printStackTrace();
 			in.clone().copyTo(out);
 		}
 	}
+
+	protected abstract Scalar boxColor();
 }
