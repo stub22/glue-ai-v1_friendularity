@@ -23,6 +23,8 @@ import org.friendularity.api.west.ThingEstimate;
 import org.friendularity.api.west.WorldEstimate;
 import org.friendularity.api.west.WorldEstimateRenderModule;
 import org.cogchar.bind.midi.FunMidiEventRouter;
+import org.friendularity.api.west.EstimateVisualizer;
+import org.friendularity.impl.visual.BonusVisualizer;
 // import org.cogchar.test.symcalc.ScriptEngineExperiment;
 import org.friendularity.vworld.VisionDataFeed;
 import org.robokind.api.motion.Robot;
@@ -150,7 +152,7 @@ public class CCRK_DemoActivator extends BundleActivatorBase {
 		werm.setFlag_visionTextureRoutingEnabled(myFlag_connectJVision);
 		
 		PumaAppUtils.attachVWorldRenderModule(bundleCtx, werm, null);
-		werm.setupVisualizer(null, null, null);
+		EstimateVisualizer eViz = werm.setupVisualizer(null, null, null);
 		// Needs to be done at least once for the selfEstim to exist.
 		MathSpaceFactory msf = new MathSpaceFactory();
 		// MathGate mg = msf.makeScriptedMathGate();
@@ -173,16 +175,21 @@ public class CCRK_DemoActivator extends BundleActivatorBase {
 			setupDebuggingScaffold(mg, we);
 		}
 		if (myFlag_deicticVisualization) {
-			startDeicticVisualizer();
+			startDeicticVisualizer((BonusVisualizer) eViz);
 		}
 		if (localDemoCheatersContext != null) {
 			getLogger().info("We have a cheater's Puma-App-Context, but we're not cheatin with it today");
 		}
 
 	}
-	private void startDeicticVisualizer() { 
+	private void startDeicticVisualizer(BonusVisualizer bViz) {
+		
 		DeicticVisualizer deictViz = new DeicticVisualizer();
+		deictViz.connectToTrialContent(bViz.getTrialContent());
 		deictViz.forceHeadCameraOntoSinbad();
+		deictViz.putVizPyramidOnDefaultCam();
+		deictViz.setupNiftyPointingRays();
+		bViz.myDVHackForUpdate = deictViz;
 	}
 	private void setupDebuggingScaffold(MathGate mg, WorldEstimate we) { 
 	/*		

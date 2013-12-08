@@ -32,6 +32,7 @@ import org.cogchar.render.trial.TrialCameras;
 import org.cogchar.render.trial.TempMidiBridge;
 
 import org.cogchar.render.opengl.optic.ViewportFacade;
+import org.friendularity.bundle.demo.ccrk.DeicticVisualizer;
 
 
 /**
@@ -40,7 +41,10 @@ import org.cogchar.render.opengl.optic.ViewportFacade;
  */
 public class BonusVisualizer extends ShapeAnimVisualizer<WorldEstimate> {
 
-
+	TrialContent	myTrialContent;
+	
+	public DeicticVisualizer	myDVHackForUpdate;
+	
 	public BonusVisualizer(HumanoidRenderContext hrc) {
 		super(hrc);
 	}
@@ -53,12 +57,12 @@ public class BonusVisualizer extends ShapeAnimVisualizer<WorldEstimate> {
 		RenderConfigEmitter rce = getConfigEmitter();
 		MeshTest mt = new MeshTest();
 		mt.makeStuff(amgr, rootNode);
-		showTrialContent();
+		initTrialContent();
 	}
 
-	public void showTrialContent() { 
+	public void initTrialContent() { 
 		TempMidiBridge tmb = new TempMidiBridge();
-		TrialContent trialCont = new TrialContent();
+		myTrialContent = new TrialContent();
 		RenderRegistryClient rrc = getRenderRegistryClient();
 		
 		Node rootDeepNode = rrc.getJme3RootDeepNode(null);
@@ -68,16 +72,30 @@ public class BonusVisualizer extends ShapeAnimVisualizer<WorldEstimate> {
 		Node guiNode = rrc.getJme3RootOverlayNode(null);
 		
 		// trialCont.shedLight_onRendThread(crc);
-		trialCont.initContent3D_onRendThread(rrc, rootDeepNode);
+		myTrialContent.initContent3D_onRendThread(rrc, rootDeepNode);
 		
 		// Camera-viewports are placed in the screen coordinate system, so we might consider them to be a kind
 		// of 2-D content.  They are part of that layout, anyhoo.
-		trialCont.initContent2D_onRendThread(rrc, guiNode, assetMgr);
+		myTrialContent.initContent2D_onRendThread(rrc, guiNode, assetMgr);
 		// trialCont.attachMidiCCs(tmb);  // was protected access
 		// CogcharRenderContext crc = getRenderContext();
 		// TrialCameras tcam = new TrialCameras();
 		// tcam.setupCamerasAndViews(rrc, crc, trialCont);
 		// tcam.attachMidiCCs(myTMB);		
+	}
+	public TrialContent getTrialContent() { 
+		return myTrialContent;
+	}
+	@Override public void updateDisplay(WorldEstimate we, float timePerFrame) {
+		super.updateDisplay(we, timePerFrame);
+		if (myTrialContent != null) {
+			RenderRegistryClient rrc = getRenderRegistryClient();
+			myTrialContent.doUpdate(rrc, timePerFrame);
+		}
+		if (myDVHackForUpdate != null) {
+			RenderRegistryClient rrc = getRenderRegistryClient();
+			myDVHackForUpdate.doUpdate(rrc, timePerFrame);
+		}
 	}
 
 }

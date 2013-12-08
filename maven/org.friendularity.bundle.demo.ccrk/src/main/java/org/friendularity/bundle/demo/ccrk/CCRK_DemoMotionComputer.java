@@ -103,6 +103,9 @@ public class CCRK_DemoMotionComputer extends CogcharMotionComputer {
 			}
 		}		
 	}
+	public void printDeicticWorldVectors() {
+		
+	}
 	public void sinJoints() { 
 				/*
 				 * 
