@@ -18,8 +18,8 @@ package org.friendularity.gaze.api;
 
 
 import org.cogchar.api.animoid.config.bonus.AnimationBlendConfig;
-import org.friendularity.sight.api.freckle.FreckleMatchConfig;
-import org.friendularity.sight.api.freckle.FaceNoticeConfig;
+import org.cogchar.sight.api.facerec.FreckleMatchConfig;
+import org.cogchar.sight.api.facerec.FaceNoticeConfig;
 import org.cogchar.api.animoid.config.bonus.AnimoidConfig;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.Dom4JDriver;
@@ -32,7 +32,7 @@ import org.friendularity.gaze.api.GazeJoint;
 import org.friendularity.gaze.api.GazeJointStrategy;
 import org.friendularity.gaze.api.GlanceStrategy;
 import org.friendularity.gaze.api.StereoGazeConfig;
-import org.friendularity.sight.api.core.SightPort;
+import org.cogchar.sight.api.core.SightPort;
 import org.cogchar.api.animoid.protocol.Robot;
 import org.cogchar.api.animoid.world.WorldJoint;
 import org.dom4j.io.SAXReader;

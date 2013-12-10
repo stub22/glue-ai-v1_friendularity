@@ -33,10 +33,12 @@ import org.cogchar.api.animoid.protocol.JointPosition;
 import org.cogchar.api.animoid.protocol.SmallAngle;
 import org.cogchar.api.animoid.world.SummableWorldJointList;
 
-import org.friendularity.sight.api.core.SightPort;
+import org.cogchar.sight.api.core.SightPort;
+import org.cogchar.sight.api.core.SightDirectionComputer;
+
 import static org.cogchar.api.animoid.protocol.JointStateCoordinateType.*;
 import org.friendularity.gaze.api.GazeJoint;
-import org.friendularity.sight.api.core.SightDirectionComputer;
+
 
 /**
  * Crude forward-kinematics computation to determine what direction a

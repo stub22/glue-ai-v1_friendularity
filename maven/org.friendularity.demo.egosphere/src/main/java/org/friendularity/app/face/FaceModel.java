@@ -21,7 +21,7 @@ import java.util.logging.Logger;
 import org.cogchar.ancient.utility.Parameters;
 import org.cogchar.animoid.calc.estimate.GazeDirectionComputer;
 import org.cogchar.animoid.calc.estimate.TargetObjectStateEstimate;
-import org.cogchar.api.freckler.protocol.FaceNoticeConfig;
+
 import org.cogchar.api.animoid.protocol.EgocentricDirection;
 import org.cogchar.api.animoid.protocol.Frame;
 import org.cogchar.integroid.boot.ThreadAwareObject;
@@ -30,9 +30,11 @@ import org.cogchar.platform.util.TimeUtils;
 import org.cogchar.sight.hypo.SightHypothesis;
 import org.cogchar.sight.hypo.SightHypothesis.ActivationStatus;
 import org.cogchar.sight.hypo.SightModel;
-import org.cogchar.sight.vision.IAnnotatingObserver;
-import org.cogchar.sight.vision.PortableImage;
-import org.cogchar.sight.vision.RawFrameProcessor;
+import org.cogchar.sight.api.obs.IAnnotatingObserver;
+import org.cogchar.sight.api.obs.RawFrameProcessor;
+
+import org.cogchar.sight.api.facerec.FaceNoticeConfig;
+import org.cogchar.sight.api.obs.PortableImage;
 
 /**
  * The ITrackObserver native-connected infrastructure is not being used right now.

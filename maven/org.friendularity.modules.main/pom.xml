@@ -80,7 +80,9 @@
         <module>../org.friendularity.test.facedetect.r50</module>
         <module>../org.friendularity.test.sensors.r50</module>
 	</modules>
+	<!--   Should be getting all this stuff from the root pom.xml
 	<properties>
+		
 		<jmonkey.version>3.0.0.20121220-SNAPSHOT</jmonkey.version>
 		<maven.compiler.source>1.6</maven.compiler.source>
 		<maven.compiler.target>1.6</maven.compiler.target>
@@ -88,6 +90,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<scala.version>2.10.2</scala.version>
 	</properties>	
+	-->
 	<build>
 		<pluginManagement>
 			<plugins>

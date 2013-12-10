@@ -16,9 +16,9 @@
 package org.friendularity.gaze.util;
 
 import java.util.List;
-import org.friendularity.sight.track.IGazeTarget;
-import org.friendularity.sight.obs.ObservationTrackerRegistry;
-import org.friendularity.sight.api.core.SightObservation;
+import org.freckler.sight.track.IGazeTarget;
+import org.freckler.sight.impl.obs.ObservationTrackerRegistry;
+import org.cogchar.sight.api.core.SightObservation;
 
 /**
  *

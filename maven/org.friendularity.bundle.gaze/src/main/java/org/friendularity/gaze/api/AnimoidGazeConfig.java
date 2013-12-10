@@ -24,11 +24,13 @@ import java.util.List;
 import java.util.Set;
 import org.cogchar.api.animoid.config.bonus.AnimationBlendConfig;
 import org.cogchar.api.animoid.config.bonus.AnimoidConfig;
-import org.friendularity.sight.api.freckle.FaceNoticeConfig;
-import org.friendularity.sight.api.freckle.FreckleMatchConfig;
+import org.cogchar.sight.api.facerec.FaceNoticeConfig;
+import org.cogchar.sight.api.facerec.FreckleMatchConfig;
+import org.cogchar.sight.api.core.SightPort;
+
 import org.friendularity.gaze.api.GazeJoint;
 import org.friendularity.gaze.api.StereoGazeConfig;
-import org.friendularity.sight.api.core.SightPort;
+
 import org.friendularity.gaze.util.GazeStrategyCue;
 
 import org.cogchar.api.animoid.protocol.Joint;

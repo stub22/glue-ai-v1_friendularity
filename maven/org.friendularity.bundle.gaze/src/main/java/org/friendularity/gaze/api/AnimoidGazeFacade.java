@@ -30,9 +30,9 @@ import org.cogchar.api.animoid.protocol.Frame;
 import org.friendularity.gaze.estimate.GazeDirectionComputer;
 
 import org.friendularity.gaze.util.GazeStrategyCue;
-import org.friendularity.sight.api.core.AnimoidSightFacade;
+import org.freckler.sight.impl.hypo.AnimoidSightFacade;
 
-import org.friendularity.sight.track.IGazeTarget;
+import org.freckler.sight.track.IGazeTarget;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
