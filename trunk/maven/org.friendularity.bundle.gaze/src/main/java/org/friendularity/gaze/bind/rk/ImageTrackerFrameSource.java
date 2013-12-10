@@ -20,8 +20,8 @@ import java.util.List;
 
 import org.cogchar.api.animoid.protocol.EgocentricDirection;
 import org.friendularity.gaze.util.GazeTracker;
-import org.friendularity.sight.api.core.SightObservation;
-import org.friendularity.sight.track.IGazeTarget;
+import org.cogchar.sight.api.core.SightObservation;
+import org.freckler.sight.track.IGazeTarget;
 import org.osgi.framework.BundleContext;
 import org.robokind.api.motion.Robot;
 import org.robokind.api.motion.Robot.RobotPositionMap;

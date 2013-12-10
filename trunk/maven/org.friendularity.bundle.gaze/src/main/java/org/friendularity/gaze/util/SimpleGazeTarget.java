@@ -16,7 +16,7 @@
 
 package org.friendularity.gaze.util;
 
-import org.friendularity.sight.track.IGazeTarget;
+import org.freckler.sight.track.IGazeTarget;
 import org.cogchar.api.animoid.protocol.EgocentricDirection;
 import org.cogchar.api.animoid.protocol.Frame;
 import org.cogchar.api.animoid.protocol.SmallAngle;

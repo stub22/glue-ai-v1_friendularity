@@ -29,8 +29,8 @@ import org.cogchar.zzz.platform.stub.JobSpaceStub;
 import org.friendularity.gaze.api.AnimoidGazeConfig;
 import org.friendularity.gaze.estimate.GazeDirectionComputer;
 import org.friendularity.gaze.util.GazeStrategyCue;
-import org.friendularity.sight.hypo.SightModel;
-import org.friendularity.sight.track.IGazeTarget;
+import org.freckler.sight.impl.hypo.SightModel;
+import org.freckler.sight.track.IGazeTarget;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

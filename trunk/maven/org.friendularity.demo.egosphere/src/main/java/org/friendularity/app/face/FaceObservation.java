@@ -5,10 +5,10 @@
 
 package org.friendularity.app.face;
 
-import org.cogchar.api.freckler.protocol.FaceRecognitionStatus;
-import org.cogchar.api.freckler.protocol.FreckleResult;
-import org.cogchar.api.sight.SightObservation;
-import org.cogchar.sight.vision.PortableImage;
+import org.cogchar.sight.api.facerec.FaceRecognitionStatus;
+import org.cogchar.sight.api.facerec.FreckleResult;
+import org.cogchar.sight.api.obs.SightObservation;
+import org.cogchar.sight.api.obs.PortableImage;
 import org.friendularity.app.freckle.FreckleFace;
 
 import java.awt.Rectangle;

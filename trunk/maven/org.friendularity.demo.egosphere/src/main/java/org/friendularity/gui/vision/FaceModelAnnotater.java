@@ -25,10 +25,10 @@ import org.cogchar.api.sight.SightPort;
 import org.cogchar.api.animoid.protocol.EgocentricDirection;
 import org.cogchar.integroid.broker.IntegroidFacade;
 import org.cogchar.api.integroid.cue.PersonCue;
-import org.cogchar.api.sight.SightObservation;
+import org.cogchar.sight.api.core.SightObservation;
 import org.cogchar.api.sight.SightAttentionStatus;
-import org.cogchar.sight.vision.IAnnotatingObserver;
-import org.cogchar.sight.hypo.SightHypothesis;
+import org.cogchar.sight.api.obs.IAnnotatingObserver;
+import org.cogchar.sight.impl.hypo.SightHypothesis;
 
 
 /**

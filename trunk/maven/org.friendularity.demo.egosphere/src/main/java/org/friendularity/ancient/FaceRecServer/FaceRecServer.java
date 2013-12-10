@@ -6,10 +6,12 @@ package org.friendularity.ancient.FaceRecServer;
  */
 
 import java.util.Collection;
-import org.cogchar.nwrap.facerec.FaceProfile;
-import org.cogchar.nwrap.facerec.FaceProfileManager;
-import org.cogchar.nwrap.facerec.FaceRecPopulationManager;
-import org.cogchar.sight.vision.OpenCVImage;
+
+import org.cogchar.sight.api.obs.OpenCVImage;
+import org.freckler.facerec.impl.nwrap.FaceProfile;
+import org.freckler.facerec.impl.nwrap.FaceProfileManager;
+import org.freckler.facerec.impl.nwrap.FaceRecPopulationManager;
+
 
 public class FaceRecServer implements FaceRecPopulationManager, FaceProfileManager {
 	public FaceRecServer(String config) {

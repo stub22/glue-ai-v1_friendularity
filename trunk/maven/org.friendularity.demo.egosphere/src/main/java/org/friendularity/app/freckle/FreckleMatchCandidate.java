@@ -12,11 +12,14 @@ import org.friendularity.app.jmxwrap.SignalStation;
 
 
 import java.util.logging.Logger;
-import org.cogchar.api.freckler.protocol.FreckleMatchConfig;
-import org.cogchar.api.freckler.protocol.FaceRecognitionStatus;
-import org.cogchar.api.freckler.protocol.FreckleQuery;
-import org.cogchar.api.freckler.protocol.FreckleResult;
-import org.cogchar.sight.vision.PortableImage;
+import org.cogchar.sight.api.facerec.FaceRecognitionStatus;
+import org.cogchar.sight.api.facerec.FreckleResult;
+import org.cogchar.sight.api.facerec.FreckleMatchConfig;
+import org.cogchar.sight.api.facerec.FreckleQuery;
+import org.cogchar.sight.api.obs.PortableImage;
+
+
+
 import org.freckler.extra.FreckbaseFacade;
 
 /**

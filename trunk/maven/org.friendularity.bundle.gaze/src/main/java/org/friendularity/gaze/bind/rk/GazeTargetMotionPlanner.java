@@ -16,7 +16,7 @@
 package org.friendularity.gaze.bind.rk;
 
 
-import org.friendularity.sight.track.IGazeTarget;
+import org.freckler.sight.track.IGazeTarget;
 import org.robokind.api.motion.Robot.RobotPositionMap;
 
 /**

@@ -5,7 +5,7 @@
 package org.friendularity.gaze.api;
 
 import org.cogchar.integroid.broker.IntegroidFacade;
-import org.friendularity.sight.track.IGazeTarget;
+import org.freckler.sight.track.IGazeTarget;
 
 /**
  *

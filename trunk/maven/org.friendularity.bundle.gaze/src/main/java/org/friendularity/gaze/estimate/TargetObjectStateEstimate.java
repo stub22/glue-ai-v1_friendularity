@@ -20,11 +20,11 @@ package org.friendularity.gaze.estimate;
 import java.awt.Rectangle;
 import java.io.Serializable;
 import org.cogchar.animoid.calc.estimate.PositionEstimator;
-import org.friendularity.sight.api.freckle.FaceNoticeConfig;
+import org.cogchar.sight.api.facerec.FaceNoticeConfig;
 
 import org.cogchar.api.animoid.protocol.Frame;
 
-import org.friendularity.sight.api.core.SightRelatedStateEstimate;
+import org.cogchar.sight.api.core.SightRelatedStateEstimate;
 
 /**
  * @author Stu B. <www.texpedient.com>
