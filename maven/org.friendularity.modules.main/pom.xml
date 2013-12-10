@@ -50,13 +50,11 @@
         <module>../org.friendularity.bundle.demoserv.semrepo</module>
         <module>../org.friendularity.bundle.webapp.semrepo</module>
 
-<!--
-
-    Moved into org.cogchar.lib.animoid
-
 		<module>../org.friendularity.bundle.gaze</module>
+<!--
 		<module>../org.friendularity.demo.egosphere</module>
 -->
+
 		<module>../org.friendularity.demo.jme3.maven</module>
 
 <!--		<module>../org.friendularity.demo.weber</module>-->
