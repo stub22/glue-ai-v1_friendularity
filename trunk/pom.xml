@@ -60,7 +60,7 @@ Version-less parent will be allowed in Maven 3.1.
 
 		<rwshop.version>0.9.3</rwshop.version>
 
-		<freckler.version>1.1.0-SNAPSHOT</freckler.version>
+		<freckler.version>1.0.0-SNAPSHOT</freckler.version>
         
         <jflux.version>0.1.7</jflux.version>
 	
