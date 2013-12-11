@@ -18,16 +18,18 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import org.cogchar.animoid.broker.AnimoidFacade;
-import org.cogchar.animoid.gaze.IGazeTarget;
+import org.cogchar.api.animoid.gaze.IGazeTarget;
 import org.cogchar.api.animoid.config.bonus.AnimoidConfig;
 import org.cogchar.api.integroid.cue.AwarenessCue;
-import org.cogchar.api.integroid.cue.MotionCue;
+import org.freckler.sight.impl.motion.MotionCue;
 import org.cogchar.api.integroid.cue.PersonCue;
-import org.cogchar.api.sight.SightCue;
+import org.cogchar.api.integroid.cue.SightCue;
 import org.cogchar.integroid.broker.IntegroidFacade;
 import org.cogchar.integroid.broker.IntegroidHelpFuncs;
 import org.cogchar.platform.util.TimeUtils;
 
+import org.friendularity.gaze.api.AnimoidGazeFacade;
+import org.friendularity.gaze.api.MoreIntegroidHelpFuncs;
 
 /**
  *
@@ -192,7 +194,7 @@ public class PersonResolver extends PersonTrackerRegistry {
 		}
 	}
 	private void propagateAwarenessChoicesToAttentionTarget() {
-		AnimoidFacade af = myIGF.getAnimoidFacade();
+		AnimoidGazeFacade af = (AnimoidGazeFacade) myIGF.getAnimoidFacade();
 		IGazeTarget currTarget = af.getAttentionTarget();
 		AwarenessCue ac = myIGF.getCueBroker().getAwarenessCue();
 		if (ac != null) {
@@ -222,7 +224,7 @@ public class PersonResolver extends PersonTrackerRegistry {
 					prevTargetTracker.clearAttentionStatus();
 				}
 				theLogger.info("Changing gazeTarget from " + currTarget + " to " + nextTarget);
-				IntegroidHelpFuncs.suggestGazeTarget(myIGF, nextTarget);
+				MoreIntegroidHelpFuncs.suggestGazeTarget(myIGF, nextTarget);
 			} else {
 				// theLogger.info("NextFocusTracker == currTarget");
 			}
@@ -233,7 +235,7 @@ public class PersonResolver extends PersonTrackerRegistry {
 		}
 	}
 	private void updateAttentionStatus() {
-		AnimoidFacade af = myIGF.getAnimoidFacade();
+		AnimoidGazeFacade af = (AnimoidGazeFacade) myIGF.getAnimoidFacade();
 		IGazeTarget currTarget = af.getAttentionTarget();
 
 		if ((currTarget != null) && (currTarget instanceof PersonTracker)) {

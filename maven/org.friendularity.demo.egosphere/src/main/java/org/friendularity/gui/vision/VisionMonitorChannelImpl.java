@@ -23,15 +23,16 @@ import org.friendularity.app.jmxwrap.SignalStation;
 
 import java.util.ArrayList;
 import java.util.logging.Logger;
-import org.cogchar.ancient.utility.NullPaddedArrayList;
-import org.cogchar.ancient.utility.Parameters;
-import org.cogchar.integroid.boot.ConfigSystemImpl;
-import org.cogchar.integroid.boot.SubsystemImpl;
-import org.cogchar.sight.vision.FaceTrackObserver;
-import org.cogchar.sight.vision.MotionFilterObserver;
-import org.cogchar.sight.vision.ROIVisionObserver;
-import org.cogchar.sight.vision.RawFrameProcessor;
-import org.cogchar.sight.vision.VisionFacade;
+import org.cogchar.zzz.ancient.utility.NullPaddedArrayList;
+import org.cogchar.zzz.ancient.utility.Parameters;
+import org.cogchar.zzz.oldboot.ConfigSystemImpl;
+import org.cogchar.zzz.oldboot.SubsystemImpl;
+import org.cogchar.sight.api.obs.FaceTrackObserver;
+
+import org.cogchar.sight.api.obs.ROIVisionObserver;
+import org.cogchar.sight.api.obs.RawFrameProcessor;
+import org.cogchar.sight.api.obs.VisionFacade;
+import org.freckler.sight.impl.motion.MotionFilterObserver;
 import org.jdesktop.observablecollections.ObservableList;
 
 

@@ -20,15 +20,16 @@ import java.awt.Rectangle;
 import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.cogchar.animoid.calc.estimate.GazeDirectionComputer;
-import org.cogchar.api.sight.SightPort;
+import org.friendularity.gaze.estimate.GazeDirectionComputer;
+import org.cogchar.sight.api.core.SightPort;
 import org.cogchar.api.animoid.protocol.EgocentricDirection;
 import org.cogchar.integroid.broker.IntegroidFacade;
 import org.cogchar.api.integroid.cue.PersonCue;
 import org.cogchar.sight.api.core.SightObservation;
-import org.cogchar.api.sight.SightAttentionStatus;
+import org.cogchar.api.integroid.cue.SightAttentionStatus;
 import org.cogchar.sight.api.obs.IAnnotatingObserver;
-import org.cogchar.sight.impl.hypo.SightHypothesis;
+import org.freckler.sight.impl.hypo.SightHypothesis;
+import org.friendularity.gaze.api.AnimoidGazeFacade;
 
 
 /**
@@ -52,7 +53,7 @@ public class FaceModelAnnotater implements IAnnotatingObserver {
 		// if (true) { return; }
 		try {
 			
-			GazeDirectionComputer gazeDirectionComputer = myFaceModel.getGazeDirectionComputer();
+			GazeDirectionComputer gazeDirectionComputer = (GazeDirectionComputer) myFaceModel.getGazeDirectionComputer();
 			if (gazeDirectionComputer != null) {
 				SightPort vp = gazeDirectionComputer.getViewPort();
 				Collection<FaceHypothesis> hypos = myFaceModel.getHypoSnapshotOrderedByNum();
@@ -86,7 +87,8 @@ public class FaceModelAnnotater implements IAnnotatingObserver {
 		Color hypoColor = null;
 		if ((attentionStatus != null) && (attentionStatus != SightAttentionStatus.IGNORED)) {
 			// GazeTarget = Blue
-			boolean gazeHoldFlag = igf.getAnimoidFacade().getAttentionJob().getHoldingStatusFlag();
+			AnimoidGazeFacade agf = (AnimoidGazeFacade) igf.getAnimoidFacade();
+			boolean gazeHoldFlag = agf.getAttentionJob().getHoldingStatusFlag();
 			if (gazeHoldFlag) {
 				// Light blue = gaze hold
 				hypoColor = new Color(0.5f, 0.5f, 1.0f, (float) strength);

@@ -12,8 +12,8 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.logging.Logger;
 import javax.swing.table.AbstractTableModel;
-import org.cogchar.sight.hypo.SightHypoComparison;
-import org.cogchar.sight.obs.SightObservationComparison;
+import org.freckler.sight.impl.hypo.SightHypoComparison;
+import org.freckler.sight.impl.obs.SightObservationComparison;
 
 /**
  *

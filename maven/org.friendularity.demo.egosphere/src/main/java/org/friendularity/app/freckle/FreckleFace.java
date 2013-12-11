@@ -7,7 +7,7 @@ package org.friendularity.app.freckle;
 
 
 
-import org.cogchar.platform.stub.PropertyChangeNotifier;
+import org.cogchar.zzz.platform.stub.PropertyChangeNotifier;
 import org.friendularity.app.face.FaceObservation;
 import org.friendularity.app.face.FreckledObsLog;
 

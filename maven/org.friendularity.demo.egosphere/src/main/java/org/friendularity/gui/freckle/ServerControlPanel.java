@@ -21,7 +21,7 @@ import javax.swing.JTextField;
 import javax.swing.filechooser.FileFilter;
 
 import org.cogchar.platform.util.TimeUtils;
-import org.cogchar.sight.vision.OpenCVImage;
+import org.cogchar.sight.api.obs.OpenCVImage;
 
 public class ServerControlPanel extends JPanel implements WindowListener {
 	public ServerControlPanel(String config, ServerVizUI parent) {

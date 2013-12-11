@@ -8,7 +8,7 @@ package org.friendularity.gui.freckle;
 import org.friendularity.app.jmxwrap.SignalStation;
 import java.awt.Graphics;
 import java.awt.Image;
-import org.cogchar.sight.vision.PortableImage;
+import org.cogchar.sight.api.obs.PortableImage;
 
 /**
  *

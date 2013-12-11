@@ -11,10 +11,10 @@
 
 package org.friendularity.gui.gaze;
 
-import org.cogchar.animoid.gaze.GazeStrategyCue;
-import org.cogchar.animoid.gaze.GazeStrategyCue.MotionStyle;
-import org.cogchar.api.animoid.gaze.GazeJointStrategy;
-import org.cogchar.sight.hypo.SightHypothesis;
+import org.friendularity.gaze.util.GazeStrategyCue;
+import org.friendularity.gaze.util.GazeStrategyCue.MotionStyle;
+import org.friendularity.gaze.api.GazeJointStrategy;
+import org.freckler.sight.impl.hypo.SightHypothesis;
 
 /**
  *

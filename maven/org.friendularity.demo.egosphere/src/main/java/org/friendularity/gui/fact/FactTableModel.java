@@ -11,11 +11,11 @@ import java.util.List;
 import java.util.logging.Logger;
 import javax.swing.table.AbstractTableModel;
 // Drools 4
-import org.cogchar.platform.stub.CueStub;
-import org.cogchar.platform.stub.FactHandleStub;
-import org.cogchar.platform.stub.JobStub;
-import org.cogchar.platform.stub.ThalamentStub;
-import org.cogchar.platform.stub.ThalamusBrokerStub;
+import org.cogchar.zzz.platform.stub.CueStub;
+import org.cogchar.zzz.platform.stub.FactHandleStub;
+import org.cogchar.zzz.platform.stub.JobStub;
+import org.cogchar.zzz.platform.stub.ThalamentStub;
+import org.cogchar.zzz.platform.stub.ThalamusBrokerStub;
 import org.cogchar.platform.util.TimeUtils;
 // import org.drools.FactHandle;
 

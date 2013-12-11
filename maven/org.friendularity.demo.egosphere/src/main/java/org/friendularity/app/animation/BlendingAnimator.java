@@ -27,6 +27,8 @@ import org.cogchar.api.animoid.protocol.JPARFrame;
 import org.cogchar.api.animoid.protocol.JointPositionSnapshot;
 import org.cogchar.api.animoid.protocol.JointStateCoordinateType;
 
+import org.friendularity.gaze.api.AnimoidGazeFacade;
+import org.friendularity.gaze.api.AnimoidGazeConfig;
 /**
  * @author Stu Baurmann
  */
@@ -34,7 +36,7 @@ public class BlendingAnimator implements PropertyChangeListener, IServoPositionR
 	private static Logger	theLogger = Logger.getLogger(BlendingAnimator.class.getName());
 
 	private BlendingMonitorBean				myBlendingMonitorBean;
-	private	AnimoidFacade					myAnimoidFacade;
+	private	AnimoidGazeFacade				myAnimoidFacade;
 
 	// Single listener for servo pos updates - redo this as a listener reg pattern.
 	private	IServoMonitor					myServoMonitor;
@@ -58,10 +60,10 @@ public class BlendingAnimator implements PropertyChangeListener, IServoPositionR
 		
 		theLogger.info("BlendingAnimator - reading servo config file from: " + servoConfigPath);
 		theLogger.info("BlendingAnimator - setting up AnimoidFacade");
-		myAnimoidFacade = new AnimoidFacade(servoConfigPath, null, // animoidConfigPath, 
+		myAnimoidFacade = new AnimoidGazeFacade(servoConfigPath, null, // animoidConfigPath, 
 				visemeConfigPath, msecPerFrame, frameDurationSmoothingFactor);
 		
-		AnimoidConfig animConf = myAnimoidFacade.getAnimoidConfig();
+		AnimoidGazeConfig animConf = (AnimoidGazeConfig) myAnimoidFacade.getAnimoidConfig();
 		
 		if (animConf != null) {
 			List gazePlanNameList = animConf.getGazeStrategyNameList();
@@ -123,8 +125,8 @@ public class BlendingAnimator implements PropertyChangeListener, IServoPositionR
 		return myLastInputFrameSnapshotLopsided;
 	}
 
-	public AnimoidFacade getAnimoidFacade() {
-		return myAnimoidFacade;
+	public AnimoidGazeFacade getAnimoidFacade() {
+		return (AnimoidGazeFacade) myAnimoidFacade;
 	}
 	public PositionEstimator getPositionEstimator() {
 		return myAnimoidFacade.getPositionEstimator();

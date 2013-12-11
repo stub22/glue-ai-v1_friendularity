@@ -32,7 +32,7 @@ import org.friendularity.gaze.estimate.GazeDirectionComputer;
 import org.friendularity.gaze.util.GazeStrategyCue;
 import org.freckler.sight.impl.hypo.AnimoidSightFacade;
 
-import org.freckler.sight.track.IGazeTarget;
+import org.cogchar.api.animoid.gaze.IGazeTarget;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

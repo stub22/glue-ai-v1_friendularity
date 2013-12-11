@@ -12,7 +12,7 @@ import java.awt.Point;
 import java.awt.geom.Point2D;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.cogchar.sight.vision.IAnnotatingObserver;
+import org.cogchar.sight.api.obs.IAnnotatingObserver;
 
 /**
  * @author Stu Baurmann

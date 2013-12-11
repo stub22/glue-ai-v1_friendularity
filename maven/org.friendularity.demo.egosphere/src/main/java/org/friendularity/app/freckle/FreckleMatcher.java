@@ -14,18 +14,21 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.cogchar.ancient.utility.Parameters;
+import org.cogchar.zzz.ancient.utility.Parameters;
 import org.cogchar.animoid.broker.AnimoidFacade;
 import org.cogchar.api.animoid.config.bonus.AnimoidConfig;
 import org.cogchar.sight.api.facerec.FreckleMatchConfig;
 import org.cogchar.sight.api.facerec.FreckleQuery;
 import org.cogchar.sight.api.facerec.FreckleResult;
-import org.cogchar.sight.impl.hypo.SightHypothesis;
+import org.freckler.sight.impl.hypo.SightHypothesis;
 import org.freckler.jmxwrap.FreckleServiceClient;
 import org.freckler.jmxwrap.FreckleServiceWrapper;
 import org.freckler.jmxwrap.FreckleServiceWrapperMXBean;
 import org.freckler.service.FreckleResultListener;
 import org.freckler.service.FreckleServiceImpl;
+
+import org.friendularity.gaze.api.AnimoidGazeFacade;
+import org.friendularity.gaze.api.AnimoidGazeConfig;
 /**
  * @author Stu B. <www.texpedient.com>
  */
@@ -180,8 +183,8 @@ public class FreckleMatcher implements  FreckleResultListener, Runnable {
 		FaceObservation fobs = fmc.getObservationToTry();
 		Long freckbaseObsID = ss.writeFaceObsToFreckbase(fobs, hypoID);
 
-		AnimoidFacade af = ss.getAnimoidFacade();
-		AnimoidConfig ac = af.getAnimoidConfig();
+		AnimoidGazeFacade af = ss.getAnimoidFacade();
+		AnimoidGazeConfig ac = (AnimoidGazeConfig) af.getAnimoidConfig();
 		FreckleMatchConfig matchConfig = ac.getFreckleMatchConfig();
 
 		FreckleQuery fq = fmc.makeFreckleQuery(freckbaseObsID,matchConfig);

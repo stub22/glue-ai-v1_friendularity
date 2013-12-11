@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.logging.Logger;
 import org.cogchar.animoid.broker.AnimoidFacade;
 import org.cogchar.integroid.broker.IntegroidFacade;
+import org.freckler.sight.impl.hypo.AnimoidSightFacade;
 
 /**
  *
@@ -38,8 +39,9 @@ public class FaceHelpFuncsBase {
 	public static FaceModel getFaceModel(IntegroidFacade igf) {
 		FaceModel fm = null;
 		AnimoidFacade af = igf.getAnimoidFacade();
+		AnimoidSightFacade asf = (AnimoidSightFacade) af;
 		if (af != null) {
-			fm = (FaceModel) af.getSightModel();
+			fm = (FaceModel) asf.getSightModel();
 		}
 		return fm;
 	}
