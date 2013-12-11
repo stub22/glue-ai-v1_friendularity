@@ -11,7 +11,7 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.util.List;
 import java.util.logging.Logger;
-import org.cogchar.sight.vision.ROIVisionObserver;
+import org.cogchar.sight.api.obs.ROIVisionObserver;
 
 
 /**

@@ -15,9 +15,9 @@ import java.util.Observer;
 import java.util.logging.Logger;
 import javax.swing.JTextArea;
 import org.cogchar.animoid.broker.AnimoidFacade;
-import org.cogchar.integroid.boot.SubsystemImpl;
+import org.cogchar.zzz.oldboot.SubsystemImpl;
 import org.cogchar.integroid.broker.IntegroidFacade;
-
+import org.friendularity.gaze.api.AnimoidGazeFacade;
 /**
  *
  * @author Matthew Stevenson
@@ -103,7 +103,7 @@ public class EgosphereMonitorImpl extends SubsystemImpl implements Observer, Pro
    public void update (Observable o, Object arg) {
         myDrawingPanel.repaint();
 		myScalingPanel.repaint();
-		AnimoidFacade af = myIGF.getAnimoidFacade();
+		AnimoidGazeFacade af = (AnimoidGazeFacade) myIGF.getAnimoidFacade();
 		String debugText = af.getAttentionDebugText();
 		myGazeDetailTextArea.setText(debugText);
     }

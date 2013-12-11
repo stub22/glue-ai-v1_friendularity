@@ -7,10 +7,10 @@ package org.friendularity.gui.fact;
 
 import java.util.Observable;
 import java.util.Observer;
-import org.cogchar.integroid.boot.SubsystemImpl;
+import org.cogchar.zzz.oldboot.SubsystemImpl;
 import org.cogchar.integroid.broker.IntegroidCueBroker;
 import org.cogchar.integroid.broker.IntegroidJobBroker;
-import org.cogchar.platform.stub.ThalamusBrokerStub;
+import org.cogchar.zzz.platform.stub.ThalamusBrokerStub;
 import org.friendularity.app.jmxwrap.SignalStation;
 
 /**

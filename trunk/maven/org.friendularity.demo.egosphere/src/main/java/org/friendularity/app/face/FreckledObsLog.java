@@ -7,9 +7,9 @@ package org.friendularity.app.face;
 
 import org.friendularity.app.freckle.FreckleFace;
 
-import org.cogchar.api.freckler.protocol.FaceRecognitionStatus;
+import org.cogchar.sight.api.facerec.FaceRecognitionStatus;
 import org.cogchar.platform.util.CollectionFilter;
-import org.cogchar.sight.obs.SightObservationLog;
+import org.freckler.sight.impl.obs.SightObservationLog;
 
 /**
  *

@@ -16,27 +16,31 @@ import javax.swing.SwingUtilities;
 
 import org.friendularity.gui.vision.VisionMonitorChannelImpl;
 import java.util.Observable;
-import org.cogchar.ancient.utility.Parameters;
+import org.cogchar.zzz.ancient.utility.Parameters;
 import org.cogchar.animoid.broker.AnimoidCueSpaceStub;
 import org.cogchar.animoid.broker.AnimoidFacade;
 import org.cogchar.api.convoid.cue.ConvoidCueSpace;
-import org.cogchar.integroid.awareness.AwarenessHelpFuncs;
+import org.freckler.sight.impl.aware.AwarenessHelpFuncs;
 import org.cogchar.integroid.broker.IntegroidFacade;
 import org.cogchar.integroid.broker.IntegroidHelpFuncs;
 import org.cogchar.integroid.broker.ReactionProcessor;
-import org.cogchar.api.integroid.cue.MotionCue;
+import org.freckler.sight.impl.motion.MotionCue;
 import org.cogchar.convoid.speech.tts.ITTSEngineObserver;
-import org.cogchar.platform.stub.CueSpaceStub;
-import org.cogchar.platform.stub.JobSpaceStub;
+import org.cogchar.zzz.platform.stub.CueSpaceStub;
+import org.cogchar.zzz.platform.stub.JobSpaceStub;
 import org.cogchar.platform.util.TimeUtils;
-import org.cogchar.sight.motion.PeakTracker;
-import org.cogchar.sight.vision.MotionFilterObserver;
-import org.cogchar.sight.vision.PortableImage;
+import org.freckler.sight.impl.motion.PeakTracker;
+import org.freckler.sight.impl.motion.MotionFilterObserver;
+import org.cogchar.sight.api.obs.PortableImage;
 import org.freckler.extra.FreckbaseFacade;
-import org.friendularity.bind.cogbot.service.CogbotService;
-import org.friendularity.bind.cogbot.simulator.CogbotAvatar;
-import org.friendularity.weber.comm.Communicator;
-import org.friendularity.weber.config.MeneConfig;
+import org.cogchar.bind.cogbot.main.CogbotService;
+import org.cogchar.bind.cogbot.cogsim.CogbotAvatar;
+// import org.cogchar.zzz.impl.weber.config.Communicator;
+import org.cogchar.zzz.impl.weber.config.MeneConfig;
+
+import org.friendularity.gaze.api.AnimoidGazeFacade;
+import org.friendularity.gaze.api.AnimoidGazeConfig;
+
 
 /**
  * @Deprecated Ad-hoc singleton for sending various signals to/from the Thalamus and JMX Clients
@@ -105,10 +109,10 @@ public class SignalStation extends Observable implements  ITTSEngineObserver  {
 	private void setReactionProcessor(ReactionProcessor rp) {
 		myReactionProcessor = rp;
 	}
-	public AnimoidFacade getAnimoidFacade() {
-		AnimoidFacade af = null;
+	public AnimoidGazeFacade getAnimoidFacade() {
+		AnimoidGazeFacade af = null;
 		if (myIntegroidFacade != null) {
-			af = myIntegroidFacade.getAnimoidFacade();
+			af = (AnimoidGazeFacade) myIntegroidFacade.getAnimoidFacade();
 		}
 		return af;
 	}
@@ -135,7 +139,7 @@ public class SignalStation extends Observable implements  ITTSEngineObserver  {
 						myPersonResolver.resolveAllState(fm);
 					}
 					advanceNowCueAndProcessDecisions();
-					AnimoidFacade af = getAnimoidFacade();
+					AnimoidGazeFacade af = getAnimoidFacade();
 					if (af != null) {
 						af.rebalanceGazeJobs();
 					}
@@ -190,7 +194,8 @@ public class SignalStation extends Observable implements  ITTSEngineObserver  {
 	private synchronized void loadCogSimConf() {
 		if (myCogSimConf == null) {
 			try {
-				myCogSimConf = CogbotService.getDefaultAvatar(MeneConfig.readPropertiesFile(Communicator.thePropsPath));
+				String propsPath = "FIXME: was Communicator.thePropsPath"; // Communicator.thePropsPath
+				myCogSimConf = CogbotService.getDefaultAvatar(); // MeneConfig.readPropertiesFile(propsPath));
 			} catch (Throwable t) {
 				theLogger.log(Level.WARNING, "Failed to load CogSimConf", t);
 			}

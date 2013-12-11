@@ -12,7 +12,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Logger;
 import org.cogchar.api.integroid.cue.PersonCue;
-import org.cogchar.sight.track.SightTrackerRegistry;
+import org.freckler.sight.track.SightTrackerRegistry;
 
 /**
  *

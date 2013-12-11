@@ -19,13 +19,14 @@ import java.util.logging.Logger;
 
 import java.util.logging.Level;
 
-import org.cogchar.ancient.utility.Parameters;
+import org.cogchar.zzz.ancient.utility.Parameters;
 import org.cogchar.animoid.broker.AnimoidFacade;
 import org.cogchar.animoid.broker.MotionController;
 import org.cogchar.animoid.monitor.IServoPositionReporter;
-import org.cogchar.integroid.boot.ConfigSystemImpl;
-import org.cogchar.integroid.boot.SubsystemImpl;
+import org.cogchar.zzz.oldboot.ConfigSystemImpl;
+import org.cogchar.zzz.oldboot.SubsystemImpl;
 
+import org.friendularity.gaze.api.AnimoidGazeFacade;
 
 /**
  *
@@ -220,7 +221,7 @@ public class BlendingMonitorImpl extends SubsystemImpl implements PropertyChange
 	}
 	public void enableAttentionGaze() {
 		ensureInitialized();
-		AnimoidFacade af = getAnimoidFacade();
+		AnimoidGazeFacade af = (AnimoidGazeFacade) getAnimoidFacade();
 		if (af != null) {
 			af.enableAttentionGaze();
 		}
@@ -228,8 +229,9 @@ public class BlendingMonitorImpl extends SubsystemImpl implements PropertyChange
 	public void disableAttentionGaze() {
 		ensureInitialized();
 		AnimoidFacade af = getAnimoidFacade();
+		AnimoidGazeFacade agf = (AnimoidGazeFacade) af;
 		if (af != null) {
-			af.disableAttentionGaze();
+			agf.disableAttentionGaze();
 		}
 	}
 	public void resetServos() {

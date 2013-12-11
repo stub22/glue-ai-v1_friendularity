@@ -8,7 +8,7 @@ package org.friendularity.gui.person;
 import java.util.Observable;
 import java.util.logging.Logger;
 import javax.swing.JTable;
-import org.cogchar.sight.obs.SightObservationLog;
+import org.freckler.sight.impl.obs.SightObservationLog;
 import org.friendularity.app.face.FaceBaseMonitorImpl;
 import org.friendularity.app.face.FaceHypothesis;
 import org.friendularity.app.face.FaceModel;

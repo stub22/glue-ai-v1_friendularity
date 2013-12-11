@@ -51,9 +51,9 @@
         <module>../org.friendularity.bundle.webapp.semrepo</module>
 
 		<module>../org.friendularity.bundle.gaze</module>
-<!--
+
 		<module>../org.friendularity.demo.egosphere</module>
--->
+
 
 		<module>../org.friendularity.demo.jme3.maven</module>
 

@@ -18,17 +18,19 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.cogchar.animoid.broker.AnimoidFacade;
-import org.cogchar.animoid.calc.estimate.GazeDirectionComputer;
-import org.cogchar.animoid.gaze.IGazeTarget;
+import org.friendularity.gaze.estimate.GazeDirectionComputer;
+import org.cogchar.api.animoid.gaze.IGazeTarget;
 import org.cogchar.api.animoid.protocol.EgocentricDirection;
 import org.cogchar.api.animoid.protocol.SmallAngle;
 import org.cogchar.api.integroid.cue.PersonCue;
-import org.cogchar.api.sight.SightAttentionStatus;
-import org.cogchar.api.sight.SightPort;
+import org.cogchar.api.integroid.cue.SightAttentionStatus;
+import org.cogchar.sight.api.core.SightPort;
 import org.cogchar.integroid.broker.IntegroidFacade;
-import org.cogchar.sight.hypo.SightModel;
-import org.cogchar.sight.vision.IRawFrameObserver;
-import org.cogchar.sight.vision.PortableImage;
+import org.freckler.sight.impl.hypo.SightModel;
+import org.cogchar.sight.api.obs.IRawFrameObserver;
+import org.cogchar.sight.api.obs.PortableImage;
+
+import org.friendularity.gaze.api.AnimoidGazeFacade;
 
 /**
  *
@@ -39,7 +41,7 @@ public class EgosphereSwingPanel extends javax.swing.JPanel {
 	private static Logger theLogger = Logger.getLogger(EgosphereSwingPanel.class.getName());
 	private IRawFrameObserver myImageSource;
 	private IntegroidFacade myIGF;
-	private AnimoidFacade myAF;
+	private AnimoidGazeFacade myAF;
 	private Double myMinAzDeg, myMaxAzDeg;
 	private Double myMinElDeg, myMaxElDeg;
 	private Double myScaleX, myScaleY;
@@ -53,7 +55,7 @@ public class EgosphereSwingPanel extends javax.swing.JPanel {
 	public boolean setIGF(IntegroidFacade igf) {
 		myIGF = igf;
 		if (myIGF != null && myIGF.getAnimoidFacade() != null) {
-			myAF = myIGF.getAnimoidFacade();
+			myAF = (AnimoidGazeFacade) myIGF.getAnimoidFacade();
 			return true;
 		}
 		return false;
@@ -101,7 +103,7 @@ public class EgosphereSwingPanel extends javax.swing.JPanel {
 			theLogger.info("Sight Model is null, cannot continue.");
 			return false;
 		}
-		GazeDirectionComputer gdc = sm.getGazeDirectionComputer();
+		GazeDirectionComputer gdc = (GazeDirectionComputer) sm.getGazeDirectionComputer();
 		if (gdc == null) {
 			theLogger.info("Gaze Direction Computer is null, cannot continue.");
 			return false;

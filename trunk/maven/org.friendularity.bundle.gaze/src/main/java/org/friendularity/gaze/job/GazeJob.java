@@ -44,7 +44,7 @@ import org.cogchar.api.animoid.world.WorldJoint;
 import org.cogchar.zzz.platform.stub.JobStub.Status;
 import org.friendularity.gaze.api.AnimoidGazeConfig;
 import org.friendularity.gaze.plan.GazeDimensionMotionPlan;
-import org.freckler.sight.track.IGazeTarget;
+import org.cogchar.api.animoid.gaze.IGazeTarget;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

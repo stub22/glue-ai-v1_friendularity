@@ -6,7 +6,7 @@
 package org.friendularity.gui.hypo;
 
 import org.friendularity.app.face.FaceHypothesis;
-import org.cogchar.api.freckler.protocol.FaceNoticeConfig;
+import org.cogchar.sight.api.facerec.FaceNoticeConfig;
 
 /**
  * @author  Stu Baurmann

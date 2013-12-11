@@ -21,7 +21,7 @@ import org.cogchar.api.animoid.protocol.JointPosition;
 import org.cogchar.api.animoid.protocol.JointPositionAROM;
 import org.cogchar.api.animoid.protocol.JointPositionSnapshot;
 import org.cogchar.api.animoid.protocol.JointStateCoordinateType;
-import org.cogchar.integroid.boot.SubsystemImpl;
+import org.cogchar.zzz.oldboot.SubsystemImpl;
 import org.friendularity.app.animation.BlendingAnimator;
 import org.friendularity.gui.blending.BlendingMonitorImpl;
 import org.jdesktop.observablecollections.ObservableCollections;

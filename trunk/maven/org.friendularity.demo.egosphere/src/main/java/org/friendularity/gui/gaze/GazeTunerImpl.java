@@ -17,10 +17,10 @@ import java.util.logging.Logger;
 
 
 import org.cogchar.animoid.broker.AnimoidFacade;
-import org.cogchar.animoid.gaze.GazeStrategyCue;
-import org.cogchar.integroid.boot.SubsystemImpl;
+import org.friendularity.gaze.util.GazeStrategyCue;
+import org.cogchar.zzz.oldboot.SubsystemImpl;
 import org.cogchar.integroid.broker.IntegroidCueBroker;
-
+import org.friendularity.gaze.api.AnimoidGazeFacade;
 /**
  *
  * @author Stu Baurmann
@@ -102,7 +102,7 @@ public class GazeTunerImpl extends SubsystemImpl implements PropertyChangeListen
 	}
 	public GazeStrategyCue getGaze(String name){
 		return myBlendingAnimator.getAnimoidFacade().
-				getAnimoidConfig().getNamedGazeStrategy(name);
+				getAGC().getNamedGazeStrategy(name);
 	}
 	public IntegroidCueBroker getCueBroker(){
 		try{

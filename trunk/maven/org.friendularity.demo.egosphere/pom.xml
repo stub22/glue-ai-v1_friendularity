@@ -1,6 +1,6 @@
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.friendularity</groupId>
@@ -24,17 +24,24 @@
 		</dependency>
 		<dependency>
 			<groupId>org.cogchar</groupId>
-			<!--
-			<artifactId>org.cogchar.lib.core.api</artifactId>
-			-->
 			<artifactId>org.cogchar.bundle.core</artifactId>
 			<version>${cogchar.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.cogchar</groupId>
+			<artifactId>org.cogchar.bundle.bind.cogbot</artifactId>
+			<version>${cogchar.version}</version>
+		</dependency>		
 		<dependency>
 			<groupId>org.freckler</groupId>
 			<artifactId>org.freckler.demo.all</artifactId>
 			<version>${freckler.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>org.friendularity.bundle.gaze</artifactId>
+			<version>${project.version}</version>
+		</dependency>		
 		<!--
 		<dependency>
 			<groupId>${project.groupId}</groupId>
@@ -59,6 +66,7 @@
 	  <version>5.5.1</version>
 	 </dependency>
 		-->
+
 	</dependencies>
   
 	<repositories>

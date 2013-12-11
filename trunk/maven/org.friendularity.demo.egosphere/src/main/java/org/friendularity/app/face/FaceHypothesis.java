@@ -17,11 +17,12 @@ import java.util.NavigableMap;
 
 import java.util.Set;
 import java.util.logging.Logger;
-import org.cogchar.api.freckler.protocol.FaceNoticeConfig;
-import org.cogchar.api.sight.SightPort;
-import org.cogchar.api.freckler.protocol.FaceRecognitionStatus;
+import org.cogchar.sight.api.facerec.FaceNoticeConfig;
+
+import org.cogchar.sight.api.facerec.FaceRecognitionStatus;
+import org.cogchar.sight.api.core.SightPort;
 import org.cogchar.platform.util.CollectionFilter;
-import org.cogchar.sight.hypo.SightHypothesis;
+import org.freckler.sight.impl.hypo.SightHypothesis;
 
 /**
  * @author Stu Baurmann

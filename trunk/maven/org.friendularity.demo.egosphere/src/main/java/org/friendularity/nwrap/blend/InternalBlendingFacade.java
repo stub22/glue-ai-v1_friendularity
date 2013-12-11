@@ -5,8 +5,8 @@
 
 package org.friendularity.nwrap.blend;
 
-import org.cogchar.ancient.utility.Parameters;
-import org.cogchar.nwrap.core.NativeEngine;
+import org.cogchar.zzz.ancient.utility.Parameters;
+import org.cogchar.zzz.nwrap.core.NativeEngine;
 
 /**
  * @author Stu Baurmann, Josh Varner

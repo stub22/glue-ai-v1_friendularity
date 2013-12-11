@@ -18,18 +18,18 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.logging.Logger;
-import org.cogchar.ancient.utility.Parameters;
-import org.cogchar.animoid.calc.estimate.GazeDirectionComputer;
-import org.cogchar.animoid.calc.estimate.TargetObjectStateEstimate;
+import org.cogchar.zzz.ancient.utility.Parameters;
+import org.friendularity.gaze.estimate.GazeDirectionComputer;
+import org.friendularity.gaze.estimate.TargetObjectStateEstimate;
 
 import org.cogchar.api.animoid.protocol.EgocentricDirection;
 import org.cogchar.api.animoid.protocol.Frame;
-import org.cogchar.integroid.boot.ThreadAwareObject;
+import org.cogchar.zzz.oldboot.ThreadAwareObject;
 import org.cogchar.platform.util.CollectionUtils;
 import org.cogchar.platform.util.TimeUtils;
-import org.cogchar.sight.hypo.SightHypothesis;
-import org.cogchar.sight.hypo.SightHypothesis.ActivationStatus;
-import org.cogchar.sight.hypo.SightModel;
+import org.freckler.sight.impl.hypo.SightHypothesis;
+import org.freckler.sight.impl.hypo.SightHypothesis.ActivationStatus;
+import org.freckler.sight.impl.hypo.SightModel;
 import org.cogchar.sight.api.obs.IAnnotatingObserver;
 import org.cogchar.sight.api.obs.RawFrameProcessor;
 
@@ -118,7 +118,8 @@ public class FaceModel extends SightModel<FaceHypothesis> implements FreckleMatc
 		EgocentricDirection egoDir = null;
 		Frame jointPosSnap = getJointPositionEstimateForCurrentVideoFrame(); // getJointPosSnapNow(enhancedAccuracy);
 		if (jointPosSnap != null) {
-			egoDir = getGazeDirectionComputer().computeGazeCenterDirection(jointPosSnap);
+			GazeDirectionComputer gdc = (GazeDirectionComputer) getGazeDirectionComputer();
+			egoDir = gdc.computeGazeCenterDirection(jointPosSnap);
 		}
 		return egoDir;
 	}
@@ -137,7 +138,7 @@ public class FaceModel extends SightModel<FaceHypothesis> implements FreckleMatc
 			theLogger.fine("Faces seen but cannot get camera center pos estimate!");
 			return;
 		}
-		GazeDirectionComputer gdc = getGazeDirectionComputer();
+		GazeDirectionComputer gdc = (GazeDirectionComputer) getGazeDirectionComputer();
 		if ((myRawFrameProcessor != null) && (gdc != null)
 					&& (SightHypothesis.getFaceNoticeConfig() != null)) {
 			//  FaceObservations with same timestamp must be of different faces.
@@ -152,11 +153,11 @@ public class FaceModel extends SightModel<FaceHypothesis> implements FreckleMatc
 
 	}
 	private void noticeFaceRectangle(Rectangle r, long timestamp, Frame cameraCenterPosEstimate) {
-		GazeDirectionComputer gdc = getGazeDirectionComputer();
+		GazeDirectionComputer gdc = (GazeDirectionComputer) getGazeDirectionComputer();
 		EgocentricDirection egoDir = gdc.computeGazeDirection(cameraCenterPosEstimate, r);
 		TargetObjectStateEstimate tose = new TargetObjectStateEstimate(myPositionEstimator, gdc, r, timestamp);
 		FaceObservation fobs = new FaceObservation();
-		tose.temporarilyHackedSightObservation = fobs;
+//		tose.temporarilyHackedSightObservation = fobs;
 		fobs.myTOSE = tose;
 		fobs.setBoundRect(r);
 

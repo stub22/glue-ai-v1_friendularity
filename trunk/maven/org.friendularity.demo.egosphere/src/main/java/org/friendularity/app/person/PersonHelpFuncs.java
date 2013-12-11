@@ -13,7 +13,7 @@ import java.util.logging.Logger;
 import org.cogchar.api.integroid.cue.FriendCue;
 import org.cogchar.api.integroid.cue.PersonCue;
 import org.cogchar.api.integroid.cue.PersonCue.NameSource;
-import org.cogchar.integroid.awareness.AwarenessHelpFuncs;
+import org.freckler.sight.impl.aware.AwarenessHelpFuncs;
 import org.cogchar.integroid.broker.IntegroidFacade;
 import org.freckler.extra.FreckbaseFacade;
 

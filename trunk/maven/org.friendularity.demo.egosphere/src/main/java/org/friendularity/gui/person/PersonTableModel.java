@@ -24,7 +24,7 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import org.cogchar.api.integroid.cue.PersonCue;
 import org.cogchar.api.integroid.cue.PersonCue.NameSource;
-import org.cogchar.platform.stub.ThalamusBrokerStub;
+import org.cogchar.zzz.platform.stub.ThalamusBrokerStub;
 import org.cogchar.platform.util.TimeUtils;
 import org.friendularity.app.face.FaceHypothesis;
 import org.friendularity.app.face.FaceObservation;

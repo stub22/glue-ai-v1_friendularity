@@ -6,7 +6,7 @@
 package org.friendularity.gui.vision;
 
 import java.awt.Graphics;
-import org.cogchar.sight.vision.IRawFrameObserver;
+import org.cogchar.sight.api.obs.IRawFrameObserver;
 
 /**
  *
