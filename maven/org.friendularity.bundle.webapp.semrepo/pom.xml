@@ -11,9 +11,14 @@
 	
 	<artifactId>org.friendularity.bundle.webapp.semrepo</artifactId>	
 
+
+    <!--
+            When we use "bundle" packaging, then we get a ".jar" file which is easily loaded as a bundle.	
+            PAX services are able to find the webapp within this bundle.
+    -->
+
 	<packaging>bundle</packaging>
 
-	<name>${project.artifactId} - OSGi</name>
 	<!-- Important: Establish the Web URL, which is used in OSGi spec
 			Web-ContextPath instruction far below, in maven-bundle-plugin.instructions
 			
@@ -22,6 +27,9 @@
 		highly-visible web.contextPath variable.
 	-->
 
+    <name>${project.artifactId} - Webapp in OSGi bundle</name>
+
+    <!-- Set the baseURL for http access via OSGi -->
 	<properties>
 		<web.contextPath>friendu_semrepo</web.contextPath>
 	</properties>
@@ -85,8 +93,15 @@
 	</dependencies>
 
 	<build>
+        <resources>
+            <resource>
+                <directory>${project.basedir}/src/main/webapp</directory>
+            </resource>
+        </resources>
+
 		<plugins>
 			<plugin>
+                <!-- Reconfigured based on http://leshazlewood.com/2010/09/08/osgi-maven-pax-and-web-applications/  -->
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
 				<version>2.3.7</version>
