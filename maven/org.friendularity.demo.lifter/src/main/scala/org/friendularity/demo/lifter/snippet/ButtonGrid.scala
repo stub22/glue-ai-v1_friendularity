@@ -13,7 +13,6 @@ import net.liftweb.util._
 import Helpers._
 import _root_.java.util.Date
 import scala.xml._
-import _root_.net.liftweb.util.Log
 
 
 object ButtonGrid {
