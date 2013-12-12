@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.friendularity</groupId>
 		<artifactId>org.friendularity.modules.main</artifactId>
-		<version>1.0.1</version>
+		<version>1.0.2-SNAPSHOT</version>
 		<relativePath>../org.friendularity.modules.main/pom.xml</relativePath>
 	</parent>	
 	
@@ -298,7 +298,7 @@
 									<entry key="org.osgi.framework.bootdelegation" value="*" />
 									<!-- Allow sun.misc package to be used by LWJGL -->
                                     <!-- org.w3c.dom.* are missing from default.properties in felix 4.2.1, they are present in 3.0.7 -->
-									<entry key="org.osgi.framework.system.packages.extra" value="sun.misc, org.w3c.dom.css, org.w3c.dom.html, org.w3c.dom.stylesheets,                                                     org.w3c.dom.traversal,                                                     org.w3c.dom.ranges,                                                     org.w3c.dom.views,                                                     org.w3c.dom.xpath" />
+									<entry key="org.osgi.framework.system.packages.extra" value="sun.misc, org.w3c.dom.css, org.w3c.dom.html, org.w3c.dom.stylesheets, org.w3c.dom.traversal,                                                     org.w3c.dom.ranges,                                                     org.w3c.dom.views,                                                     org.w3c.dom.xpath" />
 								</propertyfile>
 								<makeurl property="run.properties.url" file="${project.build.directory}/run.properties" />
 								<java fork="true" jar="${maven.dependency.org.apache.felix.org.apache.felix.main.jar.path}">
