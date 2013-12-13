@@ -1,0 +1,255 @@
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.friendularity</groupId>
+		<artifactId>org.friendularity.modules.main</artifactId>
+		<version>1.0.2-SNAPSHOT</version>
+		<relativePath>../org.friendularity.modules.main/pom.xml</relativePath>
+	</parent>
+
+	<artifactId>org.friendularity.bundle.demo.gmteach</artifactId>
+	<packaging>bundle</packaging>
+
+	<name>${project.artifactId} - OSGi</name>
+
+	<properties>
+		<storychat.version>1.0.2-SNAPSHOT</storychat.version>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.osgi.core</artifactId>
+			<version>1.4.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.appdapter</groupId>
+			<artifactId>ext.bundle.jena_all_2_10_1</artifactId>
+			<type>jar</type>
+			<version>${appdapter.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.appdapter</groupId>
+			<artifactId>org.appdapter.bundle.gui</artifactId>
+			<version>${appdapter.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.appdapter</groupId>
+			<artifactId>org.appdapter.bundle.core</artifactId>
+			<version>${appdapter.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.storychat</groupId>
+			<artifactId>org.storychat.bundle.glulx</artifactId>
+			<version>${storychat.version}</version>
+		</dependency>
+
+		<!-- We want the same deps as CCRK, but MAYBE not the full PUMA boot peformed 
+			by CCRK activator. -->
+		<dependency>
+			<!-- Note that o.f.project.root and o.f.modules.main must also have been 
+				built and avail in local repo, in order for variables like "robokind.version" 
+				to resolve when applied *transitively* (The built main+root is not required 
+				to resolve the variables used directly in this pom; those are allowed to 
+				come from the source-tree poms). -->
+			<groupId>${project.groupId}</groupId>
+			<artifactId>org.friendularity.bundle.netconfig</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.cogchar</groupId>
+			<artifactId>org.cogchar.bundle.app.puma</artifactId>
+			<version>${cogchar.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.cogchar</groupId>
+			<artifactId>org.cogchar.bundle.render.resources</artifactId>
+			<version>${cogchar.version}</version>
+			<scope>runtime</scope>
+		</dependency>
+		
+		
+		<!--  maybe play with webask later
+		<dependency>
+			<groupId>com.hrkind.tools</groupId>
+			<artifactId>com.hrkind.tools.dictation.google</artifactId>
+			<version>1.0.3-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>com.hrkind.tools</groupId>
+			<artifactId>com.hrkind.tools.bundle.web.ask</artifactId>
+			<version>1.0.3-SNAPSHOT</version>
+		</dependency> -->
+
+       <!-- ROBOKIND SORT OF EVERYTHING (What a large boiler plate) -->
+		<dependency>
+			<groupId>org.robokind</groupId>
+			<artifactId>org.robokind.impl.animation</artifactId>
+			<version>${robokind.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.robokind</groupId>
+			<artifactId>org.robokind.impl.audio</artifactId>
+			<version>${robokind.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.robokind</groupId>
+			<artifactId>org.robokind.impl.common</artifactId>
+			<version>${robokind.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.robokind</groupId>
+			<artifactId>org.robokind.impl.messaging</artifactId>
+			<version>${robokind.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.robokind</groupId>
+			<artifactId>org.robokind.impl.motion</artifactId>
+			<version>${robokind.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.robokind</groupId>
+			<artifactId>org.robokind.impl.motion.dynamixel</artifactId>
+			<version>${robokind.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.robokind</groupId>
+			<artifactId>org.robokind.impl.motion.pololu</artifactId>
+			<version>${robokind.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.robokind</groupId>
+			<artifactId>org.robokind.impl.sensor</artifactId>
+			<version>${robokind.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.robokind</groupId>
+			<artifactId>org.robokind.impl.speech</artifactId>
+			<version>${robokind.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.robokind</groupId>
+			<artifactId>org.robokind.impl.speechrec</artifactId>
+			<version>${robokind.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.robokind</groupId>
+			<artifactId>org.robokind.headless.messaging</artifactId>
+			<version>${robokind.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.robokind</groupId>
+			<artifactId>org.robokind.client.basic</artifactId>
+			<version>${robokind.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.robokind</groupId>
+			<artifactId>org.robokind.headless.speech</artifactId>
+			<version>${robokind.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.robokind</groupId>
+			<artifactId>org.robokind.api.vision</artifactId>
+			<version>${robokind.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.robokind</groupId>
+			<artifactId>org.robokind.impl.vision</artifactId>
+			<version>${robokind.version}</version>
+		</dependency>
+		<!-- END OF ROBOKIND SORT OF EVERYTHING (What a large boiler plate) -->
+		
+		<!-- Services Panel -->
+		<dependency>
+			<groupId>org.rwshop</groupId>
+			<artifactId>org.rwshop.swing.messaging</artifactId>
+			<version>${rwshop.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.rwshop</groupId>
+			<artifactId>org.rwshop.swing.common</artifactId>
+			<version>${rwshop.version}</version>
+		</dependency>
+		
+		<!-- JVISION -->
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>org.friendularity.bundle.jvision</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<!-- Our PAX-JETTY service -->
+		<dependency>
+			<groupId>org.appdapter</groupId>
+			<artifactId>ext.bundle.jetty_osgi</artifactId>
+			<version>${appdapter.version}</version>
+			<scope>runtime</scope>
+		</dependency>
+
+		<!-- JOSEKI SPARQL Service -->
+		<dependency>
+			<groupId>org.cogchar</groupId>
+			<artifactId>org.cogchar.bundle.bind.joseki</artifactId>
+			<version>${cogchar.version}</version>
+		</dependency>
+
+		<!-- Liftweb boot container -->
+		<dependency>
+			<!-- Our Lift-based webapp, which we expect PAX services above to find 
+				and launch to HTTP for us -->
+			<groupId>org.cogchar</groupId>
+			<artifactId>org.cogchar.bundle.bind.lift</artifactId>
+			<version>${cogchar.version}</version>
+		</dependency>
+
+		<!-- BMD Deps -->
+		<dependency>
+			<groupId>org.cogchar</groupId>
+			<artifactId>org.cogchar.lib.outer.behavior</artifactId>
+			<version>${cogchar.version}</version>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<version>2.3.7</version>
+				<extensions>true</extensions>
+				<configuration>
+					<instructions>
+						<Bundle-Activator>org.friendularity.bundle.demo.gmteach.GMTEACH_DemoActivator</Bundle-Activator>
+					</instructions>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.scala-tools</groupId>
+				<artifactId>maven-scala-plugin</artifactId>
+				<version>2.15.2</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>compile</goal>
+							<!-- We're not actually using any scala tests right now <goal>testCompile</goal> -->
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>
