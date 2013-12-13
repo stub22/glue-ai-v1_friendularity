@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+<JointGroup name="robot">
+	<RobotId>myRobot</RobotId>
+	<JointGroups>
+		<JointGroup name="Head">
+			<JointIds>
+				<JointId>200</JointId>
+				<JointId>201</JointId>
+				<JointId>202</JointId>
+				<JointId>300</JointId>
+				<JointId>301</JointId>
+				<JointId>310</JointId>
+				<JointId>320</JointId>
+				<JointId>321</JointId>
+				<JointId>322</JointId>
+			</JointIds>
+		</JointGroup>
+		<JointGroup name="Upper Body">
+			<JointGroups>
+				<JointGroup name="Left Arm">
+					<JointIds>
+						<JointId>400</JointId>
+						<JointId>401</JointId>
+						<JointId>410</JointId>
+						<JointId>411</JointId>
+					</JointIds>
+				</JointGroup>
+				<JointGroup name="Right Arm">
+					<JointIds>
+						<JointId>500</JointId>
+						<JointId>501</JointId>
+						<JointId>510</JointId>
+						<JointId>511</JointId>
+					</JointIds>
+				</JointGroup>
+			</JointGroups>
+		</JointGroup>
+		<JointGroup name="Torso">
+			<JointIds>
+				<JointId>100</JointId>
+			</JointIds>
+		</JointGroup>
+		<JointGroup name="Lower Body">
+			<JointGroups>
+				<JointGroup name="Left Leg">
+					<JointIds>
+						<JointId>600</JointId>
+						<JointId>601</JointId>
+						<JointId>602</JointId>
+						<JointId>610</JointId>
+						<JointId>620</JointId>
+						<JointId>621</JointId>
+					</JointIds>
+				</JointGroup>
+				<JointGroup name="Right Leg">
+					<JointIds>
+						<JointId>700</JointId>
+						<JointId>701</JointId>
+						<JointId>702</JointId>
+						<JointId>710</JointId>
+						<JointId>720</JointId>
+						<JointId>721</JointId>
+					</JointIds>
+				</JointGroup>
+			</JointGroups>
+		</JointGroup>
+	</JointGroups>
+</JointGroup>
