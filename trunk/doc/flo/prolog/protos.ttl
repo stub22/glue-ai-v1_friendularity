@@ -2,7 +2,7 @@
 @prefix  rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix  flo: <http://www.friendularity.org/ontology/flo#> .
 
-# Named toplevel resources (48)
+# Named toplevel resources (50)
 
 flo:adaptivehistoequal
 	a flo:BlockType ;
@@ -84,6 +84,8 @@ flo:black
 
 flo:bodymask
 	a flo:BlockType ;
+	flo:cellHeight 1 ;
+	flo:cellWidth 1 ;
 	flo:defaultPrototypeCoordinateX 21 ;
 	flo:defaultPrototypeCoordinateY 10 ;
 	flo:hasOutput [ a flo:BlockOutput ;
@@ -101,6 +103,8 @@ flo:bodymask
 
 flo:bodyposition
 	a flo:BlockType ;
+	flo:cellHeight 1 ;
+	flo:cellWidth 1 ;
 	flo:defaultPrototypeCoordinateX 21 ;
 	flo:defaultPrototypeCoordinateY 11 ;
 	flo:hasOutput [ a flo:BlockOutput ;
@@ -118,6 +122,8 @@ flo:bodyposition
 
 flo:bodypossim
 	a flo:BlockType ;
+	flo:cellHeight 1 ;
+	flo:cellWidth 1 ;
 	flo:defaultPrototypeCoordinateX 21 ;
 	flo:defaultPrototypeCoordinateY 12 ;
 	flo:hasOutput [ a flo:BlockOutput ;
@@ -135,6 +141,8 @@ flo:bodypossim
 
 flo:camera
 	a flo:BlockType ;
+	flo:cellHeight 1 ;
+	flo:cellWidth 1 ;
 	flo:defaultPrototypeCoordinateX 21 ;
 	flo:defaultPrototypeCoordinateY 5 ;
 	flo:hasOutput [ a flo:BlockOutput ;
@@ -248,6 +256,8 @@ flo:convolve
 
 flo:cross
 	a flo:BlockType ;
+	flo:cellHeight 1 ;
+	flo:cellWidth 1 ;
 	flo:defaultPrototypeCoordinateX 20 ;
 	flo:defaultPrototypeCoordinateY 3 ;
 	flo:hasOutput [ a flo:BlockOutput ;
@@ -303,12 +313,17 @@ flo:dehdr
 
 flo:delay
 	a flo:BlockType ;
+	flo:cellHeight 1 ;
+	flo:cellWidth 1 ;
+	flo:defaultPrototypeCoordinateX 23 ;
+	flo:defaultPrototypeCoordinateY 1 ;
 	flo:hasOutput [ a flo:BlockOutput ;
 			flo:dataType flo:object ;
 			flo:hasOrdinal 0 ;
 			flo:name "O" ;
 			flo:outputFor flo:delay
 		      ] ;
+	flo:imageResource "/img/blocks/blocksheet0-_31.png" ;
 	flo:requiresInput [ a flo:BlockInput ;
 			    flo:dataType flo:object ;
 			    flo:hasOrdinal 0 ;
@@ -323,6 +338,8 @@ flo:delay
 
 flo:distributor
 	a flo:BlockType ;
+	flo:cellHeight 1 ;
+	flo:cellWidth 1 ;
 	flo:defaultPrototypeCoordinateX 20 ;
 	flo:defaultPrototypeCoordinateY 6 ;
 	flo:hasOutput [ a flo:BlockOutput ;
@@ -358,6 +375,8 @@ flo:distributor
 
 flo:dlbend
 	a flo:BlockType ;
+	flo:cellHeight 1 ;
+	flo:cellWidth 1 ;
 	flo:defaultPrototypeCoordinateX 20 ;
 	flo:defaultPrototypeCoordinateY 1 ;
 	flo:hasOutput [ a flo:BlockOutput ;
@@ -395,6 +414,8 @@ flo:draw_tool
 
 flo:drbend
 	a flo:BlockType ;
+	flo:cellHeight 1 ;
+	flo:cellWidth 1 ;
 	flo:defaultPrototypeCoordinateX 20 ;
 	flo:defaultPrototypeCoordinateY 0 ;
 	flo:hasOutput [ a flo:BlockOutput ;
@@ -418,6 +439,8 @@ flo:drbend
 
 flo:eyes
 	a flo:BlockType ;
+	flo:cellHeight 1 ;
+	flo:cellWidth 2 ;
 	flo:defaultPrototypeCoordinateX 21 ;
 	flo:defaultPrototypeCoordinateY 6 ;
 	flo:hasOutput [ a flo:BlockOutput ;
@@ -473,6 +496,8 @@ flo:fft
 
 flo:flipflop
 	a flo:BlockType ;
+	flo:defaultPrototypeCoordinateX 22 ;
+	flo:defaultPrototypeCoordinateY 2 ;
 	flo:hasOutput [ a flo:BlockOutput ;
 			flo:dataType flo:int ;
 			flo:hasOrdinal 0 ;
@@ -500,6 +525,8 @@ flo:flipflop
 
 flo:floatval
 	a flo:BlockType ;
+	flo:cellHeight 1 ;
+	flo:cellWidth 1 ;
 	flo:defaultPrototypeCoordinateX 21 ;
 	flo:defaultPrototypeCoordinateY 2 ;
 	flo:hasOutput [ a flo:BlockOutput ;
@@ -517,29 +544,34 @@ flo:floatval
 
 flo:func
 	a flo:BlockType ;
+	flo:cellHeight 1 ;
+	flo:cellWidth 2 ;
+	flo:defaultPrototypeCoordinateX 23 ;
+	flo:defaultPrototypeCoordinateY 0 ;
 	flo:hasOutput [ a flo:BlockOutput ;
 			flo:dataType flo:object ;
 			flo:hasOrdinal 0 ;
 			flo:name "O" ;
 			flo:outputFor flo:func
 		      ] ;
+	flo:imageResource "/img/blocks/blocksheet0-_32.png" ;
 	flo:requiresInput [ a flo:BlockInput ;
-			    flo:dataType flo:scalar ;
+			    flo:dataType flo:string ;
 			    flo:hasOrdinal 0 ;
 			    flo:inputFor flo:func ;
-			    flo:name "A"
+			    flo:name "Formula"
 			  ] ,
 			  [ a flo:BlockInput ;
 			    flo:dataType flo:scalar ;
 			    flo:hasOrdinal 1 ;
 			    flo:inputFor flo:func ;
-			    flo:name "B"
+			    flo:name "A"
 			  ] ,
 			  [ a flo:BlockInput ;
 			    flo:dataType flo:scalar ;
 			    flo:hasOrdinal 2 ;
 			    flo:inputFor flo:func ;
-			    flo:name "C"
+			    flo:name "B"
 			  ] ;
 	flo:section "Math" ;
 	flo:subsection "Math" ;
@@ -589,6 +621,8 @@ flo:hdr
 
 flo:horpipe
 	a flo:BlockType ;
+	flo:cellHeight 1 ;
+	flo:cellWidth 1 ;
 	flo:defaultPrototypeCoordinateX 20 ;
 	flo:defaultPrototypeCoordinateY 2 ;
 	flo:hasOutput [ a flo:BlockOutput ;
@@ -612,12 +646,17 @@ flo:horpipe
 
 flo:if
 	a flo:BlockType ;
+	flo:cellHeight 1 ;
+	flo:cellWidth 1 ;
+	flo:defaultPrototypeCoordinateX 22 ;
+	flo:defaultPrototypeCoordinateY 0 ;
 	flo:hasOutput [ a flo:BlockOutput ;
 			flo:dataType flo:object ;
 			flo:hasOrdinal 0 ;
 			flo:name "O" ;
 			flo:outputFor flo:if
 		      ] ;
+	flo:imageResource "/img/blocks/blocksheet0-_21.png" ;
 	flo:requiresInput [ a flo:BlockInput ;
 			    flo:dataType flo:scalar ;
 			    flo:hasOrdinal 0 ;
@@ -644,12 +683,17 @@ flo:if
 
 flo:ifvar
 	a flo:BlockType ;
+	flo:cellHeight 1 ;
+	flo:cellWidth 1 ;
+	flo:defaultPrototypeCoordinateX 22 ;
+	flo:defaultPrototypeCoordinateY 1 ;
 	flo:hasOutput [ a flo:BlockOutput ;
 			flo:dataType flo:object ;
 			flo:hasOrdinal 0 ;
 			flo:name "O" ;
 			flo:outputFor flo:ifvar
 		      ] ;
+	flo:imageResource "/img/blocks/blocksheet0-_33.png" ;
 	flo:requiresInput [ a flo:BlockInput ;
 			    flo:dataType flo:string ;
 			    flo:hasOrdinal 0 ;
@@ -674,14 +718,65 @@ flo:ifvar
 	rdfs:comment "If the value of Va is true, O is A, else O is B. Var is some compile time variable (eg. DEV for development version)." ;
 	rdfs:label "ifvar" .
 
+flo:imgadd
+	a flo:BlockType ;
+	flo:hasOutput [ a flo:BlockOutput ;
+			flo:dataType flo:image ;
+			flo:hasOrdinal 0 ;
+			flo:name "O" ;
+			flo:outputFor flo:imgadd
+		      ] ;
+	flo:requiresInput [ a flo:BlockInput ;
+			    flo:dataType flo:image ;
+			    flo:hasOrdinal 0 ;
+			    flo:inputFor flo:imgadd ;
+			    flo:name "A"
+			  ] ;
+	flo:section "CV" ;
+	flo:subsection "combining" ;
+	flo:visualStyle "normal" ;
+	rdfs:comment "Ox = (Ax+Bx), for each channel x in the image (r,g,b, or grey)" ;
+	rdfs:label "imgadd" .
+
+flo:imgmax
+	a flo:BlockType ;
+	flo:hasOutput [ a flo:BlockOutput ;
+			flo:dataType flo:image ;
+			flo:hasOrdinal 0 ;
+			flo:name "O" ;
+			flo:outputFor flo:imgmax
+		      ] ;
+	flo:requiresInput [ a flo:BlockInput ;
+			    flo:dataType flo:image ;
+			    flo:hasOrdinal 0 ;
+			    flo:inputFor flo:imgmax ;
+			    flo:name "A"
+			  ] ;
+	flo:section "CV" ;
+	flo:subsection "combining" ;
+	flo:visualStyle "normal" ;
+	rdfs:comment "takes the channel values from whichever image has R+G+B greatest" ;
+	rdfs:label "imgmax" .
+
 flo:inputparam
 	a flo:BlockType ;
+	flo:cellHeight 1 ;
+	flo:cellWidth 1 ;
+	flo:defaultPrototypeCoordinateX 22 ;
+	flo:defaultPrototypeCoordinateY 4 ;
 	flo:hasOutput [ a flo:BlockOutput ;
 			flo:dataType flo:object ;
 			flo:hasOrdinal 0 ;
 			flo:name "O" ;
 			flo:outputFor flo:inputparam
 		      ] ;
+	flo:imageResource "/img/blocks/blocksheet0-_15.png" ;
+	flo:requiresInput [ a flo:BlockInput ;
+			    flo:dataType flo:string ;
+			    flo:hasOrdinal 0 ;
+			    flo:inputFor flo:inputparam ;
+			    flo:name "Name"
+			  ] ;
 	flo:section "Editor Support" ;
 	flo:subsection "Editor Support" ;
 	flo:visualStyle "visual_style0" ;
@@ -710,12 +805,17 @@ flo:inv_fft
 
 flo:isolate
 	a flo:BlockType ;
+	flo:cellHeight 1 ;
+	flo:cellWidth 1 ;
+	flo:defaultPrototypeCoordinateX 22 ;
+	flo:defaultPrototypeCoordinateY 3 ;
 	flo:hasOutput [ a flo:BlockOutput ;
 			flo:dataType flo:object ;
 			flo:hasOrdinal 0 ;
 			flo:name "O" ;
 			flo:outputFor flo:isolate
 		      ] ;
+	flo:imageResource "/img/blocks/blocksheet0-_18.png" ;
 	flo:requiresInput [ a flo:BlockInput ;
 			    flo:dataType flo:object ;
 			    flo:hasOrdinal 0 ;
@@ -736,6 +836,8 @@ flo:isolate
 
 flo:kernal
 	a flo:BlockType ;
+	flo:cellHeight 1 ;
+	flo:cellWidth 1 ;
 	flo:defaultPrototypeCoordinateX 21 ;
 	flo:defaultPrototypeCoordinateY 9 ;
 	flo:hasOutput [ a flo:BlockOutput ;
@@ -753,6 +855,8 @@ flo:kernal
 
 flo:listen
 	a flo:BlockType ;
+	flo:cellHeight 1 ;
+	flo:cellWidth 1 ;
 	flo:defaultPrototypeCoordinateX 21 ;
 	flo:defaultPrototypeCoordinateY 4 ;
 	flo:imageResource "/img/blocks/blocksheet1_05.png" ;
@@ -770,6 +874,8 @@ flo:listen
 
 flo:mic
 	a flo:BlockType ;
+	flo:cellHeight 1 ;
+	flo:cellWidth 1 ;
 	flo:defaultPrototypeCoordinateX 21 ;
 	flo:defaultPrototypeCoordinateY 3 ;
 	flo:hasOutput [ a flo:BlockOutput ;
@@ -787,6 +893,8 @@ flo:mic
 
 flo:motors
 	a flo:BlockType ;
+	flo:cellHeight 1 ;
+	flo:cellWidth 1 ;
 	flo:defaultPrototypeCoordinateX 21 ;
 	flo:defaultPrototypeCoordinateY 13 ;
 	flo:imageResource "/img/blocks/blocksheet1_15.png" ;
@@ -810,6 +918,8 @@ flo:motors
 
 flo:motorsim
 	a flo:BlockType ;
+	flo:cellHeight 1 ;
+	flo:cellWidth 1 ;
 	flo:defaultPrototypeCoordinateX 21 ;
 	flo:defaultPrototypeCoordinateY 14 ;
 	flo:imageResource "/img/blocks/blocksheet1_17.png" ;
@@ -833,11 +943,22 @@ flo:motorsim
 
 flo:outputparam
 	a flo:BlockType ;
+	flo:cellHeight 1 ;
+	flo:cellWidth 1 ;
+	flo:defaultPrototypeCoordinateX 22 ;
+	flo:defaultPrototypeCoordinateY 5 ;
+	flo:imageResource "/img/blocks/blocksheet0-_29.png" ;
 	flo:requiresInput [ a flo:BlockInput ;
 			    flo:dataType flo:object ;
 			    flo:hasOrdinal 0 ;
 			    flo:inputFor flo:outputparam ;
 			    flo:name "A"
+			  ] ,
+			  [ a flo:BlockInput ;
+			    flo:dataType flo:string ;
+			    flo:hasOrdinal 1 ;
+			    flo:inputFor flo:outputparam ;
+			    flo:name "Name"
 			  ] ;
 	flo:section "Editor Support" ;
 	flo:subsection "Editor Support" ;
@@ -873,6 +994,8 @@ flo:pixel
 
 flo:proportion
 	a flo:BlockType ;
+	flo:cellHeight 1 ;
+	flo:cellWidth 1 ;
 	flo:defaultPrototypeCoordinateX 21 ;
 	flo:defaultPrototypeCoordinateY 1 ;
 	flo:hasOutput [ a flo:BlockOutput ;
@@ -890,6 +1013,8 @@ flo:proportion
 
 flo:pulse
 	a flo:BlockType ;
+	flo:cellHeight 1 ;
+	flo:cellWidth 1 ;
 	flo:defaultPrototypeCoordinateX 21 ;
 	flo:defaultPrototypeCoordinateY 0 ;
 	flo:hasOutput [ a flo:BlockOutput ;
@@ -907,6 +1032,8 @@ flo:pulse
 
 flo:spectrum
 	a flo:BlockType ;
+	flo:cellHeight 1 ;
+	flo:cellWidth 1 ;
 	flo:defaultPrototypeCoordinateX 21 ;
 	flo:defaultPrototypeCoordinateY 7 ;
 	flo:imageResource "/img/blocks/blocksheet1_09.png" ;
@@ -950,6 +1077,8 @@ flo:threshold
 
 flo:ulbend
 	a flo:BlockType ;
+	flo:cellHeight 1 ;
+	flo:cellWidth 1 ;
 	flo:defaultPrototypeCoordinateX 20 ;
 	flo:defaultPrototypeCoordinateY 5 ;
 	flo:hasOutput [ a flo:BlockOutput ;
@@ -973,6 +1102,8 @@ flo:ulbend
 
 flo:urbend
 	a flo:BlockType ;
+	flo:cellHeight 1 ;
+	flo:cellWidth 1 ;
 	flo:defaultPrototypeCoordinateX 20 ;
 	flo:defaultPrototypeCoordinateY 4 ;
 	flo:hasOutput [ a flo:BlockOutput ;
@@ -996,6 +1127,8 @@ flo:urbend
 
 flo:vertpipe
 	a flo:BlockType ;
+	flo:cellHeight 1 ;
+	flo:cellWidth 1 ;
 	flo:defaultPrototypeCoordinateX 20 ;
 	flo:defaultPrototypeCoordinateY 7 ;
 	flo:hasOutput [ a flo:BlockOutput ;
@@ -1059,6 +1192,8 @@ flo:videorecord
 
 flo:viewer
 	a flo:BlockType ;
+	flo:cellHeight 1 ;
+	flo:cellWidth 1 ;
 	flo:defaultPrototypeCoordinateX 21 ;
 	flo:defaultPrototypeCoordinateY 8 ;
 	flo:imageResource "/img/blocks/blocksheet1_13.png" ;

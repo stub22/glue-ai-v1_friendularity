@@ -5,10 +5,7 @@ import org.friendularity.jvision.gui.FileLocations;
 import org.opencv.core.Scalar;
 import org.opencv.objdetect.CascadeClassifier;
 /*
- * Detect facial profiles.
- * Only works going to the right (TBD - flip the image and run there)
- * Requires a slightly munged version of lbpcascade_profileface.xml
- * Delete the comment at the top of yours
+ * Detect bananas
  * 
  */
 public class BananaDetector extends CascadeDetector {

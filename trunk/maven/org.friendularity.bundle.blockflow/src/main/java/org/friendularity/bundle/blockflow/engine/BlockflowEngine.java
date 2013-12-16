@@ -60,4 +60,11 @@ public class BlockflowEngine implements ViewListener {
 	public BlockflowModel getModel() {
 		return myModel;
 	}
+
+	public void decorationsChanged() {
+		for(Iterator<BlockflowEngineChangedListener>i = modelListeners.iterator() ; i.hasNext(); )
+		{
+			i.next().engineChanged(this);
+		}	
+	}
 }
