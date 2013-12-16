@@ -51,6 +51,7 @@ class BlockflowPanel extends JPanel implements
 	private WindowWidgets myWW;
 	
 	private BlockViewportController myVPController;
+	private ProtoSelectorController myProtoSelectorController;
 	
 	private static final int MARKER_WIDTH = 8000;
 	public static final int MARKER_HEIGHT = 3724;
@@ -81,7 +82,7 @@ class BlockflowPanel extends JPanel implements
 		// yup, thats a leeking this - squish squish
 		myWW = new WindowWidgets(this);
 		myVPController = new BlockViewportController(myEngine);
-				
+		myProtoSelectorController = new ProtoSelectorController(myEngine);
 		this.addMouseListener(this);
 		this.addMouseMotionListener(this);
 		this.addMouseWheelListener(this);
@@ -131,6 +132,7 @@ class BlockflowPanel extends JPanel implements
 				thing.paint(g2, pos, this);
 			}
 		
+		myProtoSelectorController.paintDecorations(g2);
 		// paint the window widgets
 		myWW.paint(g2);
 		
@@ -142,45 +144,53 @@ class BlockflowPanel extends JPanel implements
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		if(myWW.handlesMouseEvent(e))return;
+		if(myProtoSelectorController.mouseClicked(e))return;
 	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
 		if(myWW.handlesMouseEvent(e))return;
 		if(myVPController.mousePressed(e))return;
+		if(myProtoSelectorController.mousePressed(e))return;
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		if(myWW.handlesMouseEvent(e))return;
 		if(myVPController.mouseReleased(e))return;
+		if(myProtoSelectorController.mouseReleased(e))return;
 	}
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
 		if(myWW.handlesMouseEvent(e))return;
+		if(myProtoSelectorController.mouseEntered(e))return;
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
 		if(myWW.handlesMouseEvent(e))return;
+		if(myProtoSelectorController.mouseExited(e))return;
 	}
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
 		if(myWW.handlesMouseEvent(e))return;
 		if(myVPController.mouseDragged(e))return;
+		if(myProtoSelectorController.mouseDragged(e))return;
 	}
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
 		if(myWW.handlesMouseEvent(e))return;
+		if(myProtoSelectorController.mouseMoved(e))return;
 	}
 
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e) {
 		if(myWW.handlesMouseEvent(e))return;
 		if(myVPController.mouseWheelMoved(e))return;
+		if(myProtoSelectorController.mouseWheelMoved(e))return;
 	}
 
 	// TODO memoize this

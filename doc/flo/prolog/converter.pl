@@ -105,6 +105,12 @@ add_rdf([H|T]) :-
 	    rdf_assert(HGlobal, flo:imageResource, literal(ImageName))
 	;
 	    true),
+	(   icon_size(H, Width, Height) ->
+	    rdf_assert(HGlobal, flo:cellHeight, literal(Height)),
+	    rdf_assert(HGlobal, flo:cellWidth, literal(Width))
+	;
+	    true),
+
 	(   prototype_coordinates(H, X, Y) ->
 	    rdf_assert(HGlobal, flo:defaultPrototypeCoordinateX, literal(X)),
 	    rdf_assert(HGlobal, flo:defaultPrototypeCoordinateY, literal(Y))

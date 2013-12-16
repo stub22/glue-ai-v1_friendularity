@@ -7,7 +7,8 @@
 		      input_types/2,
 		      output_types/2,
 		     image_name/2,
-		     prototype_coordinates/3]).
+		     prototype_coordinates/3,
+		     icon_size/3]).
 /** <module>  Static definitions of block types
 
 
@@ -22,8 +23,8 @@
 	input_types/2,
 	output_types/2,
 	image_name/2,
-	prototype_coordinates/3.
-
+	prototype_coordinates/3,
+	icon_size/3.
 
 %  ===== if ===========
 section(if, 'Control').
@@ -34,6 +35,9 @@ inputs(if, [required('Cond'), required('A'), required('B')]).
 outputs(if, ['O']).
 input_types(if, [scalar, object, object]).
 output_types(if, [object]).
+image_name(if, '/img/blocks/blocksheet0-_21.png').
+prototype_coordinates(if, 22, 0).
+icon_size(if, 1, 1).
 
 
 %  ===== ifvar ===========
@@ -45,6 +49,9 @@ inputs(ifvar, [required('Cond'), required('A'), required('B')]).
 outputs(ifvar, ['O']).
 input_types(ifvar, [string, object, object]).
 output_types(ifvar, [object]).
+image_name(ifvar, '/img/blocks/blocksheet0-_33.png').
+prototype_coordinates(ifvar, 22, 1).
+icon_size(ifvar, 1, 1).
 
 
 %  ===== flipflop ===========
@@ -57,6 +64,8 @@ outputs(flipflop, ['O']).
 input_types(flipflop, [pulse, pulse]).
 output_types(flipflop, [int]).
 image_name(flipflop, '/img/blocks/blocksheet1_01.png').
+prototype_coordinates(flipflop, 22, 2).
+icon_size(flipflop, , ).
 
 
 
@@ -69,6 +78,9 @@ inputs(isolate, [required('A'), required('Default')]).
 outputs(isolate, ['O']).
 input_types(isolate, [object, object]).
 output_types(isolate, [object]).
+image_name(isolate, '/img/blocks/blocksheet0-_18.png').
+prototype_coordinates(isolate, 22, 3).
+icon_size(isolate, 1, 1).
 
 
 %  ===== inputparam ===========
@@ -76,10 +88,13 @@ section(inputparam, 'Editor Support').
 subsection(inputparam, 'Editor Support').
 description(inputparam, 'used when defining new blocks').
 visual_style(inputparam,  visual_style0).
-inputs(inputparam, []).
+inputs(inputparam, [required('Name')]).
 outputs(inputparam, ['O']).
-input_types(inputparam, []).
+input_types(inputparam, [string]).
 output_types(inputparam, [object]).
+image_name(inputparam, '/img/blocks/blocksheet0-_15.png').
+prototype_coordinates(inputparam, 22, 4).
+icon_size(inputparam, 1, 1).
 
 
 %  ===== outputparam ===========
@@ -87,10 +102,13 @@ section(outputparam, 'Editor Support').
 subsection(outputparam, 'Editor Support').
 description(outputparam, 'used when defining new blocks').
 visual_style(outputparam,  visual_style1).
-inputs(outputparam, [required('A')]).
+inputs(outputparam, [required('A'), required('Name')]).
 outputs(outputparam, []).
-input_types(outputparam, [object]).
+input_types(outputparam, [object, string]).
 output_types(outputparam, []).
+image_name(outputparam, '/img/blocks/blocksheet0-_29.png').
+prototype_coordinates(outputparam, 22, 5).
+icon_size(outputparam, 1, 1).
 
 
 
@@ -99,10 +117,13 @@ section(func, 'Math').
 subsection(func, 'Math').
 description(func, 'This special block has a textbox for a formula. So if you type 3x+2 you see an input parameter x. Operator meaning depends on whats connected to x (scalar or vector). Understands LSL angle bracket quat syntax').
 visual_style(func,  normal).
-inputs(func, [required('A'), required('B'), required('C')]).
+inputs(func, [required('Formula'), required('A'), required('B')]).
 outputs(func, ['O']).
-input_types(func, [scalar, scalar, scalar, scalar]).
+input_types(func, [string, scalar, scalar, scalar]).
 output_types(func, [object]).
+image_name(func, '/img/blocks/blocksheet0-_32.png').
+prototype_coordinates(func, 23, 0).
+icon_size(func, 2, 1).
 
 
 
@@ -115,6 +136,9 @@ inputs(delay, [required('A')]).
 outputs(delay, ['O']).
 input_types(delay, [object]).
 output_types(delay, [object]).
+image_name(delay, '/img/blocks/blocksheet0-_31.png').
+prototype_coordinates(delay, 23, 1).
+icon_size(delay, 1, 1).
 
 
 
@@ -130,6 +154,7 @@ input_types(pulse, []).
 output_types(pulse, [pulse]).
 image_name(pulse, '/img/blocks/blocksheet1_01.png').
 prototype_coordinates(pulse, 21, 0).
+icon_size(pulse, 1, 1).
 
 
 %  ===== proportion ===========
@@ -143,6 +168,7 @@ input_types(proportion, []).
 output_types(proportion, [proportion]).
 image_name(proportion, '/img/blocks/blocksheet1_02.png').
 prototype_coordinates(proportion, 21, 1).
+icon_size(proportion, 1, 1).
 
 
 %  ===== floatval ===========
@@ -156,6 +182,7 @@ input_types(floatval, []).
 output_types(floatval, [float]).
 image_name(floatval, '/img/blocks/blocksheet1_03.png').
 prototype_coordinates(floatval, 21, 2).
+icon_size(floatval, 1, 1).
 
 
 
@@ -170,6 +197,7 @@ input_types(mic, []).
 output_types(mic, [sample]).
 image_name(mic, '/img/blocks/blocksheet1_04.png').
 prototype_coordinates(mic, 21, 3).
+icon_size(mic, 1, 1).
 
 
 %  ===== listen ===========
@@ -183,6 +211,7 @@ input_types(listen, [sample]).
 output_types(listen, []).
 image_name(listen, '/img/blocks/blocksheet1_05.png').
 prototype_coordinates(listen, 21, 4).
+icon_size(listen, 1, 1).
 
 
 
@@ -197,6 +226,7 @@ input_types(camera, []).
 output_types(camera, [rgb, intrinsics]).
 image_name(camera, '/img/blocks/blocksheet1_06.png').
 prototype_coordinates(camera, 21, 5).
+icon_size(camera, 1, 1).
 
 
 %  ===== eyes ===========
@@ -210,6 +240,7 @@ input_types(eyes, [proportion, proportion]).
 output_types(eyes, [rgb, rgb]).
 image_name(eyes, '/img/blocks/blocksheet1_07.png').
 prototype_coordinates(eyes, 21, 6).
+icon_size(eyes, 2, 1).
 
 
 %  ===== videoplayer ===========
@@ -245,6 +276,7 @@ input_types(spectrum, [sample]).
 output_types(spectrum, []).
 image_name(spectrum, '/img/blocks/blocksheet1_09.png').
 prototype_coordinates(spectrum, 21, 7).
+icon_size(spectrum, 1, 1).
 
 
 %  ===== draw_tool ===========
@@ -269,6 +301,7 @@ input_types(viewer, [image]).
 output_types(viewer, []).
 image_name(viewer, '/img/blocks/blocksheet1_13.png').
 prototype_coordinates(viewer, 21, 8).
+icon_size(viewer, 1, 1).
 
 
 %  ===== kernal ===========
@@ -282,6 +315,7 @@ input_types(kernal, []).
 output_types(kernal, [kernal]).
 image_name(kernal, '/img/blocks/blocksheet1_14.png').
 prototype_coordinates(kernal, 21, 9).
+icon_size(kernal, 1, 1).
 
 
 
@@ -296,6 +330,7 @@ input_types(bodymask, []).
 output_types(bodymask, [mask]).
 image_name(bodymask, '/img/blocks/blocksheet1_10.png').
 prototype_coordinates(bodymask, 21, 10).
+icon_size(bodymask, 1, 1).
 
 
 %  ===== bodyposition ===========
@@ -309,6 +344,7 @@ input_types(bodyposition, []).
 output_types(bodyposition, [joints]).
 image_name(bodyposition, '/img/blocks/blocksheet1_11.png').
 prototype_coordinates(bodyposition, 21, 11).
+icon_size(bodyposition, 1, 1).
 
 
 %  ===== bodypossim ===========
@@ -322,6 +358,7 @@ input_types(bodypossim, []).
 output_types(bodypossim, [joints]).
 image_name(bodypossim, '/img/blocks/blocksheet1_16.png').
 prototype_coordinates(bodypossim, 21, 12).
+icon_size(bodypossim, 1, 1).
 
 
 %  ===== motors ===========
@@ -335,6 +372,7 @@ input_types(motors, [joints, jointmask]).
 output_types(motors, []).
 image_name(motors, '/img/blocks/blocksheet1_15.png').
 prototype_coordinates(motors, 21, 13).
+icon_size(motors, 1, 1).
 
 
 %  ===== motorsim ===========
@@ -348,6 +386,7 @@ input_types(motorsim, [joints, jointmask]).
 output_types(motorsim, []).
 image_name(motorsim, '/img/blocks/blocksheet1_17.png').
 prototype_coordinates(motorsim, 21, 14).
+icon_size(motorsim, 1, 1).
 
 
 
@@ -363,6 +402,7 @@ input_types(drbend, [any]).
 output_types(drbend, [any]).
 image_name(drbend, '/img/blocks/blocksheet0-_02.png').
 prototype_coordinates(drbend, 20, 0).
+icon_size(drbend, 1, 1).
 
 
 %  ===== dlbend ===========
@@ -376,6 +416,7 @@ input_types(dlbend, [any]).
 output_types(dlbend, [any]).
 image_name(dlbend, '/img/blocks/blocksheet0-_03.png').
 prototype_coordinates(dlbend, 20, 1).
+icon_size(dlbend, 1, 1).
 
 
 %  ===== horpipe ===========
@@ -389,6 +430,7 @@ input_types(horpipe, [any]).
 output_types(horpipe, [any]).
 image_name(horpipe, '/img/blocks/blocksheet0-_04.png').
 prototype_coordinates(horpipe, 20, 2).
+icon_size(horpipe, 1, 1).
 
 
 %  ===== cross ===========
@@ -402,6 +444,7 @@ input_types(cross, [any, any]).
 output_types(cross, [any, any]).
 image_name(cross, '/img/blocks/blocksheet0-_05.png').
 prototype_coordinates(cross, 20, 3).
+icon_size(cross, 1, 1).
 
 
 %  ===== urbend ===========
@@ -415,6 +458,7 @@ input_types(urbend, [any]).
 output_types(urbend, [any]).
 image_name(urbend, '/img/blocks/blocksheet0-_14.png').
 prototype_coordinates(urbend, 20, 4).
+icon_size(urbend, 1, 1).
 
 
 %  ===== ulbend ===========
@@ -428,6 +472,7 @@ input_types(ulbend, [any]).
 output_types(ulbend, [any]).
 image_name(ulbend, '/img/blocks/blocksheet0-_11.png').
 prototype_coordinates(ulbend, 20, 5).
+icon_size(ulbend, 1, 1).
 
 
 %  ===== distributor ===========
@@ -441,6 +486,7 @@ input_types(distributor, [any]).
 output_types(distributor, [any, any, any]).
 image_name(distributor, '/img/blocks/blocksheet0-_09.png').
 prototype_coordinates(distributor, 20, 6).
+icon_size(distributor, 1, 1).
 
 
 %  ===== vertpipe ===========
@@ -454,6 +500,7 @@ input_types(vertpipe, [any]).
 output_types(vertpipe, [any]).
 image_name(vertpipe, '/img/blocks/blocksheet0-_08.png').
 prototype_coordinates(vertpipe, 20, 7).
+icon_size(vertpipe, 1, 1).
 
 
 
@@ -611,5 +658,73 @@ inputs(inv_fft, [required('A')]).
 outputs(inv_fft, ['O']).
 input_types(inv_fft, [complex16]).
 output_types(inv_fft, [gray]).
+
+
+
+%  ===== imgadd ===========
+section(imgadd, 'CV').
+subsection(imgadd, 'combining').
+description(imgadd, 'Ox = (Ax+Bx), for each channel x in the image (r,g,b, or grey)').
+visual_style(imgadd,  normal).
+inputs(imgadd, [required('A')]).
+outputs(imgadd, ['O']).
+input_types(imgadd, [image, image]).
+output_types(imgadd, [image]).
+
+
+%  ===== imgmax ===========
+section(imgmax, 'CV').
+subsection(imgmax, 'combining').
+description(imgmax, 'takes the channel values from whichever image has R+G+B greatest').
+visual_style(imgmax,  normal).
+inputs(imgmax, [required('A')]).
+outputs(imgmax, ['O']).
+input_types(imgmax, [image, image]).
+output_types(imgmax, [image]).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

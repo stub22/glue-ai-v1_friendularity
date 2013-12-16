@@ -19,6 +19,18 @@
 #################################################################
 
 
+###  http://www.friendularity.org/ontology/flo#cellHeight
+
+flo:cellHeight rdf:type owl:ObjectProperty .
+
+
+
+###  http://www.friendularity.org/ontology/flo#cellWidth
+
+flo:cellWidth rdf:type owl:ObjectProperty .
+
+
+
 ###  http://www.friendularity.org/ontology/flo#dataType
 
 flo:dataType rdf:type owl:ObjectProperty ;
