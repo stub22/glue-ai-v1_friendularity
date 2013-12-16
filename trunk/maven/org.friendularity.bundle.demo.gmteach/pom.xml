@@ -59,11 +59,26 @@
 			<groupId>${project.groupId}</groupId>
 			<artifactId>org.friendularity.bundle.netconfig</artifactId>
 			<version>${project.version}</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>org.cogchar.bundle.bind.lift</artifactId>
+					<groupId>org.cogchar</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
+
 		<dependency>
 			<groupId>org.cogchar</groupId>
 			<artifactId>org.cogchar.bundle.app.puma</artifactId>
 			<version>${cogchar.version}</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>
+						org.cogchar.bundle.bind.lift
+					</artifactId>
+					<groupId>org.cogchar</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.cogchar</groupId>
@@ -197,14 +212,13 @@
 			<version>${cogchar.version}</version>
 		</dependency>
 
-		<!-- Liftweb boot container -->
+	    <!-- Our Lift-based webapp, which we expect PAX services above to find 
+				and launch to HTTP for us 
 		<dependency>
-			<!-- Our Lift-based webapp, which we expect PAX services above to find 
-				and launch to HTTP for us -->
 			<groupId>org.cogchar</groupId>
 			<artifactId>org.cogchar.bundle.bind.lift</artifactId>
 			<version>${cogchar.version}</version>
-		</dependency>
+		</dependency> --> 
 
 		<!-- BMD Deps -->
 		<dependency>
