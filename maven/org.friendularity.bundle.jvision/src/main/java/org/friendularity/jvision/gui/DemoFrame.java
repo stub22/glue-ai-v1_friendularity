@@ -271,7 +271,58 @@ public class DemoFrame extends JFrame implements WindowListener, ImageStreamCons
 			}
 		});
 		menu.add(cbMenuItem);
+		
+		cbMenuItem = new JCheckBoxMenuItem("RGB to HSV");
+		cbMenuItem.addItemListener(new ItemListener(){
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				if (e.getStateChange() == ItemEvent.SELECTED)
+				  myBackupFilterSeq.addOrReplaceByClass(new RGBtoHSV());
+				else if (e.getStateChange() == ItemEvent.DESELECTED)
+				   myBackupFilterSeq.removeByClass(new RGBtoHSV());
+			}
+		});
+		menu.add(cbMenuItem);
+		
+		cbMenuItem = new JCheckBoxMenuItem("Color Threshold");
+		cbMenuItem.addItemListener(new ItemListener(){
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				if (e.getStateChange() == ItemEvent.SELECTED)
+				  myBackupFilterSeq.addOrReplaceByClass(new ColorThreshold());
+				else if (e.getStateChange() == ItemEvent.DESELECTED)
+				   myBackupFilterSeq.removeByClass(new ColorThreshold());
+			}
+		});
+		menu.add(cbMenuItem);
+		
+		cbMenuItem = new JCheckBoxMenuItem("Contour");
+		cbMenuItem.addItemListener(new ItemListener(){
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				if (e.getStateChange() == ItemEvent.SELECTED)
+				  myBackupFilterSeq.addOrReplaceByClass(new Contour());
+				else if (e.getStateChange() == ItemEvent.DESELECTED)
+				   myBackupFilterSeq.removeByClass(new Contour());
+			}
+		});
+		menu.add(cbMenuItem);
+		
+		myMenuBar.add(menu);
+		
+		menu = new JMenu("Arguments");
+		
+		menuItem = new JMenuItem("Colors");
+		menuItem.addActionListener(new ActionListener(){
 
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				ColorThreshold.showHSVSliders();
+			}
+		});
+		
+		menu.add(menuItem);
+		
 		myMenuBar.add(menu);
 		
 		/* ========= */
