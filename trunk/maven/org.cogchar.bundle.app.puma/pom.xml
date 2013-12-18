@@ -3,8 +3,8 @@
 	<parent>
 		<groupId>org.cogchar</groupId>
 		<artifactId>org.cogchar.modules.main</artifactId>
-		<version>1.0.7.1-SNAPSHOT</version>
-		<relativePath>../org.cogchar.modules.main/pom.xml</relativePath>
+		<version>1.0.8.0-SNAPSHOT</version>
+		<relativePath>../../../org.cogchar/maven/org.cogchar.modules.main/pom.xml</relativePath>
 	</parent>	
 
     <artifactId>org.cogchar.bundle.app.puma</artifactId>
