@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.friendularity.bundle.demo.ccrk;
+package org.friendularity.impl.visual;
 
 import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.core.name.FreeIdent;

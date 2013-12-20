@@ -15,6 +15,7 @@
  */
 	package org.friendularity.api.west;
 
+import org.friendularity.impl.visual.RenderedOscillatorLib;
 import org.cogchar.bind.symja.MathGate;
 import org.cogchar.render.goody.dynamic.ShapeAnimator;
 import org.cogchar.render.goody.dynamic.VizShape;
@@ -33,8 +34,8 @@ public abstract class ThingEstimate extends BasicDebugger {
 
 	public		Ident							myIdent;
 	
-	private		OscillatorLib.Vec3fOscillator	myPosOscillator;
-	private		OscillatorLib.ColorOscillator	myColorOscillator;
+	private		RenderedOscillatorLib.Vec3fOscillator	myPosOscillator;
+	private		RenderedOscillatorLib.ColorOscillator	myColorOscillator;
 			
 	public ThingEstimate(Ident id) {
 		myIdent = id;
@@ -42,14 +43,14 @@ public abstract class ThingEstimate extends BasicDebugger {
 
 	public void setPosMathExpr (String mathExpr) {
 		if (myPosOscillator == null) {
-			myPosOscillator  = new OscillatorLib.Vec3fOscillator(mathExpr);			
+			myPosOscillator  = new RenderedOscillatorLib.Vec3fOscillator(mathExpr);			
 		} else {
 			myPosOscillator.setMathExpr(mathExpr);
 		}
 	}
 	public void setColorMathExpr(String mathExpr) {
 		if (myColorOscillator == null) { 
-			myColorOscillator = new OscillatorLib.ColorOscillator(mathExpr);
+			myColorOscillator = new RenderedOscillatorLib.ColorOscillator(mathExpr);
 		} else {
 			myColorOscillator.setMathExpr(mathExpr);
 		}

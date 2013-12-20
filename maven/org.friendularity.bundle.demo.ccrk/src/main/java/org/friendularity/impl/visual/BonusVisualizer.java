@@ -21,7 +21,6 @@ import com.jme3.scene.Node;
 
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 import org.cogchar.blob.emit.RenderConfigEmitter;
-import org.friendularity.api.west.EstimateVisualizer;
 import org.friendularity.api.west.ThingEstimate;
 
 import org.friendularity.api.west.WorldEstimate;
@@ -32,7 +31,6 @@ import org.cogchar.render.trial.TrialCameras;
 import org.cogchar.render.trial.TempMidiBridge;
 
 import org.cogchar.render.opengl.optic.ViewportFacade;
-import org.friendularity.bundle.demo.ccrk.DeicticVisualizer;
 
 
 /**
@@ -86,8 +84,8 @@ public class BonusVisualizer extends ShapeAnimVisualizer<WorldEstimate> {
 	public TrialContent getTrialContent() { 
 		return myTrialContent;
 	}
-	@Override public void updateDisplay(WorldEstimate we, float timePerFrame) {
-		super.updateDisplay(we, timePerFrame);
+	@Override public void updateDisplay_onRendThrd(WorldEstimate we, float timePerFrame) {
+		super.updateDisplay_onRendThrd(we, timePerFrame);
 		if (myTrialContent != null) {
 			RenderRegistryClient rrc = getRenderRegistryClient();
 			myTrialContent.doUpdate(rrc, timePerFrame);

@@ -22,7 +22,6 @@ import org.friendularity.api.west.ThingEstimate;
 
 import com.jme3.math.Vector3f;
 import com.jme3.math.ColorRGBA;
-import org.friendularity.api.west.EstimateVisualizer;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 
 /**
@@ -48,13 +47,13 @@ public class ShapeAnimVisualizer<TE extends ThingEstimate> extends BaseVisualize
 		return myShapeAnimator;
 	}
 
-	@Override public void ensureDisplayed(TE te, float timePerFrame) {
+	@Override public void ensureDisplayed_onRendThrd(TE te, float timePerFrame) {
 		if (myCachedVizObject == null) {
-			attachSimpleVizObj(te);
+			attachSimpleVizObj_onRendThrd(te);
 		}
 	}
 
-	@Override public void updateDisplay(TE te, float timePerFrame) {
+	@Override public void updateDisplay_onRendThrd(TE te, float timePerFrame) {
 		if (myCachedVizObject != null) {
 			Vector3f updatedPosVec = te.getVisualPos();
 			if (updatedPosVec != null) {
@@ -67,7 +66,7 @@ public class ShapeAnimVisualizer<TE extends ThingEstimate> extends BaseVisualize
 		}
 	}
 
-	protected void attachSimpleVizObj(TE te) {
+	protected void attachSimpleVizObj_onRendThrd(TE te) {
 		getLogger().info("Attaching simple viz-object for {}" + te);
 		float initRadius = 5.0f;
 		ColorRGBA initColor = ColorRGBA.Red;
