@@ -13,10 +13,11 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.friendularity.api.west;
+package org.friendularity.impl.visual;
 
 import org.cogchar.render.sys.registry.RenderRegistryClient;
 import org.cogchar.render.goody.dynamic.ShapeAnimator;
+import org.friendularity.api.west.ThingEstimate;
 
 
 /**
@@ -26,9 +27,9 @@ import org.cogchar.render.goody.dynamic.ShapeAnimator;
 public interface EstimateVisualizer<TE extends ThingEstimate> {
 	public RenderRegistryClient getRenderRegistryClient();
 	public ShapeAnimator getShapeAnimator();
-	public void ensureDisplayed(TE te, float timePerFrame);
-	public void updateDisplay(TE te, float timePerFrame);	
-	public void renderCurrentEstimates(TE estim, float timePerFrame);
+	public void ensureDisplayed_onRendThrd(TE te, float timePerFrame);
+	public void updateDisplay_onRendThrd(TE te, float timePerFrame);	
+	public void renderCurrentEstimates_onRendThrd(TE estim, float timePerFrame);
 	
 	public EstimateVisualizer getSubVisualizer(ThingEstimate subEstimate);
 	

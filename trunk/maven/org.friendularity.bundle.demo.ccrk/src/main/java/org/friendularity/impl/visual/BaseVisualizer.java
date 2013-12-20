@@ -16,7 +16,6 @@
 package org.friendularity.impl.visual;
 
 import org.cogchar.render.sys.registry.RenderRegistryClient;
-import org.friendularity.api.west.EstimateVisualizer;
 import org.friendularity.api.west.ThingEstimate;
 
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
@@ -63,18 +62,18 @@ public abstract class BaseVisualizer <TE extends ThingEstimate> extends BasicDeb
 	protected RenderConfigEmitter getConfigEmitter() { 
 		return myRenderCtx.getConfigEmitter();
 	}
-	@Override public void renderCurrentEstimates(TE estim, float timePerFrame) {
-		ensureDisplayed(estim, timePerFrame);
-		updateDisplay(estim, timePerFrame);
-		renderSubEstims(estim, timePerFrame);
+	@Override public void renderCurrentEstimates_onRendThrd(TE estim, float timePerFrame) {
+		ensureDisplayed_onRendThrd(estim, timePerFrame);
+		updateDisplay_onRendThrd(estim, timePerFrame);
+		renderSubEstims_onRendThrd(estim, timePerFrame);
 	}	
 	
-	protected void renderSubEstims(TE estim, float timePerFrame) { 
+	protected void renderSubEstims_onRendThrd(TE estim, float timePerFrame) { 
 		Set<ThingEstimate> subEstims = estim.getSubEstimates();
 		for (ThingEstimate subEstim : subEstims) {
 			EstimateVisualizer subViz = getSubVisualizer(subEstim);
 			if (subViz != null) {
-				subViz.renderCurrentEstimates(subEstim, timePerFrame);
+				subViz.renderCurrentEstimates_onRendThrd(subEstim, timePerFrame);
 			}
 		}		
 	}

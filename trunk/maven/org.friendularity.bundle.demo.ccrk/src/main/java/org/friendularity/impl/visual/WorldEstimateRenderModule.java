@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.friendularity.api.west;
+package org.friendularity.impl.visual;
 
 import org.cogchar.bind.symja.MathGate;
 import org.appdapter.core.name.Ident;
@@ -31,7 +31,8 @@ import org.cogchar.render.sys.registry.RenderRegistryClient;
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.scene.Node;
-import org.friendularity.api.west.EstimateVisualizer;
+import org.friendularity.impl.visual.EstimateVisualizer;
+import org.friendularity.api.west.WorldEstimate;
 import org.friendularity.impl.visual.BonusVisualizer;
 import org.friendularity.vworld.VisionTextureMapper;
 
@@ -86,7 +87,7 @@ public class WorldEstimateRenderModule extends RenderModule implements WorldEsti
 
 		if (myWorldEstimVisualizer != null) {
 			if (myCachedWorldEstim != null) {
-				myWorldEstimVisualizer.renderCurrentEstimates(myCachedWorldEstim, timePerFrame);
+				myWorldEstimVisualizer.renderCurrentEstimates_onRendThrd(myCachedWorldEstim, timePerFrame);
 			}
 
 			if (!myDidThatStuffFlag) {

@@ -134,7 +134,8 @@ object RespirationTest extends BasicDebugger {
 		}
 		
 	}
-import org.friendularity.api.west.{ThingEstimate, WorldEstimate, WorldEstimateRenderModule}	
+import org.friendularity.api.west.{ThingEstimate, WorldEstimate}
+import org.friendularity.impl.visual.{WorldEstimateRenderModule}	
 	def testWermCalcs() : Unit = { 
 		val werm : WorldEstimateRenderModule  = new WorldEstimateRenderModule();
 		// PumaAppUtils.attachVWorldRenderModule(bundleCtx, werm, null);

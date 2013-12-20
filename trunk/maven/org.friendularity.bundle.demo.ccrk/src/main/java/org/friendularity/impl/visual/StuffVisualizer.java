@@ -43,11 +43,11 @@ public class StuffVisualizer extends ShapeAnimVisualizer<StuffEstimate> {
 		myKind = shapeKind;
 	}
 
-	@Override protected void attachSimpleVizObj(StuffEstimate est) {
+	@Override protected void attachSimpleVizObj_onRendThrd(StuffEstimate est) {
 		if (myKind == Kind.MONSTER) {
 			attachMonsterShape(est);
 		} else {
-			super.attachSimpleVizObj(est);
+			super.attachSimpleVizObj_onRendThrd(est);
 		}
 	}
 

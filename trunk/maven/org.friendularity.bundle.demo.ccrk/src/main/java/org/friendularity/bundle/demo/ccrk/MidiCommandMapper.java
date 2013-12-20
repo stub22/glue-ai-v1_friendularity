@@ -17,7 +17,7 @@ package org.friendularity.bundle.demo.ccrk;
 
 import org.appdapter.core.log.BasicDebugger;
 import org.friendularity.api.west.WorldEstimate;
-import org.friendularity.api.west.WorldEstimateRenderModule;
+import org.friendularity.impl.visual.WorldEstimateRenderModule;
 import org.cogchar.bind.midi.InterestingMidiEvent;
 import org.cogchar.bind.midi.InterestingMidiEvent.NoteOn;
 import org.cogchar.bind.midi.InterestingMidiEvent.NoteOff;

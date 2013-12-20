@@ -1,5 +1,6 @@
 package org.friendularity.bundle.demo.ccrk;
 
+import org.friendularity.impl.visual.DeicticVisualizer;
 import java.util.List;
 import org.appdapter.osgi.core.BundleActivatorBase;
 
@@ -21,9 +22,9 @@ import org.cogchar.bind.symja.MathSpaceFactory;
 import org.cogchar.bind.symja.MathGate;
 import org.friendularity.api.west.ThingEstimate;
 import org.friendularity.api.west.WorldEstimate;
-import org.friendularity.api.west.WorldEstimateRenderModule;
+import org.friendularity.impl.visual.WorldEstimateRenderModule;
 import org.cogchar.bind.midi.FunMidiEventRouter;
-import org.friendularity.api.west.EstimateVisualizer;
+import org.friendularity.impl.visual.EstimateVisualizer;
 import org.friendularity.impl.visual.BonusVisualizer;
 // import org.cogchar.test.symcalc.ScriptEngineExperiment;
 import org.friendularity.vworld.VisionDataFeed;

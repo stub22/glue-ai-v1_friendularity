@@ -13,16 +13,17 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.friendularity.api.west;
+package org.friendularity.impl.visual;
 
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
+import org.friendularity.api.west.Oscillator;
 
 /**
  *
  * @author Stu B. <www.texpedient.com>
  */
-public class OscillatorLib {
+public class RenderedOscillatorLib {
 	
 	public static class ColorOscillator extends Oscillator<ColorRGBA> {
 		public ColorOscillator(String mExpr, ColorRGBA outColor) { 
