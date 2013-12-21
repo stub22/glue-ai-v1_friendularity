@@ -24,7 +24,7 @@
 			<groupId>org.apache.felix</groupId>
 			<artifactId>org.osgi.core</artifactId>
 			<version>1.4.0</version>
-			<scope>provided</scope>
+			<scope>provided</scope> 
 		</dependency>
 		<dependency>
 			<groupId>org.appdapter</groupId>
@@ -189,13 +189,6 @@
 			<artifactId>org.rwshop.swing.common</artifactId>
 			<version>${rwshop.version}</version>
 		</dependency>
-		
-		<!-- JVISION -->
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>org.friendularity.bundle.jvision</artifactId>
-			<version>${project.version}</version>
-		</dependency>
 
 		<!-- Our PAX-JETTY service -->
 		<dependency>
@@ -210,6 +203,7 @@
 			<groupId>org.cogchar</groupId>
 			<artifactId>org.cogchar.bundle.bind.joseki</artifactId>
 			<version>${cogchar.version}</version>
+			<optional>true</optional>
 		</dependency>
 
 	    <!-- Our Lift-based webapp, which we expect PAX services above to find 
@@ -225,6 +219,13 @@
 			<groupId>org.cogchar</groupId>
 			<artifactId>org.cogchar.lib.outer.behavior</artifactId>
 			<version>${cogchar.version}</version>
+		</dependency>
+		
+		<!-- JVISION -->
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>org.friendularity.bundle.jvision</artifactId>
+			<version>${project.version}</version>
 		</dependency>
 
 	</dependencies>

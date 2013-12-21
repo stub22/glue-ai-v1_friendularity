@@ -17,25 +17,22 @@ package org.friendularity.gmteach.vworld;
 
 import java.awt.Image;
 import java.net.URISyntaxException;
-
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Session;
-
+import javax.swing.SwingUtilities;
 import org.apache.qpid.client.AMQConnectionFactory;
 import org.apache.qpid.client.AMQQueue;
 import org.apache.qpid.client.AMQTopic;
 import org.appdapter.core.log.BasicDebugger;
 import org.jflux.api.core.Listener;
 import org.jflux.api.core.util.EmptyAdapter;
-import org.robokind.api.common.utils.TimeUtils;
 import org.robokind.api.messaging.services.ServiceCommand;
 import org.robokind.api.messaging.services.ServiceCommandFactory;
 import org.robokind.api.messaging.services.ServiceError;
 import org.robokind.api.vision.ImageEvent;
-import org.robokind.api.vision.ImageRegion;
 import org.robokind.api.vision.ImageRegionList;
 import org.robokind.api.vision.config.CameraServiceConfig;
 import org.robokind.api.vision.config.FaceDetectServiceConfig;
@@ -51,10 +48,22 @@ import org.robokind.impl.vision.CameraConfig;
 import org.robokind.impl.vision.FaceDetectConfig;
 import org.robokind.impl.vision.ImageRecord;
 import org.robokind.impl.vision.ImageRegionListRecord;
+
+import org.jflux.api.core.Listener;
+import org.robokind.api.common.playable.PlayState;
+import static org.robokind.api.common.playable.PlayState.COMPLETED;
+import static org.robokind.api.common.playable.PlayState.PAUSED;
+import static org.robokind.api.common.playable.PlayState.PENDING;
+import static org.robokind.api.common.playable.PlayState.RUNNING;
+import static org.robokind.api.common.playable.PlayState.STOPPED;
+import org.robokind.api.common.utils.TimeUtils;
+import org.robokind.api.vision.ImageEvent;
+import org.robokind.api.vision.ImageRegion;
+import org.robokind.api.vision.ImageRegionList;
 import org.robokind.impl.vision.PortableImageUtils;
 
 /**
- * 
+ *
  * @author Owner
  */
 public class VisionDataFeed extends BasicDebugger {
@@ -68,10 +77,9 @@ public class VisionDataFeed extends BasicDebugger {
 	private ImageRegionListCache myImageRegionListCache;
 
 	class ImageCache implements Listener<ImageEvent> {
-		int myEventCounter;
+		int		myEventCounter;
 
-		@Override
-		public void handleEvent(ImageEvent event) {
+		@Override public void handleEvent(ImageEvent event) {
 			if (event == null) {
 				return;
 			}
@@ -84,14 +92,13 @@ public class VisionDataFeed extends BasicDebugger {
 				getLogger().info("Received image event #" + myEventCounter);
 			}
 			myEventCounter++;
-			//	SwingUtilities.invokeLater(myRepaint);
+		//	SwingUtilities.invokeLater(myRepaint);
 		}
 	}
 
 	class ImageRegionListCache implements Listener<ImageRegionList> {
 
-		int myEventCounter;
-
+		int		myEventCounter;
 		@Override
 		public void handleEvent(ImageRegionList event) {
 			if (event == null) {
@@ -99,8 +106,7 @@ public class VisionDataFeed extends BasicDebugger {
 			}
 			myImageRegions = event;
 			if ((myEventCounter % 100) == 0) {
-				getLogger().info(
-						"Received imageRegions event #" + myEventCounter);
+				getLogger().info("Received imageRegions event #" + myEventCounter);
 			}
 			myEventCounter++;
 
@@ -110,8 +116,7 @@ public class VisionDataFeed extends BasicDebugger {
 	public boolean connectServices() {
 
 		String brokerTCP_Addr = "127.0.0.1:5672";
-		String brokerAMQP_URL = "amqp://admin:admin@clientid/test?brokerlist='tcp://"
-				+ brokerTCP_Addr + "'";
+		String brokerAMQP_URL = "amqp://admin:admin@clientid/test?brokerlist='tcp://" + brokerTCP_Addr + "'";
 		try {
 			myVideoService = connectToVisionImgSvc(brokerAMQP_URL);
 			myFaceService = connectToVisionRegionSvc(brokerAMQP_URL);
@@ -128,34 +133,31 @@ public class VisionDataFeed extends BasicDebugger {
 		}
 		return false;
 	}
-
 	public void registerDummyListeners() {
-		myImageCache = new ImageCache();
-		myImageRegionListCache = new ImageRegionListCache();
-
+        myImageCache = new ImageCache();
+        myImageRegionListCache = new ImageRegionListCache();
+		
 		myVideoService.addImageListener(myImageCache);
 		myFaceService.addImageRegionsListener(myImageRegionListCache);
 	}
-
-	public void startServices() {
-		/*       PlayState state = myPlayable.getPlayState();
-		        switch(state){
-		            case PENDING:
-		            case COMPLETED:
-		            case STOPPED: myPlayable.start(TimeUtils.now()); break;
-		            case RUNNING: myPlayable.pause(TimeUtils.now()); break;
-		            case PAUSED: myPlayable.resume(TimeUtils.now()); break;
-		*/
+	public void startServices() { 
+/*       PlayState state = myPlayable.getPlayState();
+        switch(state){
+            case PENDING:
+            case COMPLETED:
+            case STOPPED: myPlayable.start(TimeUtils.now()); break;
+            case RUNNING: myPlayable.pause(TimeUtils.now()); break;
+            case PAUSED: myPlayable.resume(TimeUtils.now()); break;
+*/
 		myVideoService.start(TimeUtils.now());
 		myFaceService.start(TimeUtils.now());
 	}
-
-	private RemoteImageServiceClient connectToVisionImgSvc(String brokerAMQP_URL)
-			throws URISyntaxException, JMSException, Exception {
+	private RemoteImageServiceClient connectToVisionImgSvc(String brokerAMQP_URL) throws
+			URISyntaxException, JMSException, Exception {
 		ConnectionFactory cf = new AMQConnectionFactory(brokerAMQP_URL);
 		Connection connection = cf.createConnection();
-		Session session = connection.createSession(false,
-				Session.CLIENT_ACKNOWLEDGE);
+		Session session =
+				connection.createSession(false, Session.CLIENT_ACKNOWLEDGE);
 		connection.start();
 
 		Destination cmdDest = new AMQQueue(
@@ -165,29 +167,35 @@ public class VisionDataFeed extends BasicDebugger {
 		Destination imgDest = new AMQTopic(
 				"camera0Event; {create: always, node: {type: topic}}");
 
-		JMSAvroMessageSender<ServiceCommand, ServiceCommandRecord> cmdSender = new JMSAvroMessageSender<ServiceCommand, ServiceCommandRecord>(
+		JMSAvroMessageSender<ServiceCommand, ServiceCommandRecord> cmdSender =
+				new JMSAvroMessageSender<ServiceCommand, ServiceCommandRecord>(
 				session, cmdDest);
-		JMSAvroMessageSender<CameraServiceConfig, CameraConfig> configSender = new JMSAvroMessageSender<CameraServiceConfig, CameraConfig>(
+		JMSAvroMessageSender<CameraServiceConfig, CameraConfig> configSender =
+				new JMSAvroMessageSender<CameraServiceConfig, CameraConfig>(
 				session, cmdDest);
-		JMSAvroMessageAsyncReceiver<ServiceError, ServiceErrorRecord> errorReceiver = new JMSAvroMessageAsyncReceiver<ServiceError, ServiceErrorRecord>(
-				session, errDest, ServiceErrorRecord.class,
-				ServiceErrorRecord.SCHEMA$);
+		JMSAvroMessageAsyncReceiver<ServiceError, ServiceErrorRecord> errorReceiver =
+				new JMSAvroMessageAsyncReceiver<ServiceError, ServiceErrorRecord>(
+				session, errDest,
+				ServiceErrorRecord.class, ServiceErrorRecord.SCHEMA$);
 		ServiceCommandFactory cmdFactory = new PortableServiceCommand.Factory();
-		JMSAvroMessageAsyncReceiver<ImageEvent, ImageRecord> imageReceiver = new JMSAvroMessageAsyncReceiver<ImageEvent, ImageRecord>(
-				session, imgDest, ImageRecord.class, ImageRecord.SCHEMA$);
+		JMSAvroMessageAsyncReceiver<ImageEvent, ImageRecord> imageReceiver =
+				new JMSAvroMessageAsyncReceiver<ImageEvent, ImageRecord>(
+				session, imgDest,
+				ImageRecord.class, ImageRecord.SCHEMA$);
 
-		RemoteImageServiceClient<CameraServiceConfig> service = new RemoteImageServiceClient<CameraServiceConfig>(
+		RemoteImageServiceClient<CameraServiceConfig> service =
+				new RemoteImageServiceClient<CameraServiceConfig>(
 				CameraServiceConfig.class, "imageService", "remoteId",
-				cmdSender, configSender, errorReceiver, cmdFactory,
-				imageReceiver);
+				cmdSender, configSender, errorReceiver,
+				cmdFactory, imageReceiver);
 
 		cmdSender.setAdapter(new EmptyAdapter());
 		cmdSender.setDefaultContentType(JMSAvroServiceFacade.COMMAND_MIME_TYPE);
 		cmdSender.start();
 
-		//        configSender.setAdapter(new PortableCameraServiceConfig.MessageRecordAdapter());
-		//        configSender.setDefaultContentType(JMSAvroServiceFacade.CONFIG_MIME_TYPE);
-		//        configSender.start();
+//        configSender.setAdapter(new PortableCameraServiceConfig.MessageRecordAdapter());
+//        configSender.setDefaultContentType(JMSAvroServiceFacade.CONFIG_MIME_TYPE);
+//        configSender.start();
 
 		errorReceiver.setAdapter(new EmptyAdapter());
 		errorReceiver.start();
@@ -198,13 +206,12 @@ public class VisionDataFeed extends BasicDebugger {
 		return service;
 	}
 
-	private RemoteImageRegionServiceClient connectToVisionRegionSvc(
-			String brokerAMQP_URL) throws URISyntaxException, JMSException,
-			Exception {
+	private RemoteImageRegionServiceClient connectToVisionRegionSvc(String brokerAMQP_URL) throws
+			URISyntaxException, JMSException, Exception {
 		ConnectionFactory cf = new AMQConnectionFactory(brokerAMQP_URL);
 		Connection connection = cf.createConnection();
-		Session session = connection.createSession(false,
-				Session.CLIENT_ACKNOWLEDGE);
+		Session session =
+				connection.createSession(false, Session.CLIENT_ACKNOWLEDGE);
 		connection.start();
 
 		Destination cmdDest = new AMQQueue(
@@ -214,30 +221,36 @@ public class VisionDataFeed extends BasicDebugger {
 		Destination imgRgnDest = new AMQTopic(
 				"visionproc0Event; {create: always, node: {type: topic}}");
 
-		JMSAvroMessageSender<ServiceCommand, ServiceCommandRecord> cmdSender = new JMSAvroMessageSender<ServiceCommand, ServiceCommandRecord>(
+		JMSAvroMessageSender<ServiceCommand, ServiceCommandRecord> cmdSender =
+				new JMSAvroMessageSender<ServiceCommand, ServiceCommandRecord>(
 				session, cmdDest);
-		JMSAvroMessageSender<FaceDetectServiceConfig, FaceDetectConfig> configSender = new JMSAvroMessageSender<FaceDetectServiceConfig, FaceDetectConfig>(
+		JMSAvroMessageSender<FaceDetectServiceConfig, FaceDetectConfig> configSender =
+				new JMSAvroMessageSender<FaceDetectServiceConfig, FaceDetectConfig>(
 				session, cmdDest);
-		JMSAvroMessageAsyncReceiver<ServiceError, ServiceErrorRecord> errorReceiver = new JMSAvroMessageAsyncReceiver<ServiceError, ServiceErrorRecord>(
-				session, errDest, ServiceErrorRecord.class,
-				ServiceErrorRecord.SCHEMA$);
+		JMSAvroMessageAsyncReceiver<ServiceError, ServiceErrorRecord> errorReceiver =
+				new JMSAvroMessageAsyncReceiver<ServiceError, ServiceErrorRecord>(
+				session, errDest,
+				ServiceErrorRecord.class, ServiceErrorRecord.SCHEMA$);
 		ServiceCommandFactory cmdFactory = new PortableServiceCommand.Factory();
-		JMSAvroMessageAsyncReceiver<ImageRegionList, ImageRegionListRecord> imageRgnReceiver = new JMSAvroMessageAsyncReceiver<ImageRegionList, ImageRegionListRecord>(
-				session, imgRgnDest, ImageRegionListRecord.class,
+		JMSAvroMessageAsyncReceiver<ImageRegionList, ImageRegionListRecord> imageRgnReceiver =
+				new JMSAvroMessageAsyncReceiver<ImageRegionList, ImageRegionListRecord>(
+				session, imgRgnDest,
+				ImageRegionListRecord.class,
 				ImageRegionListRecord.SCHEMA$);
 
-		RemoteImageRegionServiceClient<FaceDetectServiceConfig> service = new RemoteImageRegionServiceClient<FaceDetectServiceConfig>(
+		RemoteImageRegionServiceClient<FaceDetectServiceConfig> service =
+				new RemoteImageRegionServiceClient<FaceDetectServiceConfig>(
 				FaceDetectServiceConfig.class, "imageService", "remoteId",
-				cmdSender, configSender, errorReceiver, cmdFactory,
-				imageRgnReceiver);
+				cmdSender, configSender, errorReceiver,
+				cmdFactory, imageRgnReceiver);
 
 		cmdSender.setAdapter(new EmptyAdapter());
 		cmdSender.setDefaultContentType(JMSAvroServiceFacade.COMMAND_MIME_TYPE);
 		cmdSender.start();
 
-		//        configSender.setAdapter(new PortableFaceDetectServiceConfig.MessageRecordAdapter());
-		//        configSender.setDefaultContentType(JMSAvroServiceFacade.CONFIG_MIME_TYPE);
-		//        configSender.start();
+//        configSender.setAdapter(new PortableFaceDetectServiceConfig.MessageRecordAdapter());
+//        configSender.setDefaultContentType(JMSAvroServiceFacade.CONFIG_MIME_TYPE);
+//        configSender.start();
 
 		errorReceiver.setAdapter(new EmptyAdapter());
 		errorReceiver.start();

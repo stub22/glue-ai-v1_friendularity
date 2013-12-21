@@ -16,33 +16,36 @@
 package org.friendularity.gmteach.api.west;
 
 // import org.cogchar.test.symcalc.ParamChunk;
+import org.cogchar.bind.symja.MathGate;
+import org.cogchar.render.goody.dynamic.VizShapeGroup;
+import org.cogchar.render.goody.dynamic.VizShape;
+
 import java.util.HashSet;
 import java.util.Set;
 
-import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
-import org.cogchar.bind.symja.MathGate;
-
-;
+import org.appdapter.core.name.FreeIdent;
+import org.cogchar.render.sys.registry.RenderRegistryClient;
+import org.friendularity.gmteach.vworld.VisionTextureMapper;
 /**
  * @author Stu B. <www.texpedient.com>
  */
 public class WorldEstimate extends ThingEstimate {
 
 	public static String ESTIM_NS = "http://friendularity.org/estimate#";
-	public SelfEstimate mySelfEstim;
+	public SelfEstimate					mySelfEstim;
 	// A person estimate is any hypothetical human, animal,  robot, or other "person" with agency for us to 
 	// notice + interact with.  Presumably if we get "picked up" ourselves, it is probly by one of these agents.
-	public Set<PersonEstimate> myPersonEstims = new HashSet<PersonEstimate>();
+	public Set<PersonEstimate>			myPersonEstims = new HashSet<PersonEstimate>();
 	// Anything else is stuff.
-	public Set<StuffEstimate> myStuffEstims = new HashSet<StuffEstimate>();
+	public Set<StuffEstimate>			myStuffEstims = new HashSet<StuffEstimate>();
 
 	boolean mathNeedsInit = true;
 
 	public double mult_A = 1.0;
-
-	//	public ParamChunk myNumChunk = new ParamChunk.Number(), myTxtChunk = new ParamChunk.Text();
-
+	
+//	public ParamChunk myNumChunk = new ParamChunk.Number(), myTxtChunk = new ParamChunk.Text();
+	
 	public WorldEstimate(Ident id) {
 		super(id);
 	}
@@ -63,33 +66,31 @@ public class WorldEstimate extends ThingEstimate {
 		}
 	}
 
-	@Override
-	public void updateFromMathSpace(MathGate mg) {
+	
+	@Override public void updateFromMathSpace(MathGate mg) {
 		long nowMsec = System.currentTimeMillis();
 		double nowSec = nowMsec / 1000.0;
 		mg.putVar("$nowSec", new Double(nowSec));
 		mg.putVar("$multA", new Double(mult_A));
-
+		
 		if (mathNeedsInit) {
 			mg.putVar("$startSec", new Double(nowSec));
 			mg.putVar("$cycleSec", new Double(3.0));
 			mathNeedsInit = false;
 		}
 		// Running these expressions updates some variables within the mathGate, used by demonstration oscillators.
-		Object globs1 = mg
-				.parseAndEvalExprToIExpr("$elapsed:=$nowSec-$startSec; $cycles:=Floor[$elapsed/$cycleSec]");
-		Object globs2 = mg
-				.parseAndEvalExprToIExpr("$phaseFrac:=$elapsed/$cycleSec-$cycles; $phaseAng:=2.0*Pi*$phaseFrac");
+		Object globs1 = mg.parseAndEvalExprToIExpr("$elapsed:=$nowSec-$startSec; $cycles:=Floor[$elapsed/$cycleSec]");
+		Object globs2 = mg.parseAndEvalExprToIExpr("$phaseFrac:=$elapsed/$cycleSec-$cycles; $phaseAng:=2.0*Pi*$phaseFrac");
+		
 
 		ensureSubpartsExist();
 
 		// This reads a new Vector3f and Color4f object every time, which is expensive, and possibly leaky in
 		// some non-obvious way?
-		super.updateFromMathSpace(mg);
+		super.updateFromMathSpace(mg);	
 	}
-
-	@Override
-	public Set<ThingEstimate> getSubEstimates() {
+	
+	@Override public Set<ThingEstimate> getSubEstimates() { 
 		ensureSubpartsExist();
 		Set<ThingEstimate> subs = new HashSet<ThingEstimate>();
 		if (mySelfEstim != null) {
@@ -99,7 +100,6 @@ public class WorldEstimate extends ThingEstimate {
 		subs.addAll(myStuffEstims);
 		return subs;
 	}
-
 	public static interface Consumer {
 
 		public void setWorldEstimate(WorldEstimate worldEstim);

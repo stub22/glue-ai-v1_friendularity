@@ -1,5 +1,5 @@
 # reponame=goog:/0ArBjkBoH40tndDdsVEVHZXhVRHFETTB5MGhGcWFmeGc/9/8
-# time=Fri Dec 13 01:25:51 PST 2013
+# time=Mon Dec 16 18:36:20 PST 2013
 # dirModel = 168
 @prefix tai:   <http://www.cogchar.org/thing/action/instance#> .
 @prefix liftquery: <http://www.cogchar.org/lift/action/query#> .
@@ -10354,337 +10354,6 @@ frt:bony_sheet_sinbad
 
 
 ########################################
-# modelName=http://www.cogchar.org/schema/scene/instance#behav_file_82
-<_:self> ccrt:sheetName "http://www.cogchar.org/schema/scene/instance#behav_file_82".
-<http://www.cogchar.org/schema/scene/instance#scn_001>
-        a       <http://www.cogchar.org/schema/scene#BuildableSceneSpec> ;
-        <http://www.appdapter.org/schema/box#javaFQCN>
-                "org.cogchar.impl.scene.SceneSpec" ;
-        <http://www.appdapter.org/schema/box#label>
-                "Stepping Behavior test #1" ;
-        <http://www.cogchar.org/schema/scene#behavior>
-                <http://www.cogchar.org/schema/scene/instance#bh_001> ;
-        <http://www.cogchar.org/schema/scene#channel>
-                <http://www.cogchar.org/schema/scene/instance#avatar_01_speech_out> , <http://www.cogchar.org/schema/scene/instance#avatar_01_anim_out> ;
-        <http://www.cogchar.org/schema/scene#details>
-                "scene-specific-details-go-here" ;
-        <http://www.cogchar.org/schema/scene#trigger>
-                "sceneTrig_01" .
-
-<http://www.cogchar.org/schema/scene/instance#bh_002>
-        a       <http://www.cogchar.org/schema/scene#BuildableBehaviorSpec> ;
-        <http://www.appdapter.org/schema/box#javaFQCN>
-                "org.cogchar.impl.scene.SteppingBehaviorSpec" ;
-        <http://www.cogchar.org/schema/scene#steps>
-                ( [ <http://www.cogchar.org/schema/scene#channel>
-                            <http://www.cogchar.org/schema/scene/instance#avatar_01_speech_out> ;
-                    <http://www.cogchar.org/schema/scene#startOffsetSec>
-                            1.2 ;
-                    <http://www.cogchar.org/schema/scene#text>
-                            "Started after 1.2 seconds"
-                  ] [ <http://www.cogchar.org/schema/scene#channel>
-                              <http://www.cogchar.org/schema/scene/instance#avatar_01_anim_out> ;
-                      <http://www.cogchar.org/schema/scene#startOffsetSec>
-                              2.0 ;
-                      <http://www.cogchar.org/schema/scene#text>
-                              "animations/zeno_AZR50_A04_for_A12/AZR50_VictoryPose_01.anim.xml"
-                    ] [ <http://www.cogchar.org/schema/scene#channel>
-                                <http://www.cogchar.org/schema/scene/instance#avatar_01_speech_out> ;
-                        <http://www.cogchar.org/schema/scene#startOffsetSec>
-                                7 ;
-                        <http://www.cogchar.org/schema/scene#text>
-                                "Started after 7 seconds"
-                      ] ) ;
-        <http://www.cogchar.org/schema/scene#steps>
-                ( [ <http://www.cogchar.org/schema/scene#channel>
-                            <http://www.cogchar.org/schema/scene/instance#avatar_01_speech_out> ;
-                    <http://www.cogchar.org/schema/scene#startOffsetSec>
-                            1.2 ;
-                    <http://www.cogchar.org/schema/scene#text>
-                            "Started after 1.2 seconds"
-                  ] [ <http://www.cogchar.org/schema/scene#channel>
-                              <http://www.cogchar.org/schema/scene/instance#avatar_01_anim_out> ;
-                      <http://www.cogchar.org/schema/scene#startOffsetSec>
-                              2.0 ;
-                      <http://www.cogchar.org/schema/scene#text>
-                              "animations/zeno_AZR50_A04_for_A12/AZR50_VictoryPose_01.anim.xml"
-                    ] [ <http://www.cogchar.org/schema/scene#channel>
-                                <http://www.cogchar.org/schema/scene/instance#avatar_01_speech_out> ;
-                        <http://www.cogchar.org/schema/scene#startOffsetSec>
-                                7 ;
-                        <http://www.cogchar.org/schema/scene#text>
-                                "Started after 7 seconds"
-                      ] ) .
-
-<http://www.cogchar.org/schema/scene/instance#bh_001>
-        a       <http://www.cogchar.org/schema/scene#BuildableBehaviorSpec> ;
-        <http://www.appdapter.org/schema/box#javaFQCN>
-                "org.cogchar.impl.scene.SteppingBehaviorSpec" ;
-        <http://www.cogchar.org/schema/scene#steps>
-                ( [ <http://www.cogchar.org/schema/scene#channel>
-                            <http://www.cogchar.org/schema/scene/instance#avatar_01_speech_out> ;
-                    <http://www.cogchar.org/schema/scene#startOffsetSec>
-                            0.7 ;
-                    <http://www.cogchar.org/schema/scene#text>
-                            "I have a positive thing to say next"
-                  ] [ <http://www.cogchar.org/schema/scene#channel>
-                              <http://www.cogchar.org/schema/scene/instance#avatar_01_anim_out> ;
-                      <http://www.cogchar.org/schema/scene#startOffsetSec>
-                              1.0 ;
-                      <http://www.cogchar.org/schema/scene#text>
-                              "animations/zeno_AZR50_A04_for_A12/AZR50_Talking_02.anim.xml"
-                    ] <http://www.cogchar.org/schema/scene/instance#step_8003> ) ;
-        <http://www.cogchar.org/schema/scene#steps>
-                ( [ <http://www.cogchar.org/schema/scene#channel>
-                            <http://www.cogchar.org/schema/scene/instance#avatar_01_speech_out> ;
-                    <http://www.cogchar.org/schema/scene#startOffsetSec>
-                            0.7 ;
-                    <http://www.cogchar.org/schema/scene#text>
-                            "I have a positive thing to say next"
-                  ] [ <http://www.cogchar.org/schema/scene#channel>
-                              <http://www.cogchar.org/schema/scene/instance#avatar_01_anim_out> ;
-                      <http://www.cogchar.org/schema/scene#startOffsetSec>
-                              1.0 ;
-                      <http://www.cogchar.org/schema/scene#text>
-                              "animations/zeno_AZR50_A04_for_A12/AZR50_Talking_02.anim.xml"
-                    ] <http://www.cogchar.org/schema/scene/instance#step_8003> ) .
-
-<http://www.cogchar.org/schema/scene/instance#scn_005>
-        a       <http://www.cogchar.org/schema/scene#BuildableSceneSpec> ;
-        <http://www.appdapter.org/schema/box#javaFQCN>
-                "org.cogchar.impl.scene.SceneSpec" ;
-        <http://www.appdapter.org/schema/box#label>
-                "Stepping Behavior test #5" ;
-        <http://www.cogchar.org/schema/scene#behavior>
-                <http://www.cogchar.org/schema/scene/instance#bh_005> ;
-        <http://www.cogchar.org/schema/scene#channel>
-                <http://www.cogchar.org/schema/scene/instance#avatar_01_speech_out> , <http://www.cogchar.org/schema/scene/instance#avatar_01_anim_out> ;
-        <http://www.cogchar.org/schema/scene#trigger>
-                "sceneTrig_05" .
-
-<http://www.cogchar.org/schema/scene/instance#avatar_01_anim_out>
-        a       <http://www.cogchar.org/schema/scene#BuildableChannelSpec> .
-
-<http://www.cogchar.org/schema/scene/instance#avatar_01_speech_out>
-        a       <http://www.cogchar.org/schema/scene#BuildableChannelSpec> .
-
-<http://www.cogchar.org/schema/scene#BuildableBehaviorSpec>
-        a       <http://www.w3.org/2000/01/rdf-schema#Class> ;
-        <http://www.w3.org/2000/01/rdf-schema#subClassOf>
-                <http://jena.hpl.hp.com/2005/11/Assembler#Object> ;
-        <http://jena.hpl.hp.com/2005/11/Assembler#assembler>
-                "org.cogchar.impl.scene.BehaviorSpecBuilder" .
-
-<http://www.cogchar.org/schema/scene/instance#scn_011>
-        a       <http://www.cogchar.org/schema/scene#BuildableSceneSpec> ;
-        <http://www.appdapter.org/schema/box#javaFQCN>
-                "org.cogchar.impl.scene.SceneSpec" ;
-        <http://www.appdapter.org/schema/box#label>
-                "scn_011 - I Feel Good" ;
-        <http://www.cogchar.org/schema/scene#behavior>
-                <http://www.cogchar.org/schema/scene/instance#bh_011> ;
-        <http://www.cogchar.org/schema/scene#channel>
-                <http://www.cogchar.org/schema/scene/instance#avatar_01_speech_out> , <http://www.cogchar.org/schema/scene/instance#avatar_01_anim_out> ;
-        <http://www.cogchar.org/schema/scene#trigger>
-                "sceneTrig_11" .
-
-<http://www.cogchar.org/schema/scene/instance#bh_005>
-        a       <http://www.cogchar.org/schema/scene#BuildableBehaviorSpec> ;
-        <http://www.appdapter.org/schema/box#javaFQCN>
-                "org.cogchar.impl.scene.SteppingBehaviorSpec" ;
-        <http://www.cogchar.org/schema/scene#steps>
-                ( [ <http://www.cogchar.org/schema/scene#channel>
-                            <http://www.cogchar.org/schema/scene/instance#avatar_01_speech_out> ;
-                    <http://www.cogchar.org/schema/scene#startOffsetSec>
-                            0.0 ;
-                    <http://www.cogchar.org/schema/scene#text>
-                            "Starting animation anger.xml"
-                  ] [ <http://www.cogchar.org/schema/scene#channel>
-                              <http://www.cogchar.org/schema/scene/instance#avatar_01_anim_out> ;
-                      <http://www.cogchar.org/schema/scene#startOffsetSec>
-                              1.0 ;
-                      <http://www.cogchar.org/schema/scene#text>
-                              "animations/misc/anger.xml"
-                    ] [ <http://www.cogchar.org/schema/scene#channel>
-                                <http://www.cogchar.org/schema/scene/instance#avatar_01_speech_out> ;
-                        <http://www.cogchar.org/schema/scene#startOffsetSec>
-                                5.0 ;
-                        <http://www.cogchar.org/schema/scene#text>
-                                "Starting animation blink.xml"
-                      ] [ <http://www.cogchar.org/schema/scene#channel>
-                                  <http://www.cogchar.org/schema/scene/instance#avatar_01_anim_out> ;
-                          <http://www.cogchar.org/schema/scene#startOffsetSec>
-                                  6.0 ;
-                          <http://www.cogchar.org/schema/scene#text>
-                                  "animations/misc/blink.xml"
-                        ] [ <http://www.cogchar.org/schema/scene#channel>
-                                    <http://www.cogchar.org/schema/scene/instance#avatar_01_speech_out> ;
-                            <http://www.cogchar.org/schema/scene#startOffsetSec>
-                                    10.0 ;
-                            <http://www.cogchar.org/schema/scene#text>
-                                    "Starting animation happy.xml"
-                          ] [ <http://www.cogchar.org/schema/scene#channel>
-                                      <http://www.cogchar.org/schema/scene/instance#avatar_01_anim_out> ;
-                              <http://www.cogchar.org/schema/scene#startOffsetSec>
-                                      11.0 ;
-                              <http://www.cogchar.org/schema/scene#text>
-                                      "animations/misc/happy.xml"
-                            ] ) ;
-        <http://www.cogchar.org/schema/scene#steps>
-                ( [ <http://www.cogchar.org/schema/scene#channel>
-                            <http://www.cogchar.org/schema/scene/instance#avatar_01_speech_out> ;
-                    <http://www.cogchar.org/schema/scene#startOffsetSec>
-                            0.0 ;
-                    <http://www.cogchar.org/schema/scene#text>
-                            "Starting animation anger.xml"
-                  ] [ <http://www.cogchar.org/schema/scene#channel>
-                              <http://www.cogchar.org/schema/scene/instance#avatar_01_anim_out> ;
-                      <http://www.cogchar.org/schema/scene#startOffsetSec>
-                              1.0 ;
-                      <http://www.cogchar.org/schema/scene#text>
-                              "animations/misc/anger.xml"
-                    ] [ <http://www.cogchar.org/schema/scene#channel>
-                                <http://www.cogchar.org/schema/scene/instance#avatar_01_speech_out> ;
-                        <http://www.cogchar.org/schema/scene#startOffsetSec>
-                                5.0 ;
-                        <http://www.cogchar.org/schema/scene#text>
-                                "Starting animation blink.xml"
-                      ] [ <http://www.cogchar.org/schema/scene#channel>
-                                  <http://www.cogchar.org/schema/scene/instance#avatar_01_anim_out> ;
-                          <http://www.cogchar.org/schema/scene#startOffsetSec>
-                                  6.0 ;
-                          <http://www.cogchar.org/schema/scene#text>
-                                  "animations/misc/blink.xml"
-                        ] [ <http://www.cogchar.org/schema/scene#channel>
-                                    <http://www.cogchar.org/schema/scene/instance#avatar_01_speech_out> ;
-                            <http://www.cogchar.org/schema/scene#startOffsetSec>
-                                    10.0 ;
-                            <http://www.cogchar.org/schema/scene#text>
-                                    "Starting animation happy.xml"
-                          ] [ <http://www.cogchar.org/schema/scene#channel>
-                                      <http://www.cogchar.org/schema/scene/instance#avatar_01_anim_out> ;
-                              <http://www.cogchar.org/schema/scene#startOffsetSec>
-                                      11.0 ;
-                              <http://www.cogchar.org/schema/scene#text>
-                                      "animations/misc/happy.xml"
-                            ] ) .
-
-<http://www.cogchar.org/schema/scene#BuildableThingActionFilterSpec>
-        a       <http://www.w3.org/2000/01/rdf-schema#Class> ;
-        <http://www.w3.org/2000/01/rdf-schema#subClassOf>
-                <http://jena.hpl.hp.com/2005/11/Assembler#Object> ;
-        <http://jena.hpl.hp.com/2005/11/Assembler#assembler>
-                "org.cogchar.impl.thing.filters.ThingActionFilterBuilder" .
-
-<http://www.cogchar.org/schema/scene#BuildableSceneSpec>
-        a       <http://www.w3.org/2000/01/rdf-schema#Class> ;
-        <http://www.w3.org/2000/01/rdf-schema#subClassOf>
-                <http://jena.hpl.hp.com/2005/11/Assembler#Object> ;
-        <http://jena.hpl.hp.com/2005/11/Assembler#assembler>
-                "org.cogchar.impl.scene.SceneSpecBuilder" .
-
-<http://www.cogchar.org/schema/scene/instance#scn_003>
-        a       <http://www.cogchar.org/schema/scene#BuildableSceneSpec> ;
-        <http://www.appdapter.org/schema/box#javaFQCN>
-                "org.cogchar.impl.scene.SceneSpec" ;
-        <http://www.appdapter.org/schema/box#label>
-                "Stepping Behavior test #3" ;
-        <http://www.cogchar.org/schema/scene#behavior>
-                <http://www.cogchar.org/schema/scene/instance#bh_002> , <http://www.cogchar.org/schema/scene/instance#bh_001> ;
-        <http://www.cogchar.org/schema/scene#channel>
-                <http://www.cogchar.org/schema/scene/instance#avatar_01_speech_out> , <http://www.cogchar.org/schema/scene/instance#avatar_01_anim_out> ;
-        <http://www.cogchar.org/schema/scene#trigger>
-                "sceneTrig_03" .
-
-<http://www.cogchar.org/schema/scene#channel>
-        a       <http://www.w3.org/2000/01/rdf-schema#Property> ;
-        <http://www.w3.org/2000/01/rdf-schema#range>
-                <http://www.cogchar.org/schema/scene#BuildableChannelSpec> .
-
-<http://www.cogchar.org/schema/scene/instance#scn_002>
-        a       <http://www.cogchar.org/schema/scene#BuildableSceneSpec> ;
-        <http://www.appdapter.org/schema/box#javaFQCN>
-                "org.cogchar.impl.scene.SceneSpec" ;
-        <http://www.appdapter.org/schema/box#label>
-                "Stepping Behavior test #2" ;
-        <http://www.cogchar.org/schema/scene#behavior>
-                <http://www.cogchar.org/schema/scene/instance#bh_002> ;
-        <http://www.cogchar.org/schema/scene#channel>
-                <http://www.cogchar.org/schema/scene/instance#avatar_01_speech_out> , <http://www.cogchar.org/schema/scene/instance#avatar_01_anim_out> ;
-        <http://www.cogchar.org/schema/scene#trigger>
-                "sceneTrig_02" .
-
-<http://www.cogchar.org/schema/scene/instance#bh_011>
-        a       <http://www.cogchar.org/schema/scene#BuildableBehaviorSpec> ;
-        <http://www.appdapter.org/schema/box#javaFQCN>
-                "org.cogchar.impl.scene.SteppingBehaviorSpec" ;
-        <http://www.cogchar.org/schema/scene#steps>
-                ( [ <http://www.cogchar.org/schema/scene#channel>
-                            <http://www.cogchar.org/schema/scene/instance#avatar_01_speech_out> ;
-                    <http://www.cogchar.org/schema/scene#startOffsetSec>
-                            0.5 ;
-                    <http://www.cogchar.org/schema/scene#text>
-                            "Wow. So many people here today. How do you all feel? Ill tell you how I feel."
-                  ] [ <http://www.cogchar.org/schema/scene#channel>
-                              <http://www.cogchar.org/schema/scene/instance#avatar_01_anim_out> ;
-                      <http://www.cogchar.org/schema/scene#startOffsetSec>
-                              10.1 ;
-                      <http://www.cogchar.org/schema/scene#text>
-                              "animations/zeno_AZR50_A04_for_A12/AZR50_Dancing_01.anim.xml"
-                    ] [ <http://www.cogchar.org/schema/scene#channel>
-                                <http://www.cogchar.org/schema/scene/instance#avatar_01_speech_out> ;
-                        <http://www.cogchar.org/schema/scene#startOffsetSec>
-                                10.2 ;
-                        <http://www.cogchar.org/schema/scene#text>
-                                "well hey now \\aud=\"/mnt/vm_shared/wav_samples/DancingFeet_MAG.wav\"\\ can you dig it?"
-                      ] ) ;
-        <http://www.cogchar.org/schema/scene#steps>
-                ( [ <http://www.cogchar.org/schema/scene#channel>
-                            <http://www.cogchar.org/schema/scene/instance#avatar_01_speech_out> ;
-                    <http://www.cogchar.org/schema/scene#startOffsetSec>
-                            0.5 ;
-                    <http://www.cogchar.org/schema/scene#text>
-                            "Wow. So many people here today. How do you all feel? Ill tell you how I feel."
-                  ] [ <http://www.cogchar.org/schema/scene#channel>
-                              <http://www.cogchar.org/schema/scene/instance#avatar_01_anim_out> ;
-                      <http://www.cogchar.org/schema/scene#startOffsetSec>
-                              10.1 ;
-                      <http://www.cogchar.org/schema/scene#text>
-                              "animations/zeno_AZR50_A04_for_A12/AZR50_Dancing_01.anim.xml"
-                    ] [ <http://www.cogchar.org/schema/scene#channel>
-                                <http://www.cogchar.org/schema/scene/instance#avatar_01_speech_out> ;
-                        <http://www.cogchar.org/schema/scene#startOffsetSec>
-                                10.2 ;
-                        <http://www.cogchar.org/schema/scene#text>
-                                "well hey now \\aud=\"/mnt/vm_shared/wav_samples/DancingFeet_MAG.wav\"\\ can you dig it?"
-                      ] ) .
-
-<http://www.cogchar.org/schema/scene/instance#step_8003>
-        <http://www.cogchar.org/schema/scene#channel>
-                <http://www.cogchar.org/schema/scene/instance#avatar_01_speech_out> ;
-        <http://www.cogchar.org/schema/scene#startOffsetSec>
-                5.2 ;
-        <http://www.cogchar.org/schema/scene#text>
-                "I am not a whiny weirdo" .
-
-<http://www.cogchar.org/schema/scene#BuildableChannelSpec>
-        a       <http://www.w3.org/2000/01/rdf-schema#Class> ;
-        <http://www.w3.org/2000/01/rdf-schema#subClassOf>
-                <http://jena.hpl.hp.com/2005/11/Assembler#Object> ;
-        <http://jena.hpl.hp.com/2005/11/Assembler#assembler>
-                "org.cogchar.impl.perform.ChannelSpecBuilder" .
-
-<file:///D:/dev/hrk/org.friendularity/maven/org.friendularity.bundle.demo.gmteach/metadata/behavior/master_demo_scenes_A.ttl>
-        <http://www.w3.org/2000/01/rdf-schema#comment>
-                "Chewy nuggets of real behavior" .
-
-# modelSize=217
-<_:self> a ccrt:RepoSheetModel. 
-
-
-
-
-########################################
 # modelName=urn:ftd:cogchar.org:2012:runtime#cmd_sheet_AZR50
 <_:self> ccrt:sheetName "urn:ftd:cogchar.org:2012:runtime#cmd_sheet_AZR50".
 <urn:ftd:cogchar.org:2012:runtime_instance#cmd_sayTheTime>
@@ -11825,7 +11494,7 @@ frt:bony_sheet_sinbad
         <http://www.cogchar.org/schema/scene#markupText>
                 "rspd=80 Thank you for listening. I hope you will help us change the world, and truely improve the lives of children with aw-tism." ;
         <http://www.cogchar.org/schema/scene#text>
-                "rspd=80 Thank you for listening. I hope you will help us change the world, and truely improve the lives of children with aw-tism." ;
+                "\\rspd=80\\ Thank you for listening. I hope you will help us change the world, and truely improve the lives of children with aw-tism." ;
         <http://www.cogchar.org/schema/scene#waitForEnd>
                 <http://www.cogchar.org/schema/scene/instance#ZSS-S1B1S13> .
 
@@ -12030,7 +11699,7 @@ frt:bony_sheet_sinbad
         <http://www.cogchar.org/schema/scene#markupText>
                 "rspd=82 My soft-where allows connections with tablets to deliver interactive lectures, demonstrations, and video lessons accessible to a wide range of the aww-tism spectrum." ;
         <http://www.cogchar.org/schema/scene#text>
-                "rspd=82 My soft-where allows connections with tablets to deliver interactive lectures, demonstrations, and video lessons accessible to a wide range of the aww-tism spectrum." ;
+                "\\rspd=82\\ My soft-where allows connections with tablets to deliver interactive lectures, demonstrations, and video lessons accessible to a wide range of the aww-tism spectrum." ;
         <http://www.cogchar.org/schema/scene#waitForEnd>
                 <http://www.cogchar.org/schema/scene/instance#ZSS-S1B1S7> .
 
@@ -12090,7 +11759,7 @@ frt:bony_sheet_sinbad
         <http://www.cogchar.org/schema/scene#markupText>
                 "rspd=82 I am designed to help kids connect academically, socially, and behaviorally. Children with aw-tism want to work with me rspd=73 because I am rspd=82 designed around their strengths and I never get rspd=67 tired or angry. rspd=82 I help motivate kids intrinsically and can reinforce what your professionals are doing with them. " ;
         <http://www.cogchar.org/schema/scene#text>
-                "rspd=82 I am designed to help kids connect academically, socially, and behaviorally. Children with aw-tism want to work with me rspd=73 because I am rspd=82 designed around their strengths and I never get rspd=67 tired or angry. rspd=82 I help motivate kids intrinsically and can reinforce what your professionals are doing with them. " ;
+                "\\rspd=82\\ I am designed to help kids connect academically, socially, and behaviorally. Children with aw-tism want to work with me \\rspd=73\\ because I am \\rspd=82\\ designed around their strengths and I never get \\rspd=67\\ tired or angry. \\rspd=82\\ I help motivate kids intrinsically and can reinforce what your professionals are doing with them. " ;
         <http://www.cogchar.org/schema/scene#waitForEnd>
                 <http://www.cogchar.org/schema/scene/instance#ZSS-S1B1S1> .
 
@@ -12214,7 +11883,7 @@ frt:bony_sheet_sinbad
         <http://www.cogchar.org/schema/scene#markupText>
                 "rspd=80 With my technology, we can provide engaging, affordable, and effective tools for families and their therapists now, and for the future. " ;
         <http://www.cogchar.org/schema/scene#text>
-                "rspd=80 With my technology, we can provide engaging, affordable, and effective tools for families and their therapists now, and for the future. " ;
+                "\\rspd=80\\ With my technology, we can provide engaging, affordable, and effective tools for families and their therapists now, and for the future. " ;
         <http://www.cogchar.org/schema/scene#waitForEnd>
                 <http://www.cogchar.org/schema/scene/instance#ZSS-S1B1S11> .
 
@@ -12398,7 +12067,7 @@ frt:bony_sheet_sinbad
         <http://www.cogchar.org/schema/scene#markupText>
                 "rspd=80 I can see. hear. and make human-like expressions and gestures. My camera and microfones allow sessions to be monitored in real-time or recorded and re-viewed later by parents, teachers, or therapists." ;
         <http://www.cogchar.org/schema/scene#text>
-                "rspd=80 I can see. hear. and make human-like expressions and gestures. My camera and microfones allow sessions to be monitored in real-time or recorded and re-viewed later by parents, teachers, or therapists." ;
+                "\\rspd=80\\ I can see. hear. and make human-like expressions and gestures. My camera and microfones allow sessions to be monitored in real-time or recorded and re-viewed later by parents, teachers, or therapists." ;
         <http://www.cogchar.org/schema/scene#waitForEnd>
                 <http://www.cogchar.org/schema/scene/instance#ZSS-S1B1S5> .
 
@@ -12467,7 +12136,7 @@ frt:bony_sheet_sinbad
         <http://www.cogchar.org/schema/scene#markupText>
                 "rspd=85 Hi, my name is Zeeno, I am new technology from Rowbo-kind, and I am the next generation of therapy for children with aw-tism." ;
         <http://www.cogchar.org/schema/scene#text>
-                "rspd=85 Hi, my name is Zeeno, I am new technology from Rowbo-kind, and I am the next generation of therapy for children with aw-tism." .
+                "\\rspd=85\\ Hi, my name is Zeeno, I am new technology from Rowbo-kind, and I am the next generation of therapy for children with aw-tism." .
 
 <http://www.cogchar.org/schema/scene/instance#GeneralDemo-S1B5S4>
         a       <http://www.cogchar.org/schema/scene#BehaviorStep> ;
@@ -12525,7 +12194,7 @@ frt:bony_sheet_sinbad
         <http://www.cogchar.org/schema/scene#markupText>
                 "rspd=90 And don't forget, we can also educate high school students with my Robow-Steps program. Robow-Steps enhances or extends current computer science curriculum and is great for Robot clubs and computer science compatitions." ;
         <http://www.cogchar.org/schema/scene#text>
-                "rspd=90 And don't forget, we can also educate high school students with my Robow-Steps program. Robow-Steps enhances or extends current computer science curriculum and is great for Robot clubs and computer science compatitions." ;
+                "\\rspd=90\\ And don't forget, we can also educate high school students with my Robow-Steps program. Robow-Steps enhances or extends current computer science curriculum and is great for Robot clubs and computer science compatitions." ;
         <http://www.cogchar.org/schema/scene#waitForEnd>
                 <http://www.cogchar.org/schema/scene/instance#ZSS-S1B1S15> .
 
@@ -12580,7 +12249,7 @@ frt:bony_sheet_sinbad
         <http://www.cogchar.org/schema/scene#markupText>
                 "rspd=78 My Artificial-Intelligence includes our patented Comp-u-Compassion system, made possible through an on-going N S F grant.  I can estimate the student's emotional and mental state regarding a lesson and adjust my cawntent to be more effective." ;
         <http://www.cogchar.org/schema/scene#text>
-                "rspd=78 My Artificial-Intelligence includes our patented Comp-u-Compassion system, made possible through an on-going N S F grant.  I can estimate the student's emotional and mental state regarding a lesson and adjust my cawntent to be more effective." ;
+                "\\rspd=78\\ My Artificial-Intelligence includes our patented Comp-u-Compassion system, made possible through an on-going N S F grant.  I can estimate the student's emotional and mental state regarding a lesson and adjust my cawntent to be more effective." ;
         <http://www.cogchar.org/schema/scene#waitForEnd>
                 <http://www.cogchar.org/schema/scene/instance#ZSS-S1B1S9> .
 
@@ -12781,7 +12450,7 @@ frt:bony_sheet_sinbad
         <http://www.cogchar.org/schema/scene#markupText>
                 "rspd=82 My cawntent comes from two leading aww-tism experts: Doctor Carolyn Garver from the Aww-tism Treatment Center of Texas, and Doctor Pam Rollins at U T Dallas. rspd=78 My lessons are specifically built for emotional and behavioral understanding to help kids transition from a video game to the real world." ;
         <http://www.cogchar.org/schema/scene#text>
-                "rspd=82 My cawntent comes from two leading aww-tism experts: Doctor Carolyn Garver from the Aww-tism Treatment Center of Texas, and Doctor Pam Rollins at U T Dallas. rspd=78 My lessons are specifically built for emotional and behavioral understanding to help kids transition from a video game to the real world." ;
+                "\\rspd=82\\ My cawntent comes from two leading aww-tism experts: Doctor Carolyn Garver from the Aww-tism Treatment Center of Texas, and Doctor Pam Rollins at U T Dallas. \\rspd=78\\ My lessons are specifically built for emotional and behavioral understanding to help kids transition from a video game to the real world." ;
         <http://www.cogchar.org/schema/scene#waitForEnd>
                 <http://www.cogchar.org/schema/scene/instance#ZSS-S1B1S3> .
 
@@ -13311,8 +12980,8 @@ frt:bony_sheet_sinbad
 
 ########################################
 # defaultModel...
-# modelName=http://modelToOntoModel/modelToOntoModel_model_775412714#
-<_:self> ccrt:sheetName "http://modelToOntoModel/modelToOntoModel_model_775412714#".
+# modelName=http://modelToOntoModel/modelToOntoModel_model_2137210351#
+<_:self> ccrt:sheetName "http://modelToOntoModel/modelToOntoModel_model_2137210351#".
 
 
 

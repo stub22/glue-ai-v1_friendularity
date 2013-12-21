@@ -15,16 +15,16 @@
  */
 package org.friendularity.gmteach.api.west;
 
-import static org.friendularity.gmteach.api.west.WorldEstimate.ESTIM_NS;
-
 import java.util.HashSet;
 import java.util.Set;
 
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
 
+import static org.friendularity.gmteach.api.west.WorldEstimate.ESTIM_NS;
+
 /**
- * 
+ *
  * @author Stu B22 <stub22@appstract.com>
  */
 public class EstimateLib {
@@ -36,8 +36,7 @@ public class EstimateLib {
 			PersonEstimate pest = new PersonEstimate(personID, i);
 			double px = -10.0 - i * 2.0, py = 10.0 + i * 2.0, pz = 4.0;
 			String baseVecExpr = "{" + px + ", " + py + ", " + pz + "}";
-			pest.setPosMathExpr("$multA * Sin[$phaseAng]*Sqrt[1.0 * $personIdx]*"
-					+ baseVecExpr);
+			pest.setPosMathExpr("$multA * Sin[$phaseAng]*Sqrt[1.0 * $personIdx]*" + baseVecExpr);
 			pest.setColorMathExpr("{Sin[$phaseAng],Sin[3.0*$phaseAng], Sin[$phaseAng/2], $phaseFrac}");
 			sampleSet.add(pest);
 		}
@@ -50,7 +49,7 @@ public class EstimateLib {
 			// TODO - format the index number
 			Ident stuffID = new FreeIdent(ESTIM_NS + "stuff_estim_0" + j);
 			StuffEstimate sest = new StuffEstimate(stuffID, j);
-			// WorldEstimate.StuffEstimate.Kind.REGULAR);
+						// WorldEstimate.StuffEstimate.Kind.REGULAR);
 			double px = 15.0 + j * 3.0, py = 10.0 + j * 3.0, pz = -12.0;
 			// Making use of single-threaded access to MathSpace:
 			// We assume that someone will post our stuffIdx before each eval of the following.
@@ -63,17 +62,14 @@ public class EstimateLib {
 		for (int k = 1; k <= kMax; k++) {
 			int stuffIdx = k + jMax;
 			Ident stuffID = new FreeIdent(ESTIM_NS + "stuff_estim_0" + stuffIdx);
-			StuffEstimate sest = new StuffEstimate(stuffID, stuffIdx);
-			// , WorldEstimate.StuffEstimate.Kind.MONSTER);
+			StuffEstimate sest = new StuffEstimate(stuffID, stuffIdx); 
+					// , WorldEstimate.StuffEstimate.Kind.MONSTER);
 			double px = 15.0 + k * 3.0, py = 10.0 + k * 3.0, pz = -25.0;
 			double kFrac = k / (double) kMax;
 			double red = 0.4, green = 0.2, blue = 0.8, alpha = kFrac;
-			sest.setColorMathExpr("{" + red + ", " + green + ", " + blue + ", "
-					+ alpha + "}");
+			sest.setColorMathExpr("{" + red + ", " + green + ", " + blue + ", " + alpha + "}");
 			double phaseOff = kFrac * 2 * Math.PI;
-			sest.setPosMathExpr("$phaseTot:=$phaseAng + "
-					+ phaseOff
-					+ "; {20.0*Cos[$phaseTot], $phaseTot * 5.0, 15.0*Sin[$phaseTot]}");
+			sest.setPosMathExpr("$phaseTot:=$phaseAng + " + phaseOff + "; {20.0*Cos[$phaseTot], $phaseTot * 5.0, 15.0*Sin[$phaseTot]}");
 			sampleSet.add(sest);
 		}
 		return sampleSet;

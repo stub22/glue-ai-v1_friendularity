@@ -21,7 +21,7 @@ import org.cogchar.bind.midi.InterestingMidiEvent.ControlChange;
 import org.cogchar.bind.midi.InterestingMidiEvent.NoteOn;
 import org.cogchar.bind.midi.MidiEventReporter;
 import org.friendularity.gmteach.api.west.WorldEstimate;
-import org.friendularity.gmteach.api.west.WorldEstimateRenderModule;
+import org.friendularity.gmteach.impl.visual.WorldEstimateRenderModule;
 
 /**
  * @author Stu B. <www.texpedient.com>

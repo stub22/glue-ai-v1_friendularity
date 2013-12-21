@@ -14,6 +14,8 @@ import org.cogchar.app.puma.registry.ResourceFileCategory;
 import org.cogchar.platform.util.ClassLoaderUtils;
 import org.osgi.framework.BundleContext;
 
+import ext.osgi.common.MacroBundleActivatorBase;
+
 // normally we only use explicit exports but this gives us the ability to work with classes moved from cogchar to appdapter when smoketesting vs release
 
 /**
@@ -35,15 +37,13 @@ public class CommonMediator extends PumaContextMediator {
 	@Override
 	public RepoSpec getMainConfigRepoSpec() {
 		List<ClassLoader> fileResModelCLs = getFileResClassLoaders();
-		String localBootConfigPath = System.getProperty(BOOT_CONFIG_PROP_KEY,
-				java.lang.System.getenv(BOOT_CONFIG_PROP_KEY));
+		String localBootConfigPath = System.getProperty(BOOT_CONFIG_PROP_KEY, java.lang.System.getenv(BOOT_CONFIG_PROP_KEY));
 		if (localBootConfigPath != null) {
 			myFlag_FoundBootConfigProp = true;
 			myRepoSheetLocalPath = localBootConfigPath;
 		}
 		RepoSpec rs = new URLRepoSpec(localBootConfigPath, fileResModelCLs);
-		getLogger().info(
-				this.getClass().getSimpleName() + " made RepoSpec: {} ", rs);
+		getLogger().info(this.getClass().getSimpleName() + " made RepoSpec: {} ", rs);
 		return rs;
 	}
 
@@ -61,11 +61,11 @@ public class CommonMediator extends PumaContextMediator {
 	}
 
 	public boolean getFlagIncludeVirtualWorld() {
-		return false;
+		return MacroBundleActivatorBase.macroStartupSettings.isEnabled("VirtualWorld");
 	}
 
 	public boolean getFlagIncludeWebServices() {
-		return false;
+		return MacroBundleActivatorBase.macroStartupSettings.isEnabled("LifterLifecycle");
 	}
 
 	public boolean getFlagIncludeCharacters() {
@@ -76,8 +76,7 @@ public class CommonMediator extends PumaContextMediator {
 
 	public CommonMediator(BundleContext ctx) {
 		myContext = ctx;
-		String localBootConfigPath = System.getProperty(BOOT_CONFIG_PROP_KEY,
-				java.lang.System.getenv(BOOT_CONFIG_PROP_KEY));
+		String localBootConfigPath = System.getProperty(BOOT_CONFIG_PROP_KEY, java.lang.System.getenv(BOOT_CONFIG_PROP_KEY));
 		if (localBootConfigPath != null) {
 			myFlag_FoundBootConfigProp = true;
 			myRepoSheetLocalPath = localBootConfigPath;
@@ -98,8 +97,7 @@ public class CommonMediator extends PumaContextMediator {
 		if (myContext == null) {
 			fileResModelCLs = new ArrayList<ClassLoader>();
 		} else {
-			fileResModelCLs = ClassLoaderUtils.getFileResourceClassLoaders(
-					myContext, ClassLoaderUtils.ALL_RESOURCE_CLASSLOADER_TYPES);
+			fileResModelCLs = ClassLoaderUtils.getFileResourceClassLoaders(myContext, ClassLoaderUtils.ALL_RESOURCE_CLASSLOADER_TYPES);
 		}
 		return fileResModelCLs;
 	}
