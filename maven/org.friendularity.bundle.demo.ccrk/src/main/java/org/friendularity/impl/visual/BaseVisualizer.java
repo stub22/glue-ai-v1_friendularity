@@ -34,6 +34,9 @@ import org.cogchar.render.model.humanoid.HumanoidFigureManager;
 import org.cogchar.blob.emit.RenderConfigEmitter;
 import org.friendularity.api.west.WorldEstimate;
 
+import org.cogchar.render.goody.dynamic.VizShapeGroup;
+
+
 /**
  *
  * @author Stu B22 <stub22@appstract.com>
@@ -41,10 +44,13 @@ import org.friendularity.api.west.WorldEstimate;
 public abstract class BaseVisualizer <TE extends ThingEstimate> extends BasicDebugger implements EstimateVisualizer<TE> {
 	private HumanoidRenderContext	myRenderCtx;
 	
-	private Map<ThingEstimate, EstimateVisualizer> mySubVizMap = new HashMap<ThingEstimate, EstimateVisualizer>();
+	
 
 	public BaseVisualizer(HumanoidRenderContext hrc) {
 		myRenderCtx = hrc;
+	}
+	public BaseVisualizer(BaseVisualizer<?> otherViz) {
+		myRenderCtx = otherViz.myRenderCtx;
 	}
 	@Override public RenderRegistryClient getRenderRegistryClient() {
 		return myRenderCtx.getRenderRegistryClient();
@@ -65,26 +71,5 @@ public abstract class BaseVisualizer <TE extends ThingEstimate> extends BasicDeb
 	@Override public void renderCurrentEstimates_onRendThrd(TE estim, float timePerFrame) {
 		ensureDisplayed_onRendThrd(estim, timePerFrame);
 		updateDisplay_onRendThrd(estim, timePerFrame);
-		renderSubEstims_onRendThrd(estim, timePerFrame);
 	}	
-	
-	protected void renderSubEstims_onRendThrd(TE estim, float timePerFrame) { 
-		Set<ThingEstimate> subEstims = estim.getSubEstimates();
-		for (ThingEstimate subEstim : subEstims) {
-			EstimateVisualizer subViz = getSubVisualizer(subEstim);
-			if (subViz != null) {
-				subViz.renderCurrentEstimates_onRendThrd(subEstim, timePerFrame);
-			}
-		}		
-	}
-	// Unsafe - we use erased type for the visualizer of the subEstimate - revisit.
-	@Override public EstimateVisualizer getSubVisualizer(ThingEstimate subEstimate) {
-		EstimateVisualizer subViz = mySubVizMap.get(subEstimate);
-		if (subViz == null) {
-			getLogger().info("Making sub-visualizer for {}", subEstimate);
-			subViz = new ShapeAnimVisualizer(myRenderCtx);
-			mySubVizMap.put(subEstimate, subViz);
-		}
-		return subViz;
-	}
 }

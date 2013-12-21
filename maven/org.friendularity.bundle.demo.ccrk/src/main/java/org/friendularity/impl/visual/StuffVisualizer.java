@@ -16,7 +16,7 @@
 package org.friendularity.impl.visual;
 
 import org.cogchar.render.sys.registry.RenderRegistryClient;
-import org.cogchar.render.goody.dynamic.ShapeAnimator;
+import org.cogchar.render.goody.dynamic.VizShapeGroup;
 import org.cogchar.render.goody.dynamic.VizShape;
 import org.friendularity.api.west.ThingEstimate;
 import org.friendularity.api.west.StuffEstimate;
@@ -29,7 +29,7 @@ import com.jme3.math.ColorRGBA;
  *
  * @author Stu B22 <stub22@appstract.com>
  */
-public class StuffVisualizer extends ShapeAnimVisualizer<StuffEstimate> {
+public class StuffVisualizer extends SingleShapeVisualizer<StuffEstimate> {
 
 	public enum Kind {
 
@@ -38,8 +38,8 @@ public class StuffVisualizer extends ShapeAnimVisualizer<StuffEstimate> {
 	}
 	private Kind myKind = Kind.REGULAR;
 	
-	public StuffVisualizer(HumanoidRenderContext hrc, Kind shapeKind) {
-		super(hrc);
+	public StuffVisualizer(HumanoidRenderContext hrc, VizShapeGroup existingGroup, Kind shapeKind) {
+		super(hrc, existingGroup);
 		myKind = shapeKind;
 	}
 
@@ -57,7 +57,7 @@ public class StuffVisualizer extends ShapeAnimVisualizer<StuffEstimate> {
 		Vector3f basePos = new Vector3f(10.0f, 10.0f, 10.0f);
 		myCachedVizObject = new VizShape(est.getIdent(), basePos, initRadius, initColor);
 		RenderRegistryClient rrc = getRenderRegistryClient();
-		ShapeAnimator sa = getShapeAnimator();
-		sa.attachChild_onRendThrd(rrc, myCachedVizObject);
+		VizShapeGroup vsg = getShapeGroup();
+		vsg.attachChild_onRendThrd(rrc, myCachedVizObject);
 	}
 }

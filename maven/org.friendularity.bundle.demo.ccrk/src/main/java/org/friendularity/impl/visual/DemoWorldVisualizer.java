@@ -31,22 +31,24 @@ import org.cogchar.render.trial.TrialCameras;
 import org.cogchar.render.trial.TempMidiBridge;
 
 import org.cogchar.render.opengl.optic.ViewportFacade;
-
+import org.appdapter.core.name.Ident;
+import org.appdapter.core.name.FreeIdent;
 
 /**
  *
  * @author Stu B22 <stub22@appstract.com>
  */
-public class BonusVisualizer extends ShapeAnimVisualizer<WorldEstimate> {
+public class DemoWorldVisualizer extends SingleShapeVisualizer<WorldEstimate> {
 
-	TrialContent	myTrialContent;
+	private TrialContent		myTrialContent;
 	
-	public DeicticVisualizer	myDVHackForUpdate;
+	private boolean				myFlag_deicticVisualization = true;
+
+	// public DeicticVisualizer	myDVHackForUpdate;
 	
-	public BonusVisualizer(HumanoidRenderContext hrc) {
-		super(hrc);
+	public DemoWorldVisualizer(HumanoidRenderContext hrc) {
+		super(hrc, new FreeIdent(WorldEstimate.ESTIM_NS + "demo_world_808"));
 	}
-
 
 	public void makeBonusMeshes() {
 		RenderRegistryClient rrc = getRenderRegistryClient();
@@ -56,6 +58,9 @@ public class BonusVisualizer extends ShapeAnimVisualizer<WorldEstimate> {
 		MeshTest mt = new MeshTest();
 		mt.makeStuff(amgr, rootNode);
 		initTrialContent();
+		if (myFlag_deicticVisualization) {
+			startDeicticVisualizer();
+		}		
 	}
 
 	public void initTrialContent() { 
@@ -90,10 +95,19 @@ public class BonusVisualizer extends ShapeAnimVisualizer<WorldEstimate> {
 			RenderRegistryClient rrc = getRenderRegistryClient();
 			myTrialContent.doUpdate(rrc, timePerFrame);
 		}
+		/*
 		if (myDVHackForUpdate != null) {
 			RenderRegistryClient rrc = getRenderRegistryClient();
 			myDVHackForUpdate.doUpdate(rrc, timePerFrame);
 		}
+		*/ 
 	}
-
+	public void startDeicticVisualizer() {
+		DeicticVisualizer deictViz = new DeicticVisualizer(this);
+		deictViz.connectToTrialContent(getTrialContent());
+		deictViz.forceHeadCameraOntoSinbad();
+		deictViz.putVizPyramidOnDefaultCam();
+		deictViz.setupNiftyPointingRays();
+	//	myDVHackForUpdate = deictViz;
+	}
 }

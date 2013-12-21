@@ -46,11 +46,14 @@ import java.util.Map;
 import java.util.HashMap;
 
 import com.jme3.math.Quaternion;
+import org.friendularity.api.west.SelfEstimate;
+import org.cogchar.render.goody.dynamic.VizShapeGroup;
+
 /**
  * @author Stu B. <www.texpedient.com>
  */
 
-public class DeicticVisualizer extends BasicDebugger {
+public class DeicticVisualizer extends BaseVisualizer<SelfEstimate> {
 		// Needing the CRC, this could use either  
 		//  1) PumaAppUtils.GreedyHandleSet
 				// This is doing a semi-JFluxy lookup style already.
@@ -61,30 +64,29 @@ public class DeicticVisualizer extends BasicDebugger {
 		// registry objects (so that HumanoidRenderMapper and other key high-level 
 		// objects are easy to pick up, under appropriate conditions).  
 		
-	// Note that a PumaVirtualWorldMapper is a RenderGateway!	
-	private RenderGateway		myRenderGateway;
+
 	private	TrialContent		myTrialContent;
+	private boolean				myFlag_NeutralizationComplete = false;
+	private CameraNode			mySinbadEyeCamNode;	
+	private Map<String, Node>	myAttachNodesByName = new HashMap<String, Node>();
+	
+	String[] interestingBoneNames = 
+		{"Eye.R", "Head", "Root"}; //, "Chest", "Hand.R", "Hand.L", "IndexFingerDist.R",
+				// "Toe.L", "Toe.R"};	
+	
+	public DeicticVisualizer(BaseVisualizer<?> otherViz) {
+		super(otherViz);
+	}
 	public void connectToTrialContent(TrialContent tc) {
 		myTrialContent = tc;
 	}
 	private void ensureSetup() {
-		if (myRenderGateway == null) {
-			Ident optVWorldSpecID = null;
-			PumaAppUtils.GreedyHandleSet greedyHandles = new PumaAppUtils.GreedyHandleSet();
-			PumaVirtualWorldMapper pvwm = greedyHandles.pumaRegClient.getVWorldMapper(optVWorldSpecID);	
-			myRenderGateway = pvwm;		
-			
-		}	
 		if (myTrialContent == null) {
 			myTrialContent = new TrialContent();
 		}
 	}
 	public void forceHeadCameraOntoSinbad() {
 		ensureSetup();
-		CogcharRenderContext crc = myRenderGateway.getCogcharRenderContext();
-		forceHeadCameraOntoSinbad(crc);
-	}
-	public void forceHeadCameraOntoSinbad(CogcharRenderContext crc) {
 		Ident camID = new FreeIdent("uri:cameraConfig#sinbadHeadCam");
 		float camPos[] = { 0, 0, 1};
 		float camPointDir[] = {1, 1, 1};
@@ -93,11 +95,11 @@ public class DeicticVisualizer extends BasicDebugger {
 		CameraConfig	hardHeadCC = new CameraConfig(camID, camPos, camPointDir, displayRect);
 		Ident sinbadRobotID = new FreeIdent(ThingCN.CCRT_NS + "char_sinbad_88");
 		String leftEyeBoneName = "Eye.L";
-		RenderRegistryClient rrc = crc.getRenderRegistryClient();
+		RenderRegistryClient rrc = getRenderRegistryClient();
 		
 		hardHeadCC.setAttachmentNodeParams(sinbadRobotID, leftEyeBoneName);
 		CameraMgr camMgr = rrc.getOpticCameraFacade(null);
-		camMgr.applyCameraConfig(hardHeadCC, rrc,  crc);
+		camMgr.applyCameraConfig(hardHeadCC, rrc);
 		
 		CameraBinding	sinbadEyeCamBind = camMgr.getCameraBinding(camID);
 		CameraNode sinbadEyeCamNode = sinbadEyeCamBind.getCameraNode();
@@ -108,8 +110,7 @@ public class DeicticVisualizer extends BasicDebugger {
 		Node sinbadVizPyrNode = myTrialContent.makePointerCone(rrc, "sinbadEyeCam");
 		sinbadEyeCamNode.attachChild(sinbadVizPyrNode);
 	}
-	private boolean myFlag_NeutralizationComplete = false;
-	private CameraNode mySinbadEyeCamNode;
+
 	
 	public void neutralizeEyeCamRotation(CameraNode eyeCamNode) { 
 		
@@ -138,8 +139,8 @@ public class DeicticVisualizer extends BasicDebugger {
 	}
 	public void putVizPyramidOnDefaultCam() {	
 		ensureSetup();
-		CogcharRenderContext crc = myRenderGateway.getCogcharRenderContext();
-		RenderRegistryClient rrc = crc.getRenderRegistryClient();
+//		CogcharRenderContext crc = myRenderGateway.getCogcharRenderContext();
+		RenderRegistryClient rrc = getRenderRegistryClient();
 		putVizPyramidOnDefaultCam(rrc);
 	}
 	public void putVizPyramidOnDefaultCam(RenderRegistryClient rrc) {	
@@ -152,23 +153,20 @@ public class DeicticVisualizer extends BasicDebugger {
 		
 	}
 	
-	private Map<String, Node>	myAttachNodesByName = new HashMap<String, Node>();
+
 	
-	String[] interestingBoneNames = 
-		{"Eye.R", "Head", "Root"}; //, "Chest", "Hand.R", "Hand.L", "IndexFingerDist.R",
-				// "Toe.L", "Toe.R"};
-	
-	private void registerBoneNodesOfInterest(CogcharRenderContext crc) { 
-		HumanoidRenderContext hrc = (HumanoidRenderContext) crc;
-		HumanoidFigureManager hfm = hrc.getHumanoidFigureManager();
+	private void registerBoneNodesOfInterest() { 
+		// HumanoidRenderContext hrc = (HumanoidRenderContext) crc;
+		HumanoidFigureManager hfm = getHumanoidFigureManager(); // hrc.getHumanoidFigureManager();
 		Ident sinbadRobotID = new FreeIdent(ThingCN.CCRT_NS + "char_sinbad_88");
 		for (String boneName : interestingBoneNames) {
-			Node attachNode = hfm.findHumanoidBoneAttachNode(hrc, sinbadRobotID, boneName);
+			Node attachNode = hfm.findHumanoidBoneAttachNode(sinbadRobotID, boneName);
 			myAttachNodesByName.put(boneName, attachNode);
 		}
 	}
 	
-	private void putDeicticPointingRayOnBone(RenderRegistryClient rrc, String boneName) { 
+	private void putDeicticPointingRayOnBone(String boneName) { 
+		RenderRegistryClient rrc = getRenderRegistryClient();
 		Node boneAttachNode = myAttachNodesByName.get(boneName);
 		
 		AssetManager assetMgr = rrc.getJme3AssetManager(null);		
@@ -178,17 +176,27 @@ public class DeicticVisualizer extends BasicDebugger {
 	
 	public void setupNiftyPointingRays() { 
 		ensureSetup();
-		CogcharRenderContext crc = myRenderGateway.getCogcharRenderContext();
-		registerBoneNodesOfInterest(crc);
-		RenderRegistryClient rrc = crc.getRenderRegistryClient();
+		registerBoneNodesOfInterest();
 		for (String boneName : interestingBoneNames) {
-			putDeicticPointingRayOnBone(rrc, boneName);
+			putDeicticPointingRayOnBone(boneName);
 		}
 	}
 	public void doUpdate(RenderRegistryClient rrc, float tpf)	{
 		if ((!myFlag_NeutralizationComplete) && (mySinbadEyeCamNode != null)) {
 			neutralizeEyeCamRotation(mySinbadEyeCamNode);
 		}
+	}
+
+	@Override public VizShapeGroup getShapeGroup() {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	@Override public void ensureDisplayed_onRendThrd(SelfEstimate te, float timePerFrame) {
+		throw new UnsupportedOperationException("Not supported yet."); 
+	}
+
+	@Override public void updateDisplay_onRendThrd(SelfEstimate te, float timePerFrame) {
+		doUpdate(null, timePerFrame);
 	}
 }
 /**

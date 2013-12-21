@@ -16,7 +16,7 @@
 package org.friendularity.impl.visual;
 
 import org.cogchar.render.sys.registry.RenderRegistryClient;
-import org.cogchar.render.goody.dynamic.ShapeAnimator;
+import org.cogchar.render.goody.dynamic.VizShapeGroup;
 import org.friendularity.api.west.ThingEstimate;
 
 
@@ -26,12 +26,17 @@ import org.friendularity.api.west.ThingEstimate;
  */
 public interface EstimateVisualizer<TE extends ThingEstimate> {
 	public RenderRegistryClient getRenderRegistryClient();
-	public ShapeAnimator getShapeAnimator();
+	
+	/**
+	 * This shapeGroup may be either local to this visualizer, or shared with others.
+	 * @return 
+	 */
+	public VizShapeGroup getShapeGroup();
+	
+	public void renderCurrentEstimates_onRendThrd(TE estim, float timePerFrame);
 	public void ensureDisplayed_onRendThrd(TE te, float timePerFrame);
 	public void updateDisplay_onRendThrd(TE te, float timePerFrame);	
-	public void renderCurrentEstimates_onRendThrd(TE estim, float timePerFrame);
 	
-	public EstimateVisualizer getSubVisualizer(ThingEstimate subEstimate);
 	
 	public static class Jme3CoordinateFrame extends ThingEstimate.CoordinateFrame {
 		// Vector loc + Quat rot

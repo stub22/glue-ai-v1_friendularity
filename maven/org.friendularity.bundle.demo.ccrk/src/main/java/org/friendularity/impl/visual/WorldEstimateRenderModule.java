@@ -33,7 +33,7 @@ import com.jme3.bullet.PhysicsSpace;
 import com.jme3.scene.Node;
 import org.friendularity.impl.visual.EstimateVisualizer;
 import org.friendularity.api.west.WorldEstimate;
-import org.friendularity.impl.visual.BonusVisualizer;
+import org.friendularity.impl.visual.DemoWorldVisualizer;
 import org.friendularity.vworld.VisionTextureMapper;
 
 /**
@@ -93,7 +93,7 @@ public class WorldEstimateRenderModule extends RenderModule implements WorldEsti
 			if (!myDidThatStuffFlag) {
 				getLogger().info("One time setup for bonus-meshes");
 				myDidThatStuffFlag = true;
-				((BonusVisualizer) myWorldEstimVisualizer).makeBonusMeshes();
+				((DemoWorldVisualizer) myWorldEstimVisualizer).makeBonusMeshes();
 			}
 			if (myFlag_visionTextureRoutingEnabled) {
 				if (myVTM == null) {
@@ -114,7 +114,7 @@ public class WorldEstimateRenderModule extends RenderModule implements WorldEsti
 
 		RenderGateway rg = getRenderGateway();
 		HumanoidRenderContext hrc = (HumanoidRenderContext) rg.getCogcharRenderContext();
-		EstimateVisualizer viz = new BonusVisualizer(hrc);
+		EstimateVisualizer viz = new DemoWorldVisualizer(hrc);
 		myWorldEstimVisualizer = viz;
 		return viz;
 	}

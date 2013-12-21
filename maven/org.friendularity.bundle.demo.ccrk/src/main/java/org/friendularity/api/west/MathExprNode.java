@@ -15,40 +15,34 @@
  */
 package org.friendularity.api.west;
 
+import org.cogchar.bind.rk.robot.motion.CogcharMotionSource;
 import org.cogchar.bind.symja.MathGate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author Stu B. <www.texpedient.com>
  */
-public abstract class Oscillator<OutType> {
-	private		String		myMathExpr;
-	private		double[]	myBuffer;
-	private		OutType		myOutObj;
+public abstract class MathExprNode<NumType> extends NumericNode<NumType> {
+	static Logger theLogger = LoggerFactory.getLogger(MathExprNode.class);
 	
-	public Oscillator( String mExpr, int dim, OutType outObj) { 
+	private		String		myMathExpr;
+
+	public MathExprNode( String mExpr, int dim, NumType outObj) { 
+		super(dim, outObj);
 		myMathExpr = mExpr;
-		myBuffer = new double[dim];
-		myOutObj = outObj;
 	}
-	public OutType getOutputObject() { 
-		return myOutObj;
-	}
+
 	// Override me to use a different computational approach.
-	protected void readDoublesIntoBuf(MathGate mathGate, double[] buffer) {
+	@Override protected void readDoublesIntoBuf(MathGate mathGate, double[] buffer) {
 		if (myMathExpr != null) {
 			mathGate.parseAndEvalExprToDoubleVec(myMathExpr, buffer);
+		} else {
+			theLogger.debug("No expression found.");
 		}
 	}
 	// Override me to update an OutType from a buffer
-	protected abstract void updateOutObjFromDoublesBuf(OutType outObj, double[] buffer);
-		
-	// We pass mathGate explicitly to ensure that they can be replaced/interchanged without "breaking" dependent
-	// object like Oscillators.
-	public void doUpdate(MathGate mathGate) { 
-		readDoublesIntoBuf(mathGate, myBuffer);
-		updateOutObjFromDoublesBuf(myOutObj, myBuffer);
-	}
 	public void setMathExpr (String mathExpr) {
 		myMathExpr = mathExpr;
 	}

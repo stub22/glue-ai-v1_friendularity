@@ -15,39 +15,55 @@
  */
 package org.friendularity.impl.visual;
 
+
+import org.appdapter.core.name.Ident;
+
 import org.cogchar.render.sys.registry.RenderRegistryClient;
-import org.cogchar.render.goody.dynamic.ShapeAnimator;
+import org.cogchar.render.goody.dynamic.VizShapeGroup;
 import org.cogchar.render.goody.dynamic.VizShape;
 import org.friendularity.api.west.ThingEstimate;
 
 import com.jme3.math.Vector3f;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Quaternion;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 
 /**
  *
  * @author Stu B22 <stub22@appstract.com>
  */
-public class ShapeAnimVisualizer<TE extends ThingEstimate> extends BaseVisualizer<TE> {
+public class SingleShapeVisualizer<TE extends ThingEstimate> extends BaseVisualizer<TE> {
 
-	private ShapeAnimator myShapeAnimator;
-	public VizShape myCachedVizObject;
-
-	public ShapeAnimVisualizer(HumanoidRenderContext hrc) {
+	public		VizShape			myCachedVizObject;
+		
+	private		VizShapeGroup		myShapeGroup;
+	
+	private		Ident				myOwnedShapeGroupID; // remains null if we are passed an existing group.
+	
+	public SingleShapeVisualizer(HumanoidRenderContext hrc, Ident ownedShapeGroupID) {
 		super(hrc);
+		myOwnedShapeGroupID = ownedShapeGroupID;
 	}
+	public SingleShapeVisualizer(HumanoidRenderContext hrc, VizShapeGroup existingGroup) {
+		super(hrc);
+		myShapeGroup = existingGroup;
+	}
+	public SingleShapeVisualizer(BaseVisualizer<?> otherViz, VizShapeGroup existingGroup) {
+		super(otherViz);
+		myShapeGroup = existingGroup;
+	}	
 
-	@Override public ShapeAnimator getShapeAnimator() {
-		if (myShapeAnimator == null) {
-			RenderRegistryClient rrc = getRenderRegistryClient();
-			myShapeAnimator = new ShapeAnimator();
-			myShapeAnimator.setupMaterials(rrc);
-			myShapeAnimator.enable_onRendThrd(rrc);
-		}
-		return myShapeAnimator;
+	@Override public VizShapeGroup getShapeGroup() {
+		return myShapeGroup;
 	}
 
 	@Override public void ensureDisplayed_onRendThrd(TE te, float timePerFrame) {
+		if (myShapeGroup == null) {
+			RenderRegistryClient rrc = getRenderRegistryClient();
+			myShapeGroup = new VizShapeGroup(myOwnedShapeGroupID);
+			myShapeGroup.setupMaterials(rrc);
+			myShapeGroup.enable_onRendThrd(rrc);
+		}
 		if (myCachedVizObject == null) {
 			attachSimpleVizObj_onRendThrd(te);
 		}
@@ -57,11 +73,15 @@ public class ShapeAnimVisualizer<TE extends ThingEstimate> extends BaseVisualize
 		if (myCachedVizObject != null) {
 			Vector3f updatedPosVec = te.getVisualPos();
 			if (updatedPosVec != null) {
-				myCachedVizObject.setPosition(updatedPosVec);
+				myCachedVizObject.setPosition_onRendThrd(updatedPosVec);
 			}
 			ColorRGBA updatedColor = te.getVisualColor();
 			if (updatedColor != null) {
-				myCachedVizObject.setColor(updatedColor);
+				myCachedVizObject.setColor_onRendThrd(updatedColor);
+			}
+			Quaternion updatedDirection = te.getVisualDirection();
+			if (updatedDirection != null) {
+				myCachedVizObject.setDirection_onRendThrd(updatedDirection);
 			}
 		}
 	}
@@ -73,7 +93,7 @@ public class ShapeAnimVisualizer<TE extends ThingEstimate> extends BaseVisualize
 		Vector3f basePos = new Vector3f(35.0f, 35.0f, -5.0f);
 		myCachedVizObject = new VizShape(te.getIdent(), basePos, initRadius, initColor);
 		RenderRegistryClient rrc = getRenderRegistryClient();
-		ShapeAnimator sa = getShapeAnimator();
-		sa.attachChild_onRendThrd(rrc, myCachedVizObject);
+		VizShapeGroup vsg = getShapeGroup();
+		vsg.attachChild_onRendThrd(rrc, myCachedVizObject);
 	}
 }
