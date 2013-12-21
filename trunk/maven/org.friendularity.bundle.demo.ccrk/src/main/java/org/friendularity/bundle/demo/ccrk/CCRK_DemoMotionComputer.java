@@ -30,8 +30,11 @@ import org.slf4j.LoggerFactory;
  */
 
 public class CCRK_DemoMotionComputer extends CogcharMotionComputer {
+	static Logger theLogger = LoggerFactory.getLogger(CCRK_DemoMotionComputer.class);
+	
+	
 	long myCycleCount = 0;
-	static Logger theLogger = LoggerFactory.getLogger(CogcharMotionSource.class);
+	
 	private WorldEstimate myWorldEstimate;
 	public void setWorldEstimate(WorldEstimate we) {
 		myWorldEstimate = we;

@@ -1,5 +1,6 @@
 package org.friendularity.bundle.demo.ccrk;
 
+import static ext.osgi.common.MacroBundleActivatorBase.macroStartupSettings;
 import org.friendularity.impl.visual.DeicticVisualizer;
 import java.util.List;
 import org.appdapter.osgi.core.BundleActivatorBase;
@@ -25,7 +26,7 @@ import org.friendularity.api.west.WorldEstimate;
 import org.friendularity.impl.visual.WorldEstimateRenderModule;
 import org.cogchar.bind.midi.FunMidiEventRouter;
 import org.friendularity.impl.visual.EstimateVisualizer;
-import org.friendularity.impl.visual.BonusVisualizer;
+import org.friendularity.impl.visual.DemoWorldVisualizer;
 // import org.cogchar.test.symcalc.ScriptEngineExperiment;
 import org.friendularity.vworld.VisionDataFeed;
 import org.robokind.api.motion.Robot;
@@ -66,9 +67,11 @@ public class CCRK_DemoActivator extends BundleActivatorBase {
 	private	boolean		myFlag_connectMidiOut = false;
 	private	boolean		myFlag_connectSwingDebugGUI = false;
 	private boolean		myFlag_monitorLifecycles = true;
-	private boolean		myFlag_deicticVisualization = true;
+	
 	
 	@Override public void start(final BundleContext context) throws Exception {
+		// Need to tell the MacroBundle system that we are the main launcher, so that forceLog4JConfig will work.
+		macroStartupSettings.firstBundleActivatorBase = this;
 		// Will look for log4j.properties at root of this bundle.
 		// Any top-level OSGi app that wants to enable Log4J (and thereby make Jena happy, while
 		// retaining the power to configure Jena's logging level) should have the dependencies
@@ -128,6 +131,8 @@ public class CCRK_DemoActivator extends BundleActivatorBase {
     }
 
 	private void startPumaDemo(BundleContext bundleCtx) {
+
+		
 		PumaBooter pumaBooter = new PumaBooter();
 		PumaContextMediator mediator = PumaGlobalPrebootInjector.getTheInjector().getMediator();
 		
@@ -175,23 +180,11 @@ public class CCRK_DemoActivator extends BundleActivatorBase {
 		if (myFlag_connectSwingDebugGUI) {
 			setupDebuggingScaffold(mg, we);
 		}
-		if (myFlag_deicticVisualization) {
-			startDeicticVisualizer((BonusVisualizer) eViz);
-		}
 		if (localDemoCheatersContext != null) {
-			getLogger().info("We have a cheater's Puma-App-Context, but we're not cheatin with it today");
+			getLogger().info("We have a cheater's Puma-App-Context, but we're not cheatin with it today - hooray!");
 		}
+	}
 
-	}
-	private void startDeicticVisualizer(BonusVisualizer bViz) {
-		
-		DeicticVisualizer deictViz = new DeicticVisualizer();
-		deictViz.connectToTrialContent(bViz.getTrialContent());
-		deictViz.forceHeadCameraOntoSinbad();
-		deictViz.putVizPyramidOnDefaultCam();
-		deictViz.setupNiftyPointingRays();
-		bViz.myDVHackForUpdate = deictViz;
-	}
 	private void setupDebuggingScaffold(MathGate mg, WorldEstimate we) { 
 	/*		
 		DemoBrowser.showObject("werm-MG", mg, false, false); // true, true);

@@ -15,14 +15,16 @@
  */
 	package org.friendularity.api.west;
 
-import org.friendularity.impl.visual.RenderedOscillatorLib;
+import org.friendularity.impl.visual.VisualMathExprLib;
 import org.cogchar.bind.symja.MathGate;
-import org.cogchar.render.goody.dynamic.ShapeAnimator;
+import org.cogchar.render.goody.dynamic.VizShapeGroup;
 import org.cogchar.render.goody.dynamic.VizShape;
 import com.jme3.math.Vector3f;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Quaternion;
 import java.util.HashSet;
 import java.util.Set;
+
 import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.core.name.Ident;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
@@ -34,25 +36,34 @@ public abstract class ThingEstimate extends BasicDebugger {
 
 	public		Ident							myIdent;
 	
-	private		RenderedOscillatorLib.Vec3fOscillator	myPosOscillator;
-	private		RenderedOscillatorLib.ColorOscillator	myColorOscillator;
+	// X X X X X
+	private		VisualMathExprLib.Vec3fExprNode			myPosExprNode;
+	private		VisualMathExprLib.ColorExprNode			myColorExprNode;
+	private		VisualMathExprLib.QuaternionExprNode	myDirectionExprNode;
 			
 	public ThingEstimate(Ident id) {
 		myIdent = id;
 	}
 
 	public void setPosMathExpr (String mathExpr) {
-		if (myPosOscillator == null) {
-			myPosOscillator  = new RenderedOscillatorLib.Vec3fOscillator(mathExpr);			
+		if (myPosExprNode == null) {
+			myPosExprNode  = new VisualMathExprLib.Vec3fExprNode(mathExpr);			
 		} else {
-			myPosOscillator.setMathExpr(mathExpr);
+			myPosExprNode.setMathExpr(mathExpr);
 		}
 	}
 	public void setColorMathExpr(String mathExpr) {
-		if (myColorOscillator == null) { 
-			myColorOscillator = new RenderedOscillatorLib.ColorOscillator(mathExpr);
+		if (myColorExprNode == null) { 
+			myColorExprNode = new VisualMathExprLib.ColorExprNode(mathExpr);
 		} else {
-			myColorOscillator.setMathExpr(mathExpr);
+			myColorExprNode.setMathExpr(mathExpr);
+		}
+	}
+	public void setDirectionMathExpr(String mathExpr) {
+		if (myDirectionExprNode == null) {
+			myDirectionExprNode = new VisualMathExprLib.QuaternionExprNode(mathExpr);
+		} else {
+			myDirectionExprNode.setMathExpr(mathExpr);
 		}
 	}
 	public Ident getIdent()  {
@@ -63,28 +74,36 @@ public abstract class ThingEstimate extends BasicDebugger {
 	}
 	
 	public Vector3f getVisualPos() {
-		// Dummy impl uses "oscillator"
-		if (myPosOscillator != null) {
-			Vector3f posVec = myPosOscillator.getVector3f();
+		if (myPosExprNode != null) {
+			Vector3f posVec = myPosExprNode.getVector3f();
 			return posVec;
 		}
 		return null;
 	}
 	public ColorRGBA getVisualColor() {
-		if (myColorOscillator != null) { 
-			ColorRGBA color = myColorOscillator.getColor();
+		if (myColorExprNode != null) { 
+			ColorRGBA color = myColorExprNode.getColor();
 			return color;
 		}
 		return null;
 	}
-
+	public Quaternion getVisualDirection() {
+		if (myDirectionExprNode != null) {
+			Quaternion dirQuat = myDirectionExprNode.getOutputObject();
+			return dirQuat;
+		}
+		return null;
+	}
 	public void updateFromMathSpace(MathGate mg) {
-		if (myPosOscillator != null) {
-			myPosOscillator.doUpdate(mg);
+		if (myPosExprNode != null) {
+			myPosExprNode.doUpdate(mg);
 		}
-		if (myColorOscillator != null) {
-			myColorOscillator.doUpdate(mg);
+		if (myColorExprNode != null) {
+			myColorExprNode.doUpdate(mg);
 		}
+		if (myDirectionExprNode != null) {
+			myDirectionExprNode.doUpdate(mg);
+		}		
 
 		Set<ThingEstimate> subEstims = getSubEstimates();
 		for (ThingEstimate subEstim : subEstims) {

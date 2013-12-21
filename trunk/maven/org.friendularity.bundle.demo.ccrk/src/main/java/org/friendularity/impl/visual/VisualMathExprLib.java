@@ -17,41 +17,53 @@ package org.friendularity.impl.visual;
 
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
-import org.friendularity.api.west.Oscillator;
+import com.jme3.math.Quaternion;
+import org.friendularity.api.west.MathExprNode;
 
 /**
  *
  * @author Stu B. <www.texpedient.com>
  */
-public class RenderedOscillatorLib {
+public class VisualMathExprLib {
 	
-	public static class ColorOscillator extends Oscillator<ColorRGBA> {
-		public ColorOscillator(String mExpr, ColorRGBA outColor) { 
-			super(mExpr, 4, outColor);
+	public static class ColorExprNode extends MathExprNode<ColorRGBA> {
+		public ColorExprNode(String mExpr, ColorRGBA initColorObj) { 
+			super(mExpr, 4, initColorObj);
 		}
-		public ColorOscillator(String mExpr) { 
+		public ColorExprNode(String mExpr) { 
 			this(mExpr, new ColorRGBA());
 		}
-		
-		@Override protected void updateOutObjFromDoublesBuf(ColorRGBA outColor, double[] buffer) {
+		// TODO: Instead of this method, factor into a Color-NumberMapper and set it as our delegate. 
+		@Override protected void writeAnyNumericFromAnyDoublesBuf(ColorRGBA outColor, double[] buffer) {
 			outColor.set((float) buffer[0], (float) buffer[1], (float) buffer[2], (float) buffer[3]);
 		}
+		
 		public ColorRGBA getColor() { 
 			return getOutputObject();
 		}
 	}
-	public static class Vec3fOscillator extends Oscillator<Vector3f> {
-		public Vec3fOscillator(String mExpr, Vector3f outObj) { 
-			super(mExpr, 3, outObj);
+	public static class Vec3fExprNode extends MathExprNode<Vector3f> {
+		public Vec3fExprNode(String mExpr, Vector3f initVectObj) { 
+			super(mExpr, 3, initVectObj);
 		}	
-		public Vec3fOscillator(String mExpr) { 
+		public Vec3fExprNode(String mExpr) { 
 			this(mExpr, new Vector3f());
 		}
-		@Override protected void updateOutObjFromDoublesBuf(Vector3f outVec3f, double[] buffer) {
+		// TODO: Instead of this method, factor into a Color-NumberMapper and set it as our delegate.
+		@Override protected void writeAnyNumericFromAnyDoublesBuf(Vector3f outVec3f, double[] buffer) {
 			outVec3f.set((float) buffer[0], (float) buffer[1], (float) buffer[2]);
 		}
 		public Vector3f getVector3f() { 
 			return getOutputObject();
+		}		
+	}
+	
+	public static class QuaternionExprNode extends MathExprNode<Quaternion> {
+		public QuaternionExprNode(String mExpr, Quaternion initQuatObj) { 
+			super(mExpr, 4, initQuatObj);
+		}
+		public QuaternionExprNode(String mExpr) { 
+			this(mExpr, new Quaternion());
 		}		
 	}
 }
