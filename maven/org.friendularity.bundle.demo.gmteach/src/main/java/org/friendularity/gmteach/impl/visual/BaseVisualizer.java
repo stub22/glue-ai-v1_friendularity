@@ -15,39 +15,45 @@
  */
 package org.friendularity.gmteach.impl.visual;
 
+import org.cogchar.render.sys.registry.RenderRegistryClient;
+import org.cogchar.render.app.humanoid.HumanoidRenderContext;
+
+import com.jme3.asset.AssetManager;
+import com.jme3.bullet.PhysicsSpace;
+import com.jme3.scene.Node;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
 import org.appdapter.core.log.BasicDebugger;
-import org.cogchar.blob.emit.RenderConfigEmitter;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
+import org.cogchar.render.model.humanoid.HumanoidFigure;
 import org.cogchar.render.model.humanoid.HumanoidFigureManager;
-import org.cogchar.render.sys.registry.RenderRegistryClient;
-import org.friendularity.gmteach.api.west.EstimateVisualizer;
+import org.cogchar.blob.emit.RenderConfigEmitter;
 import org.friendularity.gmteach.api.west.ThingEstimate;
+import org.friendularity.gmteach.api.west.WorldEstimate;
+import org.cogchar.render.goody.dynamic.VizShapeGroup;
 
-import com.jme3.bullet.PhysicsSpace;
 
 /**
- * 
+ *
  * @author Stu B22 <stub22@appstract.com>
  */
-public abstract class BaseVisualizer<TE extends ThingEstimate> extends
-		BasicDebugger implements EstimateVisualizer<TE> {
-	private HumanoidRenderContext myRenderCtx;
-
-	private Map<ThingEstimate, EstimateVisualizer> mySubVizMap = new HashMap<ThingEstimate, EstimateVisualizer>();
+public abstract class BaseVisualizer <TE extends ThingEstimate> extends BasicDebugger implements EstimateVisualizer<TE> {
+	private HumanoidRenderContext	myRenderCtx;
+	
+	
 
 	public BaseVisualizer(HumanoidRenderContext hrc) {
 		myRenderCtx = hrc;
 	}
-
-	@Override
-	public RenderRegistryClient getRenderRegistryClient() {
+	public BaseVisualizer(BaseVisualizer<?> otherViz) {
+		myRenderCtx = otherViz.myRenderCtx;
+	}
+	@Override public RenderRegistryClient getRenderRegistryClient() {
 		return myRenderCtx.getRenderRegistryClient();
 	}
-
 	protected HumanoidFigureManager getHumanoidFigureManager() {
 		// Not currently supplied by the RenderRegistryClient
 		return myRenderCtx.getHumanoidFigureManager();
@@ -57,37 +63,12 @@ public abstract class BaseVisualizer<TE extends ThingEstimate> extends
 		// This could also be fetched through the RenderRegistryClient
 		return myRenderCtx.getPhysicsSpace();
 	}
-
-	protected RenderConfigEmitter getConfigEmitter() {
+	
+	protected RenderConfigEmitter getConfigEmitter() { 
 		return myRenderCtx.getConfigEmitter();
 	}
-
-	@Override
-	public void renderCurrentEstimates(TE estim, float timePerFrame) {
-		ensureDisplayed(estim, timePerFrame);
-		updateDisplay(estim, timePerFrame);
-		renderSubEstims(estim, timePerFrame);
-	}
-
-	protected void renderSubEstims(TE estim, float timePerFrame) {
-		Set<ThingEstimate> subEstims = estim.getSubEstimates();
-		for (ThingEstimate subEstim : subEstims) {
-			EstimateVisualizer subViz = getSubVisualizer(subEstim);
-			if (subViz != null) {
-				subViz.renderCurrentEstimates(subEstim, timePerFrame);
-			}
-		}
-	}
-
-	// Unsafe - we use erased type for the visualizer of the subEstimate - revisit.
-	@Override
-	public EstimateVisualizer getSubVisualizer(ThingEstimate subEstimate) {
-		EstimateVisualizer subViz = mySubVizMap.get(subEstimate);
-		if (subViz == null) {
-			getLogger().info("Making sub-visualizer for {}", subEstimate);
-			subViz = new ShapeAnimVisualizer(myRenderCtx);
-			mySubVizMap.put(subEstimate, subViz);
-		}
-		return subViz;
-	}
+	@Override public void renderCurrentEstimates_onRendThrd(TE estim, float timePerFrame) {
+		ensureDisplayed_onRendThrd(estim, timePerFrame);
+		updateDisplay_onRendThrd(estim, timePerFrame);
+	}	
 }
