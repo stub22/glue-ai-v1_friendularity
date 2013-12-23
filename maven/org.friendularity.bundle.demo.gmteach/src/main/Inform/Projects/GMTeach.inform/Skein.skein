@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Skein rootNode="node-0x02468748" xmlns="http://www.logicalshift.org.uk/IF/Skein">
+  <generator>Inform 7 for Windows</generator>
+  <activeNode nodeId="node-0x02477738"/>
+  <item nodeId="node-0x02468748">
+    <command xml:space="preserve">- start -</command>
+    <result xml:space="preserve">Open Sesame Seed&#x000A;An Interactive Fiction by GLUE-AI&#x000A;Release 1 / Serial number 131216 / Inform 7 build 6G60 (I6/v6.32 lib 6/12N) SD&#x000A;&#x000A;Desk&#x000A;You are at the far end of a musical scale that you cant quite remember. A recent boy-band rise to fame prevents all further hopes of remembering any tune  other than their smash hit.  "Sometimes".  It is strangely reminiscent of the flight of the bumblebees.  A large Grumpy music teacher to the east emits a faint green light.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">NO</temporary>
+    <children>
+      <child nodeId="node-0x0250C838"/>
+      <child nodeId="node-0x02477738"/>
+    </children>
+  </item>
+  <item nodeId="node-0x0250C838">
+    <command xml:space="preserve">start</command>
+    <result xml:space="preserve">I didn't understand that sentence.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x0250C8A8"/>
+    </children>
+  </item>
+  <item nodeId="node-0x0250C8A8">
+    <command xml:space="preserve">remember</command>
+    <result xml:space="preserve">I didn't understand that sentence.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x0250C918"/>
+    </children>
+  </item>
+  <item nodeId="node-0x0250C918">
+    <command xml:space="preserve">e</command>
+    <result xml:space="preserve">(first opening the large hand)&#x000A;There is an aura of magic about the large grumpity hand that prevents you doing this.  Perhaps name the notes of the musical bar&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x02472290"/>
+    </children>
+  </item>
+  <item nodeId="node-0x02472290">
+    <command xml:space="preserve">w</command>
+    <result xml:space="preserve">You can't go that way.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x02472300"/>
+    </children>
+  </item>
+  <item nodeId="node-0x02472300">
+    <command xml:space="preserve">d</command>
+    <result xml:space="preserve">You can't go that way.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x02472370"/>
+    </children>
+  </item>
+  <item nodeId="node-0x02472370">
+    <command xml:space="preserve">u</command>
+    <result xml:space="preserve">You can't go that way.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x024723E0"/>
+    </children>
+  </item>
+  <item nodeId="node-0x024723E0">
+    <command xml:space="preserve">s</command>
+    <result xml:space="preserve">You can't go that way.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+  </item>
+  <item nodeId="node-0x02477738">
+    <command xml:space="preserve">take</command>
+    <result xml:space="preserve">(the large hand)&#x000A;There is an aura of magic about the large grumpity hand that prevents you doing this.  Perhaps name the notes of the musical bar&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+  </item>
+</Skein>
