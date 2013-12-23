@@ -1,0 +1,312 @@
+Debugging log of Inform 7
+Inform called as: C:\pf86\Inform 7\Compilers\ni -rng -rules C:\pf86\Inform 7\Inform7\Extensions -package C:\Users\Administrator\Documents\Inform\Projects\ROTA.inform -extension=ulx 
+
+
+-----------------------------------------------------
+Phase I ... Lexical analysis
+-----------------------------------------------------
+
+I've now read your source text, which is 32323 words long.
+
+
+-----------------------------------------------------
+Phase II ... Semantic analysis Ia
+-----------------------------------------------------
+
+I've also read Standard Rules by Graham Nelson, which is 39455 words long.
+
+
+-----------------------------------------------------
+Phase III ... Initialise language semantics
+-----------------------------------------------------
+
+
+
+-----------------------------------------------------
+Phase IV ... Semantic analysis Ib
+-----------------------------------------------------
+
+
+
+-----------------------------------------------------
+Phase V ... Semantic analysis II
+-----------------------------------------------------
+
+
+
+-----------------------------------------------------
+Phase VI ... Semantic analysis III
+-----------------------------------------------------
+
+
+
+-----------------------------------------------------
+Phase VII ... First pass through assertions
+-----------------------------------------------------
+
+
+
+-----------------------------------------------------
+Phase VIII ... Second pass through assertions
+-----------------------------------------------------
+
+
+
+-----------------------------------------------------
+Phase IX ... Making the model world
+-----------------------------------------------------
+
+
+
+-----------------------------------------------------
+Phase X ... Tables and grammar
+-----------------------------------------------------
+
+
+
+-----------------------------------------------------
+Phase XI ... Phrases and rules
+-----------------------------------------------------
+
+PHUD: <instead of playing a monster>: rule attachment mode RULE_IN_RULEBOOK_RAM
+  Rule preamble: <instead of playing a monster>
+  Rule parameter: <playing a monster>
+  Owned by rulebook: Rulebook 21 (instead)
+  Placement: MIDDLE_PLACEMENT
+Bad action pattern: playing a monster =   [Invalid]  Action: unspecified
+
+PAP failure reason: 1
+Problem C22APUnknown issued from Chapter 22/Phrase Usage.w, line 805
+
+In Part I - Mechanics of a Simple Role-Playing Game, Chapter 3 - Combat,
+  Section 3 (d) - Combat-readiness:
+
+
+  >--> You wrote 'Instead of playing a monster' (source text, line 594), which
+    seems to introduce a rule taking effect only if the action is 'playing a
+    monster'. But that did not make sense as a description of an action. I am
+    unable to place this rule into any rulebook.
+
+PHUD: <instead of playing or kissing the skeleton>: rule attachment mode RULE_IN_RULEBOOK_RAM
+  Rule preamble: <instead of playing or kissing the skeleton>
+  Rule parameter: <playing or kissing the skeleton>
+  Owned by rulebook: Rulebook 21 (instead)
+  Placement: MIDDLE_PLACEMENT
+Bad action pattern: playing or kissing the skeleton =   [Invalid]  Action: unspecified
+
+PAP failure reason: 1
+Problem C22APUnknown issued from Chapter 22/Phrase Usage.w, line 805
+
+ In Part II - The Reliques of Tolti-Aph Scenario, Chapter S - Southern Quarter,
+  Section S (c) - The Fallen Tree and the Fullers:
+
+AP clause playing =   [Invalid]  Action: unspecified
+
+AP clause kissing the skeleton =   [Valid]  Action: kissing /   Noun: (A)'the skeleton'/VALUE_FMY/CONSTANT_SPC-object
+
+
+  >--> You wrote 'Instead of playing or kissing the skeleton' (source text, line 867),
+    which seems to introduce a rule taking effect only if the action is
+    'playing or kissing the skeleton'. But that did not make sense as a
+    description of an action. Looking at this as a list of alternative actions:
+    'playing' did not make sense; 'kissing the skeleton' was okay; so I am
+    unable to place this rule into any rulebook.
+
+PHUD: <instead of playing the bottle for the first time>: rule attachment mode RULE_IN_RULEBOOK_RAM
+  Rule preamble: <instead of playing the bottle for the first time>
+  Rule parameter: <playing the bottle for the first time>
+  Owned by rulebook: Rulebook 21 (instead)
+  Placement: MIDDLE_PLACEMENT
+Bad action pattern: playing the bottle for the first time =   [Invalid]  Action: unspecified
+
+PAP failure reason: 1
+Problem C22APUnknown issued from Chapter 22/Phrase Usage.w, line 805
+
+ In Section S (d) - The Broken Lane and the Spiders:
+
+
+  >--> You wrote 'Instead of playing the bottle for the first time' (source
+    text, line 959), which seems to introduce a rule taking effect only if the
+    action is 'playing the bottle for the first time'. But that did not make
+    sense as a description of an action. I am unable to place this rule into
+    any rulebook.
+
+PHUD: <instead of playing the bottle>: rule attachment mode RULE_IN_RULEBOOK_RAM
+  Rule preamble: <instead of playing the bottle>
+  Rule parameter: <playing the bottle>
+  Owned by rulebook: Rulebook 21 (instead)
+  Placement: MIDDLE_PLACEMENT
+Bad action pattern: playing the bottle =   [Invalid]  Action: unspecified
+
+PAP failure reason: 1
+Problem C22APUnknown issued from Chapter 22/Phrase Usage.w, line 805
+
+  >--> You wrote 'Instead of playing the bottle' (source text, line 959), which
+    seems to introduce a rule taking effect only if the action is 'playing the
+    bottle'. But that did not make sense as a description of an action. I am
+    unable to place this rule into any rulebook.
+
+PHUD: <instead of playing the never-children>: rule attachment mode RULE_IN_RULEBOOK_RAM
+  Rule preamble: <instead of playing the never-children>
+  Rule parameter: <playing the never-children>
+  Owned by rulebook: Rulebook 21 (instead)
+  Placement: MIDDLE_PLACEMENT
+Bad action pattern: playing the never-children =   [Invalid]  Action: unspecified
+
+PAP failure reason: 1
+Problem C22APUnknown issued from Chapter 22/Phrase Usage.w, line 805
+
+ In Chapter E - Eastern Quarter, Section E (a) - The Budless Grove:
+
+
+  >--> You wrote 'Instead of playing the never-children' (source text, line 1169),
+    which seems to introduce a rule taking effect only if the action is
+    'playing the never-children'. But that did not make sense as a description
+    of an action. I am unable to place this rule into any rulebook.
+
+PHUD: <instead of playing a scroll>: rule attachment mode RULE_IN_RULEBOOK_RAM
+  Rule preamble: <instead of playing a scroll>
+  Rule parameter: <playing a scroll>
+  Owned by rulebook: Rulebook 21 (instead)
+  Placement: MIDDLE_PLACEMENT
+Bad action pattern: playing a scroll =   [Invalid]  Action: unspecified
+
+PAP failure reason: 1
+Problem C22APUnknown issued from Chapter 22/Phrase Usage.w, line 805
+
+  >--> You wrote 'Instead of playing a scroll' (source text, line 1191), which
+    seems to introduce a rule taking effect only if the action is 'playing a
+    scroll'. But that did not make sense as a description of an action. I am
+    unable to place this rule into any rulebook.
+
+PHUD: <instead of playing a leaf>: rule attachment mode RULE_IN_RULEBOOK_RAM
+  Rule preamble: <instead of playing a leaf>
+  Rule parameter: <playing a leaf>
+  Owned by rulebook: Rulebook 21 (instead)
+  Placement: MIDDLE_PLACEMENT
+Bad action pattern: playing a leaf =   [Invalid]  Action: unspecified
+
+PAP failure reason: 1
+Problem C22APUnknown issued from Chapter 22/Phrase Usage.w, line 805
+
+ In Section E (k) - The Hedge Archway and the leaves:
+
+
+  >--> You wrote 'Instead of playing a leaf' (source text, line 1582), which
+    seems to introduce a rule taking effect only if the action is 'playing a
+    leaf'. But that did not make sense as a description of an action. I am
+    unable to place this rule into any rulebook.
+
+PHUD: <instead of playing eurydice>: rule attachment mode RULE_IN_RULEBOOK_RAM
+  Rule preamble: <instead of playing eurydice>
+  Rule parameter: <playing eurydice>
+  Owned by rulebook: Rulebook 21 (instead)
+  Placement: MIDDLE_PLACEMENT
+Bad action pattern: playing eurydice =   [Invalid]  Action: unspecified
+
+PAP failure reason: 1
+Problem C22APUnknown issued from Chapter 22/Phrase Usage.w, line 805
+
+ In Section E (l) - The four tasks:
+
+
+  >--> You wrote 'Instead of playing Eurydice' (source text, line 1619), which
+    seems to introduce a rule taking effect only if the action is 'playing
+    Eurydice'. But that did not make sense as a description of an action. I am
+    unable to place this rule into any rulebook.
+
+PHUD: <instead of playing the snake when the snake is carried by the player>: rule attachment mode RULE_IN_RULEBOOK_RAM
+  Rule preamble: <instead of playing the snake>
+  Rule parameter: <playing the snake when the snake is carried by the player>
+  Owned by rulebook: Rulebook 21 (instead)
+  Placement: MIDDLE_PLACEMENT
+Bad action pattern: playing the snake when the snake is carried by the player =   [Invalid]  Action: unspecified
+
+PAP failure reason: 5
+Problem C22APUnknown issued from Chapter 22/Phrase Usage.w, line 805
+
+ In Chapter W - Western Quarter, Section W (c) - The Goddess and the Snake:
+
+
+  >--> You wrote 'Instead of playing the snake when the snake is carried by the
+    player' (source text, line 2124), which seems to introduce a rule taking
+    effect only if the action is 'playing the snake when the snake is carried
+    by the player'. The part after 'when' (or 'while') was fine, but the
+    earlier words did not make sense as a description of an action. I am unable
+    to place this rule into any rulebook.
+
+PHUD: <instead of playing the fixed in place cubbyholes>: rule attachment mode RULE_IN_RULEBOOK_RAM
+  Rule preamble: <instead of playing the fixed in place cubbyholes>
+  Rule parameter: <playing the fixed in place cubbyholes>
+  Owned by rulebook: Rulebook 21 (instead)
+  Placement: MIDDLE_PLACEMENT
+Bad action pattern: playing the fixed in place cubbyholes =   [Invalid]  Action: unspecified
+
+PAP failure reason: 1
+Problem C22APUnknown issued from Chapter 22/Phrase Usage.w, line 805
+
+ In Section W (e) - The Garret and the Archivist:
+
+
+  >--> You wrote 'Instead of playing the fixed in place cubbyholes' (source
+    text, line 2180), which seems to introduce a rule taking effect only if the
+    action is 'playing the fixed in place cubbyholes'. But that did not make
+    sense as a description of an action. I am unable to place this rule into
+    any rulebook.
+
+PHUD: <instead of playing the portable cubbyholes>: rule attachment mode RULE_IN_RULEBOOK_RAM
+  Rule preamble: <instead of playing the portable cubbyholes>
+  Rule parameter: <playing the portable cubbyholes>
+  Owned by rulebook: Rulebook 21 (instead)
+  Placement: MIDDLE_PLACEMENT
+Bad action pattern: playing the portable cubbyholes =   [Invalid]  Action: unspecified
+
+PAP failure reason: 1
+Problem C22APUnknown issued from Chapter 22/Phrase Usage.w, line 805
+
+  >--> You wrote 'Instead of playing the portable cubbyholes' (source text, line 2182),
+    which seems to introduce a rule taking effect only if the action is
+    'playing the portable cubbyholes'. But that did not make sense as a
+    description of an action. I am unable to place this rule into any rulebook.
+
+PHUD: <instead of playing the archivist>: rule attachment mode RULE_IN_RULEBOOK_RAM
+  Rule preamble: <instead of playing the archivist>
+  Rule parameter: <playing the archivist>
+  Owned by rulebook: Rulebook 21 (instead)
+  Placement: MIDDLE_PLACEMENT
+Bad action pattern: playing the archivist =   [Invalid]  Action: unspecified
+
+PAP failure reason: 1
+Problem C22APUnknown issued from Chapter 22/Phrase Usage.w, line 805
+
+  >--> You wrote 'Instead of playing the archivist' (source text, line 2198),
+    which seems to introduce a rule taking effect only if the action is
+    'playing the archivist'. But that did not make sense as a description of an
+    action. I am unable to place this rule into any rulebook.
+
+
+
+-----------------------------------------------------
+Phase XII ... Compilation now complete
+-----------------------------------------------------
+
+Total of 4 files written as streams.
+
+That concludes the debugging log from this run of Inform.
+Its contents were as follows, and can be changed by placing
+text like 'Include property creations in the debugging log.'
+or 'Omit everything from the debugging log.' in the source.
+
+Included:
+  debugging log contents  debugging log inclusions
+Omitted:
+  action creations   action pattern compilation  action pattern parsing  assemblies    assertions    case insensitive filehandling
+  conditions    constructed past participles  constructed plurals   description compilation   excerpt meanings   excerpt parsing 
+  expressions    extensions census   figure creations   grammar    grammar construction   headings  
+  implications    inferences    kind changes   kind checking   kind creations   lexical output 
+  local variables   matching    meaning list allocation  memory allocation   noun resolution   object compilation 
+  object creations   object tree   phrase comparisons   phrase compilation   phrase creations   phrase registration 
+  phrase usage   predicate calculus   predicate calculus workings  pronouns    property assignments   property creations 
+  property provision   property translations   relation definitions   rule attachments   rulebook compilation   spatial map 
+  spatial map workings  specification permissions   specification usage   specificities    table construction   template reading 
+  text substitutions   time periods   variable creations   verifications    vocabulary  
