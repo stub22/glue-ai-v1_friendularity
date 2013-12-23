@@ -1,6 +1,6 @@
 package org.friendularity.bundle.demo.gmteach;
 
-import org.friendularity.bundle.macro.jvision.CCRK_DemoActivator;
+import org.friendularity.bundle.macro.jvision.LikeSuperActivator;
 
 /**
  * This class is a bundle activator demonstrating how to start the Cogchar PUMA system, in an OSGi environment. We call such a bundle a "top" bundle, which is essentially a launchable application. This bundle can be launched using a maven command line like:
@@ -27,8 +27,11 @@ import org.friendularity.bundle.macro.jvision.CCRK_DemoActivator;
  * @author Stu B. <www.texpedient.com>
  */
 public class GMTEACH_DemoActivator //
-		extends CCRK_DemoActivator
-//extends LikeSuperActivator
+		//		extends CCRK_DemoActivator //
+		extends LikeSuperActivator // 
+// extends BMDActivatorSpecTest // 
+//extends BMDSpecActivator // 
+//
 {
 
 }
