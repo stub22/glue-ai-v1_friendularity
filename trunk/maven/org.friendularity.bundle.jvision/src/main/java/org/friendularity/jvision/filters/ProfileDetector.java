@@ -41,4 +41,10 @@ public class ProfileDetector extends CascadeDetector {
 	protected void setDetector(CascadeClassifier aDetector) {
 		detector = aDetector;
 	}
+	
+
+	@Override
+	public String toString() {
+		return "profile_detector"; 
+	}
 }

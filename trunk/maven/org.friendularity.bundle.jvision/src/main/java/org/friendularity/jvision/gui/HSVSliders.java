@@ -31,18 +31,18 @@ import org.friendularity.jvision.filters.ColorThreshold;
 public class HSVSliders extends JFrame {
 
 	public HSVSliders() throws HeadlessException {
-		this.setSize(180, 500);
+		this.setSize(220, 500);
 		
 		Container c = this.getContentPane();
 		c.setLayout(new java.awt.FlowLayout());
 		c.add(new JLabel("Color Threshold"));
 		
-		addSlider("min H or B", c, 50, ColorThreshold.MIN_H);
-		addSlider("min S or G", c, 50, ColorThreshold.MIN_S);
-		addSlider("min V or R", c, 50, ColorThreshold.MIN_V);
-		addSlider("max H or B", c, 205, ColorThreshold.MAX_H);
-		addSlider("max S or G", c, 205, ColorThreshold.MAX_S);
-		addSlider("max V or R", c, 205, ColorThreshold.MAX_V);
+		addSlider("min H or B", c, 0, ColorThreshold.MIN_H);
+		addSlider("min S or G", c, 0, ColorThreshold.MIN_S);
+		addSlider("min V or R", c, 0, ColorThreshold.MIN_V);
+		addSlider("max H or B", c, 255, ColorThreshold.MAX_H);
+		addSlider("max S or G", c, 255, ColorThreshold.MAX_S);
+		addSlider("max V or R", c, 255, ColorThreshold.MAX_V);
 	}
 
 	private void addSlider(String label, Container c, int initial, final int which) {

@@ -46,22 +46,11 @@ public class ColorThreshold implements BaseFilter {
 			params[ColorThreshold.MAX_S], 
 			params[ColorThreshold.MAX_V]), 
 		out);
+	}
 	
-/*
-    // first frame
-    if(mLastFrame == null)
-    {
-      mLastFrame = new Mat();
-      Imgproc.cvtColor(in, mLastFrame, Imgproc.COLOR_RGB2GRAY);
-      in.copyTo(out);
-      return;
-    }
-    
-    Video.calcOpticalFlowFarneback(mLastFrame, hsv, mFlowImage, 0.5, 3, 15, 3, 5, 1.2, 0);
-    
-    in.copyTo(out);
-    drawOptFlowMap(mFlowImage, out);
-    hsv.copyTo(mLastFrame);
-	*/
+	
+	@Override
+	public String toString() {
+		return "color_threshold"; 
 	}
 }

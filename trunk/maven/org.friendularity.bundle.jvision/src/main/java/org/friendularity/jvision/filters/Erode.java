@@ -15,4 +15,8 @@ public class Erode implements BaseFilter {
 		Imgproc.erode(in, out, kernal);
 	}
 
+	@Override
+	public String toString() {
+		return "erode_13"; 
+	}
 }

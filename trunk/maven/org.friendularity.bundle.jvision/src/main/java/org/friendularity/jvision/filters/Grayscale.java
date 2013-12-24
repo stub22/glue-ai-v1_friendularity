@@ -10,4 +10,9 @@ public class Grayscale implements BaseFilter {
 		Imgproc.cvtColor(in, out, Imgproc.COLOR_RGB2GRAY);
 	}
 
+
+	@Override
+	public String toString() {
+		return "gray"; 
+	}
 }
