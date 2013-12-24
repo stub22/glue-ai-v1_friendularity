@@ -11,6 +11,14 @@
     <artifactId>org.friendularity.bundle.messagemonitor</artifactId>
     <name>org.friendularity.bundle.messagemonitor OSGi Bundle</name>
     <packaging>bundle</packaging>
+    
+    <repositories>
+        <repository>
+            <id>com.springsource.repository.bundles.external</id>
+            <name>Spring EBR External Release Repository</name>
+            <url>http://repository.springsource.com/maven/bundles/external</url>
+        </repository>
+    </repositories>
 
     <dependencies>
         <dependency>
@@ -78,6 +86,16 @@
             <groupId>org.rwshop</groupId>
             <artifactId>org.rwshop.swing.messaging</artifactId>
             <version>${rwshop.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>1.7.5</version>
         </dependency>
     </dependencies>
 
