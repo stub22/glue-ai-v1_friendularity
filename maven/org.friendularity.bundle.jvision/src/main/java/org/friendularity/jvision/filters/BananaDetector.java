@@ -38,4 +38,11 @@ public class BananaDetector extends CascadeDetector {
 	protected void setDetector(CascadeClassifier aDetector) {
 		detector = aDetector;
 	}
+
+	@Override
+	public String toString() {
+		return "banana detector"; 
+	}
+	
+	
 }

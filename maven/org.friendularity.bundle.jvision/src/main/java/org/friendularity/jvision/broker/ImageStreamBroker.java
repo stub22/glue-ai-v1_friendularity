@@ -177,4 +177,24 @@ public class ImageStreamBroker {
 	public Iterator<String> imageStreamNames() {
 		return imageStreams.keySet().iterator();
 	}
+
+	/**
+	 * return true iff this is a currently unused prefix
+	 * @param text
+	 * @return 
+	 */
+	public boolean imageStreamPrefixOK(String text) {
+		String asPrefix = text + ".";
+		
+		if(text.trim().length() < 1)return false;
+		
+		for(Iterator<String>names = imageStreamNames() ; names.hasNext() ; ) {
+			String s = names.next();
+			
+			if(s.startsWith(asPrefix))return false;
+			if(s.equals(text)) return false;
+		}
+		
+		return true;
+	}
 }

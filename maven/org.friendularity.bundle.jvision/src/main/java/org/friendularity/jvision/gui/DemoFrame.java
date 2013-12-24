@@ -48,7 +48,7 @@ public class DemoFrame extends JFrame implements WindowListener, ImageStreamCons
 	private JMenuBar		myMenuBar;
 	
 	// this is just protection, if we have no other we'll use this one
-	private	FilterSequence	myBackupFilterSeq = new FilterSequence();
+	private	FilterSequence	myFilterSequence = new FilterSequence();
 	
 	public DemoFrame()
 	{
@@ -80,13 +80,26 @@ public class DemoFrame extends JFrame implements WindowListener, ImageStreamCons
 		// Other option is DISPOSE_ON_CLOSE
 		// Useful in standalone java apps, but not super-kosher under OSGi:
 		// this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+
 	}
+	
 	public void setQuitter(Quitter q) {
 		myQuitter = q;
 	}
+		
+	private FilterSequence mytestfilters;
+	
 	public void setControlledFilterSequence(FilterSequence filters) {
 		if(filters == null)throw new IllegalArgumentException("dont set the controlled filters to nothing");
-		this.myBackupFilterSeq = filters;		
+		myFilterSequence = filters;	
+		
+		// TEMP DEBUG just to wire this up
+		FilterList.showReorderableFilterList(filters);
+
+		// even more temp, just debugging some stuff
+	//	mytestfilters = new FilterSequence();
+	//	FilterList.showReorderableFilterList(mytestfilters);
+		FilterBox.showFilterBox();
 	}
 
 	@Override public void setConsumedImage(BufferedImage img){
@@ -154,6 +167,16 @@ public class DemoFrame extends JFrame implements WindowListener, ImageStreamCons
 		});
 		menu.add(menuItem);
 
+		menuItem = new JMenuItem("Test Filters", KeyEvent.VK_T);
+		menuItem.addActionListener(new ActionListener(){
+			@Override	public void actionPerformed(ActionEvent arg0) {
+				theLogger.debug("Handling test action");
+				mytestfilters.addOrReplaceByClass(new Blur());
+				mytestfilters.addOrReplaceByClass(new ProfileDetector());
+			}
+		});
+		menu.add(menuItem);
+		
 		//Build second menu in the menu bar.
 		menu = new JMenu("Filters");
 		menu.setMnemonic(KeyEvent.VK_N);
@@ -163,9 +186,9 @@ public class DemoFrame extends JFrame implements WindowListener, ImageStreamCons
 		cbMenuItem.addItemListener(new ItemListener(){
 			@Override public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED)
-				  myBackupFilterSeq.addOrReplaceByClass(new Grayscale());
+				  myFilterSequence.addOrReplaceByClass(new Grayscale());
 				else if (e.getStateChange() == ItemEvent.DESELECTED)
-				   myBackupFilterSeq.removeByClass(new Grayscale());
+				   myFilterSequence.removeByClass(new Grayscale());
 			}
 		});
 		menu.add(cbMenuItem);
@@ -176,9 +199,9 @@ public class DemoFrame extends JFrame implements WindowListener, ImageStreamCons
 			@Override
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED)
-				  myBackupFilterSeq.addOrReplaceByClass(new Blur());
+				  myFilterSequence.addOrReplaceByClass(new Blur());
 				else if (e.getStateChange() == ItemEvent.DESELECTED)
-				   myBackupFilterSeq.removeByClass(new Blur());
+				   myFilterSequence.removeByClass(new Blur());
 			}
 		});
 		menu.add(cbMenuItem);
@@ -189,9 +212,9 @@ public class DemoFrame extends JFrame implements WindowListener, ImageStreamCons
 			@Override
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED)
-				  myBackupFilterSeq.addOrReplaceByClass(new FaceDetector());
+				  myFilterSequence.addOrReplaceByClass(new FaceDetector());
 				else if (e.getStateChange() == ItemEvent.DESELECTED)
-				   myBackupFilterSeq.removeByClass(new FaceDetector());
+				   myFilterSequence.removeByClass(new FaceDetector());
 			}
 		});
 		menu.add(cbMenuItem);
@@ -202,9 +225,9 @@ public class DemoFrame extends JFrame implements WindowListener, ImageStreamCons
 			@Override
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED)
-				  myBackupFilterSeq.addOrReplaceByClass(new Dilate());
+				  myFilterSequence.addOrReplaceByClass(new Dilate());
 				else if (e.getStateChange() == ItemEvent.DESELECTED)
-				   myBackupFilterSeq.removeByClass(new Dilate());
+				   myFilterSequence.removeByClass(new Dilate());
 			}
 		});
 		menu.add(cbMenuItem);
@@ -215,9 +238,9 @@ public class DemoFrame extends JFrame implements WindowListener, ImageStreamCons
 			@Override
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED)
-				  myBackupFilterSeq.addOrReplaceByClass(new Erode());
+				  myFilterSequence.addOrReplaceByClass(new Erode());
 				else if (e.getStateChange() == ItemEvent.DESELECTED)
-				   myBackupFilterSeq.removeByClass(new Erode());
+				   myFilterSequence.removeByClass(new Erode());
 			}
 		});
 		menu.add(cbMenuItem);
@@ -228,9 +251,9 @@ public class DemoFrame extends JFrame implements WindowListener, ImageStreamCons
 			@Override
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED)
-				  myBackupFilterSeq.addOrReplaceByClass(new ProfileDetector());
+				  myFilterSequence.addOrReplaceByClass(new ProfileDetector());
 				else if (e.getStateChange() == ItemEvent.DESELECTED)
-				   myBackupFilterSeq.removeByClass(new ProfileDetector());
+				   myFilterSequence.removeByClass(new ProfileDetector());
 			}
 		});
 		menu.add(cbMenuItem);
@@ -240,9 +263,9 @@ public class DemoFrame extends JFrame implements WindowListener, ImageStreamCons
 			@Override
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED)
-				  myBackupFilterSeq.addOrReplaceByClass(new GlassesDetector());
+				  myFilterSequence.addOrReplaceByClass(new GlassesDetector());
 				else if (e.getStateChange() == ItemEvent.DESELECTED)
-				   myBackupFilterSeq.removeByClass(new GlassesDetector());
+				   myFilterSequence.removeByClass(new GlassesDetector());
 			}
 		});
 		menu.add(cbMenuItem);
@@ -252,9 +275,9 @@ public class DemoFrame extends JFrame implements WindowListener, ImageStreamCons
 			@Override
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED)
-				  myBackupFilterSeq.addOrReplaceByClass(new BananaDetector());
+				  myFilterSequence.addOrReplaceByClass(new BananaDetector());
 				else if (e.getStateChange() == ItemEvent.DESELECTED)
-				   myBackupFilterSeq.removeByClass(new BananaDetector());
+				   myFilterSequence.removeByClass(new BananaDetector());
 			}
 		});
 		menu.add(cbMenuItem);
@@ -265,9 +288,9 @@ public class DemoFrame extends JFrame implements WindowListener, ImageStreamCons
 			@Override
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED)
-				  myBackupFilterSeq.addOrReplaceByClass(new Farneback());
+				  myFilterSequence.addOrReplaceByClass(new Farneback());
 				else if (e.getStateChange() == ItemEvent.DESELECTED)
-				   myBackupFilterSeq.removeByClass(new Farneback());
+				   myFilterSequence.removeByClass(new Farneback());
 			}
 		});
 		menu.add(cbMenuItem);
@@ -277,9 +300,9 @@ public class DemoFrame extends JFrame implements WindowListener, ImageStreamCons
 			@Override
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED)
-				  myBackupFilterSeq.addOrReplaceByClass(new RGBtoHSV());
+				  myFilterSequence.addOrReplaceByClass(new RGBtoHSV());
 				else if (e.getStateChange() == ItemEvent.DESELECTED)
-				   myBackupFilterSeq.removeByClass(new RGBtoHSV());
+				   myFilterSequence.removeByClass(new RGBtoHSV());
 			}
 		});
 		menu.add(cbMenuItem);
@@ -289,9 +312,9 @@ public class DemoFrame extends JFrame implements WindowListener, ImageStreamCons
 			@Override
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED)
-				  myBackupFilterSeq.addOrReplaceByClass(new ColorThreshold());
+				  myFilterSequence.addOrReplaceByClass(new ColorThreshold());
 				else if (e.getStateChange() == ItemEvent.DESELECTED)
-				   myBackupFilterSeq.removeByClass(new ColorThreshold());
+				   myFilterSequence.removeByClass(new ColorThreshold());
 			}
 		});
 		menu.add(cbMenuItem);
@@ -301,9 +324,9 @@ public class DemoFrame extends JFrame implements WindowListener, ImageStreamCons
 			@Override
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED)
-				  myBackupFilterSeq.addOrReplaceByClass(new Contour());
+				  myFilterSequence.addOrReplaceByClass(new Contour());
 				else if (e.getStateChange() == ItemEvent.DESELECTED)
-				   myBackupFilterSeq.removeByClass(new Contour());
+				   myFilterSequence.removeByClass(new Contour());
 			}
 		});
 		menu.add(cbMenuItem);

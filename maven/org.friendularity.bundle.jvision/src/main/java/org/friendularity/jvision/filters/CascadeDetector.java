@@ -108,4 +108,10 @@ public abstract class CascadeDetector implements BaseFilter {
 	}
 
 	protected abstract Scalar boxColor();
+	
+	
+	@Override
+	public String toString() {
+		return "abstract_cascade_detector"; 
+	}
 }

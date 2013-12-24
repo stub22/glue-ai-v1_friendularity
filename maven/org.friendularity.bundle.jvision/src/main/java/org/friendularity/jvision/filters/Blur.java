@@ -13,4 +13,9 @@ public class Blur implements BaseFilter {
 		Imgproc.blur(in, out, kernal);
 	}
 
+	
+	@Override
+	public String toString() {
+		return "kernal_13_blur"; 
+	}
 }

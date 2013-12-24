@@ -41,4 +41,10 @@ public class GlassesDetector extends CascadeDetector {
 	protected void setDetector(CascadeClassifier aDetector) {
 		detector = aDetector;
 	}
+	
+
+	@Override
+	public String toString() {
+		return "glasses_detector"; 
+	}
 }

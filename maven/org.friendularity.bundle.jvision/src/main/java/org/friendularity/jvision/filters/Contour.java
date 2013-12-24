@@ -46,4 +46,10 @@ public class Contour implements BaseFilter {
 			in.clone().copyTo(out);
 		}
 	}
+	
+
+	@Override
+	public String toString() {
+		return "contour"; 
+	}
 }

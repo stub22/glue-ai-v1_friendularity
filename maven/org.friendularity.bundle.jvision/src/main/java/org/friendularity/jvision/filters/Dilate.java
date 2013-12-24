@@ -15,4 +15,9 @@ public class Dilate implements BaseFilter {
 		Imgproc.dilate(in, out, kernal);
 	}
 
+	
+	@Override
+	public String toString() {
+		return "dilate_13"; 
+	}
 }
