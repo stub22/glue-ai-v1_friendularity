@@ -19,7 +19,7 @@ import org.appdapter.core.item.{Item}
 import org.appdapter.core.store.{Repo, InitialBinding, ModelClient }
 import org.appdapter.help.repo.{RepoClient, RepoClientImpl, InitialBindingImpl} 
 import org.appdapter.impl.store.{FancyRepo};
-import org.appdapter.core.matdat.{SheetRepo,_}
+import org.appdapter.core.matdat.{SheetRepo, OnlineSheetRepoSpec}
 import com.hp.hpl.jena.query.{QuerySolution} // Query, QueryFactory, QueryExecution, QueryExecutionFactory, , QuerySolutionMap, Syntax};
 import com.hp.hpl.jena.rdf.model.{Model}
 import org.appdapter.core.log.BasicDebugger;
@@ -51,7 +51,7 @@ object RespirationTest extends BasicDebugger {
 		
 		//testWermCalcs();
 		
-		testDoubleVecFetch();
+		// testDoubleVecFetch();
 	}
 	def testRespiration() : Unit = {
 		getLogger().info("Why hello there!  Yes, respiration is the order of the hour...")
@@ -67,16 +67,27 @@ object RespirationTest extends BasicDebugger {
 		val mathGraphID = dfltTestRC.makeIdentForQName(mathSheetQN);
 		println("viz spatial graphID = " + spatGraphID);
 		val spatGraph = dfltTestRepo.getNamedModel(spatGraphID);
-		println("Fetched spat model: " + spatGraph);
+		// println("Fetched spat model: " + spatGraph);
 		val mathGraph  = dfltTestRepo.getNamedModel(mathGraphID); 
+		
+		val mathModelPrefixMap = mathGraph.getNsPrefixMap()
+		// println("Fetched math model: " + mathGraph);
+		println("\n\n*************************************************************");
+		println("Fetched math prefix-map - if this is empty, then all the QName-resolves below will fail: " + mathModelPrefixMap)
+		println("*************************************************************\n\n");
+		
 		val mathMCI : ModelClient = new ModelClientImpl(mathGraph);
-		println("Fetched math model: " + mathGraph);
+
+		
+		
+		
 		val msf = new MathSpaceFactory();
 		// val mg : MathGate = msf.makeScriptedMathGate();
 		val mg : MathGate = msf.makeUnscriptedMathGate();
 		
 		val eq1_QN = "hevi:test_01"
 		val eq1_Item = mathMCI.makeItemForQName(eq1_QN);
+		println("Got eq1_Item : " + eq1_Item)
 		println("Got eq1_Item : " + eq1_Item)
 		
 		val exprProp_QN = "hev:expr_pos_vec3f"
