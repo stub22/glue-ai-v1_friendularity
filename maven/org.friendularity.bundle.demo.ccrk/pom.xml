@@ -62,7 +62,12 @@
 			<artifactId>org.friendularity.bundle.jvision</artifactId>
 			<version>${project.version}</version>
 		</dependency>	
-			
+
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>org.friendularity.lib.viz</artifactId>
+			<version>${project.version}</version>
+		</dependency>				
 
 	</dependencies>
 

@@ -34,8 +34,7 @@ public interface EstimateVisualizer<TE extends ThingEstimate> {
 	public VizShapeGroup getShapeGroup();
 	
 	public void renderCurrentEstimates_onRendThrd(TE estim, float timePerFrame);
-	public void ensureDisplayed_onRendThrd(TE te, float timePerFrame);
-	public void updateDisplay_onRendThrd(TE te, float timePerFrame);	
+
 	
 	
 	public static class Jme3CoordinateFrame extends ThingEstimate.CoordinateFrame {

@@ -70,6 +70,7 @@ public class SingleShapeVisualizer<TE extends ThingEstimate> extends BaseVisuali
 	}
 
 	@Override public void updateDisplay_onRendThrd(TE te, float timePerFrame) {
+		/*
 		if (myCachedVizObject != null) {
 			Vector3f updatedPosVec = te.getVisualPos();
 			if (updatedPosVec != null) {
@@ -84,6 +85,7 @@ public class SingleShapeVisualizer<TE extends ThingEstimate> extends BaseVisuali
 				myCachedVizObject.setDirection_onRendThrd(updatedDirection);
 			}
 		}
+		*/
 	}
 
 	protected void attachSimpleVizObj_onRendThrd(TE te) {

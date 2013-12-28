@@ -16,10 +16,10 @@
 package org.friendularity.bundle.macro.jvision;
 
 import org.appdapter.core.log.BasicDebugger;
-import org.cogchar.bind.midi.InterestingMidiEvent;
+import org.cogchar.bind.midi.in.InterestingMidiEvent;
 import org.cogchar.bind.midi.InterestingMidiEvent.ControlChange;
 import org.cogchar.bind.midi.InterestingMidiEvent.NoteOn;
-import org.cogchar.bind.midi.MidiEventReporter;
+import org.cogchar.bind.midi.in.MidiEventReporter;
 import org.friendularity.gmteach.api.west.WorldEstimate;
 import org.friendularity.gmteach.impl.visual.WorldEstimateRenderModule;
 

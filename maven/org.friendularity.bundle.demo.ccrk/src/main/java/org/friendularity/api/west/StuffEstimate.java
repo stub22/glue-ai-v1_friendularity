@@ -32,7 +32,7 @@ public class StuffEstimate extends ThingEstimate {
 
 	@Override public void updateFromMathSpace(MathGate mg) {
 		mg.putVar("$stuffIdx", myStuffIdx);
-		super.updateFromMathSpace(mg);
+		// super.updateFromMathSpace(mg);
 	}
 	
 }

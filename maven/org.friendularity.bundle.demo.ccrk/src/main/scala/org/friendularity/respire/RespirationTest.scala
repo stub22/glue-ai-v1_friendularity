@@ -43,15 +43,16 @@ object RespirationTest extends BasicDebugger {
 	}
 	// import org.cogchar.name.dir.{AssumedQueryDir, AssumedGraphDir};
 	def main(args: Array[String]) : Unit = {
+		// Backup - if logging is not working, try enabling these two lines.
 		// Must enable "compile" or "provided" scope for Log4J dep in order to compile this code.
-		org.apache.log4j.BasicConfigurator.configure();
-		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.ALL);
+		// Note that these settings can cause double-logging, if there is a log4j.properties found.
+		// org.apache.log4j.BasicConfigurator.configure();
+		// org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.ALL);
 		
 		testRespiration();
 		
-		//testWermCalcs();
-		
-		// testDoubleVecFetch();
+		testDoubleVecFetch();
+		//Unfinished:  testWermCalcs();		
 	}
 	def testRespiration() : Unit = {
 		getLogger().info("Why hello there!  Yes, respiration is the order of the hour...")
@@ -76,10 +77,13 @@ object RespirationTest extends BasicDebugger {
 		println("Fetched math prefix-map - if this is empty, then all the QName-resolves below will fail: " + mathModelPrefixMap)
 		println("*************************************************************\n\n");
 		
+		if (mathModelPrefixMap.size() == 0) {
+			//Set prefixes manually 
+			mathGraph.setNsPrefix("hev", "urn:ftd:headyspace.org:2013:estimviz_type#");
+			mathGraph.setNsPrefix("hevi", "urn:ftd:headyspace.org:2013:estimviz_inst#");
+		}
 		val mathMCI : ModelClient = new ModelClientImpl(mathGraph);
 
-		
-		
 		
 		val msf = new MathSpaceFactory();
 		// val mg : MathGate = msf.makeScriptedMathGate();
@@ -87,7 +91,6 @@ object RespirationTest extends BasicDebugger {
 		
 		val eq1_QN = "hevi:test_01"
 		val eq1_Item = mathMCI.makeItemForQName(eq1_QN);
-		println("Got eq1_Item : " + eq1_Item)
 		println("Got eq1_Item : " + eq1_Item)
 		
 		val exprProp_QN = "hev:expr_pos_vec3f"

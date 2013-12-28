@@ -35,8 +35,10 @@ public class EstimateLib {
 			PersonEstimate pest = new PersonEstimate(personID, i);
 			double px = -10.0 - i * 2.0, py = 10.0 + i * 2.0, pz = 4.0;
 			String baseVecExpr = "{" + px + ", " + py + ", " + pz + "}";
+			/** Fixme
 			pest.setPosMathExpr("$multA * Sin[$phaseAng]*Sqrt[1.0 * $personIdx]*" + baseVecExpr);
 			pest.setColorMathExpr("{Sin[$phaseAng],Sin[3.0*$phaseAng], Sin[$phaseAng/2], $phaseFrac}");
+			*/
 			sampleSet.add(pest);
 		}
 		return sampleSet;
@@ -53,8 +55,10 @@ public class EstimateLib {
 			// Making use of single-threaded access to MathSpace:
 			// We assume that someone will post our stuffIdx before each eval of the following.
 			String baseVecExpr = "{" + px + ", " + py + ", " + pz + "}";
+			/** Fixme
 			sest.setPosMathExpr("$multA*Sin[$phaseAng]*" + baseVecExpr);
 			sest.setColorMathExpr("{Sin[$stuffIdx * $phaseAng],Sin[3.0 * $phaseAng], Sin[$phaseAng/(2 * $stuffIdx)], $phaseFrac * $stuffIdx}");
+			*/
 			sampleSet.add(sest);
 		}
 
@@ -66,9 +70,11 @@ public class EstimateLib {
 			double px = 15.0 + k * 3.0, py = 10.0 + k * 3.0, pz = -25.0;
 			double kFrac = k / (double) kMax;
 			double red = 0.4, green = 0.2, blue = 0.8, alpha = kFrac;
+			/**
 			sest.setColorMathExpr("{" + red + ", " + green + ", " + blue + ", " + alpha + "}");
 			double phaseOff = kFrac * 2 * Math.PI;
 			sest.setPosMathExpr("$phaseTot:=$phaseAng + " + phaseOff + "; {20.0*Cos[$phaseTot], $phaseTot * 5.0, 15.0*Sin[$phaseTot]}");
+			*/
 			sampleSet.add(sest);
 		}
 		return sampleSet;

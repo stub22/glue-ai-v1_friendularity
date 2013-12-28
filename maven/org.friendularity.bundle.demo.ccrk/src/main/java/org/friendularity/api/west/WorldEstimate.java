@@ -29,7 +29,7 @@ import org.friendularity.vworld.VisionTextureMapper;
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class WorldEstimate extends ThingEstimate {
+public class WorldEstimate extends CompoundEstimate {
 
 	public static String ESTIM_NS = "http://friendularity.org/estimate#";
 	public SelfEstimate					mySelfEstim;
@@ -49,12 +49,11 @@ public class WorldEstimate extends ThingEstimate {
 		super(id);
 	}
 
-	public void ensureSubpartsExist() {
+	@Override protected void ensureSubpartsExist() {
 		if (mySelfEstim == null) {
 			Ident selfEstID = new FreeIdent(ESTIM_NS + "self_estim_88");
 			mySelfEstim = new SelfEstimate(selfEstID);
-			String selfPosVecExpr = "{5.0^Sin[$phaseAng], 6.0^(2*Cos[$phaseAng]), $phaseFrac}";
-			mySelfEstim.setPosMathExpr(selfPosVecExpr);
+			// mySelfEstim.setPosMathExpr(selfPosVecExpr);
 		}
 		if ((myPersonEstims == null) || myPersonEstims.isEmpty()) {
 			myPersonEstims = EstimateLib.makeFunPersonEstims();

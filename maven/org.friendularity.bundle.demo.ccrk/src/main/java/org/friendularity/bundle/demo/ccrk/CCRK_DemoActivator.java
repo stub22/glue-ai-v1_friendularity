@@ -24,7 +24,7 @@ import org.cogchar.bind.symja.MathGate;
 import org.friendularity.api.west.ThingEstimate;
 import org.friendularity.api.west.WorldEstimate;
 import org.friendularity.impl.visual.WorldEstimateRenderModule;
-import org.cogchar.bind.midi.FunMidiEventRouter;
+import org.cogchar.bind.midi.general.FunMidiEventRouter;
 import org.friendularity.impl.visual.EstimateVisualizer;
 import org.friendularity.impl.visual.DemoWorldVisualizer;
 // import org.cogchar.test.symcalc.ScriptEngineExperiment;
@@ -233,11 +233,9 @@ public class CCRK_DemoActivator extends BundleActivatorBase {
 	}
 	private void startMidiRouters(WorldEstimateRenderModule werm) { 
 		FunMidiEventRouter fmer = new FunMidiEventRouter();
-		MidiCommandMapper mcm = new MidiCommandMapper();
+		CCRK_DemoMidiCommandMapper mcm = new CCRK_DemoMidiCommandMapper();
 		mcm.myWERM = werm;
-		fmer.registerListener(mcm);
-		//FunMidiEventRouter.FunListener fl = new FunMidiEventRouter.FunListener();
-		//fmer.registerListener(fl);			
+		fmer.registerListener(mcm);		
 		fmer.startPumpingMidiEvents();		
 	}
 	// These mediators decorate the application lifecycle as needed.
