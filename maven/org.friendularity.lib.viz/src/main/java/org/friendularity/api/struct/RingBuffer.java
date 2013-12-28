@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.friendularity.api.west;
+package org.friendularity.api.struct;
 
 import java.lang.reflect.Array;
 

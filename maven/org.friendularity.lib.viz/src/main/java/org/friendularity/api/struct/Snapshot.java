@@ -14,12 +14,19 @@
  *  limitations under the License.
  */
 
-package org.friendularity.api.west;
-
+package org.friendularity.api.struct;
+import org.cogchar.bind.symja.MathGate;
 /**
  * @author Stu B. <www.texpedient.com>
  */
 
-public interface Maker<Elem> {
-	public Elem makeOne();
+public class Snapshot {
+	private	long	myWriteStamp;
+	private	long	myDataNominalStamp;
+	
+	public void write(MathGate mg, long writeStamp, long nominalStamp) {
+		myWriteStamp = writeStamp;
+		myDataNominalStamp = nominalStamp;
+	}
+	
 }
