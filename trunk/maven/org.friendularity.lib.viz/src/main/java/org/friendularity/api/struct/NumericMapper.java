@@ -14,19 +14,20 @@
  *  limitations under the License.
  */
 
-package org.friendularity.api.west;
-import org.cogchar.bind.symja.MathGate;
+package org.friendularity.api.struct;
+
 /**
+ * Stateless transformation from doubles[] to NumType - a useful output type.
+ * So far we only define the ability to update an existing NumType, not to create them.
  * @author Stu B. <www.texpedient.com>
  */
 
-public class Snapshot {
-	private	long	myWriteStamp;
-	private	long	myDataNominalStamp;
-	
-	public void write(MathGate mg, long writeStamp, long nominalStamp) {
-		myWriteStamp = writeStamp;
-		myDataNominalStamp = nominalStamp;
-	}
-	
+public interface NumericMapper<NumType> { 
+	/**
+	 * Writes into an existing NumType from a double-buffer.  
+	 * This function is decoupled from the identity of the node itself.
+	 * @param numeric
+	 * @param buffer 
+	 */	
+	public abstract void writeNumericFromDoublesBuf(NumType numeric, double[] buffer);
 }

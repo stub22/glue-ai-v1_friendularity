@@ -1,4 +1,4 @@
-package org.friendularity.lib.viz;
+package org.friendularity.api.struct;
 
 /**
  * Hello world!

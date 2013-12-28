@@ -13,9 +13,8 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.friendularity.api.west;
+package org.friendularity.api.struct;
 
-import org.cogchar.bind.rk.robot.motion.CogcharMotionSource;
 import org.cogchar.bind.symja.MathGate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

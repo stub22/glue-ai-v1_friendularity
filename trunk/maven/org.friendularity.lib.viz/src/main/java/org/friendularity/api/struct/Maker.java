@@ -14,20 +14,12 @@
  *  limitations under the License.
  */
 
-package org.friendularity.api.west;
+package org.friendularity.api.struct;
 
 /**
- * Stateless transformation from doubles[] to NumType - a useful output type.
- * So far we only define the ability to update an existing NumType, not to create them.
  * @author Stu B. <www.texpedient.com>
  */
 
-public interface NumericMapper<NumType> { 
-	/**
-	 * Writes into an existing NumType from a double-buffer.  
-	 * This function is decoupled from the identity of the node itself.
-	 * @param numeric
-	 * @param buffer 
-	 */	
-	public abstract void writeNumericFromDoublesBuf(NumType numeric, double[] buffer);
+public interface Maker<Elem> {
+	public Elem makeOne();
 }
