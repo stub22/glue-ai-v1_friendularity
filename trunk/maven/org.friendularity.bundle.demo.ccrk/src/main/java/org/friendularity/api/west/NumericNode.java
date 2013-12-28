@@ -27,7 +27,7 @@ import org.cogchar.bind.symja.MathGate;
  */
 
 public abstract class NumericNode<NumType> implements NumericMapper<NumType> {
-	private		NumType		myOutObj;
+	private		NumType		myCachedResultObj;
 	
 	// The "number" should be equivalent to an array-vector of this many doubles.
 	private		double[]	myBuffer;
@@ -36,10 +36,10 @@ public abstract class NumericNode<NumType> implements NumericMapper<NumType> {
 	
 	public NumericNode(int dim, NumType initNumObj) { 
 		myBuffer = new double[dim];
-		myOutObj = initNumObj;		
+		myCachedResultObj = initNumObj;		
 	}
 	public NumType getOutputObject() { 
-		return myOutObj;
+		return myCachedResultObj;
 	}	
 
 	@Override public  void writeNumericFromDoublesBuf (NumType outObj, double[] buffer) {
@@ -67,11 +67,14 @@ public abstract class NumericNode<NumType> implements NumericMapper<NumType> {
 	 */
 	protected abstract void readDoublesIntoBuf(MathGate mathGate, double[] buffer);
 	
+	protected void clearResultCache() { 
+		myCachedResultObj = null;
+	}
 	// We pass mathGate explicitly to ensure that they can be replaced/interchanged without "breaking" dependent
 	// object like Oscillators.
 	public void doUpdate(MathGate mathGate) { 
 		readDoublesIntoBuf(mathGate, myBuffer);
-		writeAnyNumericFromAnyDoublesBuf(myOutObj, myBuffer);
+		writeAnyNumericFromAnyDoublesBuf(myCachedResultObj, myBuffer);
 	}
 
 }

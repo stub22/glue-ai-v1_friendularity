@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import org.friendularity.api.west.ThingEstimate;
+import org.friendularity.api.west.CompoundEstimate;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 import org.cogchar.render.goody.dynamic.VizShapeGroup;
 
@@ -27,25 +28,34 @@ import org.cogchar.render.goody.dynamic.VizShapeGroup;
  * @author Stu B. <www.texpedient.com>
  */
 
-public abstract class GroupVisualizer <TE extends ThingEstimate> extends BaseVisualizer<TE> {
+public abstract class GroupVisualizer <CTE extends CompoundEstimate> extends BaseVisualizer<CTE> {
 	
 	private Map<ThingEstimate, EstimateVisualizer> mySubVizMap = new HashMap<ThingEstimate, EstimateVisualizer>();
 	
 	public GroupVisualizer(HumanoidRenderContext hrc) {
 		super(hrc);
 	}	
-	@Override public void renderCurrentEstimates_onRendThrd(TE estim, float timePerFrame) {
-		super.renderCurrentEstimates_onRendThrd(estim, timePerFrame);
-		renderSubEstims_onRendThrd(estim, timePerFrame);
-	}		
-	protected void renderSubEstims_onRendThrd(TE estim, float timePerFrame) { 
+	@Override protected void  ensureDisplayed_onRendThrd(CTE estim, float timePerFrame) {
 		Set<ThingEstimate> subEstims = estim.getSubEstimates();
 		for (ThingEstimate subEstim : subEstims) {
 			EstimateVisualizer subViz = getSubVisualizer(subEstim);
 			if (subViz != null) {
-				subViz.renderCurrentEstimates_onRendThrd(subEstim, timePerFrame);
+				if (subViz instanceof BaseVisualizer) {
+					((BaseVisualizer) subViz).ensureDisplayed_onRendThrd(subEstim, timePerFrame);
+				}
 			}
-		}		
+		}			
+	}
+	@Override protected void  updateDisplay_onRendThrd(CTE estim, float timePerFrame) {
+		Set<ThingEstimate> subEstims = estim.getSubEstimates();
+		for (ThingEstimate subEstim : subEstims) {
+			EstimateVisualizer subViz = getSubVisualizer(subEstim);
+			if (subViz != null) {
+				if (subViz instanceof BaseVisualizer) {
+					((BaseVisualizer) subViz).updateDisplay_onRendThrd(subEstim, timePerFrame);
+				}
+			}
+		}			
 	}
 	// Unsafe - we use erased type for the visualizer of the subEstimate - revisit.
 	public EstimateVisualizer getSubVisualizer(ThingEstimate subEstimate) {

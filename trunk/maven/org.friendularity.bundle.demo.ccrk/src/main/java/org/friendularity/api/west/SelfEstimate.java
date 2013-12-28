@@ -16,6 +16,7 @@
 package org.friendularity.api.west;
 
 import org.appdapter.core.name.Ident;
+import org.cogchar.bind.symja.MathGate;
 
 /**
  *
@@ -26,5 +27,7 @@ public class SelfEstimate extends ThingEstimate {
 	public SelfEstimate(Ident id) {
 		super(id);
 	}
-	
+	public void updateFromMathSpace(MathGate mg) {
+		
+	}
 }

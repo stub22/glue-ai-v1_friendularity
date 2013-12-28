@@ -18,16 +18,16 @@ package org.friendularity.bundle.demo.ccrk;
 import org.appdapter.core.log.BasicDebugger;
 import org.friendularity.api.west.WorldEstimate;
 import org.friendularity.impl.visual.WorldEstimateRenderModule;
-import org.cogchar.bind.midi.InterestingMidiEvent;
-import org.cogchar.bind.midi.InterestingMidiEvent.NoteOn;
-import org.cogchar.bind.midi.InterestingMidiEvent.NoteOff;
-import org.cogchar.bind.midi.InterestingMidiEvent.ControlChange;
-import org.cogchar.bind.midi.MidiEventReporter;
+import org.cogchar.bind.midi.in.InterestingMidiEvent;
+import org.cogchar.bind.midi.in.InterestingMidiEvent.NoteOn;
+import org.cogchar.bind.midi.in.InterestingMidiEvent.NoteOff;
+import org.cogchar.bind.midi.in.InterestingMidiEvent.ControlChange;
+import org.cogchar.bind.midi.in.MidiEventReporter;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class MidiCommandMapper extends BasicDebugger implements MidiEventReporter.Listener {
+public class CCRK_DemoMidiCommandMapper extends BasicDebugger implements MidiEventReporter.Listener {
 
 	public WorldEstimateRenderModule myWERM;
 

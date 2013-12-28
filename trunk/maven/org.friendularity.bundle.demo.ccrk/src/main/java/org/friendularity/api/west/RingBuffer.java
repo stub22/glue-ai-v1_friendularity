@@ -13,36 +13,23 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-	package org.friendularity.api.west;
 
-import org.cogchar.bind.symja.MathGate;
+package org.friendularity.api.west;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import org.appdapter.core.log.BasicDebugger;
-import org.appdapter.core.name.Ident;
-
+import java.lang.reflect.Array;
 
 /**
+ * Fixed size buffer of fixed elements, which have updatable contents.
  * @author Stu B. <www.texpedient.com>
+ * 
  */
-public abstract class ThingEstimate extends BasicDebugger {
 
-	public		Ident							myIdent;
-		
-	public ThingEstimate(Ident id) {
-		myIdent = id;
-	}
-
-	public Ident getIdent()  {
-		return myIdent;
-	}
-	public abstract void updateFromMathSpace(MathGate mg);
+public class RingBuffer<Elem> {
+	private		Elem[]	myDataRing;
+	int		myLastWrittenIdx = -1;
 	
-	public static abstract class CoordinateFrame {
-		public Ident myIdent;
-		public CoordinateFrame myParent;
+	public RingBuffer(int size, Class<Elem> clazz, Maker<Elem> maker) {
+		myDataRing = (Elem[]) Array.newInstance(clazz, size);
 	}
 
 }

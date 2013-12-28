@@ -13,36 +13,27 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-	package org.friendularity.api.west;
 
+package org.friendularity.api.west;
+
+import org.appdapter.core.name.Ident;
 import org.cogchar.bind.symja.MathGate;
 
-import java.util.HashSet;
-import java.util.Set;
 
-import org.appdapter.core.log.BasicDebugger;
-import org.appdapter.core.name.Ident;
-
+import org.friendularity.struct.*;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public abstract class ThingEstimate extends BasicDebugger {
 
-	public		Ident							myIdent;
-		
-	public ThingEstimate(Ident id) {
-		myIdent = id;
-	}
+public class TrackingEstimate extends ThingEstimate {
+	private		RingBuf<Struct<String, ArrayOfDoubles>>		mySnaps;
 
-	public Ident getIdent()  {
-		return myIdent;
+	public TrackingEstimate(Ident id) {
+		super(id);
 	}
-	public abstract void updateFromMathSpace(MathGate mg);
+	@Override public void updateFromMathSpace(MathGate mg) {
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	}
 	
-	public static abstract class CoordinateFrame {
-		public Ident myIdent;
-		public CoordinateFrame myParent;
-	}
-
 }

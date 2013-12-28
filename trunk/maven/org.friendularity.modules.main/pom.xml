@@ -50,6 +50,7 @@
         <module>../org.friendularity.bundle.demoserv.semrepo</module>
         <module>../org.friendularity.bundle.webapp.semrepo</module>
 
+		<module>../org.friendularity.lib.viz</module>
 		<module>../org.friendularity.bundle.gaze</module>
 
 		<module>../org.friendularity.demo.egosphere</module>

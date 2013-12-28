@@ -44,6 +44,7 @@ public abstract class MathExprNode<NumType> extends NumericNode<NumType> {
 	}
 	// Override me to update an OutType from a buffer
 	public void setMathExpr (String mathExpr) {
+		clearResultCache();
 		myMathExpr = mathExpr;
 	}
 }
