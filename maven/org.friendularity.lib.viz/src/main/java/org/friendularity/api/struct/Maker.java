@@ -22,4 +22,8 @@ package org.friendularity.api.struct;
 
 public interface Maker<Elem> {
 	public Elem makeOne();
+	// The copying op is often easier than make(), since the size+shape of source+target can be inspected.
+	public void shallowCopyContents(Elem source, Elem target);
+	
+	// public Elem[] makeArray(int size);
 }

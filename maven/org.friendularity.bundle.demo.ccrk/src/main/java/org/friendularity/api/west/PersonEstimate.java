@@ -22,7 +22,7 @@ import org.cogchar.bind.symja.MathGate;
  *
  * @author Stu B22 <stub22@appstract.com>
  */
-public class PersonEstimate extends ThingEstimate {
+public class PersonEstimate extends TrackingEstimate {
 	private Integer myPersonIdx;
 
 	public PersonEstimate(Ident id, Integer personIdx) {
@@ -32,7 +32,7 @@ public class PersonEstimate extends ThingEstimate {
 
 	@Override public void updateFromMathSpace(MathGate mg) {
 		mg.putVar("$personIdx", myPersonIdx);
-		updateFromMathSpace(mg);
+		super.updateFromMathSpace(mg);
 	}
 	
 }

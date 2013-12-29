@@ -18,6 +18,8 @@ package org.friendularity.respire
 
 /**
  * A molten core is hot in the sense of being chaotic, interconnected, active computing.
+ * Usually, such computing uses significant resources, consuming juice and generating heat.
+ * Our goal is to maximize the ratio of output utility ("light") to this heat cost.
  * @author Stu B. <www.texpedient.com>
  */
 

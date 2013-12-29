@@ -1,5 +1,9 @@
 package org.friendularity.bundle.demo.ccrk;
 
+import org.cogchar.bind.midi.out.DemoMidiOutputPlayer;
+import org.cogchar.bind.midi.out.NovLpadTest;
+import org.cogchar.bind.midi.general.FunMidiEventRouter;
+
 import static ext.osgi.common.MacroBundleActivatorBase.macroStartupSettings;
 import org.friendularity.impl.visual.DeicticVisualizer;
 import java.util.List;
@@ -24,7 +28,7 @@ import org.cogchar.bind.symja.MathGate;
 import org.friendularity.api.west.ThingEstimate;
 import org.friendularity.api.west.WorldEstimate;
 import org.friendularity.impl.visual.WorldEstimateRenderModule;
-import org.cogchar.bind.midi.general.FunMidiEventRouter;
+
 import org.friendularity.impl.visual.EstimateVisualizer;
 import org.friendularity.impl.visual.DemoWorldVisualizer;
 // import org.cogchar.test.symcalc.ScriptEngineExperiment;
@@ -62,12 +66,14 @@ import org.rwshop.swing.common.lifecycle.ServicesFrame;
  */
 public class CCRK_DemoActivator extends BundleActivatorBase {
 
-	private	boolean		myFlag_connectJVision = true;
+	private	boolean		myFlag_connectJVision = false;  // 2013-12-28 temp disabled JVision
 	private	boolean		myFlag_connectMidiIn = true;
-	private	boolean		myFlag_connectMidiOut = false;
+	private	boolean		myFlag_connectMidiOut = true;
+	private	boolean		myFlag_connectMidiSwitcheroo = true;
 	private	boolean		myFlag_connectSwingDebugGUI = false;
 	private boolean		myFlag_monitorLifecycles = true;
 	
+	private CCRK_DemoMidiCommandMapper	myMidiMapper;
 	
 	@Override public void start(final BundleContext context) throws Exception {
 		// Need to tell the MacroBundle system that we are the main launcher, so that forceLog4JConfig will work.
@@ -174,8 +180,18 @@ public class CCRK_DemoActivator extends BundleActivatorBase {
 			//	Startup the optional JVision connection
 			startVisionMonitors();
 		}
+		
+		myMidiMapper = new CCRK_DemoMidiCommandMapper();
+		
 		if (myFlag_connectMidiIn) {
-			startMidiRouters(werm);
+			myMidiMapper.startMidiRouters(werm);
+		}
+		if (myFlag_connectMidiOut) {
+			// Does the VWorld block while this is running?  Why?
+			myMidiMapper.startMidiOutputDemo();
+		}
+		if (myFlag_connectMidiSwitcheroo) {
+			myMidiMapper.startMidiSwitcherooDemo();
 		}
 		if (myFlag_connectSwingDebugGUI) {
 			setupDebuggingScaffold(mg, we);
@@ -184,6 +200,8 @@ public class CCRK_DemoActivator extends BundleActivatorBase {
 			getLogger().info("We have a cheater's Puma-App-Context, but we're not cheatin with it today - hooray!");
 		}
 	}
+	
+
 
 	private void setupDebuggingScaffold(MathGate mg, WorldEstimate we) { 
 	/*		
@@ -231,13 +249,7 @@ public class CCRK_DemoActivator extends BundleActivatorBase {
 			vdf.startServices();
 		}
 	}
-	private void startMidiRouters(WorldEstimateRenderModule werm) { 
-		FunMidiEventRouter fmer = new FunMidiEventRouter();
-		CCRK_DemoMidiCommandMapper mcm = new CCRK_DemoMidiCommandMapper();
-		mcm.myWERM = werm;
-		fmer.registerListener(mcm);		
-		fmer.startPumpingMidiEvents();		
-	}
+
 	// These mediators decorate the application lifecycle as needed.
 	static class DemoMediator extends PumaContextMediator {
 		// Override base class methods to customize the way that PUMA boots + runs, and

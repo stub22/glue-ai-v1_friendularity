@@ -81,6 +81,7 @@
 				<configuration>
 					<instructions>
 						<Bundle-Activator>org.friendularity.bundle.demo.ccrk.CCRK_DemoActivator</Bundle-Activator>
+						<Export-Package>org.friendularity.*</Export-Package>
 					</instructions>
 				</configuration>
 			</plugin>

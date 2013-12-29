@@ -33,7 +33,7 @@ public class TrackingEstimate extends ThingEstimate {
 		super(id);
 	}
 	@Override public void updateFromMathSpace(MathGate mg) {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		
 	}
 	
 }

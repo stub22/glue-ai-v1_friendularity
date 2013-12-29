@@ -17,6 +17,7 @@
 package org.friendularity.struct
 import org.cogchar.bind.symja.MathGate;
 import org.appdapter.core.name.Ident;
+import org.friendularity.api.struct.Maker;
 /**
  * @author Stu B. <www.texpedient.com>
  */
@@ -27,14 +28,20 @@ trait DataExpr {
 trait DataValue {
 	// Marker trait that we might not really need
 }
-trait Factory[V] {
+	/* Interesting:
+org/friendularity/struct/Struct.scala:150: error: type mismatch;
+ found   : Array[Elem with Object]
+ required: Array[Elem]
+Note: Elem with Object <: Elem, but class Array is invariant in type T.
+You may wish to investigate a wildcard type such as `_ <: Elem`. (SLS 3.2.10)
+	val myElems : Array[Elem] = myElemFactory.makeArray(mySize)
+http://stackoverflow.com/questions/10000126/re-using-java-generic-collections-in-scala-without-trait-object	
+	*/
+trait Factory[V] extends Maker[V] {
 	// If V represents any kind of an array, then make() must know how big that array is.
-	def make() : V
-	// The copying op is often easier than make(), since the size+shape of source+target can be inspected.
-	def shallowCopyContents(source : V, target: V)
-	
-	// Under consideration:
-	def makeArray(size : Int) : Array[V]
+	def make() : V = makeOne()
+	def makeArray(size : Int) : Array[V] 
+
 }
 trait DataSource[DE <: DataExpr, DV <: DataValue] {
 	def read(expr : DE, dataValue : DV)
@@ -46,7 +53,7 @@ class ArrayOfDoubles(val myVals : Array[Double]) extends DataValue  {
 	override def toString(): String = "AOD[" + myVals.mkString(", ") + "]"
 }
 class AODFactory(val myArraySize : Int) extends Factory[ArrayOfDoubles] {
-	override def make() : ArrayOfDoubles = {
+	override def makeOne() : ArrayOfDoubles = {
 		val a = new Array[Double](myArraySize)
 		new ArrayOfDoubles(a)
 	}
