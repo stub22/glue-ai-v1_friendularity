@@ -34,7 +34,9 @@ import com.jme3.scene.Node;
 import org.friendularity.impl.visual.EstimateVisualizer;
 import org.friendularity.api.west.WorldEstimate;
 import org.friendularity.impl.visual.DemoWorldVisualizer;
-import org.friendularity.vworld.VisionTextureMapper;
+import org.friendularity.jvision.broker.ImageStreamBroker;
+import org.friendularity.vworld.JVisionTextureMapper;
+import org.friendularity.vworld.MagicVisionBoxScene;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -49,10 +51,12 @@ public class WorldEstimateRenderModule extends RenderModule implements WorldEsti
 	// Symja is function-oriented, and does not obviously/trivially supply an associate-array or record construct.
 	private MathGate myMathGate;
 	private WorldEstimate myCachedWorldEstim;
-	boolean myDidThatStuffFlag = false;
-	private VisionTextureMapper myVTM;
-	private boolean myFlag_visionTextureRoutingEnabled = false;
+	boolean myFlag_bonusMeshesNeeded = true;  // BonusMeshes includes MagicVisionBoxScene
 
+	private boolean myFlag_JVisionTextureRoutingEnabled = false;
+
+	private MagicVisionBoxScene		myMVBS;
+	
 	public WorldEstimateRenderModule() {
 		setDebugRateModulus(1000);
 	}
@@ -60,19 +64,36 @@ public class WorldEstimateRenderModule extends RenderModule implements WorldEsti
 	@Override public void setWorldEstimate(WorldEstimate worldEstim) {
 		myCachedWorldEstim = worldEstim;
 	}
-	public WorldEstimate getWorldEstimate() { 
+
+	public WorldEstimate getWorldEstimate() {
 		return myCachedWorldEstim;
 	}
 
 	public void setMathGate(MathGate mg) {
 		myMathGate = mg;
 	}
-	public void setFlag_visionTextureRoutingEnabled(boolean flag) {
-		myFlag_visionTextureRoutingEnabled = flag;
+
+	public void setFlag_JVisionTextureRoutingEnabled(boolean flag) {
+		myFlag_JVisionTextureRoutingEnabled = flag;
 	}
 
-	@Override
-	protected void doRenderCycle(long runSeqNum, float timePerFrame) {
+	private JVisionTextureMapper setupJVisionConnection() {
+		getLogger().info("Setup for vision-texture-mappper");
+		JVisionTextureMapper jvtm = new JVisionTextureMapper();
+		jvtm.connectToImageStreamBroker();
+		return jvtm;
+	}
+	private void setupMagicVisionBoxScene(RenderRegistryClient rrc) {
+		// Currently called on RendThread, during doRenderCycle() below.
+		myMVBS = new MagicVisionBoxScene();
+		myMVBS.setup(rrc);
+		if (myFlag_JVisionTextureRoutingEnabled) {
+			JVisionTextureMapper jvtm = setupJVisionConnection(); // calls ImageStreamBroker.alwaysAddImageStreamConsumer
+			myMVBS.setJVisionTextureMapper(jvtm);  // MVBS will now poll JVTM for updated vision textures
+		}
+	}
+
+	@Override protected void doRenderCycle(long runSeqNum, float timePerFrame) {
 
 		if (myMathGate != null) {
 			// optionally do some updates+ refinements to the cached estimate, either in-place or replacing completely.
@@ -90,19 +111,17 @@ public class WorldEstimateRenderModule extends RenderModule implements WorldEsti
 				myWorldEstimVisualizer.renderCurrentEstimates_onRendThrd(myCachedWorldEstim, timePerFrame);
 			}
 
-			if (!myDidThatStuffFlag) {
+			if (myFlag_bonusMeshesNeeded) {
 				getLogger().info("One time setup for bonus-meshes");
-				myDidThatStuffFlag = true;
+				RenderRegistryClient rrc = myWorldEstimVisualizer.getRenderRegistryClient();
+				myFlag_bonusMeshesNeeded = false;
 				((DemoWorldVisualizer) myWorldEstimVisualizer).makeBonusMeshes();
-			}
-			if (myFlag_visionTextureRoutingEnabled) {
-				if (myVTM == null) {
-					getLogger().info("One time setup for vision-texture-mappper");
-					myVTM = new VisionTextureMapper();
-					RenderRegistryClient rrc = myWorldEstimVisualizer.getRenderRegistryClient();
-					myVTM.setup(rrc);
+				if (myMVBS == null) {
+					setupMagicVisionBoxScene(rrc);
 				}
-				myVTM.simpleUpdate(timePerFrame);
+			}
+			if (myMVBS != null) {
+				myMVBS.update_onRendThrd(timePerFrame);	// Includes polling for new vision textures
 			}
 		}
 
