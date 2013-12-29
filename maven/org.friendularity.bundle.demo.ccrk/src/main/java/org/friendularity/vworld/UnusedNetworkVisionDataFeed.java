@@ -66,7 +66,7 @@ import org.robokind.impl.vision.PortableImageUtils;
  *
  * @author Owner
  */
-public class VisionDataFeed extends BasicDebugger {
+public class UnusedNetworkVisionDataFeed extends BasicDebugger {
 
 	private RemoteImageServiceClient myVideoService;
 	private RemoteImageRegionServiceClient myFaceService;
@@ -129,6 +129,7 @@ public class VisionDataFeed extends BasicDebugger {
 			//faceService.addImageRegionsListener(
 			//		myVideoPanel.getImageRegionListListener());
 		} catch (Throwable t) {
+			getLogger().error("Cannot connect to *AMQP* vision streams - but this error does not affect JVision", t);
 			t.printStackTrace();
 		}
 		return false;

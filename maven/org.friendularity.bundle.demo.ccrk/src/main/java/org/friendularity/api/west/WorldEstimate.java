@@ -24,8 +24,6 @@ import java.util.Set;
 import org.appdapter.core.name.Ident;
 import org.appdapter.core.name.FreeIdent;
 
-import org.cogchar.render.sys.registry.RenderRegistryClient;
-import org.friendularity.vworld.VisionTextureMapper;
 /**
  * @author Stu B. <www.texpedient.com>
  */

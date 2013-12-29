@@ -32,7 +32,7 @@ import org.friendularity.impl.visual.WorldEstimateRenderModule;
 import org.friendularity.impl.visual.EstimateVisualizer;
 import org.friendularity.impl.visual.DemoWorldVisualizer;
 // import org.cogchar.test.symcalc.ScriptEngineExperiment;
-import org.friendularity.vworld.VisionDataFeed;
+import org.friendularity.vworld.UnusedNetworkVisionDataFeed;
 import org.robokind.api.motion.Robot;
 
 // import org.robokind.ui.swing.common.lifecycle.ServicesFrame;
@@ -66,7 +66,9 @@ import org.rwshop.swing.common.lifecycle.ServicesFrame;
  */
 public class CCRK_DemoActivator extends BundleActivatorBase {
 
-	private	boolean		myFlag_connectJVision = false;  // 2013-12-28 temp disabled JVision
+	private	boolean		myFlag_connectJVision = true;  
+	private	boolean		myFlag_connectNetworkVision = false;  
+	
 	private	boolean		myFlag_connectMidiIn = true;
 	private	boolean		myFlag_connectMidiOut = true;
 	private	boolean		myFlag_connectMidiSwitcheroo = true;
@@ -161,7 +163,7 @@ public class CCRK_DemoActivator extends BundleActivatorBase {
 		// Enable/Disable this texture flow based on whether we are launching JVision or not.
 		// Should be a dont-care whether this happens before/after   startVisionMonitors() below.
 		// TODO:  Re-verify in detail.
-		werm.setFlag_visionTextureRoutingEnabled(myFlag_connectJVision);
+		werm.setFlag_JVisionTextureRoutingEnabled(myFlag_connectJVision);
 		
 		PumaAppUtils.attachVWorldRenderModule(bundleCtx, werm, null);
 		EstimateVisualizer eViz = werm.setupVisualizer(null, null, null);
@@ -176,9 +178,9 @@ public class CCRK_DemoActivator extends BundleActivatorBase {
 		Robot.Id optRobotID_elseAllRobots = null;		
 		startMotionComputers(bundleCtx, optRobotID_elseAllRobots, we);	
 		
-		if (myFlag_connectJVision) {
+		if (myFlag_connectNetworkVision) {
 			//	Startup the optional JVision connection
-			startVisionMonitors();
+			startNetworkVisionMonitors();
 		}
 		
 		myMidiMapper = new CCRK_DemoMidiCommandMapper();
@@ -240,8 +242,8 @@ public class CCRK_DemoActivator extends BundleActivatorBase {
 			}
 		}
 	}
-	private void startVisionMonitors() { 
-		VisionDataFeed vdf = new VisionDataFeed();
+	private void startNetworkVisionMonitors() { 
+		UnusedNetworkVisionDataFeed vdf = new UnusedNetworkVisionDataFeed();
 		boolean svcsOK = vdf.connectServices();
 		getLogger().info("vdf.connectServices returned {}", svcsOK);
 		if (svcsOK) {
