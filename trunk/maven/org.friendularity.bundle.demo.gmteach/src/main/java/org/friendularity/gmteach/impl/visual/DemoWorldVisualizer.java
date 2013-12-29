@@ -27,7 +27,7 @@ import org.friendularity.gmteach.api.west.WorldEstimate;
 import org.friendularity.gmteach.vworld.MeshTest;
 import org.cogchar.render.trial.TrialContent;
 import org.cogchar.render.trial.TrialCameras;
-import org.cogchar.render.trial.TempMidiBridge;
+import org.cogchar.bind.midi.in.TempMidiBridge;
 import org.cogchar.render.opengl.optic.ViewportFacade;
 import org.appdapter.core.name.Ident;
 import org.appdapter.core.name.FreeIdent;
