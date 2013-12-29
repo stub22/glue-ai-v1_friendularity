@@ -24,20 +24,32 @@ import org.cogchar.bind.midi.in.InterestingMidiEvent.NoteOff;
 import org.cogchar.bind.midi.in.InterestingMidiEvent.ControlChange;
 import org.cogchar.bind.midi.in.MidiEventReporter;
 
+import org.cogchar.bind.midi.out.DemoMidiOutputPlayer;
+import org.cogchar.bind.midi.out.NovLpadTest;
+import org.cogchar.bind.midi.out.Switcheroo;
+import org.cogchar.bind.midi.general.FunMidiEventRouter;
 /**
  * @author Stu B. <www.texpedient.com>
  */
 public class CCRK_DemoMidiCommandMapper extends BasicDebugger implements MidiEventReporter.Listener {
 
-	public WorldEstimateRenderModule myWERM;
-
+	public	WorldEstimateRenderModule	myWERM;
+	public	FunMidiEventRouter			myFMER = new FunMidiEventRouter();
+	public	NovLpadTest					myNLT  = new NovLpadTest();
+	public	DemoMidiOutputPlayer		myDMOP  = new DemoMidiOutputPlayer();
+	public	Switcheroo					mySwitcheroo;
+	
 	@Override public void reportEvent(InterestingMidiEvent ime) {
 		try {
+			if (mySwitcheroo != null) {
+				mySwitcheroo.reportEvent(ime);
+			}
 			if (myWERM != null) {
 				WorldEstimate we = myWERM.getWorldEstimate();
 				if (we != null) {
 					if (ime instanceof NoteOn) {
 						NoteOn noteOn = (NoteOn) ime;
+						getLogger().info("Got noteOn: {}", noteOn);
 					}
 					if (ime instanceof ControlChange) {
 						ControlChange cchg = (ControlChange) ime;
@@ -51,6 +63,25 @@ public class CCRK_DemoMidiCommandMapper extends BasicDebugger implements MidiEve
 		} catch (Throwable t) {
 			getLogger().error("Error during midi-mapping", t);
 		}
-
 	}
+	public void cleanup() { 
+		
+	}
+	protected void startMidiRouters(WorldEstimateRenderModule werm) { 
+		myWERM = werm;
+		myFMER.registerListener(this);		
+		myFMER.startPumpingMidiEvents();		
+	}	
+	protected void startMidiOutputDemo() { 
+		int previewMsec = 2000;
+		myDMOP.playAllDemoSeqsBriefly_Blocking(previewMsec);  // Currently leaves the last one still playing
+	}
+	protected void startMidiSwitcherooDemo() { 
+		mySwitcheroo = new Switcheroo();
+		mySwitcheroo.myDMOP = myDMOP;
+		boolean lpadOK = myNLT.startLightDemo();
+		if (lpadOK) {
+			mySwitcheroo.myNLT = myNLT;
+		}
+	}	
 }

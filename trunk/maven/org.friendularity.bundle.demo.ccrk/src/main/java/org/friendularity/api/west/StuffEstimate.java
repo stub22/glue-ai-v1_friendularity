@@ -22,7 +22,7 @@ import org.cogchar.bind.symja.MathGate;
  *
  * @author Stu B22 <stub22@appstract.com>
  */
-public class StuffEstimate extends ThingEstimate {
+public class StuffEstimate extends TrackingEstimate {
 	private Integer myStuffIdx;
 
 	public StuffEstimate(Ident id, Integer stuffIndex) {
