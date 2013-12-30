@@ -60,14 +60,14 @@ public class ImageStreamBroker {
 			{
 				ImageStreamProducer previsp = imageStreams.get(isp.getSourceName());
 				
-				if (previsp instanceof OffAirImageStreamProducer)
-				{
+				if (previsp instanceof OffAirImageStreamProducer)	{
 					OffAirImageStreamProducer offair = (OffAirImageStreamProducer) previsp;
 					offair.switchTo(isp);
 					offair.dispose();
 				}
-				else
+				else {
 					throw new IllegalArgumentException("Image Stream " + isp.getSourceName() + " already exists");
+				}
 			}
 
 			imageStreams.put(isp.getSourceName(), isp);
@@ -79,16 +79,14 @@ public class ImageStreamBroker {
 	{
 		synchronized(imageStreams)
 		{
-			if(imageStreams.get(name) instanceof SwitchableImageStreamProducer)
-			{
+			if(imageStreams.get(name) instanceof SwitchableImageStreamProducer)	{
 				SwitchableImageStreamProducer sisp = (SwitchableImageStreamProducer) imageStreams.get(name);
 				OffAirImageStreamProducer offair = new OffAirImageStreamProducer(name);
 				
 				sisp.switchTo(offair);
 				imageStreams.put(name, offair);
 			}
-			else
-			{
+			else {
 				imageStreams.get(name).removeAllConsumers();
 				imageStreams.remove(name);
 			}

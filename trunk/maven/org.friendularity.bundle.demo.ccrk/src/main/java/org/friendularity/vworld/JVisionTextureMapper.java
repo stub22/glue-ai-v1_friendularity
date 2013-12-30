@@ -65,9 +65,23 @@ public class JVisionTextureMapper extends BasicDebugger implements ImageStreamCo
 	
 	public void connectToImageStreamBroker() { 
 		// This is currently called on the render thread!
-		// was using deprecated:  waitAndAddImageStreamConsumer
-		ImageStreamBroker.getDefaultImageStreamBroker().alwaysAddImageStreamConsumer(
-			JVisionEngine.JVISION_IS_NAME, this);		
+		/*
+		// The "always" approach recommended in JVision comments appears to lead to a system crash if the 
+		// offairConsumer is later replaced with a real consumer
+		// (which happens if this method is called before JVision is fully initialized, and then JVision
+		// tries to start up for real - boom!)
+     [java] # A fatal error has been detected by the Java Runtime Environment:
+     [java] #
+     [java] #  EXCEPTION_ACCESS_VIOLATION (0xc0000005) at pc=0x000000006dc3a39b, pid=11312, tid=7260		
+		// ImageStreamBroker.getDefaultImageStreamBroker().alwaysAddImageStreamConsumer(
+		//	JVisionEngine.JVISION_IS_NAME, this);
+		// So, now we are back to the deprecated methods:
+		*/
+		// This appeared to work in limited testing, but presumably involves a race condition with the JVision init.
+		// ImageStreamBroker.getDefaultImageStreamBroker().addImageStreamConsumer(JVisionEngine.JVISION_IS_NAME, this);
+		// This blocking approach should be reliable, as long as JVision is eventually available.
+		getLogger().info("Making blocking connection to JVision using waitAndAddImageStreamConsumer()");
+		ImageStreamBroker.getDefaultImageStreamBroker().waitAndAddImageStreamConsumer(JVisionEngine.JVISION_IS_NAME, this);
 	}
 
 

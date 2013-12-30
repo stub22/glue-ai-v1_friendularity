@@ -95,11 +95,8 @@ public class OffscreenTextureMapper {
 		myOffscreenBoxMaterial = material.clone();
 
 		myOffscreenBoxGeom = new Geometry("boxOff", boxMesh);
-		//	myOffscreenBoxGeom.setMaterial(material);
 		myOffscreenBoxGeom.setMaterial(myOffscreenBoxMaterial);
 	
-		// ImageStreamBroker-connect() was HERE, moved to separate method below.
-
 		// attach the scene to the viewport to be rendered
 		myOffscrenViewport.attachScene(myOffscreenBoxGeom);
 
@@ -128,6 +125,9 @@ public class OffscreenTextureMapper {
 			// updateGeometricState updates the lightlist, computes the world transforms, and computes the world 
 			// bounds for this Spatial. Calling this when the Spatial is attached to a node will cause undefined 
 			// results. User code should only call this method on Spatials having no parent.
+			
+			// Apparently this should be the *last* thing that happens to this scene graph during a particular
+			// OpenGL callback invocation.  So if we're using writeTexture below, it should happen *before* this call.
 			myOffscreenBoxGeom.updateGeometricState();
 		}
 	}

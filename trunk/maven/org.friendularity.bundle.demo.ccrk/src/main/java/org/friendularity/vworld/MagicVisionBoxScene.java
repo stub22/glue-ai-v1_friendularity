@@ -58,7 +58,7 @@ public class MagicVisionBoxScene extends BasicDebugger {
 	private	JVisionTextureMapper		myJVTM;
 
 
-	public void setup(RenderRegistryClient rrc) {
+	public void setup_onRendThrd(RenderRegistryClient rrc) {
 		AssetManager assetMgr = rrc.getJme3AssetManager(null);
 		RenderManager renderMgr = rrc.getJme3RenderManager(null);
 		//ViewportFacade viewportFacade = rrc.getOpticViewportFacade(null);
@@ -97,13 +97,14 @@ public class MagicVisionBoxScene extends BasicDebugger {
 		//	inputManager.addListener(this, TOGGLE_UPDATE);
 	}
 	public void update_onRendThrd(float tpf) {
-		myOTM.updateRotatingOffscreenBox_onRendThrd(tpf);
+		
 		if (myJVTM != null) {
 			Texture2D latestTexture = myJVTM.takeLatestTextureOrNull();
 			if (latestTexture != null) {
 				myOTM.writeTextureToOffscreenBoxMaterial_onRendThrd(latestTexture);
 			}
 		}
-		
+		// This should happen last because it calls "updateGeometricState()". 
+		myOTM.updateRotatingOffscreenBox_onRendThrd(tpf);
 	}
 }

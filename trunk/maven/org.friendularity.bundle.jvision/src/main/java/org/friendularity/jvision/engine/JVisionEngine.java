@@ -218,7 +218,7 @@ public class JVisionEngine extends BasicDebugger implements Runnable {
 			// TODO:  Consider whether a reusable pool of these byte-buffers makes sense.
 			byte[] b = new byte[width * height * channels];
 			
-/*  2013-12-30 - Stu notes that we often see:
+/*  2013-12-30 - Stu notes that we often see (when running under CCRK):
  *     [java] java.lang.Exception: Unknown exception in JNI code {Mat::nGetB()}
      [java] 	at org.opencv.core.Mat.nGetB(Native Method)
      [java] 	at org.opencv.core.Mat.get(Mat.java:2551)
