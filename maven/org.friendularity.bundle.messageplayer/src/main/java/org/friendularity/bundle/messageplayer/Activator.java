@@ -17,9 +17,9 @@
 package org.friendularity.bundle.messageplayer;
 
 import javax.swing.UIManager;
+import org.jflux.swing.messaging.player.PlayerFrame;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
-import org.rwshop.swing.messaging.player.PlayerFrame;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,6 +27,7 @@ public class Activator implements BundleActivator {
     private final static Logger theLogger =
             LoggerFactory.getLogger(Activator.class);
 
+    @Override
     public void start(final BundleContext context) throws Exception {
         theLogger.info("AQServiceSwingUI Activation Begin.");
         
@@ -39,7 +40,7 @@ public class Activator implements BundleActivator {
         }
         
         java.awt.EventQueue.invokeLater(new Runnable() {
-
+            @Override
             public void run() {
                 PlayerFrame frame = new PlayerFrame();
                 frame.start(context);
@@ -49,8 +50,8 @@ public class Activator implements BundleActivator {
         theLogger.info("AQServiceSwingUI Activation Complete.");
     }
 
+    @Override
     public void stop(BundleContext context) throws Exception {
         // TODO add deactivation code here
     }
-
 }

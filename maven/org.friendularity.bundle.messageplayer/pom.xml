@@ -83,9 +83,9 @@
             <version>${robokind.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.rwshop</groupId>
-            <artifactId>org.rwshop.swing.messaging</artifactId>
-            <version>${rwshop.version}</version>
+            <groupId>org.jflux</groupId>
+            <artifactId>org.jflux.swing.messaging</artifactId>
+            <version>${jflux.version}</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -96,6 +96,11 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
             <version>1.7.5</version>
+        </dependency>
+        <dependency>
+            <groupId>com.hrkind.tools</groupId>
+            <artifactId>org.robokind.impl.sensor.r25</artifactId>
+            <version>1.0.3-SNAPSHOT</version>
         </dependency>
     </dependencies>
 
