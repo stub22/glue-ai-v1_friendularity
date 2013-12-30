@@ -5,13 +5,14 @@ import org.friendularity.jvision.gui.DemoFrame;
 import org.friendularity.jvision.gui.JVisionLauncher;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+import org.slf4j.LoggerFactory;
 
 public class JVisionBundleActivator extends BundleActivatorBase {
 
 	JVisionLauncher myLauncher;
 	
 	// Set this to false to stop JVision from launching itself. 
-	public static boolean LAUNCH_MYSELF = true;
+	private static boolean LAUNCH_MYSELF = true;
 
 	@Override public void start(BundleContext context) throws Exception {
 		forceLog4jConfig();
@@ -28,8 +29,12 @@ public class JVisionBundleActivator extends BundleActivatorBase {
 		}
 		super.stop(context);
 	}
+	public static void setLaunchFlag(boolean launchFlag) {
+		LoggerFactory.getLogger(JVisionBundleActivator.class).info("Setting launchFlag to {}", launchFlag);
+		LAUNCH_MYSELF = launchFlag;
+	}
 	@Override protected void handleFrameworkStartedEvent(BundleContext bundleCtx) {
-		getLogger().info("In OSGi framework-started callback, initialization of JVision starting");
+		getLogger().info("In OSGi framework-started callback, JVision launchFlag is {}", LAUNCH_MYSELF);
 		if (LAUNCH_MYSELF) {
 			launchJVisionDemo();
 		} else {
