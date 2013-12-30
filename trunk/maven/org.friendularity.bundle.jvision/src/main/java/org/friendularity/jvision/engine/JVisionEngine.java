@@ -215,7 +215,17 @@ public class JVisionEngine extends BasicDebugger implements Runnable {
 
 			image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 			raster = image.getRaster();
+			// TODO:  Consider whether a reusable pool of these byte-buffers makes sense.
 			byte[] b = new byte[width * height * channels];
+			
+/*  2013-12-30 - Stu notes that we often see:
+ *     [java] java.lang.Exception: Unknown exception in JNI code {Mat::nGetB()}
+     [java] 	at org.opencv.core.Mat.nGetB(Native Method)
+     [java] 	at org.opencv.core.Mat.get(Mat.java:2551)
+     [java] 	at org.friendularity.jvision.engine.JVisionEngine.matToBufferedImage(JVisionEngine.java:219)
+     [java] 	at org.friendularity.jvision.engine.JVisionEngine.processOneFrame(JVisionEngine.java:163)
+     [java] 	at org.friendularity.jvision.engine.JVisionEngine.run(JVisionEngine.java:256)
+ */			
 			bgr.get(0, 0, b);
 
 			int[] rgb = new int[3];

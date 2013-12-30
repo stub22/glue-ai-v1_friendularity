@@ -66,7 +66,7 @@ import org.rwshop.swing.common.lifecycle.ServicesFrame;
  */
 public class CCRK_DemoActivator extends BundleActivatorBase {
 
-	private	boolean		myFlag_connectJVision = true;  
+	private	boolean		myFlag_connectJVision = false;  
 	private	boolean		myFlag_connectNetworkVision = false;  
 	
 	private	boolean		myFlag_connectMidiIn = true;
@@ -102,8 +102,8 @@ public class CCRK_DemoActivator extends BundleActivatorBase {
 		// startWhackamoleGuiWindow(context);
 		
 		// ScriptEngineExperiment.main(null);
-		
-		org.friendularity.bundle.jvision.JVisionBundleActivator.LAUNCH_MYSELF = myFlag_connectJVision;
+		getLogger().info("Setting JVision.LAUNCH_MYSELF to {}" + myFlag_connectJVision);
+		org.friendularity.bundle.jvision.JVisionBundleActivator.setLaunchFlag(myFlag_connectJVision);
 
 	}
 	protected void startLifecycleMonitorGuiWindow(final BundleContext context) {

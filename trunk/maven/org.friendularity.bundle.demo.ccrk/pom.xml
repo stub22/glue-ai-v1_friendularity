@@ -81,7 +81,22 @@
 				<configuration>
 					<instructions>
 						<Bundle-Activator>org.friendularity.bundle.demo.ccrk.CCRK_DemoActivator</Bundle-Activator>
-						<Export-Package>org.friendularity.*</Export-Package>
+						<!-- Cannot just export org.friendularity.*, because that will create copies of
+								classes from other bundles that we depend on, e.g. JVision.
+								
+								On the other hand, a default (implicit) export instruction does not include classes from 
+								libraries, like o.f.lib.viz, which we *do* want to include(/export).
+								
+								Don't know of a tidier way than explicitly exporting all the packages we do want.
+								(Including "*" exports the whole universe of visible classes - exciting but horrible!)
+						-->
+						<Export-Package>org.friendularity.api.*, 
+										org.friendularity.impl.visual,
+										org.friendularity.vworld,
+										org.friendularity.respire,
+										org.friendularity.struct,
+										org.friendularity.bundle.demo.ccrk
+						</Export-Package>
 					</instructions>
 				</configuration>
 			</plugin>
