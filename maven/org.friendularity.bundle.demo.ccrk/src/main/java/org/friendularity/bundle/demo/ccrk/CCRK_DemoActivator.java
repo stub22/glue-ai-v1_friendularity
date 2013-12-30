@@ -66,6 +66,13 @@ import org.rwshop.swing.common.lifecycle.ServicesFrame;
  */
 public class CCRK_DemoActivator extends BundleActivatorBase {
 
+	/*
+	 * Without JVision and the texture-mapping, memory usage hovers around 325-350M.
+	 * With JVision, it cycles rapidly from about 500M to 800M.
+	 * Part of this is the byte arrays alloced for each vision frame - but also the raw images, 
+	 * and perhaps also the textures/materials on the V-World side? 
+	 */
+	
 	private	boolean		myFlag_connectJVision = false;  
 	private	boolean		myFlag_connectNetworkVision = false;  
 	
@@ -102,7 +109,7 @@ public class CCRK_DemoActivator extends BundleActivatorBase {
 		// startWhackamoleGuiWindow(context);
 		
 		// ScriptEngineExperiment.main(null);
-		getLogger().info("Setting JVision.LAUNCH_MYSELF to {}" + myFlag_connectJVision);
+		getLogger().info("Setting JVision.LAUNCH_MYSELF to {}", myFlag_connectJVision);
 		org.friendularity.bundle.jvision.JVisionBundleActivator.setLaunchFlag(myFlag_connectJVision);
 
 	}

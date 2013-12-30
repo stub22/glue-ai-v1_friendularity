@@ -83,10 +83,11 @@ public class WorldEstimateRenderModule extends RenderModule implements WorldEsti
 		jvtm.connectToImageStreamBroker();
 		return jvtm;
 	}
-	private void setupMagicVisionBoxScene(RenderRegistryClient rrc) {
-		// Currently called on RendThread, during doRenderCycle() below.
+	private void setupMagicVisionBoxScene_onRendThrd(RenderRegistryClient rrc) {
+		// Currently called from doRenderCycle() below.
+		getLogger().info("One time setup for Magic Vision Box Scene");
 		myMVBS = new MagicVisionBoxScene();
-		myMVBS.setup(rrc);
+		myMVBS.setup_onRendThrd(rrc);
 		if (myFlag_JVisionTextureRoutingEnabled) {
 			JVisionTextureMapper jvtm = setupJVisionConnection(); // calls ImageStreamBroker.alwaysAddImageStreamConsumer
 			myMVBS.setJVisionTextureMapper(jvtm);  // MVBS will now poll JVTM for updated vision textures
@@ -117,7 +118,7 @@ public class WorldEstimateRenderModule extends RenderModule implements WorldEsti
 				myFlag_bonusMeshesNeeded = false;
 				((DemoWorldVisualizer) myWorldEstimVisualizer).makeBonusMeshes();
 				if (myMVBS == null) {
-					setupMagicVisionBoxScene(rrc);
+					setupMagicVisionBoxScene_onRendThrd(rrc);
 				}
 			}
 			if (myMVBS != null) {
