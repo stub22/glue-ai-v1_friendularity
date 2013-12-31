@@ -82,7 +82,7 @@ class UrOffAirImageStreamProducer implements ImageStreamProducer, Runnable {
 				Thread.sleep(100L);
 				
 				paintImage(i++, img.getGraphics());
-				sisp.setConsumedImage(img);
+				sisp.setConsumedImage(new ImageStreamImage(img));
 				sisp.setConsumedMessage(Integer.toString(i));
 			}
 		} catch (InterruptedException ex) {
@@ -114,6 +114,11 @@ class UrOffAirImageStreamProducer implements ImageStreamProducer, Runnable {
 		g.setFont(myFont);
 		g.drawString(s, IMAGE_WIDTH / 2 - g.getFontMetrics().stringWidth(s) / 2, IMAGE_HEIGHT  / 2 -
 				(g.getFontMetrics().getAscent() + g.getFontMetrics().getDescent()) / 2);
+	}
+
+	@Override
+	public void removeConsumer(ImageStreamConsumer c) {
+		sisp.removeConsumer(c);
 	}
 	
 }

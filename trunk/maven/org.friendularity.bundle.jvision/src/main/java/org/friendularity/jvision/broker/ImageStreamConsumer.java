@@ -15,15 +15,12 @@
  */
 package org.friendularity.jvision.broker;
 
-import java.awt.image.BufferedImage;
-
 /**
  *
  * @author Owner
  */
 public interface ImageStreamConsumer {
-	public void setConsumedImage(BufferedImage img);
-	public void setConsumedMessage(String string);	
-
+	public void setConsumedImage(ImageStreamImage img);
+	public void setConsumedMessage(String string);
 	public void sourceIsEnding();
 }

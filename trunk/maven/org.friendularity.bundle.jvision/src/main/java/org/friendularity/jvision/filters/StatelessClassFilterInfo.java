@@ -13,16 +13,35 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.friendularity.bundle.bento.engine; 
-
-import org.friendularity.bundle.bento.gui.BentoPlugin;
+package org.friendularity.jvision.filters;
 
 /**
- *
+ * FilterInfo for a stateless filter based on class
+ * 
  * @author Annie
  */
-public interface BentoAction {
+public class StatelessClassFilterInfo extends FilterInfo {
+	private BaseFilter filterProto;
+	
+	/**
+	 * 
+	 * @param f
+	 */
+	public StatelessClassFilterInfo(BaseFilter f) {
+		filterProto = f;
+	}
 
-	public abstract boolean handle(BentoPlugin source, String actionCommand);
+	@Override
+	public String toString() {
+		return filterProto.toString();
+	}
+
+	@Override
+	public BaseFilter createInstance() {
+		return filterProto; 
+	}
+	
+	
+	
 	
 }

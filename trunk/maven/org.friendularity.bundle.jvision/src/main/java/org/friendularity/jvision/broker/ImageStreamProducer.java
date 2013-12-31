@@ -25,4 +25,6 @@ public interface ImageStreamProducer  {
 	public void addConsumer(ImageStreamConsumer c);
 
 	public void removeAllConsumers();
+
+	public void removeConsumer(ImageStreamConsumer c);
 }

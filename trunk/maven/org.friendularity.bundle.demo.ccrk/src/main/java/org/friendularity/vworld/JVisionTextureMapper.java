@@ -40,6 +40,8 @@ import com.jme3.asset.AssetManager;
 import com.jme3.texture.Image;
 import com.jme3.texture.plugins.AWTLoader;
 import java.awt.image.BufferedImage;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.cogchar.render.opengl.optic.MatFactory;
 import org.cogchar.render.opengl.optic.TextureFactory;
 import org.cogchar.render.opengl.optic.ViewportFacade;
@@ -48,9 +50,11 @@ import org.cogchar.render.sys.registry.RenderRegistryClient;
 import org.cogchar.render.opengl.scene.DeepSceneMgr;
 
 import org.appdapter.core.log.BasicDebugger;
+import org.friendularity.jvision.broker.ImageFlavorNotAvailable;
 import org.friendularity.jvision.broker.ImageStreamBroker;
 
 import org.friendularity.jvision.broker.ImageStreamConsumer;
+import org.friendularity.jvision.broker.ImageStreamImage;
 import org.friendularity.jvision.engine.JVisionEngine;
 
 /**
@@ -95,10 +99,17 @@ public class JVisionTextureMapper extends BasicDebugger implements ImageStreamCo
 		return cameraTex;
 	}
 
-	@Override public void setConsumedImage(BufferedImage visionBuffdImg) {
-		// This is executing on a thread launched by JVision ImageStreamBroker.
-		// So, it is not allowed to directly modify the OpenGL scene graph.
-		myLatestTexture = loadTextureFromImage(visionBuffdImg);
+
+	@Override
+	public void setConsumedImage(ImageStreamImage visionBuffdImg) {
+		try {
+			// This is executing on a thread launched by JVision ImageStreamBroker.
+			// So, it is not allowed to directly modify the OpenGL scene graph.
+			myLatestTexture = loadTextureFromImage(visionBuffdImg.getBufferedImage());
+		} catch (ImageFlavorNotAvailable ex) {
+			Logger.getLogger(JVisionTextureMapper.class.getName()).log(Level.INFO,
+					"JVisionTextureMapper fed with stream not convertable to BufferedImage", ex);
+		}
 	}
 	public Texture2D peekLatestTexture() { 
 		return myLatestTexture;

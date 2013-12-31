@@ -25,6 +25,7 @@ import org.opencv.highgui.Highgui;
 import org.opencv.highgui.VideoCapture;
 import org.appdapter.core.log.BasicDebugger;
 import org.friendularity.jvision.broker.ImageStreamBroker;
+import org.friendularity.jvision.broker.ImageStreamImage;
 import org.friendularity.jvision.broker.SimpleImageStreamProducer;
 import org.friendularity.jvision.gui.FileLocations;
 import org.opencv.imgproc.Imgproc;
@@ -140,32 +141,13 @@ public class JVisionEngine extends BasicDebugger implements Runnable {
 				getLogger().error("Oops bad read");
 			}
 		}
-		
-		if(myCameraISP.hasConsumers())
-		{
-			try
-			{
-				myCameraISP.setConsumedImage(matToBufferedImage(myCameraImage_Mat));
-				myCameraISP.setConsumedMessage("Live From The Moon");
-			} catch(IllegalArgumentException e) {
-				getLogger().warn("Could not create BufferedImage for jvision.camera (usually height/width zero)");
-			}
-		}
+		myCameraISP.setConsumedImage(new ImageStreamImage(myCameraImage_Mat));
 		
 		long t = System.nanoTime();
 		Mat filtered_camera_image = new Mat();
 		myFilterSeq.apply(myCameraImage_Mat, filtered_camera_image);
+		myISP.setConsumedImage(new ImageStreamImage(filtered_camera_image));
 		
-		if(myISP.hasConsumers())
-		{
-			try
-			{
-				myISP.setConsumedImage(matToBufferedImage(filtered_camera_image));
-			} catch(IllegalArgumentException e) {
-				getLogger().warn("Could not create BufferedImage (usually height/width zero)");
-			}
-		}
-
 		long new_t = System.nanoTime();
 
 		double ns = (new_t - t) / 1000000000.0;  // frametime in sec

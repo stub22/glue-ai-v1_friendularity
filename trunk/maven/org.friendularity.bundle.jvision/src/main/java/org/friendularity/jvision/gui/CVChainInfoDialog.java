@@ -108,7 +108,7 @@ class CVChainInfoDialog extends JDialog implements DocumentListener, ChangeListe
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				CVChainInfoDialog.this.doOK();
+				CVChainInfoDialog.this.buildCVChain();
 			}
 		});
 		
@@ -168,7 +168,7 @@ class CVChainInfoDialog extends JDialog implements DocumentListener, ChangeListe
 			ok.setEnabled(false);
 	}
 
-	private void doOK() {
+	private void buildCVChain() {
 		System.out.println("OK fired");
 		cvccm.buildChain(fb, 
 				nameField.getText().trim(), 
@@ -176,8 +176,7 @@ class CVChainInfoDialog extends JDialog implements DocumentListener, ChangeListe
 				(String)(sources.getModel().getElementAt(sources.getSelectedIndex()))
 				);
 		
-		
-		dispose();
+		this.setVisible(false);
 	}
 	
 }

@@ -22,9 +22,18 @@ import java.net.URL;
  * @author Annie
  */
 public abstract class FilterInfo {
-        public String bookName;
+	protected String bookName;
 
-        public String toString() {
-            return bookName;
-        }
+	public String toString() {
+		return bookName;
+	}
+
+	/**
+	 * return a new instance of the filter
+	 * 
+	 * @return
+	 */
+	public abstract BaseFilter createInstance();
+		
+		
     }

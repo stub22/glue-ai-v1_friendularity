@@ -77,4 +77,9 @@ public class OffAirImageStreamProducer extends BasicDebugger implements Switchab
 	public void switchTo(ImageStreamProducer p) {
 		isp.switchTo(p);
 	}
+
+	@Override
+	public void removeConsumer(ImageStreamConsumer c) {
+		isp.removeConsumer(c);
+	}
 }

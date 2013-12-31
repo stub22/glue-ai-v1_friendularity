@@ -15,7 +15,25 @@
  */
 package org.friendularity.jvision.gui;
 
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import javax.swing.AbstractButton;
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.ButtonModel;
+import javax.swing.JCheckBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JToggleButton;
+import javax.swing.border.Border;
+import javax.swing.border.EtchedBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import org.friendularity.jvision.engine.CVChain;
+import org.friendularity.jvision.engine.CVChainManager;
+import org.friendularity.jvision.filters.FilterSequence;
 
 /**
  *  The GUI panel associated with a CVChain
@@ -23,7 +41,126 @@ import javax.swing.JPanel;
  * @author Annie
  */
 public class CVChainControl extends JPanel {
-	CVChainControl(String name) {
+	protected CVChain chain;
+	
+	protected JLabel nameField;
+	protected JCheckBox publishIntermediatesCheck;
+	protected FilterList filters;
+	protected JLabel sourceField;
+	protected JLabel outField;
+	protected FilterBox myFilterBox;
+	
+	private Border borderFactory() {
+		return BorderFactory.createCompoundBorder(
+				BorderFactory.createEmptyBorder(6, 6, 6, 6),  // margin tlbr
+				BorderFactory.createCompoundBorder(
+					BorderFactory.createEtchedBorder(EtchedBorder.RAISED, 
+						getBackground().brighter(), 
+						getBackground().darker()),
+					BorderFactory.createEmptyBorder(6, 6, 6, 6)));   // padding tlbr
+	}
+	
+	public CVChainControl(CVChain chain, FilterBox aFilterBox) {
+		this.chain = chain;
+		this.myFilterBox = aFilterBox;
 		
+		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		
+		JPanel nameBox = new JPanel();
+		nameBox.setLayout(new BoxLayout(nameBox, BoxLayout.Y_AXIS));
+		nameBox.setBorder(borderFactory());
+		nameBox.add(new JLabel("name:"));
+		nameField = new JLabel(chain.getName());
+		nameBox.add(nameField);
+		add(nameBox);
+		nameBox.setAlignmentX(CENTER_ALIGNMENT);
+		
+		
+		JPanel sourceBox = new JPanel();
+		sourceBox.setLayout(new BoxLayout(sourceBox, BoxLayout.Y_AXIS));
+		sourceBox.setAlignmentX(CENTER_ALIGNMENT);
+		JLabel sourceFieldLabel = new JLabel("Source:");
+		sourceBox.add(sourceFieldLabel);
+		
+		sourceField = new JLabel(chain.getSource());
+		sourceBox.add(sourceField);
+		sourceBox.setBorder(borderFactory());
+		sourceBox.setAlignmentX(CENTER_ALIGNMENT);
+		
+		add(sourceBox);
+		
+		publishIntermediatesCheck = new JCheckBox("publish intermediates");
+		
+		publishIntermediatesCheck.addChangeListener(new ChangeListener(){
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				CVChainControl.this.chain.setPublishIntermediates(publishIntermediatesCheck.getModel().isSelected());
+			}
+		});
+		publishIntermediatesCheck.setAlignmentX(CENTER_ALIGNMENT);
+		
+		add(publishIntermediatesCheck);
+		
+		JPanel filterListBox = new JPanel();
+		filterListBox.setLayout(new BoxLayout(filterListBox, BoxLayout.Y_AXIS));
+		JLabel flbLabel = new JLabel("filters");
+		flbLabel.setAlignmentX(CENTER_ALIGNMENT);
+		filterListBox.add(flbLabel);
+		
+		filters = new FilterList();
+		filters.setModel(chain.getFilterSequence());
+		filterListBox.setBorder(BorderFactory.createCompoundBorder(
+				BorderFactory.createEmptyBorder(6, 6, 6, 6), 
+				BorderFactory.createLineBorder(Color.BLACK)));
+		filterListBox.add(filters);
+		add(filterListBox);
+		
+		outField = new JLabel(chain.getOutName());
+		outField.setAlignmentX(CENTER_ALIGNMENT);
+		outField.setBorder(borderFactory());
+		add(outField);
+		this.setMinimumSize(new Dimension(0, 600));
+		this.setAlignmentY(TOP_ALIGNMENT);
+		this.setAlignmentX(CENTER_ALIGNMENT);
+		
+		this.setBorder(new CVChainControlBorder(this));
+		
+		this.addMouseListener(new MouseAdapter(){
+
+			CVChainControl oldSelection = null;
+			
+			@Override
+			public void mousePressed(MouseEvent e) {
+				super.mousePressed(e); 
+				oldSelection = myFilterBox.getSelectedCVChainControl();
+				myFilterBox.setSelectedChainControl(CVChainControl.this);
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				super.mouseReleased(e); 
+				if(e.getX() < 0 || e.getY() < 0 ||
+				   e.getX() >= CVChainControl.this.getWidth() ||
+				   e.getY() >= CVChainControl.this.getHeight()) {
+					myFilterBox.setSelectedChainControl(oldSelection);
+				}
+			}
+			
+		});
+	}
+
+	@Override
+	public String getName() {
+		return chain.getName();
+	}
+
+	boolean isSelected() {
+		CVChainControl cvcc = myFilterBox.getSelectedCVChainControl();
+		// cvcc might be null
+		return (this == cvcc);
+	}
+
+	FilterSequence getFilterSequence() {
+		return (FilterSequence)(filters.getModel());
 	}
 }
