@@ -15,7 +15,7 @@
  */
 package org.friendularity.bundle.bento.engine.actions;
 
-import org.friendularity.bundle.bento.engine.BentoAction;
+import org.friendularity.bundle.bento.engine.BentoAction; 
 import org.friendularity.bundle.bento.gui.BentoPlugin;
 import org.friendularity.bundle.bento.gui.CameraViewer;
 import org.friendularity.jvision.engine.JVisionEngine;

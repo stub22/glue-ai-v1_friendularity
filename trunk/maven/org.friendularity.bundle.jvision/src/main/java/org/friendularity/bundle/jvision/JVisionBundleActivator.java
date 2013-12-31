@@ -1,9 +1,7 @@
 package org.friendularity.bundle.jvision;
 
 import org.appdapter.osgi.core.BundleActivatorBase;
-import org.friendularity.jvision.gui.DemoFrame;
 import org.friendularity.jvision.gui.JVisionLauncher;
-import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.slf4j.LoggerFactory;
 

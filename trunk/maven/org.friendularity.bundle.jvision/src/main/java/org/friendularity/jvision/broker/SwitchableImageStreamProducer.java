@@ -16,7 +16,11 @@
 package org.friendularity.jvision.broker;
 
 /**
- *
+ * SwitchableImageStreamProducer adds the ability to 'bow out' to an ImageStreamProducer
+ * Suppose we have SwitchableImageStreamProducer a and ImageStreamProducer b.
+ * We want b to take over a's function. We would call a.switchTo(b) to move the consumers to b,
+ * then remove a from the ImageStreamBroker and add b.
+ * 
  * @author Annie
  */
 interface SwitchableImageStreamProducer extends ImageStreamProducer {

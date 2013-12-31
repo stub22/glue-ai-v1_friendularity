@@ -16,11 +16,33 @@
 package org.friendularity.jvision.broker;
 
 /**
- *
- * @author Owner
+ * Objects wishing to consume a stream of images should implement this interface, then
+ * pass themselves to ImageStreamBroker.getDefaultBroker().alwaysAddImageStreamConsumer("name", this)
+ * to get the stream
+ * 
+ * @author Annie
  */
 public interface ImageStreamConsumer {
+	/**
+	 * A new image is available
+	 * 
+	 * @param img 
+	 */
 	public void setConsumedImage(ImageStreamImage img);
+	
+	/**
+	 * A new message is available. 
+	 * You cannot depend on getting one message per image.
+	 * 
+	 * @param string 
+	 */
 	public void setConsumedMessage(String string);
+	
+	/**
+	 * After receiving this message you should not expect any more images.
+	 * You needn't unwire yourself from the producer, that will happen right after
+	 * this message.
+	 * 
+	 */
 	public void sourceIsEnding();
 }

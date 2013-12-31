@@ -15,23 +15,29 @@
  */
 package org.friendularity.jvision.engine;
 
-import java.awt.image.BufferedImage;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ListModel;
-import javax.swing.SwingWorker;
-import javax.swing.text.Document;
 import org.friendularity.jvision.broker.ImageFlavorNotAvailable;
 import org.friendularity.jvision.broker.ImageStreamBroker;
 import org.friendularity.jvision.broker.ImageStreamConsumer;
 import org.friendularity.jvision.broker.ImageStreamImage;
-import org.friendularity.jvision.broker.ImageStreamProducer;
 import org.friendularity.jvision.broker.SimpleImageStreamProducer;
 import org.friendularity.jvision.filters.FilterSequence;
 import org.opencv.core.Mat;
 
 /**
- *
+ *  A chain of filters.
+ * 
+ * The chain has a name and source.
+ * The chain will register with the source, and apply the filters in order to each image.
+ * The final output will be published as <name>.out
+ * There's pieces of code to have it optionally publish all the intermediate steps, but this isn't 
+ * finished yet
+ * 
+ * CVChainManager should be used to build these. The constructor has to be package access for
+ * CVChainManager, but others shouldn't use it.
+ * 
  * @author Annie
  */
 public class CVChain implements ImageStreamConsumer {
@@ -56,6 +62,10 @@ public class CVChain implements ImageStreamConsumer {
 		init();
 	}
 	
+	/**
+	 * wire up the pub sub.
+	 * 
+	 */
 	private void init() {
 		Logger.getLogger(CVChain.class.getName()).log(Level.INFO, "about to wire up imagestream");
 		ImageStreamBroker.getDefaultImageStreamBroker().alwaysAddImageStreamConsumer(source, this);
@@ -68,15 +78,28 @@ public class CVChain implements ImageStreamConsumer {
 		return chainName;
 	}
 
+	/**
+	 * @tbd this isn't working yet
+	 * 
+	 * @param publish 
+	 */
 	public void setPublishIntermediates(boolean publish) {
 		// TODO need to publish or unpublish
 		intermediatesVisible = publish;
 	}
 
+	/**
+	 * 
+	 * @return the name of the source
+	 */
 	public String getSource() {
 		return source;
 	}
 
+	/**
+	 * 
+	 * @return the name we publish our output as
+	 */
 	public String getOutName() {
 		return chainName + ".out";
 	}
@@ -84,7 +107,7 @@ public class CVChain implements ImageStreamConsumer {
 	/**
 	 * This is a tad iffy since it's letting a mutable structure out of the bag
 	 * 
-	 * @return 
+	 * @return the FilterSequence.
 	 */
 	public ListModel getFilterSequence() {
 		return filters;

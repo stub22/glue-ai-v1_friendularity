@@ -31,8 +31,9 @@ import org.friendularity.jvision.gui.FileLocations;
 import org.opencv.imgproc.Imgproc;
 
 /**
- *
- * @author Owner
+ *  Core class that runs the jvision processing loop.
+ * 
+ * @author Annie
  */
 public class JVisionEngine extends BasicDebugger implements Runnable {
 
@@ -97,12 +98,7 @@ public class JVisionEngine extends BasicDebugger implements Runnable {
 
 			getLogger().info("Opening native library handle for OpenCV " + Core.VERSION);
 			System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-			Mat m = Mat.eye(3, 3, CvType.CV_8UC1);
-			getLogger().info("m = " + m.dump());
 
-			double w;
-			double h;
-			// testWithSomeDuckFiles();
 			synchronized(cameraToken)
 			{
 				myVidCapture = new VideoCapture();
@@ -113,27 +109,22 @@ public class JVisionEngine extends BasicDebugger implements Runnable {
 					myVidCapture = null;
 					return false;
 				}
-
-				w = myVidCapture.get(Highgui.CV_CAP_PROP_FRAME_WIDTH);
-				h = myVidCapture.get(Highgui.CV_CAP_PROP_FRAME_HEIGHT);
 			}
-			
-			System.out.println(Double.toString(w));
 
 			myCameraImage_Mat = new Mat();
 			connectedFlag = true;
 		} catch (Throwable t) {
 			getLogger().error("Problem connecting JVisionEngine: ", t);
 		}
+		
 		return connectedFlag;
-
 	}
 
 	// Without "synchronized", we are vulnerable to crash if displayerList modified during loop below.
 	// Note that this method allows OpenCV exceptions to escape, such as 
 	//	  Unknown exception in JNI code {Mat::n_1copyTo__JJ()} at org.opencv.core.Mat.n_copyTo(Native Method)
 	
-	public synchronized void processOneFrame() {
+	private synchronized void processOneFrame() {
 		VideoCapture vc = myVidCapture;
 		synchronized(cameraToken)
 		{
@@ -207,6 +198,8 @@ public class JVisionEngine extends BasicDebugger implements Runnable {
      [java] 	at org.friendularity.jvision.engine.JVisionEngine.matToBufferedImage(JVisionEngine.java:219)
      [java] 	at org.friendularity.jvision.engine.JVisionEngine.processOneFrame(JVisionEngine.java:163)
      [java] 	at org.friendularity.jvision.engine.JVisionEngine.run(JVisionEngine.java:256)
+	 * 
+	 Stu - clearly something isn't playing nice among OpenGL, OpenCV and Java.
  */			
 			bgr.get(0, 0, b);
 
