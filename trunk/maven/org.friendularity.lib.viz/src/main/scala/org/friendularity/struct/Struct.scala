@@ -37,7 +37,10 @@ You may wish to investigate a wildcard type such as `_ <: Elem`. (SLS 3.2.10)
 	val myElems : Array[Elem] = myElemFactory.makeArray(mySize)
 http://stackoverflow.com/questions/10000126/re-using-java-generic-collections-in-scala-without-trait-object	
 	*/
-trait Factory[V] extends Maker[V] {
+
+// If this were a trait instead of abstract class, then it would not be properly extensible 
+// from Java, because it contains method impls.
+abstract class Factory[V] extends Maker[V] {
 	// If V represents any kind of an array, then make() must know how big that array is.
 	def make() : V = makeOne()
 	def makeArray(size : Int) : Array[V] 
@@ -168,8 +171,16 @@ class RingBuf[Elem](val mySize : Int, val myElemFactory : Factory[Elem]) {
 	def advance() {
 		myCurrentIndex = (1 + myCurrentIndex) % mySize
 	}
+	// 0 = current
+	def getPrevious(howManyBack : Int) : Elem = {
+		// Java can return negative remainders - this formula corrects to always give a positive modulus.
+		val prevIndex = (((myCurrentIndex - howManyBack) % mySize) + mySize) % mySize;
+		myElems(prevIndex)
+	}
 	// Considering this, where howMany <= mySize
-	// getRecent(howMany : Int)
+	// Order is reversed: 
+	// result[0] = current, result[1] = previous.
+	
 	
 	// def getCurrent
 }

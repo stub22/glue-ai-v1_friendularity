@@ -23,11 +23,12 @@ import org.cogchar.bind.midi.in.InterestingMidiEvent.NoteOn;
 import org.cogchar.bind.midi.in.InterestingMidiEvent.NoteOff;
 import org.cogchar.bind.midi.in.InterestingMidiEvent.ControlChange;
 import org.cogchar.bind.midi.in.MidiEventReporter;
+import org.cogchar.bind.midi.general.FunMidiEventRouter;
 
 import org.cogchar.bind.midi.out.DemoMidiOutputPlayer;
 import org.cogchar.bind.midi.out.NovLpadTest;
 import org.cogchar.bind.midi.out.Switcheroo;
-import org.cogchar.bind.midi.general.FunMidiEventRouter;
+import org.cogchar.bind.midi.in.CCParamRouter;
 /**
  * @author Stu B. <www.texpedient.com>
  */
@@ -38,6 +39,7 @@ public class CCRK_DemoMidiCommandMapper extends BasicDebugger implements MidiEve
 	public	NovLpadTest					myNLT  = new NovLpadTest();
 	public	DemoMidiOutputPlayer		myDMOP  = new DemoMidiOutputPlayer();
 	public	Switcheroo					mySwitcheroo;
+	public	CCParamRouter				myCCPR;
 	
 	@Override public void reportEvent(InterestingMidiEvent ime) {
 		try {
@@ -67,11 +69,15 @@ public class CCRK_DemoMidiCommandMapper extends BasicDebugger implements MidiEve
 	public void cleanup() { 
 		
 	}
-	protected void startMidiRouters(WorldEstimateRenderModule werm) { 
-		myWERM = werm;
+	protected void startMidiRouters() { 
+		
 		myFMER.registerListener(this);		
 		myFMER.startPumpingMidiEvents();		
+		myCCPR = new CCParamRouter(myFMER);
 	}	
+	public void setWERM(WorldEstimateRenderModule werm) { 
+		myWERM = werm;
+	}
 	protected void startMidiOutputDemo() { 
 		int previewMsec = 2000;
 		myDMOP.playAllDemoSeqsBriefly_Blocking(previewMsec);  // Currently leaves the last one still playing

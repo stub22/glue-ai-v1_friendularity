@@ -100,6 +100,9 @@ public class JVisionTextureMapper extends BasicDebugger implements ImageStreamCo
 		// So, it is not allowed to directly modify the OpenGL scene graph.
 		myLatestTexture = loadTextureFromImage(visionBuffdImg);
 	}
+	public Texture2D peekLatestTexture() { 
+		return myLatestTexture;
+	}
 	public Texture2D takeLatestTextureOrNull() { 
 		Texture2D taken = myLatestTexture;
 		myLatestTexture = null;

@@ -58,7 +58,7 @@ public class MagicVisionBoxScene extends BasicDebugger {
 	private	JVisionTextureMapper		myJVTM;
 
 
-	public void setup_onRendThrd(RenderRegistryClient rrc) {
+	public void setup_onRendThrd(RenderRegistryClient rrc, float tpf) {
 		AssetManager assetMgr = rrc.getJme3AssetManager(null);
 		RenderManager renderMgr = rrc.getJme3RenderManager(null);
 		//ViewportFacade viewportFacade = rrc.getOpticViewportFacade(null);
@@ -67,7 +67,7 @@ public class MagicVisionBoxScene extends BasicDebugger {
 
 		myOTM = new OffscreenTextureMapper();
 		
-		Texture txtr = myOTM.setupOffscreenView(renderMgr, assetMgr);
+		Texture txtr = myOTM.setupOffscreenView_onRendThrd(renderMgr, assetMgr, tpf);
 
 		myOnscreenBoxGeom = makeOnscreenTexturedBox(txtr, assetMgr);
 		DeepSceneMgr dsm = rrc.getSceneDeepFacade(null);
