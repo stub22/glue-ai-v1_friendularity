@@ -13,27 +13,15 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.friendularity.jvision.filters;
+package org.friendularity.jvision.broker;
 
 /**
  *
  * @author Annie
  */
-public class ClassFilterInfo extends FilterInfo {
-	private BaseFilter filterProto;
-	
-	/**
-	 * 
-	 * @param f
-	 */
-	public ClassFilterInfo(BaseFilter f) {
-		filterProto = f;
-	}
+public class ImageFlavorNotAvailable extends java.lang.Exception {
 
-	@Override
-	public String toString() {
-		return filterProto.toString();
+	public ImageFlavorNotAvailable() {
 	}
-	
 	
 }

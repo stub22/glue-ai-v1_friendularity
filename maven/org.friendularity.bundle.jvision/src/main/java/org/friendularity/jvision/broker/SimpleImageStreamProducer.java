@@ -64,7 +64,7 @@ public class SimpleImageStreamProducer implements ImageStreamConsumer, Switchabl
 	}
 
 	@Override
-	public void setConsumedImage(BufferedImage img) {
+	public void setConsumedImage(ImageStreamImage img) {
 		synchronized(consumers)
 		{
 			for(Iterator<ImageStreamConsumer>i = consumers.iterator() ; i.hasNext() ; )
@@ -108,6 +108,11 @@ public class SimpleImageStreamProducer implements ImageStreamConsumer, Switchabl
 		}
 		
 		removeAllConsumers();
+	}
+
+	@Override
+	public void removeConsumer(ImageStreamConsumer c) {
+		consumers.remove(c);
 	}
 			
 }

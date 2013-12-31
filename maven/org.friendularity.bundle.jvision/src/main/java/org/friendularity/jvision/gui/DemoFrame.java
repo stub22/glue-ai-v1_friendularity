@@ -13,6 +13,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
+import java.util.logging.Level;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -24,7 +25,9 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import org.friendularity.jvision.broker.ImageFlavorNotAvailable;
 import org.friendularity.jvision.broker.ImageStreamConsumer;
+import org.friendularity.jvision.broker.ImageStreamImage;
 import org.friendularity.jvision.engine.JVisionEngine;
 import org.friendularity.jvision.engine.Quitter;
 import org.slf4j.Logger;
@@ -102,8 +105,12 @@ public class DemoFrame extends JFrame implements WindowListener, ImageStreamCons
 		FilterBox.showFilterBox();
 	}
 
-	@Override public void setConsumedImage(BufferedImage img){
-		myImageOutIcon.setImage(img);
+	@Override public void setConsumedImage(ImageStreamImage img){
+		try {
+			myImageOutIcon.setImage(img.getBufferedImage());
+		} catch (ImageFlavorNotAvailable ex) {
+			java.util.logging.Logger.getLogger(DemoFrame.class.getName()).log(Level.SEVERE, "Demoframe cant convert image");
+		}
 		this.repaint();
 	}
 	

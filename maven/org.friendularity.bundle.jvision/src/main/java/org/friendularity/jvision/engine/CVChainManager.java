@@ -15,7 +15,9 @@
  */
 package org.friendularity.jvision.engine;
 
+import java.awt.event.ActionListener;
 import java.util.HashMap;
+import javax.swing.ButtonGroup;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import org.friendularity.jvision.gui.CVChainControl;
@@ -31,7 +33,9 @@ import org.friendularity.jvision.gui.FilterBox;
 public class CVChainManager {
 	private static CVChainManager defaultCVManager = null;
 	
-	private HashMap<String, CVChainControl>cvChainControls = new HashMap<String, CVChainControl>();
+	private HashMap<String, CVChain>cvChains = new HashMap<String, CVChain>();
+	
+	private ButtonGroup chainControlRadioGroup = new ButtonGroup();
 	
 	public static CVChainManager getDefaultManager() {
 		if(defaultCVManager == null)
@@ -45,12 +49,33 @@ public class CVChainManager {
 		
 	}
 
+	/**
+	 * Is it OK to make a chain with this name?
+	 * 
+	 * @param name
+	 * @return 
+	 */
 	public boolean chainExists(String name) {
-		return cvChainControls.containsKey(name);
+		return cvChains.containsKey(name);
 	}
 
 	public void buildChain(FilterBox fb, String name, boolean intermediatesVisible, String source) {
-		throw new UnsupportedOperationException("Not supported yet.");
+		if(chainExists(name)) 
+			throw new IllegalArgumentException("Chain " + name + " already exists");
+		
+		CVChain cvchain = new CVChain(name, intermediatesVisible, source);
+		cvChains.put(name, cvchain);
+		CVChainControl cvc = new CVChainControl(cvchain, fb);
+		
+		fb.addCVChainControl(cvc);	
+		
+	}
+
+	public void remove(FilterBox fb, CVChainControl cvcc) {
+		fb.removeChainControl(cvcc);
+		CVChain cvc = cvChains.get(cvcc.getName());
+		cvc.sourceIsEnding();
+		cvChains.remove(cvc);
 	}
 	
 			

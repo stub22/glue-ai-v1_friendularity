@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.friendularity.jvision.engine.CVChain;
 
 /**
  *
@@ -194,5 +195,15 @@ public class ImageStreamBroker {
 		}
 		
 		return true;
+	}
+
+	/**
+	 * Remove this ImageStreamConsumer from all imagestreams (usually just before going away)
+	 * @param aThis 
+	 */
+	public void removeImageStreamConsumerAllStreams(ImageStreamConsumer isc) {
+		for(Iterator<ImageStreamProducer>is = imageStreams.values().iterator() ; is.hasNext() ; ) {
+			is.next().removeConsumer(isc);
+		}
 	}
 }

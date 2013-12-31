@@ -32,7 +32,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeSelectionModel;
 import org.friendularity.jvision.filters.BananaDetector;
 import org.friendularity.jvision.filters.Blur;
-import org.friendularity.jvision.filters.ClassFilterInfo;
+import org.friendularity.jvision.filters.StatelessClassFilterInfo;
 import org.friendularity.jvision.filters.ColorThreshold;
 import org.friendularity.jvision.filters.Contour;
 import org.friendularity.jvision.filters.Dilate;
@@ -59,6 +59,7 @@ public class FilterTree extends JTree implements TreeSelectionListener,
     private static boolean playWithLineStyle = false;
     private static String lineStyle = "Angled";
     private static boolean DEBUG = true;
+	private FilterInfo currentSelection = null;
 	
 	static DefaultMutableTreeNode nodeFactory(int selection_rule) {
 		if(selection_rule != ALL_FILTERS)
@@ -74,52 +75,52 @@ public class FilterTree extends JTree implements TreeSelectionListener,
         category = new DefaultMutableTreeNode("Detector");
         top.add(category);
 
-        filter = new DefaultMutableTreeNode(new ClassFilterInfo (new BananaDetector()));
+        filter = new DefaultMutableTreeNode(new StatelessClassFilterInfo (new BananaDetector()));
         category.add(filter);
 
-        filter = new DefaultMutableTreeNode(new ClassFilterInfo (new FaceDetector()));
+        filter = new DefaultMutableTreeNode(new StatelessClassFilterInfo (new FaceDetector()));
         category.add(filter);
 		
-        filter = new DefaultMutableTreeNode(new ClassFilterInfo (new GlassesDetector()));
+        filter = new DefaultMutableTreeNode(new StatelessClassFilterInfo (new GlassesDetector()));
         category.add(filter);
 
-        filter = new DefaultMutableTreeNode(new ClassFilterInfo (new ProfileDetector()));
+        filter = new DefaultMutableTreeNode(new StatelessClassFilterInfo (new ProfileDetector()));
         category.add(filter);
 		
         category = new DefaultMutableTreeNode("Image Processing");
         top.add(category);
 		
-        filter = new DefaultMutableTreeNode(new ClassFilterInfo (new Blur()));
+        filter = new DefaultMutableTreeNode(new StatelessClassFilterInfo (new Blur()));
         category.add(filter);
 
-        filter = new DefaultMutableTreeNode(new ClassFilterInfo (new ColorThreshold()));
+        filter = new DefaultMutableTreeNode(new StatelessClassFilterInfo (new ColorThreshold()));
         category.add(filter);
 
-        filter = new DefaultMutableTreeNode(new ClassFilterInfo (new Grayscale()));
+        filter = new DefaultMutableTreeNode(new StatelessClassFilterInfo (new Grayscale()));
         category.add(filter);
 
-        filter = new DefaultMutableTreeNode(new ClassFilterInfo (new RGBtoHSV()));
+        filter = new DefaultMutableTreeNode(new StatelessClassFilterInfo (new RGBtoHSV()));
         category.add(filter);
 		
         category = new DefaultMutableTreeNode("Line Operations");
         top.add(category);
 		
-		filter = new DefaultMutableTreeNode(new ClassFilterInfo (new Contour()));
+		filter = new DefaultMutableTreeNode(new StatelessClassFilterInfo (new Contour()));
         category.add(filter);
 		
         category = new DefaultMutableTreeNode("Morphology");
         top.add(category);
 				
-        filter = new DefaultMutableTreeNode(new ClassFilterInfo (new Dilate()));
+        filter = new DefaultMutableTreeNode(new StatelessClassFilterInfo (new Dilate()));
         category.add(filter);		
 		
-        filter = new DefaultMutableTreeNode(new ClassFilterInfo (new Erode()));
+        filter = new DefaultMutableTreeNode(new StatelessClassFilterInfo (new Erode()));
         category.add(filter);		
 
         category = new DefaultMutableTreeNode("Motion");
         top.add(category);
 		
-        filter = new DefaultMutableTreeNode(new ClassFilterInfo (new Farneback()));
+        filter = new DefaultMutableTreeNode(new StatelessClassFilterInfo (new Farneback()));
         category.add(filter);
 		
 		return top;
@@ -155,16 +156,16 @@ public class FilterTree extends JTree implements TreeSelectionListener,
 
         Object nodeInfo = node.getUserObject();
         if (node.isLeaf()) {
-            FilterInfo fi = (FilterInfo)nodeInfo;
-           if (DEBUG) {
-              System.out.println("node " + nodeInfo.toString());
-		   }
+            currentSelection = (FilterInfo)nodeInfo;
         } else {
-           if (DEBUG) {
-              System.out.println("non node " + nodeInfo.toString());
-		   }
+           currentSelection = null;
         }
     }
+	
+	
+	FilterInfo getCurrentFilterSelectionOrNull() {
+		return currentSelection;
+	}
 
 	// ================ DragSourceListener interface =======================
 	@Override
@@ -212,4 +213,5 @@ public class FilterTree extends JTree implements TreeSelectionListener,
 	public void dragGestureRecognized(DragGestureEvent dge) {
 		throw new UnsupportedOperationException("Not supported yet.");
 	}
+
 }

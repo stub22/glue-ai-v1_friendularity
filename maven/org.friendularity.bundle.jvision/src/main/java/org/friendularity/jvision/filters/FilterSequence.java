@@ -8,6 +8,7 @@ import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 import org.appdapter.core.log.BasicDebugger;
 import org.friendularity.jvision.broker.ImageStreamBroker;
+import org.friendularity.jvision.broker.ImageStreamImage;
 import org.friendularity.jvision.broker.ImageStreamProducer;
 import org.friendularity.jvision.broker.SimpleImageStreamProducer;
 import org.friendularity.jvision.engine.JVisionEngine;
@@ -67,7 +68,7 @@ public class FilterSequence extends BasicDebugger implements BaseFilter, ListMod
 		filterSequenceChanged();
 	}
 
-	private void broadcast(Mat temp, String msg) {
+	private void broadcast(Mat image, String msg) {
 		String fname = "jvision.filter." + msg;
 		
 		if(!broadcasters.containsKey(fname))
@@ -78,18 +79,8 @@ public class FilterSequence extends BasicDebugger implements BaseFilter, ListMod
 			broadcasters.put(fname, sisp);
 		}
 		SimpleImageStreamProducer isp = broadcasters.get(fname);
-		
-		if(isp.hasConsumers())
-		{
-			try
-			{
-				isp.setConsumedImage(JVisionEngine.matToBufferedImage(temp));
-				isp.setConsumedMessage(msg);
-			} catch(IllegalArgumentException e) {
-				getLogger().warn("Could not create BufferedImage (usually height/width zero)");
-			}
-		}		
-		
+		isp.setConsumedImage(new ImageStreamImage(image));
+		isp.setConsumedMessage(msg);
 	}
 
 	// ========================  Interface ListModel ==========================
@@ -144,5 +135,11 @@ public class FilterSequence extends BasicDebugger implements BaseFilter, ListMod
 	public String toString() {
 		return "filter_sequence"; 
 	}
+
+	public void add(BaseFilter f) {
+		filters.add(f);
+		filterSequenceChanged();
+	}
+
 
 }

@@ -28,9 +28,11 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.friendularity.bundle.bento.util.Bento_OSGi_ResourceLoader;
+import org.friendularity.jvision.broker.ImageFlavorNotAvailable;
 import org.friendularity.jvision.broker.ImageStreamBroker;
 
 import org.friendularity.jvision.broker.ImageStreamConsumer;
+import org.friendularity.jvision.broker.ImageStreamImage;
 import org.friendularity.jvision.engine.JVisionEngine;
 
 /**
@@ -89,8 +91,12 @@ public class CameraViewer extends BentoPlugin  implements ImageStreamConsumer {
 	
 
 	@Override
-	public void setConsumedImage(BufferedImage img) {
-		mImage = img;
+	public void setConsumedImage(ImageStreamImage img) {
+		try {
+			mImage = img.getBufferedImage();
+		} catch (ImageFlavorNotAvailable ex) {
+			Logger.getLogger(CameraViewer.class.getName()).log(Level.SEVERE, "CameraViewer viewing wrong image type");
+		}
 		
 		this.repaint();
 	}

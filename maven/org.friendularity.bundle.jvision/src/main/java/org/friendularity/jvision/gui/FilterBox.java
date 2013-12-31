@@ -47,7 +47,6 @@ package org.friendularity.jvision.gui;
 
 import org.friendularity.jvision.engine.CVChainManager;
 import java.awt.Component;
-import javax.swing.JEditorPane;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -55,31 +54,17 @@ import javax.swing.JSplitPane;
 import javax.swing.UIManager;
 
 import javax.swing.JTree;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.TreeSelectionModel;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
-
-import java.net.URL;
-import java.io.IOException;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
-import javax.swing.DropMode;
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JComponent;
-import javax.swing.JList;
+import javax.swing.BoxLayout;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import org.friendularity.jvision.engine.JVisionEngine;
-import org.friendularity.jvision.filters.BananaDetector;
-import org.friendularity.jvision.filters.*;
+import org.friendularity.jvision.filters.FilterInfo;
 import static org.friendularity.jvision.gui.DemoFrame.theLogger;
 
 /**
@@ -89,11 +74,12 @@ import static org.friendularity.jvision.gui.DemoFrame.theLogger;
 public class FilterBox extends JPanel {
 	private JMenuBar		myMenuBar;
 	
-	// its OK to promote these to FilterList and FilterTree
-	// I havent' needed it yet
-    private JList filterList;
-    private JTree tree;
+    private FilterTree tree;
+	private JPanel listPanel;
 
+
+	private CVChainControl selectedCVChainControl = null;
+	
     //Optionally set the look and feel.
     private static boolean useSystemLookAndFeel = false;
 
@@ -106,20 +92,12 @@ public class FilterBox extends JPanel {
         //Create the scroll pane and add the tree to it. 
         JScrollPane treeView = new JScrollPane(tree);
 
-        //Create (for now a single) list pane to receive the drop
-        filterList = new FilterList();
-     //   filterList.setEnabled(true);
-	//	filterList.setDragEnabled(true);
-		
-		FilterSequence model = new FilterSequence();
-		
-		filterList.setModel(model);
-		
-		// these can only be done after everything else is up.
-	//	model.addOrReplaceByClass(new FaceDetector());
-	//	model.addOrReplaceByClass(new Blur());
+		listPanel = new JPanel();
+		listPanel.setLayout(new BoxLayout(listPanel, BoxLayout.LINE_AXIS));
 
-        JScrollPane filterListsView = new JScrollPane(filterList);
+		listPanel.setBackground(listPanel.getBackground().darker());
+		
+        JScrollPane filterListsView = new JScrollPane(listPanel);
 
         //Add the scroll panes to a split pane.
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
@@ -201,7 +179,10 @@ private  void setupMenus(JFrame frame) {
 		menuItem.addActionListener(new ActionListener(){
 			@Override	
 			public void actionPerformed(ActionEvent arg0) {
-				theLogger.debug("Someday remove a FilterSeq...");
+				if(selectedCVChainControl == null)
+					return;
+				
+				CVChainManager.getDefaultManager().remove(FilterBox.this, selectedCVChainControl);
 			}
 		});
 		menu.add(menuItem);
@@ -213,11 +194,14 @@ private  void setupMenus(JFrame frame) {
 		menuItem.addActionListener(new ActionListener(){
 			@Override	
 			public void actionPerformed(ActionEvent arg0) {
-				theLogger.debug("Someday Add a Filter...");
-				theLogger.debug("For now add a couple arbitrary ones...");
-				FilterSequence fs = (FilterSequence)(filterList.getModel());
-				fs.addOrReplaceByClass(new FaceDetector());
-				fs.addOrReplaceByClass(new Blur());
+				if(selectedCVChainControl == null)
+					return;
+				
+				FilterInfo fi = tree.getCurrentFilterSelectionOrNull();
+				if(fi == null)
+					return;
+				
+				selectedCVChainControl.getFilterSequence().add(fi.createInstance());
 			}
 		});
 		menu.add(menuItem);
@@ -283,6 +267,64 @@ private  void setupMenus(JFrame frame) {
 		}
 		return (Frame)p;
 			
+	}
+	
+	public void setSelectedChainControl(CVChainControl current) {
+		selectedCVChainControl = current;
+
+		int n = listPanel.getComponentCount();
+		
+		for(int i = 0 ; i < n ; i++) {
+			Component c = listPanel.getComponent(i);
+			
+			if(c instanceof CVChainControl) {
+				c.repaint();
+			}
+		}
+		
+	}
+
+	public void addCVChainControl(CVChainControl cvChainControl) {
+
+		listPanel.add(cvChainControl);
+		setSelectedChainControl(cvChainControl);
+		
+		cvChainControl.revalidate();
+		listPanel.repaint();
+	}
+
+	CVChainControl getSelectedCVChainControl() {
+		if(selectedCVChainControl != null)
+			return selectedCVChainControl;
+		
+		int n = listPanel.getComponentCount();
+		
+		CVChainControl candidate = null;
+		
+		for(int i = 0 ; i < n ; i++) {
+			Component c = listPanel.getComponent(i);
+			
+			if(c instanceof CVChainControl) {
+				if(candidate != null)  // if there's more than one cvChainControl we don't have candidate
+					return null;
+				
+				candidate = (CVChainControl)c;
+			}
+		}
+
+		selectedCVChainControl = candidate;
+		
+		return selectedCVChainControl;
+	}
+
+	public void removeChainControl(CVChainControl cvcc) {
+		listPanel.remove(cvcc);
+		
+		if(selectedCVChainControl == cvcc)
+			selectedCVChainControl = null;
+		
+		this.revalidate();
+		this.repaint();
 	}
 }
 
