@@ -68,6 +68,13 @@ public class SnapshotMonitor extends TrialContent implements ParamValueListener 
 
 	private JVisionTextureMapper myJVTM;
 
+	enum Mode {
+		FIXED_POS,
+		FOLLOW_CURSOR
+	}
+	
+	private Mode		myMode = Mode.FIXED_POS;
+	
 	public static class PanelItem {
 
 		Texture2D myTexture;
@@ -75,6 +82,7 @@ public class SnapshotMonitor extends TrialContent implements ParamValueListener 
 		Geometry myGeom;
 		float myAlphaOpacity = 0.5f;
 		ColorRGBA myColor = new ColorRGBA(1.0f, 1.0f, 1.0f, myAlphaOpacity);
+		int		myAbsIndex;
 	}
 
 	public static class ItemFactory extends Factory<PanelItem> {
@@ -124,6 +132,7 @@ public class SnapshotMonitor extends TrialContent implements ParamValueListener 
 		myIRB = new RingBuf<PanelItem>(panelCount, anItemFactory);
 		for (int panelIndex = 0; panelIndex < panelCount; panelIndex++) {
 			PanelItem panelItem = myIRB.getCurrent();
+			panelItem.myAbsIndex = panelIndex;
 			myIRB.advance();
 
 			
@@ -152,6 +161,9 @@ public class SnapshotMonitor extends TrialContent implements ParamValueListener 
 		myJVTM = jvtm;
 	}
 
+	public void setMode(Mode m) {
+		myMode = m;
+	}
 	public void update_onRendThrd(float tpf) {
 		updateCursorPos_onRendThread(tpf);
 		PanelItem panelItem = myIRB.getCurrent();
@@ -162,6 +174,15 @@ public class SnapshotMonitor extends TrialContent implements ParamValueListener 
 				panelItem.myTexture = latestTexture;
 				panelItem.myMat.setTexture("ColorMap", panelItem.myTexture);
 				panelItem.myGeom.setMaterial(panelItem.myMat);
+				if (myMode == Mode.FOLLOW_CURSOR) {
+					Vector3f cursPos = myCursorGeom.getLocalTranslation();
+					Quaternion cursRot = myCursorGeom.getLocalRotation();
+					panelItem.myGeom.setLocalTranslation(cursPos);
+					panelItem.myGeom.setLocalRotation(cursRot);
+				} else {
+					Vector3f offsetV = calculateDefaultPosition(panelItem.myAbsIndex);
+					panelItem.myGeom.setLocalTranslation(offsetV);
+				}
 				adjustOpacities_onRendThread();
 				myIRB.advance();
 			} else {
@@ -201,7 +222,7 @@ public class SnapshotMonitor extends TrialContent implements ParamValueListener 
 		myCursorGeom.setLocalRotation(quat);
 	}
 	enum Coord {
-		AZIMUTH, ELEVATION, TWIST, DEPTH
+		AZIMUTH, ELEVATION, TWIST, DEPTH, MODE
 	}
 	@Override public void attachMidiCCs(CCParamRouter ccpr) { 
 		ccpr.putControlChangeParamBinding(27, Coord.AZIMUTH.name(), this); 
@@ -210,6 +231,7 @@ public class SnapshotMonitor extends TrialContent implements ParamValueListener 
 		
 		// Experiment:  assign CC #40 to a crossfader, e.g. on a Nocturn
 		ccpr.putControlChangeParamBinding(40, Coord.DEPTH.name(), this); 				
+		ccpr.putControlChangeParamBinding(58, Coord.MODE.name(), this); 	
 	}		
 	@Override public void setNormalizedNumericParam(String paramName, float normZeroToOne) {
 		Coord ccoord = Coord.valueOf(paramName);
@@ -226,6 +248,13 @@ public class SnapshotMonitor extends TrialContent implements ParamValueListener 
 			break;				
 			case DEPTH:
 				myCursorDist = MathUtils.getFloatValInRange(-50.0f,  50.0f, normZeroToOne);				
+			break;
+			case MODE:
+				if (normZeroToOne > 0.5) {
+					myMode = Mode.FOLLOW_CURSOR;
+				} else {
+					myMode = Mode.FIXED_POS;
+				}
 			break;
 			default:
 				getLogger().warn("Unknown numeric-param channel name: {} resolved to: {}", paramName, ccoord);
