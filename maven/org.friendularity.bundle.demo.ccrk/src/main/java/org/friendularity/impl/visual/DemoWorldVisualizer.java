@@ -57,14 +57,14 @@ public class DemoWorldVisualizer extends SingleShapeVisualizer<WorldEstimate> {
 		RenderConfigEmitter rce = getConfigEmitter();
 		MeshTest mt = new MeshTest();
 		mt.makeStuff(amgr, rootNode);
-		initTrialContent();
+		initTrialContent_onRendThrd();
 		if (myFlag_deicticVisualization) {
 			startDeicticVisualizer();
 		}		
 	}
 
-	public void initTrialContent() { 
-		TempMidiBridge tmb = new TempMidiBridge();
+	public void initTrialContent_onRendThrd() { 
+		
 		myTrialContent = new TrialContent();
 		RenderRegistryClient rrc = getRenderRegistryClient();
 		

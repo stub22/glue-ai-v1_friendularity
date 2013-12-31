@@ -33,10 +33,12 @@ import com.jme3.bullet.PhysicsSpace;
 import com.jme3.scene.Node;
 import org.friendularity.impl.visual.EstimateVisualizer;
 import org.friendularity.api.west.WorldEstimate;
+import org.friendularity.bundle.demo.ccrk.CCRK_DemoMidiCommandMapper;
 import org.friendularity.impl.visual.DemoWorldVisualizer;
 import org.friendularity.jvision.broker.ImageStreamBroker;
 import org.friendularity.vworld.JVisionTextureMapper;
 import org.friendularity.vworld.MagicVisionBoxScene;
+import org.friendularity.vworld.SnapshotMonitor;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -56,6 +58,8 @@ public class WorldEstimateRenderModule extends RenderModule implements WorldEsti
 	private boolean myFlag_JVisionTextureRoutingEnabled = false;
 
 	private MagicVisionBoxScene		myMVBS;
+	private SnapshotMonitor			mySnapMon;
+	private CCRK_DemoMidiCommandMapper		myMidiMapper;
 	
 	public WorldEstimateRenderModule() {
 		setDebugRateModulus(1000);
@@ -63,6 +67,9 @@ public class WorldEstimateRenderModule extends RenderModule implements WorldEsti
 
 	@Override public void setWorldEstimate(WorldEstimate worldEstim) {
 		myCachedWorldEstim = worldEstim;
+	}
+	public void setMidiMapper(CCRK_DemoMidiCommandMapper midiMapper) {
+		myMidiMapper = midiMapper;
 	}
 
 	public WorldEstimate getWorldEstimate() {
@@ -80,18 +87,18 @@ public class WorldEstimateRenderModule extends RenderModule implements WorldEsti
 	private JVisionTextureMapper setupJVisionConnection() {
 		getLogger().info("Setup for vision-texture-mappper");
 		JVisionTextureMapper jvtm = new JVisionTextureMapper();
-		jvtm.connectToImageStreamBroker();
+		jvtm.connectToImageStreamBroker(); 
 		return jvtm;
 	}
-	private void setupMagicVisionBoxScene_onRendThrd(RenderRegistryClient rrc) {
+	private void setupMagicVisionBoxScene_onRendThrd(RenderRegistryClient rrc, JVisionTextureMapper optJVTM, float tpf) {
 		// Currently called from doRenderCycle() below.
 		getLogger().info("One time setup for Magic Vision Box Scene");
 		myMVBS = new MagicVisionBoxScene();
-		myMVBS.setup_onRendThrd(rrc);
-		if (myFlag_JVisionTextureRoutingEnabled) {
-			JVisionTextureMapper jvtm = setupJVisionConnection(); // calls ImageStreamBroker.alwaysAddImageStreamConsumer
-			myMVBS.setJVisionTextureMapper(jvtm);  // MVBS will now poll JVTM for updated vision textures
+		myMVBS.setup_onRendThrd(rrc, tpf);
+		if (optJVTM != null) {
+			myMVBS.setJVisionTextureMapper(optJVTM);  // MVBS will now poll JVTM for updated vision textures
 		}
+
 	}
 
 	@Override protected void doRenderCycle(long runSeqNum, float timePerFrame) {
@@ -113,16 +120,46 @@ public class WorldEstimateRenderModule extends RenderModule implements WorldEsti
 			}
 
 			if (myFlag_bonusMeshesNeeded) {
+				myFlag_bonusMeshesNeeded = false;
+				JVisionTextureMapper optJVTM = null;
+				if (myFlag_JVisionTextureRoutingEnabled) {
+					optJVTM = setupJVisionConnection(); 
+				}
 				getLogger().info("One time setup for bonus-meshes");
 				RenderRegistryClient rrc = myWorldEstimVisualizer.getRenderRegistryClient();
-				myFlag_bonusMeshesNeeded = false;
+			
 				((DemoWorldVisualizer) myWorldEstimVisualizer).makeBonusMeshes();
-				if (myMVBS == null) {
-					setupMagicVisionBoxScene_onRendThrd(rrc);
+				
+				if (mySnapMon == null) { 
+					Node rootDeepNode = rrc.getJme3RootDeepNode(null);
+					mySnapMon = new SnapshotMonitor();
+					mySnapMon.setup_onRendThrd(rrc, rootDeepNode);
+					mySnapMon.setJVisionTextureMapper(optJVTM);  // OK to set it to null
+					if ((myMidiMapper != null) && (myMidiMapper.myCCPR != null)) {
+						mySnapMon.attachMidiCCs(myMidiMapper.myCCPR);
+					} else {
+						getLogger().warn("NOT setting up CC-paramRouter mapping to SnapshotMonitor!  midiMapper={}, ccpr={}",
+								myMidiMapper, (myMidiMapper != null) ? myMidiMapper.myCCPR : null);
+					}
 				}
-			}
-			if (myMVBS != null) {
-				myMVBS.update_onRendThrd(timePerFrame);	// Includes polling for new vision textures
+				if (myMVBS == null) {
+					// Disable this line if we get sceneGraph concurrency errors mentioning "offBox"
+					setupMagicVisionBoxScene_onRendThrd(rrc, optJVTM, timePerFrame);
+				}					
+			
+			} else {
+				// We do not want these updates to happen on the same (one-time) loop as the bonus-mesh init above.
+				// Hence the "else" clause we are in.
+				
+				if (mySnapMon != null) {
+					// uses vision-texture "peek"
+					mySnapMon.update_onRendThrd(timePerFrame);
+				}
+
+				if (myMVBS != null) {
+					// uses vision-texture "take"
+					myMVBS.update_onRendThrd(timePerFrame);	// Includes polling for new vision textures
+				}
 			}
 		}
 

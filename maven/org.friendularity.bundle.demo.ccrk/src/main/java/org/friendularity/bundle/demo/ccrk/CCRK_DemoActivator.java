@@ -74,7 +74,7 @@ public class CCRK_DemoActivator extends BundleActivatorBase {
 	 */
 	
 	private	boolean		myFlag_connectJVision = false;  
-	private	boolean		myFlag_connectNetworkVision = false;  
+	private	boolean		myFlag_connectObsoleteNetworkVision = false;  
 	
 	private	boolean		myFlag_connectMidiIn = true;
 	private	boolean		myFlag_connectMidiOut = true;
@@ -166,7 +166,12 @@ public class CCRK_DemoActivator extends BundleActivatorBase {
 
 		// Hey, let's get some fused-sensor-data visualization going too, while we're at it!
 		WorldEstimateRenderModule werm = new WorldEstimateRenderModule();
-		
+		initOptionalMidiStuff();
+	    if (myMidiMapper != null) {
+			// TODO:  Can probably remove this link
+			myMidiMapper.setWERM(werm);
+			werm.setMidiMapper(myMidiMapper);
+		}
 		// Enable/Disable this texture flow based on whether we are launching JVision or not.
 		// Should be a dont-care whether this happens before/after   startVisionMonitors() below.
 		// TODO:  Re-verify in detail.
@@ -185,22 +190,9 @@ public class CCRK_DemoActivator extends BundleActivatorBase {
 		Robot.Id optRobotID_elseAllRobots = null;		
 		startMotionComputers(bundleCtx, optRobotID_elseAllRobots, we);	
 		
-		if (myFlag_connectNetworkVision) {
-			//	Startup the optional JVision connection
-			startNetworkVisionMonitors();
-		}
-		
-		myMidiMapper = new CCRK_DemoMidiCommandMapper();
-		
-		if (myFlag_connectMidiIn) {
-			myMidiMapper.startMidiRouters(werm);
-		}
-		if (myFlag_connectMidiOut) {
-			// Does the VWorld block while this is running?  Why?
-			myMidiMapper.startMidiOutputDemo();
-		}
-		if (myFlag_connectMidiSwitcheroo) {
-			myMidiMapper.startMidiSwitcherooDemo();
+		if (myFlag_connectObsoleteNetworkVision) {
+			//	Startup the obsolete netrowk vision connection
+			startObsoleteNetworkVisionMonitors();
 		}
 		if (myFlag_connectSwingDebugGUI) {
 			setupDebuggingScaffold(mg, we);
@@ -210,6 +202,19 @@ public class CCRK_DemoActivator extends BundleActivatorBase {
 		}
 	}
 	
+	private void initOptionalMidiStuff() { 
+		myMidiMapper = new CCRK_DemoMidiCommandMapper();
+		
+		if (myFlag_connectMidiIn) {
+			myMidiMapper.startMidiRouters();
+		}
+		if (myFlag_connectMidiOut) {
+			myMidiMapper.startMidiOutputDemo();
+		}
+		if (myFlag_connectMidiSwitcheroo) {
+			myMidiMapper.startMidiSwitcherooDemo();
+		}		
+	}
 
 
 	private void setupDebuggingScaffold(MathGate mg, WorldEstimate we) { 
@@ -249,7 +254,7 @@ public class CCRK_DemoActivator extends BundleActivatorBase {
 			}
 		}
 	}
-	private void startNetworkVisionMonitors() { 
+	private void startObsoleteNetworkVisionMonitors() { 
 		UnusedNetworkVisionDataFeed vdf = new UnusedNetworkVisionDataFeed();
 		boolean svcsOK = vdf.connectServices();
 		getLogger().info("vdf.connectServices returned {}", svcsOK);

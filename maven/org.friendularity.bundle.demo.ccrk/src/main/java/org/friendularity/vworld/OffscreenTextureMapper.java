@@ -61,7 +61,7 @@ public class OffscreenTextureMapper {
 	private float myOffscreenBoxRotationAngle = 0;
 	
 	// This creates a texture written to from a JME3Camera
-	public Texture setupOffscreenView(RenderManager renderMgr, AssetManager assetMgr) {
+	public Texture setupOffscreenView_onRendThrd(RenderManager renderMgr, AssetManager assetMgr, float tpf) {
 		Camera offCamera = new Camera(512, 512);
 
 		myOffscrenViewport = renderMgr.createPreView("Offscreen View", offCamera);
@@ -99,7 +99,24 @@ public class OffscreenTextureMapper {
 	
 		// attach the scene to the viewport to be rendered
 		myOffscrenViewport.attachScene(myOffscreenBoxGeom);
-
+		/*java.lang.IllegalStateException: Scene graph is not properly updated for rendering.
+     [java] State was changed after rootNode.updateGeometricState() call. 
+     [java] Make sure you do not modify the scene from another thread!
+		 *  Problem spatial name: boxOff
+     [java] 	at com.jme.scene.Spatial.checkCulling(Spatial.java:260)
+     [java] 	at com.jme3.renderer.RenderManager.renderSubScene(RenderManager.java:647)
+	 com.jme3.renderer.RenderManager.renderScene(RenderManager.java:640)
+     [java] 	at com.jme3.renderer.RenderManager.renderViewPort(RenderMateRenderModule}.doRunOnce(seqNum=0)-END
+     [java] nager.java:974)
+     [java] 	at com.jme3.renderer.RenderManager.render(RenderManager.java:1023)
+     [java] 	at com.jme3.app.SimpleApplication.update(SimpleApplication.java:251)
+     [java] 	at com.jme3.system.lwjgl.LwjglAbstractDisplay.runLoop(LwjglAbstractDisplay.java:151)
+     [java] 	at com.jme3.system.lwjgl.LwjglCanvas.runLoop(LwjglCanvas.java:229)
+     [java] 	at com.jme3.system.lwjgl.LwjglAbstractDisplay.run(LwjglAbstractDisplay.java:228)
+     [java] 	at java.lang.Thread.run(Thread.java:662)* 
+		 */
+		myOffscreenBoxGeom.updateLogicalState(tpf);
+		myOffscreenBoxGeom.updateGeometricState();
 		return offTex;
 	}
 	
