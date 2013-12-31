@@ -15,11 +15,8 @@
  */
 package org.friendularity.jvision.engine;
 
-import java.awt.event.ActionListener;
 import java.util.HashMap;
 import javax.swing.ButtonGroup;
-import javax.swing.JDialog;
-import javax.swing.JOptionPane;
 import org.friendularity.jvision.gui.CVChainControl;
 import org.friendularity.jvision.gui.FilterBox;
 
@@ -28,14 +25,15 @@ import org.friendularity.jvision.gui.FilterBox;
  * @see CVChain 
  * for a discussion of CVChains
  * 
+ * This is the coordinator for CVChains - it makes sure they have system wide unique names, and 
+ * handles wiring up CVChainControl, the FilterBox, and the CVChain model 
+ * 
  * @author Annie
  */
 public class CVChainManager {
 	private static CVChainManager defaultCVManager = null;
 	
 	private HashMap<String, CVChain>cvChains = new HashMap<String, CVChain>();
-	
-	private ButtonGroup chainControlRadioGroup = new ButtonGroup();
 	
 	public static CVChainManager getDefaultManager() {
 		if(defaultCVManager == null)
@@ -45,7 +43,6 @@ public class CVChainManager {
 	}
 	
 	private CVChainManager() {
-		
 		
 	}
 
@@ -59,6 +56,10 @@ public class CVChainManager {
 		return cvChains.containsKey(name);
 	}
 
+	/**
+	 * try to create a new CVChain with no filters in it, and add a CVChainControl to 
+	 * the FilterBox
+	 */
 	public void buildChain(FilterBox fb, String name, boolean intermediatesVisible, String source) {
 		if(chainExists(name)) 
 			throw new IllegalArgumentException("Chain " + name + " already exists");
@@ -71,11 +72,18 @@ public class CVChainManager {
 		
 	}
 
+	/**
+	 *  famulus to FilterBox, the manager takes care of coordinating the pieces
+	 *  when user removes a CVChain
+	 * 
+	 * @param fb the FilterBox we're in
+	 * @param cvcc the control to remove
+	 */
 	public void remove(FilterBox fb, CVChainControl cvcc) {
 		fb.removeChainControl(cvcc);
 		CVChain cvc = cvChains.get(cvcc.getName());
 		cvc.sourceIsEnding();
-		cvChains.remove(cvc);
+		cvChains.remove(cvcc.getName());
 	}
 	
 			

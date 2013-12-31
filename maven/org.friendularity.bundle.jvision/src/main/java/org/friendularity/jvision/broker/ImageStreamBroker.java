@@ -19,14 +19,13 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.friendularity.jvision.engine.CVChain;
 
 /**
  *
  * ImageStreamBroker
  * 
- * A singleton class. The ImageStreamBroker allows systems that produce 'video' (a stream of images) to register
- * via a name (at some point this will be refactored to a URI). 
+ * A singleton class. The ImageStreamBroker allows systems that produce 'video' (a stream of images),
+ * called an ImageStreamProducer, to register via a name (at some point this will be refactored to a URI). 
  * 
  * Image consumers can then register as ImageStreamConsumers via the name. 
  * 
@@ -38,9 +37,17 @@ import org.friendularity.jvision.engine.CVChain;
  * producer. If the producer doesn't exist, the consumer will be attached to a default fallback producer that shows
  * an animated filmstrip leader. When the real producer appears, it takes over from the default.
  * 
+ * On the other hand, when a producer removes itself from publication, all consumers will receive the sourceIsEnding
+ * message. The consumer should be not expect any more frames after this message.
+ * 
+ * The actual 'image' sent is an instance of ImageStreamImage.  ImageStreamImage can actually 'carry' any Object.
+ * The data can be available in different 'flavors'. 
+ * 
+ * 
  * @author Annie
  */
 public class ImageStreamBroker {
+	// The default ISB. It's a singleton.
 	private static ImageStreamBroker defBroker = null;
 	
 	private HashMap<String, ImageStreamProducer>imageStreams = new HashMap<String, ImageStreamProducer>();
@@ -53,6 +60,13 @@ public class ImageStreamBroker {
 		return defBroker;
 	}
 	
+	/**
+	 * Add an imageStreamProducer.
+	 * 
+	 * @param isp    the isp to add
+	 * 
+	 * @throws IllegalArgumentException if  a non fallback ISP with this name already exists
+	 */
 	public void addImageStreamProducer(ImageStreamProducer isp)
 	{
 		synchronized(imageStreams)
@@ -76,21 +90,17 @@ public class ImageStreamBroker {
 		}
 	}
 	
+	/**
+	 * remove this isp
+	 * 
+	 * @param name 
+	 */
 	public void removeImageStreamProducer(String name)
 	{
 		synchronized(imageStreams)
 		{
-			if(imageStreams.get(name) instanceof SwitchableImageStreamProducer)	{
-				SwitchableImageStreamProducer sisp = (SwitchableImageStreamProducer) imageStreams.get(name);
-				OffAirImageStreamProducer offair = new OffAirImageStreamProducer(name);
-				
-				sisp.switchTo(offair);
-				imageStreams.put(name, offair);
-			}
-			else {
-				imageStreams.get(name).removeAllConsumers();
-				imageStreams.remove(name);
-			}
+			imageStreams.get(name).removeAllConsumers();
+			imageStreams.remove(name);
 			imageStreams.notifyAll();
 		}
 	}
@@ -98,7 +108,11 @@ public class ImageStreamBroker {
 	/**
 	 * Add the consumer as a listener to image stream 'name'
 	 * creates a matching OffAirImageStreamProducer if the stream doesn't exist,
-	 * so this always succeeds
+	 * so this always succeeds.
+	 * 
+	 * Remember that different threads may be adding producers. The order in which 
+	 * producers appear at startup when different bundles are involved is often indeterminate.
+	 * So this is usually the right choice to add an ImageStreamConsumer
 	 * 
 	 * @param name
 	 * @param isc

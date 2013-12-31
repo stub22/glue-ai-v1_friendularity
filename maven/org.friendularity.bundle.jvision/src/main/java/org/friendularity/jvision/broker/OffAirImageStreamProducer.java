@@ -56,6 +56,11 @@ public class OffAirImageStreamProducer extends BasicDebugger implements Switchab
 	 * so apparently there is more to do here!
 	 * Stu has gone back to using 
 	 */
+	/*
+	 * This is in flux anyway. Lets leave it this way for the time being, I'll get the texture mapping working again
+	 * when ccrk is in steadier state and JVision is in steadier state
+	 * AO
+	 */
 	}
 
 	@Override

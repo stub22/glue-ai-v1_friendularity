@@ -16,7 +16,9 @@
 package org.friendularity.jvision.broker;
 
 /**
- *
+ * ImageStreamImage has been asked for data in a format it can't produce
+ * e.g. if you ask for a Mat and it contains a color...
+ * 
  * @author Annie
  */
 public class ImageFlavorNotAvailable extends java.lang.Exception {
