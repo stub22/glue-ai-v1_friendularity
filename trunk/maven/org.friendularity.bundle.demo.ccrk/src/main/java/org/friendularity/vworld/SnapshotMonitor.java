@@ -230,7 +230,9 @@ public class SnapshotMonitor extends TrialContent implements ParamValueListener 
 		ccpr.putControlChangeParamBinding(26, Coord.TWIST.name(), this);
 		
 		// Experiment:  assign CC #40 to a crossfader, e.g. on a Nocturn
-		ccpr.putControlChangeParamBinding(40, Coord.DEPTH.name(), this); 				
+		ccpr.putControlChangeParamBinding(40, Coord.DEPTH.name(), this); 
+		// Also put it on a regular knob
+		ccpr.putControlChangeParamBinding(25, Coord.DEPTH.name(), this); 	
 		ccpr.putControlChangeParamBinding(58, Coord.MODE.name(), this); 	
 	}		
 	@Override public void setNormalizedNumericParam(String paramName, float normZeroToOne) {
