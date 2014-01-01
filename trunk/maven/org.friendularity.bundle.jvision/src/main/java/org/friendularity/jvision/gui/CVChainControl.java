@@ -163,4 +163,11 @@ public class CVChainControl extends JPanel {
 	FilterSequence getFilterSequence() {
 		return (FilterSequence)(filters.getModel());
 	}
+
+	void removeSelectedFilter() {
+		int i = filters.getSelectedIndex();
+		if(i >= 0) {
+			((FilterSequence)(filters.getModel())).remove(i);
+		}
+	}
 }

@@ -1,13 +1,11 @@
 package org.friendularity.jvision.filters;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import javax.swing.ListModel;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 import org.appdapter.core.log.BasicDebugger;
-import org.friendularity.jvision.broker.SimpleImageStreamProducer;
 
 import org.opencv.core.Mat;
 
@@ -17,8 +15,6 @@ import org.opencv.core.Mat;
 public class FilterSequence extends BasicDebugger implements BaseFilter, ListModel {
 	
 	private ArrayList<BaseFilter> filters = new ArrayList<BaseFilter>();
-	
-	private HashMap<String, SimpleImageStreamProducer>broadcasters = new HashMap<String, SimpleImageStreamProducer>();
 
 	@Override
 	public void apply(Mat in, Mat out) {
@@ -26,7 +22,6 @@ public class FilterSequence extends BasicDebugger implements BaseFilter, ListMod
 		
 		in.copyTo(temp);
 		applyIndexed(temp, 0, out);
-		
 	}
 	
 	private void applyIndexed(Mat in, int index , Mat out){
@@ -63,6 +58,34 @@ public class FilterSequence extends BasicDebugger implements BaseFilter, ListMod
 		filterSequenceChanged();
 	}
 
+	/**
+	 * remove the sourceth filter and insert it at index target
+	 * note that index is after the removal, so you have to compensate if it's after
+	 * 
+	 * @param source
+	 * @param target 
+	 */
+	public void move(int source, int target) {
+		BaseFilter f = filters.get(source);
+		filters.remove(source);
+		filters.add(target, f);
+	}
+
+	public void add(BaseFilter f) {
+		filters.add(f);
+		filterSequenceChanged();
+	}
+	
+	public void remove(int index) {
+		filters.remove(index);
+		filterSequenceChanged();
+	}
+	
+	@Override
+	public String toString() {
+		return "filter_sequence"; 
+	}
+	
 	// ========================  Interface ListModel ==========================
 	//
 	// These are intended for Swing interface, probably not what you want.
@@ -96,30 +119,4 @@ public class FilterSequence extends BasicDebugger implements BaseFilter, ListMod
 			i.next().contentsChanged(lde);
 		}
 	}
-
-	/**
-	 * remove the sourceth filter and insert it at index target
-	 * note that index is after the removal, so you have to compensate if it's after
-	 * 
-	 * @param source
-	 * @param target 
-	 */
-	public void move(int source, int target) {
-		BaseFilter f = filters.get(source);
-		filters.remove(source);
-		filters.add(target, f);
-	}
-
-
-	@Override
-	public String toString() {
-		return "filter_sequence"; 
-	}
-
-	public void add(BaseFilter f) {
-		filters.add(f);
-		filterSequenceChanged();
-	}
-
-
 }

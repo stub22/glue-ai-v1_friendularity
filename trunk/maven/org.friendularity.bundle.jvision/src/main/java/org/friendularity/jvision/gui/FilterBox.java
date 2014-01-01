@@ -53,7 +53,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.UIManager;
 
-import javax.swing.JTree;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.GridLayout;
@@ -210,7 +209,7 @@ private  void setupMenus(JFrame frame) {
 		menuItem.addActionListener(new ActionListener(){
 			@Override	
 			public void actionPerformed(ActionEvent arg0) {
-				theLogger.debug("Someday remove a Filter...");
+				selectedCVChainControl.removeSelectedFilter();
 			}
 		});
 		menu.add(menuItem);
