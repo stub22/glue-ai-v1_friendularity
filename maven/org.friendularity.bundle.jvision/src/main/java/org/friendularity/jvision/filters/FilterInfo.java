@@ -15,25 +15,23 @@
  */
 package org.friendularity.jvision.filters;
 
-import java.net.URL;
-
 /**
  *
  * @author Annie
  */
 public abstract class FilterInfo {
-	protected String bookName;
+	protected String filterName;
 
 	public String toString() {
-		return bookName;
+		return filterName;
 	}
 
 	/**
 	 * return a new instance of the filter
+	 * Note that it might be shared if the filter is
+	 * stateless
 	 * 
-	 * @return
+	 * @return the new filter
 	 */
 	public abstract BaseFilter createInstance();
-		
-		
     }

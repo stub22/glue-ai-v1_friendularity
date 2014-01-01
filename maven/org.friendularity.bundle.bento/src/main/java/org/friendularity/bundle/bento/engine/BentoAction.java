@@ -15,7 +15,7 @@
  */
 package org.friendularity.bundle.bento.engine; 
 
-import org.friendularity.bundle.bento.gui.BentoPlugin;
+import org.friendularity.bundle.bento.gui.BentoPlugin; 
 
 /**
  *

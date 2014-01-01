@@ -6,26 +6,23 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.awt.image.BufferedImage;
 import java.util.logging.Level;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
-import static javax.swing.JFrame.EXIT_ON_CLOSE;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import org.friendularity.jvision.broker.ImageFlavorNotAvailable;
+import org.friendularity.jvision.broker.ImageStreamBroker;
 import org.friendularity.jvision.broker.ImageStreamConsumer;
 import org.friendularity.jvision.broker.ImageStreamImage;
 import org.friendularity.jvision.engine.JVisionEngine;
@@ -49,9 +46,6 @@ public class DemoFrame extends JFrame implements WindowListener, ImageStreamCons
 	private JPanel			myControlsPanel = new JPanel();
 	private JLabel			myLabel_Framerate = new JLabel();
 	private JMenuBar		myMenuBar;
-	
-	// this is just protection, if we have no other we'll use this one
-	private	FilterSequence	myFilterSequence = new FilterSequence();
 	
 	public DemoFrame()
 	{
@@ -77,6 +71,7 @@ public class DemoFrame extends JFrame implements WindowListener, ImageStreamCons
 		
 		this.setVisible(true);
 		
+		ImageStreamBroker.getDefaultImageStreamBroker().alwaysAddImageStreamConsumer(JVisionEngine.CAMERA_NAME, this);
 		// We "do nothing" from Swing point of view, but still catch the 
 		// WindowClosing event, which starts our official "quit" process.
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -92,16 +87,8 @@ public class DemoFrame extends JFrame implements WindowListener, ImageStreamCons
 		
 	private FilterSequence mytestfilters;
 	
-	public void setControlledFilterSequence(FilterSequence filters) {
-		if(filters == null)throw new IllegalArgumentException("dont set the controlled filters to nothing");
-		myFilterSequence = filters;	
+	public void showFilterBox() {
 		
-		// TEMP DEBUG just to wire this up
-		FilterList.showReorderableFilterList(filters);
-
-		// even more temp, just debugging some stuff
-	//	mytestfilters = new FilterSequence();
-	//	FilterList.showReorderableFilterList(mytestfilters);
 		FilterBox.showFilterBox();
 	}
 
@@ -183,162 +170,6 @@ public class DemoFrame extends JFrame implements WindowListener, ImageStreamCons
 			}
 		});
 		menu.add(menuItem);
-		
-		//Build second menu in the menu bar.
-		menu = new JMenu("Filters");
-		menu.setMnemonic(KeyEvent.VK_N);
-		
-		cbMenuItem = new JCheckBoxMenuItem("Grayscale");
-		cbMenuItem.setMnemonic(KeyEvent.VK_G);
-		cbMenuItem.addItemListener(new ItemListener(){
-			@Override public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == ItemEvent.SELECTED)
-				  myFilterSequence.addOrReplaceByClass(new Grayscale());
-				else if (e.getStateChange() == ItemEvent.DESELECTED)
-				   myFilterSequence.removeByClass(new Grayscale());
-			}
-		});
-		menu.add(cbMenuItem);
-
-		cbMenuItem = new JCheckBoxMenuItem("Blur");
-		cbMenuItem.setMnemonic(KeyEvent.VK_B);
-		cbMenuItem.addItemListener(new ItemListener(){
-			@Override
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == ItemEvent.SELECTED)
-				  myFilterSequence.addOrReplaceByClass(new Blur());
-				else if (e.getStateChange() == ItemEvent.DESELECTED)
-				   myFilterSequence.removeByClass(new Blur());
-			}
-		});
-		menu.add(cbMenuItem);
-		
-		cbMenuItem = new JCheckBoxMenuItem("FaceDetect");
-		cbMenuItem.setMnemonic(KeyEvent.VK_F);
-		cbMenuItem.addItemListener(new ItemListener(){
-			@Override
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == ItemEvent.SELECTED)
-				  myFilterSequence.addOrReplaceByClass(new FaceDetector());
-				else if (e.getStateChange() == ItemEvent.DESELECTED)
-				   myFilterSequence.removeByClass(new FaceDetector());
-			}
-		});
-		menu.add(cbMenuItem);
-		
-		cbMenuItem = new JCheckBoxMenuItem("Dilate");
-		cbMenuItem.setMnemonic(KeyEvent.VK_D);
-		cbMenuItem.addItemListener(new ItemListener(){
-			@Override
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == ItemEvent.SELECTED)
-				  myFilterSequence.addOrReplaceByClass(new Dilate());
-				else if (e.getStateChange() == ItemEvent.DESELECTED)
-				   myFilterSequence.removeByClass(new Dilate());
-			}
-		});
-		menu.add(cbMenuItem);
-		
-		cbMenuItem = new JCheckBoxMenuItem("Erode");
-		cbMenuItem.setMnemonic(KeyEvent.VK_E);
-		cbMenuItem.addItemListener(new ItemListener(){
-			@Override
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == ItemEvent.SELECTED)
-				  myFilterSequence.addOrReplaceByClass(new Erode());
-				else if (e.getStateChange() == ItemEvent.DESELECTED)
-				   myFilterSequence.removeByClass(new Erode());
-			}
-		});
-		menu.add(cbMenuItem);
-
-		cbMenuItem = new JCheckBoxMenuItem("Profile");
-		cbMenuItem.setMnemonic(KeyEvent.VK_P);
-		cbMenuItem.addItemListener(new ItemListener(){
-			@Override
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == ItemEvent.SELECTED)
-				  myFilterSequence.addOrReplaceByClass(new ProfileDetector());
-				else if (e.getStateChange() == ItemEvent.DESELECTED)
-				   myFilterSequence.removeByClass(new ProfileDetector());
-			}
-		});
-		menu.add(cbMenuItem);
-
-		cbMenuItem = new JCheckBoxMenuItem("EyeGlasses");
-		cbMenuItem.addItemListener(new ItemListener(){
-			@Override
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == ItemEvent.SELECTED)
-				  myFilterSequence.addOrReplaceByClass(new GlassesDetector());
-				else if (e.getStateChange() == ItemEvent.DESELECTED)
-				   myFilterSequence.removeByClass(new GlassesDetector());
-			}
-		});
-		menu.add(cbMenuItem);
-
-		cbMenuItem = new JCheckBoxMenuItem("Banana");
-		cbMenuItem.addItemListener(new ItemListener(){
-			@Override
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == ItemEvent.SELECTED)
-				  myFilterSequence.addOrReplaceByClass(new BananaDetector());
-				else if (e.getStateChange() == ItemEvent.DESELECTED)
-				   myFilterSequence.removeByClass(new BananaDetector());
-			}
-		});
-		menu.add(cbMenuItem);
-		
-		cbMenuItem = new JCheckBoxMenuItem("Farneback Optical Flow");
-		cbMenuItem.setMnemonic(KeyEvent.VK_F);
-		cbMenuItem.addItemListener(new ItemListener(){
-			@Override
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == ItemEvent.SELECTED)
-				  myFilterSequence.addOrReplaceByClass(new Farneback());
-				else if (e.getStateChange() == ItemEvent.DESELECTED)
-				   myFilterSequence.removeByClass(new Farneback());
-			}
-		});
-		menu.add(cbMenuItem);
-		
-		cbMenuItem = new JCheckBoxMenuItem("RGB to HSV");
-		cbMenuItem.addItemListener(new ItemListener(){
-			@Override
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == ItemEvent.SELECTED)
-				  myFilterSequence.addOrReplaceByClass(new RGBtoHSV());
-				else if (e.getStateChange() == ItemEvent.DESELECTED)
-				   myFilterSequence.removeByClass(new RGBtoHSV());
-			}
-		});
-		menu.add(cbMenuItem);
-		
-		cbMenuItem = new JCheckBoxMenuItem("Color Threshold");
-		cbMenuItem.addItemListener(new ItemListener(){
-			@Override
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == ItemEvent.SELECTED)
-				  myFilterSequence.addOrReplaceByClass(new ColorThreshold());
-				else if (e.getStateChange() == ItemEvent.DESELECTED)
-				   myFilterSequence.removeByClass(new ColorThreshold());
-			}
-		});
-		menu.add(cbMenuItem);
-		
-		cbMenuItem = new JCheckBoxMenuItem("Contour");
-		cbMenuItem.addItemListener(new ItemListener(){
-			@Override
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == ItemEvent.SELECTED)
-				  myFilterSequence.addOrReplaceByClass(new Contour());
-				else if (e.getStateChange() == ItemEvent.DESELECTED)
-				   myFilterSequence.removeByClass(new Contour());
-			}
-		});
-		menu.add(cbMenuItem);
-		
-		myMenuBar.add(menu);
 		
 		menu = new JMenu("Arguments");
 		

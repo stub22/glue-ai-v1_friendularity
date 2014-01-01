@@ -35,11 +35,7 @@ public class JVisionLauncher extends BasicDebugger implements Quitter {
 	public boolean  attemptInit() {
 		boolean connectedOK = myEngine.connect();
 		if (connectedOK) {
-			FilterSequence fseq = myEngine.getFilterSeq();
-			myDemoFrame.setControlledFilterSequence(fseq);
-			
-			ImageStreamBroker.getDefaultImageStreamBroker().alwaysAddImageStreamConsumer(
-					JVisionEngine.JVISION_IS_NAME, myDemoFrame);
+			myDemoFrame.showFilterBox();
 
 			myEngine.setQuitter(this);
 			return startThread();

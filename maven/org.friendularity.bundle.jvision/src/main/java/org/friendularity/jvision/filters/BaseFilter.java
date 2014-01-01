@@ -3,7 +3,7 @@ package org.friendularity.jvision.filters;
 import org.opencv.core.Mat;
 
 /*
- * Abstract base class for an image processing filter
+ * All image processing filters implement BaseFilter
  * 
  */
 public interface BaseFilter {
