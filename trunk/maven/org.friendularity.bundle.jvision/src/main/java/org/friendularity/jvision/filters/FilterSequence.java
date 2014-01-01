@@ -7,11 +7,7 @@ import javax.swing.ListModel;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 import org.appdapter.core.log.BasicDebugger;
-import org.friendularity.jvision.broker.ImageStreamBroker;
-import org.friendularity.jvision.broker.ImageStreamImage;
-import org.friendularity.jvision.broker.ImageStreamProducer;
 import org.friendularity.jvision.broker.SimpleImageStreamProducer;
-import org.friendularity.jvision.engine.JVisionEngine;
 
 import org.opencv.core.Mat;
 
@@ -40,7 +36,6 @@ public class FilterSequence extends BasicDebugger implements BaseFilter, ListMod
 			BaseFilter f = filters.get(index);
 			Mat temp = new Mat();
 			f.apply(in, temp);
-			broadcast(temp, f.getClass().getSimpleName());
 			
 			applyIndexed(temp, index + 1 , out);
 		}
@@ -66,21 +61,6 @@ public class FilterSequence extends BasicDebugger implements BaseFilter, ListMod
 			}
 		}		
 		filterSequenceChanged();
-	}
-
-	private void broadcast(Mat image, String msg) {
-		String fname = "jvision.filter." + msg;
-		
-		if(!broadcasters.containsKey(fname))
-		{
-			SimpleImageStreamProducer sisp = 
-					new SimpleImageStreamProducer(fname);
-			ImageStreamBroker.getDefaultImageStreamBroker().addImageStreamProducer(sisp);
-			broadcasters.put(fname, sisp);
-		}
-		SimpleImageStreamProducer isp = broadcasters.get(fname);
-		isp.setConsumedImage(new ImageStreamImage(image));
-		isp.setConsumedMessage(msg);
 	}
 
 	// ========================  Interface ListModel ==========================

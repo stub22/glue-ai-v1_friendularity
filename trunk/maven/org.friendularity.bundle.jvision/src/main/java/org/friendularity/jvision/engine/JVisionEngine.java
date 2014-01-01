@@ -31,26 +31,20 @@ import org.friendularity.jvision.gui.FileLocations;
 import org.opencv.imgproc.Imgproc;
 
 /**
- *  Core class that runs the jvision processing loop.
+ *  Core class that runs the jvision processing loop and publishes the
+ * camera
  * 
  * @author Annie
  */
 public class JVisionEngine extends BasicDebugger implements Runnable {
-
-	public static final String JVISION_IS_NAME = "jvision.out";
 	public static final String CAMERA_NAME = "jvision.camera";
-	
 	private static JVisionEngine sDefaultJVisionEngine = null;
 	private VideoCapture myVidCapture;
 	private Mat myCameraImage_Mat;
-	private FilterSequence myFilterSeq;
-	private SimpleImageStreamProducer myISP = new SimpleImageStreamProducer(JVISION_IS_NAME);
 	private SimpleImageStreamProducer myCameraISP = new SimpleImageStreamProducer(CAMERA_NAME);
-
-	private Quitter myQuitter;
-	private long mLastFrameTime = 0l;
-	
 	private final Object cameraToken = new Object();
+	
+	private Quitter myQuitter;
 
 	public static JVisionEngine getDefaultJVisionEngine() {
 		if (sDefaultJVisionEngine == null) {
@@ -62,13 +56,7 @@ public class JVisionEngine extends BasicDebugger implements Runnable {
 
 	private JVisionEngine() {
 		super();
-		
-		ImageStreamBroker.getDefaultImageStreamBroker().addImageStreamProducer(myISP);
 		ImageStreamBroker.getDefaultImageStreamBroker().addImageStreamProducer(myCameraISP);
-	}
-
-	public FilterSequence getFilterSeq() {
-		return myFilterSeq;
 	}
 
 	public void setQuitter(Quitter q) {
@@ -93,9 +81,7 @@ public class JVisionEngine extends BasicDebugger implements Runnable {
 
 		boolean connectedFlag = false;
 		try {
-
-			myFilterSeq = new FilterSequence();
-
+			getLogger().info("opening native library often takes 5-10 seconds");
 			getLogger().info("Opening native library handle for OpenCV " + Core.VERSION);
 			System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 
@@ -134,30 +120,20 @@ public class JVisionEngine extends BasicDebugger implements Runnable {
 		}
 		myCameraISP.setConsumedImage(new ImageStreamImage(myCameraImage_Mat));
 		
-		long t = System.nanoTime();
-		Mat filtered_camera_image = new Mat();
-		myFilterSeq.apply(myCameraImage_Mat, filtered_camera_image);
-		myISP.setConsumedImage(new ImageStreamImage(filtered_camera_image));
-		
-		long new_t = System.nanoTime();
+		// Stu - I'm going to add a new, better timing display scheme, I had to remove this
+		// hacky one to do it. I want to put in hooks that eventually will be some CV performance
+		// profiler
 
-		double ns = (new_t - t) / 1000000000.0;  // frametime in sec
-		double rate = 1.0 / ns;
-		double totalRate = 1.0 / ((new_t - mLastFrameTime) / 1000000000.0);
-		
-		myISP.setConsumedMessage(String.format("%4.0f msec/frame, %5.1f frames per second (%5.1f fps actual)",
-					(1000.0 * ns),
-					rate,
-					totalRate));
-		
-		mLastFrameTime = new_t;
-
+		// yup, always suspcious doing this, but we don't have a sleep in here
+		// and don't want to always lock up the process
 		Thread.yield();
 	}
 
 	/**
 	 * Converts/writes a Mat into a BufferedImage.
-	 *
+	 * This process takes a few msec for a 640x480 image on my desktop, so
+	 * it should be avoided if at all possible
+	 * 
 	 * @param bgr Mat of type CV_8UC3 or CV_8UC1
 	 * @return BufferedImage of type TYPE_INT_RGB or TYPE_BYTE_GRAY
 	 */
@@ -200,6 +176,7 @@ public class JVisionEngine extends BasicDebugger implements Runnable {
      [java] 	at org.friendularity.jvision.engine.JVisionEngine.run(JVisionEngine.java:256)
 	 * 
 	 Stu - clearly something isn't playing nice among OpenGL, OpenCV and Java.
+	 
  */			
 			bgr.get(0, 0, b);
 
@@ -209,13 +186,13 @@ public class JVisionEngine extends BasicDebugger implements Runnable {
 				int base = y * width * channels;
 
 				for (int x = 0; x < width; x++) {
-          // This is the base of the performance issues with htis routine
+          // This is the base of the performance issues with this routine
 
 					// this operation is really inefficient!
 					//  bgr.get(y,x,px);
           
           // this can be improved further by copying back out of the array in some
-          // fancier way
+          // fancier way perhaps.
 					rgb[0] = b[base + 3 * x + 2];
 					rgb[1] = b[base + 3 * x + 1];
 					rgb[2] = b[base + 3 * x];
@@ -246,7 +223,8 @@ public class JVisionEngine extends BasicDebugger implements Runnable {
 				} catch (Throwable t) {
 					errorCount++;
 					// TODO : set a "quit-reason" so outer layers can decide whether to try restart.
-					getLogger().error("Exception # " + errorCount + " (out of " + MAX_ERRORS_ALLOWED + " allowed) caught during processOneFrame", t);
+					getLogger().error("Exception # " + errorCount + " (out of " + 
+							MAX_ERRORS_ALLOWED + " allowed) caught during processOneFrame", t);
 					if (t instanceof InterruptedException) {
 						getLogger().warn("JVision run() got InterruptedException, run loop will quit.");
 						myQuitter.setWantsToQuit(true);
@@ -269,6 +247,10 @@ public class JVisionEngine extends BasicDebugger implements Runnable {
 		myQuitter.notifyQuitCompleted();
 	}
 
+	/**
+	 * retained because it's a useful sample, and because the method name is memorable
+	 * 
+	 */
 	public void testWithSomeDuckFiles() {
 		Mat image = Highgui.imread(FileLocations.imageBase() + "duck.jpg", 1);
 		Mat grayimage = new Mat();
@@ -278,7 +260,6 @@ public class JVisionEngine extends BasicDebugger implements Runnable {
 		Highgui.imwrite(FileLocations.imageBase() + "grayduck.png", grayimage);
 
 		Mat someimage = new Mat();
-
 
 		image.convertTo(someimage, 0, 0.5);
 		Highgui.imwrite(FileLocations.imageBase() + "outduck.png", someimage);

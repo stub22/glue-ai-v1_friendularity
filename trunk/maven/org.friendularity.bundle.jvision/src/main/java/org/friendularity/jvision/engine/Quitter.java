@@ -17,7 +17,7 @@ package org.friendularity.jvision.engine;
 
 /**
  *
- * @author Owner
+ * @author Annie
  */
 public interface Quitter {
 	public void setWantsToQuit(boolean timeToQuit);

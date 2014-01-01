@@ -22,6 +22,7 @@ import org.friendularity.jvision.gui.FilterBox;
 
 /**
  * Singleton that acts as a builder for new CVChains and their controls
+ * 
  * @see CVChain 
  * for a discussion of CVChains
  * 

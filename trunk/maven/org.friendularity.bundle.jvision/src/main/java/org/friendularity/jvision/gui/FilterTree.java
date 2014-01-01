@@ -15,16 +15,6 @@
  */
 package org.friendularity.jvision.gui;
 
-import java.awt.dnd.DragGestureEvent;
-import java.awt.dnd.DragGestureListener;
-import java.awt.dnd.DragSourceDragEvent;
-import java.awt.dnd.DragSourceDropEvent;
-import java.awt.dnd.DragSourceEvent;
-import java.awt.dnd.DragSourceListener;
-import java.awt.dnd.DropTargetDragEvent;
-import java.awt.dnd.DropTargetDropEvent;
-import java.awt.dnd.DropTargetEvent;
-import java.awt.dnd.DropTargetListener;
 import javax.swing.JTree;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
@@ -49,8 +39,7 @@ import org.friendularity.jvision.filters.RGBtoHSV;
  *
  * @author Annie
  */
-public class FilterTree extends JTree implements TreeSelectionListener, 
-		DragSourceListener, DropTargetListener, DragGestureListener {
+public class FilterTree extends JTree implements TreeSelectionListener {
 
 	public static final int ALL_FILTERS = 1;
 	
@@ -145,6 +134,11 @@ public class FilterTree extends JTree implements TreeSelectionListener,
             putClientProperty("JTree.lineStyle", lineStyle);
         }
 	}
+
+	
+	FilterInfo getCurrentFilterSelectionOrNull() {
+		return currentSelection;
+	}
 	
 	// ======================== TreeSelectionListener interface ====================
 
@@ -161,57 +155,4 @@ public class FilterTree extends JTree implements TreeSelectionListener,
            currentSelection = null;
         }
     }
-	
-	
-	FilterInfo getCurrentFilterSelectionOrNull() {
-		return currentSelection;
-	}
-
-	// ================ DragSourceListener interface =======================
-	@Override
-    public void dragEnter (DragSourceDragEvent dsde) {}
-	@Override
-    public void dragExit (DragSourceEvent dse) {}
-	@Override
-    public void dragOver (DragSourceDragEvent dsde) {}
-	@Override
-    public void dropActionChanged (DragSourceDragEvent dsde) {}
-
-	@Override
-	public void dragDropEnd(DragSourceDropEvent dsde) {
-		// a drag has ended. Don't believe we have to do anything with it
-	}
-
-	// ================= Implements DropTargetListener =====================
-	
-	@Override
-	public void dragEnter(DropTargetDragEvent dtde) {
-		dtde.rejectDrag();
-	}
-
-	@Override
-	public void dragOver(DropTargetDragEvent dtde) {
-		dtde.rejectDrag();
-	}
-
-	@Override
-	public void dropActionChanged(DropTargetDragEvent dtde) {
-		dtde.rejectDrag();
-	}
-
-	@Override
-	public void dragExit(DropTargetEvent dte) { }
-
-	@Override
-	public void drop(DropTargetDropEvent dtde) {
-		dtde.rejectDrop();
-	}
-
-	// ====================== implements DragGestureListener ============================
-	
-	@Override
-	public void dragGestureRecognized(DragGestureEvent dge) {
-		throw new UnsupportedOperationException("Not supported yet.");
-	}
-
 }
