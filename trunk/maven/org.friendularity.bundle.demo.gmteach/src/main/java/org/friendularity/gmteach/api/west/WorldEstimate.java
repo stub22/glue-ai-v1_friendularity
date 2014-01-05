@@ -19,18 +19,17 @@ package org.friendularity.gmteach.api.west;
 import org.cogchar.bind.symja.MathGate;
 import org.cogchar.render.goody.dynamic.VizShapeGroup;
 import org.cogchar.render.goody.dynamic.VizShape;
-
 import java.util.HashSet;
 import java.util.Set;
-
 import org.appdapter.core.name.Ident;
 import org.appdapter.core.name.FreeIdent;
+
 import org.cogchar.render.sys.registry.RenderRegistryClient;
 import org.friendularity.gmteach.vworld.VisionTextureMapper;
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class WorldEstimate extends ThingEstimate {
+public class WorldEstimate extends CompoundEstimate {
 
 	public static String ESTIM_NS = "http://friendularity.org/estimate#";
 	public SelfEstimate					mySelfEstim;
@@ -50,12 +49,11 @@ public class WorldEstimate extends ThingEstimate {
 		super(id);
 	}
 
-	public void ensureSubpartsExist() {
+	@Override protected void ensureSubpartsExist() {
 		if (mySelfEstim == null) {
 			Ident selfEstID = new FreeIdent(ESTIM_NS + "self_estim_88");
 			mySelfEstim = new SelfEstimate(selfEstID);
-			String selfPosVecExpr = "{5.0^Sin[$phaseAng], 6.0^(2*Cos[$phaseAng]), $phaseFrac}";
-			mySelfEstim.setPosMathExpr(selfPosVecExpr);
+			// mySelfEstim.setPosMathExpr(selfPosVecExpr);
 		}
 		if ((myPersonEstims == null) || myPersonEstims.isEmpty()) {
 			myPersonEstims = EstimateLib.makeFunPersonEstims();

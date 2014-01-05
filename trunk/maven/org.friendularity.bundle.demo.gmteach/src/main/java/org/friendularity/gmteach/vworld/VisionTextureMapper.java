@@ -53,7 +53,6 @@ import org.friendularity.jvision.broker.ImageStreamBroker;
 import org.friendularity.jvision.broker.ImageStreamConsumer;
 import org.friendularity.jvision.engine.JVisionEngine;
 
-
 /**
  *
  * @author Owner
@@ -64,25 +63,25 @@ public class VisionTextureMapper extends BasicDebugger implements ImageStreamCon
 	private Geometry myOffscreenBoxGeom, myOnscreenBoxGeom;
 	private ViewPort myOffscrenViewport;
 	private Material mCameraMaterial = new Material();
-  
 	private float angle = 0;
 
 	public void setup(RenderRegistryClient rrc) {
 		AssetManager assetMgr = rrc.getJme3AssetManager(null);
 		RenderManager renderMgr = rrc.getJme3RenderManager(null);
 		ViewportFacade viewportFacade = rrc.getOpticViewportFacade(null);
-		MatFactory matFact =  rrc.getOpticMaterialFacade(null, null);
+		MatFactory matFact = rrc.getOpticMaterialFacade(null, null);
 		TextureFactory textureFact = rrc.getOpticTextureFacade(null);
-		
+
 		Texture txtr = setupOffscreenView(renderMgr, assetMgr);
-		
+
 		myOnscreenBoxGeom = makeOnscreenTexturedBox(txtr, assetMgr);
 		DeepSceneMgr dsm = rrc.getSceneDeepFacade(null);
-		
+
 		dsm.attachTopSpatial(myOnscreenBoxGeom);
-		
+
 		getLogger().info("Attached onscreen box, offview enabled=" + myOffscrenViewport.isEnabled());
 	}
+
 	public Texture setupOffscreenView(RenderManager renderMgr, AssetManager assetMgr) {
 		Camera offCamera = new Camera(512, 512);
 
@@ -98,7 +97,7 @@ public class VisionTextureMapper extends BasicDebugger implements ImageStreamCon
 		offCamera.setLocation(new Vector3f(0f, 0f, -5f));
 		offCamera.lookAt(new Vector3f(0f, 0f, 0f), Vector3f.UNIT_Y);
 
-    
+
 		//setup framebuffer's texture
 		Texture2D offTex = new Texture2D(512, 512, Format.RGBA8);
 		offTex.setMinFilter(Texture.MinFilter.Trilinear);
@@ -114,14 +113,14 @@ public class VisionTextureMapper extends BasicDebugger implements ImageStreamCon
 		// setup framebuffer's scene
 		Box boxMesh = new Box(Vector3f.ZERO, 1, 1, 1);
 		Material material = assetMgr.loadMaterial("jme3dat/Interface/Logo/Logo.j3m");
-    mCameraMaterial = material.clone();
-    
+		mCameraMaterial = material.clone();
+
 		myOffscreenBoxGeom = new Geometry("boxOff", boxMesh);
-	//	myOffscreenBoxGeom.setMaterial(material);
-    myOffscreenBoxGeom.setMaterial(mCameraMaterial);
-    // TBD ANNIE this is probably horribly the wrong place for this
-    ImageStreamBroker.getDefaultImageStreamBroker().waitAndAddImageStreamConsumer(
-				JVisionEngine.JVISION_IS_NAME, this);
+		//	myOffscreenBoxGeom.setMaterial(material);
+		myOffscreenBoxGeom.setMaterial(mCameraMaterial);
+		// TBD ANNIE this is probably horribly the wrong place for this
+		ImageStreamBroker.getDefaultImageStreamBroker().waitAndAddImageStreamConsumer(
+			JVisionEngine.JVISION_IS_NAME, this);
 
 		// attach the scene to the viewport to be rendered
 		myOffscrenViewport.attachScene(myOffscreenBoxGeom);
@@ -132,20 +131,19 @@ public class VisionTextureMapper extends BasicDebugger implements ImageStreamCon
 //	public void simpleInitApp() {
 	//	cam.setLocation(new Vector3f(3, 3, 3));
 	//	cam.lookAt(Vector3f.ZERO, Vector3f.UNIT_Y);
-
 	public Geometry makeOnscreenTexturedBox(Texture tex, AssetManager assetMgr) {
 		//setup main scene
 		Geometry boxGeom = new Geometry("boxOn", new Box(Vector3f.ZERO, 20, 20, 20));
 
-	// 	Texture offTex = setupOffscreenView();
+		// 	Texture offTex = setupOffscreenView();
 
 		Material mat = new Material(assetMgr, "Common/MatDefs/Misc/Unshaded.j3md");
 		mat.setTexture("ColorMap", tex);
 		boxGeom.setMaterial(mat);
 		return boxGeom;
-	//	rootNode.attachChild(quad);
-	//	inputManager.addMapping(TOGGLE_UPDATE, new KeyTrigger(KeyInput.KEY_SPACE));
-	//	inputManager.addListener(this, TOGGLE_UPDATE);
+		//	rootNode.attachChild(quad);
+		//	inputManager.addMapping(TOGGLE_UPDATE, new KeyTrigger(KeyInput.KEY_SPACE));
+		//	inputManager.addListener(this, TOGGLE_UPDATE);
 	}
 
 	public void simpleUpdate(float tpf) {
@@ -167,28 +165,25 @@ public class VisionTextureMapper extends BasicDebugger implements ImageStreamCon
 		}
 	}
 
-  @Override
-  public void setConsumedImage(BufferedImage img) {
-    
-    AWTLoader awtLoader = new AWTLoader();
-	// CAUTION - this can alter img!
-	// nasty little suprise
-    Image cameraImage = awtLoader.load(img, false);
-    Texture2D cameraTex = new Texture2D(cameraImage);
-   
-    mCameraMaterial.setTexture("ColorMap", cameraTex);
-   myOffscreenBoxGeom.setMaterial(mCameraMaterial);
-  }
+	@Override
+	public void setConsumedImage(BufferedImage img) {
+/*
+		AWTLoader awtLoader = new AWTLoader();
+		// CAUTION - this can alter img!
+		// nasty little suprise
+		Image cameraImage = awtLoader.load(img, false);
+		Texture2D cameraTex = new Texture2D(cameraImage);
 
-  @Override
-  public void setConsumedMessage(String string) {
-     
-   }
+		mCameraMaterial.setTexture("ColorMap", cameraTex);
+		myOffscreenBoxGeom.setMaterial(mCameraMaterial);
+*/
+	}
+
+	@Override
+	public void setConsumedMessage(String string) {
+	}
 
 	@Override
 	public void sourceIsEnding() {
-		
 	}
-  
-   
 }

@@ -7,7 +7,7 @@ import org.appdapter.help.repo.RepoClient;
 import org.cogchar.outer.behav.demo.MasterDemo;
 import org.cogchar.outer.behav.demo.TAGraphChanWiringDemo;
 import org.cogchar.svc.behav.control.ActionCallbackMap;
-import org.friendularity.bundle.macro.jvision.LikeSuperActivator;
+import org.friendularity.bundle.demo.gmteach.LikeSuperActivator;
 import org.jflux.impl.services.rk.lifecycle.AbstractLifecycleProvider;
 import org.jflux.impl.services.rk.lifecycle.utils.DescriptorListBuilder;
 import org.jflux.impl.services.rk.lifecycle.utils.SimpleLifecycle;

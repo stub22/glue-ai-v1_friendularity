@@ -1,6 +1,11 @@
 package org.friendularity.bundle.demo.gmteach;
 
-import org.friendularity.bundle.macro.jvision.LikeSuperActivator;
+import org.appdapter.osgi.core.BundleActivatorBase;
+import org.friendularity.bundle.macro.jvision.*;
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkEvent;
+import org.osgi.framework.FrameworkListener;
 
 /**
  * This class is a bundle activator demonstrating how to start the Cogchar PUMA system, in an OSGi environment. We call such a bundle a "top" bundle, which is essentially a launchable application. This bundle can be launched using a maven command line like:
@@ -27,11 +32,40 @@ import org.friendularity.bundle.macro.jvision.LikeSuperActivator;
  * @author Stu B. <www.texpedient.com>
  */
 public class GMTEACH_DemoActivator //
-		//		extends CCRK_DemoActivator //
+		//extends CCRK_DemoActivator //
 		extends LikeSuperActivator // 
-// extends BMDActivatorSpecTest // 
-//extends BMDSpecActivator // 
-//
-{
+		// extends BMDActivatorSpecTest // 
+		//extends BMDSpecActivator // 
+		//
+		implements BundleActivator, FrameworkListener {
+
+	BundleActivatorBase bundleActivatorBase = null;
+	private boolean booleanStart = true;
+
+	public GMTEACH_DemoActivator() {
+		//bundleActivatorBase = new CCRK_DemoActivator();
+		booleanStart = true;
+	}
+
+	@Override public void frameworkEvent(FrameworkEvent event) {
+		super.frameworkEvent(event);
+		if (bundleActivatorBase != null && bundleActivatorBase != this)
+			bundleActivatorBase.frameworkEvent(event);
+	}
+
+	public void start(BundleContext bundleCtx) throws Exception {
+		// TODO Auto-generated method stub
+		if (booleanStart)
+			super.start(bundleCtx);
+		if (bundleActivatorBase != null && bundleActivatorBase != this)
+			bundleActivatorBase.start(bundleCtx);
+	}
+
+	@Override public void stop(BundleContext context) throws Exception {
+		if (booleanStart)
+			super.stop(context);
+		if (bundleActivatorBase != null && bundleActivatorBase != this)
+			bundleActivatorBase.stop(context);
+	}
 
 }

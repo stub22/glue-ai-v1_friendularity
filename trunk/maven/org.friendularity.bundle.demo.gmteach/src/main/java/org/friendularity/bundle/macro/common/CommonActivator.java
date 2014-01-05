@@ -17,6 +17,7 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 
 import ext.osgi.common.MacroBundleActivatorBase;
+import org.appdapter.osgi.core.BundleActivatorBase;
 
 /*
  *
@@ -26,7 +27,7 @@ import ext.osgi.common.MacroBundleActivatorBase;
  * @author Stu B. <www.texpedient.com>
  *  @author DMiles@logicmoo.org
  */
-public abstract class CommonActivator extends MacroBundleActivatorBase {
+public abstract class CommonActivator extends BundleActivatorBase {
 
 	public final static String ROBOT_CONNECTION_ENV_VAR_KEY = "com.hrkind.robot.connections";
 	// mimic the repo semantics we've been using in PUMA Boots
@@ -59,5 +60,6 @@ public abstract class CommonActivator extends MacroBundleActivatorBase {
 	public void stop(BundleContext context) throws Exception {
 		super.stop(context);
 	}
+
 
 }
