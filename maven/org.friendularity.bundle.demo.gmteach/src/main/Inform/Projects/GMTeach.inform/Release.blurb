@@ -10,7 +10,7 @@ release to "C:\Users\Administrator\Documents\Inform\Projects\GMTeach Materials\R
 
 ! Blorb instructions
 
-storyfile leafname "Open Sesame Seed.gblorb"
+storyfile leafname "GMTEACH.gblorb"
 storyfile "C:\Users\Administrator\Documents\Inform\Projects\GMTeach.inform\Build\output.ulx" include
 ifiction "C:\Users\Administrator\Documents\Inform\Projects\GMTeach.inform\Metadata.iFiction" include
 cover "C:\pf86\Inform 7\Inform7\Extensions\Reserved\DefaultCover.jpg"
@@ -20,8 +20,8 @@ picture 1 "C:\pf86\Inform 7\Inform7\Extensions\Reserved\DefaultCover.jpg"
 
 placeholder [IFID] = "312C8B62-1C90-495C-A220-A6539E6CBBFA"
 placeholder [RELEASE] = "1"
-placeholder [YEAR] = "2013"
-placeholder [TITLE] = "Open Sesame Seed"
+placeholder [YEAR] = "2014"
+placeholder [TITLE] = "GMTEACH"
 placeholder [AUTHOR] = "GLUE-AI"
 placeholder [BLURB] = "A work of interactive fiction."
 

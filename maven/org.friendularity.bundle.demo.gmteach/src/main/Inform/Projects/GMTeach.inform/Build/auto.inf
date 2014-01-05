@@ -4294,7 +4294,7 @@ Global lightflag = false;
 ];
 
 
-Constant REQUISITION_STACK_SIZE = 3*21;
+Constant REQUISITION_STACK_SIZE = 3*22;
 Array requisition_stack --> REQUISITION_STACK_SIZE;
 Global requisition_stack_pointer = 0;
 
@@ -8330,7 +8330,7 @@ Array InitialSituation --> selfobj nothing I95_desk 551 0;
 ];
 
 [ SEED_RANDOM_NUMBER_GENERATOR_R i;
-	if (0) VM_Seed_RNG(0);
+	if (-16339) VM_Seed_RNG(-16339);
 	for (i=1: i<=100: i++) random(i);
 	rfalse;
 ];
@@ -9012,7 +9012,7 @@ Constant REL_BLOCK_HEADER ($100*6 + $$1101)*$10000;
     switch(value) {
         I66_entire_game: print "Entire Game";
         I98_introduction: print "Introduction";
-        I107_classroom: print "Classroom";
+        I107_fillingoutlessonforms: print "FillingOutLessonForms";
         default: print "<illegal scene>";
     }
 ];
@@ -9421,9 +9421,10 @@ Constant DirectionObject_10 = in_obj;
 Constant DirectionObject_11 = out_obj;
 Array Map_Storage -->
  0 0 0 0 0 0 I96_large_hand 0 0 0 0 0 ! Exits from: I95_desk
- 0 0 0 0 0 0 0 I96_large_hand 0 I99_room_of_requirements 0 0 ! Exits from: I97_small_stage
- 0 0 0 0 0 0 0 0 I97_small_stage 0 0 0 ! Exits from: I99_room_of_requirements
+ 0 0 0 0 0 0 0 I96_large_hand 0 I99_dance_floor 0 0 ! Exits from: I97_small_stage
+ 0 0 0 0 0 0 I115_pub 0 I97_small_stage 0 0 0 ! Exits from: I99_dance_floor
  0 0 0 0 0 0 0 0 0 0 0 0 ! Exits from: I111_vestry
+ 0 0 0 0 0 0 0 I99_dance_floor 0 0 0 0 ! Exits from: I115_pub
 ;
 
 Class VPH_Class;
@@ -9877,25 +9878,25 @@ Object I97_small_stage ""
     with cap_short_name "Small stage"
     has mark_as_room
     with IK1_Count 1
-    with IK1_Link I99_room_of_requirements
+    with IK1_Link I99_dance_floor
     with KD_Count 1
     with name 'small' 'stage' 
 ;
 
-Object I99_room_of_requirements ""
+Object I99_dance_floor ""
     class K1_room
-    with short_name "Room of requirements"
+    with short_name "Dance Floor"
     with description text_routine_1
     has proper
     with vector 0
     with room_index -1
     with list_together 0
-    with cap_short_name "Room of requirements"
+    with cap_short_name "Dance Floor"
     has mark_as_room
     with IK1_Count 2
     with IK1_Link I111_vestry
     with KD_Count 1
-    with name 'room' 'of' 'requirements' 
+    with name 'dance' 'floor' 
 ;
 
 Object I111_vestry ""
@@ -9907,7 +9908,7 @@ Object I111_vestry ""
     with list_together 0
     has mark_as_room
     with IK1_Count 3
-    with IK1_Link nothing
+    with IK1_Link I115_pub
     with KD_Count 1
     with name 'vestry' 
 ;
@@ -9955,6 +9956,20 @@ Object -> -> I113_barbara_s_notebook ""
     with action_bitmap 0 0 0 0 0 0 
 ;
 
+Object I115_pub ""
+    class K1_room
+    with short_name "pub"
+    with description SC_10
+    with vector 0
+    with room_index -1
+    with list_together 0
+    has mark_as_room
+    with IK1_Count 4
+    with IK1_Link nothing
+    with KD_Count 1
+    with name 'pub' 
+;
+
 Constant I65_figure_of_cover = 1;
 Constant I66_entire_game = 1;
 Constant I68_didn_t_understand_error = 1;
@@ -9989,12 +10004,12 @@ Constant I103_sex = 3;
 Constant I104_character = 4;
 Constant I105_finalise = 5;
 Constant I106_complete = 6;
-Constant I107_classroom = 3;
+Constant I107_fillingoutlessonforms = 3;
 Constant I110_file_of_player_s_script = 1;
 Constant I114_file_of_barbara_s_obser = 2;
 Array Global_Vars -->
   (false) ! 7
-  (SC_10) ! 24
+  (SC_11) ! 24
   (SC_2) ! 29
   (EMPTY_TEXT_VALUE) ! 30
   (EMPTY_TEXT_VALUE) ! 31
@@ -10007,16 +10022,16 @@ Array Global_Vars -->
   (EMPTY_TEXT_VALUE) ! 53
   (0) ! 54
   (0) ! 55
-  (SC_11) ! 56
-  (SC_10) ! 57
+  (SC_12) ! 56
+  (SC_11) ! 57
   (text_routine_3) ! 58
-  (SC_10) ! 59
-  (SC_12) ! 60
-  (SC_10) ! 61
-  (SC_13) ! 62
-  (SC_10) ! 63
-  (SC_14) ! 64
-  (SC_10) ! 65
+  (SC_11) ! 59
+  (SC_13) ! 60
+  (SC_11) ! 61
+  (SC_14) ! 62
+  (SC_11) ! 63
+  (SC_15) ! 64
+  (SC_11) ! 65
   (false) ! 66
   (false) ! 67
   (false) ! 68
@@ -10031,12 +10046,13 @@ Array Global_Vars -->
   (EMPTY_TEXT_VALUE) ! 77
   (nothing) ! 78
   (nothing) ! 79
+  (0) ! 80
 ;
 
 
 
 Array T0_final_question_options table  tab_0_0 tab_0_1 tab_0_2 tab_0_3 tab_0_4;
-Array tab_0_0 table $0064 0  (SC_15)  (SC_16)  (SC_17)  (SC_18)  (SC_19) ;
+Array tab_0_0 table $0064 0  (SC_16)  (SC_17)  (SC_18)  (SC_19)  (SC_20) ;
 Array tab_0_1 table $0465 1  (0)  (0)  (1)  (0)  (0) ;
 Array tab_0_2 table $2066 2  (Consult_Grammar_100)  (Consult_Grammar_101)  (Consult_Grammar_102)  (Consult_Grammar_103)  (Consult_Grammar_104) ;
 Array tab_0_3 table $0067 3  (IMMEDIATELY_RESTART_VM_R)  (IMMEDIATELY_RESTORE_SAVED_R)  TABLE_NOVALUE (IMMEDIATELY_QUIT_R)  (IMMEDIATELY_UNDO_R) ;
@@ -10044,6 +10060,10 @@ Array tab_0_4 table $0068 4  TABLE_NOVALUE TABLE_NOVALUE (V26_amusing_a_victorio
 Array T1_locale_priorities table  tab_1_0 tab_1_1;
 Array tab_1_0 table $0869 NULL  TABLE_NOVALUE TABLE_NOVALUE TABLE_NOVALUE TABLE_NOVALUE TABLE_NOVALUE TABLE_NOVALUE;
 Array tab_1_1 table $446a 5  TABLE_NOVALUE TABLE_NOVALUE TABLE_NOVALUE TABLE_NOVALUE TABLE_NOVALUE TABLE_NOVALUE;
+Array T2_quiz_questions table  tab_2_0 tab_2_1 tab_2_2;
+Array tab_2_0 table $006b 6  (SC_21)  (SC_22)  (SC_23)  (SC_24)  (SC_25) ;
+Array tab_2_1 table $066c 7  (LIST_CONST_1320)  (LIST_CONST_1331)  (LIST_CONST_1342)  (LIST_CONST_1353)  (LIST_CONST_1364) ;
+Array tab_2_2 table $446d 8  (2)  (4)  (1)  (2)  (3) ;
 Array TB_Blanks -> 
   ! For table T0_final_question_options
   $00  ! Column 0
@@ -10054,6 +10074,11 @@ Array TB_Blanks ->
   
   ! For table T1_locale_priorities
   $3f  ! Column 1
+  
+  ! For table T2_quiz_questions
+  $00  ! Column 0
+  $00  ! Column 1
+  $00  ! Column 2
   
   ! End of table
   NULL NULL;
@@ -10066,11 +10091,14 @@ Array TB_Blanks ->
         104: return KD2_activity; ! final response activity: activity
         105: return OBJECT_TY; ! notable-object: object
         106: return NUMBER_TY; ! locale description priority: number
+        107: return TEXT_TY; ! qn: text
+        108: return KD3_list_of_texts; ! options: list of texts
+        109: return NUMBER_TY; ! correct: number
     }
     return UNKNOWN_TY;
 ];
 
-Array TableOfTables --> TheEmptyTable T0_final_question_options  T1_locale_priorities  0 0;
+Array TableOfTables --> TheEmptyTable T0_final_question_options  T1_locale_priorities  T2_quiz_questions  0 0;
 
 
 
@@ -10623,9 +10651,11 @@ Array ActionHappened --> 0 0 0 0 0 0;
 ! ----------------------------------------------------------------------------------------------------
 ! Rules in rulebook: Every turn (B9_every_turn)
 ! ----------------------------------------------------------------------------------------------------
-! Rule 1/2 ! Every turn when introduction is happening ( this is the set open sesame rule ):
+! Rule 1/3 ! Every turn when introduction is happening ( this is the set open sesame rule ):
+!   === which is equally specific with ===
+! Rule 2/3 ! Every turn when the location is the pub ( this is the pub rule ):
 !   >>> II - When/while requirement >>>
-! Rule 2/2 ! Every turn during Classroom:
+! Rule 3/3 ! Every turn during FillingOutLessonForms:
 ! ----------------------------------------------------------------------------------------------------
 ! No specific request
 ! Every turn when introduction is happening ( this is the set open sesame rule ):
@@ -10637,7 +10667,7 @@ Array ActionHappened --> 0 0 0 0 0 0;
        (Global_Vars-->9) = EMPTY_TEXT_VALUE; 
       ! phrase 2
       ! [2: now current prompt is ~>~]
-       (Global_Vars-->10) = SC_10; 
+       (Global_Vars-->10) = SC_11; 
       ! phrase 3
       ! [3: now punctuation removal is true]
        (Global_Vars-->30) = 1; 
@@ -10649,19 +10679,48 @@ Array ActionHappened --> 0 0 0 0 0 0;
    rfalse;
 ];
 ! No specific request
-! Every turn during Classroom:
+! Every turn when the location is the pub ( this is the pub rule ):
+[ R_790 
+    ct_0 ct_1 ! Used for table searches
+    ;
+   if ((((((real_location == I115_pub)))))) { ! Runs only while condition holds
+   if (debug_rules) DB_Rule(R_790, 790);
+      ! phrase 1
+      ! [1: choose a random row in the table of quiz questions]
+       ct_0 = T2_quiz_questions; ct_1 = TableRandomRow(ct_0); 
+      ! phrase 2
+      ! [2: now current question is the qn entry]
+       (Global_Vars-->9) = TableLookUpEntry(ct_0,107,ct_1); 
+      ! phrase 3
+      ! [3: now current question menu is the options entry]
+       BlkValueCopy((Global_Vars-->12), TableLookUpEntry(ct_0,108,ct_1)); 
+      ! phrase 4
+      ! [4: now expected answer is the correct entry]
+       (Global_Vars-->38) = TableLookUpEntry(ct_0,109,ct_1); 
+      ! phrase 5
+      ! [5: blank out the whole row]
+       TableBlankOutRow(ct_0, ct_1); 
+      ! phrase 6
+      ! [6: ask a closed question , in menu mode]
+      (PHR_740_r4 (2));
+   } ! Runs only while condition holds
+   else if (debug_rules > 1) DB_Rule(R_790, 790, true);
+   rfalse;
+];
+! No specific request
+! Every turn during FillingOutLessonForms:
 [ R_769 ;
    if (scene_status-->2 == 1) { ! Runs only during scene
    if (debug_rules) DB_Rule(R_769, 769);
       ! phrase 1
-      ! [1: if lessonstage is name begin]
+      ! [1: if lessonforms is name begin]
        if ((((Global_Vars-->31) == I101_name)))  {
          ! phrase 2
          ! [2: now current question is ~What is your name?~]
-          (Global_Vars-->9) = SC_20; 
+          (Global_Vars-->9) = SC_26; 
          ! phrase 3
          ! [3: now current prompt is ~Enter your name >~]
-          (Global_Vars-->10) = SC_21; 
+          (Global_Vars-->10) = SC_27; 
          ! phrase 4
          ! [4: now punctuation removal is false]
           (Global_Vars-->30) = 0; 
@@ -10673,11 +10732,11 @@ Array ActionHappened --> 0 0 0 0 0 0;
          }
 
       ! phrase 7
-      ! [7: if lessonstage is age begin]
+      ! [7: if lessonforms is age begin]
        if ((((Global_Vars-->31) == I102_age)))  {
          ! phrase 8
          ! [8: now current question is ~How old are you?~]
-          (Global_Vars-->9) = SC_22; 
+          (Global_Vars-->9) = SC_28; 
          ! phrase 9
          ! [9: ask a closed question , in number mode]
          (PHR_740_r4 (1));
@@ -10686,11 +10745,11 @@ Array ActionHappened --> 0 0 0 0 0 0;
          }
 
       ! phrase 11
-      ! [11: if lessonstage is sex begin]
+      ! [11: if lessonforms is sex begin]
        if ((((Global_Vars-->31) == I103_sex)))  {
          ! phrase 12
          ! [12: now current question is ~Do you want to play as a male, female or neutral character~]
-          (Global_Vars-->9) = SC_23; 
+          (Global_Vars-->9) = SC_29; 
          ! phrase 13
          ! [13: ask a closed question , in gender mode]
          (PHR_740_r4 (8));
@@ -10699,14 +10758,14 @@ Array ActionHappened --> 0 0 0 0 0 0;
          }
 
       ! phrase 15
-      ! [15: if lessonstage is character begin]
+      ! [15: if lessonforms is character begin]
        if ((((Global_Vars-->31) == I104_character)))  {
          ! phrase 16
          ! [16: now current question is ~Which of the following is your preferred character type:~]
-          (Global_Vars-->9) = SC_24; 
+          (Global_Vars-->9) = SC_30; 
          ! phrase 17
          ! [17: now current question menu is { ~Drummer~ , ~Keyboardist~ , ~Lipsyncer~ , ~Other Faker~ }]
-          BlkValueCopy((Global_Vars-->12), ConstantListPointers-->0); 
+          BlkValueCopy((Global_Vars-->12), ConstantListPointers-->5); 
          ! phrase 18
          ! [18: ask a closed question , in menu mode]
          (PHR_740_r4 (2));
@@ -10715,14 +10774,14 @@ Array ActionHappened --> 0 0 0 0 0 0;
          }
 
       ! phrase 20
-      ! [20: if lessonstage is finalise begin]
+      ! [20: if lessonforms is finalise begin]
        if ((((Global_Vars-->31) == I105_finalise)))  {
          ! phrase 21
          ! [21: say ~You have chosen:[line break]Name: [player's name][line break]Age: [Player's age][line break]Sex: [Player's sex][line break]Character: [Player's character][paragraph break]~]
-         say__p=1;ParaContent();  print (PrintText) SC_25; ParaContent();  new_line; ParaContent();  print (PrintText) SC_26; ParaContent();  print (INDEXED_TEXT_TY_Say) (Global_Vars-->32); ParaContent();  new_line; ParaContent();  print (PrintText) SC_27; ParaContent();  print (say__n=(Global_Vars-->33)); ParaContent();  new_line; ParaContent();  print (PrintText) SC_28; ParaContent();  print (T59) (Global_Vars-->34); ParaContent();  new_line; ParaContent();  print (PrintText) SC_29; ParaContent();  print (PrintText) (Global_Vars-->35); ParaContent();  DivideParagraphPoint(); new_line;  .L_Say2; .L_SayX2;
+         say__p=1;ParaContent();  print (PrintText) SC_31; ParaContent();  new_line; ParaContent();  print (PrintText) SC_32; ParaContent();  print (INDEXED_TEXT_TY_Say) (Global_Vars-->32); ParaContent();  new_line; ParaContent();  print (PrintText) SC_33; ParaContent();  print (say__n=(Global_Vars-->33)); ParaContent();  new_line; ParaContent();  print (PrintText) SC_34; ParaContent();  print (T59) (Global_Vars-->34); ParaContent();  new_line; ParaContent();  print (PrintText) SC_35; ParaContent();  print (PrintText) (Global_Vars-->35); ParaContent();  DivideParagraphPoint(); new_line;  .L_Say2; .L_SayX2;
          ! phrase 22
          ! [22: now current question is ~Are you happy with your responses?~]
-          (Global_Vars-->9) = SC_30; 
+          (Global_Vars-->9) = SC_36; 
          ! phrase 23
          ! [23: ask a closed question , in yes/no mode]
          (PHR_740_r4 (4));
@@ -10767,7 +10826,7 @@ Array ActionHappened --> 0 0 0 0 0 0;
 [ R_20 ;
       ! phrase 1
       ! [1: if the current item from the multiple object list is not nothing , say ~[current item from the multiple object list]: [run paragraph on]~]
-       if (((~~((multiple_object_item == nothing))))) { say__p=1;ParaContent();  print (PrintShortName) multiple_object_item; ParaContent();  print (PrintText) SC_31; ParaContent();  RunParagraphOn();  .L_Say3; .L_SayX3;  }
+       if (((~~((multiple_object_item == nothing))))) { say__p=1;ParaContent();  print (PrintShortName) multiple_object_item; ParaContent();  print (PrintText) SC_37; ParaContent();  RunParagraphOn();  .L_Say3; .L_SayX3;  }
    rfalse;
 ];
 ! No specific request
@@ -11091,7 +11150,7 @@ self = noun;
 ! ----------------------------------------------------------------------------------------------------
 ! Rules in rulebook: Instead (B21_instead)
 ! ----------------------------------------------------------------------------------------------------
-! Rule 1/4 ! Instead of doing anything in the room of requirements when Classroom is happening:
+! Rule 1/4 ! Instead of doing anything in the Dance Floor when FillingOutLessonForms is happening:
 !   >>> I - Number of aspects constrained >>>
 ! Rule 2/4 ! Instead of doing anything other than examining the large hand:
 !   >>> III.3.2 - Action/What/Thing Acted On >>>
@@ -11100,13 +11159,13 @@ self = noun;
 ! Rule 4/4 ! Instead of examining a fresh scriptcontext ( called the pad ):
 ! ----------------------------------------------------------------------------------------------------
 ! No specific request
-! Instead of doing anything in the room of requirements when Classroom is happening:
+! Instead of doing anything in the Dance Floor when FillingOutLessonForms is happening:
 [ R_767 ;
-   if ( (actor==player) && ((real_location == I99_room_of_requirements) && (true)) && (self=actor,true) && ((((scene_status-->(I107_classroom-1)==1))))) { ! Runs only when pattern matches
+   if ( (actor==player) && ((real_location == I99_dance_floor) && (true)) && (self=actor,true) && ((((scene_status-->(I107_fillingoutlessonforms-1)==1))))) { ! Runs only when pattern matches
    if (debug_rules) DB_Rule(R_767, 767);
       ! phrase 1
       ! [1: say ~You are under a strange compulsion and unable to move.~]
-      say__p=1;ParaContent();  print (PrintText) SC_32;  new_line; .L_Say4; .L_SayX4;
+      say__p=1;ParaContent();  print (PrintText) SC_38;  new_line; .L_Say4; .L_SayX4;
       RulebookFails(); rtrue;
    } ! Runs only when pattern matches
    else if (debug_rules > 1) DB_Rule(R_767, 767, true);
@@ -11120,7 +11179,7 @@ self = noun;
    if (debug_rules) DB_Rule(R_763, 763);
       ! phrase 1
       ! [1: say ~There is an aura of magic about the large grumpity hand that prevents you doing this.  Perhaps name the notes of the musical bar: say egbdf~]
-      say__p=1;ParaContent();  print (PrintText) SC_33;  .L_Say5; .L_SayX5;
+      say__p=1;ParaContent();  print (PrintText) SC_39;  .L_Say5; .L_SayX5;
       RulebookFails(); rtrue;
    } ! Runs only when pattern matches
    else if (debug_rules > 1) DB_Rule(R_763, 763, true);
@@ -11152,10 +11211,31 @@ self = noun;
    if (debug_rules) DB_Rule(R_781, 781);
       ! phrase 1
       ! [1: say ~There is nothing of note in [the pad].~]
-      say__p=1;ParaContent();  print (PrintText) SC_34; ParaContent();  print (the) t_0; ParaContent();  print (PrintText) SC_35;  new_line; .L_Say6; .L_SayX6;
+      say__p=1;ParaContent();  print (PrintText) SC_40; ParaContent();  print (the) t_0; ParaContent();  print (PrintText) SC_41;  new_line; .L_Say6; .L_SayX6;
       RulebookFails(); rtrue;
    } ! Runs only when pattern matches
    else if (debug_rules > 1) DB_Rule(R_781, 781, true);
+   rfalse;
+];
+! ----------------------------------------------------------------------------------------------------
+
+! ----------------------------------------------------------------------------------------------------
+! Rules in rulebook: After (B24_after)
+! ----------------------------------------------------------------------------------------------------
+! Rule 1/1 ! After looking for the first time:
+! ----------------------------------------------------------------------------------------------------
+! No specific request
+! After looking for the first time:
+[ R_789 ;
+   if ((PAPR_0() && (((TimesActionHasHappened-->0) == 1) && (ActionCurrentlyHappeningFlag->0)))) { ! Runs only when pattern matches
+self = noun;
+   if (debug_rules) DB_Rule(R_789, 789);
+      ! phrase 1
+      ! [1: follow the pub rule]
+       FollowRulebook(R_790); 
+      RulebookSucceeds(); rtrue;
+   } ! Runs only when pattern matches
+   else if (debug_rules > 1) DB_Rule(R_789, 789, true);
    rfalse;
 ];
 ! ----------------------------------------------------------------------------------------------------
@@ -11242,7 +11322,7 @@ self = noun;
    if (debug_rules) DB_Rule(R_60, 60);
       ! phrase 1
       ! [1: say ~[listing group size in words] ~]
-      say__p=1;ParaContent();  print (number) say__n=(listing_size); ParaContent();  print (PrintText) SC_36;  .L_Say8; .L_SayX8;
+      say__p=1;ParaContent();  print (number) say__n=(listing_size); ParaContent();  print (PrintText) SC_42;  .L_Say8; .L_SayX8;
       ! phrase 2
       ! [2: carry out the printing the plural name activity with the item]
        CarryOutActivity(V1_printing_the_plural_name_, t_0); 
@@ -11512,7 +11592,7 @@ self = noun;
        BlkValueCast((Global_Vars-->13), INDEXED_TEXT_TY, SNIPPET_TY, players_command); 
       ! phrase 2
       ! [2: replace the regular expression ~@@94say ~ in the current answer with ~~ , case insensitively]
-       IT_Replace_RE(REGEXP_BLOB, (Global_Vars-->13), BlkValueCast((blockv_stack-->(I7BASPL+0)),INDEXED_TEXT_TY,TEXT_TY,SC_37),
+       IT_Replace_RE(REGEXP_BLOB, (Global_Vars-->13), BlkValueCast((blockv_stack-->(I7BASPL+0)),INDEXED_TEXT_TY,TEXT_TY,SC_43),
 		BlkValueCast((blockv_stack-->(I7BASPL+1)),INDEXED_TEXT_TY,TEXT_TY,EMPTY_TEXT_VALUE), 1); 
       ! phrase 3
       ! [3: follow the text question rules]
@@ -11567,7 +11647,7 @@ self = noun;
    if (debug_rules) DB_Rule(R_785, 785);
       ! phrase 1
       ! [1: now the command prompt is ~>~]
-       (Global_Vars-->1) = SC_10; 
+       (Global_Vars-->1) = SC_11; 
       ! phrase 2
       ! [2: write in target scriptcontext]
       (Resolver_2((Global_Vars-->37),"source", 178));
@@ -11576,7 +11656,7 @@ self = noun;
        (Adj_75_t2_v9((Global_Vars-->37))); 
       ! phrase 4
       ! [4: say ~You finish writing and fold your notebook away.~]
-      say__p=1;ParaContent();  print (PrintText) SC_38;  new_line; .L_Say9; .L_SayX9;
+      say__p=1;ParaContent();  print (PrintText) SC_44;  new_line; .L_Say9; .L_SayX9;
       ! phrase 5
       ! [5: now the target scriptcontext is nothing]
        (Global_Vars-->37) = nothing; 
@@ -11775,7 +11855,7 @@ self = noun;
        if (((t_0 < 1))) {  if (ProcessRulebook(IMMEDIATELY_QUIT_R)) rtrue;   }
       ! phrase 10
       ! [10: say ~Would you like to ~]
-      say__p=1;ParaContent();  print (PrintText) SC_39;  .L_Say10; .L_SayX10;
+      say__p=1;ParaContent();  print (PrintText) SC_45;  .L_Say10; .L_SayX10;
       ! phrase 11
       ! [11: repeat through the table of final question options begin]
        @push ct_0; @push ct_1;
@@ -11802,23 +11882,23 @@ self = noun;
                    if (((t_0 == 0)))  {
                      ! phrase 18
                      ! [18: say ~?[line break]~]
-                     say__p=1;ParaContent();  print (PrintText) SC_40; ParaContent();  new_line;  .L_Say12; .L_SayX12;
+                     say__p=1;ParaContent();  print (PrintText) SC_46; ParaContent();  new_line;  .L_Say12; .L_SayX12;
                      ! phrase 19
                      ! [19: otherwise if the named options count is 1]
                       } else if (((t_0 == 1))) { 
                      ! phrase 20
                      ! [20: if the serial comma option is active , say ~,~]
-                      if ((((Adj_22_t1_v15(5))))) { say__p=1;ParaContent();  print (PrintText) SC_41;  .L_Say13; .L_SayX13;  }
+                      if ((((Adj_22_t1_v15(5))))) { say__p=1;ParaContent();  print (PrintText) SC_47;  .L_Say13; .L_SayX13;  }
                      ! phrase 21
                      ! [21: say ~ or ~]
-                     say__p=1;ParaContent();  print (PrintText) SC_42;  .L_Say14; .L_SayX14;
+                     say__p=1;ParaContent();  print (PrintText) SC_48;  .L_Say14; .L_SayX14;
                      ! phrase 22
                      ! [22: otherwise]
                      } else {
 
                      ! phrase 23
                      ! [23: say ~, ~]
-                     say__p=1;ParaContent();  print (PrintText) SC_43;  .L_Say15; .L_SayX15;
+                     say__p=1;ParaContent();  print (PrintText) SC_49;  .L_Say15; .L_SayX15;
                      ! phrase 24
                      ! [24: end if]
                      }
@@ -11847,7 +11927,7 @@ self = noun;
 [ R_68 ;
       ! phrase 1
       ! [1: say ~> [run paragraph on]~]
-      say__p=1;ParaContent();  print (PrintText) SC_44; ParaContent();  RunParagraphOn();  .L_Say16; .L_SayX16;
+      say__p=1;ParaContent();  print (PrintText) SC_50; ParaContent();  RunParagraphOn();  .L_Say16; .L_SayX16;
    rfalse;
 ];
 ! ----------------------------------------------------------------------------------------------------
@@ -12100,40 +12180,40 @@ self = noun;
                 if (((t_0 ofclass K1_room)))  {
                   ! phrase 22
                   ! [22: if the domain is the location , say ~You ~]
-                   if (((t_0 == real_location))) { say__p=1;ParaContent();  print (PrintText) SC_45;  .L_Say17; .L_SayX17;  }
+                   if (((t_0 == real_location))) { say__p=1;ParaContent();  print (PrintText) SC_51;  .L_Say17; .L_SayX17;  }
                   ! phrase 23
                   ! [23: otherwise say ~In [the domain] you ~]
-                   else { say__p=1;ParaContent();  print (PrintText) SC_46; ParaContent();  print (the) t_0; ParaContent();  print (PrintText) SC_47;  .L_Say18; .L_SayX18;  }
+                   else { say__p=1;ParaContent();  print (PrintText) SC_52; ParaContent();  print (the) t_0; ParaContent();  print (PrintText) SC_53;  .L_Say18; .L_SayX18;  }
                   ! phrase 24
                   ! [24: otherwise if the domain is a supporter]
                    } else if (((t_0 ofclass K6_supporter))) { 
                   ! phrase 25
                   ! [25: say ~On [the domain] you ~]
-                  say__p=1;ParaContent();  print (PrintText) SC_48; ParaContent();  print (the) t_0; ParaContent();  print (PrintText) SC_47;  .L_Say19; .L_SayX19;
+                  say__p=1;ParaContent();  print (PrintText) SC_54; ParaContent();  print (the) t_0; ParaContent();  print (PrintText) SC_53;  .L_Say19; .L_SayX19;
                   ! phrase 26
                   ! [26: otherwise if the domain is an animal]
                    } else if (((t_0 ofclass K12_animal))) { 
                   ! phrase 27
                   ! [27: say ~On [the domain] you ~]
-                  say__p=1;ParaContent();  print (PrintText) SC_48; ParaContent();  print (the) t_0; ParaContent();  print (PrintText) SC_47;  .L_Say20; .L_SayX20;
+                  say__p=1;ParaContent();  print (PrintText) SC_54; ParaContent();  print (the) t_0; ParaContent();  print (PrintText) SC_53;  .L_Say20; .L_SayX20;
                   ! phrase 28
                   ! [28: otherwise]
                   } else {
 
                   ! phrase 29
                   ! [29: say ~In [the domain] you ~]
-                  say__p=1;ParaContent();  print (PrintText) SC_46; ParaContent();  print (the) t_0; ParaContent();  print (PrintText) SC_47;  .L_Say21; .L_SayX21;
+                  say__p=1;ParaContent();  print (PrintText) SC_52; ParaContent();  print (the) t_0; ParaContent();  print (PrintText) SC_53;  .L_Say21; .L_SayX21;
                   ! phrase 30
                   ! [30: end if]
                   }
 
                ! phrase 31
                ! [31: say ~can [if the locale paragraph count is greater than 0]also [end if]see ~]
-               say__p=1;ParaContent();  print (PrintText) SC_49; 
+               say__p=1;ParaContent();  print (PrintText) SC_55; 
 	if (~~(((((Global_Vars-->8) > 0))))) jump L_Say22;
-		ParaContent();  print (PrintText) SC_50; 
+		ParaContent();  print (PrintText) SC_56; 
 	.L_Say22; .L_SayX22;
-		ParaContent();  print (PrintText) SC_51;  .L_Say23; .L_SayX23;
+		ParaContent();  print (PrintText) SC_57;  .L_Say23; .L_SayX23;
                ! phrase 32
                ! [32: let the common holder be nothing]
                 t_2 = nothing; 
@@ -12179,10 +12259,10 @@ self = noun;
 		@pull subst__v;  .L_Say24; .L_SayX24;  }
                ! phrase 44
                ! [44: if the domain is the location , say ~ here~]
-                if (((t_0 == real_location))) { say__p=1;ParaContent();  print (PrintText) SC_52;  .L_Say25; .L_SayX25;  }
+                if (((t_0 == real_location))) { say__p=1;ParaContent();  print (PrintText) SC_58;  .L_Say25; .L_SayX25;  }
                ! phrase 45
                ! [45: say ~.[paragraph break]~]
-               say__p=1;ParaContent();  print (PrintText) SC_35; ParaContent();  DivideParagraphPoint(); new_line;  .L_Say26; .L_SayX26;
+               say__p=1;ParaContent();  print (PrintText) SC_41; ParaContent();  DivideParagraphPoint(); new_line;  .L_Say26; .L_SayX26;
                ! phrase 46
                ! [46: unfilter list recursion]
                 list_filter_routine = 0; 
@@ -12443,13 +12523,13 @@ self = noun;
 
                ! phrase 13
                ! [13: say ~On [the item] ~]
-               say__p=1;ParaContent();  print (PrintText) SC_48; ParaContent();  print (the) t_0; ParaContent();  print (PrintText) SC_36;  .L_Say31; .L_SayX31;
+               say__p=1;ParaContent();  print (PrintText) SC_54; ParaContent();  print (the) t_0; ParaContent();  print (PrintText) SC_42;  .L_Say31; .L_SayX31;
                ! phrase 14
                ! [14: list the contents of the item , as a sentence , including contents , giving brief inventory information , tersely , not listing concealed items , prefacing with is/are , listing marked items only]
                 WriteListFrom(child(t_0), 3800); 
                ! phrase 15
                ! [15: say ~.[paragraph break]~]
-               say__p=1;ParaContent();  print (PrintText) SC_35; ParaContent();  DivideParagraphPoint(); new_line;  .L_Say32; .L_SayX32;
+               say__p=1;ParaContent();  print (PrintText) SC_41; ParaContent();  DivideParagraphPoint(); new_line;  .L_Say32; .L_SayX32;
                ! phrase 16
                ! [16: end if]
                }
@@ -12517,13 +12597,13 @@ self = noun;
              (Global_Vars-->8) = (Global_Vars-->8) + 1; 
             ! phrase 11
             ! [11: say ~On [the item] ~]
-            say__p=1;ParaContent();  print (PrintText) SC_48; ParaContent();  print (the) t_0; ParaContent();  print (PrintText) SC_36;  .L_Say33; .L_SayX33;
+            say__p=1;ParaContent();  print (PrintText) SC_54; ParaContent();  print (the) t_0; ParaContent();  print (PrintText) SC_42;  .L_Say33; .L_SayX33;
             ! phrase 12
             ! [12: list the contents of the item , as a sentence , including contents , giving brief inventory information , tersely , not listing concealed items , prefacing with is/are , listing marked items only]
              WriteListFrom(child(t_0), 3800); 
             ! phrase 13
             ! [13: say ~.[paragraph break]~]
-            say__p=1;ParaContent();  print (PrintText) SC_35; ParaContent();  DivideParagraphPoint(); new_line;  .L_Say34; .L_SayX34;
+            say__p=1;ParaContent();  print (PrintText) SC_41; ParaContent();  DivideParagraphPoint(); new_line;  .L_Say34; .L_SayX34;
             ! phrase 14
             ! [14: end if]
             }
@@ -12573,7 +12653,7 @@ self = noun;
        GL__M(##Inv,2,noun); 
       ! phrase 2
       ! [2: say ~:[line break]~]
-      say__p=1;ParaContent();  print (PrintText) SC_53; ParaContent();  new_line;  .L_Say35; .L_SayX35;
+      say__p=1;ParaContent();  print (PrintText) SC_59; ParaContent();  new_line;  .L_Say35; .L_SayX35;
       ! phrase 3
       ! [3: list the contents of the player , with newlines , indented , including contents , giving inventory information , with extra indentation]
        WriteListFrom(child(player), 8215); 
@@ -14169,7 +14249,7 @@ self = noun;
           if (((~~(((MStack-->MstVO(20007,3)) == nothing)))))  {
             ! phrase 49
             ! [49: say ~ ~]
-            say__p=1;ParaContent();  print (PrintText) SC_36;  .L_Say36; .L_SayX36;
+            say__p=1;ParaContent();  print (PrintText) SC_42;  .L_Say36; .L_SayX36;
             ! phrase 50
             ! [50: if the vehicle gone by is a supporter , issue actor-based library message going action number 20 for the vehicle gone by]
              if ((((MStack-->MstVO(20007,3)) ofclass K6_supporter))) {  AGL__M(##Go,20,(MStack-->MstVO(20007,3)));   }
@@ -14224,7 +14304,7 @@ self = noun;
              AGL__M(##Go,26,noun); 
             ! phrase 66
             ! [66: say ~.~]
-            say__p=1;ParaContent();  print (PrintText) SC_35;  new_line; .L_Say37; .L_SayX37;
+            say__p=1;ParaContent();  print (PrintText) SC_41;  new_line; .L_Say37; .L_SayX37;
             ! phrase 67
             ! [67: try looking]
              TryAction(0, player, ##Look, 0, 0);; 
@@ -14237,7 +14317,7 @@ self = noun;
 
          ! phrase 70
          ! [70: say ~.~]
-         say__p=1;ParaContent();  print (PrintText) SC_35;  new_line; .L_Say38; .L_SayX38;
+         say__p=1;ParaContent();  print (PrintText) SC_41;  new_line; .L_Say38; .L_SayX38;
          ! phrase 71
          ! [71: end if]
          }
@@ -17788,14 +17868,14 @@ self = noun;
 ! A number question rule ( this is the gather age rule ):
 [ R_771 ;
       ! phrase 1
-      ! [1: if classroom is happening and lessonstage is age begin]
-       if (((((scene_status-->(I107_classroom-1)==1)))) && ((((Global_Vars-->31) == I102_age))))  {
+      ! [1: if fillingoutlessonforms is happening and lessonforms is age begin]
+       if (((((scene_status-->(I107_fillingoutlessonforms-1)==1)))) && ((((Global_Vars-->31) == I102_age))))  {
          ! phrase 2
          ! [2: if the number understood is less than 5 begin]
           if (((parsed_number < 5)))  {
             ! phrase 3
             ! [3: say ~It seems improbable that one of such tender years would be venturing so far.[line break]~]
-            say__p=1;ParaContent();  print (PrintText) SC_54; ParaContent();  new_line;  .L_Say46; .L_SayX46;
+            say__p=1;ParaContent();  print (PrintText) SC_60; ParaContent();  new_line;  .L_Say46; .L_SayX46;
             ! phrase 4
             ! [4: retry]
             RulebookFails(19, RBNO_14); rtrue;
@@ -17809,7 +17889,7 @@ self = noun;
           if (((parsed_number > 111)))  {
             ! phrase 7
             ! [7: say ~Let's try to be realistic about this.~]
-            say__p=1;ParaContent();  print (PrintText) SC_55;  new_line; .L_Say47; .L_SayX47;
+            say__p=1;ParaContent();  print (PrintText) SC_61;  new_line; .L_Say47; .L_SayX47;
             ! phrase 8
             ! [8: retry]
             RulebookFails(19, RBNO_14); rtrue;
@@ -17823,9 +17903,9 @@ self = noun;
           (Global_Vars-->33) = parsed_number; 
          ! phrase 11
          ! [11: say ~Thank you: You are [the player's age] for the remainder of your venture into the unknown[line break]~]
-         say__p=1;ParaContent();  print (PrintText) SC_56; ParaContent();  print (say__n=(Global_Vars-->33)); ParaContent();  print (PrintText) SC_57; ParaContent();  new_line;  .L_Say48; .L_SayX48;
+         say__p=1;ParaContent();  print (PrintText) SC_62; ParaContent();  print (say__n=(Global_Vars-->33)); ParaContent();  print (PrintText) SC_63; ParaContent();  new_line;  .L_Say48; .L_SayX48;
          ! phrase 12
-         ! [12: now lessonstage is sex]
+         ! [12: now lessonforms is sex]
           (Global_Vars-->31) = I103_sex; 
          ! phrase 13
          ! [13: exit]
@@ -17852,11 +17932,13 @@ self = noun;
 ! ----------------------------------------------------------------------------------------------------
 ! Rules in rulebook: Menu question (B372_menu_question)
 ! ----------------------------------------------------------------------------------------------------
-! Rule 1/3 ! The first menu question rule ( this is the invalid menu reply rule ):
+! Rule 1/4 ! The first menu question rule ( this is the invalid menu reply rule ):
 ! --- now the mid-placed rules ---
-! Rule 2/3 ! A menu question rule ( this is the gather character rule ):
+! Rule 2/4 ! A menu question rule ( this is the gather character rule ):
+!   === which is equally specific with ===
+! Rule 3/4 ! A menu question rule ( this is the pub answer rule ):
 ! --- now the last-placed rules ---
-! Rule 3/3 ! The last menu question rule ( this is the default menu question rule ):
+! Rule 4/4 ! The last menu question rule ( this is the default menu question rule ):
 ! ----------------------------------------------------------------------------------------------------
 ! No specific request
 ! From "questions" by Michael Callaghan
@@ -17921,8 +18003,8 @@ self = noun;
     t_0 ! Local variable e.g. '?-1,-1?' = number
     ;
       ! phrase 1
-      ! [1: if classroom is happening and lessonstage is character begin]
-       if (((((scene_status-->(I107_classroom-1)==1)))) && ((((Global_Vars-->31) == I104_character))))  {
+      ! [1: if fillingoutlessonforms is happening and lessonforms is character begin]
+       if (((((scene_status-->(I107_fillingoutlessonforms-1)==1)))) && ((((Global_Vars-->31) == I104_character))))  {
          ! phrase 2
          ! [2: let temp be the number understood]
           t_0 = parsed_number; 
@@ -17931,9 +18013,9 @@ self = noun;
           (Global_Vars-->35) = LIST_OF_TY_GetItem((Global_Vars-->12),t_0); 
          ! phrase 4
          ! [4: say ~Thank you, you are playing as a [player's character][line break]~]
-         say__p=1;ParaContent();  print (PrintText) SC_58; ParaContent();  print (PrintText) (Global_Vars-->35); ParaContent();  new_line;  .L_Say49; .L_SayX49;
+         say__p=1;ParaContent();  print (PrintText) SC_64; ParaContent();  print (PrintText) (Global_Vars-->35); ParaContent();  new_line;  .L_Say49; .L_SayX49;
          ! phrase 5
-         ! [5: now lessonstage is finalise]
+         ! [5: now lessonforms is finalise]
           (Global_Vars-->31) = I105_finalise; 
          ! phrase 6
          ! [6: exit]
@@ -17941,6 +18023,42 @@ self = noun;
 
          ! phrase 7
          ! [7: end if]
+         }
+
+   rfalse;
+];
+! No specific request
+! A menu question rule ( this is the pub answer rule ):
+[ R_791 ;
+      ! phrase 1
+      ! [1: if the number understood is the expected answer begin]
+       if (((parsed_number == (Global_Vars-->38))))  {
+         ! phrase 2
+         ! [2: if the table of quiz questions is not empty begin]
+          if (((~~(((Adj_16_t1_v17(T2_quiz_questions)))))))  {
+            ! phrase 3
+            ! [3: say ~Well done. You have survived to the next round.~]
+            say__p=1;ParaContent();  print (PrintText) SC_65;  new_line; .L_Say50; .L_SayX50;
+            ! phrase 4
+            ! [4: otherwise]
+            } else {
+
+            ! phrase 5
+            ! [5: end the story finally saying ~Congratulations you have won!~]
+             deadflag=SC_66; story_complete=true; 
+            ! phrase 6
+            ! [6: end if]
+            }
+
+         ! phrase 7
+         ! [7: otherwise]
+         } else {
+
+         ! phrase 8
+         ! [8: end the story finally saying ~You have been barred from the pub for getting a question wrong.~]
+          deadflag=SC_67; story_complete=true; 
+         ! phrase 9
+         ! [9: end if]
          }
 
    rfalse;
@@ -18005,16 +18123,16 @@ self = noun;
 ! A yes/no question rule ( this is the confirm answers rule ):
 [ R_774 ;
       ! phrase 1
-      ! [1: if classroom is happening and lessonstage is finalise begin]
-       if (((((scene_status-->(I107_classroom-1)==1)))) && ((((Global_Vars-->31) == I105_finalise))))  {
+      ! [1: if fillingoutlessonforms is happening and lessonforms is finalise begin]
+       if (((((scene_status-->(I107_fillingoutlessonforms-1)==1)))) && ((((Global_Vars-->31) == I105_finalise))))  {
          ! phrase 2
          ! [2: if the decision understood is yes begin]
           if (((parsed_number == I89_yes)))  {
             ! phrase 3
             ! [3: say ~Thank you. Venture into the unknown brave [the player's character][line break]~]
-            say__p=1;ParaContent();  print (PrintText) SC_59; ParaContent();  print (PrintText) (Global_Vars-->35); ParaContent();  new_line;  .L_Say50; .L_SayX50;
+            say__p=1;ParaContent();  print (PrintText) SC_68; ParaContent();  print (PrintText) (Global_Vars-->35); ParaContent();  new_line;  .L_Say51; .L_SayX51;
             ! phrase 4
-            ! [4: now lessonstage is complete]
+            ! [4: now lessonforms is complete]
              (Global_Vars-->31) = I106_complete; 
             ! phrase 5
             ! [5: exit]
@@ -18026,9 +18144,9 @@ self = noun;
 
             ! phrase 7
             ! [7: say ~OK. Let's start again, shall we[line break]~]
-            say__p=1;ParaContent();  print (PrintText) SC_60; ParaContent();  new_line;  .L_Say51; .L_SayX51;
+            say__p=1;ParaContent();  print (PrintText) SC_69; ParaContent();  new_line;  .L_Say52; .L_SayX52;
             ! phrase 8
-            ! [8: now lessonstage is name]
+            ! [8: now lessonforms is name]
              (Global_Vars-->31) = I101_name; 
             ! phrase 9
             ! [9: exit]
@@ -18104,16 +18222,16 @@ self = noun;
 ! A gender question rule ( this is the gather gender rule ):
 [ R_772 ;
       ! phrase 1
-      ! [1: if classroom is happening and lessonstage is sex begin]
-       if (((((scene_status-->(I107_classroom-1)==1)))) && ((((Global_Vars-->31) == I103_sex))))  {
+      ! [1: if fillingoutlessonforms is happening and lessonforms is sex begin]
+       if (((((scene_status-->(I107_fillingoutlessonforms-1)==1)))) && ((((Global_Vars-->31) == I103_sex))))  {
          ! phrase 2
          ! [2: now the player's sex is the gender understood]
           (Global_Vars-->34) = parsed_number; 
          ! phrase 3
          ! [3: say ~Thank you. You are [the player's sex] gender[line break]~]
-         say__p=1;ParaContent();  print (PrintText) SC_61; ParaContent();  print (T59) (Global_Vars-->34); ParaContent();  print (PrintText) SC_62; ParaContent();  new_line;  .L_Say52; .L_SayX52;
+         say__p=1;ParaContent();  print (PrintText) SC_70; ParaContent();  print (T59) (Global_Vars-->34); ParaContent();  print (PrintText) SC_71; ParaContent();  new_line;  .L_Say53; .L_SayX53;
          ! phrase 4
-         ! [4: now lessonstage is character]
+         ! [4: now lessonforms is character]
           (Global_Vars-->31) = I104_character; 
          ! phrase 5
          ! [5: exit]
@@ -18166,7 +18284,7 @@ self = noun;
        if (((((Global_Vars-->30) && true) == (1 && true))))  {
          ! phrase 2
          ! [2: replace the regular expression ~@{5C}p~ in the current answer with ~~]
-          IT_Replace_RE(REGEXP_BLOB, (Global_Vars-->13), BlkValueCast((blockv_stack-->(I7BASPL+0)),INDEXED_TEXT_TY,TEXT_TY,SC_63),
+          IT_Replace_RE(REGEXP_BLOB, (Global_Vars-->13), BlkValueCast((blockv_stack-->(I7BASPL+0)),INDEXED_TEXT_TY,TEXT_TY,SC_72),
 		BlkValueCast((blockv_stack-->(I7BASPL+1)),INDEXED_TEXT_TY,TEXT_TY,EMPTY_TEXT_VALUE), 0); 
          ! phrase 3
          ! [3: end if]
@@ -18189,10 +18307,10 @@ self = noun;
        if ((((scene_status-->(I98_introduction-1)==1))))  {
          ! phrase 2
          ! [2: if the current answer is ~egbdf~ begin]
-          if (((BlkValueCompare((Global_Vars-->13), BlkValueCast((blockv_stack-->(I7BASPL+0)), INDEXED_TEXT_TY, TEXT_TY, SC_64))==0)))  {
+          if (((BlkValueCompare((Global_Vars-->13), BlkValueCast((blockv_stack-->(I7BASPL+0)), INDEXED_TEXT_TY, TEXT_TY, SC_73))==0)))  {
             ! phrase 3
             ! [3: say ~With an eerie musical scale, the hand falls to the side hearing songA~]
-            say__p=1;ParaContent();  print (PrintText) SC_65;  .L_Say53; .L_SayX53;
+            say__p=1;ParaContent();  print (PrintText) SC_74;  .L_Say54; .L_SayX54;
             ! phrase 4
             ! [4: now the large hand is open]
              (Adj_60_t2_v9(I96_large_hand)); 
@@ -18234,14 +18352,14 @@ self = noun;
 ];
 [ R_SHELL_3 I7BASPL ;
       ! phrase 1
-      ! [1: if classroom is happening and lessonstage is name begin]
-       if (((((scene_status-->(I107_classroom-1)==1)))) && ((((Global_Vars-->31) == I101_name))))  {
+      ! [1: if fillingoutlessonforms is happening and lessonforms is name begin]
+       if (((((scene_status-->(I107_fillingoutlessonforms-1)==1)))) && ((((Global_Vars-->31) == I101_name))))  {
          ! phrase 2
          ! [2: if the number of words in the current answer is greater than 1 begin]
           if ((( IT_BlobAccess((Global_Vars-->13), WORD_BLOB)  > 1)))  {
             ! phrase 3
             ! [3: say ~I think we will simply refer to you as [word number 1 in the current answer][line break]~]
-            say__p=1;ParaContent();  print (PrintText) SC_66; ParaContent();  print (INDEXED_TEXT_TY_Say)  IT_GetBlob((blockv_stack-->(I7BASPL+0)), (Global_Vars-->13), 1, WORD_BLOB) ; ParaContent();  new_line;  .L_Say54; .L_SayX54;
+            say__p=1;ParaContent();  print (PrintText) SC_75; ParaContent();  print (INDEXED_TEXT_TY_Say)  IT_GetBlob((blockv_stack-->(I7BASPL+0)), (Global_Vars-->13), 1, WORD_BLOB) ; ParaContent();  new_line;  .L_Say55; .L_SayX55;
             ! phrase 4
             ! [4: now the player's name is word number 1 in the current answer]
              BlkValueCopy((Global_Vars-->32),  IT_GetBlob((blockv_stack-->(I7BASPL+1)), (Global_Vars-->13), 1, WORD_BLOB) ); 
@@ -18254,13 +18372,13 @@ self = noun;
              BlkValueCopy((Global_Vars-->32), (Global_Vars-->13)); 
             ! phrase 7
             ! [7: say ~Welcome to this venture, [player's name][line break]~]
-            say__p=1;ParaContent();  print (PrintText) SC_67; ParaContent();  print (INDEXED_TEXT_TY_Say) (Global_Vars-->32); ParaContent();  new_line;  .L_Say55; .L_SayX55;
+            say__p=1;ParaContent();  print (PrintText) SC_76; ParaContent();  print (INDEXED_TEXT_TY_Say) (Global_Vars-->32); ParaContent();  new_line;  .L_Say56; .L_SayX56;
             ! phrase 8
             ! [8: end if]
             }
 
          ! phrase 9
-         ! [9: now lessonstage is age]
+         ! [9: now lessonforms is age]
           (Global_Vars-->31) = I102_age; 
          ! phrase 10
          ! [10: exit]
@@ -18318,15 +18436,15 @@ self = noun;
 ! ----------------------------------------------------------------------------------------------------
 
 ! ----------------------------------------------------------------------------------------------------
-! Rules in rulebook: when Classroom begins (B387_when_classroom_begins)
+! Rules in rulebook: when FillingOutLessonForms begins (B387_when_fillingoutlessonfo)
 ! ----------------------------------------------------------------------------------------------------
-! Rule 1/1 ! When Classroom begins:
+! Rule 1/1 ! When FillingOutLessonForms begins:
 ! ----------------------------------------------------------------------------------------------------
 ! No specific request
-! When Classroom begins:
+! When FillingOutLessonForms begins:
 [ R_768 ;
       ! phrase 1
-      ! [1: now lessonstage is name]
+      ! [1: now lessonforms is name]
        (Global_Vars-->31) = I101_name; 
    rfalse;
 ];
@@ -18344,7 +18462,7 @@ self = noun;
    if (debug_rules) DB_Rule(R_782, 782);
       ! phrase 1
       ! [1: if the noun is not a scriptcontext , say ~It would be better to write in a notebook.~ instead]
-       if (((~~((noun ofclass K16_scriptcontext))))) { say__p=1;ParaContent();  print (PrintText) SC_68;  new_line; .L_Say56; .L_SayX56;  rtrue; }
+       if (((~~((noun ofclass K16_scriptcontext))))) { say__p=1;ParaContent();  print (PrintText) SC_77;  new_line; .L_Say57; .L_SayX57;  rtrue; }
    } ! Runs only when actor is the player
    else if (debug_rules > 1) DB_Rule(R_782, 782, true);
    rfalse;
@@ -18363,7 +18481,7 @@ self = noun;
    if (debug_rules) DB_Rule(R_783, 783);
       ! phrase 1
       ! [1: now the command prompt is ~>>~]
-       (Global_Vars-->1) = SC_69; 
+       (Global_Vars-->1) = SC_78; 
       ! phrase 2
       ! [2: now the target scriptcontext is the noun]
        (Global_Vars-->37) = noun; 
@@ -18385,7 +18503,7 @@ self = noun;
    if (debug_rules) DB_Rule(R_784, 784);
       ! phrase 1
       ! [1: say ~You open [the noun] and prepare to write in it.~]
-      say__p=1;ParaContent();  print (PrintText) SC_70; ParaContent();  print (the) noun; ParaContent();  print (PrintText) SC_71;  new_line; .L_Say57; .L_SayX57;
+      say__p=1;ParaContent();  print (PrintText) SC_79; ParaContent();  print (the) noun; ParaContent();  print (PrintText) SC_80;  new_line; .L_Say58; .L_SayX58;
    } ! Runs only when actor is the player
    else if (debug_rules > 1) DB_Rule(R_784, 784, true);
    rfalse;
@@ -18404,7 +18522,7 @@ self = noun;
    if (debug_rules) DB_Rule(R_786, 786);
       ! phrase 1
       ! [1: if the noun is not a scriptcontext , say ~It's hard to see how.~ instead]
-       if (((~~((noun ofclass K16_scriptcontext))))) { say__p=1;ParaContent();  print (PrintText) SC_72;  new_line; .L_Say58; .L_SayX58;  rtrue; }
+       if (((~~((noun ofclass K16_scriptcontext))))) { say__p=1;ParaContent();  print (PrintText) SC_81;  new_line; .L_Say59; .L_SayX59;  rtrue; }
    } ! Runs only when actor is the player
    else if (debug_rules > 1) DB_Rule(R_786, 786, true);
    rfalse;
@@ -18442,7 +18560,7 @@ self = noun;
    if (debug_rules) DB_Rule(R_788, 788);
       ! phrase 1
       ! [1: say ~You scrub out all the entries in [the noun].~]
-      say__p=1;ParaContent();  print (PrintText) SC_73; ParaContent();  print (the) noun; ParaContent();  print (PrintText) SC_35;  new_line; .L_Say59; .L_SayX59;
+      say__p=1;ParaContent();  print (PrintText) SC_82; ParaContent();  print (the) noun; ParaContent();  print (PrintText) SC_41;  new_line; .L_Say60; .L_SayX60;
    } ! Runs only when actor is the player
    else if (debug_rules > 1) DB_Rule(R_788, 788, true);
    rfalse;
@@ -20348,7 +20466,7 @@ Array TimedEventTimesTable table 0 0;
 
 
 
-Array rulebooks_array --> B0_procedural B1_startup B2_turn_sequence B3_shutdown B4_scene_changing B5_when_play_begins B6_when_play_ends B7_when_scene_begins B8_when_scene_ends B9_every_turn B10_action_processing B11_setting_action_variables B12_specific_action_processi B13_player_s_action_awarenes B14_accessibility B15_reaching_inside B16_reaching_outside B17_visibility B18_persuasion B19_unsuccessful_attempt_by B20_before B21_instead B22_check B23_carry_out B24_after B25_report B26_does_the_player_mean B27_when_entire_game_begins B28_when_entire_game_ends B29_before_printing_the_name B30_for_printing_the_name B31_after_printing_the_name B32_before_printing_the_plur B33_for_printing_the_plural_ B34_after_printing_the_plura B35_before_printing_a_number B36_for_printing_a_number B37_after_printing_a_number B38_before_printing_room_des B39_for_printing_room_descri B40_after_printing_room_desc B41_before_listing_contents B42_for_listing_contents B43_after_listing_contents B44_before_grouping_together B45_for_grouping_together B46_after_grouping_together B47_before_writing_a_paragra B48_for_writing_a_paragraph_ B49_after_writing_a_paragrap B50_before_listing_nondescri B51_for_listing_nondescript_ B52_after_listing_nondescrip B53_before_printing_the_name B54_for_printing_the_name_of B55_after_printing_the_name_ B56_before_printing_the_desc B57_for_printing_the_descrip B58_after_printing_the_descr B59_before_printing_the_anno B60_for_printing_the_announc B61_after_printing_the_annou B62_before_printing_the_anno B63_for_printing_the_announc B64_after_printing_the_annou B65_before_printing_a_refusa B66_for_printing_a_refusal_t B67_after_printing_a_refusal B68_before_constructing_the_ B69_for_constructing_the_sta B70_after_constructing_the_s B71_before_printing_the_bann B72_for_printing_the_banner_ B73_after_printing_the_banne B74_before_reading_a_command B75_for_reading_a_command B76_after_reading_a_command B77_before_deciding_the_scop B78_for_deciding_the_scope B79_after_deciding_the_scope B80_before_deciding_the_conc B81_for_deciding_the_conceal B82_after_deciding_the_conce B83_before_deciding_whether_ B84_for_deciding_whether_all B85_after_deciding_whether_a B86_before_clarifying_the_pa B87_for_clarifying_the_parse B88_after_clarifying_the_par B89_before_asking_which_do_y B90_for_asking_which_do_you_ B91_after_asking_which_do_yo B92_before_printing_a_parser B93_for_printing_a_parser_er B94_after_printing_a_parser_ B95_before_supplying_a_missi B96_for_supplying_a_missing_ B97_after_supplying_a_missin B98_before_supplying_a_missi B99_for_supplying_a_missing_ B100_after_supplying_a_missi B101_before_implicitly_takin B102_for_implicitly_taking B103_after_implicitly_taking B104_before_starting_the_vir B105_for_starting_the_virtua B106_after_starting_the_virt B107_before_amusing_a_victor B108_for_amusing_a_victoriou B109_after_amusing_a_victori B110_before_printing_the_pla B111_for_printing_the_player B112_after_printing_the_play B113_before_handling_the_fin B114_for_handling_the_final_ B115_after_handling_the_fina B116_before_printing_the_loc B117_for_printing_the_locale B118_after_printing_the_loca B119_before_choosing_notable B120_for_choosing_notable_lo B121_after_choosing_notable_ B122_before_printing_a_local B123_for_printing_a_locale_p B124_after_printing_a_locale B125_check_taking_inventory B126_carry_out_taking_invent B127_report_taking_inventory B128_check_taking B129_carry_out_taking B130_report_taking B131_check_removing_it_from B132_carry_out_removing_it_f B133_report_removing_it_from B134_check_dropping B135_carry_out_dropping B136_report_dropping B137_check_putting_it_on B138_carry_out_putting_it_on B139_report_putting_it_on B140_check_inserting_it_into B141_carry_out_inserting_it_ B142_report_inserting_it_int B143_check_eating B144_carry_out_eating B145_report_eating B146_check_going B147_carry_out_going B148_report_going B149_check_entering B150_carry_out_entering B151_report_entering B152_check_exiting B153_carry_out_exiting B154_report_exiting B155_check_getting_off B156_carry_out_getting_off B157_report_getting_off B158_check_looking B159_carry_out_looking B160_report_looking B161_check_examining B162_carry_out_examining B163_report_examining B164_check_looking_under B165_carry_out_looking_under B166_report_looking_under B167_check_searching B168_carry_out_searching B169_report_searching B170_check_consulting_it_abo B171_carry_out_consulting_it B172_report_consulting_it_ab B173_check_locking_it_with B174_carry_out_locking_it_wi B175_report_locking_it_with B176_check_unlocking_it_with B177_carry_out_unlocking_it_ B178_report_unlocking_it_wit B179_check_switching_on B180_carry_out_switching_on B181_report_switching_on B182_check_switching_off B183_carry_out_switching_off B184_report_switching_off B185_check_opening B186_carry_out_opening B187_report_opening B188_check_closing B189_carry_out_closing B190_report_closing B191_check_wearing B192_carry_out_wearing B193_report_wearing B194_check_taking_off B195_carry_out_taking_off B196_report_taking_off B197_check_giving_it_to B198_carry_out_giving_it_to B199_report_giving_it_to B200_check_showing_it_to B201_carry_out_showing_it_to B202_report_showing_it_to B203_check_waking B204_carry_out_waking B205_report_waking B206_check_throwing_it_at B207_carry_out_throwing_it_a B208_report_throwing_it_at B209_check_attacking B210_carry_out_attacking B211_report_attacking B212_check_kissing B213_carry_out_kissing B214_report_kissing B215_check_answering_it_that B216_carry_out_answering_it_ B217_report_answering_it_tha B218_check_telling_it_about B219_carry_out_telling_it_ab B220_report_telling_it_about B221_check_asking_it_about B222_carry_out_asking_it_abo B223_report_asking_it_about B224_check_asking_it_for B225_carry_out_asking_it_for B226_report_asking_it_for B227_check_waiting B228_carry_out_waiting B229_report_waiting B230_check_touching B231_carry_out_touching B232_report_touching B233_check_waving B234_carry_out_waving B235_report_waving B236_check_pulling B237_carry_out_pulling B238_report_pulling B239_check_pushing B240_carry_out_pushing B241_report_pushing B242_check_turning B243_carry_out_turning B244_report_turning B245_check_pushing_it_to B246_carry_out_pushing_it_to B247_report_pushing_it_to B248_check_squeezing B249_carry_out_squeezing B250_report_squeezing B251_check_saying_yes B252_carry_out_saying_yes B253_report_saying_yes B254_check_saying_no B255_carry_out_saying_no B256_report_saying_no B257_check_burning B258_carry_out_burning B259_report_burning B260_check_waking_up B261_carry_out_waking_up B262_report_waking_up B263_check_thinking B264_carry_out_thinking B265_report_thinking B266_check_smelling B267_carry_out_smelling B268_report_smelling B269_check_listening_to B270_carry_out_listening_to B271_report_listening_to B272_check_tasting B273_carry_out_tasting B274_report_tasting B275_check_cutting B276_carry_out_cutting B277_report_cutting B278_check_jumping B279_carry_out_jumping B280_report_jumping B281_check_tying_it_to B282_carry_out_tying_it_to B283_report_tying_it_to B284_check_drinking B285_carry_out_drinking B286_report_drinking B287_check_saying_sorry B288_carry_out_saying_sorry B289_report_saying_sorry B290_check_swearing_obscenel B291_carry_out_swearing_obsc B292_report_swearing_obscene B293_check_swearing_mildly B294_carry_out_swearing_mild B295_report_swearing_mildly B296_check_swinging B297_carry_out_swinging B298_report_swinging B299_check_rubbing B300_carry_out_rubbing B301_report_rubbing B302_check_setting_it_to B303_carry_out_setting_it_to B304_report_setting_it_to B305_check_waving_hands B306_carry_out_waving_hands B307_report_waving_hands B308_check_buying B309_carry_out_buying B310_report_buying B311_check_singing B312_carry_out_singing B313_report_singing B314_check_climbing B315_carry_out_climbing B316_report_climbing B317_check_sleeping B318_carry_out_sleeping B319_report_sleeping B320_check_quitting_the_game B321_carry_out_quitting_the_ B322_report_quitting_the_gam B323_check_saving_the_game B324_carry_out_saving_the_ga B325_report_saving_the_game B326_check_restoring_the_gam B327_carry_out_restoring_the B328_report_restoring_the_ga B329_check_restarting_the_ga B330_carry_out_restarting_th B331_report_restarting_the_g B332_check_verifying_the_sto B333_carry_out_verifying_the B334_report_verifying_the_st B335_check_switching_the_sto B336_carry_out_switching_the B337_report_switching_the_st B338_check_switching_the_sto B339_carry_out_switching_the B340_report_switching_the_st B341_check_requesting_the_st B342_carry_out_requesting_th B343_report_requesting_the_s B344_check_requesting_the_sc B345_carry_out_requesting_th B346_report_requesting_the_s B347_check_preferring_abbrev B348_carry_out_preferring_ab B349_report_preferring_abbre B350_check_preferring_unabbr B351_carry_out_preferring_un B352_report_preferring_unabb B353_check_preferring_someti B354_carry_out_preferring_so B355_report_preferring_somet B356_check_switching_score_n B357_carry_out_switching_sco B358_report_switching_score_ B359_check_switching_score_n B360_carry_out_switching_sco B361_report_switching_score_ B362_check_requesting_the_pr B363_carry_out_requesting_th B364_report_requesting_the_p B365_check_number_questionin B366_carry_out_number_questi B367_report_number_questioni B368_number_question B369_check_menu_questioning B370_carry_out_menu_question B371_report_menu_questioning B372_menu_question B373_check_yes_no_questionin B374_carry_out_yes_no_questi B375_report_yes_no_questioni B376_yes_no_question B377_check_gender_questionin B378_carry_out_gender_questi B379_report_gender_questioni B380_gender_question B381_check_text_questioning B382_carry_out_text_question B383_report_text_questioning B384_text_question B385_when_introduction_begin B386_when_introduction_ends B387_when_classroom_begins B388_when_classroom_ends B389_check_writing_in B390_carry_out_writing_in B391_report_writing_in B392_check_erasing B393_carry_out_erasing B394_report_erasing 0;
+Array rulebooks_array --> B0_procedural B1_startup B2_turn_sequence B3_shutdown B4_scene_changing B5_when_play_begins B6_when_play_ends B7_when_scene_begins B8_when_scene_ends B9_every_turn B10_action_processing B11_setting_action_variables B12_specific_action_processi B13_player_s_action_awarenes B14_accessibility B15_reaching_inside B16_reaching_outside B17_visibility B18_persuasion B19_unsuccessful_attempt_by B20_before B21_instead B22_check B23_carry_out B24_after B25_report B26_does_the_player_mean B27_when_entire_game_begins B28_when_entire_game_ends B29_before_printing_the_name B30_for_printing_the_name B31_after_printing_the_name B32_before_printing_the_plur B33_for_printing_the_plural_ B34_after_printing_the_plura B35_before_printing_a_number B36_for_printing_a_number B37_after_printing_a_number B38_before_printing_room_des B39_for_printing_room_descri B40_after_printing_room_desc B41_before_listing_contents B42_for_listing_contents B43_after_listing_contents B44_before_grouping_together B45_for_grouping_together B46_after_grouping_together B47_before_writing_a_paragra B48_for_writing_a_paragraph_ B49_after_writing_a_paragrap B50_before_listing_nondescri B51_for_listing_nondescript_ B52_after_listing_nondescrip B53_before_printing_the_name B54_for_printing_the_name_of B55_after_printing_the_name_ B56_before_printing_the_desc B57_for_printing_the_descrip B58_after_printing_the_descr B59_before_printing_the_anno B60_for_printing_the_announc B61_after_printing_the_annou B62_before_printing_the_anno B63_for_printing_the_announc B64_after_printing_the_annou B65_before_printing_a_refusa B66_for_printing_a_refusal_t B67_after_printing_a_refusal B68_before_constructing_the_ B69_for_constructing_the_sta B70_after_constructing_the_s B71_before_printing_the_bann B72_for_printing_the_banner_ B73_after_printing_the_banne B74_before_reading_a_command B75_for_reading_a_command B76_after_reading_a_command B77_before_deciding_the_scop B78_for_deciding_the_scope B79_after_deciding_the_scope B80_before_deciding_the_conc B81_for_deciding_the_conceal B82_after_deciding_the_conce B83_before_deciding_whether_ B84_for_deciding_whether_all B85_after_deciding_whether_a B86_before_clarifying_the_pa B87_for_clarifying_the_parse B88_after_clarifying_the_par B89_before_asking_which_do_y B90_for_asking_which_do_you_ B91_after_asking_which_do_yo B92_before_printing_a_parser B93_for_printing_a_parser_er B94_after_printing_a_parser_ B95_before_supplying_a_missi B96_for_supplying_a_missing_ B97_after_supplying_a_missin B98_before_supplying_a_missi B99_for_supplying_a_missing_ B100_after_supplying_a_missi B101_before_implicitly_takin B102_for_implicitly_taking B103_after_implicitly_taking B104_before_starting_the_vir B105_for_starting_the_virtua B106_after_starting_the_virt B107_before_amusing_a_victor B108_for_amusing_a_victoriou B109_after_amusing_a_victori B110_before_printing_the_pla B111_for_printing_the_player B112_after_printing_the_play B113_before_handling_the_fin B114_for_handling_the_final_ B115_after_handling_the_fina B116_before_printing_the_loc B117_for_printing_the_locale B118_after_printing_the_loca B119_before_choosing_notable B120_for_choosing_notable_lo B121_after_choosing_notable_ B122_before_printing_a_local B123_for_printing_a_locale_p B124_after_printing_a_locale B125_check_taking_inventory B126_carry_out_taking_invent B127_report_taking_inventory B128_check_taking B129_carry_out_taking B130_report_taking B131_check_removing_it_from B132_carry_out_removing_it_f B133_report_removing_it_from B134_check_dropping B135_carry_out_dropping B136_report_dropping B137_check_putting_it_on B138_carry_out_putting_it_on B139_report_putting_it_on B140_check_inserting_it_into B141_carry_out_inserting_it_ B142_report_inserting_it_int B143_check_eating B144_carry_out_eating B145_report_eating B146_check_going B147_carry_out_going B148_report_going B149_check_entering B150_carry_out_entering B151_report_entering B152_check_exiting B153_carry_out_exiting B154_report_exiting B155_check_getting_off B156_carry_out_getting_off B157_report_getting_off B158_check_looking B159_carry_out_looking B160_report_looking B161_check_examining B162_carry_out_examining B163_report_examining B164_check_looking_under B165_carry_out_looking_under B166_report_looking_under B167_check_searching B168_carry_out_searching B169_report_searching B170_check_consulting_it_abo B171_carry_out_consulting_it B172_report_consulting_it_ab B173_check_locking_it_with B174_carry_out_locking_it_wi B175_report_locking_it_with B176_check_unlocking_it_with B177_carry_out_unlocking_it_ B178_report_unlocking_it_wit B179_check_switching_on B180_carry_out_switching_on B181_report_switching_on B182_check_switching_off B183_carry_out_switching_off B184_report_switching_off B185_check_opening B186_carry_out_opening B187_report_opening B188_check_closing B189_carry_out_closing B190_report_closing B191_check_wearing B192_carry_out_wearing B193_report_wearing B194_check_taking_off B195_carry_out_taking_off B196_report_taking_off B197_check_giving_it_to B198_carry_out_giving_it_to B199_report_giving_it_to B200_check_showing_it_to B201_carry_out_showing_it_to B202_report_showing_it_to B203_check_waking B204_carry_out_waking B205_report_waking B206_check_throwing_it_at B207_carry_out_throwing_it_a B208_report_throwing_it_at B209_check_attacking B210_carry_out_attacking B211_report_attacking B212_check_kissing B213_carry_out_kissing B214_report_kissing B215_check_answering_it_that B216_carry_out_answering_it_ B217_report_answering_it_tha B218_check_telling_it_about B219_carry_out_telling_it_ab B220_report_telling_it_about B221_check_asking_it_about B222_carry_out_asking_it_abo B223_report_asking_it_about B224_check_asking_it_for B225_carry_out_asking_it_for B226_report_asking_it_for B227_check_waiting B228_carry_out_waiting B229_report_waiting B230_check_touching B231_carry_out_touching B232_report_touching B233_check_waving B234_carry_out_waving B235_report_waving B236_check_pulling B237_carry_out_pulling B238_report_pulling B239_check_pushing B240_carry_out_pushing B241_report_pushing B242_check_turning B243_carry_out_turning B244_report_turning B245_check_pushing_it_to B246_carry_out_pushing_it_to B247_report_pushing_it_to B248_check_squeezing B249_carry_out_squeezing B250_report_squeezing B251_check_saying_yes B252_carry_out_saying_yes B253_report_saying_yes B254_check_saying_no B255_carry_out_saying_no B256_report_saying_no B257_check_burning B258_carry_out_burning B259_report_burning B260_check_waking_up B261_carry_out_waking_up B262_report_waking_up B263_check_thinking B264_carry_out_thinking B265_report_thinking B266_check_smelling B267_carry_out_smelling B268_report_smelling B269_check_listening_to B270_carry_out_listening_to B271_report_listening_to B272_check_tasting B273_carry_out_tasting B274_report_tasting B275_check_cutting B276_carry_out_cutting B277_report_cutting B278_check_jumping B279_carry_out_jumping B280_report_jumping B281_check_tying_it_to B282_carry_out_tying_it_to B283_report_tying_it_to B284_check_drinking B285_carry_out_drinking B286_report_drinking B287_check_saying_sorry B288_carry_out_saying_sorry B289_report_saying_sorry B290_check_swearing_obscenel B291_carry_out_swearing_obsc B292_report_swearing_obscene B293_check_swearing_mildly B294_carry_out_swearing_mild B295_report_swearing_mildly B296_check_swinging B297_carry_out_swinging B298_report_swinging B299_check_rubbing B300_carry_out_rubbing B301_report_rubbing B302_check_setting_it_to B303_carry_out_setting_it_to B304_report_setting_it_to B305_check_waving_hands B306_carry_out_waving_hands B307_report_waving_hands B308_check_buying B309_carry_out_buying B310_report_buying B311_check_singing B312_carry_out_singing B313_report_singing B314_check_climbing B315_carry_out_climbing B316_report_climbing B317_check_sleeping B318_carry_out_sleeping B319_report_sleeping B320_check_quitting_the_game B321_carry_out_quitting_the_ B322_report_quitting_the_gam B323_check_saving_the_game B324_carry_out_saving_the_ga B325_report_saving_the_game B326_check_restoring_the_gam B327_carry_out_restoring_the B328_report_restoring_the_ga B329_check_restarting_the_ga B330_carry_out_restarting_th B331_report_restarting_the_g B332_check_verifying_the_sto B333_carry_out_verifying_the B334_report_verifying_the_st B335_check_switching_the_sto B336_carry_out_switching_the B337_report_switching_the_st B338_check_switching_the_sto B339_carry_out_switching_the B340_report_switching_the_st B341_check_requesting_the_st B342_carry_out_requesting_th B343_report_requesting_the_s B344_check_requesting_the_sc B345_carry_out_requesting_th B346_report_requesting_the_s B347_check_preferring_abbrev B348_carry_out_preferring_ab B349_report_preferring_abbre B350_check_preferring_unabbr B351_carry_out_preferring_un B352_report_preferring_unabb B353_check_preferring_someti B354_carry_out_preferring_so B355_report_preferring_somet B356_check_switching_score_n B357_carry_out_switching_sco B358_report_switching_score_ B359_check_switching_score_n B360_carry_out_switching_sco B361_report_switching_score_ B362_check_requesting_the_pr B363_carry_out_requesting_th B364_report_requesting_the_p B365_check_number_questionin B366_carry_out_number_questi B367_report_number_questioni B368_number_question B369_check_menu_questioning B370_carry_out_menu_question B371_report_menu_questioning B372_menu_question B373_check_yes_no_questionin B374_carry_out_yes_no_questi B375_report_yes_no_questioni B376_yes_no_question B377_check_gender_questionin B378_carry_out_gender_questi B379_report_gender_questioni B380_gender_question B381_check_text_questioning B382_carry_out_text_question B383_report_text_questioning B384_text_question B385_when_introduction_begin B386_when_introduction_ends B387_when_fillingoutlessonfo B388_when_fillingoutlessonfo B389_check_writing_in B390_carry_out_writing_in B391_report_writing_in B392_check_erasing B393_carry_out_erasing B394_report_erasing 0;
 
 Constant B0_procedural = EMPTY_RULEBOOK;
 Array B1_startup --> INITIALISE_MEMORY_R VIRTUAL_MACHINE_STARTUP_R SEED_RANDOM_NUMBER_GENERATOR_R UPDATE_CHRONOLOGICAL_RECORDS_R POSITION_PLAYER_IN_MODEL_R R_8 R_9 R_10 R_11 R_12 NULL; ! 10 rule(s)
@@ -20359,7 +20477,7 @@ Constant B5_when_play_begins = EMPTY_RULEBOOK;
 Constant B6_when_play_ends = EMPTY_RULEBOOK;
 Array B7_when_scene_begins --> R_57 NULL; ! 1 rule(s)
 Constant B8_when_scene_ends = EMPTY_RULEBOOK;
-Array B9_every_turn --> R_765 R_769 NULL; ! 2 rule(s)
+Array B9_every_turn --> R_765 R_790 R_769 NULL; ! 3 rule(s)
 Array B10_action_processing --> R_20 R_19 R_21 BASIC_VISIBILITY_R BASIC_ACCESSIBILITY_R CARRYING_REQUIREMENTS_R R_22 REQUESTED_ACTIONS_REQUIRE_R CARRY_OUT_REQUESTED_ACTIONS_R DESCEND_TO_SPECIFIC_ACTION_R R_23 NULL; ! 11 rule(s)
 Array B11_setting_action_variables --> R_137 R_171 R_159 NULL; ! 3 rule(s)
 Array B12_specific_action_processi --> WORK_OUT_DETAILS_OF_SPECIFIC_R R_24 R_25 R_26 R_27 R_28 R_29 R_30 NULL; ! 8 rule(s)
@@ -20374,7 +20492,7 @@ Constant B20_before = EMPTY_RULEBOOK;
 Array B21_instead --> R_767 R_763 R_780 R_781 NULL; ! 4 rule(s)
 Constant B22_check = EMPTY_RULEBOOK;
 Constant B23_carry_out = EMPTY_RULEBOOK;
-Constant B24_after = EMPTY_RULEBOOK;
+Array B24_after --> R_789 NULL; ! 1 rule(s)
 Constant B25_report = EMPTY_RULEBOOK;
 Array B26_does_the_player_mean --> R_36 NULL; ! 1 rule(s)
 Constant B27_when_entire_game_begins = EMPTY_RULEBOOK;
@@ -20722,7 +20840,7 @@ Array B368_number_question --> R_742 R_771 R_743 NULL; ! 3 rule(s)
 Constant B369_check_menu_questioning = EMPTY_RULEBOOK;
 Constant B370_carry_out_menu_question = EMPTY_RULEBOOK;
 Constant B371_report_menu_questioning = EMPTY_RULEBOOK;
-Array B372_menu_question --> R_746 R_773 R_747 NULL; ! 3 rule(s)
+Array B372_menu_question --> R_746 R_773 R_791 R_747 NULL; ! 4 rule(s)
 Constant B373_check_yes_no_questionin = EMPTY_RULEBOOK;
 Constant B374_carry_out_yes_no_questi = EMPTY_RULEBOOK;
 Constant B375_report_yes_no_questioni = EMPTY_RULEBOOK;
@@ -20737,8 +20855,8 @@ Constant B383_report_text_questioning = EMPTY_RULEBOOK;
 Array B384_text_question --> R_758 R_766 R_770 R_759 NULL; ! 4 rule(s)
 Array B385_when_introduction_begin --> R_764 NULL; ! 1 rule(s)
 Constant B386_when_introduction_ends = EMPTY_RULEBOOK;
-Array B387_when_classroom_begins --> R_768 NULL; ! 1 rule(s)
-Constant B388_when_classroom_ends = EMPTY_RULEBOOK;
+Array B387_when_fillingoutlessonfo --> R_768 NULL; ! 1 rule(s)
+Constant B388_when_fillingoutlessonfo = EMPTY_RULEBOOK;
 Array B389_check_writing_in --> R_782 NULL; ! 1 rule(s)
 Array B390_carry_out_writing_in --> R_783 NULL; ! 1 rule(s)
 Array B391_report_writing_in --> R_784 NULL; ! 1 rule(s)
@@ -21028,28 +21146,30 @@ Constant BR_278 = R_771;
 Constant BR_279 = R_772;
 Constant BR_280 = R_773;
 Constant BR_281 = R_774;
-Constant BR_757 = R_8;
-Constant BR_763 = R_9;
-Constant BR_764 = R_10;
-Constant BR_765 = R_11;
-Constant BR_766 = R_12;
-Constant BR_774 = R_16;
-Constant BR_775 = R_17;
-Constant BR_777 = R_18;
-Constant BR_780 = R_21;
-Constant BR_781 = R_19;
-Constant BR_782 = R_20;
-Constant BR_786 = R_22;
-Constant BR_790 = R_23;
-Constant BR_796 = R_35;
-Constant BR_798 = R_59;
-Constant BR_799 = R_60;
-Constant BR_801 = R_61;
-Constant BR_806 = R_69;
-Constant BR_807 = R_68;
-Constant BR_809 = R_70;
-Constant BR_810 = R_91;
-Constant BR_811 = R_148;
+Constant BR_282 = R_790;
+Constant BR_283 = R_791;
+Constant BR_760 = R_8;
+Constant BR_766 = R_9;
+Constant BR_767 = R_10;
+Constant BR_768 = R_11;
+Constant BR_769 = R_12;
+Constant BR_777 = R_16;
+Constant BR_778 = R_17;
+Constant BR_780 = R_18;
+Constant BR_783 = R_21;
+Constant BR_784 = R_19;
+Constant BR_785 = R_20;
+Constant BR_789 = R_22;
+Constant BR_793 = R_23;
+Constant BR_799 = R_35;
+Constant BR_801 = R_59;
+Constant BR_802 = R_60;
+Constant BR_804 = R_61;
+Constant BR_809 = R_69;
+Constant BR_810 = R_68;
+Constant BR_812 = R_70;
+Constant BR_813 = R_91;
+Constant BR_814 = R_148;
 
 
 
@@ -21105,7 +21225,7 @@ if (scene_status-->0 == 1) {
     if (scene_status-->2 == 1) {
         if (((((Global_Vars-->31) == I106_complete)))) {
             ch = true;
-            if (debug_scenes) print "[Scene 'Classroom' ends]^";
+            if (debug_scenes) print "[Scene 'FillingOutLessonForms' ends]^";
             if (GProperty(39, 3, p56_recurring)) scene_status-->2 = 0; else scene_status-->2 = 2; ProcessRulebook(WHEN_SCENE_ENDS_RB, 3);
             ProcessRulebook(388);
             scene_ended-->2 = the_time;
@@ -21115,9 +21235,9 @@ if (scene_status-->0 == 1) {
         }
     }
     if (scene_status-->2 == 0) {
-        if ((((real_location == I99_room_of_requirements)))) {
+        if ((((real_location == I99_dance_floor)))) {
             ch = true;
-            if (debug_scenes) print "[Scene 'Classroom' begins]^";
+            if (debug_scenes) print "[Scene 'FillingOutLessonForms' begins]^";
             scene_status-->2 = 1; ProcessRulebook(WHEN_SCENE_BEGINS_RB, 3);
             ProcessRulebook(387);
             scene_started-->2 = the_time;
@@ -21153,10 +21273,10 @@ if (scene_status-->0 == 1) {
         }
     }
     if (scene_status-->2 == 1) {
-        print "Scene 'Classroom' playing (for ", the_time-(scene_started-->2), " mins now)^";
+        print "Scene 'FillingOutLessonForms' playing (for ", the_time-(scene_started-->2), " mins now)^";
     } else {
         if (scene_latest_ending-->2 > 0) {
-            print "Scene 'Classroom' ended";
+            print "Scene 'FillingOutLessonForms' ended";
             print "^";
         }
     }
@@ -23351,7 +23471,7 @@ Constant SLOW_ROUTE_FINDING;
 #endif;
 
 Constant NUM_DOORS = 1;
-Constant NUM_ROOMS = 4;
+Constant NUM_ROOMS = 5;
 
 Array DoorRoutingViable -> NUM_DOORS+1;
 
@@ -23538,7 +23658,7 @@ Array FWMatrix --> NUM_ROOMS*NUM_ROOMS;
 ];
 #ENDIF;
 
-Constant MAX_ROUTE_LENGTH = 21 + 32;
+Constant MAX_ROUTE_LENGTH = 22 + 32;
 
 [ RelationRouteTo relation from to count  handler;
 	if (count) {
@@ -24701,8 +24821,8 @@ Array RulebookNames -->
     "Text question rulebook" ! 384
     "when Introduction begins rulebook" ! 385
     "when Introduction ends rulebook" ! 386
-    "when Classroom begins rulebook" ! 387
-    "when Classroom ends rulebook" ! 388
+    "when FillingOutLessonForms begins rulebook" ! 387
+    "when FillingOutLessonForms ends rulebook" ! 388
     "check Writing in rulebook" ! 389
     "carry out Writing in rulebook" ! 390
     "report Writing in rulebook" ! 391
@@ -25001,161 +25121,164 @@ Array RulebookNames -->
 		if (R == R_772) { print "gather gender rule"; return; } ! 279, case 1
 		if (R == R_773) { print "gather character rule"; return; } ! 280, case 1
 		if (R == R_774) { print "confirm answers rule"; return; } ! 281, case 1
-		if (R == LITTLE_USED_DO_NOTHING_R) { print "little-used do nothing rule"; return; } ! 309, case 1
-		if (R == VIRTUAL_MACHINE_STARTUP_R) { print "virtual machine startup rule"; return; } ! 310, case 1
-		if (R == INITIALISE_MEMORY_R) { print "initialise memory rule"; return; } ! 311, case 1
-		if (R == SEED_RANDOM_NUMBER_GENERATOR_R) { print "seed random number generator rule"; return; } ! 312, case 1
-		if (R == UPDATE_CHRONOLOGICAL_RECORDS_R) { print "update chronological records rule"; return; } ! 313, case 1
-		if (R == POSITION_PLAYER_IN_MODEL_R) { print "position player in model world rule"; return; } ! 314, case 1
-		if (R == ADJUST_LIGHT_R) { print "adjust light rule"; return; } ! 315, case 1
-		if (R == ADVANCE_TIME_R) { print "advance time rule"; return; } ! 316, case 1
-		if (R == GENERATE_ACTION_R) { print "generate action rule"; return; } ! 317, case 1
-		if (R == NOTE_OBJECT_ACQUISITIONS_R) { print "note object acquisitions rule"; return; } ! 318, case 1
-		if (R == PARSE_COMMAND_R) { print "parse command rule"; return; } ! 319, case 1
-		if (R == TIMED_EVENTS_R) { print "timed events rule"; return; } ! 320, case 1
-		if (R == RESURRECT_PLAYER_IF_ASKED_R) { print "resurrect player if asked rule"; return; } ! 321, case 1
-		if (R == ASK_FINAL_QUESTION_R) { print "ask the final question rule"; return; } ! 322, case 1
-		if (R == DetectSceneChange) { print "scene change machinery rule"; return; } ! 323, case 1
-		if (R == BASIC_ACCESSIBILITY_R) { print "basic accessibility rule"; return; } ! 326, case 1
-		if (R == BASIC_VISIBILITY_R) { print "basic visibility rule"; return; } ! 327, case 1
-		if (R == CARRYING_REQUIREMENTS_R) { print "carrying requirements rule"; return; } ! 328, case 1
-		if (R == REQUESTED_ACTIONS_REQUIRE_R) { print "requested actions require persuasion rule"; return; } ! 329, case 1
-		if (R == CARRY_OUT_REQUESTED_ACTIONS_R) { print "carry out requested actions rule"; return; } ! 330, case 1
-		if (R == DESCEND_TO_SPECIFIC_ACTION_R) { print "descend to specific action-processing rule"; return; } ! 331, case 1
-		if (R == WORK_OUT_DETAILS_OF_SPECIFIC_R) { print "work out details of specific action rule"; return; } ! 332, case 1
-		if (R == ACCESS_THROUGH_BARRIERS_R) { print "access through barriers rule"; return; } ! 333, case 1
-		if (R == CANT_REACH_INSIDE_CLOSED_R) { print "can't reach inside closed containers rule"; return; } ! 334, case 1
-		if (R == CANT_REACH_INSIDE_ROOMS_R) { print "can't reach inside rooms rule"; return; } ! 335, case 1
-		if (R == CANT_REACH_OUTSIDE_CLOSED_R) { print "can't reach outside closed containers rule"; return; } ! 336, case 1
-		if (R == STANDARD_NAME_PRINTING_R) { print "standard name printing rule"; return; } ! 340, case 1
-		if (R == STANDARD_CONTENTS_LISTING_R) { print "standard contents listing rule"; return; } ! 353, case 1
-		if (R == ENABLE_GLULX_ACCEL_R) { print "enable Glulx acceleration rule"; return; } ! 417, case 1
-		if (R == PRINT_OBITUARY_HEADLINE_R) { print "print obituary headline rule"; return; } ! 424, case 1
-		if (R == PRINT_FINAL_SCORE_R) { print "print final score rule"; return; } ! 425, case 1
-		if (R == DISPLAY_FINAL_STATUS_LINE_R) { print "display final status line rule"; return; } ! 426, case 1
-		if (R == IMMEDIATELY_RESTART_VM_R) { print "immediately restart the VM rule"; return; } ! 430, case 1
-		if (R == IMMEDIATELY_RESTORE_SAVED_R) { print "immediately restore saved game rule"; return; } ! 431, case 1
-		if (R == IMMEDIATELY_QUIT_R) { print "immediately quit rule"; return; } ! 432, case 1
-		if (R == IMMEDIATELY_UNDO_R) { print "immediately undo rule"; return; } ! 433, case 1
-		if (R == READ_FINAL_ANSWER_R) { print "read the final answer rule"; return; } ! 434, case 1
-		if (R == QUIT_THE_GAME_R) { print "quit the game rule"; return; } ! 642, case 1
-		if (R == SAVE_THE_GAME_R) { print "save the game rule"; return; } ! 646, case 1
-		if (R == RESTORE_THE_GAME_R) { print "restore the game rule"; return; } ! 650, case 1
-		if (R == RESTART_THE_GAME_R) { print "restart the game rule"; return; } ! 654, case 1
-		if (R == VERIFY_THE_STORY_FILE_R) { print "verify the story file rule"; return; } ! 658, case 1
-		if (R == SWITCH_TRANSCRIPT_ON_R) { print "switch the story transcript on rule"; return; } ! 662, case 1
-		if (R == SWITCH_TRANSCRIPT_OFF_R) { print "switch the story transcript off rule"; return; } ! 666, case 1
-		if (R == ANNOUNCE_STORY_FILE_VERSION_R) { print "announce the story file version rule"; return; } ! 670, case 1
-		if (R == ANNOUNCE_SCORE_R) { print "announce the score rule"; return; } ! 674, case 1
-		if (R == PREFER_ABBREVIATED_R) { print "prefer abbreviated room descriptions rule"; return; } ! 678, case 1
-		if (R == REP_PREFER_ABBREVIATED_R) { print "standard report preferring abbreviated room descriptions rule"; return; } ! 679, case 1
-		if (R == PREFER_UNABBREVIATED_R) { print "prefer unabbreviated room descriptions rule"; return; } ! 683, case 1
-		if (R == REP_PREFER_UNABBREVIATED_R) { print "standard report preferring unabbreviated room descriptions rule"; return; } ! 684, case 1
-		if (R == PREFER_SOMETIMES_ABBREVIATED_R) { print "prefer sometimes abbreviated room descriptions rule"; return; } ! 688, case 1
-		if (R == REP_PREFER_SOMETIMES_ABBR_R) { print "standard report preferring sometimes abbreviated room descriptions rule"; return; } ! 689, case 1
-		if (R == SWITCH_SCORE_NOTIFY_ON_R) { print "switch score notification on rule"; return; } ! 693, case 1
-		if (R == REP_SWITCH_NOTIFY_ON_R) { print "standard report switching score notification on rule"; return; } ! 694, case 1
-		if (R == SWITCH_SCORE_NOTIFY_OFF_R) { print "switch score notification off rule"; return; } ! 698, case 1
-		if (R == REP_SWITCH_NOTIFY_OFF_R) { print "standard report switching score notification off rule"; return; } ! 699, case 1
-		if (R == ANNOUNCE_PRONOUN_MEANINGS_R) { print "announce the pronoun meanings rule"; return; } ! 703, case 1
-		if (R == R_14) { print "A first turn sequence rule"; return; } ! 734, case 2
-		if (R == R_15) { print "A last turn sequence rule"; return; } ! 735, case 2
-		if (R == R_30) { print "last specific action-processing rule"; return; } ! 736, case 2
-		if (R == R_159) { print "Setting action variables for exiting"; return; } ! 737, case 2
-		if (R == R_744) { print "After reading a command when number question mode is true"; return; } ! 738, case 2
-		if (R == R_748) { print "After reading a command when menu question mode is true"; return; } ! 739, case 2
-		if (R == R_752) { print "After reading a command when yes/no question mode is true"; return; } ! 740, case 2
-		if (R == R_756) { print "After reading a command when gender question mode is true"; return; } ! 741, case 2
-		if (R == R_760) { print "After reading a command when text question mode is true"; return; } ! 742, case 2
-		if (R == R_763) { print "Instead of doing anything other than examining the large hand"; return; } ! 743, case 2
-		if (R == R_764) { print "When introduction begins"; return; } ! 744, case 2
-		if (R == R_767) { print "Instead of doing anything in the room of requirements when Classroom is happening"; return; } ! 745, case 2
-		if (R == R_768) { print "When Classroom begins"; return; } ! 746, case 2
-		if (R == R_769) { print "Every turn during Classroom"; return; } ! 747, case 2
-		if (R == R_780) { print "Instead of examining a used scriptcontext ( called the pad )"; return; } ! 748, case 2
-		if (R == R_781) { print "Instead of examining a fresh scriptcontext ( called the pad )"; return; } ! 749, case 2
-		if (R == R_782) { print "Check writing in"; return; } ! 750, case 2
-		if (R == R_783) { print "Carry out writing in"; return; } ! 751, case 2
-		if (R == R_784) { print "Report writing in"; return; } ! 752, case 2
-		if (R == R_785) { print "After reading a command when target scriptcontext is a scriptcontext"; return; } ! 753, case 2
-		if (R == R_786) { print "Check erasing"; return; } ! 754, case 2
-		if (R == R_787) { print "Carry out erasing"; return; } ! 755, case 2
-		if (R == R_788) { print "Report erasing"; return; } ! 756, case 2
-		if (R == R_8) { print "start in the correct scenes rule"; return; } ! 757, case 1
-		if (R == POSITION_PLAYER_IN_MODEL_R) { print "position player in model world rule"; return; } ! 758, case 1
-		if (R == UPDATE_CHRONOLOGICAL_RECORDS_R) { print "update chronological records rule"; return; } ! 759, case 1
-		if (R == SEED_RANDOM_NUMBER_GENERATOR_R) { print "seed random number generator rule"; return; } ! 760, case 1
-		if (R == VIRTUAL_MACHINE_STARTUP_R) { print "virtual machine startup rule"; return; } ! 761, case 1
-		if (R == INITIALISE_MEMORY_R) { print "initialise memory rule"; return; } ! 762, case 1
-		if (R == R_9) { print "when play begins stage rule"; return; } ! 763, case 1
-		if (R == R_10) { print "fix baseline scoring rule"; return; } ! 764, case 1
-		if (R == R_11) { print "display banner rule"; return; } ! 765, case 1
-		if (R == R_12) { print "initial room description rule"; return; } ! 766, case 1
-		if (R == GENERATE_ACTION_R) { print "generate action rule"; return; } ! 767, case 1
-		if (R == PARSE_COMMAND_R) { print "parse command rule"; return; } ! 768, case 1
-		if (R == TIMED_EVENTS_R) { print "timed events rule"; return; } ! 769, case 1
-		if (R == ADVANCE_TIME_R) { print "advance time rule"; return; } ! 770, case 1
-		if (R == UPDATE_CHRONOLOGICAL_RECORDS_R) { print "update chronological records rule"; return; } ! 771, case 1
-		if (R == ADJUST_LIGHT_R) { print "adjust light rule"; return; } ! 772, case 1
-		if (R == NOTE_OBJECT_ACQUISITIONS_R) { print "note object acquisitions rule"; return; } ! 773, case 1
-		if (R == R_16) { print "notify score changes rule"; return; } ! 774, case 1
-		if (R == R_17) { print "when play ends stage rule"; return; } ! 775, case 1
-		if (R == RESURRECT_PLAYER_IF_ASKED_R) { print "resurrect player if asked rule"; return; } ! 776, case 1
-		if (R == R_18) { print "print player's obituary rule"; return; } ! 777, case 1
-		if (R == ASK_FINAL_QUESTION_R) { print "ask the final question rule"; return; } ! 778, case 1
-		if (R == DetectSceneChange) { print "scene change machinery rule"; return; } ! 779, case 1
-		if (R == R_21) { print "before stage rule"; return; } ! 780, case 1
-		if (R == R_19) { print "set pronouns from items from multiple object lists rule"; return; } ! 781, case 1
-		if (R == R_20) { print "announce items from multiple object lists rule"; return; } ! 782, case 1
-		if (R == BASIC_VISIBILITY_R) { print "basic visibility rule"; return; } ! 783, case 1
-		if (R == BASIC_ACCESSIBILITY_R) { print "basic accessibility rule"; return; } ! 784, case 1
-		if (R == CARRYING_REQUIREMENTS_R) { print "carrying requirements rule"; return; } ! 785, case 1
-		if (R == R_22) { print "instead stage rule"; return; } ! 786, case 1
-		if (R == REQUESTED_ACTIONS_REQUIRE_R) { print "requested actions require persuasion rule"; return; } ! 787, case 1
-		if (R == CARRY_OUT_REQUESTED_ACTIONS_R) { print "carry out requested actions rule"; return; } ! 788, case 1
-		if (R == DESCEND_TO_SPECIFIC_ACTION_R) { print "descend to specific action-processing rule"; return; } ! 789, case 1
-		if (R == R_23) { print "end action-processing in success rule"; return; } ! 790, case 1
-		if (R == WORK_OUT_DETAILS_OF_SPECIFIC_R) { print "work out details of specific action rule"; return; } ! 791, case 1
-		if (R == ACCESS_THROUGH_BARRIERS_R) { print "access through barriers rule"; return; } ! 792, case 1
-		if (R == CANT_REACH_INSIDE_ROOMS_R) { print "can't reach inside rooms rule"; return; } ! 793, case 1
-		if (R == CANT_REACH_INSIDE_CLOSED_R) { print "can't reach inside closed containers rule"; return; } ! 794, case 1
-		if (R == CANT_REACH_OUTSIDE_CLOSED_R) { print "can't reach outside closed containers rule"; return; } ! 795, case 1
-		if (R == R_35) { print "can't act in the dark rule"; return; } ! 796, case 1
-		if (R == STANDARD_NAME_PRINTING_R) { print "standard name printing rule"; return; } ! 797, case 1
-		if (R == R_59) { print "standard printing the plural name rule"; return; } ! 798, case 1
-		if (R == R_60) { print "standard printing a number of something rule"; return; } ! 799, case 1
-		if (R == STANDARD_CONTENTS_LISTING_R) { print "standard contents listing rule"; return; } ! 800, case 1
-		if (R == R_61) { print "look around once light available rule"; return; } ! 801, case 1
-		if (R == ENABLE_GLULX_ACCEL_R) { print "enable Glulx acceleration rule"; return; } ! 802, case 1
-		if (R == PRINT_OBITUARY_HEADLINE_R) { print "print obituary headline rule"; return; } ! 803, case 1
-		if (R == PRINT_FINAL_SCORE_R) { print "print final score rule"; return; } ! 804, case 1
-		if (R == DISPLAY_FINAL_STATUS_LINE_R) { print "display final status line rule"; return; } ! 805, case 1
-		if (R == R_69) { print "print the final question rule"; return; } ! 806, case 1
-		if (R == R_68) { print "print the final prompt rule"; return; } ! 807, case 1
-		if (R == READ_FINAL_ANSWER_R) { print "read the final answer rule"; return; } ! 808, case 1
-		if (R == R_70) { print "standard respond to final question rule"; return; } ! 809, case 1
-		if (R == R_91) { print "can't take component parts rule"; return; } ! 810, case 1
-		if (R == R_148) { print "find what to enter rule"; return; } ! 811, case 1
-		if (R == QUIT_THE_GAME_R) { print "quit the game rule"; return; } ! 812, case 1
-		if (R == SAVE_THE_GAME_R) { print "save the game rule"; return; } ! 813, case 1
-		if (R == RESTORE_THE_GAME_R) { print "restore the game rule"; return; } ! 814, case 1
-		if (R == RESTART_THE_GAME_R) { print "restart the game rule"; return; } ! 815, case 1
-		if (R == VERIFY_THE_STORY_FILE_R) { print "verify the story file rule"; return; } ! 816, case 1
-		if (R == SWITCH_TRANSCRIPT_ON_R) { print "switch the story transcript on rule"; return; } ! 817, case 1
-		if (R == SWITCH_TRANSCRIPT_OFF_R) { print "switch the story transcript off rule"; return; } ! 818, case 1
-		if (R == ANNOUNCE_STORY_FILE_VERSION_R) { print "announce the story file version rule"; return; } ! 819, case 1
-		if (R == ANNOUNCE_SCORE_R) { print "announce the score rule"; return; } ! 820, case 1
-		if (R == PREFER_ABBREVIATED_R) { print "prefer abbreviated room descriptions rule"; return; } ! 821, case 1
-		if (R == REP_PREFER_ABBREVIATED_R) { print "standard report preferring abbreviated room descriptions rule"; return; } ! 822, case 1
-		if (R == PREFER_UNABBREVIATED_R) { print "prefer unabbreviated room descriptions rule"; return; } ! 823, case 1
-		if (R == REP_PREFER_UNABBREVIATED_R) { print "standard report preferring unabbreviated room descriptions rule"; return; } ! 824, case 1
-		if (R == PREFER_SOMETIMES_ABBREVIATED_R) { print "prefer sometimes abbreviated room descriptions rule"; return; } ! 825, case 1
-		if (R == REP_PREFER_SOMETIMES_ABBR_R) { print "standard report preferring sometimes abbreviated room descriptions rule"; return; } ! 826, case 1
-		if (R == SWITCH_SCORE_NOTIFY_ON_R) { print "switch score notification on rule"; return; } ! 827, case 1
-		if (R == REP_SWITCH_NOTIFY_ON_R) { print "standard report switching score notification on rule"; return; } ! 828, case 1
-		if (R == SWITCH_SCORE_NOTIFY_OFF_R) { print "switch score notification off rule"; return; } ! 829, case 1
-		if (R == REP_SWITCH_NOTIFY_OFF_R) { print "standard report switching score notification off rule"; return; } ! 830, case 1
-		if (R == ANNOUNCE_PRONOUN_MEANINGS_R) { print "announce the pronoun meanings rule"; return; } ! 831, case 1
+		if (R == R_790) { print "pub rule"; return; } ! 282, case 1
+		if (R == R_791) { print "pub answer rule"; return; } ! 283, case 1
+		if (R == LITTLE_USED_DO_NOTHING_R) { print "little-used do nothing rule"; return; } ! 311, case 1
+		if (R == VIRTUAL_MACHINE_STARTUP_R) { print "virtual machine startup rule"; return; } ! 312, case 1
+		if (R == INITIALISE_MEMORY_R) { print "initialise memory rule"; return; } ! 313, case 1
+		if (R == SEED_RANDOM_NUMBER_GENERATOR_R) { print "seed random number generator rule"; return; } ! 314, case 1
+		if (R == UPDATE_CHRONOLOGICAL_RECORDS_R) { print "update chronological records rule"; return; } ! 315, case 1
+		if (R == POSITION_PLAYER_IN_MODEL_R) { print "position player in model world rule"; return; } ! 316, case 1
+		if (R == ADJUST_LIGHT_R) { print "adjust light rule"; return; } ! 317, case 1
+		if (R == ADVANCE_TIME_R) { print "advance time rule"; return; } ! 318, case 1
+		if (R == GENERATE_ACTION_R) { print "generate action rule"; return; } ! 319, case 1
+		if (R == NOTE_OBJECT_ACQUISITIONS_R) { print "note object acquisitions rule"; return; } ! 320, case 1
+		if (R == PARSE_COMMAND_R) { print "parse command rule"; return; } ! 321, case 1
+		if (R == TIMED_EVENTS_R) { print "timed events rule"; return; } ! 322, case 1
+		if (R == RESURRECT_PLAYER_IF_ASKED_R) { print "resurrect player if asked rule"; return; } ! 323, case 1
+		if (R == ASK_FINAL_QUESTION_R) { print "ask the final question rule"; return; } ! 324, case 1
+		if (R == DetectSceneChange) { print "scene change machinery rule"; return; } ! 325, case 1
+		if (R == BASIC_ACCESSIBILITY_R) { print "basic accessibility rule"; return; } ! 328, case 1
+		if (R == BASIC_VISIBILITY_R) { print "basic visibility rule"; return; } ! 329, case 1
+		if (R == CARRYING_REQUIREMENTS_R) { print "carrying requirements rule"; return; } ! 330, case 1
+		if (R == REQUESTED_ACTIONS_REQUIRE_R) { print "requested actions require persuasion rule"; return; } ! 331, case 1
+		if (R == CARRY_OUT_REQUESTED_ACTIONS_R) { print "carry out requested actions rule"; return; } ! 332, case 1
+		if (R == DESCEND_TO_SPECIFIC_ACTION_R) { print "descend to specific action-processing rule"; return; } ! 333, case 1
+		if (R == WORK_OUT_DETAILS_OF_SPECIFIC_R) { print "work out details of specific action rule"; return; } ! 334, case 1
+		if (R == ACCESS_THROUGH_BARRIERS_R) { print "access through barriers rule"; return; } ! 335, case 1
+		if (R == CANT_REACH_INSIDE_CLOSED_R) { print "can't reach inside closed containers rule"; return; } ! 336, case 1
+		if (R == CANT_REACH_INSIDE_ROOMS_R) { print "can't reach inside rooms rule"; return; } ! 337, case 1
+		if (R == CANT_REACH_OUTSIDE_CLOSED_R) { print "can't reach outside closed containers rule"; return; } ! 338, case 1
+		if (R == STANDARD_NAME_PRINTING_R) { print "standard name printing rule"; return; } ! 342, case 1
+		if (R == STANDARD_CONTENTS_LISTING_R) { print "standard contents listing rule"; return; } ! 355, case 1
+		if (R == ENABLE_GLULX_ACCEL_R) { print "enable Glulx acceleration rule"; return; } ! 419, case 1
+		if (R == PRINT_OBITUARY_HEADLINE_R) { print "print obituary headline rule"; return; } ! 426, case 1
+		if (R == PRINT_FINAL_SCORE_R) { print "print final score rule"; return; } ! 427, case 1
+		if (R == DISPLAY_FINAL_STATUS_LINE_R) { print "display final status line rule"; return; } ! 428, case 1
+		if (R == IMMEDIATELY_RESTART_VM_R) { print "immediately restart the VM rule"; return; } ! 432, case 1
+		if (R == IMMEDIATELY_RESTORE_SAVED_R) { print "immediately restore saved game rule"; return; } ! 433, case 1
+		if (R == IMMEDIATELY_QUIT_R) { print "immediately quit rule"; return; } ! 434, case 1
+		if (R == IMMEDIATELY_UNDO_R) { print "immediately undo rule"; return; } ! 435, case 1
+		if (R == READ_FINAL_ANSWER_R) { print "read the final answer rule"; return; } ! 436, case 1
+		if (R == QUIT_THE_GAME_R) { print "quit the game rule"; return; } ! 644, case 1
+		if (R == SAVE_THE_GAME_R) { print "save the game rule"; return; } ! 648, case 1
+		if (R == RESTORE_THE_GAME_R) { print "restore the game rule"; return; } ! 652, case 1
+		if (R == RESTART_THE_GAME_R) { print "restart the game rule"; return; } ! 656, case 1
+		if (R == VERIFY_THE_STORY_FILE_R) { print "verify the story file rule"; return; } ! 660, case 1
+		if (R == SWITCH_TRANSCRIPT_ON_R) { print "switch the story transcript on rule"; return; } ! 664, case 1
+		if (R == SWITCH_TRANSCRIPT_OFF_R) { print "switch the story transcript off rule"; return; } ! 668, case 1
+		if (R == ANNOUNCE_STORY_FILE_VERSION_R) { print "announce the story file version rule"; return; } ! 672, case 1
+		if (R == ANNOUNCE_SCORE_R) { print "announce the score rule"; return; } ! 676, case 1
+		if (R == PREFER_ABBREVIATED_R) { print "prefer abbreviated room descriptions rule"; return; } ! 680, case 1
+		if (R == REP_PREFER_ABBREVIATED_R) { print "standard report preferring abbreviated room descriptions rule"; return; } ! 681, case 1
+		if (R == PREFER_UNABBREVIATED_R) { print "prefer unabbreviated room descriptions rule"; return; } ! 685, case 1
+		if (R == REP_PREFER_UNABBREVIATED_R) { print "standard report preferring unabbreviated room descriptions rule"; return; } ! 686, case 1
+		if (R == PREFER_SOMETIMES_ABBREVIATED_R) { print "prefer sometimes abbreviated room descriptions rule"; return; } ! 690, case 1
+		if (R == REP_PREFER_SOMETIMES_ABBR_R) { print "standard report preferring sometimes abbreviated room descriptions rule"; return; } ! 691, case 1
+		if (R == SWITCH_SCORE_NOTIFY_ON_R) { print "switch score notification on rule"; return; } ! 695, case 1
+		if (R == REP_SWITCH_NOTIFY_ON_R) { print "standard report switching score notification on rule"; return; } ! 696, case 1
+		if (R == SWITCH_SCORE_NOTIFY_OFF_R) { print "switch score notification off rule"; return; } ! 700, case 1
+		if (R == REP_SWITCH_NOTIFY_OFF_R) { print "standard report switching score notification off rule"; return; } ! 701, case 1
+		if (R == ANNOUNCE_PRONOUN_MEANINGS_R) { print "announce the pronoun meanings rule"; return; } ! 705, case 1
+		if (R == R_14) { print "A first turn sequence rule"; return; } ! 736, case 2
+		if (R == R_15) { print "A last turn sequence rule"; return; } ! 737, case 2
+		if (R == R_30) { print "last specific action-processing rule"; return; } ! 738, case 2
+		if (R == R_159) { print "Setting action variables for exiting"; return; } ! 739, case 2
+		if (R == R_744) { print "After reading a command when number question mode is true"; return; } ! 740, case 2
+		if (R == R_748) { print "After reading a command when menu question mode is true"; return; } ! 741, case 2
+		if (R == R_752) { print "After reading a command when yes/no question mode is true"; return; } ! 742, case 2
+		if (R == R_756) { print "After reading a command when gender question mode is true"; return; } ! 743, case 2
+		if (R == R_760) { print "After reading a command when text question mode is true"; return; } ! 744, case 2
+		if (R == R_763) { print "Instead of doing anything other than examining the large hand"; return; } ! 745, case 2
+		if (R == R_764) { print "When introduction begins"; return; } ! 746, case 2
+		if (R == R_767) { print "Instead of doing anything in the Dance Floor when FillingOutLessonForms is happening"; return; } ! 747, case 2
+		if (R == R_768) { print "When FillingOutLessonForms begins"; return; } ! 748, case 2
+		if (R == R_769) { print "Every turn during FillingOutLessonForms"; return; } ! 749, case 2
+		if (R == R_780) { print "Instead of examining a used scriptcontext ( called the pad )"; return; } ! 750, case 2
+		if (R == R_781) { print "Instead of examining a fresh scriptcontext ( called the pad )"; return; } ! 751, case 2
+		if (R == R_782) { print "Check writing in"; return; } ! 752, case 2
+		if (R == R_783) { print "Carry out writing in"; return; } ! 753, case 2
+		if (R == R_784) { print "Report writing in"; return; } ! 754, case 2
+		if (R == R_785) { print "After reading a command when target scriptcontext is a scriptcontext"; return; } ! 755, case 2
+		if (R == R_786) { print "Check erasing"; return; } ! 756, case 2
+		if (R == R_787) { print "Carry out erasing"; return; } ! 757, case 2
+		if (R == R_788) { print "Report erasing"; return; } ! 758, case 2
+		if (R == R_789) { print "After looking for the first time"; return; } ! 759, case 2
+		if (R == R_8) { print "start in the correct scenes rule"; return; } ! 760, case 1
+		if (R == POSITION_PLAYER_IN_MODEL_R) { print "position player in model world rule"; return; } ! 761, case 1
+		if (R == UPDATE_CHRONOLOGICAL_RECORDS_R) { print "update chronological records rule"; return; } ! 762, case 1
+		if (R == SEED_RANDOM_NUMBER_GENERATOR_R) { print "seed random number generator rule"; return; } ! 763, case 1
+		if (R == VIRTUAL_MACHINE_STARTUP_R) { print "virtual machine startup rule"; return; } ! 764, case 1
+		if (R == INITIALISE_MEMORY_R) { print "initialise memory rule"; return; } ! 765, case 1
+		if (R == R_9) { print "when play begins stage rule"; return; } ! 766, case 1
+		if (R == R_10) { print "fix baseline scoring rule"; return; } ! 767, case 1
+		if (R == R_11) { print "display banner rule"; return; } ! 768, case 1
+		if (R == R_12) { print "initial room description rule"; return; } ! 769, case 1
+		if (R == GENERATE_ACTION_R) { print "generate action rule"; return; } ! 770, case 1
+		if (R == PARSE_COMMAND_R) { print "parse command rule"; return; } ! 771, case 1
+		if (R == TIMED_EVENTS_R) { print "timed events rule"; return; } ! 772, case 1
+		if (R == ADVANCE_TIME_R) { print "advance time rule"; return; } ! 773, case 1
+		if (R == UPDATE_CHRONOLOGICAL_RECORDS_R) { print "update chronological records rule"; return; } ! 774, case 1
+		if (R == ADJUST_LIGHT_R) { print "adjust light rule"; return; } ! 775, case 1
+		if (R == NOTE_OBJECT_ACQUISITIONS_R) { print "note object acquisitions rule"; return; } ! 776, case 1
+		if (R == R_16) { print "notify score changes rule"; return; } ! 777, case 1
+		if (R == R_17) { print "when play ends stage rule"; return; } ! 778, case 1
+		if (R == RESURRECT_PLAYER_IF_ASKED_R) { print "resurrect player if asked rule"; return; } ! 779, case 1
+		if (R == R_18) { print "print player's obituary rule"; return; } ! 780, case 1
+		if (R == ASK_FINAL_QUESTION_R) { print "ask the final question rule"; return; } ! 781, case 1
+		if (R == DetectSceneChange) { print "scene change machinery rule"; return; } ! 782, case 1
+		if (R == R_21) { print "before stage rule"; return; } ! 783, case 1
+		if (R == R_19) { print "set pronouns from items from multiple object lists rule"; return; } ! 784, case 1
+		if (R == R_20) { print "announce items from multiple object lists rule"; return; } ! 785, case 1
+		if (R == BASIC_VISIBILITY_R) { print "basic visibility rule"; return; } ! 786, case 1
+		if (R == BASIC_ACCESSIBILITY_R) { print "basic accessibility rule"; return; } ! 787, case 1
+		if (R == CARRYING_REQUIREMENTS_R) { print "carrying requirements rule"; return; } ! 788, case 1
+		if (R == R_22) { print "instead stage rule"; return; } ! 789, case 1
+		if (R == REQUESTED_ACTIONS_REQUIRE_R) { print "requested actions require persuasion rule"; return; } ! 790, case 1
+		if (R == CARRY_OUT_REQUESTED_ACTIONS_R) { print "carry out requested actions rule"; return; } ! 791, case 1
+		if (R == DESCEND_TO_SPECIFIC_ACTION_R) { print "descend to specific action-processing rule"; return; } ! 792, case 1
+		if (R == R_23) { print "end action-processing in success rule"; return; } ! 793, case 1
+		if (R == WORK_OUT_DETAILS_OF_SPECIFIC_R) { print "work out details of specific action rule"; return; } ! 794, case 1
+		if (R == ACCESS_THROUGH_BARRIERS_R) { print "access through barriers rule"; return; } ! 795, case 1
+		if (R == CANT_REACH_INSIDE_ROOMS_R) { print "can't reach inside rooms rule"; return; } ! 796, case 1
+		if (R == CANT_REACH_INSIDE_CLOSED_R) { print "can't reach inside closed containers rule"; return; } ! 797, case 1
+		if (R == CANT_REACH_OUTSIDE_CLOSED_R) { print "can't reach outside closed containers rule"; return; } ! 798, case 1
+		if (R == R_35) { print "can't act in the dark rule"; return; } ! 799, case 1
+		if (R == STANDARD_NAME_PRINTING_R) { print "standard name printing rule"; return; } ! 800, case 1
+		if (R == R_59) { print "standard printing the plural name rule"; return; } ! 801, case 1
+		if (R == R_60) { print "standard printing a number of something rule"; return; } ! 802, case 1
+		if (R == STANDARD_CONTENTS_LISTING_R) { print "standard contents listing rule"; return; } ! 803, case 1
+		if (R == R_61) { print "look around once light available rule"; return; } ! 804, case 1
+		if (R == ENABLE_GLULX_ACCEL_R) { print "enable Glulx acceleration rule"; return; } ! 805, case 1
+		if (R == PRINT_OBITUARY_HEADLINE_R) { print "print obituary headline rule"; return; } ! 806, case 1
+		if (R == PRINT_FINAL_SCORE_R) { print "print final score rule"; return; } ! 807, case 1
+		if (R == DISPLAY_FINAL_STATUS_LINE_R) { print "display final status line rule"; return; } ! 808, case 1
+		if (R == R_69) { print "print the final question rule"; return; } ! 809, case 1
+		if (R == R_68) { print "print the final prompt rule"; return; } ! 810, case 1
+		if (R == READ_FINAL_ANSWER_R) { print "read the final answer rule"; return; } ! 811, case 1
+		if (R == R_70) { print "standard respond to final question rule"; return; } ! 812, case 1
+		if (R == R_91) { print "can't take component parts rule"; return; } ! 813, case 1
+		if (R == R_148) { print "find what to enter rule"; return; } ! 814, case 1
+		if (R == QUIT_THE_GAME_R) { print "quit the game rule"; return; } ! 815, case 1
+		if (R == SAVE_THE_GAME_R) { print "save the game rule"; return; } ! 816, case 1
+		if (R == RESTORE_THE_GAME_R) { print "restore the game rule"; return; } ! 817, case 1
+		if (R == RESTART_THE_GAME_R) { print "restart the game rule"; return; } ! 818, case 1
+		if (R == VERIFY_THE_STORY_FILE_R) { print "verify the story file rule"; return; } ! 819, case 1
+		if (R == SWITCH_TRANSCRIPT_ON_R) { print "switch the story transcript on rule"; return; } ! 820, case 1
+		if (R == SWITCH_TRANSCRIPT_OFF_R) { print "switch the story transcript off rule"; return; } ! 821, case 1
+		if (R == ANNOUNCE_STORY_FILE_VERSION_R) { print "announce the story file version rule"; return; } ! 822, case 1
+		if (R == ANNOUNCE_SCORE_R) { print "announce the score rule"; return; } ! 823, case 1
+		if (R == PREFER_ABBREVIATED_R) { print "prefer abbreviated room descriptions rule"; return; } ! 824, case 1
+		if (R == REP_PREFER_ABBREVIATED_R) { print "standard report preferring abbreviated room descriptions rule"; return; } ! 825, case 1
+		if (R == PREFER_UNABBREVIATED_R) { print "prefer unabbreviated room descriptions rule"; return; } ! 826, case 1
+		if (R == REP_PREFER_UNABBREVIATED_R) { print "standard report preferring unabbreviated room descriptions rule"; return; } ! 827, case 1
+		if (R == PREFER_SOMETIMES_ABBREVIATED_R) { print "prefer sometimes abbreviated room descriptions rule"; return; } ! 828, case 1
+		if (R == REP_PREFER_SOMETIMES_ABBR_R) { print "standard report preferring sometimes abbreviated room descriptions rule"; return; } ! 829, case 1
+		if (R == SWITCH_SCORE_NOTIFY_ON_R) { print "switch score notification on rule"; return; } ! 830, case 1
+		if (R == REP_SWITCH_NOTIFY_ON_R) { print "standard report switching score notification on rule"; return; } ! 831, case 1
+		if (R == SWITCH_SCORE_NOTIFY_OFF_R) { print "switch score notification off rule"; return; } ! 832, case 1
+		if (R == REP_SWITCH_NOTIFY_OFF_R) { print "standard report switching score notification off rule"; return; } ! 833, case 1
+		if (R == ANNOUNCE_PRONOUN_MEANINGS_R) { print "announce the pronoun meanings rule"; return; } ! 834, case 1
 
 		print "(nameless rule at address ", R, ")";
 	}
@@ -25862,6 +25985,7 @@ Array CheckTableEntryIsNonBlank_LU
   TheEmptyTable: print "(the empty table)"; return;
   T0_final_question_options: print "Table of Final Question Options"; return;
   T1_locale_priorities: print "Table of Locale Priorities"; return;
+  T2_quiz_questions: print "Table of quiz questions"; return;
 
 		default: print "** No such table **";
 	}
@@ -27370,7 +27494,12 @@ Verb meta 'tree'
 
 [ LITTLE_USED_DO_NOTHING_R; rfalse; ];
 
-Array LIST_CONST_416 --> 0 TEXT_TY 4 (SC_74) (SC_75) (SC_76) (SC_77) ;
+Array LIST_CONST_1320 --> 0 TEXT_TY 4 (SC_83) (SC_84) (SC_85) (SC_86) ;
+Array LIST_CONST_1331 --> 0 TEXT_TY 4 (SC_87) (SC_88) (SC_89) (SC_90) ;
+Array LIST_CONST_1342 --> 0 TEXT_TY 4 (SC_91) (SC_92) (SC_93) (SC_94) ;
+Array LIST_CONST_1353 --> 0 TEXT_TY 4 (SC_95) (SC_96) (SC_97) (SC_98) ;
+Array LIST_CONST_1364 --> 0 TEXT_TY 4 (SC_99) (SC_100) (SC_101) (SC_102) ;
+Array LIST_CONST_412 --> 0 TEXT_TY 4 (SC_103) (SC_104) (SC_105) (SC_106) ;
 
 
 
@@ -27554,7 +27683,7 @@ Array LIST_CONST_416 --> 0 TEXT_TY 4 (SC_74) (SC_75) (SC_76) (SC_77) ;
        if (((~~(((Global_Vars-->9) == EMPTY_TEXT_VALUE)))))  {
          ! phrase 44
          ! [44: say ~[current question][line break]~]
-         say__p=1;ParaContent();  print (PrintText) (Global_Vars-->9); ParaContent();  new_line;  .L_Say60; .L_SayX60;
+         say__p=1;ParaContent();  print (PrintText) (Global_Vars-->9); ParaContent();  new_line;  .L_Say61; .L_SayX61;
          ! phrase 45
          ! [45: end if]
          }
@@ -27567,7 +27696,7 @@ Array LIST_CONST_416 --> 0 TEXT_TY 4 (SC_74) (SC_75) (SC_76) (SC_77) ;
           for (t_0=1: t_0<= LIST_OF_TY_GetLength((Global_Vars-->12)) : t_0++)  {
             ! phrase 48
             ! [48: say ~[counter] - [entry counter of the current question menu][line break]~]
-            say__p=1;ParaContent();  print (say__n=t_0); ParaContent();  print (PrintText) SC_78; ParaContent();  print (PrintText) LIST_OF_TY_GetItem((Global_Vars-->12),t_0); ParaContent();  new_line;  .L_Say61; .L_SayX61;
+            say__p=1;ParaContent();  print (say__n=t_0); ParaContent();  print (PrintText) SC_107; ParaContent();  print (PrintText) LIST_OF_TY_GetItem((Global_Vars-->12),t_0); ParaContent();  new_line;  .L_Say62; .L_SayX62;
             ! phrase 49
             ! [49: end repeat]
             }
@@ -27731,7 +27860,7 @@ Array LIST_CONST_416 --> 0 TEXT_TY 4 (SC_74) (SC_75) (SC_76) (SC_77) ;
        if (((~~(((Global_Vars-->9) == EMPTY_TEXT_VALUE)))))  {
          ! phrase 44
          ! [44: say ~[current question][line break]~]
-         say__p=1;ParaContent();  print (PrintText) (Global_Vars-->9); ParaContent();  new_line;  .L_Say62; .L_SayX62;
+         say__p=1;ParaContent();  print (PrintText) (Global_Vars-->9); ParaContent();  new_line;  .L_Say63; .L_SayX63;
          ! phrase 45
          ! [45: end if]
          }
@@ -27744,7 +27873,7 @@ Array LIST_CONST_416 --> 0 TEXT_TY 4 (SC_74) (SC_75) (SC_76) (SC_77) ;
           for (t_0=1: t_0<= LIST_OF_TY_GetLength((Global_Vars-->12)) : t_0++)  {
             ! phrase 48
             ! [48: say ~[counter] - [entry counter of the current question menu][line break]~]
-            say__p=1;ParaContent();  print (say__n=t_0); ParaContent();  print (PrintText) SC_78; ParaContent();  print (PrintText) LIST_OF_TY_GetItem((Global_Vars-->12),t_0); ParaContent();  new_line;  .L_Say63; .L_SayX63;
+            say__p=1;ParaContent();  print (say__n=t_0); ParaContent();  print (PrintText) SC_107; ParaContent();  print (PrintText) LIST_OF_TY_GetItem((Global_Vars-->12),t_0); ParaContent();  new_line;  .L_Say64; .L_SayX64;
             ! phrase 49
             ! [49: end repeat]
             }
@@ -27762,7 +27891,7 @@ Array LIST_CONST_416 --> 0 TEXT_TY 4 (SC_74) (SC_75) (SC_76) (SC_77) ;
     ;
       ! phrase 1
       ! [1: say ~You read:[text of the text file of the pad]~]
-      say__p=1;ParaContent();  print (PrintText) SC_79; ParaContent(); @push self;  FileIO_PrintContents(GProperty(9, self=t_0,p13_text_file)); say__p = 1; @pull self;  .L_Say64; .L_SayX64;
+      say__p=1;ParaContent();  print (PrintText) SC_108; ParaContent(); @push self;  FileIO_PrintContents(GProperty(9, self=t_0,p13_text_file)); say__p = 1; @pull self;  .L_Say65; .L_SayX65;
    rfalse;
 ];
 ! Request 6: phrase nothing -> nothing
@@ -28046,31 +28175,31 @@ Array LIST_CONST_416 --> 0 TEXT_TY 4 (SC_74) (SC_75) (SC_76) (SC_77) ;
        FileIO_PutContents(GProperty(9, t_0,p13_text_file), ((LocalParking-->0=t_0)*0+text_routine_7), false); 
       ! phrase 2
       ! [2: say ~result:[text of the text file of the pad]~]
-      say__p=1;ParaContent();  print (PrintText) SC_80; ParaContent(); @push self;  FileIO_PrintContents(GProperty(9, self=t_0,p13_text_file)); say__p = 1; @pull self;  .L_Say65; .L_SayX65;
+      say__p=1;ParaContent();  print (PrintText) SC_109; ParaContent(); @push self;  FileIO_PrintContents(GProperty(9, self=t_0,p13_text_file)); say__p = 1; @pull self;  .L_Say66; .L_SayX66;
       ! phrase 3
       ! [3: now the pad is used]
        (Adj_75_t2_v9(t_0)); 
    rfalse;
 ];
 [ text_routine_0;
-say__p=1;ParaContent();  print (PrintText) SC_81; ParaContent();  print "'"; ParaContent();  print (PrintText) SC_82;  .L_Say66; .L_SayX66;
+say__p=1;ParaContent();  print (PrintText) SC_110; ParaContent();  print "'"; ParaContent();  print (PrintText) SC_111;  .L_Say67; .L_SayX67;
     rtrue;
 ];
 
 [ text_routine_1;
-say__p=1;ParaContent();  print (PrintText) SC_83; 
-	if (~~(((((Adj_40_t1_v9(self))))))) jump L_Say67;
-		ParaContent();  print (PrintText) SC_84;  .L_Say67; .L_SayX67;
+say__p=1;ParaContent();  print (PrintText) SC_112; 
+	if (~~(((((Adj_40_t1_v9(self))))))) jump L_Say68;
+		ParaContent();  print (PrintText) SC_113;  .L_Say68; .L_SayX68;
     rtrue;
 ];
 
 [ text_routine_2;
-say__p=1;ParaContent();  print (PrintShortName) I112_detective_havers; ParaContent();  print (PrintText) SC_85;  .L_Say68; .L_SayX68;
+say__p=1;ParaContent();  print (PrintShortName) I112_detective_havers; ParaContent();  print (PrintText) SC_114;  .L_Say69; .L_SayX69;
     rtrue;
 ];
 
 [ text_routine_3;
-say__p=1;ParaContent();  print (PrintText) SC_86; ParaContent();  print (say__n= LIST_OF_TY_GetLength((Global_Vars-->12)) ); ParaContent();  print (PrintText) SC_87;  .L_Say69; .L_SayX69;
+say__p=1;ParaContent();  print (PrintText) SC_115; ParaContent();  print (say__n= LIST_OF_TY_GetLength((Global_Vars-->12)) ); ParaContent();  print (PrintText) SC_116;  .L_Say70; .L_SayX70;
     rtrue;
 ];
 
@@ -28078,7 +28207,7 @@ say__p=1;ParaContent();  print (PrintText) SC_86; ParaContent();  print (say__n=
     t_0 ! Call parameter 'pad' = scriptcontext
     ;
 t_0=LocalParking-->0;
-    say__p=1;ParaContent();  new_line; ParaContent();  print (PrintSnippet) players_command; ParaContent();  new_line;  .L_Say70; .L_SayX70;
+    say__p=1;ParaContent();  new_line; ParaContent();  print (PrintSnippet) players_command; ParaContent();  new_line;  .L_Say71; .L_SayX71;
     rtrue;
 ];
 
@@ -28086,7 +28215,7 @@ t_0=LocalParking-->0;
     t_0 ! Call parameter 'pad' = scriptcontext
     ;
 t_0=LocalParking-->0;
-    say__p=1;ParaContent(); @push self;  print (PrintText) GProperty(OBJECT_TY, self=(Global_Vars-->36),p14_heading); @pull self; ParaContent();  DivideParagraphPoint(); new_line;  .L_Say71; .L_SayX71;
+    say__p=1;ParaContent(); @push self;  print (PrintText) GProperty(OBJECT_TY, self=(Global_Vars-->36),p14_heading); @pull self; ParaContent();  DivideParagraphPoint(); new_line;  .L_Say72; .L_SayX72;
     rtrue;
 ];
 
@@ -28094,7 +28223,7 @@ t_0=LocalParking-->0;
     t_0 ! Call parameter 'pad' = scriptcontext
     ;
 t_0=LocalParking-->0;
-    say__p=1;ParaContent();  new_line; ParaContent();  print (PrintSnippet) players_command; ParaContent();  new_line;  .L_Say72; .L_SayX72;
+    say__p=1;ParaContent();  new_line; ParaContent();  print (PrintSnippet) players_command; ParaContent();  new_line;  .L_Say73; .L_SayX73;
     rtrue;
 ];
 
@@ -28102,7 +28231,7 @@ t_0=LocalParking-->0;
     t_0 ! Call parameter 'pad' = scriptcontext
     ;
 t_0=LocalParking-->0;
-    say__p=1;ParaContent();  new_line; ParaContent();  print (PrintSnippet) players_command; ParaContent();  new_line;  .L_Say73; .L_SayX73;
+    say__p=1;ParaContent();  new_line; ParaContent();  print (PrintSnippet) players_command; ParaContent();  new_line;  .L_Say74; .L_SayX74;
     rtrue;
 ];
 
@@ -28125,10 +28254,14 @@ t_0=LocalParking-->0;
 	rfalse;
 ];
 
-Array PastActionsI6Routines --> 0 0;
+[ PAPR_0 ;
+if ((action ==##Look) &&  (actor==player)) rtrue;
+    rfalse;
+];
+Array PastActionsI6Routines --> PAPR_0 0 0;
 
 Constant NO_PAST_TENSE_CONDS 0;
-Constant NO_PAST_TENSE_ACTIONS 0;
+Constant NO_PAST_TENSE_ACTIONS 1;
 
 [ TestSinglePastState past_flag pt turn_end wanted
 	old new trips consecutives ct_0 ct_1 I7BASPL;
@@ -29291,7 +29424,7 @@ Array Rel_Record_63 -->
     NULL NULL
     "leading-through relation"
      RELS_TEST+RELS_LOOKUP_ANY+RELS_LOOKUP_ALL_X+RELS_LOOKUP_ALL_Y+RELS_LIST+RELS_X_UNIQUE+RELS_ASSERT_TRUE+RELS_ASSERT_FALSE+RELS_SHOW+RELS_ROUTE_FIND
-     door_to KD3_relation_of_rooms_to_doors Rel_Handler_63 "Leading-through relates one room (called the other side) to various doors";
+     door_to KD4_relation_of_rooms_to_doors Rel_Handler_63 "Leading-through relates one room (called the other side) to various doors";
 [ Rel_Handler_63 rr task X Y Z1 Z2 Z3 Z4;
     switch (task) {
         RELS_TEST: if (X == (Y.door_to)) rtrue; rfalse;
@@ -29362,7 +29495,7 @@ Array Rel_Record_65 -->
     NULL NULL
     "lock-fitting relation"
      RELS_TEST+RELS_LOOKUP_ANY+RELS_LOOKUP_ALL_X+RELS_LOOKUP_ALL_Y+RELS_LIST+RELS_X_UNIQUE+RELS_ASSERT_TRUE+RELS_ASSERT_FALSE+RELS_SHOW+RELS_ROUTE_FIND
-     with_key KD4_relation_of_things_to_thin Rel_Handler_65 "Lock-fitting relates one thing (called the matching key) to various things";
+     with_key KD5_relation_of_things_to_thin Rel_Handler_65 "Lock-fitting relates one thing (called the matching key) to various things";
 [ Rel_Handler_65 rr task X Y Z1 Z2 Z3 Z4;
     switch (task) {
         RELS_TEST: if (X == (Y.with_key)) rtrue; rfalse;
@@ -29872,93 +30005,122 @@ ArgumentTypeFailed(filename, line);
 
 
 Array ConstantListPointers --> 
-LIST_CONST_416  0 0;
+LIST_CONST_1320 LIST_CONST_1331 LIST_CONST_1342 LIST_CONST_1353 LIST_CONST_1364 LIST_CONST_412  0 0;
 
-Constant SC_36 = " ";
-Constant SC_78 = " - ";
-Constant SC_87 = " >";
-Constant SC_84 = " An alien presence invades your mind and deep in your bones you hear a voice echo ~Welcome brave soul. You have passed the first hurdle. Before you proceed, you must answer the following questions.~";
-Constant SC_71 = " and prepare to write in it.";
-Constant SC_57 = " for the remainder of your venture into the unknown";
-Constant SC_62 = " gender";
-Constant SC_85 = " hangs back by the door: the forensics expert is not finished with a preliminary examination of the body. From here you can't see much, except that the expert has peeled back and laid to one side a liturgical vestment that someone at the church used to cover the corpse until the police came. What was once a cream silk with festive Easter embroidery is now stained with blood-colored handprints.";
-Constant SC_52 = " here";
-Constant SC_42 = " or ";
-Constant SC_47 = " you ";
-Constant SC_43 = ", ";
-Constant SC_41 = ",";
-Constant SC_35 = ".";
-Constant SC_31 = ": ";
-Constant SC_53 = ":";
-Constant SC_44 = "> ";
-Constant SC_10 = ">";
-Constant SC_69 = ">>";
-Constant SC_40 = "?";
+Constant SC_42 = " ";
+Constant SC_107 = " - ";
+Constant SC_116 = " >";
+Constant SC_113 = " An alien presence invades your mind and deep in your bones you hear a voice echo ~Welcome brave soul. You have passed the first hurdle. Before you proceed, you must answer the following questions.~";
+Constant SC_80 = " and prepare to write in it.";
+Constant SC_63 = " for the remainder of your venture into the unknown";
+Constant SC_71 = " gender";
+Constant SC_114 = " hangs back by the door: the forensics expert is not finished with a preliminary examination of the body. From here you can't see much, except that the expert has peeled back and laid to one side a liturgical vestment that someone at the church used to cover the corpse until the police came. What was once a cream silk with festive Easter embroidery is now stained with blood-colored handprints.";
+Constant SC_58 = " here";
+Constant SC_48 = " or ";
+Constant SC_53 = " you ";
+Constant SC_49 = ", ";
+Constant SC_47 = ",";
+Constant SC_41 = ".";
+Constant SC_84 = "1066";
+Constant SC_83 = "1256";
+Constant SC_85 = "1589";
+Constant SC_86 = "1790";
+Constant SC_95 = "23";
+Constant SC_92 = "289";
+Constant SC_94 = "321";
+Constant SC_91 = "356";
+Constant SC_97 = "37";
+Constant SC_96 = "39";
+Constant SC_98 = "41";
+Constant SC_93 = "421";
+Constant SC_37 = ": ";
+Constant SC_59 = ":";
+Constant SC_50 = "> ";
+Constant SC_11 = ">";
+Constant SC_78 = ">>";
+Constant SC_46 = "?";
 Constant SC_7 = "A flight of steps leads down into the darkness.";
-Constant SC_27 = "Age: ";
-Constant SC_30 = "Are you happy with your responses?";
+Constant SC_33 = "Age: ";
+Constant SC_99 = "Animal";
+Constant SC_36 = "Are you happy with your responses?";
 Constant SC_4 = "As good-looking as ever.";
-Constant SC_29 = "Character: ";
-Constant SC_23 = "Do you want to play as a male, female or neutral character";
-Constant SC_74 = "Drummer";
-Constant SC_21 = "Enter your name >";
+Constant SC_87 = "Cat";
+Constant SC_35 = "Character: ";
+Constant SC_66 = "Congratulations you have won!";
+Constant SC_29 = "Do you want to play as a male, female or neutral character";
+Constant SC_88 = "Dog";
+Constant SC_103 = "Drummer";
+Constant SC_27 = "Enter your name >";
+Constant SC_90 = "Fox";
+Constant SC_101 = "Fruit";
 Constant SC_2 = "GLUE-AI";
-Constant SC_22 = "How old are you?";
-Constant SC_66 = "I think we will simply refer to you as ";
-Constant SC_46 = "In ";
-Constant SC_81 = "It is the same green hand that has Inscribed in on the blackboard of the the words ?Remember the scala of Sinbad";
-Constant SC_54 = "It seems improbable that one of such tender years would be venturing so far.";
-Constant SC_68 = "It would be better to write in a notebook.";
-Constant SC_72 = "It's hard to see how.";
-Constant SC_75 = "Keyboardist";
-Constant SC_55 = "Let's try to be realistic about this.";
-Constant SC_76 = "Lipsyncer";
-Constant SC_26 = "Name: ";
-Constant SC_60 = "OK. Let's start again, shall we";
-Constant SC_48 = "On ";
-Constant SC_77 = "Other Faker";
-Constant SC_13 = "Please enter M, F or N (Male or Female or Neuter) >";
-Constant SC_12 = "Please enter Y or N (Yes or No) >";
-Constant SC_11 = "Please enter a number >";
-Constant SC_14 = "Please enter your answer >";
-Constant SC_86 = "Please select a number between 1 and ";
-Constant SC_18 = "QUIT";
-Constant SC_15 = "RESTART";
-Constant SC_16 = "RESTORE a saved game";
-Constant SC_28 = "Sex: ";
+Constant SC_24 = "How many books are there in the Old Testament? (hint 2)";
+Constant SC_28 = "How old are you?";
+Constant SC_75 = "I think we will simply refer to you as ";
+Constant SC_52 = "In ";
+Constant SC_21 = "In which year was the Battle of Hastings? (hint 2)";
+Constant SC_110 = "It is the same green hand that has Inscribed in on the blackboard of the the words ?emember the scala of Sinbad";
+Constant SC_60 = "It seems improbable that one of such tender years would be venturing so far.";
+Constant SC_77 = "It would be better to write in a notebook.";
+Constant SC_81 = "It's hard to see how.";
+Constant SC_104 = "Keyboardist";
+Constant SC_61 = "Let's try to be realistic about this.";
+Constant SC_105 = "Lipsyncer";
+Constant SC_32 = "Name: ";
+Constant SC_69 = "OK. Let's start again, shall we";
+Constant SC_54 = "On ";
+Constant SC_106 = "Other Faker";
+Constant SC_14 = "Please enter M, F or N (Male or Female or Neuter) >";
+Constant SC_13 = "Please enter Y or N (Yes or No) >";
+Constant SC_12 = "Please enter a number >";
+Constant SC_15 = "Please enter your answer >";
+Constant SC_115 = "Please select a number between 1 and ";
+Constant SC_19 = "QUIT";
+Constant SC_16 = "RESTART";
+Constant SC_17 = "RESTORE a saved game";
+Constant SC_89 = "Rabbit";
+Constant SC_34 = "Sex: ";
 Constant SC_8 = "She looks glumly back. There's still a purple-ish bruise on her cheekbone from the disaster Thursday afternoon.";
+Constant SC_100 = "Star";
 Constant SC_9 = "Sun. AM";
-Constant SC_58 = "Thank you, you are playing as a ";
-Constant SC_59 = "Thank you. Venture into the unknown brave ";
-Constant SC_61 = "Thank you. You are ";
-Constant SC_56 = "Thank you: You are ";
-Constant SC_83 = "The room smells musty.";
-Constant SC_33 = "There is an aura of magic about the large grumpity hand that prevents you doing this.  Perhaps name the notes of the musical bar: say egbdf";
-Constant SC_34 = "There is nothing of note in ";
-Constant SC_19 = "UNDO the last command";
-Constant SC_67 = "Welcome to this venture, ";
-Constant SC_20 = "What is your name?";
-Constant SC_24 = "Which of the following is your preferred character type:";
-Constant SC_65 = "With an eerie musical scale, the hand falls to the side hearing songA";
-Constant SC_39 = "Would you like to ";
-Constant SC_45 = "You ";
+Constant SC_64 = "Thank you, you are playing as a ";
+Constant SC_68 = "Thank you. Venture into the unknown brave ";
+Constant SC_70 = "Thank you. You are ";
+Constant SC_62 = "Thank you: You are ";
+Constant SC_112 = "The Dance Floor is just the dance floor below the stage and west of the rest of the pub.";
+Constant SC_10 = "The pub is crowded for the weekly quiz night. The barman is ready to call out the questions. Get one wrong and you will be barred from the pub for life.";
+Constant SC_39 = "There is an aura of magic about the large grumpity hand that prevents you doing this.  Perhaps name the notes of the musical bar: say egbdf";
+Constant SC_40 = "There is nothing of note in ";
+Constant SC_20 = "UNDO the last command";
+Constant SC_102 = "Vegetable";
+Constant SC_76 = "Welcome to this venture, ";
+Constant SC_65 = "Well done. You have survived to the next round.";
+Constant SC_25 = "What is a Cantaloupe? (hint 3)";
+Constant SC_23 = "What is the square root of 126736? (hint 1)";
+Constant SC_26 = "What is your name?";
+Constant SC_22 = "What type of animal is Basil Brush? (hint 4)";
+Constant SC_30 = "Which of the following is your preferred character type:";
+Constant SC_74 = "With an eerie musical scale, the hand falls to the side hearing songA";
+Constant SC_45 = "Would you like to ";
+Constant SC_51 = "You ";
 Constant SC_6 = "You are at the far end of a musical scale that you cant quite remember. A recent boy-band rise to fame prevents all further hopes of remembering any tune  other than their smash hit.  ~Sometimes~.  It is strangely reminiscent of the flight of the bumblebees.  A large Grumpy music teacher to the east emits a faint green light.  Type ~test me~ to win fast! ";
-Constant SC_32 = "You are under a strange compulsion and unable to move.";
-Constant SC_38 = "You finish writing and fold your notebook away.";
-Constant SC_25 = "You have chosen:";
-Constant SC_70 = "You open ";
-Constant SC_79 = "You read:";
-Constant SC_73 = "You scrub out all the entries in ";
-Constant SC_63 = "@{5C}p";
-Constant SC_37 = "@@94say ";
-Constant SC_50 = "also ";
+Constant SC_38 = "You are under a strange compulsion and unable to move.";
+Constant SC_44 = "You finish writing and fold your notebook away.";
+Constant SC_67 = "You have been barred from the pub for getting a question wrong.";
+Constant SC_31 = "You have chosen:";
+Constant SC_79 = "You open ";
+Constant SC_108 = "You read:";
+Constant SC_82 = "You scrub out all the entries in ";
+Constant SC_72 = "@{5C}p";
+Constant SC_43 = "@@94say ";
+Constant SC_56 = "also ";
 Constant SC_5 = "bsh";
-Constant SC_49 = "can ";
-Constant SC_64 = "egbdf";
-Constant SC_80 = "result:";
-Constant SC_82 = "s Theme  to find your way forward.~";
-Constant SC_51 = "see ";
-Constant SC_17 = "see some suggestions for AMUSING things to do";
+Constant SC_55 = "can ";
+Constant SC_73 = "egbdf";
+Constant SC_109 = "result:";
+Constant SC_111 = "s Theme  to find your way forward.~";
+Constant SC_57 = "see ";
+Constant SC_18 = "see some suggestions for AMUSING things to do";
 Constant SC_3 = "the";
 
 #ifndef p0_specification; Constant p0_specification = 0; #endif;
@@ -30060,10 +30222,11 @@ Constant cap_short_name = short_name;
 Array Runtime_Quotations_Displayed --> 1;
 
 [ InitialHeapAllocation obj pv;
-    pv = (Global_Vars-->12); (Global_Vars-->12) = BlkValueCreate(LIST_OF_TY,pv,KD5_list_of_texts);
+    pv = (Global_Vars-->12); (Global_Vars-->12) = BlkValueCreate(LIST_OF_TY,pv,KD3_list_of_texts);
     pv = (Global_Vars-->13); (Global_Vars-->13) = BlkValueCreate(INDEXED_TEXT_TY,pv,INDEXED_TEXT_TY);
     pv = (Global_Vars-->32); (Global_Vars-->32) = BlkValueCreate(INDEXED_TEXT_TY,pv,INDEXED_TEXT_TY);
-    pv = ConstantListPointers-->0; ConstantListPointers-->0 = BlkValueCreate(LIST_OF_TY,pv,KD5_list_of_texts);
+    for (obj=1:obj<=TableRows(T2_quiz_questions):obj++) { if (ExistsTableLookUpEntry(T2_quiz_questions, 2, obj)==false) continue; pv = TableLookUpEntry(T2_quiz_questions, 2, obj); TableLookUpEntry(T2_quiz_questions, 2, obj, true, BlkValueCreate(LIST_OF_TY,pv,KD3_list_of_texts)); }
+    pv = ConstantListPointers-->5; ConstantListPointers-->5 = BlkValueCreate(LIST_OF_TY,pv,KD3_list_of_texts);
 ];
 [ DistributeBlockConstants obj pv;
 ];
@@ -30085,12 +30248,12 @@ Array KD1_values_based_rule_producin --> ! values based rule producing values
     RULE_TY 2 VALUE_TY VALUE_TY;
 Array KD2_activity --> ! activity
     ACTIVITY_TY 1 NIL_TY;
-Array KD3_relation_of_rooms_to_doors --> ! relation of rooms to doors
-    RELATION_TY 2 9 9;
-Array KD4_relation_of_things_to_thin --> ! relation of things to things
-    RELATION_TY 2 9 9;
-Array KD5_list_of_texts --> ! list of texts
+Array KD3_list_of_texts --> ! list of texts
     LIST_OF_TY 1 TEXT_TY;
+Array KD4_relation_of_rooms_to_doors --> ! relation of rooms to doors
+    RELATION_TY 2 9 9;
+Array KD5_relation_of_things_to_thin --> ! relation of things to things
+    RELATION_TY 2 9 9;
 [ DefaultValueFinder K;
     if (K == KD0_phrase_nothing_to_nothing) return Default_Value_0;
     return 0;
