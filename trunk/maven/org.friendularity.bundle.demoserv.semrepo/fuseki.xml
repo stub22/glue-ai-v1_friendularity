@@ -25,7 +25,6 @@
 		highly-visible web.contextPath variable.
 	-->
         <web.contextPath>friendu_semrepo</web.contextPath>
-
         <force-imports>
                org.joseki.servlets, org.joseki.http, org.joseki.validation, org.joseki, org.joseki.module, org.joseki.vocabulary, javax.servlet, javax.servlet.http,
                org.cogchar.app.puma.boot, org.cogchar.app.puma.config, org.cogchar.app.puma.web, org.cogchar.joswrap,org.cogchar.name.dir
@@ -48,14 +47,20 @@
             <scope>runtime</scope>
         </dependency>
 				
-				
+
         <!-- Our Lift-based webapp, which we expect PAX services above to find and launch to HTTP for us  -->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>org.friendularity.bundle.webapp.semrepo</artifactId>
             <version>${project.version}</version>
-            <scope>runtime</scope>
         </dependency>   
+   <!--  *is* "provided" above by org.friendularity.bundle.webapp.semrepo at "runtime"
+		<dependency>
+			<groupId>org.cogchar</groupId>
+			<artifactId>org.cogchar.bundle.bind.lift</artifactId>
+			<version>${cogchar.version}</version>
+            <scope>provided</scope>
+		</dependency> 
        
         <dependency>
             <groupId>org.cogchar</groupId>
@@ -63,40 +68,34 @@
             <version>${cogchar.version}</version>
             <scope>compile</scope>
         </dependency>   
-		<dependency>
-			<groupId>org.cogchar</groupId>
-			<artifactId>org.cogchar.bundle.bind.lift</artifactId>
-			<version>${cogchar.version}</version>
-            <scope>provided</scope>  <!--  *is* "provided" above by org.friendularity.bundle.webapp.semrepo at "runtime"-->
-		</dependency> 
-       
-
-		<!-- We want the same deps as CCRK, but not the full PUMA boot peformed by CCRK activator.
-		-->
-		<dependency>
-			<groupId>org.cogchar</groupId>
-			<artifactId>org.cogchar.bundle.app.puma</artifactId>
-			<version>${cogchar.version}</version>
-		</dependency>
-        <!--
-		<dependency>
-			<groupId>org.cogchar</groupId>
-			<artifactId>org.cogchar.bundle.render.resources</artifactId>
-			<version>${cogchar.version}</version>
-		</dependency>
 		-->
         <!-- Note that o.f.project.root and o.f.modules.main must also have been built and avail in local repo,
             in order for variables like "robokind.version" to resolve when applied *transitively*
             (The built main+root is not required to resolve the variables used directly in this pom; 
                 those are allowed to come from the source-tree poms).
-        -->
-		<!-- not yet using but will -->
+        
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>org.friendularity.bundle.netconfig</artifactId>
 			<version>${project.version}</version>
             <scope>runtime</scope>
 		</dependency>
+         -->
+
+        <!--
+
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>org.friendularity.bundle.vworld.semrepo</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+		<dependency>
+            <groupId>org.friendularity</groupId>
+            <artifactId>org.friendularity.bundle.demoapp.semrepo</artifactId>
+            <version>${friendularity.version}</version>
+		</dependency>
+
+        -->
 	</dependencies>
 
 	<build>
