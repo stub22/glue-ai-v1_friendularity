@@ -73,7 +73,7 @@ public class CCRK_DemoActivator extends BundleActivatorBase {
 
 	@Override public void start(final BundleContext context) throws Exception {
 		// take control for jVision
-		org.friendularity.bundle.jvision.JVisionBundleActivator.LAUNCH_MYSELF = false;
+		//org.friendularity.bundle.jvision.JVisionBundleActivator.LAUNCH_MYSELF = false;
 		// Need to tell the MacroBundle system that we are the main launcher, so that forceLog4JConfig will work.
 		macroStartupSettings.firstBundleActivatorBase = this;
 		// Will look for log4j.properties at root of this bundle.

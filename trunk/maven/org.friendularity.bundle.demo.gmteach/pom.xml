@@ -15,6 +15,7 @@
 	<name>${project.artifactId} - OSGi</name>
 
 	<properties>
+		<jflux.version>0.1.9-SNAPSHOT</jflux.version>
 		<storychat.version>1.0.2-SNAPSHOT</storychat.version>
 		        <com.hrkind.robot.connections>
             <!-- We can add additional speech services for a robot by adding 
@@ -161,15 +162,15 @@
 
 		<!-- Services Panel -->
 		<dependency>
-			<groupId>org.rwshop</groupId>
-			<artifactId>org.rwshop.swing.messaging</artifactId>
-			<version>${rwshop.version}</version>
+			<groupId>org.jflux</groupId>
+			<artifactId>org.jflux.swing.messaging</artifactId>
+			<version>${jflux.version}</version>
 		</dependency>
-		<dependency>
-			 <groupId>org.rwshop</groupId>
-			 <artifactId>org.rwshop.swing.common</artifactId>
-			 <version>${rwshop.version}</version>
-		 </dependency>
+		<!--dependency>
+			 <groupId>org.jflux</groupId>
+			 <artifactId>org.jflux.swing.common</artifactId>
+			 <version>${jflux.version}</version>
+		 </dependency-->
 
 		<!-- Our PAX-JETTY service -->
 		<dependency>
@@ -235,7 +236,24 @@
 				<configuration>
 					<instructions>
 						<Bundle-Activator>org.friendularity.bundle.demo.gmteach.GMTEACH_DemoActivator</Bundle-Activator>
-						<Export-Package>org.friendularity.*</Export-Package>
+						<!-- Cannot just export org.friendularity.*, because that will create copies of
+								classes from other bundles that we depend on, e.g. JVision.
+								
+								On the other hand, a default (implicit) export instruction does not include classes from 
+								libraries, like o.f.lib.viz, which we *do* want to include(/export).
+								
+								Don't know of a tidier way than explicitly exporting all the packages we do want.
+								(Including "*" exports the whole universe of visible classes - exciting but horrible!)
+
+								org.friendularity.respire
+						-->
+						<Export-Package>org.friendularity.gmteach.api.*, 
+										org.friendularity.gmteach.impl.visual,
+										org.friendularity.gmteach.vworld,
+										
+										org.friendularity.struct,
+										org.friendularity.bundle.demo.gmteach
+						</Export-Package>
 					</instructions>
 				</configuration>
 			</plugin>

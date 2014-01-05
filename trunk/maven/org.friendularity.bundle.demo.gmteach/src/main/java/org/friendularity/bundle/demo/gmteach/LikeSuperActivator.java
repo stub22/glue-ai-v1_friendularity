@@ -73,6 +73,7 @@ import org.jflux.impl.services.rk.lifecycle.AbstractLifecycleProvider;
 import org.jflux.impl.services.rk.lifecycle.ServiceLifecycleProvider;
 import org.jflux.impl.services.rk.lifecycle.utils.DescriptorListBuilder;
 import org.jflux.impl.services.rk.osgi.lifecycle.OSGiComponent;
+import org.jflux.swing.messaging.monitor.AvroTableDemoFrame;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
@@ -83,7 +84,7 @@ import org.osgi.framework.ServiceListener;
 import org.robokind.api.animation.player.AnimationPlayer;
 import org.robokind.api.motion.Robot;
 import org.rwshop.swing.common.lifecycle.ServicesFrame;
-import org.rwshop.swing.messaging.monitor.AvroTableDemoFrame;
+//import org.rwshop.swing.messaging.monitor.AvroTableDemoFrame;
 import org.slf4j.Logger;
 //import org.cogchar.bind.midi.FunMidiEventRouter;
 
@@ -205,8 +206,8 @@ public class LikeSuperActivator extends CommonActivator implements BundleListene
 
 	protected void setupDefaultConfigs(final BundleContext context) {
 		setDefaultSettings(true);
-		// Have to set this bool early in start() here
-		org.friendularity.bundle.jvision.JVisionBundleActivator.LAUNCH_MYSELF = false;// flagTrue("connectJVision");
+		// No longer Have to set this bool early in start() here
+		// org.friendularity.bundle.jvision.JVisionBundleActivator.LAUNCH_MYSELF = false;// flagTrue("connectJVision");
 		//putSetting("VirtualWorld", false);
 		putSetting("BootPuma", true);
 		putSetting("worldEstimate", true);
