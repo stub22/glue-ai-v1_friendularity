@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Skein rootNode="node-0x0033C7C0" xmlns="http://www.logicalshift.org.uk/IF/Skein">
   <generator>Inform 7 for Windows</generator>
-  <activeNode nodeId="node-0x026A2CF8"/>
+  <activeNode nodeId="node-0x02701650"/>
   <item nodeId="node-0x0033C7C0">
     <command xml:space="preserve">- start -</command>
-    <result xml:space="preserve">GMTEACH&#x000A;An Interactive Fiction by GLUE-AI&#x000A;Release 1 / Serial number 140105 / Inform 7 build 6G60 (I6/v6.32 lib 6/12N) SD&#x000A;&#x000A;Desk&#x000A;You are at the far end of a musical scale that you cant quite remember. A recent boy-band rise to fame prevents all further hopes of remembering any tune  other than their smash hit.  "Sometimes".  It is strangely reminiscent of the flight of the bumblebees.  A large Grumpy music teacher to the east emits a faint green light.&#x000A;&#x000A;&gt;</result>
+    <result xml:space="preserve">GMTEACH&#x000A;An Interactive Fiction by GLUE-AI&#x000A;Release 1 / Serial number 140105 / Inform 7 build 6G60 (I6/v6.32 lib 6/12N) SD&#x000A;&#x000A;Desk&#x000A;You are at the far end of a musical scale that you cant quite remember. A recent boy-band rise to fame prevents all further hopes of remembering any tune  other than their smash hit.  "Sometimes".  It is strangely reminiscent of the flight of the bumblebees.  A large Grumpy music teacher to the east emits a faint green light.  Type "test me" to win fast! &#x000A;&#x000A;&gt;</result>
     <commentary xml:space="preserve"></commentary>
     <played>YES</played>
-    <changed>YES</changed>
+    <changed>NO</changed>
     <temporary score="0">NO</temporary>
     <children>
       <child nodeId="node-0x0033C830"/>
@@ -16,6 +16,7 @@
       <child nodeId="node-0x026A26D8"/>
       <child nodeId="node-0x026A2A58"/>
       <child nodeId="node-0x026A2B38"/>
+      <child nodeId="node-0x02700A10"/>
     </children>
   </item>
   <item nodeId="node-0x0033C830">
@@ -325,6 +326,285 @@
   <item nodeId="node-0x026A2CF8">
     <command xml:space="preserve">test me</command>
     <result xml:space="preserve">(Testing.)&#x000A;&#x000A;&gt;[1] x hand&#x000A;It is the same green hand that has Inscribed in on the blackboard of the the words ?Remember the scala of Sinbad's Theme  to find your way forward."&#x000A;&#x000A;&gt;[2] push hand&#x000A;There is an aura of magic about the large grumpity hand that prevents you doing this.  Perhaps name the notes of the musical bar: say egbdf&#x000A;&gt;[3] say egbdf&#x000A;With an eerie musical scale, the hand falls to the side hearing songA&#x000A;&gt;[4] e&#x000A;&#x000A;Small stage&#x000A;A flight of steps leads down into the darkness.&#x000A;&#x000A;&gt;[5] d&#x000A;&#x000A;Room of requirements&#x000A;The room smells musty. An alien presence invades your mind and deep in your bones you hear a voice echo "Welcome brave soul. You have passed the first hurdle. Before you proceed, you must answer the following questions."&#x000A;&#x000A;What is your name?&#x000A;&#x000A;Enter your name &gt;[6] peter&#x000A;Welcome to this venture, peter&#x000A;&#x000A;How old are you?&#x000A;&#x000A;Please enter a number &gt;[7] 34&#x000A;Thank you: You are 34 for the remainder of your venture into the unknown&#x000A;&#x000A;Do you want to play as a male, female or neutral character&#x000A;&#x000A;Please enter M, F or N (Male or Female or Neuter) &gt;[8] m&#x000A;Thank you. You are Masculine gender&#x000A;&#x000A;Which of the following is your preferred character type:&#x000A;1 - Drummer&#x000A;2 - Keyboardist&#x000A;3 - Lipsyncer&#x000A;4 - Other Faker&#x000A;&#x000A;Please select a number between 1 and 4 &gt;[9] 3&#x000A;Thank you, you are playing as a Lipsyncer&#x000A;&#x000A;You have chosen:&#x000A;Name: peter&#x000A;Age: 34&#x000A;Sex: Masculine&#x000A;Character: Lipsyncer&#x000A;&#x000A;Are you happy with your responses?&#x000A;&#x000A;Please enter Y or N (Yes or No) &gt;[10] y&#x000A;Thank you. Venture into the unknown brave Lipsyncer&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x026A2D68"/>
+    </children>
+  </item>
+  <item nodeId="node-0x026A2D68">
+    <command xml:space="preserve">q</command>
+    <result xml:space="preserve">Are you sure you want to quit?</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x026A2DD8"/>
+    </children>
+  </item>
+  <item nodeId="node-0x026A2DD8">
+    <command xml:space="preserve">y</command>
+    <result xml:space="preserve"></result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+  </item>
+  <item nodeId="node-0x02700A10">
+    <command xml:space="preserve">test me</command>
+    <result xml:space="preserve">(Testing.)&#x000A;&#x000A;&gt;[1] x hand&#x000A;It is the same green hand that has Inscribed in on the blackboard of the the words ?emember the scala of Sinbad's Theme  to find your way forward."&#x000A;&#x000A;&gt;[2] push hand&#x000A;There is an aura of magic about the large grumpity hand that prevents you doing this.  Perhaps name the notes of the musical bar: say egbdf&#x000A;&gt;[3] say egbdf&#x000A;With an eerie musical scale, the hand falls to the side hearing songA&#x000A;&gt;[4] e&#x000A;&#x000A;Small stage&#x000A;A flight of steps leads down into the darkness.&#x000A;&#x000A;&gt;[5] d&#x000A;&#x000A;Dance Floor&#x000A;The Dance Floor is just the dance floor below the stage and west of the rest of the pub. An alien presence invades your mind and deep in your bones you hear a voice echo "Welcome brave soul. You have passed the first hurdle. Before you proceed, you must answer the following questions."&#x000A;&#x000A;What is your name?&#x000A;&#x000A;Enter your name &gt;[6] peter&#x000A;Welcome to this venture, peter&#x000A;&#x000A;How old are you?&#x000A;&#x000A;Please enter a number &gt;[7] 34&#x000A;Thank you: You are 34 for the remainder of your venture into the unknown&#x000A;&#x000A;Do you want to play as a male, female or neutral character&#x000A;&#x000A;Please enter M, F or N (Male or Female or Neuter) &gt;[8] m&#x000A;Thank you. You are Masculine gender&#x000A;&#x000A;Which of the following is your preferred character type:&#x000A;1 - Drummer&#x000A;2 - Keyboardist&#x000A;3 - Lipsyncer&#x000A;4 - Other Faker&#x000A;&#x000A;Please select a number between 1 and 4 &gt;[9] 3&#x000A;Thank you, you are playing as a Lipsyncer&#x000A;&#x000A;You have chosen:&#x000A;Name: peter&#x000A;Age: 34&#x000A;Sex: Masculine&#x000A;Character: Lipsyncer&#x000A;&#x000A;Are you happy with your responses?&#x000A;&#x000A;Please enter Y or N (Yes or No) &gt;[10] y&#x000A;Thank you. Venture into the unknown brave Lipsyncer&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x02700AF0"/>
+      <child nodeId="node-0x02700F50"/>
+      <child nodeId="node-0x027012D0"/>
+    </children>
+  </item>
+  <item nodeId="node-0x02700AF0">
+    <command xml:space="preserve">d</command>
+    <result xml:space="preserve">You are under a strange compulsion and unable to move.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x02700C40"/>
+    </children>
+  </item>
+  <item nodeId="node-0x02700C40">
+    <command xml:space="preserve">look</command>
+    <result xml:space="preserve">Room of requirements&#x000A;The room smells musty.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x02700BD0"/>
+    </children>
+  </item>
+  <item nodeId="node-0x02700BD0">
+    <command xml:space="preserve">w</command>
+    <result xml:space="preserve">You can't go that way.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x02700B60"/>
+    </children>
+  </item>
+  <item nodeId="node-0x02700B60">
+    <command xml:space="preserve">e</command>
+    <result xml:space="preserve">You can't go that way.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x02700CB0"/>
+    </children>
+  </item>
+  <item nodeId="node-0x02700CB0">
+    <command xml:space="preserve">d</command>
+    <result xml:space="preserve">You can't go that way.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x02700D20"/>
+    </children>
+  </item>
+  <item nodeId="node-0x02700D20">
+    <command xml:space="preserve">w</command>
+    <result xml:space="preserve">You can't go that way.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x02700D90"/>
+    </children>
+  </item>
+  <item nodeId="node-0x02700D90">
+    <command xml:space="preserve">u</command>
+    <result xml:space="preserve">Small stage&#x000A;A flight of steps leads down into the darkness.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x02700E00"/>
+    </children>
+  </item>
+  <item nodeId="node-0x02700E00">
+    <command xml:space="preserve">d</command>
+    <result xml:space="preserve">Room of requirements&#x000A;The room smells musty.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+  </item>
+  <item nodeId="node-0x02700F50">
+    <command xml:space="preserve">look</command>
+    <result xml:space="preserve">You are under a strange compulsion and unable to move.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x02700FC0"/>
+    </children>
+  </item>
+  <item nodeId="node-0x02700FC0">
+    <command xml:space="preserve">look</command>
+    <result xml:space="preserve">Dance Floor&#x000A;The Dance Floor is just the dance floor below the stage and west of the rest of the pub.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>YES</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x027010A0"/>
+    </children>
+  </item>
+  <item nodeId="node-0x027010A0">
+    <command xml:space="preserve">e</command>
+    <result xml:space="preserve">You can't go that way.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x02701110"/>
+    </children>
+  </item>
+  <item nodeId="node-0x02701110">
+    <command xml:space="preserve">w</command>
+    <result xml:space="preserve">pub&#x000A;The pub is crowded for the weekly quiz night. The barman is ready to call out the questions. Get one wrong and you will be barred from the pub for life.&#x000A;&#x000A;How many books are there in the Old Testament&#x000A;1 - 23&#x000A;2 - 39&#x000A;3 - 37&#x000A;4 - 41&#x000A;&#x000A;Please select a number between 1 and 4 &gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x02701180"/>
+    </children>
+  </item>
+  <item nodeId="node-0x02701180">
+    <command xml:space="preserve">2</command>
+    <result xml:space="preserve">Well done. You have survived to the next round.&#x000A;&#x000A;What type of animal is Basil Brush&#x000A;1 - Cat&#x000A;2 - Dog&#x000A;3 - Rabbit&#x000A;4 - Fox&#x000A;&#x000A;Please select a number between 1 and 4 &gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x027011F0"/>
+    </children>
+  </item>
+  <item nodeId="node-0x027011F0">
+    <command xml:space="preserve">4</command>
+    <result xml:space="preserve">Well done. You have survived to the next round.&#x000A;&#x000A;In which year was the Battle of Hastings&#x000A;1 - 1256&#x000A;2 - 1066&#x000A;3 - 1589&#x000A;4 - 1790&#x000A;&#x000A;Please select a number between 1 and 4 &gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+  </item>
+  <item nodeId="node-0x027012D0">
+    <command xml:space="preserve">e</command>
+    <result xml:space="preserve">You are under a strange compulsion and unable to move.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x02701340"/>
+    </children>
+  </item>
+  <item nodeId="node-0x02701340">
+    <command xml:space="preserve">e</command>
+    <result xml:space="preserve">pub&#x000A;The pub is crowded for the weekly quiz night. The barman is ready to call out the questions. Get one wrong and you will be barred from the pub for life.&#x000A;&#x000A;How many books are there in the Old Testament? (hint 2)&#x000A;1 - 23&#x000A;2 - 39&#x000A;3 - 37&#x000A;4 - 41&#x000A;&#x000A;Please select a number between 1 and 4 &gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x027013B0"/>
+    </children>
+  </item>
+  <item nodeId="node-0x027013B0">
+    <command xml:space="preserve">2</command>
+    <result xml:space="preserve">Well done. You have survived to the next round.&#x000A;&#x000A;What type of animal is Basil Brush? (hint 4)&#x000A;1 - Cat&#x000A;2 - Dog&#x000A;3 - Rabbit&#x000A;4 - Fox&#x000A;&#x000A;Please select a number between 1 and 4 &gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x02701420"/>
+    </children>
+  </item>
+  <item nodeId="node-0x02701420">
+    <command xml:space="preserve">4</command>
+    <result xml:space="preserve">Well done. You have survived to the next round.&#x000A;&#x000A;In which year was the Battle of Hastings? (hint 2)&#x000A;1 - 1256&#x000A;2 - 1066&#x000A;3 - 1589&#x000A;4 - 1790&#x000A;&#x000A;Please select a number between 1 and 4 &gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x02701490"/>
+    </children>
+  </item>
+  <item nodeId="node-0x02701490">
+    <command xml:space="preserve">2</command>
+    <result xml:space="preserve">Well done. You have survived to the next round.&#x000A;&#x000A;What is a Cantaloupe? (hint 3)&#x000A;1 - Animal&#x000A;2 - Star&#x000A;3 - Fruit&#x000A;4 - Vegetable&#x000A;&#x000A;Please select a number between 1 and 4 &gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x02701500"/>
+    </children>
+  </item>
+  <item nodeId="node-0x02701500">
+    <command xml:space="preserve">3</command>
+    <result xml:space="preserve">Well done. You have survived to the next round.&#x000A;&#x000A;What is the square root of 126736? (hint 1)&#x000A;1 - 356&#x000A;2 - 289&#x000A;3 - 421&#x000A;4 - 321&#x000A;&#x000A;Please select a number between 1 and 4 &gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x02701570"/>
+    </children>
+  </item>
+  <item nodeId="node-0x02701570">
+    <command xml:space="preserve">1</command>
+    <result xml:space="preserve">*** Congratulations you have won! ***&#x000A;&#x000A;&#x000A;In that game you scored 0 out of a possible 0, in 17 turns.&#x000A;&#x000A;&#x000A;Would you like to RESTART, RESTORE a saved game, QUIT or UNDO the last command?&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x027015E0"/>
+    </children>
+  </item>
+  <item nodeId="node-0x027015E0">
+    <command xml:space="preserve">undo</command>
+    <result xml:space="preserve">pub&#x000A;[Previous turn undone.]&#x000A;&#x000A;Please select a number between 1 and 4 &gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x02701650"/>
+    </children>
+  </item>
+  <item nodeId="node-0x02701650">
+    <command xml:space="preserve">3</command>
+    <result xml:space="preserve">*** You have been barred from the pub for getting a question wrong. ***&#x000A;&#x000A;&#x000A;In that game you scored 0 out of a possible 0, in 17 turns.&#x000A;&#x000A;&#x000A;Would you like to RESTART, RESTORE a saved game, QUIT or UNDO the last command?&#x000A;&gt;</result>
     <commentary xml:space="preserve"></commentary>
     <played>YES</played>
     <changed>NO</changed>
