@@ -1,20 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Skein rootNode="node-0x02468748" xmlns="http://www.logicalshift.org.uk/IF/Skein">
+<Skein rootNode="node-0x0033C7C0" xmlns="http://www.logicalshift.org.uk/IF/Skein">
   <generator>Inform 7 for Windows</generator>
-  <activeNode nodeId="node-0x02477738"/>
-  <item nodeId="node-0x02468748">
+  <activeNode nodeId="node-0x026A2CF8"/>
+  <item nodeId="node-0x0033C7C0">
     <command xml:space="preserve">- start -</command>
-    <result xml:space="preserve">Open Sesame Seed&#x000A;An Interactive Fiction by GLUE-AI&#x000A;Release 1 / Serial number 131216 / Inform 7 build 6G60 (I6/v6.32 lib 6/12N) SD&#x000A;&#x000A;Desk&#x000A;You are at the far end of a musical scale that you cant quite remember. A recent boy-band rise to fame prevents all further hopes of remembering any tune  other than their smash hit.  "Sometimes".  It is strangely reminiscent of the flight of the bumblebees.  A large Grumpy music teacher to the east emits a faint green light.&#x000A;&#x000A;&gt;</result>
+    <result xml:space="preserve">GMTEACH&#x000A;An Interactive Fiction by GLUE-AI&#x000A;Release 1 / Serial number 140105 / Inform 7 build 6G60 (I6/v6.32 lib 6/12N) SD&#x000A;&#x000A;Desk&#x000A;You are at the far end of a musical scale that you cant quite remember. A recent boy-band rise to fame prevents all further hopes of remembering any tune  other than their smash hit.  "Sometimes".  It is strangely reminiscent of the flight of the bumblebees.  A large Grumpy music teacher to the east emits a faint green light.&#x000A;&#x000A;&gt;</result>
     <commentary xml:space="preserve"></commentary>
     <played>YES</played>
-    <changed>NO</changed>
+    <changed>YES</changed>
     <temporary score="0">NO</temporary>
     <children>
-      <child nodeId="node-0x0250C838"/>
-      <child nodeId="node-0x02477738"/>
+      <child nodeId="node-0x0033C830"/>
+      <child nodeId="node-0x02693768"/>
+      <child nodeId="node-0x026A1FD8"/>
+      <child nodeId="node-0x026A26D8"/>
+      <child nodeId="node-0x026A2A58"/>
+      <child nodeId="node-0x026A2B38"/>
     </children>
   </item>
-  <item nodeId="node-0x0250C838">
+  <item nodeId="node-0x0033C830">
     <command xml:space="preserve">start</command>
     <result xml:space="preserve">I didn't understand that sentence.&#x000A;&#x000A;&gt;</result>
     <commentary xml:space="preserve"></commentary>
@@ -22,10 +26,10 @@
     <changed>NO</changed>
     <temporary score="0">YES</temporary>
     <children>
-      <child nodeId="node-0x0250C8A8"/>
+      <child nodeId="node-0x0033C8A0"/>
     </children>
   </item>
-  <item nodeId="node-0x0250C8A8">
+  <item nodeId="node-0x0033C8A0">
     <command xml:space="preserve">remember</command>
     <result xml:space="preserve">I didn't understand that sentence.&#x000A;&#x000A;&gt;</result>
     <commentary xml:space="preserve"></commentary>
@@ -33,10 +37,10 @@
     <changed>NO</changed>
     <temporary score="0">YES</temporary>
     <children>
-      <child nodeId="node-0x0250C918"/>
+      <child nodeId="node-0x0033C910"/>
     </children>
   </item>
-  <item nodeId="node-0x0250C918">
+  <item nodeId="node-0x0033C910">
     <command xml:space="preserve">e</command>
     <result xml:space="preserve">(first opening the large hand)&#x000A;There is an aura of magic about the large grumpity hand that prevents you doing this.  Perhaps name the notes of the musical bar&#x000A;&gt;</result>
     <commentary xml:space="preserve"></commentary>
@@ -44,10 +48,10 @@
     <changed>NO</changed>
     <temporary score="0">YES</temporary>
     <children>
-      <child nodeId="node-0x02472290"/>
+      <child nodeId="node-0x02693468"/>
     </children>
   </item>
-  <item nodeId="node-0x02472290">
+  <item nodeId="node-0x02693468">
     <command xml:space="preserve">w</command>
     <result xml:space="preserve">You can't go that way.&#x000A;&#x000A;&gt;</result>
     <commentary xml:space="preserve"></commentary>
@@ -55,10 +59,10 @@
     <changed>NO</changed>
     <temporary score="0">YES</temporary>
     <children>
-      <child nodeId="node-0x02472300"/>
+      <child nodeId="node-0x026934D8"/>
     </children>
   </item>
-  <item nodeId="node-0x02472300">
+  <item nodeId="node-0x026934D8">
     <command xml:space="preserve">d</command>
     <result xml:space="preserve">You can't go that way.&#x000A;&#x000A;&gt;</result>
     <commentary xml:space="preserve"></commentary>
@@ -66,10 +70,10 @@
     <changed>NO</changed>
     <temporary score="0">YES</temporary>
     <children>
-      <child nodeId="node-0x02472370"/>
+      <child nodeId="node-0x02693548"/>
     </children>
   </item>
-  <item nodeId="node-0x02472370">
+  <item nodeId="node-0x02693548">
     <command xml:space="preserve">u</command>
     <result xml:space="preserve">You can't go that way.&#x000A;&#x000A;&gt;</result>
     <commentary xml:space="preserve"></commentary>
@@ -77,10 +81,10 @@
     <changed>NO</changed>
     <temporary score="0">YES</temporary>
     <children>
-      <child nodeId="node-0x024723E0"/>
+      <child nodeId="node-0x026935B8"/>
     </children>
   </item>
-  <item nodeId="node-0x024723E0">
+  <item nodeId="node-0x026935B8">
     <command xml:space="preserve">s</command>
     <result xml:space="preserve">You can't go that way.&#x000A;&#x000A;&gt;</result>
     <commentary xml:space="preserve"></commentary>
@@ -88,9 +92,239 @@
     <changed>NO</changed>
     <temporary score="0">YES</temporary>
   </item>
-  <item nodeId="node-0x02477738">
+  <item nodeId="node-0x02693768">
     <command xml:space="preserve">take</command>
     <result xml:space="preserve">(the large hand)&#x000A;There is an aura of magic about the large grumpity hand that prevents you doing this.  Perhaps name the notes of the musical bar&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+  </item>
+  <item nodeId="node-0x026A1FD8">
+    <command xml:space="preserve">east</command>
+    <result xml:space="preserve">(first opening the large hand)&#x000A;There is an aura of magic about the large grumpity hand that prevents you doing this.  Perhaps name the notes of the musical bar&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x026A2048"/>
+    </children>
+  </item>
+  <item nodeId="node-0x026A2048">
+    <command xml:space="preserve">a b c d e f g</command>
+    <result xml:space="preserve">I didn't understand that sentence.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x026A20B8"/>
+    </children>
+  </item>
+  <item nodeId="node-0x026A20B8">
+    <command xml:space="preserve">hint</command>
+    <result xml:space="preserve">I didn't understand that sentence.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x026A2128"/>
+    </children>
+  </item>
+  <item nodeId="node-0x026A2128">
+    <command xml:space="preserve">e bg b d f</command>
+    <result xml:space="preserve">I only understood you as far as wanting to e.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x026A2198"/>
+    </children>
+  </item>
+  <item nodeId="node-0x026A2198">
+    <command xml:space="preserve">e g b d f</command>
+    <result xml:space="preserve">I only understood you as far as wanting to e.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x026A2208"/>
+    </children>
+  </item>
+  <item nodeId="node-0x026A2208">
+    <command xml:space="preserve">say b d f</command>
+    <result xml:space="preserve">(to yourself)&#x000A;There is no reply.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x026A2278"/>
+    </children>
+  </item>
+  <item nodeId="node-0x026A2278">
+    <command xml:space="preserve">say </command>
+    <result xml:space="preserve">I didn't understand that sentence.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x026A22E8"/>
+    </children>
+  </item>
+  <item nodeId="node-0x026A22E8">
+    <command xml:space="preserve">say e g b d f</command>
+    <result xml:space="preserve">(to yourself)&#x000A;There is no reply.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x026A2358"/>
+    </children>
+  </item>
+  <item nodeId="node-0x026A2358">
+    <command xml:space="preserve">say gmteach</command>
+    <result xml:space="preserve">(to yourself)&#x000A;There is no reply.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x026A23C8"/>
+    </children>
+  </item>
+  <item nodeId="node-0x026A23C8">
+    <command xml:space="preserve">talk</command>
+    <result xml:space="preserve">I didn't understand that sentence.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x026A2438"/>
+    </children>
+  </item>
+  <item nodeId="node-0x026A2438">
+    <command xml:space="preserve">look</command>
+    <result xml:space="preserve">Desk&#x000A;You are at the far end of a musical scale that you cant quite remember. A recent boy-band rise to fame prevents all further hopes of remembering any tune  other than their smash hit.  "Sometimes".  It is strangely reminiscent of the flight of the bumblebees.  A large Grumpy music teacher to the east emits a faint green light.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x026A24A8"/>
+    </children>
+  </item>
+  <item nodeId="node-0x026A24A8">
+    <command xml:space="preserve">e</command>
+    <result xml:space="preserve">(first opening the large hand)&#x000A;There is an aura of magic about the large grumpity hand that prevents you doing this.  Perhaps name the notes of the musical bar&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x026A2518"/>
+    </children>
+  </item>
+  <item nodeId="node-0x026A2518">
+    <command xml:space="preserve">open hand</command>
+    <result xml:space="preserve">There is an aura of magic about the large grumpity hand that prevents you doing this.  Perhaps name the notes of the musical bar&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+  </item>
+  <item nodeId="node-0x026A26D8">
+    <command xml:space="preserve">w</command>
+    <result xml:space="preserve">You can't go that way.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x026A2748"/>
+    </children>
+  </item>
+  <item nodeId="node-0x026A2748">
+    <command xml:space="preserve">e</command>
+    <result xml:space="preserve">(first opening the large hand)&#x000A;There is an aura of magic about the large grumpity hand that prevents you doing this.  Perhaps name the notes of the musical bar: say egbdf&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x026A27B8"/>
+    </children>
+  </item>
+  <item nodeId="node-0x026A27B8">
+    <command xml:space="preserve">say egbdf</command>
+    <result xml:space="preserve">With an eerie musical scale, the hand falls to the side.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+  </item>
+  <item nodeId="node-0x026A2A58">
+    <command xml:space="preserve">i</command>
+    <result xml:space="preserve">You are carrying:&#x000A;  your beanscript&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+  </item>
+  <item nodeId="node-0x026A2B38">
+    <command xml:space="preserve">hello</command>
+    <result xml:space="preserve">I didn't understand that sentence.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x026A2898"/>
+    </children>
+  </item>
+  <item nodeId="node-0x026A2898">
+    <command xml:space="preserve">look</command>
+    <result xml:space="preserve">Desk&#x000A;You are at the far end of a musical scale that you cant quite remember. A recent boy-band rise to fame prevents all further hopes of remembering any tune  other than their smash hit.  "Sometimes".  It is strangely reminiscent of the flight of the bumblebees.  A large Grumpy music teacher to the east emits a faint green light.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x026A2C18"/>
+    </children>
+  </item>
+  <item nodeId="node-0x026A2C18">
+    <command xml:space="preserve">hint</command>
+    <result xml:space="preserve">I didn't understand that sentence.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x026A2C88"/>
+    </children>
+  </item>
+  <item nodeId="node-0x026A2C88">
+    <command xml:space="preserve">test</command>
+    <result xml:space="preserve">&gt;--&gt; The following tests are available:&#x000A;'test me'&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x026A2CF8"/>
+    </children>
+  </item>
+  <item nodeId="node-0x026A2CF8">
+    <command xml:space="preserve">test me</command>
+    <result xml:space="preserve">(Testing.)&#x000A;&#x000A;&gt;[1] x hand&#x000A;It is the same green hand that has Inscribed in on the blackboard of the the words ?Remember the scala of Sinbad's Theme  to find your way forward."&#x000A;&#x000A;&gt;[2] push hand&#x000A;There is an aura of magic about the large grumpity hand that prevents you doing this.  Perhaps name the notes of the musical bar: say egbdf&#x000A;&gt;[3] say egbdf&#x000A;With an eerie musical scale, the hand falls to the side hearing songA&#x000A;&gt;[4] e&#x000A;&#x000A;Small stage&#x000A;A flight of steps leads down into the darkness.&#x000A;&#x000A;&gt;[5] d&#x000A;&#x000A;Room of requirements&#x000A;The room smells musty. An alien presence invades your mind and deep in your bones you hear a voice echo "Welcome brave soul. You have passed the first hurdle. Before you proceed, you must answer the following questions."&#x000A;&#x000A;What is your name?&#x000A;&#x000A;Enter your name &gt;[6] peter&#x000A;Welcome to this venture, peter&#x000A;&#x000A;How old are you?&#x000A;&#x000A;Please enter a number &gt;[7] 34&#x000A;Thank you: You are 34 for the remainder of your venture into the unknown&#x000A;&#x000A;Do you want to play as a male, female or neutral character&#x000A;&#x000A;Please enter M, F or N (Male or Female or Neuter) &gt;[8] m&#x000A;Thank you. You are Masculine gender&#x000A;&#x000A;Which of the following is your preferred character type:&#x000A;1 - Drummer&#x000A;2 - Keyboardist&#x000A;3 - Lipsyncer&#x000A;4 - Other Faker&#x000A;&#x000A;Please select a number between 1 and 4 &gt;[9] 3&#x000A;Thank you, you are playing as a Lipsyncer&#x000A;&#x000A;You have chosen:&#x000A;Name: peter&#x000A;Age: 34&#x000A;Sex: Masculine&#x000A;Character: Lipsyncer&#x000A;&#x000A;Are you happy with your responses?&#x000A;&#x000A;Please enter Y or N (Yes or No) &gt;[10] y&#x000A;Thank you. Venture into the unknown brave Lipsyncer&#x000A;&#x000A;&gt;</result>
     <commentary xml:space="preserve"></commentary>
     <played>YES</played>
     <changed>NO</changed>
