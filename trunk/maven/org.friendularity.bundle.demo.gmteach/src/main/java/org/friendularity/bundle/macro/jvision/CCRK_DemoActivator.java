@@ -1,37 +1,27 @@
 package org.friendularity.bundle.macro.jvision;
 
-import org.friendularity.gmteach.impl.visual.WorldEstimateRenderModule;
-import org.friendularity.gmteach.impl.visual.EstimateVisualizer;
-import org.cogchar.bind.midi.out.DemoMidiOutputPlayer;
-import org.cogchar.bind.midi.out.NovLpadTest;
-import org.cogchar.bind.midi.general.*;
-
-import static ext.osgi.common.MacroBundleActivatorBase.macroStartupSettings;
-
 import java.util.List;
 
+import org.appdapter.core.name.FreeIdent;
+import org.appdapter.core.name.Ident;
 import org.appdapter.osgi.core.BundleActivatorBase;
+import org.cogchar.app.puma.boot.PumaAppContext;
 import org.cogchar.app.puma.boot.PumaBooter;
 import org.cogchar.app.puma.config.PumaContextMediator;
 import org.cogchar.app.puma.registry.PumaGlobalPrebootInjector;
 import org.cogchar.bind.rk.robot.motion.CogcharMotionSource;
-import org.osgi.framework.BundleContext;
-import org.appdapter.core.name.FreeIdent;
-import org.appdapter.core.name.Ident;
-// import org.appdapter.gui.demo.DemoBrowser;
-import org.appdapter.help.repo.RepoClient;
-import org.cogchar.app.puma.boot.PumaAppContext;
-import org.cogchar.bundle.app.puma.PumaAppUtils;
-import org.cogchar.bind.symja.MathSpaceFactory;
 import org.cogchar.bind.symja.MathGate;
+import org.cogchar.bind.symja.MathSpaceFactory;
+import org.cogchar.bundle.app.puma.PumaAppUtils;
 import org.cogchar.scalatest.Whackamole;
-import org.friendularity.gmteach.api.west.ThingEstimate;
 import org.friendularity.gmteach.api.west.WorldEstimate;
-import org.friendularity.gmteach.symcalc.ScriptEngineExperiment;
+import org.friendularity.gmteach.impl.visual.EstimateVisualizer;
+import org.friendularity.gmteach.impl.visual.WorldEstimateRenderModule;
 // import org.cogchar.test.symcalc.ScriptEngineExperiment;
 import org.friendularity.gmteach.vworld.VisionDataFeed;
+import org.osgi.framework.BundleContext;
 import org.robokind.api.motion.Robot;
-
+// import org.appdapter.gui.demo.DemoBrowser;
 // import org.robokind.ui.swing.common.lifecycle.ServicesFrame;
 import org.rwshop.swing.common.lifecycle.ServicesFrame;
 

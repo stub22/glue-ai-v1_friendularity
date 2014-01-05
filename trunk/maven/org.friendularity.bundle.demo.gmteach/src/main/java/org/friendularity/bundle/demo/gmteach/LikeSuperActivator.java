@@ -74,6 +74,7 @@ import org.jflux.impl.services.rk.lifecycle.ServiceLifecycleProvider;
 import org.jflux.impl.services.rk.lifecycle.utils.DescriptorListBuilder;
 import org.jflux.impl.services.rk.osgi.lifecycle.OSGiComponent;
 import org.jflux.swing.messaging.monitor.AvroTableDemoFrame;
+//import org.rwshop.swing.messaging.monitor.AvroTableDemoFrame;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
@@ -84,7 +85,6 @@ import org.osgi.framework.ServiceListener;
 import org.robokind.api.animation.player.AnimationPlayer;
 import org.robokind.api.motion.Robot;
 import org.rwshop.swing.common.lifecycle.ServicesFrame;
-//import org.rwshop.swing.messaging.monitor.AvroTableDemoFrame;
 import org.slf4j.Logger;
 //import org.cogchar.bind.midi.FunMidiEventRouter;
 
