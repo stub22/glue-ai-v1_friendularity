@@ -18,8 +18,7 @@ package org.friendularity.gmteach.impl.visual;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.math.Quaternion;
-
-import org.friendularity.gmteach.api.west.MathExprNode;
+import org.friendularity.api.struct.MathExprNode;
 
 /**
  *

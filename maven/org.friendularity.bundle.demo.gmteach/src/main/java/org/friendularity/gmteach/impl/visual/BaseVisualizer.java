@@ -67,8 +67,10 @@ public abstract class BaseVisualizer <TE extends ThingEstimate> extends BasicDeb
 	protected RenderConfigEmitter getConfigEmitter() { 
 		return myRenderCtx.getConfigEmitter();
 	}
-	@Override public void renderCurrentEstimates_onRendThrd(TE estim, float timePerFrame) {
+	@Override final public void renderCurrentEstimates_onRendThrd(TE estim, float timePerFrame) {
 		ensureDisplayed_onRendThrd(estim, timePerFrame);
 		updateDisplay_onRendThrd(estim, timePerFrame);
-	}	
+	}
+	protected abstract void ensureDisplayed_onRendThrd(TE te, float timePerFrame);
+	protected abstract void updateDisplay_onRendThrd(TE te, float timePerFrame);		
 }

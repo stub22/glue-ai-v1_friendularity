@@ -62,19 +62,20 @@ public class WorldEstimateRenderModule extends RenderModule implements WorldEsti
 	@Override public void setWorldEstimate(WorldEstimate worldEstim) {
 		myCachedWorldEstim = worldEstim;
 	}
-	public WorldEstimate getWorldEstimate() { 
+
+	public WorldEstimate getWorldEstimate() {
 		return myCachedWorldEstim;
 	}
 
 	public void setMathGate(MathGate mg) {
 		myMathGate = mg;
 	}
+
 	public void setFlag_visionTextureRoutingEnabled(boolean flag) {
 		myFlag_visionTextureRoutingEnabled = flag;
 	}
 
-	@Override
-	protected void doRenderCycle(long runSeqNum, float timePerFrame) {
+	@Override protected void doRenderCycle(long runSeqNum, float timePerFrame) {
 
 		if (myMathGate != null) {
 			// optionally do some updates+ refinements to the cached estimate, either in-place or replacing completely.
@@ -98,17 +99,28 @@ public class WorldEstimateRenderModule extends RenderModule implements WorldEsti
 				((DemoWorldVisualizer) myWorldEstimVisualizer).makeBonusMeshes();
 			}
 			if (myFlag_visionTextureRoutingEnabled) {
-				if (myVTM == null) {
-					getLogger().info("One time setup for vision-texture-mappper");
-					myVTM = new VisionTextureMapper();
-					RenderRegistryClient rrc = myWorldEstimVisualizer.getRenderRegistryClient();
-					myVTM.setup(rrc);
+				try {
+					if (myVTM == null) {
+						getLogger().info("One time setup for vision-texture-mappper");
+						myVTM = new VisionTextureMapper();
+						RenderRegistryClient rrc = myWorldEstimVisualizer.getRenderRegistryClient();
+						myVTM.setup(rrc);
+					}
+				} catch (Throwable t) {
+					t.printStackTrace();
+					myVTM = null;
 				}
-				myVTM.simpleUpdate(timePerFrame);
+				try {
+					if (myVTM != null)
+						myVTM.simpleUpdate(timePerFrame);
+				} catch (Throwable t) {
+					t.printStackTrace();
+				}
 			}
 		}
 
 	}
+
 	// TODO:  Use these helpful config args to set up the visualization pipeline.
 
 	public EstimateVisualizer setupVisualizer(RepoClient rc, Ident charID, Ident vizConfGraphID) {
