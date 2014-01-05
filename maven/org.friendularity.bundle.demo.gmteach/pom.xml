@@ -17,7 +17,7 @@
 	<properties>
 		<jflux.version>0.1.9-SNAPSHOT</jflux.version>
 		<storychat.version>1.0.2-SNAPSHOT</storychat.version>
-		        <com.hrkind.robot.connections>
+		<com.hrkind.robot.connections>
             <!-- We can add additional speech services for a robot by adding 
                 the voices separated by colons after the ip address:
                 robot01; 127.0.0.1; klauss:saul, ... 
@@ -30,22 +30,22 @@
         avatar01; 192.168.2.127
             -->
             <!-- Localhost avatar only -->
-            robot01; 127.0.0.1,
-            robot02; 127.0.0.1,
-            avatar01; 127.0.0.1
+			robot01; 127.0.0.1,
+			robot02; 127.0.0.1,
+			avatar01; 127.0.0.1
 			 <!-- ,
 			 robot01; 192.168.0.103
 			 -->
-        </com.hrkind.robot.connections>
-        
-        <com.hrkind.test.behavior.master.source>
-            sheetKey;0AlpQRNQ-L8QUdFh5YWswSzdYZFJMb1N6aEhJVWwtR3c,
-            namespaceSheetNumber;4,
-            directorySheetNumber;3,
-            workBookPath;GluePuma_BehavMasterDemo.xlsx,
-            workBookNamespaceSheet;Nspc.csv,
-            workBookDirectorySheet;Dir.csv
-        </com.hrkind.test.behavior.master.source>
+		</com.hrkind.robot.connections>
+
+		<com.hrkind.test.behavior.master.source>
+			sheetKey;0AlpQRNQ-L8QUdFh5YWswSzdYZFJMb1N6aEhJVWwtR3c,
+			namespaceSheetNumber;4,
+			directorySheetNumber;3,
+			workBookPath;GluePuma_BehavMasterDemo.xlsx,
+			workBookNamespaceSheet;Nspc.csv,
+			workBookDirectorySheet;Dir.csv
+		</com.hrkind.test.behavior.master.source>
 	</properties>
 
 	<dependencies>
@@ -105,7 +105,7 @@
 			<artifactId>org.cogchar.bundle.app.puma</artifactId>
 			<version>${cogchar.version}</version>
 			<exclusions>
- 				<exclusion>
+				<exclusion>
 					<artifactId>
 						org.cogchar.bundle.bind.lift
 					</artifactId>
@@ -162,15 +162,20 @@
 
 		<!-- Services Panel -->
 		<dependency>
+			<groupId>org.rwshop</groupId>
+			<artifactId>org.rwshop.swing.messaging</artifactId>
+			<version>${rwshop.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.rwshop</groupId>
+			<artifactId>org.rwshop.swing.common</artifactId>
+			<version>${rwshop.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>org.jflux</groupId>
 			<artifactId>org.jflux.swing.messaging</artifactId>
 			<version>${jflux.version}</version>
 		</dependency>
-		<!--dependency>
-			 <groupId>org.jflux</groupId>
-			 <artifactId>org.jflux.swing.common</artifactId>
-			 <version>${jflux.version}</version>
-		 </dependency-->
 
 		<!-- Our PAX-JETTY service -->
 		<dependency>
@@ -226,7 +231,7 @@
 
 	</dependencies>
 
- 	<build>
+	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.felix</groupId>
@@ -247,12 +252,12 @@
 
 								org.friendularity.respire
 						-->
-						<Export-Package>org.friendularity.gmteach.api.*, 
-										org.friendularity.gmteach.impl.visual,
-										org.friendularity.gmteach.vworld,
-										
-										org.friendularity.struct,
-										org.friendularity.bundle.demo.gmteach
+						<Export-Package>org.friendularity.gmteach.api.*,
+							org.friendularity.gmteach.impl.visual,
+							org.friendularity.gmteach.vworld,
+							org.friendularity.api.struct,
+							org.friendularity.struct,
+							org.friendularity.bundle.demo.gmteach
 						</Export-Package>
 					</instructions>
 				</configuration>
@@ -285,25 +290,25 @@
 	</build>
 
 	<profiles>
-		  <profile>
-			  <id>run-on-felix</id>
-			  <dependencies>
-				  <dependency>
-					  <groupId>org.apache.felix</groupId>
-					  <artifactId>org.apache.felix.main</artifactId>
-					  <version>4.2.1</version>
-					  <scope>provided</scope>
-				  </dependency>
-				  <dependency>
-					  <groupId>org.slf4j</groupId>
-					  <artifactId>slf4j-api</artifactId>
-					  <version>1.7.5</version>
-				  </dependency>
-				  <dependency>
-					  <groupId>org.slf4j</groupId>
-					  <artifactId>slf4j-log4j12</artifactId>
-					  <version>1.7.5</version>
-				  </dependency>
+		<profile>
+			<id>run-on-felix</id>
+			<dependencies>
+				<dependency>
+					<groupId>org.apache.felix</groupId>
+					<artifactId>org.apache.felix.main</artifactId>
+					<version>4.2.1</version>
+					<scope>provided</scope>
+				</dependency>
+				<dependency>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-api</artifactId>
+					<version>1.7.5</version>
+				</dependency>
+				<dependency>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-log4j12</artifactId>
+					<version>1.7.5</version>
+				</dependency>
                 <!-- To include a shell:
                 <dependency>
                     <groupId>org.apache.felix</groupId>
@@ -312,37 +317,37 @@
                 </dependency>
                 -->		  
 		  <!-- org.apache.felix:org.apache.felix.gogo.shell:0.6.1 useless from Maven since stdin is swallowed -->
-			  </dependencies>
-			  <build>
-				  <plugins>
-					  <plugin>
-						  <groupId>org.apache.maven.plugins</groupId>
-						  <artifactId>maven-antrun-plugin</artifactId>
-						  <version>1.6</version>
-						  <configuration>
-							  <target>
+			</dependencies>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<version>1.6</version>
+						<configuration>
+							<target>
 								  <!-- HRK custom :  Note the log4j.debug flag -->
 								  <property name="vm.args" value="-Dlog4j.debug -XX:MaxHeapSize=512M -XX:MaxPermSize=384M -XX:+TieredCompilation -XX:+UseConcMarkSweepGC" />
-								  <property name="vm.localargs" value="" />
-								  <pathconvert property="plugins.jars" pathsep="${path.separator}">
-									  <path refid="maven.runtime.classpath" />
+								<property name="vm.localargs" value="" />
+								<pathconvert property="plugins.jars" pathsep="${path.separator}">
+									<path refid="maven.runtime.classpath" />
 									<map from="${project.build.directory}${file.separator}classes" to="" />
-								  </pathconvert>
-								  <makeurl property="urls" separator=" ">
-									  <path path="${plugins.jars}" />
+								</pathconvert>
+								<makeurl property="urls" separator=" ">
+									<path path="${plugins.jars}" />
 									<path location="${project.build.directory}/${project.build.finalName}.jar" />
-								  </makeurl>
-								  <propertyfile file="${project.build.directory}/run.properties">
-									  <entry key="felix.auto.start" value="${urls}" />
-									  <entry key="felix.auto.deploy.action" value="uninstall,install,update,start" />
+								</makeurl>
+								<propertyfile file="${project.build.directory}/run.properties">
+									<entry key="felix.auto.start" value="${urls}" />
+									<entry key="felix.auto.deploy.action" value="uninstall,install,update,start" />
 									<entry key="org.osgi.framework.storage" value="${project.build.directory}${file.separator}felix-cache" />
-									  <entry key="org.osgi.framework.bootdelegation" value="*" />
+									<entry key="org.osgi.framework.bootdelegation" value="*" />
 									<!-- Friendularity customizations : 
 										1) Allow sun.misc package to be used by LWJGL.
 										2) org.w3c.dom.* are wanteed by Jena, Xerces, (+?), and are missing from 
 											default.properties in felix 4.2.1, tho	they are present in 3.0.7 -->
-										<entry key="org.osgi.framework.system.packages.extra"
-										  value="sun.misc,
+									<entry key="org.osgi.framework.system.packages.extra"
+										value="sun.misc,
 													  org.w3c.dom.css,
 													  org.w3c.dom.html,
 													  org.w3c.dom.stylesheets,
@@ -350,25 +355,25 @@
 													  org.w3c.dom.ranges,
 													  org.w3c.dom.views,
 													  org.w3c.dom.xpath" />
-								  </propertyfile>
+								</propertyfile>
 								  <makeurl property="run.properties.url" file="${project.build.directory}/run.properties" />
 								  <java fork="true" jar="${maven.dependency.org.apache.felix.org.apache.felix.main.jar.path}">
-									  <sysproperty key="felix.config.properties" value="${run.properties.url}" />
+									<sysproperty key="felix.config.properties" value="${run.properties.url}" />
 									  <sysproperty key="com.hrkind.robot.connections" value="${com.hrkind.robot.connections}" />
 									  <sysproperty key="com.hrkind.demo.behavior.master.source" value="${com.hrkind.demo.behavior.master.source}" />
-									  <sysproperty key="puma.boot.config.local" value="${puma.boot.config.local}" />
-									  <sysproperty key="behavior.master.type" value="${behavior.master.type}" />
+									<sysproperty key="puma.boot.config.local" value="${puma.boot.config.local}" />
+									<sysproperty key="behavior.master.type" value="${behavior.master.type}" />
 									   <!-- 
 											<sysproperty key="RKExtraVoices" value="klaus:saul" /> 
 										           -agentlib:jdwp=transport=dt_socket,address=localhost:9009,server=y,suspend=n  -->
-									  <jvmarg line="${vm.args} ${vm.localargs}" />
-								  </java>
-							  </target>
-						  </configuration>
-					  </plugin>
-		  
-				  </plugins>
-			  </build>
-		  </profile>
+									<jvmarg line="${vm.args} ${vm.localargs}" />
+								</java>
+							</target>
+						</configuration>
+					</plugin>
+
+				</plugins>
+			</build>
+		</profile>
 	</profiles>
 </project>
