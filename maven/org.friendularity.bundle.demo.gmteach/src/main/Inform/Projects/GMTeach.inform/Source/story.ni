@@ -1,16 +1,17 @@
 
-"Open Sesame Seed" by GLUE-AI
+"GMTEACH" by GLUE-AI
+
 
 Include questions by Michael Callaghan.
 
-Desk is a room. "You are at the far end of a musical scale that you cant quite remember. A recent boy-band rise to fame prevents all further hopes of remembering any tune  other than their smash hit.  'Sometimes'.  It is strangely reminiscent of the flight of the bumblebees.  A large Grumpy music teacher to the east emits a faint green light."
+Desk is a room. "You are at the far end of a musical scale that you cant quite remember. A recent boy-band rise to fame prevents all further hopes of remembering any tune  other than their smash hit.  'Sometimes'.  It is strangely reminiscent of the flight of the bumblebees.  A large Grumpy music teacher to the east emits a faint green light.  Type 'test me' to win fast! "
 
 A large hand is a door. The large hand is locked and closed.
 
 The large hand is scenery. The description is "It is the same green hand that has Inscribed in on the blackboard of the the words ‘Remember the scala of Sinbad[']s Theme  to find your way forward.'"
 
 Instead of doing anything other than examining the large hand:
-	say "There is an aura of magic about the large grumpity hand that prevents you doing this.  Perhaps name the notes of the musical bar"
+	say "There is an aura of magic about the large grumpity hand that prevents you doing this.  Perhaps name the notes of the musical bar: say egbdf"
 
 Small stage is a room. "A flight of steps leads down into the darkness."
 
@@ -32,7 +33,7 @@ Every turn when introduction is happening (this is the set open sesame rule):
 A text question rule (this is the open sesame rule):
 	if introduction is happening:
 		if the current answer is "egbdf":
-			say "With an eerie musical scale, the hand falls to the side.";
+			say "With an eerie musical scale, the hand falls to the side hearing songA";
 			now the large hand is open;
 			now the large hand is unopenable;
 			exit;
@@ -129,5 +130,77 @@ A yes/no question rule (this is the confirm answers rule):
 			now lessonstage is name;
 			exit.
 
-Test me with "x hand / push hand/ say Emily Short / e / d / Peter / 34 / M / 3 / Y".
+Test me with "x hand / push hand/ say egbdf / e / d / Peter / 34 / M / 3 / Y".
+
+[[[BEGIN SCRIPT CONTEXT SOURCE]]]
+A scriptcontext is a kind of person. A scriptcontext has an external file called the text file. A scriptcontext can be fresh or used. A scriptcontext is usually fresh. A scriptcontext has a text called the heading.
+The currently erased scriptcontext is an object that varies.
+
+To erase (pad - a scriptcontext): 
+	now the currently erased scriptcontext is the pad; 
+	write "[heading of the currently erased scriptcontext][paragraph break]" to the text file of the pad; 
+	now the pad is fresh.
+To write in (pad - a scriptcontext): 
+	write "[line break][player's command][line break]" to the text file of the pad; 
+	now the pad is used.
+To ammend in (pad - a scriptcontext): 
+	append "[line break][player's command][line break]" to the text file of the pad; 
+	now the pad is used.
+To read (pad - a scriptcontext): 
+	say "You read:[text of the text file of the pad]".
+To ask in (pad - a scriptcontext): 
+	write "[line break][player's command][line break]" to the text file of the pad; 
+	say "result:[text of the text file of the pad]";
+	now the pad is used.
+	
+[When play begins: 
+	repeat with pad running through scriptcontexts: 
+		erase the pad. ]
+
+Instead of examining a used scriptcontext (called the pad): 
+	read the pad.
+
+Instead of examining a fresh scriptcontext (called the pad): 
+	say "There is nothing of note in [the pad]."
+	
+Target scriptcontext is an object that varies. The target scriptcontext is usually nothing.
+Understand "write in [something preferably held]" as writing in. Writing in is an action applying to one thing.
+Check writing in: 
+	if the noun is not a scriptcontext, say "It would be better to write in a notebook." instead.
+Carry out writing in: 
+	now the command prompt is ">>"; 
+	now the target scriptcontext is the noun.
+Report writing in: 
+	say "You open [the noun] and prepare to write in it."
+	
+After reading a command when target scriptcontext is a scriptcontext: 
+	now the command prompt is ">"; 
+	write in target scriptcontext; 
+	now target scriptcontext is used; 
+	say "You finish writing and fold your notebook away."; 
+	now the target scriptcontext is nothing; 
+	reject the player's command.
+Understand "erase [something preferably held]" as erasing. Erasing is an action applying to one carried thing.
+Check erasing: 
+	if the noun is not a scriptcontext, say "It's hard to see how." instead.
+Carry out erasing: 
+	erase the noun.
+Report erasing: 
+	say "You scrub out all the entries in [the noun]."
+
+The player carries a scriptcontext called your beanscript. 
+The heading of your beanscript is "bsh".
+The file of Player's Scripts is called "bsfbeanscriptbsf". 
+The text file of your beanscript is the file of Player's Scripts.
+
+
+The Vestry is a room. "[Havers] hangs back by the door: the forensics expert is not finished with a preliminary examination of the body. From here you can't see much, except that the expert has peeled back and laid to one side a liturgical vestment that someone at the church used to cover the corpse until the police came. What was once a cream silk with festive Easter embroidery is now stained with blood-colored handprints."
+Detective Havers is a woman in the Vestry. The description is "She looks glumly back. There's still a purple-ish bruise on her cheekbone from the disaster Thursday afternoon." Havers is scenery.
+
+Havers is carrying a scriptcontext called Barbara's notebook. The file of Barbara's Observations is called "barbara". The text file of Barbara's notebook is the file of Barbara's Observations. The heading of Barbara's notebook is "Sun. AM".
+
+
+The time of day is 9:11 AM.	
+
+[[[END SCRIPT CONTEXT SOURCE]]]
 
