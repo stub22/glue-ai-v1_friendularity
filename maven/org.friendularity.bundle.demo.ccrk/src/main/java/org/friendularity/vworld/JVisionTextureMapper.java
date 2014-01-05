@@ -85,7 +85,7 @@ public class JVisionTextureMapper extends BasicDebugger implements ImageStreamCo
 		// ImageStreamBroker.getDefaultImageStreamBroker().addImageStreamConsumer(JVisionEngine.JVISION_IS_NAME, this);
 		// This blocking approach should be reliable, as long as JVision is eventually available.
 		getLogger().info("Making blocking connection to JVision using waitAndAddImageStreamConsumer()");
-		ImageStreamBroker.getDefaultImageStreamBroker().waitAndAddImageStreamConsumer(JVisionEngine.JVISION_IS_NAME, this);
+		ImageStreamBroker.getDefaultImageStreamBroker().waitAndAddImageStreamConsumer(JVisionEngine.CAMERA_NAME, this);
 	}
 
 
