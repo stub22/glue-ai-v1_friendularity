@@ -1,6 +1,5 @@
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -49,6 +48,7 @@
 	</properties>
 
 	<dependencies>
+      <!-- begin unneeded 
 		<dependency>
 			<groupId>org.apache.felix</groupId>
 			<artifactId>org.osgi.core</artifactId>
@@ -61,26 +61,19 @@
 			<type>jar</type>
 			<version>${appdapter.version}</version>
 		</dependency>
-		<dependency>
-			 <groupId>org.rwshop</groupId>
-			 <artifactId>org.rwshop.swing.common</artifactId>
-			 <version>${rwshop.version}</version>
-		 </dependency>
 		 <dependency>
 			 <artifactId>org.friendularity.spec.connection</artifactId>
 			 <groupId>org.friendularity</groupId>
 			 <version>${friendularity.version}</version>
 		 </dependency>
-			<dependency>
-			<groupId>org.appdapter</groupId>
-			<artifactId>org.appdapter.bundle.gui</artifactId>
-			<version>${appdapter.version}</version>
-		</dependency>
 		<dependency>
 			<groupId>org.appdapter</groupId>
 			<artifactId>org.appdapter.bundle.core</artifactId>
 			<version>${appdapter.version}</version>
 		</dependency>
+      	
+ 		end unneeded -->
+
 		<dependency>
 			<groupId>org.storychat</groupId>
 			<artifactId>org.storychat.bundle.glulx</artifactId>
@@ -111,7 +104,7 @@
 			<artifactId>org.cogchar.bundle.app.puma</artifactId>
 			<version>${cogchar.version}</version>
 			<exclusions>
-				<exclusion>
+ 				<exclusion>
 					<artifactId>
 						org.cogchar.bundle.bind.lift
 					</artifactId>
@@ -125,8 +118,8 @@
 			<version>${cogchar.version}</version>
 			<scope>runtime</scope>
 		</dependency>
-		
-		
+
+
 		<!--  maybe play with webask later
 		<dependency>
 			<groupId>com.hrkind.tools</groupId>
@@ -139,67 +132,16 @@
 			<version>1.0.3-SNAPSHOT</version>
 		</dependency> -->
 
-       <!-- ROBOKIND SORT OF EVERYTHING (What a large boiler plate) -->
-		<dependency>
-			<groupId>org.robokind</groupId>
-			<artifactId>org.robokind.impl.animation</artifactId>
-			<version>${robokind.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.robokind</groupId>
-			<artifactId>org.robokind.impl.audio</artifactId>
-			<version>${robokind.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.robokind</groupId>
-			<artifactId>org.robokind.impl.common</artifactId>
-			<version>${robokind.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.robokind</groupId>
-			<artifactId>org.robokind.impl.messaging</artifactId>
-			<version>${robokind.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.robokind</groupId>
-			<artifactId>org.robokind.impl.motion</artifactId>
-			<version>${robokind.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.robokind</groupId>
-			<artifactId>org.robokind.impl.motion.dynamixel</artifactId>
-			<version>${robokind.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.robokind</groupId>
-			<artifactId>org.robokind.impl.motion.pololu</artifactId>
-			<version>${robokind.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.robokind</groupId>
-			<artifactId>org.robokind.impl.sensor</artifactId>
-			<version>${robokind.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.robokind</groupId>
-			<artifactId>org.robokind.impl.speech</artifactId>
-			<version>${robokind.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.robokind</groupId>
-			<artifactId>org.robokind.impl.speechrec</artifactId>
-			<version>${robokind.version}</version>
-		</dependency>
 		<dependency>
 			<groupId>org.robokind</groupId>
 			<artifactId>org.robokind.headless.messaging</artifactId>
 			<version>${robokind.version}</version>
 		</dependency>
-		<dependency>
+		<!-- dependency>
 			<groupId>org.robokind</groupId>
 			<artifactId>org.robokind.client.basic</artifactId>
 			<version>${robokind.version}</version>
-		</dependency>
+		</dependency -->
 		<dependency>
 			<groupId>org.robokind</groupId>
 			<artifactId>org.robokind.headless.speech</artifactId>
@@ -216,7 +158,7 @@
 			<version>${robokind.version}</version>
 		</dependency>
 		<!-- END OF ROBOKIND SORT OF EVERYTHING (What a large boiler plate) -->
-		
+
 		<!-- Services Panel -->
 		<dependency>
 			<groupId>org.rwshop</groupId>
@@ -224,10 +166,10 @@
 			<version>${rwshop.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.rwshop</groupId>
-			<artifactId>org.rwshop.swing.common</artifactId>
-			<version>${rwshop.version}</version>
-		</dependency>
+			 <groupId>org.rwshop</groupId>
+			 <artifactId>org.rwshop.swing.common</artifactId>
+			 <version>${rwshop.version}</version>
+		 </dependency>
 
 		<!-- Our PAX-JETTY service -->
 		<dependency>
@@ -235,6 +177,13 @@
 			<artifactId>ext.bundle.jetty_osgi</artifactId>
 			<version>${appdapter.version}</version>
 			<scope>runtime</scope>
+		</dependency>
+
+		<!-- GUI Deps -->
+		<dependency>
+			<groupId>org.appdapter</groupId>
+			<artifactId>org.appdapter.bundle.gui</artifactId>
+			<version>${appdapter.version}</version>
 		</dependency>
 
 		<!-- JOSEKI SPARQL Service -->
@@ -267,9 +216,16 @@
 			<version>${project.version}</version>
 		</dependency>
 
+        <!-- New VIZ LIB -->
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>org.friendularity.lib.viz</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
 	</dependencies>
 
-	<build>
+ 	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.felix</groupId>
@@ -279,6 +235,7 @@
 				<configuration>
 					<instructions>
 						<Bundle-Activator>org.friendularity.bundle.demo.gmteach.GMTEACH_DemoActivator</Bundle-Activator>
+						<Export-Package>org.friendularity.*</Export-Package>
 					</instructions>
 				</configuration>
 			</plugin>
@@ -299,16 +256,19 @@
 					<execution>
 						<goals>
 							<goal>compile</goal>
-							<!-- We're not actually using any scala tests right now <goal>testCompile</goal> -->
+							<!-- We're not actually using any scala tests right now
+							<goal>testCompile</goal>
+							-->
 						</goals>
 					</execution>
 				</executions>
 			</plugin>
 		</plugins>
 	</build>
+
 	<profiles>
 		  <profile>
-			  <id>debug-run-on-felix</id>
+			  <id>run-on-felix</id>
 			  <dependencies>
 				  <dependency>
 					  <groupId>org.apache.felix</groupId>
@@ -326,10 +286,15 @@
 					  <artifactId>slf4j-log4j12</artifactId>
 					  <version>1.7.5</version>
 				  </dependency>
-		  
+                <!-- To include a shell:
+                <dependency>
+                    <groupId>org.apache.felix</groupId>
+                    <artifactId>org.apache.felix.gogo.shell</artifactId>
+                    <version>0.6.1</version>
+                </dependency>
+                -->		  
 		  <!-- org.apache.felix:org.apache.felix.gogo.shell:0.6.1 useless from Maven since stdin is swallowed -->
 			  </dependencies>
-		  
 			  <build>
 				  <plugins>
 					  <plugin>
@@ -338,28 +303,27 @@
 						  <version>1.6</version>
 						  <configuration>
 							  <target>
-				  <!-- HRK custom :  Note the log4j.debug flag -->
-								  <property name="vm.args" value="-Dlog4j.debug -Xmx16g -XX:MaxPermSize=3g" />
+								  <!-- HRK custom :  Note the log4j.debug flag -->
+								  <property name="vm.args" value="-Dlog4j.debug -XX:MaxHeapSize=512M -XX:MaxPermSize=384M -XX:+TieredCompilation -XX:+UseConcMarkSweepGC" />
 								  <property name="vm.localargs" value="" />
 								  <pathconvert property="plugins.jars" pathsep="${path.separator}">
 									  <path refid="maven.runtime.classpath" />
-									  <map from="${project.build.directory}${file.separator}classes"
-										  to="" />
+									<map from="${project.build.directory}${file.separator}classes" to="" />
 								  </pathconvert>
 								  <makeurl property="urls" separator=" ">
 									  <path path="${plugins.jars}" />
-									  <path
-										  location="${project.build.directory}/${project.build.finalName}.jar" />
+									<path location="${project.build.directory}/${project.build.finalName}.jar" />
 								  </makeurl>
 								  <propertyfile file="${project.build.directory}/run.properties">
 									  <entry key="felix.auto.start" value="${urls}" />
 									  <entry key="felix.auto.deploy.action" value="uninstall,install,update,start" />
-									  <entry key="org.osgi.framework.storage"
-										  value="${project.build.directory}${file.separator}felix-cache" />
+									<entry key="org.osgi.framework.storage" value="${project.build.directory}${file.separator}felix-cache" />
 									  <entry key="org.osgi.framework.bootdelegation" value="*" />
-					<!-- HRK Customization:   Allow sun.misc package to be used by LWJGL under OSGi -->
-					<!-- org.w3c.dom.* are missing from default.properties in felix 4.2.1, they are present in 3.0.7 -->
-									  <entry key="org.osgi.framework.system.packages.extra"
+									<!-- Friendularity customizations : 
+										1) Allow sun.misc package to be used by LWJGL.
+										2) org.w3c.dom.* are wanteed by Jena, Xerces, (+?), and are missing from 
+											default.properties in felix 4.2.1, tho	they are present in 3.0.7 -->
+										<entry key="org.osgi.framework.system.packages.extra"
 										  value="sun.misc,
 													  org.w3c.dom.css,
 													  org.w3c.dom.html,
@@ -369,17 +333,17 @@
 													  org.w3c.dom.views,
 													  org.w3c.dom.xpath" />
 								  </propertyfile>
-								  <makeurl property="run.properties.url"
-									  file="${project.build.directory}/run.properties" />
-								  <java fork="true"
-									  jar="${maven.dependency.org.apache.felix.org.apache.felix.main.jar.path}">
+								  <makeurl property="run.properties.url" file="${project.build.directory}/run.properties" />
+								  <java fork="true" jar="${maven.dependency.org.apache.felix.org.apache.felix.main.jar.path}">
 									  <sysproperty key="felix.config.properties" value="${run.properties.url}" />
 									  <sysproperty key="com.hrkind.robot.connections" value="${com.hrkind.robot.connections}" />
 									  <sysproperty key="com.hrkind.demo.behavior.master.source" value="${com.hrkind.demo.behavior.master.source}" />
 									  <sysproperty key="puma.boot.config.local" value="${puma.boot.config.local}" />
 									  <sysproperty key="behavior.master.type" value="${behavior.master.type}" />
-									   <!-- <sysproperty key="RKExtraVoices" value="klaus:saul" />-->
-									  <jvmarg line="-agentlib:jdwp=transport=dt_socket,address=localhost:9009,server=y,suspend=y ${vm.args} ${vm.localargs}" />
+									   <!-- 
+											<sysproperty key="RKExtraVoices" value="klaus:saul" /> 
+										           -agentlib:jdwp=transport=dt_socket,address=localhost:9009,server=y,suspend=n  -->
+									  <jvmarg line="${vm.args} ${vm.localargs}" />
 								  </java>
 							  </target>
 						  </configuration>
@@ -390,5 +354,3 @@
 		  </profile>
 	</profiles>
 </project>
-
-
