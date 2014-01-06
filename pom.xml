@@ -61,7 +61,7 @@ Version-less parent will be allowed in Maven 3.1.
 
 		<freckler.version>1.0.1-SNAPSHOT</freckler.version>
         
-        <jflux.version>0.1.8-SNAPSHOT</jflux.version>
+        <jflux.version>0.1.8</jflux.version>
 
 		<!--  JME3 is used directly in o.f.demo.jme3.maven -->
 		<jmonkey.version>3.0.0.20121220-SNAPSHOT</jmonkey.version>		
