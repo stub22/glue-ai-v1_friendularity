@@ -29,7 +29,7 @@ Array UUID_ARRAY string "UUID://312C8B62-1C90-495C-A220-A6539E6CBBFA//";
 Constant Story "GMTEACH";
 Constant Headline "An Interactive Fiction";
 Constant Story_Author SC_2;
-Serial "140105";
+Serial "140107";
 
 Default Story 0;
 Default Headline 0;
