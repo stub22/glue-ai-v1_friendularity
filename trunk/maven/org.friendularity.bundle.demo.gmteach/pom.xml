@@ -163,20 +163,22 @@
 		<!-- Services Panel -->
 		<dependency>
 			<groupId>org.rwshop</groupId>
-			<artifactId>org.rwshop.swing.messaging</artifactId>
-			<version>${rwshop.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.rwshop</groupId>
 			<artifactId>org.rwshop.swing.common</artifactId>
 			<version>${rwshop.version}</version>
 		</dependency>
+		<!-- NEW FROM 0.1.9	
 		<dependency>
 			<groupId>org.jflux</groupId>
 			<artifactId>org.jflux.swing.messaging</artifactId>
 			<version>${jflux.version}</version>
+		</dependency>  -->
+		<!-- ELSE -->
+		<dependency>
+			<groupId>org.rwshop</groupId>
+			<artifactId>org.rwshop.swing.messaging</artifactId>
+			<version>${rwshop.version}</version>
 		</dependency>
-
+		
 		<!-- Our PAX-JETTY service -->
 		<dependency>
 			<groupId>org.appdapter</groupId>

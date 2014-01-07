@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Skein rootNode="node-0x0033C7C0" xmlns="http://www.logicalshift.org.uk/IF/Skein">
+<Skein rootNode="node-0x0025C8D0" xmlns="http://www.logicalshift.org.uk/IF/Skein">
   <generator>Inform 7 for Windows</generator>
-  <activeNode nodeId="node-0x02701650"/>
-  <item nodeId="node-0x0033C7C0">
+  <activeNode nodeId="node-0x026A55F0"/>
+  <item nodeId="node-0x0025C8D0">
     <command xml:space="preserve">- start -</command>
     <result xml:space="preserve">GMTEACH&#x000A;An Interactive Fiction by GLUE-AI&#x000A;Release 1 / Serial number 140105 / Inform 7 build 6G60 (I6/v6.32 lib 6/12N) SD&#x000A;&#x000A;Desk&#x000A;You are at the far end of a musical scale that you cant quite remember. A recent boy-band rise to fame prevents all further hopes of remembering any tune  other than their smash hit.  "Sometimes".  It is strangely reminiscent of the flight of the bumblebees.  A large Grumpy music teacher to the east emits a faint green light.  Type "test me" to win fast! &#x000A;&#x000A;&gt;</result>
     <commentary xml:space="preserve"></commentary>
@@ -10,16 +10,16 @@
     <changed>NO</changed>
     <temporary score="0">NO</temporary>
     <children>
-      <child nodeId="node-0x0033C830"/>
-      <child nodeId="node-0x02693768"/>
-      <child nodeId="node-0x026A1FD8"/>
-      <child nodeId="node-0x026A26D8"/>
-      <child nodeId="node-0x026A2A58"/>
-      <child nodeId="node-0x026A2B38"/>
-      <child nodeId="node-0x02700A10"/>
+      <child nodeId="node-0x0025C940"/>
+      <child nodeId="node-0x026AE860"/>
+      <child nodeId="node-0x026AEA30"/>
+      <child nodeId="node-0x026AEFF8"/>
+      <child nodeId="node-0x026AF148"/>
+      <child nodeId="node-0x026AF1B8"/>
+      <child nodeId="node-0x026AF4C8"/>
     </children>
   </item>
-  <item nodeId="node-0x0033C830">
+  <item nodeId="node-0x0025C940">
     <command xml:space="preserve">start</command>
     <result xml:space="preserve">I didn't understand that sentence.&#x000A;&#x000A;&gt;</result>
     <commentary xml:space="preserve"></commentary>
@@ -27,10 +27,10 @@
     <changed>NO</changed>
     <temporary score="0">YES</temporary>
     <children>
-      <child nodeId="node-0x0033C8A0"/>
+      <child nodeId="node-0x026984F8"/>
     </children>
   </item>
-  <item nodeId="node-0x0033C8A0">
+  <item nodeId="node-0x026984F8">
     <command xml:space="preserve">remember</command>
     <result xml:space="preserve">I didn't understand that sentence.&#x000A;&#x000A;&gt;</result>
     <commentary xml:space="preserve"></commentary>
@@ -38,10 +38,10 @@
     <changed>NO</changed>
     <temporary score="0">YES</temporary>
     <children>
-      <child nodeId="node-0x0033C910"/>
+      <child nodeId="node-0x026986C8"/>
     </children>
   </item>
-  <item nodeId="node-0x0033C910">
+  <item nodeId="node-0x026986C8">
     <command xml:space="preserve">e</command>
     <result xml:space="preserve">(first opening the large hand)&#x000A;There is an aura of magic about the large grumpity hand that prevents you doing this.  Perhaps name the notes of the musical bar&#x000A;&gt;</result>
     <commentary xml:space="preserve"></commentary>
@@ -49,10 +49,10 @@
     <changed>NO</changed>
     <temporary score="0">YES</temporary>
     <children>
-      <child nodeId="node-0x02693468"/>
+      <child nodeId="node-0x02698738"/>
     </children>
   </item>
-  <item nodeId="node-0x02693468">
+  <item nodeId="node-0x02698738">
     <command xml:space="preserve">w</command>
     <result xml:space="preserve">You can't go that way.&#x000A;&#x000A;&gt;</result>
     <commentary xml:space="preserve"></commentary>
@@ -60,10 +60,10 @@
     <changed>NO</changed>
     <temporary score="0">YES</temporary>
     <children>
-      <child nodeId="node-0x026934D8"/>
+      <child nodeId="node-0x026AE5D0"/>
     </children>
   </item>
-  <item nodeId="node-0x026934D8">
+  <item nodeId="node-0x026AE5D0">
     <command xml:space="preserve">d</command>
     <result xml:space="preserve">You can't go that way.&#x000A;&#x000A;&gt;</result>
     <commentary xml:space="preserve"></commentary>
@@ -71,10 +71,10 @@
     <changed>NO</changed>
     <temporary score="0">YES</temporary>
     <children>
-      <child nodeId="node-0x02693548"/>
+      <child nodeId="node-0x026AE640"/>
     </children>
   </item>
-  <item nodeId="node-0x02693548">
+  <item nodeId="node-0x026AE640">
     <command xml:space="preserve">u</command>
     <result xml:space="preserve">You can't go that way.&#x000A;&#x000A;&gt;</result>
     <commentary xml:space="preserve"></commentary>
@@ -82,10 +82,10 @@
     <changed>NO</changed>
     <temporary score="0">YES</temporary>
     <children>
-      <child nodeId="node-0x026935B8"/>
+      <child nodeId="node-0x026AE6B0"/>
     </children>
   </item>
-  <item nodeId="node-0x026935B8">
+  <item nodeId="node-0x026AE6B0">
     <command xml:space="preserve">s</command>
     <result xml:space="preserve">You can't go that way.&#x000A;&#x000A;&gt;</result>
     <commentary xml:space="preserve"></commentary>
@@ -93,7 +93,7 @@
     <changed>NO</changed>
     <temporary score="0">YES</temporary>
   </item>
-  <item nodeId="node-0x02693768">
+  <item nodeId="node-0x026AE860">
     <command xml:space="preserve">take</command>
     <result xml:space="preserve">(the large hand)&#x000A;There is an aura of magic about the large grumpity hand that prevents you doing this.  Perhaps name the notes of the musical bar&#x000A;&gt;</result>
     <commentary xml:space="preserve"></commentary>
@@ -101,7 +101,7 @@
     <changed>NO</changed>
     <temporary score="0">YES</temporary>
   </item>
-  <item nodeId="node-0x026A1FD8">
+  <item nodeId="node-0x026AEA30">
     <command xml:space="preserve">east</command>
     <result xml:space="preserve">(first opening the large hand)&#x000A;There is an aura of magic about the large grumpity hand that prevents you doing this.  Perhaps name the notes of the musical bar&#x000A;&gt;</result>
     <commentary xml:space="preserve"></commentary>
@@ -109,10 +109,10 @@
     <changed>NO</changed>
     <temporary score="0">YES</temporary>
     <children>
-      <child nodeId="node-0x026A2048"/>
+      <child nodeId="node-0x026AEAA0"/>
     </children>
   </item>
-  <item nodeId="node-0x026A2048">
+  <item nodeId="node-0x026AEAA0">
     <command xml:space="preserve">a b c d e f g</command>
     <result xml:space="preserve">I didn't understand that sentence.&#x000A;&#x000A;&gt;</result>
     <commentary xml:space="preserve"></commentary>
@@ -120,10 +120,10 @@
     <changed>NO</changed>
     <temporary score="0">YES</temporary>
     <children>
-      <child nodeId="node-0x026A20B8"/>
+      <child nodeId="node-0x026AEB10"/>
     </children>
   </item>
-  <item nodeId="node-0x026A20B8">
+  <item nodeId="node-0x026AEB10">
     <command xml:space="preserve">hint</command>
     <result xml:space="preserve">I didn't understand that sentence.&#x000A;&#x000A;&gt;</result>
     <commentary xml:space="preserve"></commentary>
@@ -131,10 +131,10 @@
     <changed>NO</changed>
     <temporary score="0">YES</temporary>
     <children>
-      <child nodeId="node-0x026A2128"/>
+      <child nodeId="node-0x026AEB80"/>
     </children>
   </item>
-  <item nodeId="node-0x026A2128">
+  <item nodeId="node-0x026AEB80">
     <command xml:space="preserve">e bg b d f</command>
     <result xml:space="preserve">I only understood you as far as wanting to e.&#x000A;&#x000A;&gt;</result>
     <commentary xml:space="preserve"></commentary>
@@ -142,10 +142,10 @@
     <changed>NO</changed>
     <temporary score="0">YES</temporary>
     <children>
-      <child nodeId="node-0x026A2198"/>
+      <child nodeId="node-0x026AEBF0"/>
     </children>
   </item>
-  <item nodeId="node-0x026A2198">
+  <item nodeId="node-0x026AEBF0">
     <command xml:space="preserve">e g b d f</command>
     <result xml:space="preserve">I only understood you as far as wanting to e.&#x000A;&#x000A;&gt;</result>
     <commentary xml:space="preserve"></commentary>
@@ -153,10 +153,10 @@
     <changed>NO</changed>
     <temporary score="0">YES</temporary>
     <children>
-      <child nodeId="node-0x026A2208"/>
+      <child nodeId="node-0x026AEC78"/>
     </children>
   </item>
-  <item nodeId="node-0x026A2208">
+  <item nodeId="node-0x026AEC78">
     <command xml:space="preserve">say b d f</command>
     <result xml:space="preserve">(to yourself)&#x000A;There is no reply.&#x000A;&#x000A;&gt;</result>
     <commentary xml:space="preserve"></commentary>
@@ -164,10 +164,10 @@
     <changed>NO</changed>
     <temporary score="0">YES</temporary>
     <children>
-      <child nodeId="node-0x026A2278"/>
+      <child nodeId="node-0x026AECE8"/>
     </children>
   </item>
-  <item nodeId="node-0x026A2278">
+  <item nodeId="node-0x026AECE8">
     <command xml:space="preserve">say </command>
     <result xml:space="preserve">I didn't understand that sentence.&#x000A;&#x000A;&gt;</result>
     <commentary xml:space="preserve"></commentary>
@@ -175,10 +175,10 @@
     <changed>NO</changed>
     <temporary score="0">YES</temporary>
     <children>
-      <child nodeId="node-0x026A22E8"/>
+      <child nodeId="node-0x026AED58"/>
     </children>
   </item>
-  <item nodeId="node-0x026A22E8">
+  <item nodeId="node-0x026AED58">
     <command xml:space="preserve">say e g b d f</command>
     <result xml:space="preserve">(to yourself)&#x000A;There is no reply.&#x000A;&#x000A;&gt;</result>
     <commentary xml:space="preserve"></commentary>
@@ -186,10 +186,10 @@
     <changed>NO</changed>
     <temporary score="0">YES</temporary>
     <children>
-      <child nodeId="node-0x026A2358"/>
+      <child nodeId="node-0x026AEDC8"/>
     </children>
   </item>
-  <item nodeId="node-0x026A2358">
+  <item nodeId="node-0x026AEDC8">
     <command xml:space="preserve">say gmteach</command>
     <result xml:space="preserve">(to yourself)&#x000A;There is no reply.&#x000A;&#x000A;&gt;</result>
     <commentary xml:space="preserve"></commentary>
@@ -197,10 +197,10 @@
     <changed>NO</changed>
     <temporary score="0">YES</temporary>
     <children>
-      <child nodeId="node-0x026A23C8"/>
+      <child nodeId="node-0x026AEE38"/>
     </children>
   </item>
-  <item nodeId="node-0x026A23C8">
+  <item nodeId="node-0x026AEE38">
     <command xml:space="preserve">talk</command>
     <result xml:space="preserve">I didn't understand that sentence.&#x000A;&#x000A;&gt;</result>
     <commentary xml:space="preserve"></commentary>
@@ -208,10 +208,10 @@
     <changed>NO</changed>
     <temporary score="0">YES</temporary>
     <children>
-      <child nodeId="node-0x026A2438"/>
+      <child nodeId="node-0x026AEEA8"/>
     </children>
   </item>
-  <item nodeId="node-0x026A2438">
+  <item nodeId="node-0x026AEEA8">
     <command xml:space="preserve">look</command>
     <result xml:space="preserve">Desk&#x000A;You are at the far end of a musical scale that you cant quite remember. A recent boy-band rise to fame prevents all further hopes of remembering any tune  other than their smash hit.  "Sometimes".  It is strangely reminiscent of the flight of the bumblebees.  A large Grumpy music teacher to the east emits a faint green light.&#x000A;&#x000A;&gt;</result>
     <commentary xml:space="preserve"></commentary>
@@ -219,10 +219,10 @@
     <changed>NO</changed>
     <temporary score="0">YES</temporary>
     <children>
-      <child nodeId="node-0x026A24A8"/>
+      <child nodeId="node-0x026AEF18"/>
     </children>
   </item>
-  <item nodeId="node-0x026A24A8">
+  <item nodeId="node-0x026AEF18">
     <command xml:space="preserve">e</command>
     <result xml:space="preserve">(first opening the large hand)&#x000A;There is an aura of magic about the large grumpity hand that prevents you doing this.  Perhaps name the notes of the musical bar&#x000A;&gt;</result>
     <commentary xml:space="preserve"></commentary>
@@ -230,10 +230,10 @@
     <changed>NO</changed>
     <temporary score="0">YES</temporary>
     <children>
-      <child nodeId="node-0x026A2518"/>
+      <child nodeId="node-0x026AEF88"/>
     </children>
   </item>
-  <item nodeId="node-0x026A2518">
+  <item nodeId="node-0x026AEF88">
     <command xml:space="preserve">open hand</command>
     <result xml:space="preserve">There is an aura of magic about the large grumpity hand that prevents you doing this.  Perhaps name the notes of the musical bar&#x000A;&gt;</result>
     <commentary xml:space="preserve"></commentary>
@@ -241,7 +241,7 @@
     <changed>NO</changed>
     <temporary score="0">YES</temporary>
   </item>
-  <item nodeId="node-0x026A26D8">
+  <item nodeId="node-0x026AEFF8">
     <command xml:space="preserve">w</command>
     <result xml:space="preserve">You can't go that way.&#x000A;&#x000A;&gt;</result>
     <commentary xml:space="preserve"></commentary>
@@ -249,10 +249,10 @@
     <changed>NO</changed>
     <temporary score="0">YES</temporary>
     <children>
-      <child nodeId="node-0x026A2748"/>
+      <child nodeId="node-0x026AF068"/>
     </children>
   </item>
-  <item nodeId="node-0x026A2748">
+  <item nodeId="node-0x026AF068">
     <command xml:space="preserve">e</command>
     <result xml:space="preserve">(first opening the large hand)&#x000A;There is an aura of magic about the large grumpity hand that prevents you doing this.  Perhaps name the notes of the musical bar: say egbdf&#x000A;&gt;</result>
     <commentary xml:space="preserve"></commentary>
@@ -260,10 +260,10 @@
     <changed>NO</changed>
     <temporary score="0">YES</temporary>
     <children>
-      <child nodeId="node-0x026A27B8"/>
+      <child nodeId="node-0x026AF0D8"/>
     </children>
   </item>
-  <item nodeId="node-0x026A27B8">
+  <item nodeId="node-0x026AF0D8">
     <command xml:space="preserve">say egbdf</command>
     <result xml:space="preserve">With an eerie musical scale, the hand falls to the side.&#x000A;&#x000A;&gt;</result>
     <commentary xml:space="preserve"></commentary>
@@ -271,7 +271,7 @@
     <changed>NO</changed>
     <temporary score="0">YES</temporary>
   </item>
-  <item nodeId="node-0x026A2A58">
+  <item nodeId="node-0x026AF148">
     <command xml:space="preserve">i</command>
     <result xml:space="preserve">You are carrying:&#x000A;  your beanscript&#x000A;&#x000A;&gt;</result>
     <commentary xml:space="preserve"></commentary>
@@ -279,7 +279,7 @@
     <changed>NO</changed>
     <temporary score="0">YES</temporary>
   </item>
-  <item nodeId="node-0x026A2B38">
+  <item nodeId="node-0x026AF1B8">
     <command xml:space="preserve">hello</command>
     <result xml:space="preserve">I didn't understand that sentence.&#x000A;&#x000A;&gt;</result>
     <commentary xml:space="preserve"></commentary>
@@ -287,10 +287,10 @@
     <changed>NO</changed>
     <temporary score="0">YES</temporary>
     <children>
-      <child nodeId="node-0x026A2898"/>
+      <child nodeId="node-0x026AF228"/>
     </children>
   </item>
-  <item nodeId="node-0x026A2898">
+  <item nodeId="node-0x026AF228">
     <command xml:space="preserve">look</command>
     <result xml:space="preserve">Desk&#x000A;You are at the far end of a musical scale that you cant quite remember. A recent boy-band rise to fame prevents all further hopes of remembering any tune  other than their smash hit.  "Sometimes".  It is strangely reminiscent of the flight of the bumblebees.  A large Grumpy music teacher to the east emits a faint green light.&#x000A;&#x000A;&gt;</result>
     <commentary xml:space="preserve"></commentary>
@@ -298,10 +298,10 @@
     <changed>NO</changed>
     <temporary score="0">YES</temporary>
     <children>
-      <child nodeId="node-0x026A2C18"/>
+      <child nodeId="node-0x026AF298"/>
     </children>
   </item>
-  <item nodeId="node-0x026A2C18">
+  <item nodeId="node-0x026AF298">
     <command xml:space="preserve">hint</command>
     <result xml:space="preserve">I didn't understand that sentence.&#x000A;&#x000A;&gt;</result>
     <commentary xml:space="preserve"></commentary>
@@ -309,10 +309,10 @@
     <changed>NO</changed>
     <temporary score="0">YES</temporary>
     <children>
-      <child nodeId="node-0x026A2C88"/>
+      <child nodeId="node-0x026AF308"/>
     </children>
   </item>
-  <item nodeId="node-0x026A2C88">
+  <item nodeId="node-0x026AF308">
     <command xml:space="preserve">test</command>
     <result xml:space="preserve">&gt;--&gt; The following tests are available:&#x000A;'test me'&#x000A;&gt;</result>
     <commentary xml:space="preserve"></commentary>
@@ -320,10 +320,10 @@
     <changed>NO</changed>
     <temporary score="0">YES</temporary>
     <children>
-      <child nodeId="node-0x026A2CF8"/>
+      <child nodeId="node-0x026AF378"/>
     </children>
   </item>
-  <item nodeId="node-0x026A2CF8">
+  <item nodeId="node-0x026AF378">
     <command xml:space="preserve">test me</command>
     <result xml:space="preserve">(Testing.)&#x000A;&#x000A;&gt;[1] x hand&#x000A;It is the same green hand that has Inscribed in on the blackboard of the the words ?Remember the scala of Sinbad's Theme  to find your way forward."&#x000A;&#x000A;&gt;[2] push hand&#x000A;There is an aura of magic about the large grumpity hand that prevents you doing this.  Perhaps name the notes of the musical bar: say egbdf&#x000A;&gt;[3] say egbdf&#x000A;With an eerie musical scale, the hand falls to the side hearing songA&#x000A;&gt;[4] e&#x000A;&#x000A;Small stage&#x000A;A flight of steps leads down into the darkness.&#x000A;&#x000A;&gt;[5] d&#x000A;&#x000A;Room of requirements&#x000A;The room smells musty. An alien presence invades your mind and deep in your bones you hear a voice echo "Welcome brave soul. You have passed the first hurdle. Before you proceed, you must answer the following questions."&#x000A;&#x000A;What is your name?&#x000A;&#x000A;Enter your name &gt;[6] peter&#x000A;Welcome to this venture, peter&#x000A;&#x000A;How old are you?&#x000A;&#x000A;Please enter a number &gt;[7] 34&#x000A;Thank you: You are 34 for the remainder of your venture into the unknown&#x000A;&#x000A;Do you want to play as a male, female or neutral character&#x000A;&#x000A;Please enter M, F or N (Male or Female or Neuter) &gt;[8] m&#x000A;Thank you. You are Masculine gender&#x000A;&#x000A;Which of the following is your preferred character type:&#x000A;1 - Drummer&#x000A;2 - Keyboardist&#x000A;3 - Lipsyncer&#x000A;4 - Other Faker&#x000A;&#x000A;Please select a number between 1 and 4 &gt;[9] 3&#x000A;Thank you, you are playing as a Lipsyncer&#x000A;&#x000A;You have chosen:&#x000A;Name: peter&#x000A;Age: 34&#x000A;Sex: Masculine&#x000A;Character: Lipsyncer&#x000A;&#x000A;Are you happy with your responses?&#x000A;&#x000A;Please enter Y or N (Yes or No) &gt;[10] y&#x000A;Thank you. Venture into the unknown brave Lipsyncer&#x000A;&#x000A;&gt;</result>
     <commentary xml:space="preserve"></commentary>
@@ -331,10 +331,10 @@
     <changed>NO</changed>
     <temporary score="0">YES</temporary>
     <children>
-      <child nodeId="node-0x026A2D68"/>
+      <child nodeId="node-0x026AF3E8"/>
     </children>
   </item>
-  <item nodeId="node-0x026A2D68">
+  <item nodeId="node-0x026AF3E8">
     <command xml:space="preserve">q</command>
     <result xml:space="preserve">Are you sure you want to quit?</result>
     <commentary xml:space="preserve"></commentary>
@@ -342,10 +342,10 @@
     <changed>NO</changed>
     <temporary score="0">YES</temporary>
     <children>
-      <child nodeId="node-0x026A2DD8"/>
+      <child nodeId="node-0x026AF458"/>
     </children>
   </item>
-  <item nodeId="node-0x026A2DD8">
+  <item nodeId="node-0x026AF458">
     <command xml:space="preserve">y</command>
     <result xml:space="preserve"></result>
     <commentary xml:space="preserve"></commentary>
@@ -353,7 +353,7 @@
     <changed>NO</changed>
     <temporary score="0">YES</temporary>
   </item>
-  <item nodeId="node-0x02700A10">
+  <item nodeId="node-0x026AF4C8">
     <command xml:space="preserve">test me</command>
     <result xml:space="preserve">(Testing.)&#x000A;&#x000A;&gt;[1] x hand&#x000A;It is the same green hand that has Inscribed in on the blackboard of the the words ?emember the scala of Sinbad's Theme  to find your way forward."&#x000A;&#x000A;&gt;[2] push hand&#x000A;There is an aura of magic about the large grumpity hand that prevents you doing this.  Perhaps name the notes of the musical bar: say egbdf&#x000A;&gt;[3] say egbdf&#x000A;With an eerie musical scale, the hand falls to the side hearing songA&#x000A;&gt;[4] e&#x000A;&#x000A;Small stage&#x000A;A flight of steps leads down into the darkness.&#x000A;&#x000A;&gt;[5] d&#x000A;&#x000A;Dance Floor&#x000A;The Dance Floor is just the dance floor below the stage and west of the rest of the pub. An alien presence invades your mind and deep in your bones you hear a voice echo "Welcome brave soul. You have passed the first hurdle. Before you proceed, you must answer the following questions."&#x000A;&#x000A;What is your name?&#x000A;&#x000A;Enter your name &gt;[6] peter&#x000A;Welcome to this venture, peter&#x000A;&#x000A;How old are you?&#x000A;&#x000A;Please enter a number &gt;[7] 34&#x000A;Thank you: You are 34 for the remainder of your venture into the unknown&#x000A;&#x000A;Do you want to play as a male, female or neutral character&#x000A;&#x000A;Please enter M, F or N (Male or Female or Neuter) &gt;[8] m&#x000A;Thank you. You are Masculine gender&#x000A;&#x000A;Which of the following is your preferred character type:&#x000A;1 - Drummer&#x000A;2 - Keyboardist&#x000A;3 - Lipsyncer&#x000A;4 - Other Faker&#x000A;&#x000A;Please select a number between 1 and 4 &gt;[9] 3&#x000A;Thank you, you are playing as a Lipsyncer&#x000A;&#x000A;You have chosen:&#x000A;Name: peter&#x000A;Age: 34&#x000A;Sex: Masculine&#x000A;Character: Lipsyncer&#x000A;&#x000A;Are you happy with your responses?&#x000A;&#x000A;Please enter Y or N (Yes or No) &gt;[10] y&#x000A;Thank you. Venture into the unknown brave Lipsyncer&#x000A;&#x000A;&gt;</result>
     <commentary xml:space="preserve"></commentary>
@@ -361,12 +361,12 @@
     <changed>NO</changed>
     <temporary score="0">YES</temporary>
     <children>
-      <child nodeId="node-0x02700AF0"/>
-      <child nodeId="node-0x02700F50"/>
-      <child nodeId="node-0x027012D0"/>
+      <child nodeId="node-0x026AF538"/>
+      <child nodeId="node-0x026AF8B8"/>
+      <child nodeId="node-0x026AFB58"/>
     </children>
   </item>
-  <item nodeId="node-0x02700AF0">
+  <item nodeId="node-0x026AF538">
     <command xml:space="preserve">d</command>
     <result xml:space="preserve">You are under a strange compulsion and unable to move.&#x000A;&#x000A;&gt;</result>
     <commentary xml:space="preserve"></commentary>
@@ -374,10 +374,10 @@
     <changed>NO</changed>
     <temporary score="0">YES</temporary>
     <children>
-      <child nodeId="node-0x02700C40"/>
+      <child nodeId="node-0x026AF5A8"/>
     </children>
   </item>
-  <item nodeId="node-0x02700C40">
+  <item nodeId="node-0x026AF5A8">
     <command xml:space="preserve">look</command>
     <result xml:space="preserve">Room of requirements&#x000A;The room smells musty.&#x000A;&#x000A;&gt;</result>
     <commentary xml:space="preserve"></commentary>
@@ -385,10 +385,10 @@
     <changed>NO</changed>
     <temporary score="0">YES</temporary>
     <children>
-      <child nodeId="node-0x02700BD0"/>
+      <child nodeId="node-0x026AF618"/>
     </children>
   </item>
-  <item nodeId="node-0x02700BD0">
+  <item nodeId="node-0x026AF618">
     <command xml:space="preserve">w</command>
     <result xml:space="preserve">You can't go that way.&#x000A;&#x000A;&gt;</result>
     <commentary xml:space="preserve"></commentary>
@@ -396,10 +396,10 @@
     <changed>NO</changed>
     <temporary score="0">YES</temporary>
     <children>
-      <child nodeId="node-0x02700B60"/>
+      <child nodeId="node-0x026AF688"/>
     </children>
   </item>
-  <item nodeId="node-0x02700B60">
+  <item nodeId="node-0x026AF688">
     <command xml:space="preserve">e</command>
     <result xml:space="preserve">You can't go that way.&#x000A;&#x000A;&gt;</result>
     <commentary xml:space="preserve"></commentary>
@@ -407,10 +407,10 @@
     <changed>NO</changed>
     <temporary score="0">YES</temporary>
     <children>
-      <child nodeId="node-0x02700CB0"/>
+      <child nodeId="node-0x026AF6F8"/>
     </children>
   </item>
-  <item nodeId="node-0x02700CB0">
+  <item nodeId="node-0x026AF6F8">
     <command xml:space="preserve">d</command>
     <result xml:space="preserve">You can't go that way.&#x000A;&#x000A;&gt;</result>
     <commentary xml:space="preserve"></commentary>
@@ -418,10 +418,10 @@
     <changed>NO</changed>
     <temporary score="0">YES</temporary>
     <children>
-      <child nodeId="node-0x02700D20"/>
+      <child nodeId="node-0x026AF768"/>
     </children>
   </item>
-  <item nodeId="node-0x02700D20">
+  <item nodeId="node-0x026AF768">
     <command xml:space="preserve">w</command>
     <result xml:space="preserve">You can't go that way.&#x000A;&#x000A;&gt;</result>
     <commentary xml:space="preserve"></commentary>
@@ -429,10 +429,10 @@
     <changed>NO</changed>
     <temporary score="0">YES</temporary>
     <children>
-      <child nodeId="node-0x02700D90"/>
+      <child nodeId="node-0x026AF7D8"/>
     </children>
   </item>
-  <item nodeId="node-0x02700D90">
+  <item nodeId="node-0x026AF7D8">
     <command xml:space="preserve">u</command>
     <result xml:space="preserve">Small stage&#x000A;A flight of steps leads down into the darkness.&#x000A;&#x000A;&gt;</result>
     <commentary xml:space="preserve"></commentary>
@@ -440,10 +440,10 @@
     <changed>NO</changed>
     <temporary score="0">YES</temporary>
     <children>
-      <child nodeId="node-0x02700E00"/>
+      <child nodeId="node-0x026AF848"/>
     </children>
   </item>
-  <item nodeId="node-0x02700E00">
+  <item nodeId="node-0x026AF848">
     <command xml:space="preserve">d</command>
     <result xml:space="preserve">Room of requirements&#x000A;The room smells musty.&#x000A;&#x000A;&gt;</result>
     <commentary xml:space="preserve"></commentary>
@@ -451,7 +451,7 @@
     <changed>NO</changed>
     <temporary score="0">YES</temporary>
   </item>
-  <item nodeId="node-0x02700F50">
+  <item nodeId="node-0x026AF8B8">
     <command xml:space="preserve">look</command>
     <result xml:space="preserve">You are under a strange compulsion and unable to move.&#x000A;&#x000A;&gt;</result>
     <commentary xml:space="preserve"></commentary>
@@ -459,10 +459,10 @@
     <changed>NO</changed>
     <temporary score="0">YES</temporary>
     <children>
-      <child nodeId="node-0x02700FC0"/>
+      <child nodeId="node-0x026AF928"/>
     </children>
   </item>
-  <item nodeId="node-0x02700FC0">
+  <item nodeId="node-0x026AF928">
     <command xml:space="preserve">look</command>
     <result xml:space="preserve">Dance Floor&#x000A;The Dance Floor is just the dance floor below the stage and west of the rest of the pub.&#x000A;&#x000A;&gt;</result>
     <commentary xml:space="preserve"></commentary>
@@ -470,10 +470,10 @@
     <changed>YES</changed>
     <temporary score="0">YES</temporary>
     <children>
-      <child nodeId="node-0x027010A0"/>
+      <child nodeId="node-0x026AF998"/>
     </children>
   </item>
-  <item nodeId="node-0x027010A0">
+  <item nodeId="node-0x026AF998">
     <command xml:space="preserve">e</command>
     <result xml:space="preserve">You can't go that way.&#x000A;&#x000A;&gt;</result>
     <commentary xml:space="preserve"></commentary>
@@ -481,10 +481,10 @@
     <changed>NO</changed>
     <temporary score="0">YES</temporary>
     <children>
-      <child nodeId="node-0x02701110"/>
+      <child nodeId="node-0x026AFA08"/>
     </children>
   </item>
-  <item nodeId="node-0x02701110">
+  <item nodeId="node-0x026AFA08">
     <command xml:space="preserve">w</command>
     <result xml:space="preserve">pub&#x000A;The pub is crowded for the weekly quiz night. The barman is ready to call out the questions. Get one wrong and you will be barred from the pub for life.&#x000A;&#x000A;How many books are there in the Old Testament&#x000A;1 - 23&#x000A;2 - 39&#x000A;3 - 37&#x000A;4 - 41&#x000A;&#x000A;Please select a number between 1 and 4 &gt;</result>
     <commentary xml:space="preserve"></commentary>
@@ -492,10 +492,10 @@
     <changed>NO</changed>
     <temporary score="0">YES</temporary>
     <children>
-      <child nodeId="node-0x02701180"/>
+      <child nodeId="node-0x026AFA78"/>
     </children>
   </item>
-  <item nodeId="node-0x02701180">
+  <item nodeId="node-0x026AFA78">
     <command xml:space="preserve">2</command>
     <result xml:space="preserve">Well done. You have survived to the next round.&#x000A;&#x000A;What type of animal is Basil Brush&#x000A;1 - Cat&#x000A;2 - Dog&#x000A;3 - Rabbit&#x000A;4 - Fox&#x000A;&#x000A;Please select a number between 1 and 4 &gt;</result>
     <commentary xml:space="preserve"></commentary>
@@ -503,10 +503,10 @@
     <changed>NO</changed>
     <temporary score="0">YES</temporary>
     <children>
-      <child nodeId="node-0x027011F0"/>
+      <child nodeId="node-0x026AFAE8"/>
     </children>
   </item>
-  <item nodeId="node-0x027011F0">
+  <item nodeId="node-0x026AFAE8">
     <command xml:space="preserve">4</command>
     <result xml:space="preserve">Well done. You have survived to the next round.&#x000A;&#x000A;In which year was the Battle of Hastings&#x000A;1 - 1256&#x000A;2 - 1066&#x000A;3 - 1589&#x000A;4 - 1790&#x000A;&#x000A;Please select a number between 1 and 4 &gt;</result>
     <commentary xml:space="preserve"></commentary>
@@ -514,7 +514,7 @@
     <changed>NO</changed>
     <temporary score="0">YES</temporary>
   </item>
-  <item nodeId="node-0x027012D0">
+  <item nodeId="node-0x026AFB58">
     <command xml:space="preserve">e</command>
     <result xml:space="preserve">You are under a strange compulsion and unable to move.&#x000A;&#x000A;&gt;</result>
     <commentary xml:space="preserve"></commentary>
@@ -522,10 +522,10 @@
     <changed>NO</changed>
     <temporary score="0">YES</temporary>
     <children>
-      <child nodeId="node-0x02701340"/>
+      <child nodeId="node-0x026AFBC8"/>
     </children>
   </item>
-  <item nodeId="node-0x02701340">
+  <item nodeId="node-0x026AFBC8">
     <command xml:space="preserve">e</command>
     <result xml:space="preserve">pub&#x000A;The pub is crowded for the weekly quiz night. The barman is ready to call out the questions. Get one wrong and you will be barred from the pub for life.&#x000A;&#x000A;How many books are there in the Old Testament? (hint 2)&#x000A;1 - 23&#x000A;2 - 39&#x000A;3 - 37&#x000A;4 - 41&#x000A;&#x000A;Please select a number between 1 and 4 &gt;</result>
     <commentary xml:space="preserve"></commentary>
@@ -533,10 +533,10 @@
     <changed>NO</changed>
     <temporary score="0">YES</temporary>
     <children>
-      <child nodeId="node-0x027013B0"/>
+      <child nodeId="node-0x026A5350"/>
     </children>
   </item>
-  <item nodeId="node-0x027013B0">
+  <item nodeId="node-0x026A5350">
     <command xml:space="preserve">2</command>
     <result xml:space="preserve">Well done. You have survived to the next round.&#x000A;&#x000A;What type of animal is Basil Brush? (hint 4)&#x000A;1 - Cat&#x000A;2 - Dog&#x000A;3 - Rabbit&#x000A;4 - Fox&#x000A;&#x000A;Please select a number between 1 and 4 &gt;</result>
     <commentary xml:space="preserve"></commentary>
@@ -544,10 +544,10 @@
     <changed>NO</changed>
     <temporary score="0">YES</temporary>
     <children>
-      <child nodeId="node-0x02701420"/>
+      <child nodeId="node-0x026A53C0"/>
     </children>
   </item>
-  <item nodeId="node-0x02701420">
+  <item nodeId="node-0x026A53C0">
     <command xml:space="preserve">4</command>
     <result xml:space="preserve">Well done. You have survived to the next round.&#x000A;&#x000A;In which year was the Battle of Hastings? (hint 2)&#x000A;1 - 1256&#x000A;2 - 1066&#x000A;3 - 1589&#x000A;4 - 1790&#x000A;&#x000A;Please select a number between 1 and 4 &gt;</result>
     <commentary xml:space="preserve"></commentary>
@@ -555,10 +555,10 @@
     <changed>NO</changed>
     <temporary score="0">YES</temporary>
     <children>
-      <child nodeId="node-0x02701490"/>
+      <child nodeId="node-0x026A5430"/>
     </children>
   </item>
-  <item nodeId="node-0x02701490">
+  <item nodeId="node-0x026A5430">
     <command xml:space="preserve">2</command>
     <result xml:space="preserve">Well done. You have survived to the next round.&#x000A;&#x000A;What is a Cantaloupe? (hint 3)&#x000A;1 - Animal&#x000A;2 - Star&#x000A;3 - Fruit&#x000A;4 - Vegetable&#x000A;&#x000A;Please select a number between 1 and 4 &gt;</result>
     <commentary xml:space="preserve"></commentary>
@@ -566,10 +566,10 @@
     <changed>NO</changed>
     <temporary score="0">YES</temporary>
     <children>
-      <child nodeId="node-0x02701500"/>
+      <child nodeId="node-0x026A54A0"/>
     </children>
   </item>
-  <item nodeId="node-0x02701500">
+  <item nodeId="node-0x026A54A0">
     <command xml:space="preserve">3</command>
     <result xml:space="preserve">Well done. You have survived to the next round.&#x000A;&#x000A;What is the square root of 126736? (hint 1)&#x000A;1 - 356&#x000A;2 - 289&#x000A;3 - 421&#x000A;4 - 321&#x000A;&#x000A;Please select a number between 1 and 4 &gt;</result>
     <commentary xml:space="preserve"></commentary>
@@ -577,10 +577,10 @@
     <changed>NO</changed>
     <temporary score="0">YES</temporary>
     <children>
-      <child nodeId="node-0x02701570"/>
+      <child nodeId="node-0x026A5510"/>
     </children>
   </item>
-  <item nodeId="node-0x02701570">
+  <item nodeId="node-0x026A5510">
     <command xml:space="preserve">1</command>
     <result xml:space="preserve">*** Congratulations you have won! ***&#x000A;&#x000A;&#x000A;In that game you scored 0 out of a possible 0, in 17 turns.&#x000A;&#x000A;&#x000A;Would you like to RESTART, RESTORE a saved game, QUIT or UNDO the last command?&#x000A;&gt;</result>
     <commentary xml:space="preserve"></commentary>
@@ -588,10 +588,10 @@
     <changed>NO</changed>
     <temporary score="0">YES</temporary>
     <children>
-      <child nodeId="node-0x027015E0"/>
+      <child nodeId="node-0x026A5580"/>
     </children>
   </item>
-  <item nodeId="node-0x027015E0">
+  <item nodeId="node-0x026A5580">
     <command xml:space="preserve">undo</command>
     <result xml:space="preserve">pub&#x000A;[Previous turn undone.]&#x000A;&#x000A;Please select a number between 1 and 4 &gt;</result>
     <commentary xml:space="preserve"></commentary>
@@ -599,10 +599,10 @@
     <changed>NO</changed>
     <temporary score="0">YES</temporary>
     <children>
-      <child nodeId="node-0x02701650"/>
+      <child nodeId="node-0x026A55F0"/>
     </children>
   </item>
-  <item nodeId="node-0x02701650">
+  <item nodeId="node-0x026A55F0">
     <command xml:space="preserve">3</command>
     <result xml:space="preserve">*** You have been barred from the pub for getting a question wrong. ***&#x000A;&#x000A;&#x000A;In that game you scored 0 out of a possible 0, in 17 turns.&#x000A;&#x000A;&#x000A;Would you like to RESTART, RESTORE a saved game, QUIT or UNDO the last command?&#x000A;&gt;</result>
     <commentary xml:space="preserve"></commentary>

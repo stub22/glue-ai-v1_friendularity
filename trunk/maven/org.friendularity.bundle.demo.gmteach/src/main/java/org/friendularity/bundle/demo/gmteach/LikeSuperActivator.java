@@ -145,6 +145,7 @@ public class LikeSuperActivator extends CommonActivator implements BundleListene
 		macroStartupSettings.runNow("configPuma");
 		macroStartupSettings.printMacroStateInfo(System.err, null, true);
 		macroStartupSettings.removeBegun();
+		configGMTeachStory();
 	}
 
 	/**
@@ -266,9 +267,7 @@ public class LikeSuperActivator extends CommonActivator implements BundleListene
 		getLogger().warn("gmteach.glulx Activation in 0 seconds.");
 		// raise to DURRING_CONFIG
 		macroStartupSettings.raiseToPhase(MacroStartupSettings.DURRING_CONFIG);
-		// add our stuff
-		String args = macroStartupSettings.getProperty(LikeSuperActivator.this.m_context.getBundle(), "gmteach.glulx", "inform7.story", "glulx.args", "application.args", "launcher.arguments").trim();
-		macroStartupSettings.putSetting("inform7.story", args);
+		configGMTeachStory();
 		// raise to POST_CONFIG
 		macroStartupSettings.raiseToPhase(MacroStartupSettings.POST_CONFIG);
 		// show POST_CONFIG
@@ -278,6 +277,12 @@ public class LikeSuperActivator extends CommonActivator implements BundleListene
 		macroStartupSettings.removeBegun();
 		getLogger().warn("launchPhases COMPLETE.");
 		showMacroFrame();
+	}
+
+	private void configGMTeachStory() {
+		// add our stuff
+		String args = macroStartupSettings.getProperty(LikeSuperActivator.this.m_context.getBundle(), "src/main/Inform/Projects/GMTeach.inform/Build/output.ulx" ,"gmteach.glulx", "inform7.story", "glulx.args", "application.args", "launcher.arguments").trim();
+		macroStartupSettings.putSetting("inform7.story", args);
 	}
 
 	private void showMacroFrame() {
@@ -324,7 +329,6 @@ public class LikeSuperActivator extends CommonActivator implements BundleListene
 		}
 
 		@Override public synchronized Object getService() {
-			// TODO Auto-generated method stub
 			return super.getService();
 		}
 
