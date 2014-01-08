@@ -10,10 +10,6 @@ import org.appdapter.bind.rdf.jena.assembly.ItemAssemblyReader;
 import org.appdapter.core.item.Item;
 import org.appdapter.core.name.Ident;
 import org.jflux.api.registry.Descriptor;
-import org.jflux.api.service.DefaultRegistrationStrategy;
-import org.jflux.api.service.RegistrationStrategy;
-import org.jflux.api.service.ServiceDependency;
-import org.jflux.api.service.binding.ServiceBinding;
 import com.hp.hpl.jena.rdf.model.Resource;
 
 /**

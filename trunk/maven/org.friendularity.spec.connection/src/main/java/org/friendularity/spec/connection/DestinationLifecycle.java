@@ -11,7 +11,7 @@ import javax.jms.Destination;
 import org.apache.qpid.client.AMQAnyDestination;
 import org.jflux.api.service.ServiceDependency;
 import org.jflux.api.service.ServiceLifecycle;
-import org.robokind.impl.messaging.utils.ConnectionUtils;
+import org.jflux.impl.messaging.rk.utils.ConnectionUtils;
 
 /**
  *

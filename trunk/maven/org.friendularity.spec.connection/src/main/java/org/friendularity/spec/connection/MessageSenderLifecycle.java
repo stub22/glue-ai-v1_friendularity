@@ -11,7 +11,7 @@ import org.jflux.api.core.Adapter;
 import org.jflux.api.core.config.Configuration;
 import org.jflux.api.service.ServiceDependency;
 import org.jflux.api.service.ServiceLifecycle;
-import org.robokind.impl.messaging.JMSAvroMessageSender;
+import org.jflux.impl.messaging.rk.JMSAvroMessageSender;
 
 import static org.jflux.impl.encode.avro.SerializationConfigUtils.*;
 

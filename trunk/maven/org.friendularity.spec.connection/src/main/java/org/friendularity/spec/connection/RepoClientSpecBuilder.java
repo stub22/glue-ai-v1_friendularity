@@ -17,11 +17,9 @@ package org.friendularity.spec.connection;
 
 import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.assembler.Mode;
-import java.util.Set;
 import org.appdapter.bind.rdf.jena.assembly.CachingComponentAssembler;
 import org.appdapter.bind.rdf.jena.assembly.ItemAssemblyReader;
 import org.appdapter.core.item.Item;
-import org.appdapter.core.item.ItemFuncs;
 import org.appdapter.core.name.Ident;
 import com.hp.hpl.jena.rdf.model.Resource;
 

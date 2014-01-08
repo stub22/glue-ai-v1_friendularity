@@ -135,5 +135,4 @@ public class FaceMonitor implements Listener<ImageRegionList> {
             myRobot.move(goals, 100);
         }
     }
-    
 }

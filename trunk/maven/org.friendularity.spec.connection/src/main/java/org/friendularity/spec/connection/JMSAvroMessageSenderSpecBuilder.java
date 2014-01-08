@@ -19,8 +19,6 @@ package org.friendularity.spec.connection;
 import org.appdapter.bind.rdf.jena.assembly.CachingComponentAssembler;
 import org.appdapter.core.item.Item;
 import org.appdapter.core.name.Ident;
-import org.robokind.impl.messaging.JMSAvroMessageSender;
-
 
 import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.assembler.Mode;

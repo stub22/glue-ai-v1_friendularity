@@ -25,6 +25,10 @@ import javax.jms.Connection;
 import javax.jms.JMSException;
 import javax.swing.JOptionPane;
 import org.jflux.api.core.Source;
+import org.jflux.impl.messaging.rk.lifecycle.JMSAvroAsyncReceiverLifecycle;
+import org.jflux.impl.messaging.rk.lifecycle.JMSAvroMessageSenderLifecycle;
+import org.jflux.impl.messaging.rk.utils.ConnectionManager;
+import org.jflux.impl.messaging.rk.utils.ConnectionUtils;
 import org.osgi.framework.BundleContext;
 import org.robokind.api.animation.Animation;
 import org.robokind.api.animation.lifecycle.AnimationPlayerClientLifecycle;
@@ -40,10 +44,6 @@ import org.robokind.impl.animation.messaging.AnimationRecord;
 import org.robokind.impl.animation.messaging.AnimationSignallingRecord;
 import org.robokind.impl.animation.messaging.PortableAnimationEvent;
 import org.robokind.impl.animation.messaging.PortableAnimationSignal;
-import org.robokind.impl.messaging.lifecycle.JMSAvroAsyncReceiverLifecycle;
-import org.robokind.impl.messaging.lifecycle.JMSAvroMessageSenderLifecycle;
-import org.robokind.impl.messaging.utils.ConnectionManager;
-import org.robokind.impl.messaging.utils.ConnectionUtils;
 
 /**
  *

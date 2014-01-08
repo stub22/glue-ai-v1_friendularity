@@ -7,8 +7,6 @@ import org.appdapter.core.name.Ident;
 import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.assembler.Mode;
 
-import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
-import com.hp.hpl.jena.rdf.model.Resource;
 import org.appdapter.bind.rdf.jena.assembly.ItemAssemblyReader;
 
 /**

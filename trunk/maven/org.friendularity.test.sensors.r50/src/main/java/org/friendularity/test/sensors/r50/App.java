@@ -102,6 +102,7 @@ public class App {
     }
     
     private static class TestGpioListener implements Listener<DeviceBoolEvent> {
+        @Override
         public void handleEvent(DeviceBoolEvent t) {
             System.out.println(t.getChannelId() + ": " +
                     (t.getBoolValue() ? "on" : "off"));
@@ -110,6 +111,7 @@ public class App {
     
     private static class TestAccelListener
         implements Listener<FilteredVector3Event> {
+        @Override
         public void handleEvent(FilteredVector3Event t) {
             Vector3Event v = t.getFilteredVector();
             Vector3Event r = t.getRawVector();
@@ -122,6 +124,7 @@ public class App {
     
     private static class TestGyroListener
         implements Listener<FilteredVector3Event> {
+        @Override
         public void handleEvent(FilteredVector3Event t) {
             Vector3Event v = t.getFilteredVector();
             Vector3Event r = t.getRawVector();
@@ -134,6 +137,7 @@ public class App {
     
     private static class TestCompassListener
         implements Listener<FilteredVector3Event> {
+        @Override
         public void handleEvent(FilteredVector3Event t) {
             Vector3Event v = t.getFilteredVector();
             Vector3Event r = t.getRawVector();
