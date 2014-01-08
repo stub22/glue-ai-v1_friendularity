@@ -2,18 +2,13 @@ package org.friendularity.spec.connection;
 
 import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.assembler.Mode;
-import java.util.HashMap;
 import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.appdapter.bind.rdf.jena.assembly.CachingComponentAssembler;
 import org.appdapter.bind.rdf.jena.assembly.ItemAssemblyReader;
 import org.appdapter.core.item.Item;
 import org.appdapter.core.name.Ident;
-import org.jflux.api.registry.basic.BasicDescriptor;
-import org.jflux.api.service.ServiceDependency;
 import org.jflux.api.service.binding.ServiceBinding.BindingStrategy;
 
 import com.hp.hpl.jena.rdf.model.Resource;
