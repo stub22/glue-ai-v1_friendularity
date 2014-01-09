@@ -35,6 +35,20 @@ public class Beacon implements Runnable {
     private final static Logger theLogger =
             LoggerFactory.getLogger(Beacon.class);
     
+    private SerialNumberSpec mySerialNumber;
+    
+    public Beacon(SerialNumberSpec serialNumber) {
+        mySerialNumber = serialNumber;
+    }
+    
+    public Beacon() {
+        mySerialNumber = new SerialNumberSpec();
+        mySerialNumber.setSerialNumber("000001");
+        mySerialNumber.setRobotType(RobotType.R25);
+        mySerialNumber.setCharacter(RobotCharacter.ZENO);
+        mySerialNumber.setPhysical(Boolean.TRUE);
+    }
+    
     public static void main(String[] args) {
         Thread thread = new Thread(new Beacon());
         thread.start();
@@ -71,7 +85,9 @@ public class Beacon implements Runnable {
         sb.append("SERVER: Linux,");
         sb.append(System.getProperty("os.version"));
         sb.append(",GLUE-AI\r\n");
-        sb.append("LOCATION: zeno-r25-000002\r\n");
+        sb.append("LOCATION: ");
+        sb.append(mySerialNumber.getBroadcastId());
+        sb.append("\r\n");
         sb.append("NT: upnp:rootdevice\r\n");
         String http = sb.toString();
         
