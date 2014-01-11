@@ -81,6 +81,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import org.friendularity.jvision.broker.ImageStreamBroker;
+import org.friendularity.jvision.engine.JVisionEngine;
 import org.friendularity.jvision.engine.JVisionRDF;
 import org.friendularity.jvision.filters.FilterInfo;
 import static org.friendularity.jvision.gui.JVisionFrame.theLogger;
@@ -93,8 +94,7 @@ public class FilterBox extends JPanel {
 	private JMenuBar		myMenuBar;
     private FilterTree tree;
 	private JPanel listPanel;
-	private final JFileChooser fc = new JFileChooser();
-
+	
 	private CVChainControl selectedCVChainControl = null;
 	
     //Optionally set the look and feel.
@@ -162,7 +162,7 @@ private  void setupMenus(JFrame frame) {
 			@Override	
 			public void actionPerformed(ActionEvent arg0) {
 				theLogger.debug("New");
-				if(!saveViaDirtyBit())return;
+				if(!saveAsViaDirtyBit())return;
 				removeAllCVChains();
 				last_saved_model = JVisionRDF.createDefaultJVisionModel();
 				ImageStreamBroker.getDefaultImageStreamBroker().removeAllOfflineStreams();
@@ -173,7 +173,7 @@ private  void setupMenus(JFrame frame) {
 		menuItem = new JMenuItem("Open...", KeyEvent.VK_O);
 		menuItem.addActionListener(new ActionListener(){
 			@Override	public void actionPerformed(ActionEvent arg0) {
-				if(!saveViaDirtyBit())return;
+				if(!saveAsViaDirtyBit())return;
 				
 				// offer the open dialog
 				final JFileChooser fc = new JFileChooser();
@@ -182,7 +182,7 @@ private  void setupMenus(JFrame frame) {
 					fc.setCurrentDirectory(last_saved_name);
 					fc.setSelectedFile(last_saved_name);
 				} else {
-					fc.setCurrentDirectory(new File(System.getProperty("user.home")));
+					fc.setCurrentDirectory(new File(System.getProperty("user.dir")));
 				}
 				if(fc.showOpenDialog(FilterBox.this) == JFileChooser.APPROVE_OPTION) {
 					last_saved_name = fc.getSelectedFile();
@@ -211,9 +211,26 @@ private  void setupMenus(JFrame frame) {
 		menuItem.addActionListener(new ActionListener(){
 			@Override	
 			public void actionPerformed(ActionEvent arg0) {
-				theLogger.debug("Save");
-				// TBD someday dirty bit
-				// http://jena.cvs.sourceforge.net/viewvc/jena/jena/src/com/hp/hpl/mesa/rdf/jena/common/ModelMatcher.java?view=markup
+				if(last_saved_name == null) {
+					saveAs();
+				} else {
+					String path = "";
+					try {
+						path = FilterBox.this.last_saved_name.getCanonicalPath();
+						FileWriter fw = new FileWriter(FilterBox.this.last_saved_name);
+						Model M = getRDFModel();
+						M.write(fw,
+								"TURTLE",
+								JVisionRDF.CV_PREFIX);
+
+						last_saved_model = M;
+						fw.close();
+					} catch (IOException ex) {
+						Logger.getLogger(FilterBox.class.getName()).log(Level.SEVERE, 
+								"Can't save in " + path);
+					}
+
+				}
 			}
 		});
 		menu.add(menuItem);
@@ -222,7 +239,17 @@ private  void setupMenus(JFrame frame) {
 		menuItem.addActionListener(new ActionListener(){
 			@Override	
 			public void actionPerformed(ActionEvent arg0) {
-				theLogger.debug("Someday Save As...");
+				saveAs();
+			}
+		});
+		menu.add(menuItem);
+		
+		menuItem = new JMenuItem("Quit...", KeyEvent.VK_Q);
+		menuItem.addActionListener(new ActionListener(){
+			@Override	
+			public void actionPerformed(ActionEvent arg0) {
+				saveAsViaDirtyBit();
+				JVisionEngine.getDefaultJVisionEngine().requestQuit();
 			}
 		});
 		menu.add(menuItem);
@@ -401,8 +428,8 @@ private  void setupMenus(JFrame frame) {
 	 * 
 	 * @return true if we should continue
 	 */
-	private boolean saveViaDirtyBit() {
-		Model M = FilterBox.this.getRDFModel();
+	private boolean saveAsViaDirtyBit() {
+		Model M = getRDFModel();
 		
 		// TBD does this work if you change the file name?
 		// deskcheck through the various UI actions
@@ -426,41 +453,7 @@ private  void setupMenus(JFrame frame) {
 					options[2]);
 			if(response == 2)return false; // we cancelled
 			if(response == 0) {
-				final JFileChooser fc = new JFileChooser();
-				fc.setDialogType(JFileChooser.SAVE_DIALOG);
-				fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-				fc.setFileFilter(new FileNameExtensionFilter("flo files", "flo", "ttl"));
-
-				if (FilterBox.this.last_saved_name != null) {
-					fc.setCurrentDirectory(FilterBox.this.last_saved_name);
-					fc.setSelectedFile(last_saved_name);
-				} else {
-					fc.setSelectedFile(new File("*.flo"));
-					fc.setCurrentDirectory(new File(System.getProperty("user.home")));
-				}
-
-				if(fc.showSaveDialog(FilterBox.this) == JFileChooser.APPROVE_OPTION) {
-					FilterBox.this.last_saved_name = fc.getSelectedFile();
-					String path = "";
-					try {
-						path = FilterBox.this.last_saved_name.getCanonicalPath();
-						FileWriter fw = new FileWriter(FilterBox.this.last_saved_name);
-						M.write(fw,
-								"TURTLE",
-								JVisionRDF.CV_PREFIX);
-						
-						last_saved_model = M;
-						fw.close();
-					} catch (IOException ex) {
-						Logger.getLogger(FilterBox.class.getName()).log(Level.SEVERE, 
-								"Can't save in " + path);
-						return false;
-					}
-
-					return true;
-				} else {
-					return false;
-				}
+				return saveAs();
 			}  // if save button chosen
 		}  // if we were dirty
 		
@@ -490,6 +483,46 @@ private  void setupMenus(JFrame frame) {
 		}
 		
 		return M;
+	}
+
+	private boolean saveAs() {
+		Model M = getRDFModel();
+		
+		final JFileChooser fc = new JFileChooser();
+		fc.setDialogType(JFileChooser.SAVE_DIALOG);
+		fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		fc.setFileFilter(new FileNameExtensionFilter("flo files", "flo", "ttl"));
+
+		if (FilterBox.this.last_saved_name != null) {
+			fc.setCurrentDirectory(FilterBox.this.last_saved_name);
+			fc.setSelectedFile(last_saved_name);
+		} else {
+			fc.setSelectedFile(new File("*.flo"));
+			fc.setCurrentDirectory(new File(System.getProperty("user.dir")));
+		}
+
+		if(fc.showSaveDialog(FilterBox.this) == JFileChooser.APPROVE_OPTION) {
+			FilterBox.this.last_saved_name = fc.getSelectedFile();
+			String path = "";
+			try {
+				path = FilterBox.this.last_saved_name.getCanonicalPath();
+				FileWriter fw = new FileWriter(FilterBox.this.last_saved_name);
+				M.write(fw,
+						"TURTLE",
+						JVisionRDF.CV_PREFIX);
+
+				last_saved_model = M;
+				fw.close();
+			} catch (IOException ex) {
+				Logger.getLogger(FilterBox.class.getName()).log(Level.SEVERE, 
+						"Can't save in " + path);
+				return false;
+			}
+
+			return true;
+		} else {
+			return false;
+		}
 	}
 }
 
