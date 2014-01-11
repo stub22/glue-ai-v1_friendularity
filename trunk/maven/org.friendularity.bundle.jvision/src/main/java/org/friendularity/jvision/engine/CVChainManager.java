@@ -83,7 +83,7 @@ public class CVChainManager {
 	public void remove(FilterBox fb, CVChainControl cvcc) {
 		fb.removeChainControl(cvcc);
 		CVChain cvc = cvChains.get(cvcc.getName());
-		cvc.sourceIsEnding();
+		cvc.unwire();
 		cvChains.remove(cvcc.getName());
 	}
 	

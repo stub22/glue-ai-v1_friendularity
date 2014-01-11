@@ -187,8 +187,17 @@ public class ImageStreamBroker {
 		isp.addConsumer(isc);
 	}
 
+	/**
+	 * Caution, the caller should always be ready for the iterator to 
+	 * throw an exception if the imageStream list is modified while this is being used.
+	 * 
+	 * @return 
+	 */
 	public Iterator<String> imageStreamNames() {
-		return imageStreams.keySet().iterator();
+		synchronized(imageStreams)
+		{
+			return imageStreams.keySet().iterator();
+		}
 	}
 
 	/**
@@ -200,12 +209,14 @@ public class ImageStreamBroker {
 		String asPrefix = text + ".";
 		
 		if(text.trim().length() < 1)return false;
-		
-		for(Iterator<String>names = imageStreamNames() ; names.hasNext() ; ) {
-			String s = names.next();
-			
-			if(s.startsWith(asPrefix))return false;
-			if(s.equals(text)) return false;
+		synchronized(imageStreams)
+		{
+			for(Iterator<String>names = imageStreamNames() ; names.hasNext() ; ) {
+				String s = names.next();
+
+				if(s.startsWith(asPrefix))return false;
+				if(s.equals(text)) return false;
+			}
 		}
 		
 		return true;
@@ -216,8 +227,29 @@ public class ImageStreamBroker {
 	 * @param aThis 
 	 */
 	public void removeImageStreamConsumerAllStreams(ImageStreamConsumer isc) {
-		for(Iterator<ImageStreamProducer>is = imageStreams.values().iterator() ; is.hasNext() ; ) {
-			is.next().removeConsumer(isc);
+		synchronized(imageStreams)
+		{
+			for(Iterator<ImageStreamProducer>is = imageStreams.values().iterator() ; is.hasNext() ; ) {
+				is.next().removeConsumer(isc);
+			}
+		}
+	}
+
+	/**
+	 * Purge every stream that is currently OffAir from the list.
+	 * 
+	 * this is a rather extreme measure. Only call if you 
+	 */
+	public void removeAllOfflineStreams() {
+		synchronized(imageStreams)
+		{
+			for(Iterator<ImageStreamProducer>is = imageStreams.values().iterator() ; is.hasNext() ; ) {
+				ImageStreamProducer isp = is.next();
+				if(isp instanceof OffAirImageStreamProducer) {
+					isp.removeAllConsumers();
+					is.remove();
+				}
+			}
 		}
 	}
 }

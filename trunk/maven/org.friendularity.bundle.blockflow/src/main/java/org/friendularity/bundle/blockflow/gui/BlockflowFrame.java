@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
  */
 
 public class BlockflowFrame extends JFrame implements WindowListener {
-	static Logger theLogger = LoggerFactory.getLogger(org.friendularity.jvision.gui.DemoFrame.class);
+	static Logger theLogger = LoggerFactory.getLogger(org.friendularity.jvision.gui.JVisionFrame.class);
 
 	private static final long serialVersionUID = -242343530233038194L;
 
