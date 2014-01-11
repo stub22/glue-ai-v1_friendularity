@@ -264,4 +264,8 @@ public class JVisionEngine extends BasicDebugger implements Runnable {
 		image.convertTo(someimage, 0, 0.5);
 		Highgui.imwrite(FileLocations.imageBase() + "outduck.png", someimage);
 	}
+
+	public void requestQuit() {
+		myQuitter.setWantsToQuit(true);
+	}
 }
