@@ -13,29 +13,25 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.friendularity.jvision.filters;
+package org.friendularity.jvision.engine;
+
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
 
 /**
  *
  * @author Annie
  */
-public abstract class FilterInfo {
-	protected String filterName;
+public class JVisionRDF {
+	public static final String CV_PREFIX = "http://www.friendularity.org/cv#";
+	public static final String FLO_PREFIX = "http://www.friendularity.org/ontology/flo#";
+	public static final String RDF_PREFIX = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
 
-	/**
-	 * 
-	 * @return the common name of the filter
-	 */
-	public String toString() {
-		return filterName;
+	public static Model createDefaultJVisionModel() {
+		Model M = ModelFactory.createDefaultModel();
+		M.setNsPrefix("flo", JVisionRDF.FLO_PREFIX);
+		M.setNsPrefix("cv", JVisionRDF.CV_PREFIX);
+		M.setNsPrefix("rdf", JVisionRDF.RDF_PREFIX);
+		return M;
 	}
-
-	/**
-	 * return a new instance of the filter
-	 * Note that it might be shared if the filter is
-	 * stateless
-	 * 
-	 * @return the new filter
-	 */
-	public abstract BaseFilter createInstance();
-    }
+}

@@ -15,6 +15,15 @@
  */
 package org.friendularity.jvision.engine;
 
+import org.friendularity.jvision.filters.FilterInfoManager;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.Property;
+import com.hp.hpl.jena.rdf.model.ResIterator;
+import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.rdf.model.Statement;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ListModel;
@@ -23,7 +32,10 @@ import org.friendularity.jvision.broker.ImageStreamBroker;
 import org.friendularity.jvision.broker.ImageStreamConsumer;
 import org.friendularity.jvision.broker.ImageStreamImage;
 import org.friendularity.jvision.broker.SimpleImageStreamProducer;
+import org.friendularity.jvision.filters.FilterInfo;
 import org.friendularity.jvision.filters.FilterSequence;
+import org.friendularity.jvision.gui.CVChainControl;
+import org.friendularity.jvision.gui.FilterBox;
 import org.opencv.core.Mat;
 
 /**
@@ -60,6 +72,43 @@ public class CVChain implements ImageStreamConsumer {
 		filters = new FilterSequence();
 
 		init();
+	}
+
+	public CVChain(Model M, Resource cvchain) {
+		Statement s = M.getProperty(cvchain, M.createProperty(JVisionRDF.RDF_PREFIX + "label"));
+		
+		this.chainName = s.getObject().asLiteral().getString();
+		s = M.getProperty(cvchain, M.createProperty(JVisionRDF.FLO_PREFIX + "source"));
+		
+		this.source = s.getObject().asLiteral().getString();
+		filters = new FilterSequence();
+		
+		this.intermediatesVisible = false;
+				
+		init();
+		
+		TreeMap<Integer, FilterInfo>filtersToAdd = new TreeMap<Integer, FilterInfo>();
+		
+		Property p = M.createProperty(JVisionRDF.RDF_PREFIX + "type");
+		Resource o = M.createResource(JVisionRDF.FLO_PREFIX + "FilterInstance");
+		for(ResIterator i = M.listResourcesWithProperty(p, o);
+				i.hasNext(); ) {
+			Resource filterInstance = i.next();
+			
+			FilterInfo ff;
+			String type = filterInstance.getProperty(M.createProperty(JVisionRDF.FLO_PREFIX + "filterType")).getObject().asLiteral().getString();
+			int index = filterInstance.getProperty(M.createProperty(JVisionRDF.FLO_PREFIX + "index")).getObject().asLiteral().getInt();
+			Resource itsChain = filterInstance.getProperty(M.createProperty(JVisionRDF.FLO_PREFIX + "inChain")).getObject().asResource();
+			if(itsChain.equals(cvchain))
+				filtersToAdd.put(index, FilterInfoManager.getFilterInfo(type));
+		}
+		
+		// TreeMaps keyset iterator guarantess ascending order
+		for(Iterator<Integer>i = filtersToAdd.keySet().iterator() ; i.hasNext() ; ) {
+			Integer ii = i.next();
+			
+			filters.add(filtersToAdd.get(ii).createInstance());
+		}
 	}
 	
 	/**
@@ -113,6 +162,11 @@ public class CVChain implements ImageStreamConsumer {
 		return filters;
 	}
 
+	public void unwire() {
+		ImageStreamBroker.getDefaultImageStreamBroker().removeImageStreamConsumerAllStreams(this);
+		ImageStreamBroker.getDefaultImageStreamBroker().removeImageStreamProducer(outputProducer.getSourceName());
+	}
+	
 	// =============== ImageStreamConsumer ==========================
 	@Override
 	public void setConsumedImage(ImageStreamImage in) {
@@ -132,9 +186,7 @@ public class CVChain implements ImageStreamConsumer {
 
 	@Override
 	public void sourceIsEnding() {
-		outputProducer.sourceIsEnding();
-		ImageStreamBroker.getDefaultImageStreamBroker().removeImageStreamConsumerAllStreams(this);
-		ImageStreamBroker.getDefaultImageStreamBroker().removeImageStreamProducer(outputProducer.getSourceName());
+
 	}
 
 }

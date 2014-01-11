@@ -15,6 +15,13 @@
  */
 package org.friendularity.jvision.gui;
 
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.NodeFactory;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.Property;
+import com.hp.hpl.jena.rdf.model.RDFNode;
+import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.rdf.model.Statement;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
@@ -31,8 +38,11 @@ import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import org.friendularity.jvision.broker.ImageStreamBroker;
 import org.friendularity.jvision.engine.CVChain;
 import org.friendularity.jvision.engine.CVChainManager;
+import org.friendularity.jvision.engine.JVisionRDF;
+import org.friendularity.jvision.filters.BaseFilter;
 import org.friendularity.jvision.filters.FilterSequence;
 
 /**
@@ -41,14 +51,20 @@ import org.friendularity.jvision.filters.FilterSequence;
  * @author Annie
  */
 public class CVChainControl extends JPanel {
-	protected CVChain chain;
+	private CVChain chain;
 	
-	protected JLabel nameField;
-	protected JCheckBox publishIntermediatesCheck;
-	protected FilterList filters;
-	protected JLabel sourceField;
-	protected JLabel outField;
-	protected FilterBox myFilterBox;
+	private JLabel nameField;
+	private JCheckBox publishIntermediatesCheck;
+	private FilterList filters;
+	private JLabel sourceField;
+	private JLabel outField;
+	private FilterBox myFilterBox;
+
+	CVChainControl(FilterBox fb, Model M, Resource cvchain) {		
+		CVChain chain = new CVChain(M, cvchain);
+		
+		init(chain, fb);
+	}
 	
 	private Border borderFactory() {
 		return BorderFactory.createCompoundBorder(
@@ -61,6 +77,10 @@ public class CVChainControl extends JPanel {
 	}
 	
 	public CVChainControl(CVChain chain, FilterBox aFilterBox) {
+		init(chain, aFilterBox);
+	}
+	
+	private void init(CVChain chain, FilterBox aFilterBox) {
 		this.chain = chain;
 		this.myFilterBox = aFilterBox;
 		
@@ -168,6 +188,31 @@ public class CVChainControl extends JPanel {
 		int i = filters.getSelectedIndex();
 		if(i >= 0) {
 			((FilterSequence)(filters.getModel())).remove(i);
+		}
+	}
+
+	void addSelfToModel(Model M) {
+		Resource cv = M.createResource(JVisionRDF.CV_PREFIX + "cvchain" + chain.getName());
+		M.add(M.createStatement(cv, M.createProperty(JVisionRDF.RDF_PREFIX + "type") , 
+				M.createResource(JVisionRDF.FLO_PREFIX + "CVChain")));
+		M.add(M.createStatement(cv, M.createProperty(JVisionRDF.RDF_PREFIX + "label"), M.createLiteral(chain.getName())));
+		M.add(M.createStatement(cv, M.createProperty(JVisionRDF.FLO_PREFIX + "source"), M.createLiteral(chain.getSource())));
+		M.add(M.createStatement(cv, M.createProperty(JVisionRDF.FLO_PREFIX + "intermediatesVisible"), 
+				M.createLiteral(Boolean.FALSE.toString())));
+		
+		FilterSequence fs = (FilterSequence)(chain.getFilterSequence());
+		
+		for(int i = 0 ; i < fs.getSize() ; i++) {
+			String f = fs.getElementAt(i).toString();
+			Resource frsrc = M.createResource(JVisionRDF.CV_PREFIX + "filter/" + chain.getName() + "/" + Integer.toString(i));
+			M.add(M.createStatement(frsrc, 
+					M.createProperty(JVisionRDF.RDF_PREFIX + "type"), 
+					M.createResource(JVisionRDF.FLO_PREFIX + "FilterInstance")));
+			M.add(M.createStatement(frsrc, M.createProperty(JVisionRDF.FLO_PREFIX + "inChain"), cv)); // filterType  index inChain
+			M.add(M.createStatement(frsrc, M.createProperty(JVisionRDF.FLO_PREFIX + "index"), 
+					M.createLiteral(Integer.toString(i))));
+			M.add(M.createStatement(frsrc, M.createProperty(JVisionRDF.FLO_PREFIX + "filterType"), 
+					M.createLiteral(f.toString())));
 		}
 	}
 }

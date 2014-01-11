@@ -13,7 +13,7 @@ public class JVisionLauncher extends BasicDebugger implements Quitter {
 
 	private JVisionEngine	myEngine;
 	private	Thread			myCamProcThread;
-	private DemoFrame		myDemoFrame;
+	private JVisionFrame		myDemoFrame;
 	
 	private Boolean			myFlag_QuittingNow  = Boolean.FALSE;	
 	private	boolean			myFlag_StopOSGiAfterQuit = false;
@@ -27,7 +27,7 @@ public class JVisionLauncher extends BasicDebugger implements Quitter {
 	}
 	public JVisionLauncher(boolean flag_stopOSGiAfterQuit) {
 		myEngine = JVisionEngine.getDefaultJVisionEngine();
-		myDemoFrame = new DemoFrame();
+		myDemoFrame = new JVisionFrame();
 		myDemoFrame.setQuitter(this);
 		myFlag_StopOSGiAfterQuit = flag_stopOSGiAfterQuit;
 	}

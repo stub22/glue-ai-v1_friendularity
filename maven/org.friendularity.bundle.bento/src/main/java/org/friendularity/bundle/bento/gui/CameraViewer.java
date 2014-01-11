@@ -15,14 +15,11 @@
  */
 package org.friendularity.bundle.bento.gui;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Rectangle;
-import java.awt.Stroke;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -33,7 +30,6 @@ import org.friendularity.jvision.broker.ImageStreamBroker;
 
 import org.friendularity.jvision.broker.ImageStreamConsumer;
 import org.friendularity.jvision.broker.ImageStreamImage;
-import org.friendularity.jvision.engine.JVisionEngine;
 
 /**
  *

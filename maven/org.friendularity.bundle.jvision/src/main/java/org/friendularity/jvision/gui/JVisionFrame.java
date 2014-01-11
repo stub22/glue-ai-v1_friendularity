@@ -31,8 +31,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-public class DemoFrame extends JFrame implements WindowListener, ImageStreamConsumer {
-	static Logger theLogger = LoggerFactory.getLogger(DemoFrame.class);
+public class JVisionFrame extends JFrame implements WindowListener, ImageStreamConsumer {
+	static Logger theLogger = LoggerFactory.getLogger(JVisionFrame.class);
 	/**
 	 * 
 	 */
@@ -47,7 +47,7 @@ public class DemoFrame extends JFrame implements WindowListener, ImageStreamCons
 	private JLabel			myLabel_Framerate = new JLabel();
 	private JMenuBar		myMenuBar;
 	
-	public DemoFrame()
+	public JVisionFrame()
 	{
 		this.setSize(640, 640);
 		this.setTitle("JVision Bundle - OpenCV java demo");
@@ -96,7 +96,7 @@ public class DemoFrame extends JFrame implements WindowListener, ImageStreamCons
 		try {
 			myImageOutIcon.setImage(img.getBufferedImage());
 		} catch (ImageFlavorNotAvailable ex) {
-			java.util.logging.Logger.getLogger(DemoFrame.class.getName()).log(Level.SEVERE, "Demoframe cant convert image");
+			java.util.logging.Logger.getLogger(JVisionFrame.class.getName()).log(Level.SEVERE, "Demoframe cant convert image");
 		}
 		this.repaint();
 	}
@@ -107,10 +107,10 @@ public class DemoFrame extends JFrame implements WindowListener, ImageStreamCons
 	
 	// ========================  Window Listeners  ========================
 	@Override public void windowActivated(WindowEvent arg0) {
-		// TODO Auto-generated method stub
+		
 	}
 	@Override public void windowClosed(WindowEvent arg0) {
-		// TODO Auto-generated method stub
+		
 	}
 	@Override public void windowClosing(WindowEvent arg0) {
 		theLogger.debug("Caught windowClosing() event");
@@ -121,23 +121,22 @@ public class DemoFrame extends JFrame implements WindowListener, ImageStreamCons
 	}
 	
 	@Override public void windowDeactivated(WindowEvent arg0) {
-		// TODO Auto-generated method stub
+		
 	}
 	@Override public void windowDeiconified(WindowEvent arg0) {
-		// TODO Auto-generated method stub
+		
 	}
 	@Override	public void windowIconified(WindowEvent arg0) {
-		// TODO Auto-generated method stub
+		
 	}
 	@Override public void windowOpened(WindowEvent arg0) {
-		// TODO Auto-generated method stub
+		
 	}
 	
 	private  void setupMenus() {
 		// ================ setup menus =================
 		JMenu menu;
 		JMenuItem menuItem;
-		JCheckBoxMenuItem cbMenuItem;
 		
 		myMenuBar = new JMenuBar();
 
@@ -157,16 +156,6 @@ public class DemoFrame extends JFrame implements WindowListener, ImageStreamCons
 				}
 				setVisible(false);
 				dispose();
-			}
-		});
-		menu.add(menuItem);
-
-		menuItem = new JMenuItem("Test Filters", KeyEvent.VK_T);
-		menuItem.addActionListener(new ActionListener(){
-			@Override	public void actionPerformed(ActionEvent arg0) {
-				theLogger.debug("Handling test action");
-				mytestfilters.addOrReplaceByClass(new Blur());
-				mytestfilters.addOrReplaceByClass(new ProfileDetector());
 			}
 		});
 		menu.add(menuItem);
@@ -200,10 +189,10 @@ public class DemoFrame extends JFrame implements WindowListener, ImageStreamCons
 			@Override	public void actionPerformed(ActionEvent e) {
 				theLogger.debug("Change to camera 0");
 				JVisionEngine.getDefaultJVisionEngine().changeCamera(0);
-				((JCheckBoxMenuItem)(DemoFrame.this.myMenuBar.getMenu(2).getMenuComponent(0))).setSelected(true);
-				((JCheckBoxMenuItem)(DemoFrame.this.myMenuBar.getMenu(2).getMenuComponent(1))).setSelected(false);
-				((JCheckBoxMenuItem)(DemoFrame.this.myMenuBar.getMenu(2).getMenuComponent(2))).setSelected(false);
-				((JCheckBoxMenuItem)(DemoFrame.this.myMenuBar.getMenu(2).getMenuComponent(3))).setSelected(false);
+				((JCheckBoxMenuItem)(JVisionFrame.this.myMenuBar.getMenu(2).getMenuComponent(0))).setSelected(true);
+				((JCheckBoxMenuItem)(JVisionFrame.this.myMenuBar.getMenu(2).getMenuComponent(1))).setSelected(false);
+				((JCheckBoxMenuItem)(JVisionFrame.this.myMenuBar.getMenu(2).getMenuComponent(2))).setSelected(false);
+				((JCheckBoxMenuItem)(JVisionFrame.this.myMenuBar.getMenu(2).getMenuComponent(3))).setSelected(false);
 				
 			}
 		});
@@ -216,10 +205,10 @@ public class DemoFrame extends JFrame implements WindowListener, ImageStreamCons
 			@Override	public void actionPerformed(ActionEvent e) {
 				theLogger.debug("Change to camera 1");
 				JVisionEngine.getDefaultJVisionEngine().changeCamera(1);
-				((JCheckBoxMenuItem)(DemoFrame.this.myMenuBar.getMenu(2).getMenuComponent(0))).setSelected(false);
-				((JCheckBoxMenuItem)(DemoFrame.this.myMenuBar.getMenu(2).getMenuComponent(1))).setSelected(true);
-				((JCheckBoxMenuItem)(DemoFrame.this.myMenuBar.getMenu(2).getMenuComponent(2))).setSelected(false);
-				((JCheckBoxMenuItem)(DemoFrame.this.myMenuBar.getMenu(2).getMenuComponent(3))).setSelected(false);
+				((JCheckBoxMenuItem)(JVisionFrame.this.myMenuBar.getMenu(2).getMenuComponent(0))).setSelected(false);
+				((JCheckBoxMenuItem)(JVisionFrame.this.myMenuBar.getMenu(2).getMenuComponent(1))).setSelected(true);
+				((JCheckBoxMenuItem)(JVisionFrame.this.myMenuBar.getMenu(2).getMenuComponent(2))).setSelected(false);
+				((JCheckBoxMenuItem)(JVisionFrame.this.myMenuBar.getMenu(2).getMenuComponent(3))).setSelected(false);
 			}
 		});
 		menu.add(menuItem);
@@ -230,10 +219,10 @@ public class DemoFrame extends JFrame implements WindowListener, ImageStreamCons
 			@Override	public void actionPerformed(ActionEvent e) {
 				theLogger.debug("Change to camera 2");
 				JVisionEngine.getDefaultJVisionEngine().changeCamera(2);
-				((JCheckBoxMenuItem)(DemoFrame.this.myMenuBar.getMenu(2).getMenuComponent(0))).setSelected(false);
-				((JCheckBoxMenuItem)(DemoFrame.this.myMenuBar.getMenu(2).getMenuComponent(1))).setSelected(false);
-				((JCheckBoxMenuItem)(DemoFrame.this.myMenuBar.getMenu(2).getMenuComponent(2))).setSelected(true);
-				((JCheckBoxMenuItem)(DemoFrame.this.myMenuBar.getMenu(2).getMenuComponent(3))).setSelected(false);
+				((JCheckBoxMenuItem)(JVisionFrame.this.myMenuBar.getMenu(2).getMenuComponent(0))).setSelected(false);
+				((JCheckBoxMenuItem)(JVisionFrame.this.myMenuBar.getMenu(2).getMenuComponent(1))).setSelected(false);
+				((JCheckBoxMenuItem)(JVisionFrame.this.myMenuBar.getMenu(2).getMenuComponent(2))).setSelected(true);
+				((JCheckBoxMenuItem)(JVisionFrame.this.myMenuBar.getMenu(2).getMenuComponent(3))).setSelected(false);
 			}
 		});
 		menu.add(menuItem);
@@ -244,10 +233,10 @@ public class DemoFrame extends JFrame implements WindowListener, ImageStreamCons
 			@Override	public void actionPerformed(ActionEvent e) {
 				theLogger.debug("Change to camera 3");
 				JVisionEngine.getDefaultJVisionEngine().changeCamera(3);
-				((JCheckBoxMenuItem)(DemoFrame.this.myMenuBar.getMenu(2).getMenuComponent(0))).setSelected(false);
-				((JCheckBoxMenuItem)(DemoFrame.this.myMenuBar.getMenu(2).getMenuComponent(1))).setSelected(false);
-				((JCheckBoxMenuItem)(DemoFrame.this.myMenuBar.getMenu(2).getMenuComponent(2))).setSelected(false);
-				((JCheckBoxMenuItem)(DemoFrame.this.myMenuBar.getMenu(2).getMenuComponent(3))).setSelected(true);
+				((JCheckBoxMenuItem)(JVisionFrame.this.myMenuBar.getMenu(2).getMenuComponent(0))).setSelected(false);
+				((JCheckBoxMenuItem)(JVisionFrame.this.myMenuBar.getMenu(2).getMenuComponent(1))).setSelected(false);
+				((JCheckBoxMenuItem)(JVisionFrame.this.myMenuBar.getMenu(2).getMenuComponent(2))).setSelected(false);
+				((JCheckBoxMenuItem)(JVisionFrame.this.myMenuBar.getMenu(2).getMenuComponent(3))).setSelected(true);
 			}
 		});
 		menu.add(menuItem);		

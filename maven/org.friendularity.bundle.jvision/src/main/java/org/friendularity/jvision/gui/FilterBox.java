@@ -45,6 +45,12 @@
 package org.friendularity.jvision.gui;
 
 
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.Property;
+import com.hp.hpl.jena.rdf.model.RDFNode;
+import com.hp.hpl.jena.rdf.model.ResIterator;
+import com.hp.hpl.jena.rdf.model.Resource;
 import org.friendularity.jvision.engine.CVChainManager;
 import java.awt.Component;
 import javax.swing.JFrame;
@@ -59,12 +65,25 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.FileFilter;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.BoxLayout;
+import javax.swing.JFileChooser;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import org.friendularity.jvision.broker.ImageStreamBroker;
+import org.friendularity.jvision.engine.JVisionRDF;
 import org.friendularity.jvision.filters.FilterInfo;
-import static org.friendularity.jvision.gui.DemoFrame.theLogger;
+import static org.friendularity.jvision.gui.JVisionFrame.theLogger;
 
 /**
  *
@@ -72,15 +91,18 @@ import static org.friendularity.jvision.gui.DemoFrame.theLogger;
  */
 public class FilterBox extends JPanel {
 	private JMenuBar		myMenuBar;
-	
     private FilterTree tree;
 	private JPanel listPanel;
-
+	private final JFileChooser fc = new JFileChooser();
 
 	private CVChainControl selectedCVChainControl = null;
 	
     //Optionally set the look and feel.
     private static boolean useSystemLookAndFeel = false;
+	// Instead of a dirty bit we just hang on to the old model
+	private Model last_saved_model = JVisionRDF.createDefaultJVisionModel();
+	// the file we saved it under
+	private File last_saved_name = null;
 
     public FilterBox() {
         super(new GridLayout(1,0));
@@ -112,6 +134,17 @@ public class FilterBox extends JPanel {
         //Add the split pane to this panel.
         add(splitPane);
     }
+	
+private void removeAllCVChains() {
+		for(int i = 0 ; i < listPanel.getComponentCount() ; ) {
+			if(listPanel.getComponent(i) instanceof CVChainControl) {
+				CVChainControl cvcc = (CVChainControl)(listPanel.getComponent(i));
+				CVChainManager.getDefaultManager().remove(this, cvcc);
+				listPanel.remove(cvcc);
+			}
+		}
+	}
+			
 private  void setupMenus(JFrame frame) {
 		
 		JMenu menu;
@@ -128,7 +161,11 @@ private  void setupMenus(JFrame frame) {
 		menuItem.addActionListener(new ActionListener(){
 			@Override	
 			public void actionPerformed(ActionEvent arg0) {
-				theLogger.debug("Someday New");
+				theLogger.debug("New");
+				if(!saveViaDirtyBit())return;
+				removeAllCVChains();
+				last_saved_model = JVisionRDF.createDefaultJVisionModel();
+				ImageStreamBroker.getDefaultImageStreamBroker().removeAllOfflineStreams();
 			}
 		});
 		menu.add(menuItem);
@@ -136,16 +173,47 @@ private  void setupMenus(JFrame frame) {
 		menuItem = new JMenuItem("Open...", KeyEvent.VK_O);
 		menuItem.addActionListener(new ActionListener(){
 			@Override	public void actionPerformed(ActionEvent arg0) {
-				theLogger.debug("someday Open");
+				if(!saveViaDirtyBit())return;
+				
+				// offer the open dialog
+				final JFileChooser fc = new JFileChooser();
+				fc.setDialogType(JFileChooser.OPEN_DIALOG);
+				if(last_saved_name != null) {
+					fc.setCurrentDirectory(last_saved_name);
+					fc.setSelectedFile(last_saved_name);
+				} else {
+					fc.setCurrentDirectory(new File(System.getProperty("user.home")));
+				}
+				if(fc.showOpenDialog(FilterBox.this) == JFileChooser.APPROVE_OPTION) {
+					last_saved_name = fc.getSelectedFile();
+					removeAllCVChains();
+
+					String path = "";
+					try {
+						path = last_saved_name.getCanonicalPath();
+						FileInputStream fis = new FileInputStream(FilterBox.this.last_saved_name);
+						Model M = JVisionRDF.createDefaultJVisionModel();
+						M.read(fis, JVisionRDF.CV_PREFIX, "TURTLE");
+						fis.close();
+						last_saved_model = M;
+						createUIFromModel(M);
+						ImageStreamBroker.getDefaultImageStreamBroker().removeAllOfflineStreams();
+					} catch (IOException ex) {
+						Logger.getLogger(FilterBox.class.getName()).log(Level.SEVERE, 
+								"Can't open " + path);
+					}
+				}
 			}
 		});
 		menu.add(menuItem);
 		
-				menuItem = new JMenuItem("Save", KeyEvent.VK_S);
+		menuItem = new JMenuItem("Save", KeyEvent.VK_S);
 		menuItem.addActionListener(new ActionListener(){
 			@Override	
 			public void actionPerformed(ActionEvent arg0) {
-				theLogger.debug("Someday Save");
+				theLogger.debug("Save");
+				// TBD someday dirty bit
+				// http://jena.cvs.sourceforge.net/viewvc/jena/jena/src/com/hp/hpl/mesa/rdf/jena/common/ModelMatcher.java?view=markup
 			}
 		});
 		menu.add(menuItem);
@@ -324,6 +392,104 @@ private  void setupMenus(JFrame frame) {
 		
 		this.revalidate();
 		this.repaint();
+	}
+
+	/**
+	 * save off a dirty model before continuing
+	 * 
+	 * @TBD show save/don't save/cancel dialog
+	 * 
+	 * @return true if we should continue
+	 */
+	private boolean saveViaDirtyBit() {
+		Model M = FilterBox.this.getRDFModel();
+		
+		// TBD does this work if you change the file name?
+		// deskcheck through the various UI actions
+		if(FilterBox.this.last_saved_model == null || 
+				!last_saved_model.isIsomorphicWith(M)) {
+			Object[] options = {
+				"Save", "Don't Save", "Cancel"
+			};
+			
+			String filename = "Untitled";
+			if(this.last_saved_name != null)
+				filename = last_saved_name.getName();
+			
+			int response = JOptionPane.showOptionDialog(this, 
+					"Do you want to save changes to " + filename, 
+					"FilterBox", 
+					JOptionPane.YES_NO_CANCEL_OPTION,
+					JOptionPane.PLAIN_MESSAGE,
+					null,   // icon
+					options,
+					options[2]);
+			if(response == 2)return false; // we cancelled
+			if(response == 0) {
+				final JFileChooser fc = new JFileChooser();
+				fc.setDialogType(JFileChooser.SAVE_DIALOG);
+				fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+				fc.setFileFilter(new FileNameExtensionFilter("flo files", "flo", "ttl"));
+
+				if (FilterBox.this.last_saved_name != null) {
+					fc.setCurrentDirectory(FilterBox.this.last_saved_name);
+					fc.setSelectedFile(last_saved_name);
+				} else {
+					fc.setSelectedFile(new File("*.flo"));
+					fc.setCurrentDirectory(new File(System.getProperty("user.home")));
+				}
+
+				if(fc.showSaveDialog(FilterBox.this) == JFileChooser.APPROVE_OPTION) {
+					FilterBox.this.last_saved_name = fc.getSelectedFile();
+					String path = "";
+					try {
+						path = FilterBox.this.last_saved_name.getCanonicalPath();
+						FileWriter fw = new FileWriter(FilterBox.this.last_saved_name);
+						M.write(fw,
+								"TURTLE",
+								JVisionRDF.CV_PREFIX);
+						
+						last_saved_model = M;
+						fw.close();
+					} catch (IOException ex) {
+						Logger.getLogger(FilterBox.class.getName()).log(Level.SEVERE, 
+								"Can't save in " + path);
+						return false;
+					}
+
+					return true;
+				} else {
+					return false;
+				}
+			}  // if save button chosen
+		}  // if we were dirty
+		
+		return true;
+	}
+
+	private void createUIFromModel(Model M) {
+		
+		Property p = M.createProperty(JVisionRDF.RDF_PREFIX + "type");
+		Resource o = M.createResource(JVisionRDF.FLO_PREFIX + "CVChain");
+		for(ResIterator i = M.listResourcesWithProperty(p, o);
+				i.hasNext(); ) {
+			Resource cvchain = i.next();
+			listPanel.add(new CVChainControl(this, M, cvchain));
+		}
+		listPanel.revalidate();
+	}
+			
+	private Model getRDFModel() {
+		Model M = JVisionRDF.createDefaultJVisionModel();
+		
+		Component[] cs = listPanel.getComponents();
+		for(int i = 0 ; i < cs.length ; i++) {
+			if(cs[i] instanceof CVChainControl) {
+				((CVChainControl)(cs[i])).addSelfToModel(M);
+			}
+		}
+		
+		return M;
 	}
 }
 

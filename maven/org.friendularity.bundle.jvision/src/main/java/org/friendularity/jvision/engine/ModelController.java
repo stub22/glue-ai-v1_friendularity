@@ -13,29 +13,25 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.friendularity.jvision.filters;
+package org.friendularity.jvision.engine;
+
+import org.friendularity.jvision.gui.FilterBox;
 
 /**
- *
+ * Controller around a Jena model
+ * handles undo and the dirty bit for load/save
+ * 
  * @author Annie
  */
-public abstract class FilterInfo {
-	protected String filterName;
-
-	/**
-	 * 
-	 * @return the common name of the filter
-	 */
-	public String toString() {
-		return filterName;
+public class ModelController {
+	private FilterBox fb;
+	private boolean dirty = false;
+	
+	public ModelController(FilterBox fb) {
+		this.fb = fb;
 	}
-
-	/**
-	 * return a new instance of the filter
-	 * Note that it might be shared if the filter is
-	 * stateless
-	 * 
-	 * @return the new filter
-	 */
-	public abstract BaseFilter createInstance();
-    }
+	
+	public boolean isDirty() {
+		return dirty;
+	}
+}
