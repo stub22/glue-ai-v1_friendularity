@@ -9,7 +9,7 @@ import org.opencv.imgproc.Imgproc;
  */
 public class Dilate implements BaseFilter, ParamChangedListener {
 	private Size kernal_size = new Size(13, 13);
-	private double dilateIterations = 13.0;
+	private int dilateIterations = 13;
 	
 	@Override
 	public void apply(Mat in, Mat out) {
@@ -31,18 +31,18 @@ public class Dilate implements BaseFilter, ParamChangedListener {
 
 	@Override
 	public String serialize() {
-		return Double.toString(dilateIterations);
+		return Integer.toString(dilateIterations);
 	}
 
 	@Override
 	public void deserialize(String str) {
-		dilateIterations = Integer.parseInt(str);
+		dilateIterations = (int)Double.parseDouble(str);
 		kernal_size = new Size(dilateIterations, dilateIterations);
 	}
 
 	@Override
 	public void paramChanged(int index, String param) {
-		dilateIterations = Double.parseDouble(param);
+		dilateIterations = (int)Double.parseDouble(param);
 		kernal_size = new Size(dilateIterations, dilateIterations);		
 	}
 }

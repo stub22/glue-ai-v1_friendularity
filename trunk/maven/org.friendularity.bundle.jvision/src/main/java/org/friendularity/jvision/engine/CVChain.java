@@ -32,6 +32,7 @@ import org.friendularity.jvision.broker.ImageStreamBroker;
 import org.friendularity.jvision.broker.ImageStreamConsumer;
 import org.friendularity.jvision.broker.ImageStreamImage;
 import org.friendularity.jvision.broker.SimpleImageStreamProducer;
+import org.friendularity.jvision.filters.BaseFilter;
 import org.friendularity.jvision.filters.FilterInfo;
 import org.friendularity.jvision.filters.FilterSequence;
 import org.friendularity.jvision.gui.CVChainControl;
@@ -88,6 +89,7 @@ public class CVChain implements ImageStreamConsumer {
 		init();
 		
 		TreeMap<Integer, FilterInfo>filtersToAdd = new TreeMap<Integer, FilterInfo>();
+		TreeMap<Integer, String>filterParms = new TreeMap<Integer, String>();
 		
 		Property p = M.createProperty(JVisionRDF.RDF_PREFIX + "type");
 		Resource o = M.createResource(JVisionRDF.FLO_PREFIX + "FilterInstance");
@@ -99,15 +101,19 @@ public class CVChain implements ImageStreamConsumer {
 			String type = filterInstance.getProperty(M.createProperty(JVisionRDF.FLO_PREFIX + "filterType")).getObject().asLiteral().getString();
 			int index = filterInstance.getProperty(M.createProperty(JVisionRDF.FLO_PREFIX + "index")).getObject().asLiteral().getInt();
 			Resource itsChain = filterInstance.getProperty(M.createProperty(JVisionRDF.FLO_PREFIX + "inChain")).getObject().asResource();
-			if(itsChain.equals(cvchain))
+			if(itsChain.equals(cvchain)) {
 				filtersToAdd.put(index, FilterInfoManager.getFilterInfo(type));
+				String parms = filterInstance.getProperty(M.createProperty(JVisionRDF.FLO_PREFIX + "filterParameters")).getObject().asLiteral().getString();
+				filterParms.put(index, parms);
+			}
 		}
 		
 		// TreeMaps keyset iterator guarantess ascending order
 		for(Iterator<Integer>i = filtersToAdd.keySet().iterator() ; i.hasNext() ; ) {
 			Integer ii = i.next();
-			
-			filters.add(filtersToAdd.get(ii).createInstance());
+			BaseFilter f = filtersToAdd.get(ii).createInstance();
+			f.deserialize(filterParms.get(ii));
+			filters.add(f);
 		}
 	}
 	
