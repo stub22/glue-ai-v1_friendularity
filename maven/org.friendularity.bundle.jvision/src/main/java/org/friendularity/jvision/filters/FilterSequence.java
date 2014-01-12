@@ -139,4 +139,8 @@ public class FilterSequence extends BasicDebugger implements BaseFilter, ListMod
 	public void showParamUIForIndex(int i) {
 		filters.get(i).showParamUI(null);
 	}
+
+	public String serializeIndex(int i) {
+		return filters.get(i).serialize();
+	}
 }

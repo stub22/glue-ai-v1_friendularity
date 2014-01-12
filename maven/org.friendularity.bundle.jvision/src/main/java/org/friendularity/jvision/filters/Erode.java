@@ -9,7 +9,7 @@ import org.opencv.imgproc.Imgproc;
  */
 public class Erode implements BaseFilter, ParamChangedListener {
 	private Size kernal_size = new Size(13, 13);
-	private double dilateIterations = 13.0;
+	private int erodeIterations = 13;
 	
 	@Override
 	public void apply(Mat in, Mat out) {
@@ -26,23 +26,23 @@ public class Erode implements BaseFilter, ParamChangedListener {
 
 	@Override
 	public void showParamUI(JFrame parent) {
-		FilterParams.showParamWidget(this, "erosion iterations,slider,0," + dilateIterations + ",24");
+		FilterParams.showParamWidget(this, "erosion iterations,slider,0," + erodeIterations + ",24");
 	}
 
 	@Override
 	public String serialize() {
-		return Double.toString(dilateIterations);
+		return Integer.toString(erodeIterations);
 	}
 
 	@Override
 	public void deserialize(String str) {
-		dilateIterations = Integer.parseInt(str);
-		kernal_size = new Size(dilateIterations, dilateIterations);
+		erodeIterations = Integer.parseInt(str);
+		kernal_size = new Size(erodeIterations, erodeIterations);
 	}
 
 	@Override
 	public void paramChanged(int index, String param) {
-		dilateIterations = Double.parseDouble(param);
-		kernal_size = new Size(dilateIterations, dilateIterations);		
+		erodeIterations = Integer.parseInt(param);
+		kernal_size = new Size(erodeIterations, erodeIterations);		
 	}
 }

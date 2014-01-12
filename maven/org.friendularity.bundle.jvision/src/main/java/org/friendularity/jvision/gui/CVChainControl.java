@@ -213,7 +213,9 @@ public class CVChainControl extends JPanel {
 			M.add(M.createStatement(frsrc, M.createProperty(JVisionRDF.FLO_PREFIX + "index"), 
 					M.createLiteral(Integer.toString(i))));
 			M.add(M.createStatement(frsrc, M.createProperty(JVisionRDF.FLO_PREFIX + "filterType"), 
-					M.createLiteral(f.toString())));
+					M.createLiteral(f)));
+			M.add(M.createStatement(frsrc, M.createProperty(JVisionRDF.FLO_PREFIX + "filterParameters"), 
+					M.createLiteral(fs.serializeIndex(i))));
 		}
 	}
 

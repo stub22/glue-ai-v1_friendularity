@@ -13,8 +13,8 @@ public class BentoBundleActivator extends BundleActivatorBase {
 
 	public static Logger theLogger = LoggerFactory.getLogger(BentoBundleActivator.class);
 	private BentoLauncher myBento;
-
-	public void start(BundleContext context) throws Exception {
+ 
+	public void start(BundleContext context) throws Exception {  
 		// forceLog4jConfig();
 		
 		myBento = new BentoLauncher(false);

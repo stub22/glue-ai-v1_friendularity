@@ -33,7 +33,7 @@ public class Blur implements BaseFilter, ParamChangedListener {
 
 	@Override
 	public void deserialize(String str) {
-		kernalSize = Integer.parseInt(str);
+		kernalSize = Double.parseDouble(str);
 		kernal = new Size(kernalSize, kernalSize);
 	}
 
