@@ -38,4 +38,6 @@ public abstract class FilterInfo {
 	 * @return the new filter
 	 */
 	public abstract BaseFilter createInstance();
-    }
+	
+	public abstract String[] getCategory();
+}
