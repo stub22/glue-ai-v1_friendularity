@@ -23,7 +23,7 @@ import javax.swing.JComponent;
 import javax.swing.JTree;
 import javax.swing.TransferHandler;
 import javax.swing.tree.TreePath;
-import org.friendularity.jvision.filters.StatelessClassFilterInfo;
+import org.friendularity.jvision.filters.FilterInfo;
 
 /**
  *
@@ -68,7 +68,7 @@ class TreeTransferHandler extends TransferHandler {
 				TreePath tp = ((FilterTree)c).getSelectionPath();
 				
 				Object o = tp.getLastPathComponent();
-				if(!(o instanceof StatelessClassFilterInfo))
+				if(!(o instanceof FilterInfo))
 					throw new java.lang.IllegalArgumentException("hey that wasn't a ClassFilterInfo");
 				
 				return o;

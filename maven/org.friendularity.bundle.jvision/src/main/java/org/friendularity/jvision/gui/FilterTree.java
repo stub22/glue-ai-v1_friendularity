@@ -20,20 +20,8 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeSelectionModel;
-import org.friendularity.jvision.filters.BananaDetector;
-import org.friendularity.jvision.filters.Blur;
-import org.friendularity.jvision.filters.StatelessClassFilterInfo;
-import org.friendularity.jvision.filters.ColorThreshold;
-import org.friendularity.jvision.filters.Contour;
-import org.friendularity.jvision.filters.Dilate;
-import org.friendularity.jvision.filters.Erode;
-import org.friendularity.jvision.filters.FaceDetector;
-import org.friendularity.jvision.filters.Farneback;
 import org.friendularity.jvision.filters.FilterInfo;
-import org.friendularity.jvision.filters.GlassesDetector;
-import org.friendularity.jvision.filters.Grayscale;
-import org.friendularity.jvision.filters.ProfileDetector;
-import org.friendularity.jvision.filters.RGBtoHSV;
+import org.friendularity.jvision.filters.FilterInfoManager;
 
 /**
  *
@@ -58,59 +46,7 @@ public class FilterTree extends JTree implements TreeSelectionListener {
         DefaultMutableTreeNode top =
             new DefaultMutableTreeNode("Flo Filters");
 
-        DefaultMutableTreeNode category = null;
-        DefaultMutableTreeNode filter = null;
-
-        category = new DefaultMutableTreeNode("Detector");
-        top.add(category);
-
-        filter = new DefaultMutableTreeNode(new StatelessClassFilterInfo (new BananaDetector()));
-        category.add(filter);
-
-        filter = new DefaultMutableTreeNode(new StatelessClassFilterInfo (new FaceDetector()));
-        category.add(filter);
-		
-        filter = new DefaultMutableTreeNode(new StatelessClassFilterInfo (new GlassesDetector()));
-        category.add(filter);
-
-        filter = new DefaultMutableTreeNode(new StatelessClassFilterInfo (new ProfileDetector()));
-        category.add(filter);
-		
-        category = new DefaultMutableTreeNode("Image Processing");
-        top.add(category);
-		
-        filter = new DefaultMutableTreeNode(new StatelessClassFilterInfo (new Blur()));
-        category.add(filter);
-
-        filter = new DefaultMutableTreeNode(new StatelessClassFilterInfo (new ColorThreshold()));
-        category.add(filter);
-
-        filter = new DefaultMutableTreeNode(new StatelessClassFilterInfo (new Grayscale()));
-        category.add(filter);
-
-        filter = new DefaultMutableTreeNode(new StatelessClassFilterInfo (new RGBtoHSV()));
-        category.add(filter);
-		
-        category = new DefaultMutableTreeNode("Line Operations");
-        top.add(category);
-		
-		filter = new DefaultMutableTreeNode(new StatelessClassFilterInfo (new Contour()));
-        category.add(filter);
-		
-        category = new DefaultMutableTreeNode("Morphology");
-        top.add(category);
-				
-        filter = new DefaultMutableTreeNode(new StatelessClassFilterInfo (new Dilate()));
-        category.add(filter);		
-		
-        filter = new DefaultMutableTreeNode(new StatelessClassFilterInfo (new Erode()));
-        category.add(filter);		
-
-        category = new DefaultMutableTreeNode("Motion");
-        top.add(category);
-		
-        filter = new DefaultMutableTreeNode(new StatelessClassFilterInfo (new Farneback()));
-        category.add(filter);
+		FilterInfoManager.addAllFilterInfoToTree(top);
 		
 		return top;
     }
