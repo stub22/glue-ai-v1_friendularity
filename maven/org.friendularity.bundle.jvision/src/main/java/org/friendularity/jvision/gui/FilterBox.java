@@ -46,9 +46,7 @@ package org.friendularity.jvision.gui;
 
 
 import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Property;
-import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.ResIterator;
 import com.hp.hpl.jena.rdf.model.Resource;
 import org.friendularity.jvision.engine.CVChainManager;
@@ -66,13 +64,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.io.File;
-import java.io.FileFilter;
 import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.BoxLayout;
 import javax.swing.JFileChooser;
 import javax.swing.JMenu;
@@ -178,6 +172,7 @@ private  void setupMenus(JFrame frame) {
 				// offer the open dialog
 				final JFileChooser fc = new JFileChooser();
 				fc.setDialogType(JFileChooser.OPEN_DIALOG);
+				fc.setFileFilter(new FileNameExtensionFilter("flo files", "flo", "ttl"));
 				if(last_saved_name != null) {
 					fc.setCurrentDirectory(last_saved_name);
 					fc.setSelectedFile(last_saved_name);
@@ -186,7 +181,6 @@ private  void setupMenus(JFrame frame) {
 				}
 				if(fc.showOpenDialog(FilterBox.this) == JFileChooser.APPROVE_OPTION) {
 					last_saved_name = fc.getSelectedFile();
-					removeAllCVChains();
 
 					String path = "";
 					try {
@@ -196,11 +190,12 @@ private  void setupMenus(JFrame frame) {
 						M.read(fis, JVisionRDF.CV_PREFIX, "TURTLE");
 						fis.close();
 						last_saved_model = M;
+						removeAllCVChains();
 						createUIFromModel(M);
 						ImageStreamBroker.getDefaultImageStreamBroker().removeAllOfflineStreams();
 					} catch (IOException ex) {
-						Logger.getLogger(FilterBox.class.getName()).log(Level.SEVERE, 
-								"Can't open " + path);
+						JOptionPane.showMessageDialog(FilterBox.this, "Cannot Open File", "Can't open " + path, 
+								JOptionPane.WARNING_MESSAGE);
 					}
 				}
 			}
@@ -226,8 +221,8 @@ private  void setupMenus(JFrame frame) {
 						last_saved_model = M;
 						fw.close();
 					} catch (IOException ex) {
-						Logger.getLogger(FilterBox.class.getName()).log(Level.SEVERE, 
-								"Can't save in " + path);
+						JOptionPane.showMessageDialog(FilterBox.this, "Can't Save", 
+								"Can't save in " + path, JOptionPane.WARNING_MESSAGE);
 					}
 
 				}
@@ -424,7 +419,6 @@ private  void setupMenus(JFrame frame) {
 	/**
 	 * save off a dirty model before continuing
 	 * 
-	 * @TBD show save/don't save/cancel dialog
 	 * 
 	 * @return true if we should continue
 	 */
@@ -467,7 +461,8 @@ private  void setupMenus(JFrame frame) {
 		for(ResIterator i = M.listResourcesWithProperty(p, o);
 				i.hasNext(); ) {
 			Resource cvchain = i.next();
-			listPanel.add(new CVChainControl(this, M, cvchain));
+			
+			CVChainManager.getDefaultManager().buildChain(this, cvchain, M);
 		}
 		listPanel.revalidate();
 	}
@@ -485,6 +480,11 @@ private  void setupMenus(JFrame frame) {
 		return M;
 	}
 
+	/**
+	 * save off to a user specified file
+	 * 
+	 * @return true if the user saved and we should continue
+	 */
 	private boolean saveAs() {
 		Model M = getRDFModel();
 		
@@ -506,6 +506,15 @@ private  void setupMenus(JFrame frame) {
 			String path = "";
 			try {
 				path = FilterBox.this.last_saved_name.getCanonicalPath();
+				
+				if (FilterBox.this.last_saved_name.exists()) {
+					int res  = JOptionPane.showConfirmDialog(this, 
+							"File Exists", 
+							path + " Exists, OK to overwrite?",
+							JOptionPane.QUESTION_MESSAGE);
+					if(res == JOptionPane.CANCEL_OPTION || res == JOptionPane.NO_OPTION)return false;
+				}
+						
 				FileWriter fw = new FileWriter(FilterBox.this.last_saved_name);
 				M.write(fw,
 						"TURTLE",
@@ -514,8 +523,9 @@ private  void setupMenus(JFrame frame) {
 				last_saved_model = M;
 				fw.close();
 			} catch (IOException ex) {
-				Logger.getLogger(FilterBox.class.getName()).log(Level.SEVERE, 
-						"Can't save in " + path);
+				JOptionPane.showMessageDialog(this, "Can't Save", "Can't save in " + path,
+						JOptionPane.WARNING_MESSAGE);
+				
 				return false;
 			}
 

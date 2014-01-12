@@ -15,7 +15,11 @@
  */
 package org.friendularity.jvision.engine;
 
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.Resource;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ButtonGroup;
 import org.friendularity.jvision.gui.CVChainControl;
 import org.friendularity.jvision.gui.FilterBox;
@@ -72,7 +76,14 @@ public class CVChainManager {
 		fb.addCVChainControl(cvc);	
 		
 	}
-
+	
+	public void buildChain(FilterBox fb, Resource cvchainRDF, Model M) {
+		CVChain cvchain = new CVChain(M, cvchainRDF);
+		cvChains.put(cvchain.getName(), cvchain);
+		CVChainControl cvc = new CVChainControl(cvchain, fb);
+		fb.addCVChainControl(cvc);
+	}
+	
 	/**
 	 *  famulus to FilterBox, the manager takes care of coordinating the pieces
 	 *  when user removes a CVChain
@@ -81,11 +92,16 @@ public class CVChainManager {
 	 * @param cvcc the control to remove
 	 */
 	public void remove(FilterBox fb, CVChainControl cvcc) {
+		if(fb == null || cvcc == null) {
+			Logger.getLogger(CVChainManager.class.getName()).log(Level.SEVERE, 
+								"evil thing in remove in CVChainManager");
+		}
 		fb.removeChainControl(cvcc);
 		CVChain cvc = cvChains.get(cvcc.getName());
 		cvc.unwire();
 		cvChains.remove(cvcc.getName());
 	}
+
 	
 			
 }

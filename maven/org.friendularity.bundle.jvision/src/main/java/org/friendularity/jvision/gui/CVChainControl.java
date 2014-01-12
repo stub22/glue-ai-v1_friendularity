@@ -60,6 +60,7 @@ public class CVChainControl extends JPanel {
 	private JLabel outField;
 	private FilterBox myFilterBox;
 
+	@Deprecated
 	CVChainControl(FilterBox fb, Model M, Resource cvchain) {		
 		CVChain chain = new CVChain(M, cvchain);
 		
