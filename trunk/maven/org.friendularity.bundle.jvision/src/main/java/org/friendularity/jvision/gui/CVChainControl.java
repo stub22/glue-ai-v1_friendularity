@@ -216,4 +216,12 @@ public class CVChainControl extends JPanel {
 					M.createLiteral(f.toString())));
 		}
 	}
+
+	void showParametersOfSelectedFilter() {
+		int i = filters.getSelectedIndex();
+		
+		if(i >= 0) {
+			 ((FilterSequence)(filters.getModel())).showParamUIForIndex(i);
+		}
+	}
 }

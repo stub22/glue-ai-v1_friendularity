@@ -3,6 +3,7 @@ package org.friendularity.jvision.filters;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import javax.swing.JFrame;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
@@ -51,5 +52,20 @@ public class Contour implements BaseFilter {
 	@Override
 	public String toString() {
 		return "contour"; 
+	}
+
+	@Override
+	public void showParamUI(JFrame parent) {
+		
+	}
+
+	@Override
+	public String serialize() {
+		return "";
+	}
+
+	@Override
+	public void deserialize(String str) {
+		
 	}
 }

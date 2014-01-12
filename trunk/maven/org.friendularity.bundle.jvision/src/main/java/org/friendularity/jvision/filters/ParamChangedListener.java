@@ -11,18 +11,14 @@
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
- *  limitations under the License. 
+ *  limitations under the License.
  */
-package org.friendularity.bundle.bento.engine; 
-
-import org.friendularity.bundle.bento.gui.BentoPlugin; 
+package org.friendularity.jvision.filters;
 
 /**
  *
  * @author Annie
  */
-public interface BentoAction {
-
-	public abstract boolean handle(BentoPlugin source, String actionCommand);
-	
+interface ParamChangedListener {
+	public void paramChanged(int index, String param);
 }

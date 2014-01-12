@@ -1,16 +1,15 @@
 package org.friendularity.bundle.bento;
 
-import org.appdapter.osgi.core.BundleActivatorBase;
-import org.friendularity.bundle.bento.gui.BentoLauncher;
+import org.appdapter.osgi.core.BundleActivatorBase; 
+import org.friendularity.bundle.bento.gui.BentoLauncher;  
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkEvent;
 import org.osgi.framework.FrameworkListener;  
-import org.slf4j.Logger;
+import org.slf4j.Logger; 
 import org.slf4j.LoggerFactory;
 
 public class BentoBundleActivator extends BundleActivatorBase {
-	// this was a Missing File (or didn't make it onto the SVN) 
 
 	public static Logger theLogger = LoggerFactory.getLogger(BentoBundleActivator.class);
 	private BentoLauncher myBento;

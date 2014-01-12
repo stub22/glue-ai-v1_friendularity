@@ -160,21 +160,6 @@ public class JVisionFrame extends JFrame implements WindowListener, ImageStreamC
 		});
 		menu.add(menuItem);
 		
-		menu = new JMenu("Arguments");
-		
-		menuItem = new JMenuItem("Colors");
-		menuItem.addActionListener(new ActionListener(){
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				ColorThreshold.showHSVSliders();
-			}
-		});
-		
-		menu.add(menuItem);
-		
-		myMenuBar.add(menu);
-		
 		/* ========= */
 				//Build the camera menu
 		menu = new JMenu("Camera");

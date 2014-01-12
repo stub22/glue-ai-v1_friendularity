@@ -1,5 +1,6 @@
 package org.friendularity.jvision.filters;
 
+import javax.swing.JFrame;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.imgproc.Imgproc;
@@ -76,5 +77,20 @@ public class Farneback implements BaseFilter {
 	@Override
 	public String toString() {
 		return "farneback_optical_flow"; 
+	}
+
+	@Override
+	public void showParamUI(JFrame parent) {
+		
+	}
+
+	@Override
+	public String serialize() {
+		return "";
+	}
+
+	@Override
+	public void deserialize(String str) {
+		
 	}
 }
