@@ -522,7 +522,7 @@ private  void setupMenus(JFrame frame) {
 					int res  = JOptionPane.showConfirmDialog(this, 
 							"File Exists", 
 							path + " Exists, OK to overwrite?",
-							JOptionPane.QUESTION_MESSAGE);
+							JOptionPane.OK_CANCEL_OPTION);
 					if(res == JOptionPane.CANCEL_OPTION || res == JOptionPane.NO_OPTION)return false;
 				}
 						

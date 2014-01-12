@@ -202,12 +202,29 @@ public class FilterInfoManager {
 		new FilterInfo() {
 			@Override
 			public String toString() {
-				return "Farneback optical flow"; 
+				return "Farneback optical flow visual"; 
 			}
 
 			@Override
 			public BaseFilter createInstance() {
 				return new Farneback();
+			}
+
+			@Override
+			public String[] getCategory() {
+				String[] c = {"CV", "Motion"};
+				return c;
+			}
+		},
+		new FilterInfo() {
+			@Override
+			public String toString() {
+				return "Farneback optical flow BGx"; 
+			}
+
+			@Override
+			public BaseFilter createInstance() {
+				return new FarnebackBGx();
 			}
 
 			@Override
