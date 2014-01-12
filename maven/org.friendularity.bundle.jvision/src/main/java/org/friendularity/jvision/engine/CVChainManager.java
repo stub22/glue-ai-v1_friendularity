@@ -73,8 +73,7 @@ public class CVChainManager {
 		cvChains.put(name, cvchain);
 		CVChainControl cvc = new CVChainControl(cvchain, fb);
 		
-		fb.addCVChainControl(cvc);	
-		
+		fb.addCVChainControl(cvc);
 	}
 	
 	public void buildChain(FilterBox fb, Resource cvchainRDF, Model M) {

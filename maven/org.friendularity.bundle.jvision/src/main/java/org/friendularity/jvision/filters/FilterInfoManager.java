@@ -26,18 +26,127 @@ public class FilterInfoManager {
 	private static final TreeMap<String, FilterInfo>filterTypes = new TreeMap<String, FilterInfo>();
 
 	private static final FilterInfo[] filterProtos = {
-		new StatelessClassFilterInfo (new BananaDetector()),
-		new StatelessClassFilterInfo (new FaceDetector()),
-		new StatelessClassFilterInfo (new GlassesDetector()),
-		new StatelessClassFilterInfo (new ProfileDetector()),
-		new StatelessClassFilterInfo (new Blur()),
-		new StatelessClassFilterInfo (new ColorThreshold()),
-		new StatelessClassFilterInfo (new Grayscale()),
-		new StatelessClassFilterInfo (new RGBtoHSV()),
-		new StatelessClassFilterInfo (new Contour()),
-		new StatelessClassFilterInfo (new Dilate()),
-		new StatelessClassFilterInfo (new Erode()),
-		new StatelessClassFilterInfo (new Farneback())
+		new FilterInfo() {
+			@Override
+			public String toString() {
+				return "banana detector"; 
+			}
+
+			@Override
+			public BaseFilter createInstance() {
+				return new BananaDetector();
+			}
+		},
+		new FilterInfo() {
+			@Override
+			public String toString() {
+				return "face detector"; 
+			}
+
+			@Override
+			public BaseFilter createInstance() {
+				return new FaceDetector();
+			}
+		},
+		new FilterInfo() {
+			@Override
+			public String toString() {
+				return "glasses detector"; 
+			}
+
+			@Override
+			public BaseFilter createInstance() {
+				return new GlassesDetector();
+			}
+		},
+		new FilterInfo() {
+			@Override
+			public String toString() {
+				return "profile detector"; 
+			}
+
+			@Override
+			public BaseFilter createInstance() {
+				return new ProfileDetector();
+			}
+		},
+		new FilterInfo() {
+			@Override
+			public String toString() {
+				return "color threshold"; 
+			}
+
+			@Override
+			public BaseFilter createInstance() {
+				return new ColorThreshold();
+			}
+		},
+		new FilterInfo() {
+			@Override
+			public String toString() {
+				return "grey"; 
+			}
+
+			@Override
+			public BaseFilter createInstance() {
+				return new Grayscale();
+			}
+		},
+		new FilterInfo() {
+			@Override
+			public String toString() {
+				return "BGR to HSV"; 
+			}
+
+			@Override
+			public BaseFilter createInstance() {
+				return new RGBtoHSV();
+			}
+		},
+		new FilterInfo() {
+			@Override
+			public String toString() {
+				return "contour display"; 
+			}
+
+			@Override
+			public BaseFilter createInstance() {
+				return new Contour();
+			}
+		},
+		new FilterInfo() {
+			@Override
+			public String toString() {
+				return "dilate"; 
+			}
+
+			@Override
+			public BaseFilter createInstance() {
+				return new Dilate();
+			}
+		},
+		new FilterInfo() {
+			@Override
+			public String toString() {
+				return "erode"; 
+			}
+
+			@Override
+			public BaseFilter createInstance() {
+				return new Erode();
+			}
+		},
+		new FilterInfo() {
+			@Override
+			public String toString() {
+				return "Farneback optical flow"; 
+			}
+
+			@Override
+			public BaseFilter createInstance() {
+				return new Farneback();
+			}
+		}
 	};
 	
 	static {

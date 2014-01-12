@@ -2,6 +2,7 @@ package org.friendularity.jvision.filters;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import javax.swing.JFrame;
 import javax.swing.ListModel;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
@@ -118,5 +119,24 @@ public class FilterSequence extends BasicDebugger implements BaseFilter, ListMod
 		{
 			i.next().contentsChanged(lde);
 		}
+	}
+
+	@Override
+	public void showParamUI(JFrame parent) {
+		
+	}
+
+	@Override
+	public String serialize() {
+		throw new UnsupportedOperationException("Use RDF dont serialize firlter sequence");
+	}
+
+	@Override
+	public void deserialize(String str) {
+		throw new UnsupportedOperationException("Use RDF dont deserialize filter sequence");
+	}
+
+	public void showParamUIForIndex(int i) {
+		filters.get(i).showParamUI(null);
 	}
 }

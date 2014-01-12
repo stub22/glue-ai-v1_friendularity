@@ -304,6 +304,17 @@ private  void setupMenus(JFrame frame) {
 		});
 		menu.add(menuItem);
 		
+		menuItem = new JMenuItem("Parameters...", KeyEvent.VK_P);
+		menuItem.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				selectedCVChainControl.showParametersOfSelectedFilter();
+			}
+		});
+		
+		menu.add(menuItem);
+		
 		myMenuBar.add(menu);
 
 		frame.setJMenuBar(myMenuBar);

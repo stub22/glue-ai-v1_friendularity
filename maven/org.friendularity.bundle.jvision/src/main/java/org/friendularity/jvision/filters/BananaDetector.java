@@ -43,6 +43,4 @@ public class BananaDetector extends CascadeDetector {
 	public String toString() {
 		return "banana detector"; 
 	}
-	
-	
 }

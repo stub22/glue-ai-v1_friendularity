@@ -6,6 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import javax.swing.JFrame;
 import org.friendularity.jvision.gui.FileLocations;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
@@ -113,5 +114,20 @@ public abstract class CascadeDetector implements BaseFilter {
 	@Override
 	public String toString() {
 		return "abstract_cascade_detector"; 
+	}
+
+	@Override
+	public void showParamUI(JFrame parent) {
+	
+	}
+	
+	@Override
+	public String serialize() {
+		return "";
+	}
+
+	@Override
+	public void deserialize(String str) {
+
 	}
 }
