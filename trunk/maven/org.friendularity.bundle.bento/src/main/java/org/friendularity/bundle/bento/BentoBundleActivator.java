@@ -6,8 +6,8 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkEvent;
 import org.osgi.framework.FrameworkListener;   
-import org.slf4j.Logger; 
-import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;   
+import org.slf4j.LoggerFactory; 
 
 public class BentoBundleActivator extends BundleActivatorBase {
 

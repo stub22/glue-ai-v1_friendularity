@@ -100,6 +100,40 @@ public class FilterInfoManager {
 		new FilterInfo() {
 			@Override
 			public String toString() {
+				return "halfsize"; 
+			}
+
+			@Override
+			public BaseFilter createInstance() {
+				return new HalfSize();
+			}
+
+			@Override
+			public String[] getCategory() {
+				String[] c = {"CV", "ImageProc"};
+				return c;
+			}
+		},
+		new FilterInfo() {
+			@Override
+			public String toString() {
+				return "quartersize"; 
+			}
+
+			@Override
+			public BaseFilter createInstance() {
+				return new QuarterSize();
+			}
+
+			@Override
+			public String[] getCategory() {
+				String[] c = {"CV", "ImageProc"};
+				return c;
+			}
+		},
+		new FilterInfo() {
+			@Override
+			public String toString() {
 				return "color threshold"; 
 			}
 
@@ -140,6 +174,23 @@ public class FilterInfoManager {
 			@Override
 			public BaseFilter createInstance() {
 				return new RGBtoHSV();
+			}
+
+			@Override
+			public String[] getCategory() {
+				String[] c = {"CV", "ImageProc"};
+				return c;
+			}
+		},
+		new FilterInfo() {
+			@Override
+			public String toString() {
+				return "HSV to BGR"; 
+			}
+
+			@Override
+			public BaseFilter createInstance() {
+				return new HSVtoBGR();
 			}
 
 			@Override

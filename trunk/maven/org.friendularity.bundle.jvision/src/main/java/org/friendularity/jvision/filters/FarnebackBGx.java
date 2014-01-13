@@ -20,26 +20,32 @@ public class FarnebackBGx implements BaseFilter {
 	}
 	
     Mat mLastFrame = null;
-    Mat mFlowImage = new Mat(640, 480, CvType.CV_32FC2);
+    Mat mFlowImage = null;
 	@Override
 	public void apply(Mat in, Mat out) {
-    Mat gray = new Mat();
-		Imgproc.cvtColor(in, gray, Imgproc.COLOR_RGB2GRAY);
-    
-    // first frame
-    if(mLastFrame == null)
-    {
-      mLastFrame = new Mat();
-      Imgproc.cvtColor(in, mLastFrame, Imgproc.COLOR_RGB2GRAY);
-      in.copyTo(out);
-      return;
-    }
-    
-    Video.calcOpticalFlowFarneback(mLastFrame, gray, mFlowImage, 0.5, 3, 15, 3, 5, 1.2, 0);
-    
-    in.copyTo(out);
-    drawFlowBGx(mFlowImage, out);
-    gray.copyTo(mLastFrame);
+		if(mFlowImage == null)
+			mFlowImage = new Mat(in.width(), in.height(), CvType.CV_32FC2);
+		
+		Mat gray = new Mat();
+		if(in.channels() > 1) 
+			Imgproc.cvtColor(in, gray, Imgproc.COLOR_RGB2GRAY);
+		else
+			in.copyTo(gray);
+
+		// first frame
+		if(mLastFrame == null)
+		{
+		  mLastFrame = new Mat();
+		  Imgproc.cvtColor(in, mLastFrame, Imgproc.COLOR_RGB2GRAY);
+		  in.copyTo(out);
+		  return;
+		}
+
+		Video.calcOpticalFlowFarneback(mLastFrame, gray, mFlowImage, 0.5, 3, 15, 3, 5, 1.2, 0);
+
+		in.copyTo(out);
+		drawFlowBGx(mFlowImage, out);
+		gray.copyTo(mLastFrame);
 	}
   
 	/**
@@ -78,7 +84,7 @@ public class FarnebackBGx implements BaseFilter {
 
 	@Override
 	public String toString() {
-		return "farneback_optical_flow"; 
+		return "farneback_BGx"; 
 	}
 
 	@Override
