@@ -26,7 +26,7 @@ public class Dilate implements BaseFilter, ParamChangedListener {
 
 	@Override
 	public void showParamUI(JFrame parent) {
-		FilterParams.showParamWidget(this, "dilation iterations,slider,0," + dilateIterations + ",24");
+		FilterParams.showParamWidget(this, "dilation iterations,slider,1," + dilateIterations + ",24");
 	}
 
 	@Override
@@ -43,6 +43,8 @@ public class Dilate implements BaseFilter, ParamChangedListener {
 	@Override
 	public void paramChanged(int index, String param) {
 		dilateIterations = (int)Double.parseDouble(param);
+		if(dilateIterations < 1)
+			dilateIterations = 1;
 		kernal_size = new Size(dilateIterations, dilateIterations);		
 	}
 }

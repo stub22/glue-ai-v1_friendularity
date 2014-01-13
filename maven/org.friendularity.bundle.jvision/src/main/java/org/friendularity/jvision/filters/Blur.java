@@ -23,7 +23,7 @@ public class Blur implements BaseFilter, ParamChangedListener {
 
 	@Override
 	public void showParamUI(JFrame parent) {
-		FilterParams.showParamWidget(this, "blur radius,slider,0," + kernalSize + ",36");
+		FilterParams.showParamWidget(this, "blur radius,slider,1," + kernalSize + ",36");
 	}
 
 	@Override

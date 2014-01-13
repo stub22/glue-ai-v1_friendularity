@@ -26,7 +26,7 @@ public class Erode implements BaseFilter, ParamChangedListener {
 
 	@Override
 	public void showParamUI(JFrame parent) {
-		FilterParams.showParamWidget(this, "erosion iterations,slider,0," + erodeIterations + ",24");
+		FilterParams.showParamWidget(this, "erosion iterations,slider,1," + erodeIterations + ",24");
 	}
 
 	@Override
@@ -43,6 +43,8 @@ public class Erode implements BaseFilter, ParamChangedListener {
 	@Override
 	public void paramChanged(int index, String param) {
 		erodeIterations = Integer.parseInt(param);
+		if(erodeIterations < 1)
+			erodeIterations = 1;
 		kernal_size = new Size(erodeIterations, erodeIterations);		
 	}
 }

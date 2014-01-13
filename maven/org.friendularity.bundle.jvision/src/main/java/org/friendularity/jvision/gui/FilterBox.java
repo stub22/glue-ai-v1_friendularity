@@ -466,7 +466,6 @@ private  void setupMenus(JFrame frame) {
 	}
 
 	private void createUIFromModel(Model M) {
-		
 		Property p = M.createProperty(JVisionRDF.RDF_PREFIX + "type");
 		Resource o = M.createResource(JVisionRDF.FLO_PREFIX + "CVChain");
 		for(ResIterator i = M.listResourcesWithProperty(p, o);
