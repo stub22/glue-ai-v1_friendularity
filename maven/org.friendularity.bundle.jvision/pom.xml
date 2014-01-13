@@ -93,11 +93,14 @@
                             native/linux_x86/libopencv_java247.so;
                             native/linux_x86/cv2.so;
                             osname=linux;
-                            processor=x86
+                            processor=x86,
                             native/linux_x64/libopencv_java246.so;
                             native/linux_x64/cv2.so;
                             osname=linux;
-                            processor=x86-64
+                            processor=x86-64,
+                            native/linux_arm/libopencv_java246.so;
+                            osname=linux;
+                            processor=arm
 						</Bundle-NativeCode>						
 
 						<!--
