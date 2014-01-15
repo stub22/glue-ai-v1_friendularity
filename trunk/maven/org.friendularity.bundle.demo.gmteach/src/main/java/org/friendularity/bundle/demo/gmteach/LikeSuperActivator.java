@@ -86,6 +86,8 @@ import org.robokind.api.animation.player.AnimationPlayer;
 import org.robokind.api.motion.Robot;
 import org.rwshop.swing.common.lifecycle.ServicesFrame;
 import org.slf4j.Logger;
+import org.storychat.scripting.GInterpreter;
+import org.zmpp.glulx.stdlib.Glulx;
 //import org.cogchar.bind.midi.FunMidiEventRouter;
 
 // import org.appdapter.gui.demo.DemoBrowser;
@@ -281,7 +283,7 @@ public class LikeSuperActivator extends CommonActivator implements BundleListene
 
 	private void configGMTeachStory() {
 		// add our stuff
-		String args = macroStartupSettings.getProperty(LikeSuperActivator.this.m_context.getBundle(), "src/main/Inform/Projects/GMTeach.inform/Build/output.ulx" ,"gmteach.glulx", "inform7.story", "glulx.args", "application.args", "launcher.arguments").trim();
+		String args = macroStartupSettings.getProperty(LikeSuperActivator.this.m_context.getBundle(), "src/main/Inform/Projects/GMTeach.inform/Build/output.ulx", "gmteach.glulx", "inform7.story", "glulx.args", "application.args", "launcher.arguments").trim();
 		macroStartupSettings.putSetting("inform7.story", args);
 	}
 
@@ -299,12 +301,19 @@ public class LikeSuperActivator extends CommonActivator implements BundleListene
 	public void showDemoAppStarter() throws HeadlessException {
 		DemoBrowser.appName = "MacroLauncher";
 		DemoBrowser.addRepoLoaderMenu();
-		DemoBrowser.showObject("macroStartupSettings", macroStartupSettings, false, false);
-		DemoBrowser.showObject("macroActionCallbackMap", macroStartupSettings.actionCallbackMap, false, false);
+		showObject("macroStartupSettings", macroStartupSettings, false, false);
+		showObject("macroActionCallbackMap", macroStartupSettings.actionCallbackMap, false, false);
 		org.appdapter.gui.browse.Utility.setSingletonValue(BundleContext.class, m_context);
 		if (isHeadless())
 			return;
 		DemoBrowser.show();
+	}
+
+	static void showObject(String name, Object value, final boolean showASAP, final boolean loadChildren) {
+		GInterpreter pareGInterpreter = Glulx.ensureParentInterpreter();
+		pareGInterpreter.setGlobally(name, value);
+		DemoBrowser.showObject(name, value, showASAP, loadChildren);
+
 	}
 
 	protected PumaContextMediator getMediator() {
