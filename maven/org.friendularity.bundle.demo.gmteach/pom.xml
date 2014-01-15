@@ -166,12 +166,12 @@
 			<artifactId>org.rwshop.swing.common</artifactId>
 			<version>${rwshop.version}</version>
 		</dependency>
-		<!-- NEW FROM 0.1.9	
+		<!-- NEW FROM 0.1.9	-->
 		<dependency>
 			<groupId>org.jflux</groupId>
 			<artifactId>org.jflux.swing.messaging</artifactId>
 			<version>${jflux.version}</version>
-		</dependency>  -->
+		</dependency>  
 		<!-- ELSE -->
 		<dependency>
 			<groupId>org.rwshop</groupId>
