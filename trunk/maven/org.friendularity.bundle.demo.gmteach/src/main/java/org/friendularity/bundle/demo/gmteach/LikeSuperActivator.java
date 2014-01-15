@@ -279,6 +279,7 @@ public class LikeSuperActivator extends CommonActivator implements BundleListene
 		macroStartupSettings.removeBegun();
 		getLogger().warn("launchPhases COMPLETE.");
 		showMacroFrame();
+		macroStartupSettings.runNow("ccrk");
 	}
 
 	private void configGMTeachStory() {
@@ -312,6 +313,9 @@ public class LikeSuperActivator extends CommonActivator implements BundleListene
 	static void showObject(String name, Object value, final boolean showASAP, final boolean loadChildren) {
 		GInterpreter pareGInterpreter = Glulx.ensureParentInterpreter();
 		pareGInterpreter.setGlobally(name, value);
+		if (value == null) {
+			throw new NullPointerException(name);
+		}
 		DemoBrowser.showObject(name, value, showASAP, loadChildren);
 
 	}
@@ -503,7 +507,7 @@ public class LikeSuperActivator extends CommonActivator implements BundleListene
 			}
 		});
 
-		addMacroServiceButton("whackamole", new Runnable() {
+		addMacroServiceButton("whackamoleReloadObjects", new Runnable() {
 			@Override public void run() {
 				if (isHeadless())
 					return;
@@ -666,21 +670,17 @@ public class LikeSuperActivator extends CommonActivator implements BundleListene
 		PumaAppUtils.attachVWorldRenderModule(bundleCtx, werm, null);
 		eViz = werm.setupVisualizer(null, null, null);
 		// Needs to be done at least once for the selfEstim to exist.
-		MathSpaceFactory msf = new MathSpaceFactory();
+		//MathSpaceFactory msf = new MathSpaceFactory();
 		// MathGate mg = msf.makeScriptedMathGate();
-		mg = msf.makeUnscriptedMathGate();
-		werm.setMathGate(mg);
-		Ident worldEstimID = new FreeIdent(WorldEstimate.ESTIM_NS + "world_estim_31");
-		WorldEstimate we = new WorldEstimate(worldEstimID);
-		werm.setWorldEstimate(we);
-		Robot.Id optRobotID_elseAllRobots = null;
-		startMotionComputers(bundleCtx, optRobotID_elseAllRobots, we);
+		macroStartupSettings.runNow("makeUnscriptedMathGate");
+		macroStartupSettings.runNow("world_estim_31");
+		macroStartupSettings.runNow("startMotionComputers");
 
 		if (isEnabled("visionMonitors")) {
 
 			//	Startup the optional JVision connection
 			try {
-				startVisionMonitors();
+				macroStartupSettings.runNow("connectJVision");
 			} catch (Throwable t) {
 				t.printStackTrace();
 			}
@@ -852,11 +852,12 @@ public class LikeSuperActivator extends CommonActivator implements BundleListene
 	protected void setupDebuggingScaffold(MathGate mg, WorldEstimate we) {
 		UISettings uiSettings = DemoBrowser.getSettings();
 		uiSettings.setOverzealousHunter(true);
-		DemoBrowser.showObject("werm-MG", mg, false, false); // true, true);
-		DemoBrowser.showObject("amazingly accurate estimate", we, false, false);
+		showObject("werm-MG", mg, false, false); // true, true);
+		if (we != null)
+			showObject("amazingly accurate estimate", we, false, false);
 		PumaAppUtils.GreedyHandleSet greedyHandles = PumaAppUtils.obtainGreedyHandleSet();
-		DemoBrowser.showObject("our-greedy-handles", greedyHandles, false, false);
-		DemoBrowser.showObject("our-repo-client", greedyHandles.rc, false, false);
+		showObject("our-greedy-handles", greedyHandles, false, false);
+		showObject("our-repo-client", greedyHandles.rc, false, false);
 		DemoBrowser.show();
 	}
 
