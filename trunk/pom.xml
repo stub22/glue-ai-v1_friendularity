@@ -55,7 +55,7 @@ Version-less parent will be allowed in Maven 3.1.
 		<!--  o.f.b.demo.repo   has a direct dependence on Appdapter. -->
 		<appdapter.version>1.1.4</appdapter.version>
 		<!--  We are directly using the "headless" part of Robokind-core. -->
-		<robokind.version>0.9.5-SNAPSHOT</robokind.version>
+		<robokind.version>0.9.5</robokind.version>
 
 		<rwshop.version>0.9.4-SNAPSHOT</rwshop.version>
 
