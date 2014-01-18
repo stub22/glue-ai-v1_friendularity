@@ -50,6 +50,9 @@ Version-less parent will be allowed in Maven 3.1.
 		<module>maven/org.friendularity.modules.main</module>
 	</modules>
 	<properties>
+		<osgi.core.version>4.2.0</osgi.core.version>
+		<appdapter.msg.version>1.0.5</appdapter.msg.version>
+		<appdapter.jscience.version>1.0.9</appdapter.jscience.version>
 
 		<cogchar.version>1.0.8.0-SNAPSHOT</cogchar.version>
 		<!--  o.f.b.demo.repo   has a direct dependence on Appdapter. -->
