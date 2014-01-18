@@ -14,11 +14,13 @@ import org.cogchar.bind.symja.MathGate;
 import org.cogchar.bind.symja.MathSpaceFactory;
 import org.cogchar.bundle.app.puma.PumaAppUtils;
 import org.cogchar.scalatest.Whackamole;
-import org.friendularity.gmteach.api.west.WorldEstimate;
-import org.friendularity.gmteach.impl.visual.EstimateVisualizer;
-import org.friendularity.gmteach.impl.visual.WorldEstimateRenderModule;
+import org.friendularity.bundle.demo.gmteach.GMTeachApp;
+import org.friendularity.gmteach.estimate.api.west.WorldEstimate;
+import org.friendularity.gmteach.estimate.impl.visual.EstimateVisualizer;
 // import org.cogchar.test.symcalc.ScriptEngineExperiment;
-import org.friendularity.gmteach.vworld.VisionDataFeed;
+import org.friendularity.gmteach.ext.vworld.VisionDataFeed;
+import org.friendularity.gmteach.recognizer.MidiEventRecognizer;
+import org.friendularity.gmteach.recognizer.WorldEstimateRecognizer;
 import org.osgi.framework.BundleContext;
 import org.robokind.api.motion.Robot;
 // import org.appdapter.gui.demo.DemoBrowser;
@@ -59,7 +61,7 @@ public class CCRK_DemoActivator extends BundleActivatorBase {
 	private boolean myFlag_connectSwingDebugGUI = false;
 	private boolean myFlag_monitorLifecycles = true;
 
-	private CCRK_DemoMidiCommandMapper myMidiMapper;
+	private MidiEventRecognizer myMidiMapper;
 
 	@Override public void start(final BundleContext context) throws Exception {
 		// take control for jVision
@@ -144,7 +146,7 @@ public class CCRK_DemoActivator extends BundleActivatorBase {
 		}
 
 		// Hey, let's get some fused-sensor-data visualization going too, while we're at it!
-		WorldEstimateRenderModule werm = new WorldEstimateRenderModule();
+		WorldEstimateRecognizer werm = new WorldEstimateRecognizer(GMTeachApp.staticInstance());
 
 		// Enable/Disable this texture flow based on whether we are launching JVision or not.
 		// Should be a dont-care whether this happens before/after   startVisionMonitors() below.
@@ -176,7 +178,7 @@ public class CCRK_DemoActivator extends BundleActivatorBase {
 			}
 		}
 
-		myMidiMapper = new CCRK_DemoMidiCommandMapper();
+		myMidiMapper = new MidiEventRecognizer(GMTeachApp.staticInstance());
 
 		if (myFlag_connectMidiIn) {
 			myMidiMapper.startMidiRouters(werm);

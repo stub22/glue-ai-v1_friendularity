@@ -1,7 +1,6 @@
 package org.friendularity.bundle.demo.gmteach;
 
 import org.appdapter.osgi.core.BundleActivatorBase;
-import org.friendularity.bundle.macro.jvision.*;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkEvent;
@@ -33,7 +32,7 @@ import org.osgi.framework.FrameworkListener;
  */
 public class GMTEACH_DemoActivator //
 		//extends CCRK_DemoActivator //
-		extends LikeSuperActivator // 
+		extends GMTeachApp // 
 		// extends BMDActivatorSpecTest // 
 		//extends BMDSpecActivator // 
 		//
