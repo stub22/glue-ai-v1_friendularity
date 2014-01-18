@@ -4,20 +4,8 @@
 
 package org.friendularity.bundle.macro.common;
 
-import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
-
-import org.apache.log4j.PropertyConfigurator;
-import org.cogchar.app.puma.boot.PumaAppContext;
-import org.cogchar.app.puma.boot.PumaBooter;
-import org.cogchar.app.puma.config.PumaContextMediator;
-import org.cogchar.app.puma.registry.PumaGlobalPrebootInjector;
-import org.osgi.framework.BundleContext;
-import org.slf4j.Logger;
-
-import ext.osgi.common.MacroBundleActivatorBase;
 import org.appdapter.osgi.core.BundleActivatorBase;
+import org.osgi.framework.BundleContext;
 
 /*
  *
@@ -56,10 +44,8 @@ public abstract class CommonActivator extends BundleActivatorBase {
 		// new Exception(message).fillInStackTrace().printStackTrace();
 	}
 
-	@Override
-	public void stop(BundleContext context) throws Exception {
+	@Override public void stop(BundleContext context) throws Exception {
 		super.stop(context);
 	}
-
 
 }

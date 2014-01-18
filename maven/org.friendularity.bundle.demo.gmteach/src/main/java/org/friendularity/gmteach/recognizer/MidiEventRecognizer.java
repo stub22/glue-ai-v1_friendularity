@@ -42,7 +42,7 @@ public class MidiEventRecognizer extends GMTeachModule implements MidiEventRepor
 
 	public void init(String[] args) {
 		fmer = new FunMidiEventRouter();
-		fmer.noPrint = System.err;
+		//fmer.noPrint = System.err;
 		fmer.registerListener(this);
 		fmer.startPumpingMidiEvents();
 	}

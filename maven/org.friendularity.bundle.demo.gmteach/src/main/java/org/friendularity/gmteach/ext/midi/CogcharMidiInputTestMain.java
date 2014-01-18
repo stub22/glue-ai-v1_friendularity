@@ -23,7 +23,7 @@ public class CogcharMidiInputTestMain extends BasicDebugger {
 	public static void main(String[] args) {
 
 		FunMidiEventRouter fmer = new FunMidiEventRouter();
-		fmer.noPrint = System.err;
+		//fmer.noPrint = System.err;
 		try {
 			fmer.startPumpingMidiEvents();
 			Thread.sleep(30000);
