@@ -138,7 +138,7 @@ public class GMTeachApp extends CommonActivator implements BundleListener, Servi
 	MidiEventRecognizer myMidiEventRecognizer = new MidiEventRecognizer(this);
 	GoalRegistery myGoalRegistery = new GoalRegistery(this);
 	WorldEstimateRecognizer estimateRecognizer = new WorldEstimateRecognizer(this);
-	static MockBundleContext fakeBundleCtx = new MockBundleContext();
+	static BundleContext fakeBundleCtx = null;
 
 	//	WorldEstimateRecognizer myEstimateRecognizer = new WorldEstimateRecognizer();
 

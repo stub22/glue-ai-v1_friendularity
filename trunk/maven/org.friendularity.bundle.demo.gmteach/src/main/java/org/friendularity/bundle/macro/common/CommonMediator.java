@@ -13,9 +13,10 @@ import org.appdapter.core.matdat.URLRepoSpec;
 import org.cogchar.app.puma.boot.PumaAppContext;
 import org.cogchar.app.puma.config.PumaContextMediator;
 import org.cogchar.app.puma.registry.ResourceFileCategory;
-import org.cogchar.app.puma.vworld.PumaVirtualWorldMapper;
 import org.cogchar.platform.util.ClassLoaderUtils;
 import org.osgi.framework.BundleContext;
+
+//import com.hrkind.content.preview.PreviewContentBundleActivator;
 
 import ext.osgi.common.MacroBundleActivatorBase;
 
@@ -88,17 +89,17 @@ public class CommonMediator extends PumaContextMediator {
 	public void notifyPanelsConstructed(PumaAppContext ctx) throws Throwable {
 		myDemoPACtx = ctx;
 		/*logInfo("******************* Registering HRK Preview resource bundle with default AssetContext");
-		org.appdapter.core.boot.ClassLoaderUtils.registerClassLoader(myContext, PreviewContentBundleActivator.class.getClassLoader(), "com.hrkind.content");
-		org.appdapter.core.boot.ClassLoaderUtils.registerClassLoader(myContext, PreviewContentBundleActivator.class, "com.hrkind.content");
 		AssetContext defAssetCtx = RenderRegistryFuncs.findOrMakeAssetContext(null, null, PreviewContentBundleActivator.class);
 		JmonkeyAssetLocation jmal = new JmonkeyAssetLocation(PreviewContentBundleActivator.class);
+		org.appdapter.core.boot.ClassLoaderUtils.registerClassLoader(myContext, PreviewContentBundleActivator.class.getClassLoader(), "com.hrkind.content");
+		org.appdapter.core.boot.ClassLoaderUtils.registerClassLoader(myContext, PreviewContentBundleActivator.class, "com.hrkind.content");
 		defAssetCtx.addAssetSource(jmal);
 		logInfo("******************* Completed registration of HRK Preview resource bundle with default AssetContext");
 		*/
-		PumaVirtualWorldMapper pvwm = myDemoPACtx.getPumaRegistryClient().getVWorldMapper(null);
-		for (ClassLoader cl : getFileResClassLoaders()) {
-			//pvwm.connectVisualizationResources(cl);
-		}
+		//PumaVirtualWorldMapper pvwm = myDemoPACtx.getPumaRegistryClient().getVWorldMapper(null);
+		//	for (ClassLoader cl : getFileResClassLoaders()) {
+		//pvwm.connectVisualizationResources(cl);
+		//	}
 	}
 
 	/**
