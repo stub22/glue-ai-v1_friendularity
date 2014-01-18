@@ -7,7 +7,7 @@ import org.appdapter.help.repo.RepoClient;
 import org.cogchar.outer.behav.demo.MasterDemo;
 import org.cogchar.outer.behav.demo.TAGraphChanWiringDemo;
 import org.cogchar.svc.behav.control.ActionCallbackMap;
-import org.friendularity.bundle.demo.gmteach.LikeSuperActivator;
+import org.friendularity.bundle.demo.gmteach.GMTeachApp;
 import org.jflux.impl.services.rk.lifecycle.AbstractLifecycleProvider;
 import org.jflux.impl.services.rk.lifecycle.utils.DescriptorListBuilder;
 import org.jflux.impl.services.rk.lifecycle.utils.SimpleLifecycle;
@@ -32,15 +32,14 @@ public class BehaviorMasterLifecycle extends AbstractLifecycleProvider<MasterDem
 		myContext = context;
 	}
 
-	@Override
-	protected synchronized MasterDemo create(Map<String, Object> dependencies) {
+	@Override protected synchronized MasterDemo create(Map<String, Object> dependencies) {
 		RepoClient repoClient = (RepoClient) dependencies.get(queryEmitterId);
 		MasterDemo md = new MasterDemo();
 		String adminID = "adminID";
 		String behaviorID = "behaviorID";
 		startTriggerPanel(myContext, behaviorID, adminID);
 		//        startCallbackMaps(myContext, behaviorID, adminID);
-		md.preLaunchSetup(myContext, LikeSuperActivator.ROBOT_CONNECTION_ENV_VAR_KEY);
+		md.preLaunchSetup(myContext, GMTeachApp.ROBOT_CONNECTION_ENV_VAR_KEY);
 		md.launchDemo(myContext, repoClient);
 		try {
 			TAGraphChanWiringDemo.loadAndRegisterSpecs(myContext, repoClient, "ccrt:taChan_sheet_77");
@@ -56,8 +55,7 @@ public class BehaviorMasterLifecycle extends AbstractLifecycleProvider<MasterDem
 		return md;
 	}
 
-	@Override
-	protected void handleChange(String serviceId, Object dependency, Map<String, Object> availableDependencies) {
+	@Override protected void handleChange(String serviceId, Object dependency, Map<String, Object> availableDependencies) {
 		if (isSatisfied()) {
 			myService = create(availableDependencies);
 		} else {
@@ -65,15 +63,13 @@ public class BehaviorMasterLifecycle extends AbstractLifecycleProvider<MasterDem
 		}
 	}
 
-	@Override
-	public Class<MasterDemo> getServiceClass() {
+	@Override public Class<MasterDemo> getServiceClass() {
 		return MasterDemo.class;
 	}
 
 	private void startTriggerPanel(final BundleContext context, final String behaviorPanelId, final String adminPanelId) {
 		java.awt.EventQueue.invokeLater(new Runnable() {
-			@Override
-			public void run() {
+			@Override public void run() {
 				TriggerFrame tf = new TriggerFrame();
 				tf.init(context, behaviorPanelId, adminPanelId);
 				tf.setVisible(true);

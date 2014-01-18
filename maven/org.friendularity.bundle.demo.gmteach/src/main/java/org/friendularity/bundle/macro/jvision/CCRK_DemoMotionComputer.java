@@ -18,7 +18,7 @@ package org.friendularity.bundle.macro.jvision;
 
 import org.cogchar.bind.rk.robot.motion.CogcharMotionComputer;
 import org.cogchar.bind.rk.robot.motion.CogcharMotionSource;
-import org.friendularity.gmteach.api.west.WorldEstimate;
+import org.friendularity.gmteach.estimate.api.west.WorldEstimate;
 import org.robokind.api.common.position.NormalizedDouble;
 import org.robokind.api.motion.Joint;
 import org.robokind.api.motion.Robot;
