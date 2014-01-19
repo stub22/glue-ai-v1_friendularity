@@ -10,7 +10,7 @@ public class JVisionBundleActivator extends BundleActivatorBase {
 	JVisionLauncher myLauncher;
 	
 	// Set this to false to stop JVision from launching itself. 
-	public static boolean LAUNCH_MYSELF = true;
+	private static boolean LAUNCH_MYSELF = true;
 
 	@Override public void start(BundleContext context) throws Exception {
 		forceLog4jConfig();
