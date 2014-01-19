@@ -6,10 +6,8 @@ import static org.friendularity.bundle.macro.tools.R50ConfigUtils.VISEME_JSON_CO
 
 import java.awt.HeadlessException;
 import java.io.File;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.rmi.activation.Activatable;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -53,6 +51,7 @@ import org.cogchar.joswrap.RepoUpdateCallbackAdapter;
 import org.cogchar.render.sys.module.RenderGateway;
 import org.cogchar.render.trial.TrialBalloon;
 import org.cogchar.svc.behav.control.BehaviorControlServiceManager;
+import org.friendularity.bundle.jvision.JVisionBundleActivator;
 import org.friendularity.bundle.macro.behavior.BehaviorMasterConfig;
 import org.friendularity.bundle.macro.behavior.BehaviorMasterLifecycle;
 import org.friendularity.bundle.macro.behavior.HeadlessBehaviorLifecycle;
@@ -92,15 +91,14 @@ import org.robokind.api.motion.Robot;
 import org.rwshop.swing.common.lifecycle.ServicesFrame;
 import org.slf4j.Logger;
 import org.storychat.bundle.glulx.Activator;
+import org.storychat.game.EventAngifiable;
 import org.storychat.game.StoryChatInterpretor;
-import org.storychat.glulx.GlulxeMain;
+import org.storychat.game.StoryContext;
 import org.storychat.scripting.GInterpreter;
-import org.zmpp.glulx.GlulxVM;
 import org.zmpp.glulx.stdlib.Glulx;
-import org.zmpp.glulx.stdlib.GlulxMain;
-//import org.cogchar.bind.midi.FunMidiEventRouter;
 
 import bsh.EvalError;
+//import org.cogchar.bind.midi.FunMidiEventRouter;
 
 // import org.appdapter.gui.demo.DemoBrowser;
 
@@ -175,7 +173,8 @@ public class GMTeachApp extends CommonActivator implements BundleListener, Servi
 		StoryChatInterpretor sci = getStoryChatInterpretor();
 		if (sci == null)
 			return;
-		sci.submitEvent(ime, obj, this);
+		StoryContext sc = sci.getCurrentStoryContext();
+		sci.submitEvent(ime, obj, sc);
 	}
 
 	private StoryChatInterpretor getStoryChatInterpretor() {
@@ -217,6 +216,7 @@ public class GMTeachApp extends CommonActivator implements BundleListener, Servi
 		HEADLESS = false;
 		MACRO_LAUNCHER = false;
 		Activator.AUTO_LAUNCH = false;
+		JVisionBundleActivator.LAUNCH_MYSELF = false;
 		// TODO Auto-generated method stub
 		super.start(bundleCtx);
 		super.bundleBootPhase = BootPhaseConst.UNSTARTED;
@@ -380,7 +380,7 @@ public class GMTeachApp extends CommonActivator implements BundleListener, Servi
 		myMidiEventRecognizer.init(args);
 		myGoalRegistery.init(args);
 		estimateRecognizer.initModule();
-		macroStartupSettings.runNow("ccrk");
+		//macroStartupSettings.runNow("ccrk");
 	}
 
 	private void configGMTeachStory() {
@@ -520,7 +520,7 @@ public class GMTeachApp extends CommonActivator implements BundleListener, Servi
 			}
 		});
 
-		addMacroService("bootPuma", new Runnable() {
+		addMacroServiceButton("bootPuma", new Runnable() {
 			@Override public void run() {
 				ensurePuma();
 			}
