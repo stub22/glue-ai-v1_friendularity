@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
 
 import ext.osgi.common.MacroBundleActivatorBase.ListenableMap;
 
-public class RunnablesPanel extends javax.swing.JPanel implements ActionCallbackMap, PropertyChangeListener, Listener<String> {
+public class GoalsPanel extends javax.swing.JPanel implements ActionCallbackMap, PropertyChangeListener, Listener<String> {
 	public final class PanelWorker extends SwingWorker<Void, Runnable> {
 		private final Vector<Runnable> todoList;
 
@@ -100,7 +100,7 @@ public class RunnablesPanel extends javax.swing.JPanel implements ActionCallback
 	}
 
 	/** Creates new form TriggerPanel */
-	public RunnablesPanel() {
+	public GoalsPanel() {
 		initComponents();
 	}
 

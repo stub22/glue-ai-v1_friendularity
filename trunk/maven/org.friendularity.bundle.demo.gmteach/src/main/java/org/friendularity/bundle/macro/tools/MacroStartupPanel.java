@@ -1,4 +1,4 @@
-package org.friendularity.bundle.demo.gmteach;
+package org.friendularity.bundle.macro.tools;
 
 import java.awt.Component;
 import java.awt.event.ActionEvent;
@@ -6,12 +6,14 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 
+import org.friendularity.bundle.demo.gmteach.GMTeachApp;
+import org.friendularity.bundle.demo.gmteach.GoalsPanel;
 import org.jflux.api.core.Listener;
 
 import ext.osgi.common.MacroBundleActivatorBase;
 import ext.osgi.common.MacroBundleActivatorBase.MacroStartupSettings;
 
-public class RunnableComponentPanel extends RunnablesPanel implements Listener<String> {
+public class MacroStartupPanel extends GoalsPanel implements Listener<String> {
 	public class RunnableComponent extends JButton {
 		private final String name;
 		ActionListener singleActionListener;
@@ -103,7 +105,7 @@ public class RunnableComponentPanel extends RunnablesPanel implements Listener<S
 
 	MacroStartupSettings macroStartupSettings;
 
-	RunnableComponentPanel(MacroStartupSettings ms) {
+	public MacroStartupPanel(MacroStartupSettings ms) {
 		this.macroStartupSettings = ms;
 		addListenableMap(ms.actionCallbackMap);
 		macroStartupSettings.registerServiceChanged(this);
