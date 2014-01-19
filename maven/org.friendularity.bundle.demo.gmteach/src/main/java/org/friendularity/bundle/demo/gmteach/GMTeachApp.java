@@ -58,8 +58,8 @@ import org.friendularity.bundle.macro.behavior.HeadlessBehaviorLifecycle;
 import org.friendularity.bundle.macro.behavior.TriggerFrame;
 import org.friendularity.bundle.macro.common.CommonActivator;
 import org.friendularity.bundle.macro.common.CommonMediator;
-import org.friendularity.bundle.macro.jvision.CCRK_DemoMediator;
 import org.friendularity.bundle.macro.jvision.CCRK_DemoMotionComputer;
+import org.friendularity.bundle.macro.tools.MacroStartupPanel;
 import org.friendularity.bundle.macro.tools.R50ConfigUtils;
 import org.friendularity.gmteach.estimate.api.west.WorldEstimate;
 import org.friendularity.gmteach.estimate.impl.visual.EstimateVisualizer;
@@ -204,7 +204,7 @@ public class GMTeachApp extends CommonActivator implements BundleListener, Servi
 		return gmStaticIsntance;
 	}
 
-	PumaContextMediator myMediator = new CCRK_DemoMediator();
+	PumaContextMediator myMediator = null;
 
 	protected boolean isHeadless() {
 		return HEADLESS;
@@ -216,7 +216,7 @@ public class GMTeachApp extends CommonActivator implements BundleListener, Servi
 		HEADLESS = false;
 		MACRO_LAUNCHER = false;
 		Activator.AUTO_LAUNCH = false;
-		JVisionBundleActivator.LAUNCH_MYSELF = false;
+		JVisionBundleActivator.setLaunchFlag(false);
 		// TODO Auto-generated method stub
 		super.start(bundleCtx);
 		super.bundleBootPhase = BootPhaseConst.UNSTARTED;
@@ -402,7 +402,7 @@ public class GMTeachApp extends CommonActivator implements BundleListener, Servi
 		if (isHeadless())
 			return;
 		JFrame shownIn = new JFrame("macroStartupSettings");
-		shownIn.add(new JScrollPane(new RunnableComponentPanel(macroStartupSettings)));
+		shownIn.add(new JScrollPane(new MacroStartupPanel(macroStartupSettings)));
 		shownIn.pack();
 		shownIn.show(true);
 
@@ -1152,9 +1152,10 @@ public class GMTeachApp extends CommonActivator implements BundleListener, Servi
 		// [It is currently unused]
 		// If another mediator took over instead, then we won't try to "cheat" to make those debugging features run.
 		PumaAppContext localDemoCheatersContext = null;
+		/*
 		if (mediator instanceof CCRK_DemoMediator) {
 			localDemoCheatersContext = ((CCRK_DemoMediator) mediator).myDemoPACtx;
-		}
+		}*/
 
 		if (localDemoCheatersContext != null) {
 			getLogger().info("We have a cheater's Puma-App-Context, but we're not cheatin with it today - hooray!");

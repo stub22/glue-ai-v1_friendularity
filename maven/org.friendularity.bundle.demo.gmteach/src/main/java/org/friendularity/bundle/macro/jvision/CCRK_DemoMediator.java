@@ -6,7 +6,7 @@ import org.cogchar.app.puma.boot.PumaAppContext;
 import org.cogchar.app.puma.config.PumaContextMediator;
 
 // These mediators decorate the application lifecycle as needed.
-public class CCRK_DemoMediator extends PumaContextMediator {
+class CCRK_DemoMediatorUNSUSUDE extends PumaContextMediator {
 	// Override base class methods to customize the way that PUMA boots + runs, and
 	// to receive notifications of progress during the boot / re-boot process.
 	String TEST_REPO_SHEET_KEY = "0ArBjkBoH40tndDdsVEVHZXhVRHFETTB5MGhGcWFmeGc";
