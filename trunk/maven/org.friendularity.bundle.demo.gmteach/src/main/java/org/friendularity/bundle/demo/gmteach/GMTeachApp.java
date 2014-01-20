@@ -235,7 +235,7 @@ public class GMTeachApp extends CommonActivator implements BundleListener, Servi
 		macroStartupSettings.makeStartupBundle(this);
 		registerServices(bundleCtx);
 		//macroStartupSettings.raiseToPhase(MacroStartupSettings.COMPLETED_REGISTERSERVICES);
-		macroStartupSettings.runNow("configPuma");
+		macroStartupSettings.ensureReady("configPuma");
 		macroStartupSettings.printMacroStateInfo(System.err, null, true);
 		macroStartupSettings.removeBegun();
 		configGMTeachStory();
@@ -380,7 +380,7 @@ public class GMTeachApp extends CommonActivator implements BundleListener, Servi
 		myMidiEventRecognizer.init(args);
 		myGoalRegistery.init(args);
 		estimateRecognizer.initModule();
-		//macroStartupSettings.runNow("ccrk");
+		//macroStartupSettings.ensureReady("ccrk");
 	}
 
 	private void configGMTeachStory() {
@@ -486,11 +486,11 @@ public class GMTeachApp extends CommonActivator implements BundleListener, Servi
 		lifterComp.start();
 	}
 
-	WorldEstimateRecognizer werm0 = null;
 	EstimateVisualizer<?> eViz;
 	protected MathGateUnscripted mg;
-	protected WorldEstimate we;
+	WorldEstimate world_estim_31;
 	protected MidiEventRecognizer myMidiMapper = new MidiEventRecognizer(GMTeachApp.staticInstance());
+	WorldEstimateRecognizer werm0 = null;
 
 	public void registerServices(final BundleContext context0) {
 		if (m_context == null)
@@ -575,10 +575,12 @@ public class GMTeachApp extends CommonActivator implements BundleListener, Servi
 		addMacroServiceButton("world_estim_31", new Runnable() {
 			@Override public void run() {
 				macroStartupSettings.ensureReady("attachVWorldRenderModule");
-				Ident worldEstimID = new FreeIdent(WorldEstimate.ESTIM_NS + "world_estim_31");
-				we = new WorldEstimate(worldEstimID);
-				WorldEstimateRecognizer werm = ensureWerm();
-				werm.setWorldEstimate(we);
+				if (world_estim_31 == null) {
+					Ident worldEstimID = new FreeIdent(WorldEstimate.ESTIM_NS + "world_estim_31");
+					world_estim_31 = new WorldEstimate(worldEstimID);
+					WorldEstimateRecognizer werm = ensureWerm();
+					werm.setWorldEstimate(world_estim_31);
+				}
 			}
 		});
 
@@ -586,7 +588,7 @@ public class GMTeachApp extends CommonActivator implements BundleListener, Servi
 			@Override public void run() {
 				macroStartupSettings.ensureReady("world_estim_31");
 				Robot.Id optRobotID_elseAllRobots = null;
-				startMotionComputers(m_context, optRobotID_elseAllRobots, we);
+				startMotionComputers(m_context, optRobotID_elseAllRobots, world_estim_31);
 			}
 		});
 
@@ -620,7 +622,7 @@ public class GMTeachApp extends CommonActivator implements BundleListener, Servi
 			@Override public void run() {
 				if (isHeadless())
 					return;
-				setupDebuggingScaffold(mg, we);
+				setupDebuggingScaffold(mg, world_estim_31);
 			}
 		});
 
@@ -762,7 +764,7 @@ public class GMTeachApp extends CommonActivator implements BundleListener, Servi
 
 	private void startPumaDemo(BundleContext bundleCtx) {
 
-		macroStartupSettings.runNow("bootPuma");
+		macroStartupSettings.ensureReady("bootPuma");
 
 		// Hey, let's get some fused-sensor-data visualization going too, while we're at it!
 
@@ -776,31 +778,31 @@ public class GMTeachApp extends CommonActivator implements BundleListener, Servi
 		} catch (Throwable t) {
 		}
 
-		PumaAppUtils.attachVWorldRenderModule(bundleCtx, werm, null);
-		eViz = werm.setupVisualizer(null, null, null);
+		macroStartupSettings.ensureReady("attachVWorldRenderModule");
+		macroStartupSettings.ensureReady("setupVisualizer");
 		// Needs to be done at least once for the selfEstim to exist.
 		//MathSpaceFactory msf = new MathSpaceFactory();
 		// MathGate mg = msf.makeScriptedMathGate();
-		macroStartupSettings.runNow("makeUnscriptedMathGate");
-		macroStartupSettings.runNow("world_estim_31");
-		macroStartupSettings.runNow("startMotionComputers");
+		macroStartupSettings.ensureReady("makeUnscriptedMathGate");
+		macroStartupSettings.ensureReady("world_estim_31");
+		macroStartupSettings.ensureReady("startMotionComputers");
 
 		if (isEnabled("visionMonitors")) {
 
 			//	Startup the optional JVision connection
 			try {
-				macroStartupSettings.runNow("connectJVision");
+				macroStartupSettings.ensureReady("connectJVision");
 			} catch (Throwable t) {
 				t.printStackTrace();
 			}
 		}
 
-		macroStartupSettings.runNow("connectMidiIn");
-		macroStartupSettings.runNow("connectMidiOut");
-		macroStartupSettings.runNow("connectMidiOut");
+		macroStartupSettings.ensureReady("connectMidiIn");
+		macroStartupSettings.ensureReady("connectMidiOut");
+		macroStartupSettings.ensureReady("connectMidiOut");
 
 		if (isEnabled("connectSwingDebugGUI")) {
-			setupDebuggingScaffold(mg, we);
+			setupDebuggingScaffold(mg, world_estim_31);
 		}
 	}
 
