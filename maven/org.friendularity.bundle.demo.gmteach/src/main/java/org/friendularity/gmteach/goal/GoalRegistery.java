@@ -8,7 +8,7 @@ import ext.osgi.common.MacroBundleActivatorBase;
 
 public class GoalRegistery extends GMTeachModule {
 
-	Map<String, GoalCommand> registeredGoals = MacroBundleActivatorBase.macroStartupSettings.actionCallbackMap;
+	final Map<String, GoalCommand> registeredGoals = MacroBundleActivatorBase.macroStartupSettings.actionCallbackMap;
 
 	public GoalRegistery(GMTeachApp gmteach) {
 		super(gmteach);
@@ -28,6 +28,10 @@ public class GoalRegistery extends GMTeachModule {
 	}
 
 	@Override public void unload() {
+	}
+
+	@Override public String toString() {
+		return "registeredGoals " + registeredGoals;
 	}
 
 }

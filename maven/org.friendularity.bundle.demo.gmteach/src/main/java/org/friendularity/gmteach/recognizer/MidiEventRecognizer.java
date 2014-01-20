@@ -118,4 +118,8 @@ public class MidiEventRecognizer extends GMTeachModule implements MidiEventRepor
 			mySwitcheroo.myNLT = myNLT;
 		}
 	}
+
+	@Override public String toString() {
+		return "MidiEventRecognizer";
+	}
 }
