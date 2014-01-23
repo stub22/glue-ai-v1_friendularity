@@ -28,15 +28,15 @@ trait DataExpr {
 trait DataValue {
 	// Marker trait that we might not really need
 }
-	/* Interesting:
-org/friendularity/struct/Struct.scala:150: error: type mismatch;
+/* Interesting:
+ org/friendularity/struct/Struct.scala:150: error: type mismatch;
  found   : Array[Elem with Object]
  required: Array[Elem]
-Note: Elem with Object <: Elem, but class Array is invariant in type T.
-You may wish to investigate a wildcard type such as `_ <: Elem`. (SLS 3.2.10)
-	val myElems : Array[Elem] = myElemFactory.makeArray(mySize)
-http://stackoverflow.com/questions/10000126/re-using-java-generic-collections-in-scala-without-trait-object	
-	*/
+ Note: Elem with Object <: Elem, but class Array is invariant in type T.
+ You may wish to investigate a wildcard type such as `_ <: Elem`. (SLS 3.2.10)
+ val myElems : Array[Elem] = myElemFactory.makeArray(mySize)
+ http://stackoverflow.com/questions/10000126/re-using-java-generic-collections-in-scala-without-trait-object	
+ */
 
 // If this were a trait instead of abstract class, then it would not be properly extensible 
 // from Java, because it contains method impls.
@@ -74,16 +74,18 @@ class MathGateDoublesSource(val myMG : MathGate) extends DataSource[MathGateExpr
 		myMG.parseAndEvalExprToDoubleVec(expr.myExprString, dataValue.myVals);
 	}
 }
-
+// A Struct is just an interface to some state that can be read/written using FieldVal.
+// These methods read/write a private copy of the data, separate from dVal.
+// This trait does not specify whether the fields must exist internally before being written,
+// or how fields might be made if they are not available, or whether an error should occur instead.
+// Those issues are addressed by subtypes of this Trait.
 // This approach implies that all exposed fields are readable/writable using type FieldVal.
 // This policy is somewhat restrictive.  Alternatives require an additional layer of indirection.
 trait Struct[FieldKey, FieldVal] extends DataValue {
-	// A Struct is just an interface to some state that can be read/written using FieldVal.
-	// These methods read/write a private copy of the data, separate from dVal.
-	// This trait does not specify whether the fields must exist internally before being written,
-	// or how fields might be made if they are not available, or whether an error should occur instead.
+
 	def writeField(fk : FieldKey, dVal : FieldVal)
-	// Note that covariance is utilized by avoiding return values, and instead using FieldVal arg as target for reading.
+	// We avoid assuming it is easy to create a FieldVal of appropriate type, by using FieldVal arg as 
+	// target for reading, rather than as a return value.
 	// This approach also fits our larger constant-memory ring-buffer pattern.
 	def readField(fk : FieldKey, dVal : FieldVal)
 }
@@ -101,7 +103,7 @@ class StructMapper[FK, DV <: DataValue, DE <: DataExpr] {
 		val binding = new Binding(de, bufferDV)
 		myFieldExprMap += (fk -> binding)
 	}
-	// Again, covariance friendly args:
+	// Again, we avoid assuming that it is easy to create new values, and instead we write into exsiting values.
 	def mapSourceDataToStruct( ds : DataSource[DE, DV], s : Struct[FK, DV]) : Unit = {
 		for ((fk,b) <- myFieldExprMap) {
 			b.readSourceField(ds)
@@ -186,7 +188,7 @@ class RingBuf[Elem](val mySize : Int, val myElemFactory : Factory[Elem]) {
 }
 // class AgnosticStruct 
 /*
-class ClassyIdentStruct extends Struct[Ident] {
+ class ClassyIdentStruct extends Struct[Ident] {
 	
-}
-*/
+ }
+ */
