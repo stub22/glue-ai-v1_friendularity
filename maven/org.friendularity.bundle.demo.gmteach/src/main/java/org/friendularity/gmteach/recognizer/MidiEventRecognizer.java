@@ -19,6 +19,7 @@ package org.friendularity.gmteach.recognizer;
 import org.cogchar.bind.midi.general.FunMidiEventRouter;
 import org.cogchar.bind.midi.in.InterestingMidiEvent;
 import org.cogchar.bind.midi.in.InterestingMidiEvent.ControlChange;
+import org.cogchar.bind.midi.in.InterestingMidiEvent.Note;
 import org.cogchar.bind.midi.in.InterestingMidiEvent.NoteOn;
 import org.cogchar.bind.midi.in.MidiEventReporter;
 import org.cogchar.bind.midi.out.DemoMidiOutputPlayer;
@@ -27,6 +28,7 @@ import org.cogchar.bind.midi.out.Switcheroo;
 import org.friendularity.bundle.demo.gmteach.GMTeachApp;
 import org.friendularity.gmteach.estimate.api.west.WorldEstimate;
 import org.friendularity.gmteach.goal.GMTeachModule;
+import org.storychat.game.EventAngifiable;
 
 /**
  * @author Logicmoo <logicmoo@gmail.com>
@@ -34,23 +36,26 @@ import org.friendularity.gmteach.goal.GMTeachModule;
 
 public class MidiEventRecognizer extends GMTeachModule implements MidiEventReporter.Listener {
 
-	private FunMidiEventRouter fmer;
+	//private FunMidiEventRouter fmer;
 
 	public MidiEventRecognizer(GMTeachApp gmteach) {
 		super(gmteach);
 	}
 
 	public void init(String[] args) {
-		fmer = new FunMidiEventRouter();
+		if (myFMER == null)
+			myFMER = new FunMidiEventRouter();
 		//fmer.noPrint = System.err;
-		fmer.registerListener(this);
-		fmer.startPumpingMidiEvents();
+		myFMER.registerListener(this);
+		myFMER.startPumpingMidiEvents();
+		startMidiSwitcherooDemo();
+		startMidiOutputDemo();
 	}
 
 	@Override public void unload() {
-		fmer.logInfo("Doing cleanup");
-		fmer.cleanup();
-		fmer = null;
+		myFMER.logInfo("Doing cleanup");
+		myFMER.cleanup();
+		myFMER = null;
 	}
 
 	public WorldEstimateRecognizer myWERM;
@@ -59,12 +64,41 @@ public class MidiEventRecognizer extends GMTeachModule implements MidiEventRepor
 	public DemoMidiOutputPlayer myDMOP = new DemoMidiOutputPlayer();
 	public Switcheroo mySwitcheroo;
 
-	@Override public void reportEvent(InterestingMidiEvent ime) {
+	@Override public void reportEvent(final InterestingMidiEvent ime) {
 		try {
 			if (myTeach == null) {
 				myTeach = GMTeachApp.staticInstance();
 			}
-			myTeach.reportObject(ime);
+			myTeach.reportObject(new EventAngifiable() {
+
+				@Override public Object getEventObject() {
+					return ime;
+				}
+
+				@Override public String getEnglishEvent() {
+					String suffix = "";
+					suffix += " chan_" + ime.myChannel;
+					if (ime instanceof Note) {
+						boolean noteOn = (ime instanceof NoteOn);
+						Note note = (Note) ime;
+						int inputNoteNum = note.myNote;
+						int myRowBase0 = inputNoteNum / 10;
+						int myColBase0 = inputNoteNum % 10;
+						suffix += " loc_" + note.myNote;
+						suffix += " x_" + myColBase0;
+						suffix += " y_" + myRowBase0;
+						suffix += " " + note.myVelocity;
+					} else if (ime instanceof ControlChange) {
+						ControlChange note = (ControlChange) ime;
+						suffix += " loc_" + note.myController;
+						suffix += " " + note.myValue;
+					} else if (ime instanceof ControlChange) {
+						suffix = " " + ime;
+					}
+					return "midievent " + ime.getClass().getSimpleName() + suffix;
+
+				}
+			});
 
 			if (mySwitcheroo != null) {
 				mySwitcheroo.reportEvent(ime);
@@ -111,6 +145,8 @@ public class MidiEventRecognizer extends GMTeachModule implements MidiEventRepor
 	}
 
 	public void startMidiSwitcherooDemo() {
+		if (mySwitcheroo != null)
+			return;
 		mySwitcheroo = new Switcheroo();
 		mySwitcheroo.myDMOP = myDMOP;
 		boolean lpadOK = myNLT.startLightDemo();

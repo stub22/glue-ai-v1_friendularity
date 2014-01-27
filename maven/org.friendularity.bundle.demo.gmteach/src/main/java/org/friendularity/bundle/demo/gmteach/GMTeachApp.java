@@ -165,8 +165,22 @@ public class GMTeachApp extends CommonActivator implements BundleListener, Servi
 
 	}
 
-	private EventAngifiable getObjectEnglishEncoder(Class c, Object o) {
-		return null;
+	private EventAngifiable getObjectEnglishEncoder(final Class c, final Object o) {
+		return new EventAngifiable() {
+
+			@Override public Object getEventObject() {
+
+				return o;
+			}
+
+			@Override public String getEnglishEvent() {
+				return c.getSimpleName() + " " + Debuggable.toInfoStringO(o);
+			}
+
+			@Override public String toString() {
+				return getEnglishEvent() + " for " + o;
+			}
+		};
 	}
 
 	private void submitEvent(String ime, Object obj) {
