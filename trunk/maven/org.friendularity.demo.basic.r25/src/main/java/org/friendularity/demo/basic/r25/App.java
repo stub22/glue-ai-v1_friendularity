@@ -25,11 +25,11 @@ public class App {
         
         // If running on a robot instead of an avatar:
         //     uncomment the next five lines and change the IP to the robot's IP
-        String ipAddress = "192.168.2.101";
-        UserSettings.setRobotAddress(ipAddress);
-        UserSettings.setSpeechAddress(ipAddress);
-        UserSettings.setAnimationAddress(ipAddress);
-        UserSettings.setRobotId("myRobot");
+//        String ipAddress = "127.0.0.1";
+//        UserSettings.setRobotAddress(ipAddress);
+//        UserSettings.setSpeechAddress(ipAddress);
+//        UserSettings.setAnimationAddress(ipAddress);
+//        UserSettings.setRobotId("myRobot");
         
         myRobot = Robokind.connectRobot();
         myPlayer = Robokind.connectAnimationPlayer();
