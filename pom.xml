@@ -59,12 +59,13 @@ Version-less parent will be allowed in Maven 3.1.
 		<appdapter.version>1.1.4</appdapter.version>
 		<!--  We are directly using the "headless" part of Robokind-core. -->
 		<robokind.version>0.9.5</robokind.version>
+        <mechio.version>1.0.0-SNAPSHOT</mechio.version>
 
 		<rwshop.version>0.9.4-SNAPSHOT</rwshop.version>
 
 		<freckler.version>1.0.1-SNAPSHOT</freckler.version>
         
-        <jflux.version>0.1.8</jflux.version>
+        <jflux.version>0.1.9-SNAPSHOT</jflux.version>
 
 		<!--  JME3 is used directly in o.f.demo.jme3.maven -->
 		<jmonkey.version>3.0.0.20121220-SNAPSHOT</jmonkey.version>		
