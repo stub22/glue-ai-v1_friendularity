@@ -80,6 +80,10 @@
         <module>../org.friendularity.test.camera.r50</module>
         <module>../org.friendularity.test.facedetect.r50</module>
         <module>../org.friendularity.test.sensors.r50</module>
+        <module>../org.friendularity.demo.basic.r25</module>
+        <module>../org.friendularity.bundle.headless.animation</module>
+        <module>../org.friendularity.bundle.headless.messaging</module>
+        <module>../org.friendularity.bundle.headless.speech</module>
 
 	</modules>
 	<!--   Should be getting all this stuff from the root pom.xml
