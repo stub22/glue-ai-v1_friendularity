@@ -32,8 +32,8 @@
         </dependency>
         <dependency>
             <groupId>org.appdapter</groupId>
-            <artifactId>org.appdapter.bundle.core</artifactId>
-            <version>${appdapter.version}</version>
+            <artifactId>org.appdapter.lib.bind.jflux</artifactId>
+            <version>1.1.5-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.appdapter</groupId>

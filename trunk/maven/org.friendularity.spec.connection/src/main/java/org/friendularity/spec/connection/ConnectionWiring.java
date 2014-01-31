@@ -24,8 +24,6 @@ import java.util.Set;
 import org.appdapter.core.name.Ident;
 import org.osgi.framework.BundleContext;
 import org.appdapter.core.matdat.*;
-import org.jflux.api.registry.Registry;
-import org.jflux.impl.registry.OSGiRegistry;
 import org.jflux.impl.services.rk.lifecycle.ManagedService;
 import org.jflux.impl.services.rk.lifecycle.ServiceLifecycleProvider;
 import org.jflux.impl.services.rk.lifecycle.utils.SimpleLifecycle;
