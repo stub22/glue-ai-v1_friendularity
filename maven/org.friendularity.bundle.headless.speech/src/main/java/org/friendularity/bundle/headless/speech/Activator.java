@@ -1,4 +1,4 @@
-package org.mechio.headless.speech;
+package org.friendularity.bundle.headless.speech;
 
 import java.util.Properties;
 import java.util.logging.Logger;

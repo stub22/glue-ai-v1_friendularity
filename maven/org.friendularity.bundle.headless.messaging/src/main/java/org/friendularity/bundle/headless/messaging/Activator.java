@@ -1,4 +1,4 @@
-package org.mechio.headless.messaging;
+package org.friendularity.bundle.headless.messaging;
 
 import java.util.logging.Logger;
 import javax.jms.Connection;
