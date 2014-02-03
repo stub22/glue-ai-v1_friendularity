@@ -5,18 +5,18 @@
 package org.friendularity.bundle.test.facedetect.r50;
 
 import java.util.List;
+import org.jflux.api.common.rk.position.NormalizedDouble;
+import org.jflux.api.common.rk.utils.TimeUtils;
 import org.jflux.api.core.Listener;
-import org.robokind.api.common.position.NormalizedDouble;
-import org.robokind.api.common.utils.TimeUtils;
-import org.robokind.api.motion.Joint;
-import org.robokind.api.motion.Robot.JointId;
-import org.robokind.api.motion.Robot.RobotPositionMap;
-import org.robokind.api.motion.messaging.RemoteRobot;
-import org.robokind.api.vision.ImageRegion;
-import org.robokind.api.vision.ImageRegionList;
-import org.robokind.client.basic.Robokind;
-import org.robokind.client.basic.RobotJoints;
-import org.robokind.client.basic.UserSettings;
+import org.mechio.api.motion.Joint;
+import org.mechio.api.motion.Robot.JointId;
+import org.mechio.api.motion.Robot.RobotPositionMap;
+import org.mechio.api.motion.messaging.RemoteRobot;
+import org.mechio.api.vision.ImageRegion;
+import org.mechio.api.vision.ImageRegionList;
+import org.mechio.client.basic.MechIO;
+import org.mechio.client.basic.R50RobotJoints;
+import org.mechio.client.basic.UserSettings;
 
 /**
  *
@@ -34,12 +34,12 @@ public class FaceMonitor implements Listener<ImageRegionList> {
     private JointId myNeckPitch;
     
     public FaceMonitor() {
-        myRobot = Robokind.connectRobot();
+        myRobot = MechIO.connectRobot();
         RobotPositionMap posMap = myRobot.getDefaultPositions();
         myNeckYaw = new JointId(myRobot.getRobotId(),
-                new Joint.Id(RobotJoints.NECK_YAW));
+                new Joint.Id(R50RobotJoints.NECK_YAW));
         myNeckPitch = new JointId(myRobot.getRobotId(),
-                new Joint.Id(RobotJoints.NECK_PITCH));
+                new Joint.Id(R50RobotJoints.NECK_PITCH));
         
         myRobot.move(posMap, 1000);
         
@@ -54,12 +54,12 @@ public class FaceMonitor implements Listener<ImageRegionList> {
         UserSettings.setAnimationAddress(ipAddress);
         UserSettings.setSpeechAddress(ipAddress);
         UserSettings.setRobotId("myRobot");
-        myRobot = Robokind.connectRobot();
+        myRobot = MechIO.connectRobot();
         RobotPositionMap posMap = myRobot.getDefaultPositions();
         myNeckYaw = new JointId(myRobot.getRobotId(),
-                new Joint.Id(RobotJoints.NECK_YAW));
+                new Joint.Id(R50RobotJoints.NECK_YAW));
         myNeckPitch = new JointId(myRobot.getRobotId(),
-                new Joint.Id(RobotJoints.NECK_PITCH));
+                new Joint.Id(R50RobotJoints.NECK_PITCH));
         
         myRobot.move(posMap, 1000);
         

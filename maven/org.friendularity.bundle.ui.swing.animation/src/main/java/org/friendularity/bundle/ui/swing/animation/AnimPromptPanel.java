@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Hanson Robokind LLC.
+ * Copyright 2014 the Friendularity Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +28,7 @@ import java.util.List;
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Session;
+import org.jflux.api.common.rk.config.VersionProperty;
 import org.jflux.api.core.Listener;
 import org.jflux.api.core.Source;
 import org.jflux.api.core.config.ConfigProperty;
@@ -35,14 +36,13 @@ import org.jflux.api.core.config.DefaultConfigProperty;
 import org.jflux.api.core.node.ProducerNode;
 import org.jflux.api.core.util.DefaultSource;
 import org.jflux.api.core.util.EmptyAdapter;
+import org.jflux.api.messaging.rk.services.ServiceCommand;
 import org.jflux.impl.messaging.JMSAvroUtils;
-import org.robokind.api.animation.Animation;
-import org.robokind.api.animation.library.AnimationLibrary;
-import org.robokind.api.animation.library.DefaultAnimationLibrary;
-import org.robokind.api.animation.messaging.RemoteAnimationPlayerClient;
-import org.robokind.api.common.config.VersionProperty;
-import org.robokind.api.messaging.services.ServiceCommand;
-import org.robokind.impl.messaging.ServiceCommandRecord;
+import org.jflux.impl.messaging.rk.ServiceCommandRecord;
+import org.mechio.api.animation.Animation;
+import org.mechio.api.animation.library.AnimationLibrary;
+import org.mechio.api.animation.library.DefaultAnimationLibrary;
+import org.mechio.api.animation.messaging.RemoteAnimationPlayerClient;
 
 /**
  *

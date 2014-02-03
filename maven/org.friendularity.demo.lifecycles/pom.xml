@@ -19,7 +19,7 @@
 
   If this fails....
 
-        <robokind.version>0.9.2</robokind.version>
+        <mechio.version>0.9.2</mechio.version>
         <rwshop.version>0.9.2</rwshop.version>
         <jflux.version>0.1.6</jflux.version>
 
@@ -27,16 +27,16 @@ or
 
   try this once... (Then switch back to the above for daily use) 
 
-    <robokind.version>0.9.0</robokind.version>
+    <mechio.version>0.9.0</mechio.version>
     <rwshop.version>0.9.0</rwshop.version>
     <jflux.version>0.1.5</jflux.version>
 
   
 
 -->		
-        <robokind.version>0.9.3</robokind.version>
+<!--        <mechio.version>0.9.3</mechio.version>
         <rwshop.version>0.9.3</rwshop.version>
-        <jflux.version>0.1.7</jflux.version>
+        <jflux.version>0.1.7</jflux.version>-->
 
     </properties>
 
@@ -57,19 +57,19 @@ or
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.robokind</groupId>
-            <artifactId>org.robokind.impl.animation</artifactId>
-            <version>${robokind.version}</version>
+            <groupId>org.mechio</groupId>
+            <artifactId>org.mechio.impl.animation</artifactId>
+            <version>${mechio.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.robokind</groupId>
-            <artifactId>org.robokind.api.animation</artifactId>
-            <version>${robokind.version}</version>
+            <groupId>org.mechio</groupId>
+            <artifactId>org.mechio.api.animation</artifactId>
+            <version>${mechio.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.robokind</groupId>
-            <artifactId>org.robokind.integration.motion_speech</artifactId>
-            <version>${robokind.version}</version>
+            <groupId>org.mechio</groupId>
+            <artifactId>org.mechio.integration.motion_speech</artifactId>
+            <version>${mechio.version}</version>
         </dependency>
         <dependency>
             <groupId>org.rwshop</groupId>

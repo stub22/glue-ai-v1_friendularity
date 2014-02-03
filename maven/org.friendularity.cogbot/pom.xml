@@ -39,23 +39,23 @@
             <version>1.6.1</version>
         </dependency>
         <dependency>
-            <groupId>org.robokind</groupId>
-            <artifactId>org.robokind.api.speech</artifactId>
+            <groupId>org.mechio</groupId>
+            <artifactId>org.mechio.api.speech</artifactId>
             <version>0.8.4-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>org.robokind</groupId>
-            <artifactId>org.robokind.impl.speech</artifactId>
+            <groupId>org.mechio</groupId>
+            <artifactId>org.mechio.impl.speech</artifactId>
             <version>0.8.4-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>org.robokind</groupId>
-            <artifactId>org.robokind.impl.messaging</artifactId>
+            <groupId>org.mechio</groupId>
+            <artifactId>org.mechio.impl.messaging</artifactId>
             <version>0.8.4-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>org.robokind</groupId>
-            <artifactId>org.robokind.impl.speechrec</artifactId>
+            <groupId>org.mechio</groupId>
+            <artifactId>org.mechio.impl.speechrec</artifactId>
             <version>0.8.4-SNAPSHOT</version>
         </dependency>
     </dependencies>

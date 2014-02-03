@@ -9,8 +9,8 @@ import java.awt.Image;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import org.jflux.api.core.Listener;
-import org.robokind.api.vision.ImageEvent;
-import org.robokind.impl.vision.PortableImageUtils;
+import org.mechio.api.vision.ImageEvent;
+import org.mechio.impl.vision.PortableImageUtils;
 
 /**
  *

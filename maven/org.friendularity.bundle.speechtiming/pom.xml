@@ -2,7 +2,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.robosteps</groupId>
+    <groupId>org.friendularity</groupId>
     <artifactId>org.friendularity.bundle.speechtiming</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
@@ -11,14 +11,14 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <robokind.version>0.9.0</robokind.version>
+        <mechio.version>1.0.0-SNAPSHOT</mechio.version>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>org.robokind</groupId>
-            <artifactId>org.robokind.client.basic</artifactId>
-            <version>${robokind.version}</version>
+            <groupId>org.mechio</groupId>
+            <artifactId>org.mechio.client.basic</artifactId>
+            <version>${mechio.version}</version>
         </dependency>
     </dependencies>
 </project>

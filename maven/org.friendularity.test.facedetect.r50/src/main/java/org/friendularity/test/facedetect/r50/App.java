@@ -1,11 +1,11 @@
 package org.friendularity.test.facedetect.r50;
 
 import org.jflux.api.core.Listener;
-import org.robokind.api.vision.ImageRegionList;
-import org.robokind.api.vision.config.FaceDetectServiceConfig;
-import org.robokind.api.vision.messaging.RemoteImageRegionServiceClient;
-import org.robokind.client.basic.Robokind;
-import org.robokind.client.basic.UserSettings;
+import org.mechio.api.vision.ImageRegionList;
+import org.mechio.api.vision.config.FaceDetectServiceConfig;
+import org.mechio.api.vision.messaging.RemoteImageRegionServiceClient;
+import org.mechio.client.basic.MechIO;
+import org.mechio.client.basic.UserSettings;
 
 /**
  * Face detection demo.
@@ -19,7 +19,7 @@ public class App {
         UserSettings.setImageRegionId("0");
         
         RemoteImageRegionServiceClient<FaceDetectServiceConfig> regions =
-                Robokind.connectImageRegionService();
+                MechIO.connectImageRegionService();
         Listener<ImageRegionList> monitor = new FaceMonitor(ipAddress);
         
         regions.addImageRegionsListener(monitor);

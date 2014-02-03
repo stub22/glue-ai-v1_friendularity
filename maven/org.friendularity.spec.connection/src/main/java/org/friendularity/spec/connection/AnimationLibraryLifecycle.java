@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.Map;
 import org.jflux.api.service.ServiceDependency;
 import org.jflux.api.service.ServiceLifecycle;
-import org.robokind.api.animation.library.AnimationLibrary;
-import org.robokind.api.animation.library.DefaultAnimationLibrary;
+import org.mechio.api.animation.library.AnimationLibrary;
+import org.mechio.api.animation.library.DefaultAnimationLibrary;
 
 public class AnimationLibraryLifecycle implements ServiceLifecycle<AnimationLibrary> {
 

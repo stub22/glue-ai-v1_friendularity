@@ -5,10 +5,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.UIManager;
-import org.robokind.api.vision.config.CameraServiceConfig;
-import org.robokind.api.vision.messaging.RemoteImageServiceClient;
-import org.robokind.client.basic.Robokind;
-import org.robokind.client.basic.UserSettings;
+import org.mechio.api.vision.config.CameraServiceConfig;
+import org.mechio.api.vision.messaging.RemoteImageServiceClient;
+import org.mechio.client.basic.MechIO;
+import org.mechio.client.basic.UserSettings;
 
 /**
  * Camera service demo.
@@ -22,7 +22,7 @@ public class ImageDemo extends JFrame {
         UserSettings.setCameraId("0");
         
         RemoteImageServiceClient<CameraServiceConfig> images =
-                Robokind.connectCameraService();
+                MechIO.connectCameraService();
         ImageMonitor monitor = new ImageMonitor();
         
         add(monitor);

@@ -7,9 +7,9 @@ package org.friendularity.bundle.macro.tools;
 import java.util.List;
 
 import org.jflux.impl.services.rk.lifecycle.utils.ManagedServiceFactory;
-import org.robokind.api.motion.Robot;
-import org.robokind.impl.speech.RemoteSpeechUtils;
-import org.robokind.integration.motion_speech.VisemeMotionUtils;
+import org.mechio.api.motion.Robot;
+import org.mechio.impl.speech.RemoteSpeechUtils;
+import org.mechio.integration.motion_speech.VisemeMotionUtils;
 
 /**
  *

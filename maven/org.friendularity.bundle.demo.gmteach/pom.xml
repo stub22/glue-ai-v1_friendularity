@@ -85,7 +85,7 @@
 			by CCRK activator. -->
 		<dependency>
 			<!-- Note that o.f.project.root and o.f.modules.main must also have been 
-				built and avail in local repo, in order for variables like "robokind.version" 
+				built and avail in local repo, in order for variables like "mechio.version" 
 				to resolve when applied *transitively* (The built main+root is not required 
 				to resolve the variables used directly in this pom; those are allowed to 
 				come from the source-tree poms). -->
@@ -134,29 +134,29 @@
 		</dependency> -->
 
 		<dependency>
-			<groupId>org.robokind</groupId>
-			<artifactId>org.robokind.headless.messaging</artifactId>
-			<version>${robokind.version}</version>
+			<groupId>org.mechio</groupId>
+			<artifactId>org.mechio.headless.messaging</artifactId>
+			<version>${mechio.version}</version>
 		</dependency>
 		<!-- dependency>
-			<groupId>org.robokind</groupId>
-			<artifactId>org.robokind.client.basic</artifactId>
-			<version>${robokind.version}</version>
+			<groupId>org.mechio</groupId>
+			<artifactId>org.mechio.client.basic</artifactId>
+			<version>${mechio.version}</version>
 		</dependency -->
 		<dependency>
-			<groupId>org.robokind</groupId>
-			<artifactId>org.robokind.headless.speech</artifactId>
-			<version>${robokind.version}</version>
+			<groupId>org.mechio</groupId>
+			<artifactId>org.mechio.headless.speech</artifactId>
+			<version>${mechio.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.robokind</groupId>
-			<artifactId>org.robokind.api.vision</artifactId>
-			<version>${robokind.version}</version>
+			<groupId>org.mechio</groupId>
+			<artifactId>org.mechio.api.vision</artifactId>
+			<version>${mechio.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.robokind</groupId>
-			<artifactId>org.robokind.impl.vision</artifactId>
-			<version>${robokind.version}</version>
+			<groupId>org.mechio</groupId>
+			<artifactId>org.mechio.impl.vision</artifactId>
+			<version>${mechio.version}</version>
 		</dependency>
 		<!-- END OF ROBOKIND SORT OF EVERYTHING (What a large boiler plate) -->
 

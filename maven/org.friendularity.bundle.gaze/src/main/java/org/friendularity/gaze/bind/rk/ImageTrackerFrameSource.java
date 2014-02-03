@@ -23,13 +23,13 @@ import org.friendularity.gaze.util.GazeTracker;
 import org.cogchar.sight.api.core.SightObservation;
 import org.cogchar.api.animoid.gaze.IGazeTarget;
 import org.osgi.framework.BundleContext;
-import org.robokind.api.motion.Robot;
-import org.robokind.api.motion.Robot.RobotPositionMap;
-import org.robokind.api.motion.blending.FrameSource;
-import org.robokind.api.motion.protocol.DefaultMotionFrame;
-import org.robokind.api.motion.protocol.MotionFrame;
-import org.robokind.api.motion.utils.RobotUtils;
-import org.robokind.api.vision.ImageRegion;
+import org.mechio.api.motion.Robot;
+import org.mechio.api.motion.Robot.RobotPositionMap;
+import org.mechio.api.motion.blending.FrameSource;
+import org.mechio.api.motion.protocol.DefaultMotionFrame;
+import org.mechio.api.motion.protocol.MotionFrame;
+import org.mechio.api.motion.utils.RobotUtils;
+import org.mechio.api.vision.ImageRegion;
 
 /**
  *

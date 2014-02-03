@@ -21,16 +21,16 @@ import java.util.List;
 import java.util.Map;
 import org.jflux.api.messaging.rk.MessageAsyncReceiver;
 import org.jflux.api.messaging.rk.MessageSender;
+import org.jflux.api.messaging.rk.services.ServiceCommand;
+import org.jflux.api.messaging.rk.services.ServiceCommandFactory;
+import org.jflux.api.messaging.rk.services.ServiceError;
 import org.jflux.api.service.ServiceDependency;
 import org.jflux.api.service.ServiceLifecycle;
-import org.robokind.api.speech.SpeechConfig;
-import org.robokind.api.speech.SpeechEventList;
-import org.robokind.api.speech.SpeechRequest;
-import org.robokind.api.speech.SpeechRequestFactory;
-import org.robokind.api.speech.messaging.RemoteSpeechServiceClient;
-import org.robokind.api.messaging.services.ServiceCommand;
-import org.robokind.api.messaging.services.ServiceCommandFactory;
-import org.robokind.api.messaging.services.ServiceError;
+import org.mechio.api.speech.SpeechConfig;
+import org.mechio.api.speech.SpeechEventList;
+import org.mechio.api.speech.SpeechRequest;
+import org.mechio.api.speech.SpeechRequestFactory;
+import org.mechio.api.speech.messaging.RemoteSpeechServiceClient;
 
 /**
  *

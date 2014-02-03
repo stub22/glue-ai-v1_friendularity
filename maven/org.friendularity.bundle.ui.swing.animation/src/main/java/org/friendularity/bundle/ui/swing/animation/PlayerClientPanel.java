@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Hanson Robokind LLC.
+ * Copyright 2014 the Friendularity Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,20 +30,20 @@ import org.jflux.impl.messaging.rk.lifecycle.JMSAvroMessageSenderLifecycle;
 import org.jflux.impl.messaging.rk.utils.ConnectionManager;
 import org.jflux.impl.messaging.rk.utils.ConnectionUtils;
 import org.osgi.framework.BundleContext;
-import org.robokind.api.animation.Animation;
-import org.robokind.api.animation.lifecycle.AnimationPlayerClientLifecycle;
-import org.robokind.api.animation.messaging.RemoteAnimationPlayerClient;
-import org.robokind.api.animation.protocol.AnimationEvent;
-import org.robokind.api.animation.protocol.AnimationEvent.AnimationEventFactory;
-import org.robokind.api.animation.protocol.AnimationSignal;
+import org.mechio.api.animation.Animation;
+import org.mechio.api.animation.lifecycle.AnimationPlayerClientLifecycle;
+import org.mechio.api.animation.messaging.RemoteAnimationPlayerClient;
+import org.mechio.api.animation.protocol.AnimationEvent;
+import org.mechio.api.animation.protocol.AnimationEvent.AnimationEventFactory;
+import org.mechio.api.animation.protocol.AnimationSignal;
 import org.jflux.impl.services.rk.lifecycle.ManagedService;
 import org.jflux.impl.services.rk.lifecycle.utils.SimpleLifecycle;
 import org.jflux.impl.services.rk.osgi.OSGiUtils;
 import org.jflux.impl.services.rk.osgi.lifecycle.OSGiComponent;
-import org.robokind.impl.animation.messaging.AnimationRecord;
-import org.robokind.impl.animation.messaging.AnimationSignallingRecord;
-import org.robokind.impl.animation.messaging.PortableAnimationEvent;
-import org.robokind.impl.animation.messaging.PortableAnimationSignal;
+import org.mechio.impl.animation.messaging.AnimationRecord;
+import org.mechio.impl.animation.messaging.AnimationSignallingRecord;
+import org.mechio.impl.animation.messaging.PortableAnimationEvent;
+import org.mechio.impl.animation.messaging.PortableAnimationSignal;
 
 /**
  *

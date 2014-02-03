@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.Map;
 import org.jflux.api.service.ServiceDependency;
 import org.jflux.api.service.ServiceLifecycle;
-import org.robokind.api.speech.SpeechService;
-import org.robokind.api.speech.viseme.VisemeEventNotifier;
+import org.mechio.api.speech.SpeechService;
+import org.mechio.api.speech.viseme.VisemeEventNotifier;
 
 /**
  *

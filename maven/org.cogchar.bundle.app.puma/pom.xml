@@ -15,7 +15,7 @@
 
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>org.cogchar.bundle.bind.robokind</artifactId>
+            <artifactId>org.cogchar.bundle.bind.mechio</artifactId>
             <version>${project.version}</version>
         </dependency>
 <!--         <dependency>

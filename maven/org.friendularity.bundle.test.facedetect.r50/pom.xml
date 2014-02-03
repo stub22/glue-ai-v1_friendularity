@@ -28,9 +28,9 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.robokind</groupId>
-            <artifactId>org.robokind.client.basic</artifactId>
-            <version>${robokind.version}</version>
+            <groupId>org.mechio</groupId>
+            <artifactId>org.mechio.client.basic</artifactId>
+            <version>${mechio.version}</version>
         </dependency>
         <dependency>
             <groupId>org.appdapter</groupId>
@@ -49,7 +49,7 @@
                 <configuration>
                     <instructions>
                         <Bundle-Activator>org.friendularity.bundle.test.facedetect.r50.Activator</Bundle-Activator>
-                        <Export-Package>org.robokind.client.basic.*</Export-Package>
+                        <Export-Package>org.mechio.client.basic.*</Export-Package>
                     </instructions>
                 </configuration>
             </plugin>

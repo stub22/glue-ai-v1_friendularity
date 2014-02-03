@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Hanson Robokind LLC.
+ * Copyright 2014 the Friendularity Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,10 +26,10 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.swing.RepaintManager;
 import org.jflux.api.core.Source;
-import org.robokind.api.animation.Animation;
-import org.robokind.api.animation.Channel;
-import org.robokind.api.animation.editor.ChannelEditor;
-import org.robokind.api.animation.messaging.RemoteAnimationPlayerClient;
+import org.mechio.api.animation.Animation;
+import org.mechio.api.animation.Channel;
+import org.mechio.api.animation.editor.ChannelEditor;
+import org.mechio.api.animation.messaging.RemoteAnimationPlayerClient;
 import org.rwshop.swing.animation.config.PathProperties;
 import org.rwshop.swing.common.scaling.CoordinateScalar;
 import org.rwshop.swing.common.scaling.DefaultCoordinateScalar;

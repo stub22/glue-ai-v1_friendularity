@@ -1,21 +1,21 @@
 package org.friendularity.test.sensors.r50;
 
 import org.jflux.api.core.Listener;
-import org.robokind.api.sensor.DeviceBoolEvent;
-import org.robokind.api.sensor.DeviceReadPeriodEvent;
-import org.robokind.api.sensor.FilteredVector3Event;
-import org.robokind.api.sensor.Vector3Event;
-import org.robokind.api.sensor.gpio.RemoteGpioServiceClient;
-import org.robokind.api.sensor.imu.RemoteAccelerometerServiceClient;
-import org.robokind.api.sensor.imu.RemoteCompassServiceClient;
-import org.robokind.api.sensor.imu.RemoteGyroscopeServiceClient;
-import org.robokind.impl.sensor.AccelerometerConfigRecord;
-import org.robokind.impl.sensor.CompassConfigRecord;
-import org.robokind.impl.sensor.DeviceReadPeriodRecord;
-import org.robokind.impl.sensor.GyroConfigRecord;
-import org.robokind.impl.sensor.HeaderRecord;
-import org.robokind.client.basic.Robokind;
-import org.robokind.client.basic.UserSettings;
+import org.mechio.api.sensor.DeviceBoolEvent;
+import org.mechio.api.sensor.DeviceReadPeriodEvent;
+import org.mechio.api.sensor.FilteredVector3Event;
+import org.mechio.api.sensor.Vector3Event;
+import org.mechio.api.sensor.gpio.RemoteGpioServiceClient;
+import org.mechio.api.sensor.imu.RemoteAccelerometerServiceClient;
+import org.mechio.api.sensor.imu.RemoteCompassServiceClient;
+import org.mechio.api.sensor.imu.RemoteGyroscopeServiceClient;
+import org.mechio.impl.sensor.AccelerometerConfigRecord;
+import org.mechio.impl.sensor.CompassConfigRecord;
+import org.mechio.impl.sensor.DeviceReadPeriodRecord;
+import org.mechio.impl.sensor.GyroConfigRecord;
+import org.mechio.impl.sensor.HeaderRecord;
+import org.mechio.client.basic.MechIO;
+import org.mechio.client.basic.UserSettings;
 
 /**
  * Hello world!
@@ -32,7 +32,7 @@ public class App {
 //        UserSettings.setCompassAddress("127.0.0.1");
         UserSettings.setRobotId("myRobot");
         
-        RemoteGpioServiceClient sensors = Robokind.connectSensors();
+        RemoteGpioServiceClient sensors = MechIO.connectSensors();
         DeviceReadPeriodEvent<HeaderRecord> readPeriod =
                 new DeviceReadPeriodRecord();
         HeaderRecord header = new HeaderRecord();
@@ -60,9 +60,9 @@ public class App {
         System.out.println("Adding IMU.");
         
         RemoteAccelerometerServiceClient accel =
-                Robokind.connectAccelerometer();
-        RemoteGyroscopeServiceClient gyro = Robokind.connectGyroscope();
-        RemoteCompassServiceClient compass = Robokind.connectCompass();
+                MechIO.connectAccelerometer();
+        RemoteGyroscopeServiceClient gyro = MechIO.connectGyroscope();
+        RemoteCompassServiceClient compass = MechIO.connectCompass();
         
         readPeriod.setPeriod(1000.0);
         

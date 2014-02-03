@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Hanson Robokind LLC.
+ * Copyright 2014 the Friendularity Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,8 +29,8 @@ import org.jflux.impl.messaging.rk.JMSAvroRecordAsyncReceiver;
 import org.jflux.impl.messaging.rk.JMSAvroRecordSender;
 import org.jflux.impl.messaging.rk.JMSBytesMessageSender;
 import org.jflux.impl.messaging.rk.utils.ConnectionManager;
-import org.robokind.impl.speech.SpeechRequestRecord;
-import org.robokind.impl.speechrec.SpeechRecEventListRecord;
+import org.mechio.impl.speech.SpeechRequestRecord;
+import org.mechio.impl.speechrec.SpeechRecEventListRecord;
 
 /**
  *

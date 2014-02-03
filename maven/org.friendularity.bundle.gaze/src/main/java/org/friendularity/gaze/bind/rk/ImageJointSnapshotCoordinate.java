@@ -15,8 +15,8 @@
  */
 package org.friendularity.gaze.bind.rk;
 
-import org.robokind.api.motion.Robot.RobotPositionMap;
-import org.robokind.api.vision.ImageRegion;
+import org.mechio.api.motion.Robot.RobotPositionMap;
+import org.mechio.api.vision.ImageRegion;
 
 /**
  *

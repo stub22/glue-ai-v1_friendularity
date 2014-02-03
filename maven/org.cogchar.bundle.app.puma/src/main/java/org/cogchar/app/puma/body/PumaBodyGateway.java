@@ -54,7 +54,7 @@ import org.cogchar.impl.perform.FancyTextPerfChan;
 import org.cogchar.blob.emit.BehaviorConfigEmitter;
 import org.osgi.framework.ServiceRegistration;
 import org.cogchar.platform.util.ClassLoaderUtils;
-import org.robokind.api.motion.Robot;
+import org.mechio.api.motion.Robot;
 import org.cogchar.bind.rk.robot.motion.CogcharMotionSource;
 /**
  * @author Stu B. <www.texpedient.com>

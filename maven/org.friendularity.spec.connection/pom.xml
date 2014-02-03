@@ -33,7 +33,7 @@
         <dependency>
             <groupId>org.appdapter</groupId>
             <artifactId>org.appdapter.lib.bind.jflux</artifactId>
-            <version>1.1.5-SNAPSHOT</version>
+            <version>${appdapter.version}</version>
         </dependency>
         <dependency>
             <groupId>org.appdapter</groupId>
@@ -41,19 +41,19 @@
             <version>${appdapter.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.robokind</groupId>
-            <artifactId>org.robokind.api.common</artifactId>
-            <version>${robokind.version}</version>
+            <groupId>org.jflux</groupId>
+            <artifactId>org.jflux.api.common.rk</artifactId>
+            <version>${jflux.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.robokind</groupId>
-            <artifactId>org.robokind.api.animation</artifactId>
-            <version>${robokind.version}</version>
+            <groupId>org.mechio</groupId>
+            <artifactId>org.mechio.api.animation</artifactId>
+            <version>${mechio.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.robokind</groupId>
-            <artifactId>org.robokind.api.speech</artifactId>
-            <version>${robokind.version}</version>
+            <groupId>org.mechio</groupId>
+            <artifactId>org.mechio.api.speech</artifactId>
+            <version>${mechio.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jflux</groupId>
@@ -71,9 +71,9 @@
             <version>${jflux.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.robokind</groupId>
-            <artifactId>org.robokind.impl.messaging</artifactId>
-            <version>${robokind.version}</version>
+            <groupId>org.jflux</groupId>
+            <artifactId>org.jflux.impl.messaging.rk</artifactId>
+            <version>${jflux.version}</version>
         </dependency>
         <dependency>
             <groupId>org.rwshop</groupId>

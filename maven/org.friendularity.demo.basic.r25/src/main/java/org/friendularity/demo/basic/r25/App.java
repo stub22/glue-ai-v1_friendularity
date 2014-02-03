@@ -1,18 +1,18 @@
 package org.friendularity.demo.basic.r25;
 
-import org.robokind.api.animation.Animation;
-import org.robokind.api.animation.messaging.RemoteAnimationPlayerClient;
-import org.robokind.api.animation.player.AnimationJob;
-import org.robokind.api.common.position.NormalizedDouble;
-import org.robokind.api.common.utils.TimeUtils;
-import org.robokind.api.motion.Joint;
-import org.robokind.api.motion.messaging.RemoteRobot;
-import org.robokind.api.speech.messaging.RemoteSpeechServiceClient;
-import org.robokind.client.basic.Robokind;
-import org.robokind.client.basic.UserSettings;
+import org.jflux.api.common.rk.position.NormalizedDouble;
+import org.jflux.api.common.rk.utils.TimeUtils;
+import org.mechio.api.animation.Animation;
+import org.mechio.api.animation.messaging.RemoteAnimationPlayerClient;
+import org.mechio.api.animation.player.AnimationJob;
+import org.mechio.api.motion.Joint;
+import org.mechio.api.motion.messaging.RemoteRobot;
+import org.mechio.api.speech.messaging.RemoteSpeechServiceClient;
+import org.mechio.client.basic.MechIO;
+import org.mechio.client.basic.UserSettings;
 
-import static org.friendularity.demo.basic.r25.RobotJointsR25.*;
-import static org.robokind.api.motion.Robot.*;
+import static org.mechio.api.motion.Robot.*;
+import static org.mechio.client.basic.R25RobotJoints.*;
 
 public class App {
     private static RemoteRobot myRobot;
@@ -31,9 +31,9 @@ public class App {
 //        UserSettings.setAnimationAddress(ipAddress);
 //        UserSettings.setRobotId("myRobot");
         
-        myRobot = Robokind.connectRobot();
-        myPlayer = Robokind.connectAnimationPlayer();
-        mySpeaker = Robokind.connectSpeechService();
+        myRobot = MechIO.connectRobot();
+        myPlayer = MechIO.connectAnimationPlayer();
+        mySpeaker = MechIO.connectSpeechService();
         
         // This will move the robot or avatar's waist and arm.
         // If running on a robot instead of an avatar:
@@ -55,13 +55,13 @@ public class App {
         myRobot.move(myGoalPositions, 1000);
         
         Animation introAnim =
-                Robokind.loadAnimation("AZR25_waveHand_01.anim.xml");
+                MechIO.loadAnimation("AZR25_waveHand_01.anim.xml");
         AnimationJob introJob = myPlayer.playAnimation(introAnim);
         animLen = introAnim.getLength();
         mySpeaker.speak("Hello, I am your new companion.");
-        Robokind.sleep(500 + animLen);
+        MechIO.sleep(500 + animLen);
         
-        Robokind.disconnect();
+        MechIO.disconnect();
         System.exit(0);
     }
 }
