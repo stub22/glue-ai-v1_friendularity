@@ -28,59 +28,54 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.robokind</groupId>
-            <artifactId>org.robokind.impl.animation</artifactId>
-            <version>${robokind.version}</version>
+            <groupId>org.mechio</groupId>
+            <artifactId>org.mechio.impl.animation</artifactId>
+            <version>${mechio.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.robokind</groupId>
-            <artifactId>org.robokind.impl.audio</artifactId>
-            <version>${robokind.version}</version>
+            <groupId>org.mechio</groupId>
+            <artifactId>org.mechio.impl.audio</artifactId>
+            <version>${mechio.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.robokind</groupId>
-            <artifactId>org.robokind.impl.common</artifactId>
-            <version>${robokind.version}</version>
+            <groupId>org.jflux</groupId>
+            <artifactId>org.jflux.impl.messaging.rk</artifactId>
+            <version>${jflux.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.robokind</groupId>
-            <artifactId>org.robokind.impl.messaging</artifactId>
-            <version>${robokind.version}</version>
+            <groupId>org.mechio</groupId>
+            <artifactId>org.mechio.impl.motion</artifactId>
+            <version>${mechio.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.robokind</groupId>
-            <artifactId>org.robokind.impl.motion</artifactId>
-            <version>${robokind.version}</version>
+            <groupId>org.mechio</groupId>
+            <artifactId>org.mechio.impl.motion.dynamixel</artifactId>
+            <version>${mechio.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.robokind</groupId>
-            <artifactId>org.robokind.impl.motion.dynamixel</artifactId>
-            <version>${robokind.version}</version>
+            <groupId>org.mechio</groupId>
+            <artifactId>org.mechio.impl.motion.pololu</artifactId>
+            <version>${mechio.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.robokind</groupId>
-            <artifactId>org.robokind.impl.motion.pololu</artifactId>
-            <version>${robokind.version}</version>
+            <groupId>org.mechio</groupId>
+            <artifactId>org.mechio.impl.sensor</artifactId>
+            <version>${mechio.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.robokind</groupId>
-            <artifactId>org.robokind.impl.sensor</artifactId>
-            <version>${robokind.version}</version>
+            <groupId>org.mechio</groupId>
+            <artifactId>org.mechio.impl.speech</artifactId>
+            <version>${mechio.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.robokind</groupId>
-            <artifactId>org.robokind.impl.speech</artifactId>
-            <version>${robokind.version}</version>
+            <groupId>org.mechio</groupId>
+            <artifactId>org.mechio.impl.speechrec</artifactId>
+            <version>${mechio.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.robokind</groupId>
-            <artifactId>org.robokind.impl.speechrec</artifactId>
-            <version>${robokind.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.robokind</groupId>
-            <artifactId>org.robokind.impl.vision</artifactId>
-            <version>${robokind.version}</version>
+            <groupId>org.mechio</groupId>
+            <artifactId>org.mechio.impl.vision</artifactId>
+            <version>${mechio.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jflux</groupId>
@@ -96,11 +91,6 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
             <version>1.7.5</version>
-        </dependency>
-        <dependency>
-            <groupId>com.hrkind.tools</groupId>
-            <artifactId>org.robokind.impl.sensor.r25</artifactId>
-            <version>1.0.3-SNAPSHOT</version>
         </dependency>
     </dependencies>
 

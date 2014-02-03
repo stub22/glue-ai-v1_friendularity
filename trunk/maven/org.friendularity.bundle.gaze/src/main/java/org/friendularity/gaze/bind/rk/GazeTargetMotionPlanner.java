@@ -17,7 +17,7 @@ package org.friendularity.gaze.bind.rk;
 
 
 import org.cogchar.api.animoid.gaze.IGazeTarget;
-import org.robokind.api.motion.Robot.RobotPositionMap;
+import org.mechio.api.motion.Robot.RobotPositionMap;
 
 /**
  * This class is a stub showing how a Java service approach to gaze planning is constructed.

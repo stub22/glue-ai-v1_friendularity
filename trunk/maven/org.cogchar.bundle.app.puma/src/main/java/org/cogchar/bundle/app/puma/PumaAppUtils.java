@@ -28,7 +28,7 @@ import org.appdapter.help.repo.RepoClient;
 //import org.cogchar.app.puma.vworld.PumaVirtualWorldMapper;
 import org.cogchar.impl.thing.basic.BasicThingActionRouter;
 import org.osgi.framework.BundleContext;
-import org.robokind.api.motion.Robot;
+import org.mechio.api.motion.Robot;
 import org.cogchar.bind.rk.robot.motion.CogcharMotionSource;
 import org.cogchar.blob.emit.BehaviorConfigEmitter;
 import org.cogchar.impl.channel.AnimFileSpecReader;

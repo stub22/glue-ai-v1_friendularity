@@ -48,12 +48,12 @@ MNG-1412 / MNG-3111 introduced deterministic ordering of dependencies on the cla
 	
 		<dependency>
 			<!-- Note that o.f.project.root and o.f.modules.main must also have been built and avail in local repo,
-				in order for variables like "robokind.version" to resolve when applied *transitively*
+				in order for variables like "mechio.version" to resolve when applied *transitively*
 				(The built main+root is not required to resolve the variables used directly in this pom; 
 					those are allowed to come from the source-tree poms).
 			-->
 			<groupId>${project.groupId}</groupId>
-			<artifactId>org.friendularity.bundle.demo.ccrk</artifactId>
+			<artifactId>org.friendularity.bundle.demo.ccmio</artifactId>
 			<version>${project.version}</version>
 		
 		</dependency>

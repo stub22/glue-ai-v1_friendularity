@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Hanson Robokind LLC.
+ * Copyright 2014 the Friendularity Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ public class PlayerClientComboBoxModel extends DefaultComboBoxModel {
     private Preferences myPrefs;
     
     public PlayerClientComboBoxModel() {
-        myPrefs = Preferences.userRoot().node("org.robokind.demo.animation");
+        myPrefs = Preferences.userRoot().node("org.mechio.demo.animation");
         String histString = myPrefs.get("ip_history", "127.0.0.1");
         String[] history = histString.split("¤");
         myEntries = new ArrayList<String>();

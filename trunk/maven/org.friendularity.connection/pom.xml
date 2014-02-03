@@ -31,7 +31,7 @@
 		</dependency>-->
         <dependency>
             <artifactId>org.friendularity.spec.connection</artifactId>
-            <groupId>org.friendularity</groupId>
+            <groupId>${project.groupId}</groupId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Hanson Robokind, LLC
+ * Copyright 2014 the Friendularity Project
  */
 
 package org.friendularity.bundle.macro.common;

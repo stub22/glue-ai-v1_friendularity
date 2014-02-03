@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Hanson Robokind LLC.
+ * Copyright 2014 the Friendularity Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,12 +34,12 @@ import javax.swing.BoxLayout;
 import javax.swing.border.Border;
 import javax.swing.border.MatteBorder;
 import org.jflux.api.core.Source;
-import org.robokind.api.animation.Animation;
-import org.robokind.api.animation.messaging.RemoteAnimationPlayerClient;
+import org.mechio.api.animation.Animation;
+import org.mechio.api.animation.messaging.RemoteAnimationPlayerClient;
 
 /**
  *
- * @author Matthew Stevenson <www.robokind.org>
+ * @author Matthew Stevenson <www.friendularity.org>
  */
 public class AnimationListPanel extends javax.swing.JPanel {
     private final static Border theBorder = new MatteBorder(0, 0, 1, 0, Color.LIGHT_GRAY);

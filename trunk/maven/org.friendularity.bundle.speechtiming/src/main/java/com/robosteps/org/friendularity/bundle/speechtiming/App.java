@@ -8,13 +8,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import org.jflux.api.core.Listener;
-import org.robokind.api.speech.SpeechEvent;
-import org.robokind.api.speech.SpeechEventList;
-import org.robokind.api.speech.SpeechJob;
-import org.robokind.api.speech.messaging.RemoteSpeechServiceClient;
-import org.robokind.api.speech.utils.DefaultSpeechJob;
-import org.robokind.client.basic.Robokind;
-import org.robokind.client.basic.UserSettings;
+import org.mechio.api.speech.SpeechEvent;
+import org.mechio.api.speech.SpeechEventList;
+import org.mechio.api.speech.SpeechJob;
+import org.mechio.api.speech.messaging.RemoteSpeechServiceClient;
+import org.mechio.api.speech.utils.DefaultSpeechJob;
+import org.mechio.client.basic.MechIO;
+import org.mechio.client.basic.UserSettings;
 
 /**
  *
@@ -31,7 +31,7 @@ public class App {
         if(!ip.isEmpty()){
             UserSettings.setSpeechAddress(ip);
         }
-        mySpeaker = Robokind.connectSpeechService();
+        mySpeaker = MechIO.connectSpeechService();
         mySpeaker.addSpeechEventListener(new SpeechEventListener());
         while(true){
             System.out.print("Enter a phrase: ");
@@ -41,11 +41,11 @@ public class App {
             }
             SpeechJob job = mySpeaker.speak(lastPhrase);
             while(job.getStatus() <= DefaultSpeechJob.RUNNING){
-                Robokind.sleep(5);
+                MechIO.sleep(5);
             }
         }
         
-        Robokind.disconnect();
+        MechIO.disconnect();
         System.exit(0);
     }
     

@@ -35,9 +35,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.robokind</groupId>
-            <artifactId>org.robokind.client.basic</artifactId>
-            <version>${robokind.version}</version>
+            <groupId>org.mechio</groupId>
+            <artifactId>org.mechio.client.basic</artifactId>
+            <version>${mechio.version}</version>
         </dependency>
     </dependencies>
 </project>

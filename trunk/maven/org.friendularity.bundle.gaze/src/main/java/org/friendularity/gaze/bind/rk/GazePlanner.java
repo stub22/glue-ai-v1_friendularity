@@ -15,7 +15,7 @@
  */
 package org.friendularity.gaze.bind.rk;
 
-import org.robokind.api.motion.protocol.JointPositionMap;
+import org.mechio.api.motion.protocol.JointPositionMap;
 
 /**
  * A GazePlanner plans the movements towards a Target

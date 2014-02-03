@@ -1,10 +1,10 @@
 package org.friendularity.bundle.demo.convo.response;
 
+import org.jflux.api.common.rk.utils.TimeUtils;
 import org.jflux.api.core.Listener;
-import org.robokind.api.common.utils.TimeUtils;
-import org.robokind.api.speechrec.SpeechRecEvent;
-import org.robokind.impl.speech.SpeechRequestRecord;
-import org.robokind.impl.speechrec.SpeechRecEventListRecord;
+import org.mechio.api.speechrec.SpeechRecEvent;
+import org.mechio.impl.speech.SpeechRequestRecord;
+import org.mechio.impl.speechrec.SpeechRecEventListRecord;
 
 /**
  *

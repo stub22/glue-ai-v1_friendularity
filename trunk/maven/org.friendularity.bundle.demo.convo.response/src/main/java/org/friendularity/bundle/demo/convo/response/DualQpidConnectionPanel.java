@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Hanson Robokind LLC.
+ * Copyright 2014 the Friendularity Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,8 +22,8 @@
 package org.friendularity.bundle.demo.convo.response;
 
 import javax.swing.JOptionPane;
-import org.robokind.impl.speech.SpeechRequestRecord;
-import org.robokind.impl.speechrec.SpeechRecEventListRecord;
+import org.mechio.impl.speech.SpeechRequestRecord;
+import org.mechio.impl.speechrec.SpeechRecEventListRecord;
 import org.rwshop.swing.common.HistoricalComboBoxModel;
 
 /**

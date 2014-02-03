@@ -10,9 +10,9 @@ import java.util.List;
 import java.util.Map;
 import org.jflux.api.service.ServiceDependency;
 import org.jflux.api.service.ServiceLifecycle;
-import org.robokind.api.speech.viseme.VisemeBindingManager;
-import org.robokind.api.speech.viseme.config.VisemeBindingManagerConfig;
-import org.robokind.api.speech.viseme.config.VisemeBindingManagerFactory;
+import org.mechio.api.speech.viseme.VisemeBindingManager;
+import org.mechio.api.speech.viseme.config.VisemeBindingManagerConfig;
+import org.mechio.api.speech.viseme.config.VisemeBindingManagerFactory;
 
 /**
  *

@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Hanson Robokind LLC.
+ * Copyright 2014 the Friendularity Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,14 +25,14 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JFileChooser;
+import org.jflux.api.common.rk.config.VersionProperty;
 import org.jflux.api.core.Source;
-import org.robokind.api.animation.Animation;
-import org.robokind.api.animation.library.AnimationLibrary;
-import org.robokind.api.animation.library.AnimationLibraryLoader;
-import org.robokind.api.animation.messaging.RemoteAnimationPlayerClient;
-import org.robokind.api.animation.xml.AnimationFileReader;
-import org.robokind.api.animation.xml.AnimationXML;
-import org.robokind.api.common.config.VersionProperty;
+import org.mechio.api.animation.Animation;
+import org.mechio.api.animation.library.AnimationLibrary;
+import org.mechio.api.animation.library.AnimationLibraryLoader;
+import org.mechio.api.animation.messaging.RemoteAnimationPlayerClient;
+import org.mechio.api.animation.xml.AnimationFileReader;
+import org.mechio.api.animation.xml.AnimationXML;
 
 /**
  *
