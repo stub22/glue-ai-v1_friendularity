@@ -1,4 +1,4 @@
-package org.mechio.headless.animation;
+package org.friendularity.bundle.headless.animation;
 
 import java.util.logging.Logger;
 import javax.jms.Connection;

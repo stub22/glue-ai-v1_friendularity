@@ -5,7 +5,7 @@ import javax.jms.Connection;
 import org.jflux.api.messaging.rk.services.ServiceCommandFactory;
 import org.jflux.impl.messaging.rk.utils.ConnectionManager;
 import org.jflux.impl.messaging.rk.utils.ConnectionUtils;
-import org.jflux.impl.messaging.services.PortableServiceCommand;
+import org.jflux.impl.messaging.rk.services.PortableServiceCommand;
 import org.jflux.impl.services.rk.lifecycle.utils.SimpleLifecycle;
 import org.jflux.impl.services.rk.osgi.lifecycle.OSGiComponent;
 import org.osgi.framework.BundleActivator;
