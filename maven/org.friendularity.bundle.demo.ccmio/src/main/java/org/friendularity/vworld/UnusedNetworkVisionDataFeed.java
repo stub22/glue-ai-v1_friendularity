@@ -46,7 +46,7 @@ import org.jflux.impl.messaging.rk.JMSAvroMessageSender;
 import org.jflux.impl.messaging.rk.JMSAvroServiceFacade;
 import org.jflux.impl.messaging.rk.ServiceCommandRecord;
 import org.jflux.impl.messaging.rk.ServiceErrorRecord;
-import org.jflux.impl.messaging.services.PortableServiceCommand;
+import org.jflux.impl.messaging.rk.services.PortableServiceCommand;
 import org.mechio.api.vision.ImageEvent;
 import org.mechio.api.vision.ImageRegion;
 import org.mechio.api.vision.ImageRegionList;
