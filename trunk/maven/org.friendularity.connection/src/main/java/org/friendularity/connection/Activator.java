@@ -3,6 +3,7 @@ package org.friendularity.connection;
 import java.util.List;
 
 import javax.swing.UIManager;
+import org.appdapter.core.boot.ClassLoaderUtils;
 // import org.cogchar.outer.behav.demo.RepoConnector;
 import org.osgi.framework.BundleContext;
 
@@ -11,12 +12,10 @@ import org.osgi.framework.BundleContext;
 import org.appdapter.core.matdat.OnlineSheetRepoSpec;
 import org.appdapter.core.matdat.EnhancedRepoClient;
 import org.appdapter.core.store.Repo;
+import org.appdapter.lib.bind.jflux.services.RegisterWiring;
+import org.appdapter.lib.bind.jflux.services.ServiceManagerWiring;
 import org.appdapter.osgi.core.BundleActivatorBase;
 import org.cogchar.impl.scene.read.BehavMasterConfigTest;
-
-import org.friendularity.specl.connection.RegisterWiring;
-import org.cogchar.platform.util.ClassLoaderUtils;
-import org.friendularity.spec.connection.ServiceManagerWiring;
 
 /**
  * Bundle Activator for the demo connection package. This project serves as an example use-case for
