@@ -80,7 +80,7 @@
 				<extensions>true</extensions>
 				<configuration>
 					<instructions>
-						<Bundle-Activator>org.friendularity.bundle.demo.ccrk.CCRK_DemoActivator</Bundle-Activator>
+						<Bundle-Activator>org.friendularity.bundle.demo.ccmio.CCMIO_DemoActivator</Bundle-Activator>
 						<!-- Cannot just export org.friendularity.*, because that will create copies of
 								classes from other bundles that we depend on, e.g. JVision.
 								
@@ -95,7 +95,7 @@
 										org.friendularity.vworld,
 										org.friendularity.respire,
 										org.friendularity.struct,
-										org.friendularity.bundle.demo.ccrk
+										org.friendularity.bundle.demo.ccmio
 						</Export-Package>
 					</instructions>
 				</configuration>
