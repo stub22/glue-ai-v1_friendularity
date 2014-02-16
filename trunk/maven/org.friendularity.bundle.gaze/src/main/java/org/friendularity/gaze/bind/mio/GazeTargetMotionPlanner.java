@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.friendularity.gaze.bind.rk;
+package org.friendularity.gaze.bind.mio;
 
 
 import org.cogchar.api.animoid.gaze.IGazeTarget;

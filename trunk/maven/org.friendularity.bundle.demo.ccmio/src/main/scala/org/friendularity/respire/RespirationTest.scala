@@ -31,7 +31,7 @@ import org.cogchar.bind.symja.{MathGate, MathSpaceFactory}
 import org.cogchar.render.goody.dynamic.{DynamicGoody, DynamicGoodySpace}
 
 object RespirationTest extends BasicDebugger {
-	// This is the "Glue_EstimVizDemo" test sheet:
+	// This is the "Glue Test Data -  Estim Viz Demo" test sheet:
 	final val TEST_REPO_SHEET_KEY = "0ArBjkBoH40tndHRFS1JTX200WXNNTjI3MGMxWXBDN1E" 
 	final val DFLT_NAMESPACE_SHEET_NUM = 3
 	final val DFLT_DIRECTORY_SHEET_NUM = 4
