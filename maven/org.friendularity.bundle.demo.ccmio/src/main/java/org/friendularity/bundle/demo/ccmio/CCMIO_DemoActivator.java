@@ -169,7 +169,8 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 		// TODO:  Re-verify in detail.
 		werm.setFlag_JVisionTextureRoutingEnabled(myFlag_connectJVision);
 		
-		PumaAppUtils.attachVWorldRenderModule(bundleCtx, werm, null);
+		getLogger().info("$$$$$$$$$$$$$$$    $$$$$$$$$$$$$$$$$   disabled PumaAppUtils.attachVWorldRenderModule");
+	// 	PumaAppUtils.attachVWorldRenderModule(bundleCtx, werm, null);
 		EstimateVisualizer eViz = werm.setupVisualizer(null, null, null);
 		// Needs to be done at least once for the selfEstim to exist.
 		MathSpaceFactory msf = new MathSpaceFactory();
