@@ -7,7 +7,7 @@ import org.opencv.imgproc.Imgproc;
 /*
  * blur with kernal size 5
  */
-public class Erode implements BaseFilter, ParamChangedListener {
+public class Erode extends ApplicativeBaseFilter implements ParamChangedListener {
 	private Size kernal_size = new Size(13, 13);
 	private int erodeIterations = 13;
 	

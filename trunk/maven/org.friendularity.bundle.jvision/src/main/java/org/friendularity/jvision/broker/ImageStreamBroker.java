@@ -16,6 +16,7 @@
 package org.friendularity.jvision.broker;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -50,7 +51,7 @@ public class ImageStreamBroker {
 	// The default ISB. It's a singleton.
 	private static ImageStreamBroker defBroker = null;
 	
-	private HashMap<String, ImageStreamProducer>imageStreams = new HashMap<String, ImageStreamProducer>();
+	private final HashMap<String, ImageStreamProducer>imageStreams = new HashMap<String, ImageStreamProducer>();
 	
 	public static ImageStreamBroker getDefaultImageStreamBroker()
 	{
@@ -197,6 +198,26 @@ public class ImageStreamBroker {
 		synchronized(imageStreams)
 		{
 			return imageStreams.keySet().iterator();
+		}
+	}
+
+	/**
+	 * Caution, the caller should always be ready for the iterator to 
+	 * throw an exception if the imageStream list is modified while this is being used.
+	 * 
+	 * @return 
+	 */
+	public Iterator<String> publicImageStreamNames() {
+		synchronized(imageStreams)
+		{
+			HashSet<String> publicNames = new HashSet<String>();
+			for(Iterator<String>i = imageStreams.keySet().iterator() ; i.hasNext() ; ) {
+				String s = i.next();
+				
+				if(!s.contains("#"))
+					publicNames.add(s);
+			}
+			return publicNames.iterator();
 		}
 	}
 

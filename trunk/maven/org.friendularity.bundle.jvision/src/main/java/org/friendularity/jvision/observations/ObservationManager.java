@@ -13,43 +13,30 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.friendularity.jvision.filters;
-
-import javax.swing.JFrame;
-import org.opencv.core.Mat;
-import org.opencv.core.Size;
-import org.opencv.imgproc.Imgproc;
+package org.friendularity.jvision.observations;
 
 /**
  *
  * @author Annie
  */
-public class QuarterSize extends ApplicativeBaseFilter {
-
-	@Override
-	public void apply(Mat in, Mat out) {
-		 
-		Imgproc.resize(in, out, new Size(in.width() /4.0, in.height() / 4.0));
-	}
-
-	@Override
-	public void showParamUI(JFrame parent) {
+public class ObservationManager {
+	private static ObservationManager theObservationManager = null;
+	public static ObservationManager getDefaultObservationManager() {
+		ensureTransients();
 		
+		return theObservationManager;
 	}
 
-	@Override
-	public String toString() {
-		return "quartersize";
+	private static void ensureTransients() {
+		if(theObservationManager == null)
+			theObservationManager = new ObservationManager();
 	}
-
-	@Override
-	public String serialize() {
-		return "";
-	}
-
-	@Override
-	public void deserialize(String str) {
+	
+	private ObservationManager() {
 		
 	}
 	
+	public void startObservationStream(String destination) {
+		
+	}
 }

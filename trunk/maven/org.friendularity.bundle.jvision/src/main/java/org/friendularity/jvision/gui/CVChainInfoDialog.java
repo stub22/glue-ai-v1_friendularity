@@ -54,6 +54,7 @@ class CVChainInfoDialog extends JDialog implements DocumentListener, ChangeListe
 	private JButton ok;
 	private FilterBox fb;
 	private CVChainManager cvccm;
+	private static int nextChainNum = 0;
 	
 	public CVChainInfoDialog(FilterBox fb, CVChainManager cvccm) {
 
@@ -67,7 +68,7 @@ class CVChainInfoDialog extends JDialog implements DocumentListener, ChangeListe
 		cp.setLayout(new BoxLayout(cp, BoxLayout.Y_AXIS));
 		cp.add(new JLabel("ImageStream name prefix"));
 		
-		nameField = new JTextField("name here");
+		nameField = new JTextField("chain" + nextChainNum++);
 		cp.add(nameField);
 		nameField.setMaximumSize(new Dimension(32767, 24));
 		nameField.getDocument().addDocumentListener(this);
@@ -97,6 +98,7 @@ class CVChainInfoDialog extends JDialog implements DocumentListener, ChangeListe
 				names.hasNext() ; ) {
 			lm.add(item_index++, names.next());
 		}
+		if(item_index > 0)sources.setSelectedIndex(0);
 		
 		sources.addListSelectionListener(this);
 		JPanel pnl = new JPanel();
@@ -128,6 +130,7 @@ class CVChainInfoDialog extends JDialog implements DocumentListener, ChangeListe
 		cp.add(pnl);
 	
 		this.setSize(new Dimension(400, 400));
+		updateOKToOK();
 	}
 
 	@Override

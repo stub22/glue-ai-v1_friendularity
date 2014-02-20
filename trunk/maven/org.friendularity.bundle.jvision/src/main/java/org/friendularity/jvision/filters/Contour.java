@@ -13,7 +13,7 @@ import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 
-public class Contour implements BaseFilter {
+public class Contour extends ApplicativeBaseFilter  {
 
 	@Override
 	public void apply(Mat in, Mat out) {

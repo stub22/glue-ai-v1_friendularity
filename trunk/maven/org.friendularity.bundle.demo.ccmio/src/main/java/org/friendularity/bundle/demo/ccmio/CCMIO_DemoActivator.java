@@ -65,7 +65,7 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 	 * and perhaps also the textures/materials on the V-World side? 
 	 */
 	
-	private	boolean		myFlag_connectJVision = false;  
+	private	boolean		myFlag_connectJVision = true;  
 	private	boolean		myFlag_connectObsoleteNetworkVision = false;  
 	
 	private	boolean		myFlag_connectMidiIn = true;

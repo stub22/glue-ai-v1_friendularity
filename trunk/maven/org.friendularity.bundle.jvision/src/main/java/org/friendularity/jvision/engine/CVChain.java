@@ -62,6 +62,7 @@ public class CVChain implements ImageStreamConsumer {
 	
 	/**
 	 * The only thing that should call this is CVChainManager
+	 * 
 	 * @param chainName
 	 * @param intermediatesVisible
 	 * @param source 
@@ -127,20 +128,11 @@ public class CVChain implements ImageStreamConsumer {
 		outputProducer = new SimpleImageStreamProducer(getOutName());
 		ImageStreamBroker.getDefaultImageStreamBroker().addImageStreamProducer(outputProducer);
 		Logger.getLogger(CVChain.class.getName()).log(Level.INFO, "done wiring up imagestream");
+		filters.sendOutputTo(outputProducer);
 	}
 
 	public String getName() {
 		return chainName;
-	}
-
-	/**
-	 * @tbd this isn't working yet
-	 * 
-	 * @param publish 
-	 */
-	public void setPublishIntermediates(boolean publish) {
-		// TODO need to publish or unpublish
-		intermediatesVisible = publish;
 	}
 
 	/**
@@ -176,13 +168,11 @@ public class CVChain implements ImageStreamConsumer {
 	// =============== ImageStreamConsumer ==========================
 	@Override
 	public void setConsumedImage(ImageStreamImage in) {
-		Mat out = new Mat();
-		try {
-			filters.apply(in.getMat(), out);
-			outputProducer.setConsumedImage(new ImageStreamImage(out));
-		} catch (ImageFlavorNotAvailable ex) {
-			Logger.getLogger(CVChain.class.getName()).log(Level.SEVERE, null, ex);
-		}
+		filters.setConsumedImage(in);
+
+			// TODO make the last element forward to outputProducer
+		// TODO wire up the producer chain
+		   
 	}
 
 	@Override

@@ -54,7 +54,6 @@ public class CVChainControl extends JPanel {
 	private CVChain chain;
 	
 	private JLabel nameField;
-	private JCheckBox publishIntermediatesCheck;
 	private FilterList filters;
 	private JLabel sourceField;
 	private JLabel outField;
@@ -96,7 +95,6 @@ public class CVChainControl extends JPanel {
 		add(nameBox);
 		nameBox.setAlignmentX(CENTER_ALIGNMENT);
 		
-		
 		JPanel sourceBox = new JPanel();
 		sourceBox.setLayout(new BoxLayout(sourceBox, BoxLayout.Y_AXIS));
 		sourceBox.setAlignmentX(CENTER_ALIGNMENT);
@@ -109,18 +107,6 @@ public class CVChainControl extends JPanel {
 		sourceBox.setAlignmentX(CENTER_ALIGNMENT);
 		
 		add(sourceBox);
-		
-		publishIntermediatesCheck = new JCheckBox("publish intermediates");
-		
-		publishIntermediatesCheck.addChangeListener(new ChangeListener(){
-			@Override
-			public void stateChanged(ChangeEvent e) {
-				CVChainControl.this.chain.setPublishIntermediates(publishIntermediatesCheck.getModel().isSelected());
-			}
-		});
-		publishIntermediatesCheck.setAlignmentX(CENTER_ALIGNMENT);
-		
-		add(publishIntermediatesCheck);
 		
 		JPanel filterListBox = new JPanel();
 		filterListBox.setLayout(new BoxLayout(filterListBox, BoxLayout.Y_AXIS));

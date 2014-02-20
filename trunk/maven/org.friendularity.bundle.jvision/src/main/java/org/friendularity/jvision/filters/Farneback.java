@@ -12,7 +12,7 @@ import org.opencv.core.Scalar;
 
 
 
-public class Farneback implements BaseFilter {
+public class Farneback extends ApplicativeBaseFilter {
     Mat mLastFrame = null;
     Mat mFlowImage = null; 
 	@Override

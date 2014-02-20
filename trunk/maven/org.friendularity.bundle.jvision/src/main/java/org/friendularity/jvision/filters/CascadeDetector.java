@@ -1,11 +1,13 @@
 package org.friendularity.jvision.filters;
 
+import java.awt.Rectangle;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.LinkedList;
 import javax.swing.JFrame;
 import org.friendularity.jvision.gui.FileLocations;
 import org.opencv.core.Core;
@@ -23,7 +25,7 @@ import org.opencv.objdetect.CascadeClassifier;
  */
 
 
-public abstract class CascadeDetector implements BaseFilter {
+public abstract class CascadeDetector extends ApplicativeBaseFilter  {
 	
 	/**
 	 * @return the detector
@@ -85,6 +87,7 @@ public abstract class CascadeDetector implements BaseFilter {
 			}
 
 		}
+		
 	}
 	
 	public void apply(Mat in, Mat out) {
@@ -98,10 +101,15 @@ public abstract class CascadeDetector implements BaseFilter {
 			in.clone().copyTo(out);
 
 			Scalar color = this.boxColor();
+			LinkedList<Rectangle>pubRects = new LinkedList<Rectangle>();
+			
 			// Draw a bounding box around each face.
 			for (Rect rect : faceDetections.toArray()) {
 				Core.rectangle(out, new Point(rect.x, rect.y), new Point(rect.x + rect.width, rect.y + rect.height), color);
+				pubRects.add(new Rectangle(rect.x, rect.y, rect.x + rect.width, rect.y + rect.height));
+				publishObservation(pubRects);
 			}
+			
 		} catch (Throwable t) {
 			t.printStackTrace();
 			in.clone().copyTo(out);
@@ -129,5 +137,14 @@ public abstract class CascadeDetector implements BaseFilter {
 	@Override
 	public void deserialize(String str) {
 
+	}
+
+	/**
+	 * Publish this list of rectangles as an Avro/qPid message
+	 * 
+	 * @param pubRects 
+	 */
+	private void publishObservation(LinkedList<Rectangle> pubRects) {
+		// TBD not doing anything yet
 	}
 }

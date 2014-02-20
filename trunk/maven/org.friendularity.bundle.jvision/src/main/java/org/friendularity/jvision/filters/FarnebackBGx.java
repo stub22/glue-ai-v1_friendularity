@@ -9,7 +9,7 @@ import org.opencv.core.CvType;
 import org.opencv.core.Point;
 import org.opencv.core.Scalar;
 
-public class FarnebackBGx implements BaseFilter {
+public class FarnebackBGx extends ApplicativeBaseFilter {
 
 	private static byte toIntRange(float f) {
 		float ff = 128 + 8 * f;

@@ -4,7 +4,7 @@ import javax.swing.JFrame;
 import org.opencv.core.Mat;
 import org.opencv.imgproc.Imgproc;
 
-public class Grayscale implements BaseFilter {
+public class Grayscale extends ApplicativeBaseFilter {
 
 	@Override
 	public void apply(Mat in, Mat out) {

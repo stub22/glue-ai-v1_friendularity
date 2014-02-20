@@ -25,7 +25,7 @@ import org.opencv.imgproc.Imgproc;
  *
  * @author Annie
  */
-public class HalfSize implements BaseFilter {
+public class HalfSize extends ApplicativeBaseFilter {
 
 	@Override
 	public void apply(Mat in, Mat out) {
