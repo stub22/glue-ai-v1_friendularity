@@ -9,7 +9,7 @@ import org.opencv.core.Scalar;
 
 
 
-public class ColorThreshold implements BaseFilter, ParamChangedListener {
+public class ColorThreshold extends ApplicativeBaseFilter implements ParamChangedListener  {
 
 	public static final int MIN_H = 0;
 	public static final int MIN_S = 1;

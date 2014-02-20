@@ -7,35 +7,18 @@ import javax.swing.ListModel;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 import org.appdapter.core.log.BasicDebugger;
+import org.friendularity.jvision.broker.ImageStreamConsumer;
+import org.friendularity.jvision.broker.ImageStreamImage;
+import org.friendularity.jvision.broker.SimpleImageStreamProducer;
 
 import org.opencv.core.Mat;
 
 /* 
  * An ordered sequence of filters to be applied
  */
-public class FilterSequence extends BasicDebugger implements BaseFilter, ListModel {
+public class FilterSequence implements ListModel, ImageStreamConsumer {
 	
 	private ArrayList<BaseFilter> filters = new ArrayList<BaseFilter>();
-
-	@Override
-	public void apply(Mat in, Mat out) {
-		Mat temp = new Mat();
-		
-		in.copyTo(temp);
-		applyIndexed(temp, 0, out);
-	}
-	
-	private void applyIndexed(Mat in, int index , Mat out){
-		if(index >= filters.size()) {
-			in.copyTo(out);
-		} else {
-			BaseFilter f = filters.get(index);
-			Mat temp = new Mat();
-			f.apply(in, temp);
-			
-			applyIndexed(temp, index + 1 , out);
-		}
-	}
 	
 	public void addOrReplaceByClass(BaseFilter f) {
 		for(int i = filters.size() - 1 ; i >= 0 ; i--){
@@ -70,6 +53,7 @@ public class FilterSequence extends BasicDebugger implements BaseFilter, ListMod
 		BaseFilter f = filters.get(source);
 		filters.remove(source);
 		filters.add(target, f);
+		filterSequenceChanged();  // ANNIE - added this 2/19/2014 
 	}
 
 	public void add(BaseFilter f) {
@@ -119,21 +103,8 @@ public class FilterSequence extends BasicDebugger implements BaseFilter, ListMod
 		{
 			i.next().contentsChanged(lde);
 		}
-	}
-
-	@Override
-	public void showParamUI(JFrame parent) {
 		
-	}
-
-	@Override
-	public String serialize() {
-		throw new UnsupportedOperationException("Use RDF dont serialize firlter sequence");
-	}
-
-	@Override
-	public void deserialize(String str) {
-		throw new UnsupportedOperationException("Use RDF dont deserialize filter sequence");
+		rewireImageChain();
 	}
 
 	public void showParamUIForIndex(int i) {
@@ -142,5 +113,41 @@ public class FilterSequence extends BasicDebugger implements BaseFilter, ListMod
 
 	public String serializeIndex(int i) {
 		return filters.get(i).serialize();
+	}
+
+	@Override
+	public void setConsumedImage(ImageStreamImage img) {
+		if(filters.isEmpty())
+			outputLocation.setConsumedImage(img);
+		else
+			filters.get(0).setConsumedImage(img);
+	}
+
+	@Override
+	public void setConsumedMessage(String string) {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	@Override
+	public void sourceIsEnding() {
+		// TODO
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	private ImageStreamConsumer outputLocation = null;
+	
+	public void sendOutputTo(SimpleImageStreamProducer outputProducer) {
+		outputLocation = outputProducer;
+	}
+
+	private void rewireImageChain() {
+		for(Iterator<BaseFilter>i = filters.iterator() ; i.hasNext() ; ) {
+			i.next().removeAllConsumers();
+		}
+		
+		for(int i = 0; i < filters.size() - 1 ; i++)
+			filters.get(i).addConsumer(filters.get(i+1));
+		
+		filters.get(filters.size()-1).addConsumer(outputLocation);
 	}
 }

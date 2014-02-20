@@ -7,7 +7,7 @@ import org.opencv.imgproc.Imgproc;
 /*
  * blur with kernal size 5
  */
-public class Blur implements BaseFilter, ParamChangedListener {
+public class Blur extends ApplicativeBaseFilter implements ParamChangedListener {
 	private Size kernal = new Size(13.0, 13.0);
 	private double kernalSize = 13.0d;
 	

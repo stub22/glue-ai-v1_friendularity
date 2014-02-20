@@ -7,7 +7,7 @@ import org.opencv.imgproc.Imgproc;
 /*
  * blur with kernal size 5
  */
-public class Dilate implements BaseFilter, ParamChangedListener {
+public class Dilate extends ApplicativeBaseFilter implements ParamChangedListener {
 	private Size kernal_size = new Size(13, 13);
 	private int dilateIterations = 13;
 	

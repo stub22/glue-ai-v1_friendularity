@@ -33,12 +33,33 @@
 		</dependency>
 		<!-- 
 		2013-08-04:  JVision is currently not using any of the Cogchar or Robokind libraries, but it does use Appdapter 
+		2014-02-19:  Not true any more, we're migrating into the real world
 		-->
 		<dependency>
 			<groupId>org.appdapter</groupId>
 			<artifactId>org.appdapter.bundle.core</artifactId>
 			<version>${appdapter.version}</version>
 		</dependency>
+		<dependency>
+            <groupId>org.jflux</groupId>
+            <artifactId>org.jflux.impl.messaging.rk</artifactId>
+            <version>${jflux.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jflux</groupId>
+            <artifactId>org.jflux.swing.messaging</artifactId>
+            <version>${jflux.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>1.7.5</version>
+        </dependency>
 	</dependencies>
 
 	<build>
