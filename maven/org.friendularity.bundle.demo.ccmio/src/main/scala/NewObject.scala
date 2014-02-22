@@ -1,5 +1,5 @@
 /*
- *  Copyright 2013 by The Friendularity Project (www.friendularity.org).
+ *  Copyright 2014 by The Friendularity Project (www.friendularity.org).
  * 
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -14,15 +14,6 @@
  *  limitations under the License.
  */
 
-package org.friendularity.respire
-
-/**
- * A molten core is hot in the sense of being chaotic, interconnected, active computing.
- * Usually, such computing uses significant resources, consuming juice and generating heat.
- * Our goal is to maximize the ratio of output utility ("light") to this heat cost.
- * @author Stu B. <www.texpedient.com>
- */
-
-class MoltenCore {
+object NewObject {
 
 }
