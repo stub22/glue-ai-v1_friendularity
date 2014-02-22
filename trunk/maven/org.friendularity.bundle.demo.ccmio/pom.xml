@@ -27,6 +27,11 @@
 		</dependency>
 		<dependency>
 			<groupId>org.cogchar</groupId>
+			<artifactId>org.cogchar.bundle.app.vworld.startup</artifactId>
+			<version>${cogchar.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.cogchar</groupId>
 			<artifactId>org.cogchar.bundle.render.resources</artifactId>
 			<version>${cogchar.version}</version>
 			<scope>runtime</scope>
