@@ -66,16 +66,16 @@ object RespirationTest extends BasicDebugger {
 		val mathSheetQN = "ccrti:math_sheet_60";
 		val spatGraphID = dfltTestRC.makeIdentForQName(spatSheetQN);// AssumedGraphDir.estimVizTestCfgGraphQN);
 		val mathGraphID = dfltTestRC.makeIdentForQName(mathSheetQN);
-		println("viz spatial graphID = " + spatGraphID);
+		getLogger().info("viz spatial graphID = " + spatGraphID);
 		val spatGraph = dfltTestRepo.getNamedModel(spatGraphID);
 		// println("Fetched spat model: " + spatGraph);
 		val mathGraph  = dfltTestRepo.getNamedModel(mathGraphID); 
 		
 		val mathModelPrefixMap = mathGraph.getNsPrefixMap()
 		// println("Fetched math model: " + mathGraph);
-		println("\n\n*************************************************************");
-		println("Fetched math prefix-map - if this is empty, then all the QName-resolves below will fail: " + mathModelPrefixMap)
-		println("*************************************************************\n\n");
+		getLogger().info("\n\n*************************************************************");
+		getLogger().info("Fetched math prefix-map - if this is empty, then all the QName-resolves below will fail: " + mathModelPrefixMap)
+		getLogger().info("*************************************************************\n\n");
 		
 		if (mathModelPrefixMap.size() == 0) {
 			//Set prefixes manually 
@@ -90,27 +90,27 @@ object RespirationTest extends BasicDebugger {
 		
 		val eq1_QN = "hevi:test_01"
 		val eq1_Item = mathMCI.makeItemForQName(eq1_QN);
-		println("Got eq1_Item : " + eq1_Item)
+		getLogger().info("Got eq1_Item : " + eq1_Item)
 		
 		val exprProp_QN = "hev:expr_pos_vec3f"
 		val exprProp_ID = mathMCI.makeIdentForQName(exprProp_QN)
 		val eq1_expr = eq1_Item.getValString(exprProp_ID, "NOT_FOUND")
-		println("Got eq1_expr : " + eq1_expr)
+		getLogger().info("Got eq1_expr : " + eq1_expr)
 		
 		val outDoubleVec : Array[Double] = mg.parseAndEvalExprToDoubleVec(eq1_expr, null)
 		
-		println("Math-eval produced array: " + outDoubleVec.deep) 
+		getLogger().info("Math-eval produced array: " + outDoubleVec.deep) 
 		
 		val eq2_QN = "hevi:test_02"
 		val eq2_Item = mathMCI.makeItemForQName(eq2_QN);
-		println("Got eq2_Item : " + eq2_Item)
+		getLogger().info("Got eq2_Item : " + eq2_Item)
 		
 		val eq2_expr = eq2_Item.getValString(exprProp_ID, "{-1.0}")
-		println("Got eq2_expr : " + eq2_expr)
+		getLogger().info("Got eq2_expr : " + eq2_expr)
 		
 		val outDoubleVec2 : Array[Double] = mg.parseAndEvalExprToDoubleVec(eq2_expr, null)
 		
-		println("Math-eval produced array: " + outDoubleVec2.deep) 
+		getLogger().info("Math-eval produced array: " + outDoubleVec2.deep) 
 		// val exprPropQN = "hev:expr"
 		// val eq1_expr = 
 		testGoodySpace(dfltTestRepo, dfltTestRC)
@@ -127,20 +127,20 @@ object RespirationTest extends BasicDebugger {
 		val spaceSpecItem = mathModelClient.makeItemForQName(spaceSpecQN);
 		
 		val dgs = new DynamicGoodySpace(graphID, spaceSpecItem.getIdent);
-		println("Got Goody-Space-Spec Item: " + spaceSpecItem)
+		getLogger().info("Got Goody-Space-Spec Item: " + spaceSpecItem)
 
 		dgs.refreshModelClient(mathModelClient)
 		
 		val spaceLink_Prop = mathModelClient.makeIdentForQName(spaceLink_PropQN);
-		println("Space Link Prop" + spaceLink_Prop)
+		getLogger().info("Space Link Prop" + spaceLink_Prop)
 		val linkedGSItems = spaceSpecItem.getLinkedItemSet(spaceLink_Prop, Item.LinkDirection.REVERSE);
-		println("linkedGSItems: " + linkedGSItems)
+		getLogger().info("linkedGSItems: " + linkedGSItems)
 		val goodyIndex_PropQN = "hev:goodyIndex";
 		val goodyIndex_Prop = mathModelClient.makeIdentForQName(goodyIndex_PropQN);
 
 		import scala.collection.JavaConversions._;	
 		for (gsi <- linkedGSItems) {
-			println("Got Goody-Spec Item: " + gsi)
+			getLogger().info("Got Goody-Spec Item: " + gsi)
 			val dgIndex_oneBased = gsi.getValInteger(goodyIndex_Prop, -1)
 			val dg = dgs.getGoodyAtIndex(dgIndex_oneBased)
 			dg.updateFromSpecItem(mathModelClient, gsi);
@@ -154,17 +154,18 @@ object RespirationTest extends BasicDebugger {
 		// for difference implied by the "new" in this case, see:
 		// http://stackoverflow.com/questions/2700175/scala-array-constructor
 		val tgtArray = new Array[Double](4)
-		val baseExpr = "{-4.0, 3.0, -2.0, 1.0}";
+		val baseExpr = "{-4.0, 5/2, 14 /-7, Sqrt[1.001]}";
 		val oneHundred = 100
 		for (idx <- 1 to oneHundred) {
 			var lastDvec : Array[Double] = new Array[Double](0)
 			val oneMillion = 1000000
+			// Create a string expr multiplying index (scalar, integer) and baseExpr (vector of floats + ints) 
 			val fullExpr = "" + idx + " * " + baseExpr;
 			for (jdx <- 0 to oneMillion) {
 				val dvec : Array[Double] = mg.parseAndEvalExprToDoubleVec(fullExpr, tgtArray);
 				lastDvec = dvec;
 			}
-			println("Loop # " + idx + " produced " + lastDvec.deep)
+			getLogger().info("Loop # " + idx + " produced " + lastDvec.deep)
 		}
 	}
 }
