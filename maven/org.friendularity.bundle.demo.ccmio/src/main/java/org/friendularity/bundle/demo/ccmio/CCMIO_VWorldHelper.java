@@ -54,6 +54,8 @@ public class CCMIO_VWorldHelper {
 		myVWorldMapper = vwm;
 	}	
 	
+	//  2014-02-22 - Noted most of the stuff below is now captured in the new VWorldRegistry class.
+	
 	/*  2014-02-20 removed from PumaAppContext
 	 * 	public boolean hasVWorldMapper() {
 		return (myRegClient.getVWorldMapper(null) != null);
