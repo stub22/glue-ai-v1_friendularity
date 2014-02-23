@@ -30,10 +30,10 @@ object StructTest  extends BasicDebugger {
 		// Backup - if logging is not working, try enabling these two lines.
 		// Must enable "compile" or "provided" scope for Log4J dep in order to compile this code.
 		// Note that these settings can cause double-logging, if there is a log4j.properties found.		
-		//org.apache.log4j.BasicConfigurator.configure();
-		//org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.ALL);		
-		println("Yep!")
-		getLogger().info("Sweet!")
+		org.apache.log4j.BasicConfigurator.configure();
+		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.INFO);		
+		println("Yep, Scala println works!")
+		getLogger().info("Sweet, app logging works!")
 		testStructs()
 		testMathSource()
 	}
