@@ -1,3 +1,0 @@
-
-package org.friendularity.vwtest
-
