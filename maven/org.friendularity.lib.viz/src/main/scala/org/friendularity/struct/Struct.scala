@@ -22,12 +22,7 @@ import org.friendularity.api.struct.Maker;
  * @author Stu B. <www.texpedient.com>
  */
 
-trait DataExpr {
-	// Marker trait that we might not really need
-}
-trait DataValue {
-	// Marker trait that we might not really need
-}
+
 /* Interesting:
  org/friendularity/struct/Struct.scala:150: error: type mismatch;
  found   : Array[Elem with Object]
@@ -46,35 +41,10 @@ abstract class Factory[V] extends Maker[V] {
 	def makeArray(size : Int) : Array[V] 
 
 }
-trait DataSource[DE <: DataExpr, DV <: DataValue] {
-	def read(expr : DE, dataValue : DV)
-}
 class MathGateExpr(val myExprString : String) extends DataExpr {
 }
-// Scala's  Array[Double] compiles to java:  double[]  
-class ArrayOfDoubles(val myVals : Array[Double]) extends DataValue  {
-	override def toString(): String = "AOD[" + myVals.mkString(", ") + "]"
-}
-class AODFactory(val myArraySize : Int) extends Factory[ArrayOfDoubles] {
-	override def makeOne() : ArrayOfDoubles = {
-		val a = new Array[Double](myArraySize)
-		new ArrayOfDoubles(a)
-	}
-	override def makeArray(size : Int) : Array[ArrayOfDoubles] = {
-		new Array[ArrayOfDoubles](size)
-	}
-	override def shallowCopyContents(source : ArrayOfDoubles, target: ArrayOfDoubles) {
-		source.myVals.copyToArray(target.myVals)
-	}
-}
-class OneDouble(val myVal : Double) extends DataValue {
-}
-class MathGateDoublesSource(val myMG : MathGate) extends DataSource[MathGateExpr, ArrayOfDoubles] {
-	override def read(expr : MathGateExpr, dataValue : ArrayOfDoubles) = {
-		myMG.parseAndEvalExprToDoubleVec(expr.myExprString, dataValue.myVals);
-	}
-}
-// A Struct is just an interface to some state that can be read/written using FieldVal.
+
+// A Struct is just an interface to some state that can be read/written using the value type FieldVal.
 // These methods read/write a private copy of the data, separate from dVal.
 // This trait does not specify whether the fields must exist internally before being written,
 // or how fields might be made if they are not available, or whether an error should occur instead.
@@ -89,18 +59,13 @@ trait Struct[FieldKey, FieldVal] extends DataValue {
 	// This approach also fits our larger constant-memory ring-buffer pattern.
 	def readField(fk : FieldKey, dVal : FieldVal)
 }
-// The buffer is an unsafe temp-buffer for us to use in bridging between data-source and (all) structs
-class Binding[DE <: DataExpr, BDV <: DataValue](val myExpr : DE, val myBufferDV : BDV) {
-	def readSourceField(ds : DataSource[DE, BDV]) : Unit = {
-		// Un-threadsafe use of temp buffer val
-		ds.read(myExpr, myBufferDV)
-	}
-}
+
+// Knows how to 
 class StructMapper[FK, DV <: DataValue, DE <: DataExpr] {
-	var myFieldExprMap = new scala.collection.immutable.HashMap[FK, Binding[DE, DV]]
+	var myFieldExprMap = new scala.collection.immutable.HashMap[FK, DataBinding[DE, DV]]
 
 	def bindField(fk : FK, de : DE, bufferDV : DV) {
-		val binding = new Binding(de, bufferDV)
+		val binding = new DataBinding(de, bufferDV)
 		myFieldExprMap += (fk -> binding)
 	}
 	// Again, we avoid assuming that it is easy to create new values, and instead we write into exsiting values.

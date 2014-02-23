@@ -30,7 +30,7 @@ import org.cogchar.bind.symja.{MathGate, MathSpaceFactory}
 
 import org.cogchar.render.goody.dynamic.{DynamicGoody, DynamicGoodySpace}
 
-object RespirationTest extends BasicDebugger {
+object RespirationTest extends VarargsLogging {
 	// This is the "Glue Test Data -  Estim Viz Demo" test sheet:
 	final val TEST_REPO_SHEET_KEY = "0ArBjkBoH40tndHRFS1JTX200WXNNTjI3MGMxWXBDN1E" 
 	final val DFLT_NAMESPACE_SHEET_NUM = 3
@@ -53,6 +53,7 @@ object RespirationTest extends BasicDebugger {
 		
 		testDoubleVecFetch();
 	}
+	
 	def testRespiration() : Unit = {
 		// Note this calls testGoodySpace at the end
 		getLogger().info("Why hello there!  Yes, respiration is the order of the hour...")
@@ -87,33 +88,47 @@ object RespirationTest extends BasicDebugger {
 		val msf = new MathSpaceFactory();
 		// val mg : MathGate = msf.makeScriptedMathGate();
 		val mg : MathGate = msf.makeUnscriptedMathGate();
+		val mathTxtSrc = new MathTextSource(mathMCI)
 		
+		// Here we grab two FullExprs and prove we can parse and evaluate math expressions from the input graph.
 		val eq1_QN = "hevi:test_01"
-		val eq1_Item = mathMCI.makeItemForQName(eq1_QN);
-		getLogger().info("Got eq1_Item : " + eq1_Item)
-		
-		val exprProp_QN = "hev:expr_pos_vec3f"
-		val exprProp_ID = mathMCI.makeIdentForQName(exprProp_QN)
-		val eq1_expr = eq1_Item.getValString(exprProp_ID, "NOT_FOUND")
-		getLogger().info("Got eq1_expr : " + eq1_expr)
-		
-		val outDoubleVec : Array[Double] = mg.parseAndEvalExprToDoubleVec(eq1_expr, null)
-		
-		getLogger().info("Math-eval produced array: " + outDoubleVec.deep) 
-		
+		grappleFullExpr(eq1_QN, mg, mathTxtSrc)
+
 		val eq2_QN = "hevi:test_02"
-		val eq2_Item = mathMCI.makeItemForQName(eq2_QN);
-		getLogger().info("Got eq2_Item : " + eq2_Item)
+		grappleFullExpr(eq2_QN, mg, mathTxtSrc)
 		
-		val eq2_expr = eq2_Item.getValString(exprProp_ID, "{-1.0}")
-		getLogger().info("Got eq2_expr : " + eq2_expr)
-		
-		val outDoubleVec2 : Array[Double] = mg.parseAndEvalExprToDoubleVec(eq2_expr, null)
-		
-		getLogger().info("Math-eval produced array: " + outDoubleVec2.deep) 
-		// val exprPropQN = "hev:expr"
-		// val eq1_expr = 
 		testGoodySpace(dfltTestRepo, dfltTestRC)
+	}
+	def powerLoad() { 
+		// We want to iterate over the subcategories of exprs to load them up.
+		// Order within a subcat generally should not matter.  
+		//   1) Optional Symbols - Any globals or builtins - not for state
+		//   2) Optional Types - including state vector names/patterns may come from RDF,
+		//   3) FuncDef - Transformations und mappings = the essence of our model.
+		//   4) FullExpr - A query/calculation result stream node, used for state and as view for display.
+		//		Establishing one of these in a context causes actual state to be streamed. 
+		//   5) Application objects such as DynamicGoodys.
+	}
+	val NOT_FOUND_EXPR : String = "None"	
+	class MathTextSource(val mySymSrcMC : ModelClient) {
+		val posExprProp_QN = "hev:expr_pos_vec3f"
+		val posExprProp_ID = mySymSrcMC.makeIdentForQName(posExprProp_QN)		
+		
+		// Here items are thought of as parents for expression properties
+		def findParentItem(itemIndivQN : String) : Item = mySymSrcMC.makeItemForQName(itemIndivQN)
+
+		def positionExprText(parentIndivItem : Item) = parentIndivItem.getValString(posExprProp_ID, NOT_FOUND_EXPR)
+				
+	}
+	
+	def grappleFullExpr(exprIndivQN: String, mg : MathGate,  mTxtSrc : MathTextSource) = {
+		val indivItem = mTxtSrc.findParentItem(exprIndivQN)
+		
+		debug2("At indiv-QN {} found expr-Item: {}", exprIndivQN, indivItem)		
+		val exprText =  mTxtSrc.positionExprText(indivItem)
+		val outDubVec : Array[Double] = mg.parseAndEvalExprToDoubleVec(exprText, null)
+
+		info3("At QN {}, math-expr {} evals to double-vec {}", exprIndivQN, exprText, outDubVec.deep)
 	}
 	
 	def testGoodySpace(repo : Repo, repoClient : RepoClient) : Unit = { 
