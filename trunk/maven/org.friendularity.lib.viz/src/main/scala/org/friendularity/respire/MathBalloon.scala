@@ -31,6 +31,9 @@ object MathBalloon extends BasicDebugger {
 		getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^  main() starting StructTest.testStructs()");		
 		org.friendularity.struct.StructTest.testStructs;
 		
+		getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^  main() starting StructTest.testMathSource()");				
+		org.friendularity.struct.StructTest.testMathSource;
+		
 		getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^  main() starting GridSpaceTest.go");
 		// GridSpaceTest 
 		org.cogchar.api.space.GridSpaceTest.go;

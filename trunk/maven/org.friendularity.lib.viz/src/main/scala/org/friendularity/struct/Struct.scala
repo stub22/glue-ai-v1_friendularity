@@ -22,28 +22,6 @@ import org.friendularity.api.struct.Maker;
  * @author Stu B. <www.texpedient.com>
  */
 
-
-/* Interesting:
- org/friendularity/struct/Struct.scala:150: error: type mismatch;
- found   : Array[Elem with Object]
- required: Array[Elem]
- Note: Elem with Object <: Elem, but class Array is invariant in type T.
- You may wish to investigate a wildcard type such as `_ <: Elem`. (SLS 3.2.10)
- val myElems : Array[Elem] = myElemFactory.makeArray(mySize)
- http://stackoverflow.com/questions/10000126/re-using-java-generic-collections-in-scala-without-trait-object	
- */
-
-// If this were a trait instead of abstract class, then it would not be properly extensible 
-// from Java, because it contains method impls.
-abstract class Factory[V] extends Maker[V] {
-	// If V represents any kind of an array, then make() must know how big that array is.
-	def make() : V = makeOne()
-	def makeArray(size : Int) : Array[V] 
-
-}
-class MathGateExpr(val myExprString : String) extends DataExpr {
-}
-
 // A Struct is just an interface to some state that can be read/written using the value type FieldVal.
 // These methods read/write a private copy of the data, separate from dVal.
 // This trait does not specify whether the fields must exist internally before being written,
@@ -77,10 +55,6 @@ class StructMapper[FK, DV <: DataValue, DE <: DataExpr] {
 	}
 }
 
-trait FieldMaker[FK, DV <: DataValue] {
-	// Unused
-	def makeField(fieldKey : FK) : DV
-}
 // Uses a fieldFactory to copy values as required, and *by default* to make new values.
 class BasicStruct[FK, FV](val myFieldFactory : Factory[FV]) extends Struct[FK, FV] {
 	var myFieldValMap : Map[FK, FV] = new scala.collection.immutable.HashMap[FK, FV]
@@ -107,53 +81,3 @@ class BasicStruct[FK, FV](val myFieldFactory : Factory[FV]) extends Struct[FK, F
 	}
 	override def toString(): String = "BasicStruct[" + myFieldValMap + "]"	
 }
-
-object RigidBodyFieldNames {
-	val	(pos, dir) = ("pos", "dir")
-	val aodf = new	AODFactory(1)
-	val pos3Factory = new AODFactory(3)
-	val dir4Factory = new AODFactory(4)
-}
-class RigidBodyStruct extends BasicStruct[String, ArrayOfDoubles](RigidBodyFieldNames.aodf) {
-	override protected def makeFieldVal(fk : String) : ArrayOfDoubles = {
-		fk match {
-			case RigidBodyFieldNames.pos => RigidBodyFieldNames.pos3Factory.make()
-			case RigidBodyFieldNames.dir => RigidBodyFieldNames.dir4Factory.make()
-		}
-	}
-}
-// class SnapTimes extends Struct[FK, FV] {	
-// }
-class SnapStruct extends BasicStruct[String, ArrayOfDoubles](RigidBodyFieldNames.aodf) {
-}
-class RingBuf[Elem](val mySize : Int, val myElemFactory : Factory[Elem]) {
-	val myElems : Array[Elem] = myElemFactory.makeArray(mySize)
-	var	myCurrentIndex = 0
-	// Do we like having empty elements initially? 
-	for (idx <- 0 to mySize-1) {
-		myElems(idx) = myElemFactory.make()
-	}
-	def getCurrent() : Elem = myElems(myCurrentIndex)
-	
-	def advance() {
-		myCurrentIndex = (1 + myCurrentIndex) % mySize
-	}
-	// 0 = current
-	def getPrevious(howManyBack : Int) : Elem = {
-		// Java can return negative remainders - this formula corrects to always give a positive modulus.
-		val prevIndex = (((myCurrentIndex - howManyBack) % mySize) + mySize) % mySize;
-		myElems(prevIndex)
-	}
-	// Considering this, where howMany <= mySize
-	// Order is reversed: 
-	// result[0] = current, result[1] = previous.
-	
-	
-	// def getCurrent
-}
-// class AgnosticStruct 
-/*
- class ClassyIdentStruct extends Struct[Ident] {
-	
- }
- */
