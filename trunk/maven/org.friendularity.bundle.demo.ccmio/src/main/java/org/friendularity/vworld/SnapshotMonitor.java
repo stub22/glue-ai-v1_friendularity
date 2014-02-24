@@ -24,7 +24,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.shape.Quad;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
 
-import org.friendularity.struct.RingBuf;
+import org.friendularity.struct.OtherRingBuf;
 import org.friendularity.struct.Factory;
 
 import org.cogchar.render.trial.TrialContent;
@@ -77,7 +77,7 @@ public class SnapshotMonitor extends TrialContent implements ParamValueListener 
 	}
 	private float myCursorAz = 0.0f, myCursorEl, myCursorTwist, myCursorDist = 15.0f;
 	private Vector3f myBaseVec;
-	private RingBuf<PanelItem> myIRB;
+	private OtherRingBuf<PanelItem> myIRB;
 	private Node mySnapRootNode;
 	private	Geometry myCursorGeom;
 	// private TempMidiBridge	myTMB;
@@ -105,7 +105,7 @@ public class SnapshotMonitor extends TrialContent implements ParamValueListener 
 		mySnapRootNode.attachChild(myCursorGeom);
 		
 		
-		myIRB = new RingBuf<PanelItem>(panelCount, anItemFactory);
+		myIRB = new OtherRingBuf<PanelItem>(panelCount, anItemFactory);
 		for (int panelIndex = 0; panelIndex < panelCount; panelIndex++) {
 			PanelItem panelItem = myIRB.getCurrent();
 			panelItem.myAbsIndex = panelIndex;

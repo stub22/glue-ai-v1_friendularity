@@ -27,7 +27,7 @@ import org.friendularity.struct.*;
  */
 
 public class TrackingEstimate extends ThingEstimate {
-	private		RingBuf<Struct<String, ArrayOfDoubles>>		mySnaps;
+	private		OtherRingBuf<Struct<String, ArrayOfDoubles>>		mySnaps;
 
 	public TrackingEstimate(Ident id) {
 		super(id);
