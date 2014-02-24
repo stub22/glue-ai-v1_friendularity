@@ -39,6 +39,7 @@ object StructTest  extends org.friendularity.respire.VarargsLogging {
 		testMathSource()
 	}
 	def testStructs() { 
+		// Make factories for the double-Array sizes we commonly use
 		val aodf4 = new	AODFactory(4)
 		val aodf3 = new	AODFactory(3)
 		val aodf2 = new	AODFactory(2)

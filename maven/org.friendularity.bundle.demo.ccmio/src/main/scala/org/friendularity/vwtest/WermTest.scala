@@ -21,7 +21,7 @@ import org.appdapter.core.name.{Ident, FreeIdent}
 
 import org.cogchar.bind.symja.{MathGate, MathSpaceFactory}
 
-import org.friendularity.respire.{RespirationTest, MoltenCore}
+import org.friendularity.respire.{RespirationTest, MoltenCore}  
 
 object WermTest {
 	def main(args: Array[String]) : Unit = {
