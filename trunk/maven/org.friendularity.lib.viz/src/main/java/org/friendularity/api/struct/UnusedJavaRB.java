@@ -24,11 +24,11 @@ import java.lang.reflect.Array;
  * 
  */
 
-public class RingBuffer<Elem> {
+class UnusedJavaRB<Elem> {
 	private		Elem[]	myDataRing;
 	int		myLastWrittenIdx = -1;
 	
-	public RingBuffer(int size, Class<Elem> clazz, Maker<Elem> maker) {
+	public UnusedJavaRB(int size, Class<Elem> clazz, Maker<Elem> maker) {
 		myDataRing = (Elem[]) Array.newInstance(clazz, size);
 	}
 
