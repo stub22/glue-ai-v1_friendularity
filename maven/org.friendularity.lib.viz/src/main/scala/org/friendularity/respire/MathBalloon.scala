@@ -26,24 +26,32 @@ object MathBalloon extends BasicDebugger {
 		// However, when a log4j.properties file is present, these commands should not be used.
 		org.apache.log4j.BasicConfigurator.configure();
 		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.INFO);
-		val tbApp : TrialBalloon = new TrialBalloon();
+
+
+		getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^  main() starting StructTest.testStructs()");		
+		org.friendularity.struct.StructTest.testStructs;
 		
-		getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^  main() starting GridSpaceTest");
+		getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^  main() starting GridSpaceTest.go");
 		// GridSpaceTest 
 		org.cogchar.api.space.GridSpaceTest.go;
 		
-		getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^  main() calling initMidi()");
+		getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^  main() testing math-repo+goody load (respiration)");		
+		RespirationTest.initReposLoadMathEval;
+		
+		getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^  main() constructing a TrialBalloon OpenGL+MIDI app");
+		val tbApp : TrialBalloon = new TrialBalloon();
+		getLogger().info("calling tbApp.initMidi()");
 		// Initialize available MIDI devices and sequence library.
 		tbApp.initMidi();
-		getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^  main() calling JME3 start(), which will in turn call TrialBalloon.simpleInitApp()");
+		getLogger().info("main() calling tbApp (JME3) start(), which will block this thread until done, and will call TrialBalloon.simpleInitApp()");
 		// Start the JME3 Virtual world, running all init (i.e. simpleInitApp()) on *this* thread,
 		// including blocking waiting for user to say OK to jME launch box.  
 		tbApp.start();
 
-		getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^  main() - now expects OpenGL VWorld to be running.");
+		getLogger().info("main() - returned from blocking V-World launch, we now expect OpenGL VWorld to be running.");
 		
 		// app.optLoadConfig();
-		getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^ main() calling playMidiOutput()");
+		getLogger().info("main() calling tbApp.playMidiOutput()");
 		tbApp.playMidiOutput();
 		
 		// If user escapes out of OpenGL Canvas window while MIDI output still playing in this playMidiOutput method, we get:
@@ -59,7 +67,7 @@ object MathBalloon extends BasicDebugger {
 148231 [main] INFO org.friendularity.respire.MathBalloon$  - ^^^^^^^^^^^^^^^^^^^^^^^^ End of main()
 
 		 */
-		getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^ End of main()");
+		getLogger().info("^^^^^^^^^^ End of MathBalloon.main()");
 		
 		
 	}

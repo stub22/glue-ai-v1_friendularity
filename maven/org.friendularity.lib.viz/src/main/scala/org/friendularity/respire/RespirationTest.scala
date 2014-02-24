@@ -49,12 +49,14 @@ object RespirationTest extends VarargsLogging {
 		org.apache.log4j.BasicConfigurator.configure();
 		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.INFO);
 		
-		testRespiration();  // Chains to call testGoodySpace
+		initReposLoadMathEval();  // Chains to call testGoodySpace
 		
-		testDoubleVecFetch();
+		// Optional: Wander off into a long looping computation...
+		val mc = new MoltenCore()
+		mc.testDoubleVecFetch();
 	}
 	
-	def testRespiration() : Unit = {
+	def initReposLoadMathEval() : Unit = {
 		// Note this calls testGoodySpace at the end
 		getLogger().info("Why hello there!  Yes, respiration is the order of the hour...")
 		val rspec = makeDfltOSRS();
@@ -63,41 +65,53 @@ object RespirationTest extends VarargsLogging {
 		//dbRepo.addNamedModel(copyID, lightsModelFromSheet);
 		//val copiedModel = dbRepo.getNamedModel(copyID)	
 		val dfltTestRC = rspec.makeRepoClient(dfltTestRepo); 
+		testMathAndDynaGoodies(dfltTestRepo, dfltTestRC);
+	}
+	def testMathAndDynaGoodies (dfltTestRepo: Repo,  dfltTestRC : RepoClient) : Unit = {
+		
+		testMathGraphLoadEval(dfltTestRepo, dfltTestRC)
+
+		// This does not diretly create any V-World goodies, just tests the config mechanism
+		testDynaGoodyItemLoad(dfltTestRepo, dfltTestRC)		
+	}
+	def testMathGraphLoadEval(dfltTestRepo : Repo, dfltTestRC : RepoClient) : Unit = {  
 		val spatSheetQN = "ccrti:spatial_sheet_60";
 		val mathSheetQN = "ccrti:math_sheet_60";
-		val spatGraphID = dfltTestRC.makeIdentForQName(spatSheetQN);// AssumedGraphDir.estimVizTestCfgGraphQN);
+		val spatGraphID = dfltTestRC.makeIdentForQName(spatSheetQN);   // AssumedGraphDir.estimVizTestCfgGraphQN);
 		val mathGraphID = dfltTestRC.makeIdentForQName(mathSheetQN);
-		getLogger().info("viz spatial graphID = " + spatGraphID);
+		info1("viz spatial graphID = {} ", spatGraphID);
 		val spatGraph = dfltTestRepo.getNamedModel(spatGraphID);
 		// println("Fetched spat model: " + spatGraph);
 		val mathGraph  = dfltTestRepo.getNamedModel(mathGraphID); 
 		
-		val mathModelPrefixMap = mathGraph.getNsPrefixMap()
-		// println("Fetched math model: " + mathGraph);
-		getLogger().info("\n\n*************************************************************");
-		getLogger().info("Fetched math prefix-map - if this is empty, then all the QName-resolves below will fail: " + mathModelPrefixMap)
-		getLogger().info("*************************************************************\n\n");
-		
-		if (mathModelPrefixMap.size() == 0) {
-			//Set prefixes manually 
-			mathGraph.setNsPrefix("hev", "urn:ftd:headyspace.org:2013:estimviz_type#");
-			mathGraph.setNsPrefix("hevi", "urn:ftd:headyspace.org:2013:estimviz_inst#");
-		}
-		val mathMCI : ModelClient = new ModelClientImpl(mathGraph);
+		ensurePrefixesAligned(mathGraph)
 
+		val mathMCI : ModelClient = new ModelClientImpl(mathGraph);
+		val mathTxtSrc = new MathTextSource(mathMCI)
+		
 		val msf = new MathSpaceFactory();
 		// val mg : MathGate = msf.makeScriptedMathGate();
 		val mg : MathGate = msf.makeUnscriptedMathGate();
-		val mathTxtSrc = new MathTextSource(mathMCI)
-		
+
 		// Here we grab two FullExprs and prove we can parse and evaluate math expressions from the input graph.
 		val eq1_QN = "hevi:test_01"
 		grappleFullExpr(eq1_QN, mg, mathTxtSrc)
 
 		val eq2_QN = "hevi:test_02"
 		grappleFullExpr(eq2_QN, mg, mathTxtSrc)
+	}
+	def ensurePrefixesAligned(mathGraph : Model) : Unit = {
+		val mathModelPrefixMap = mathGraph.getNsPrefixMap()
+		// println("Fetched math model: " + mathGraph);
+		debug0("\n\n*************************************************************");
+		debug1("Fetched math prefix-map - if this is empty, then all the QName-resolves below will fail: {} ", mathModelPrefixMap)
+		debug0("*************************************************************\n\n");
 		
-		testGoodySpace(dfltTestRepo, dfltTestRC)
+		if (mathModelPrefixMap.size() == 0) {
+			//Set prefixes manually 
+			mathGraph.setNsPrefix("hev", "urn:ftd:headyspace.org:2013:estimviz_type#");
+			mathGraph.setNsPrefix("hevi", "urn:ftd:headyspace.org:2013:estimviz_inst#");
+		}		
 	}
 	def powerLoad() { 
 		// We want to iterate over the subcategories of exprs to load them up.
@@ -131,7 +145,7 @@ object RespirationTest extends VarargsLogging {
 		info3("At QN {}, math-expr {} evals to double-vec {}", exprIndivQN, exprText, outDubVec.deep)
 	}
 	
-	def testGoodySpace(repo : Repo, repoClient : RepoClient) : Unit = { 
+	def testDynaGoodyItemLoad(repo : Repo, repoClient : RepoClient) : Unit = { 
 		val graphQN = "ccrti:math_sheet_60";
 		val spaceSpecQN = "hevi:space_01";
 		val spaceLink_PropQN = "hev:goodySpace";
@@ -142,20 +156,20 @@ object RespirationTest extends VarargsLogging {
 		val spaceSpecItem = mathModelClient.makeItemForQName(spaceSpecQN);
 		
 		val dgs = new DynamicGoodySpace(graphID, spaceSpecItem.getIdent);
-		getLogger().info("Got Goody-Space-Spec Item: " + spaceSpecItem)
+		info1("Got Goody-Space-Spec Item: {}", spaceSpecItem)
 
 		dgs.refreshModelClient(mathModelClient)
 		
 		val spaceLink_Prop = mathModelClient.makeIdentForQName(spaceLink_PropQN);
-		getLogger().info("Space Link Prop" + spaceLink_Prop)
+		info1("Space Link Prop: {}", spaceLink_Prop)
 		val linkedGSItems = spaceSpecItem.getLinkedItemSet(spaceLink_Prop, Item.LinkDirection.REVERSE);
-		getLogger().info("linkedGSItems: " + linkedGSItems)
+		info1("linkedGSItems: {}",  linkedGSItems)
 		val goodyIndex_PropQN = "hev:goodyIndex";
 		val goodyIndex_Prop = mathModelClient.makeIdentForQName(goodyIndex_PropQN);
 
 		import scala.collection.JavaConversions._;	
 		for (gsi <- linkedGSItems) {
-			getLogger().info("Got Goody-Spec Item: " + gsi)
+			info1("Got Goody-Spec Item: {}", gsi)
 			val dgIndex_oneBased = gsi.getValInteger(goodyIndex_Prop, -1)
 			val dg = dgs.getGoodyAtIndex(dgIndex_oneBased)
 			dg.updateFromSpecItem(mathModelClient, gsi);
@@ -163,24 +177,5 @@ object RespirationTest extends VarargsLogging {
 		
 	}
 
-	def testDoubleVecFetch() : Unit = {
-		val msf : MathSpaceFactory = new  MathSpaceFactory();
-		val mg : MathGate = msf.makeUnscriptedMathGate();
-		// for difference implied by the "new" in this case, see:
-		// http://stackoverflow.com/questions/2700175/scala-array-constructor
-		val tgtArray = new Array[Double](4)
-		val baseExpr = "{-4.0, 5/2, 14 /-7, Sqrt[1.001]}";
-		val oneHundred = 100
-		for (idx <- 1 to oneHundred) {
-			var lastDvec : Array[Double] = new Array[Double](0)
-			val oneMillion = 1000000
-			// Create a string expr multiplying index (scalar, integer) and baseExpr (vector of floats + ints) 
-			val fullExpr = "" + idx + " * " + baseExpr;
-			for (jdx <- 0 to oneMillion) {
-				val dvec : Array[Double] = mg.parseAndEvalExprToDoubleVec(fullExpr, tgtArray);
-				lastDvec = dvec;
-			}
-			getLogger().info("Loop # " + idx + " produced " + lastDvec.deep)
-		}
-	}
+
 }

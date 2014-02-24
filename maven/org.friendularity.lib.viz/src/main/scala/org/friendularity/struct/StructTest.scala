@@ -25,7 +25,7 @@ import org.cogchar.bind.symja.{MathGate, MathSpaceFactory}
  * @author Stu B. <www.texpedient.com>
  */
 
-object StructTest  extends BasicDebugger {
+object StructTest  extends org.friendularity.respire.VarargsLogging {
 	def main(args: Array[String]) : Unit = {
 		// Backup - if logging is not working, try enabling these two lines.
 		// Must enable "compile" or "provided" scope for Log4J dep in order to compile this code.
@@ -34,6 +34,7 @@ object StructTest  extends BasicDebugger {
 		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.INFO);		
 		println("Yep, Scala println works!")
 		getLogger().info("Sweet, app logging works!")
+		info1("Whooopee, also short-varargs, such as seven={}", new Integer(7))
 		testStructs()
 		testMathSource()
 	}
@@ -52,27 +53,27 @@ object StructTest  extends BasicDebugger {
 		val inDat1 = aodf1.make()
 		inDat1.myVals(0) = -2.8
 		
-		println("inDat1: " + inDat1)
+		info0("inDat1: " + inDat1)
 		
 		val inDat2 = aodf2.make()
 		inDat2.myVals(1) = 3.7
-		println("inDat2: " + inDat2)
+		info0("inDat2: " + inDat2)
 		
 		val inDat3 = aodf3.make()
 		inDat3.myVals(0) = 9.9
 		inDat3.myVals(1) = -8.1
 		inDat3.myVals(2) = 7.7
-		println("inDat3: " + inDat3)
+		info0("inDat3: " + inDat3)
 		
-		println("bs2 - before write: " + bs2)
+		info0("bs2 - before write: " + bs2)
 		bs2.writeField("pair1", inDat1)
-		println("bs2 - after write-1: " + bs2)
+		info0("bs2 - after write-1: " + bs2)
 		val inDat22 = aodf2.make()
 		inDat22.myVals(1) = -17.5
 		bs2.writeField("pair1", inDat22)
 		bs2.writeField("pair2", inDat2)
 		bs2.writeField("pair3", inDat3)
-		println("bs2 - after write-2: " + bs2)
+		info0("bs2 - after write-2: " + bs2)
 	}
 	def testMathSource() { 
 		val msf = new MathSpaceFactory();
@@ -85,16 +86,16 @@ object StructTest  extends BasicDebugger {
 		val smp = new StructMapper[String, ArrayOfDoubles, MathGateExpr]
 		val expr11 = new MathGateExpr("{-44.0,33.3}")
 		smp.bindField("v1", expr11, aodf2.make())
-		println("bs2 - before map-1: " + bs2)
+		info0("bs2 - before map-1: " + bs2)
 		smp.mapSourceDataToStruct(mgds, bs2)
-		println("bs2 - after map-1: " + bs2)
+		info0("bs2 - after map-1: " + bs2)
 		val expr12 = new MathGateExpr("7 * {3.5, 2}")
 		val expr22 = new MathGateExpr("{99, -0.05}")
 		smp.bindField("v2", expr22, aodf2.make())
 		smp.bindField("v1", expr12, aodf2.make())
-		println("bs2 - before map-2: " + bs2)
+		info0("bs2 - before map-2: " + bs2)
 		smp.mapSourceDataToStruct(mgds, bs2)
-		println("bs2 - after map-2: " + bs2)
+		info0("bs2 - after map-2: " + bs2)
 		
 	}
 }
