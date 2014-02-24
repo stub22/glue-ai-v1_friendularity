@@ -21,7 +21,7 @@ import org.appdapter.core.name.{Ident, FreeIdent}
 
 import org.cogchar.bind.symja.{MathGate, MathSpaceFactory}
 
-import org.friendularity.respire.{RespirationTest}
+import org.friendularity.respire.{RespirationTest, MoltenCore}
 
 object WermTest {
 	def main(args: Array[String]) : Unit = {
@@ -31,9 +31,10 @@ object WermTest {
 		// org.apache.log4j.BasicConfigurator.configure();
 		// org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.ALL);
 		
-		RespirationTest.testRespiration();
-		
-		RespirationTest.testDoubleVecFetch();
+		RespirationTest.initReposLoadMathEval()
+		// Optional: Wander off into a long looping computation...
+		val mc = new MoltenCore()
+		mc.testDoubleVecFetch();
 		//Unfinished:  testWermCalcs();		
 	}	
 	def testWermCalcs() : Unit = { 
