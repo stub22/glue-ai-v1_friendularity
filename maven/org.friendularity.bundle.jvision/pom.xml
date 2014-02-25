@@ -205,7 +205,8 @@
         <configuration>
          <target>
       <!-- HRK custom :  Note the log4j.debug flag -->
-          <property name="vm.args" value="-Dlog4j.debug -Xmx16g -XX:MaxPermSize=3g" />
+	  <!-- AO - reduced Xmx for ARM was -Xmx16G -XX:MaxPermSize=3G  -->
+          <property name="vm.args" value="-Dlog4j.debug -Xmx512m -XX:MaxPermSize=512m" />
           <property name="vm.localargs" value="" />
           <pathconvert property="plugins.jars" pathsep="${path.separator}">
            <path refid="maven.runtime.classpath" />
