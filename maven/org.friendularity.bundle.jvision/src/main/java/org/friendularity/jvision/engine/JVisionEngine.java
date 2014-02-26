@@ -29,6 +29,7 @@ import org.friendularity.jvision.broker.ImageStreamImage;
 import org.friendularity.jvision.broker.SimpleImageStreamProducer;
 import org.friendularity.jvision.gui.FileLocations;
 import org.opencv.imgproc.Imgproc;
+import org.opencv.highgui;
 
 /**
  *  Core class that runs the jvision processing loop and publishes the
