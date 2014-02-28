@@ -1,11 +1,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     
-	<parent>
+    <parent>
         <groupId>org.friendularity</groupId>
-		<artifactId>org.friendularity.modules.main</artifactId>
-		<version>1.0.2-SNAPSHOT</version>
-		<relativePath>../org.friendularity.modules.main/pom.xml</relativePath>
+        <artifactId>org.friendularity.modules.main</artifactId>
+        <version>1.0.2-SNAPSHOT</version>
+        <relativePath>../org.friendularity.modules.main/pom.xml</relativePath>
     </parent>
 
     <artifactId>org.friendularity.bundle.messagemonitor</artifactId>
@@ -91,6 +91,11 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
             <version>1.7.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.appdapter</groupId>
+            <artifactId>ext.bundle.osgi.common</artifactId>
+            <version>${appdapter.version}</version>
         </dependency>
     </dependencies>
 
