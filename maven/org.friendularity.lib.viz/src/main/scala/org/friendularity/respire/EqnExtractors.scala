@@ -57,26 +57,17 @@ object EqnExtractors extends VarargsLogging {
 		val allFullExprs = mathTxtSrc.getIndivsMatchingTypeSel(mathTxtSrc.myFullExprIndivSel)
 		
 		val msf = new MathSpaceFactory();
-		// val mg : MathGate = msf.makeScriptedMathGate();
 		val mg : MathGate = msf.makeUnscriptedMathGate();
 
-		// val posExprProp_QN = "hev:expr_pos_vec3f"
-		
-		// Here we grab two FullExprs and prove we can parse and evaluate math expressions from the input graph.
-		val eq1_QN = "hevi:test_01"
-		grappleFullExpr(eq1_QN, mg, mathTxtSrc)
-
-		val eq2_QN = "hevi:test_02"
-		grappleFullExpr(eq2_QN, mg, mathTxtSrc)
-		
+		testMathWithKnownItems(mg, mathTxtSrc)
+				
 		info1("All funcDefs size: {}", allFuncDefs.size : java.lang.Integer)
 		for (fdi : Item <- allFuncDefs) {
 			val funcDefText : String =  mathTxtSrc.funcDefText(fdi)
 			info2("Found funcDef at {} with Text: {}", fdi, funcDefText)
-			// yield new FuncDef(funcDefText)
 		}
+		
 		info1("All fullExprs size: {}", allFullExprs.size : java.lang.Integer)
-
 		for (xi : Item <- allFullExprs) {
 			val posExprText : String =  mathTxtSrc.positionExprText(xi)
 			info2("At {}, found posExpr-text: {}", xi, posExprText)
@@ -84,7 +75,6 @@ object EqnExtractors extends VarargsLogging {
 			info2("At {}, found orientExpr-text: {}", xi, orientExprText)
 			val colorExprText : String =  mathTxtSrc.colorExprText(xi)
 			info2("At {}, found colorExpr-text: {}", xi, colorExprText)
-			
 		}		
 	}
 	def ensurePrefixesAligned(mathGraph : Model) : Unit = {
@@ -99,6 +89,12 @@ object EqnExtractors extends VarargsLogging {
 			mathGraph.setNsPrefix("hev", "urn:ftd:headyspace.org:2013:estimviz_type#");
 			mathGraph.setNsPrefix("hevi", "urn:ftd:headyspace.org:2013:estimviz_inst#");
 		}		
+	}
+	def testMathWithKnownItems(mg : MathGate,  mathTxtSrc : MathTextSource) { 
+		// Here we grab two FullExprs with known QNames and prove we can parse and evaluate math expressions from the input graph.
+		val (eq1_QN, eq2_QN) = ("hevi:test_01", "hevi:test_02")
+		grappleFullExpr(eq1_QN, mg, mathTxtSrc)
+		grappleFullExpr(eq2_QN, mg, mathTxtSrc)		
 	}
 	def grappleFullExpr(exprIndivQN: String, mg : MathGate,  mTxtSrc : MathTextSource) = {
 		val indivItem = mTxtSrc.findParentItem(exprIndivQN)
