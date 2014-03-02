@@ -53,6 +53,9 @@ object EqnExtractors extends VarargsLogging {
 		val mathMCI : ModelClient = new ModelClientImpl(mathGraph);
 		val mathTxtSrc = new MathTextSource(mathMCI)
 		
+		val allFuncDefs = mathTxtSrc.getIndivsMatchingTypeSel(mathTxtSrc.myFuncDefIndivSel)
+		val allFullExprs = mathTxtSrc.getIndivsMatchingTypeSel(mathTxtSrc.myFullExprIndivSel)
+		
 		val msf = new MathSpaceFactory();
 		// val mg : MathGate = msf.makeScriptedMathGate();
 		val mg : MathGate = msf.makeUnscriptedMathGate();
@@ -65,6 +68,24 @@ object EqnExtractors extends VarargsLogging {
 
 		val eq2_QN = "hevi:test_02"
 		grappleFullExpr(eq2_QN, mg, mathTxtSrc)
+		
+		info1("All funcDefs size: {}", allFuncDefs.size : java.lang.Integer)
+		for (fdi : Item <- allFuncDefs) {
+			val funcDefText : String =  mathTxtSrc.funcDefText(fdi)
+			info2("Found funcDef at {} with Text: {}", fdi, funcDefText)
+			// yield new FuncDef(funcDefText)
+		}
+		info1("All fullExprs size: {}", allFullExprs.size : java.lang.Integer)
+
+		for (xi : Item <- allFullExprs) {
+			val posExprText : String =  mathTxtSrc.positionExprText(xi)
+			info2("At {}, found posExpr-text: {}", xi, posExprText)
+			val orientExprText : String =  mathTxtSrc.orientExprText(xi)
+			info2("At {}, found orientExpr-text: {}", xi, orientExprText)
+			val colorExprText : String =  mathTxtSrc.colorExprText(xi)
+			info2("At {}, found colorExpr-text: {}", xi, colorExprText)
+			
+		}		
 	}
 	def ensurePrefixesAligned(mathGraph : Model) : Unit = {
 		val mathModelPrefixMap = mathGraph.getNsPrefixMap()
@@ -112,15 +133,20 @@ trait Sel[T] {
 	// def getOneVal(parentItem : Item) : T
 }
 trait IndivSel extends Sel[Item] {
-	def getAllIndivs() : List[Item]
+	def getAllIndivs(modelCli : ModelClient) : Set[Item]
 }
 trait PropSel[T] extends Sel[T] {
 	def getOneVal(parentItem : Item) : T
 }
 class TypedIndivSel(val myTypeID: Ident) extends IndivSel {
-	override def getAllIndivs() : List[Item] = {
-		var incrResult = Nil		
-		incrResult		
+	override def getAllIndivs(modelCli : ModelClient) : Set[Item] = {
+		// Find all resources that are marked with property "rdf:type" equiv to myTypeID
+		val typeItem = modelCli.makeItemForIdent(myTypeID)
+		val typeProp = modelCli.makeIdentForQName("rdf:type")
+		val indivSet = typeItem.getLinkedItemSet(typeProp, Item.LinkDirection.REVERSE);
+
+		import scala.collection.JavaConversions._;
+		indivSet.toSet
 	}
 }
 class StringPropSel(val myPropID: Ident) extends PropSel[String] { 
@@ -152,7 +178,14 @@ class MathStringPropSels(val mySymSrcMC : ModelClient) {
 }
 
 class MathTextSource(val mySymSrcMC : ModelClient) {
-	val mySels = new MathStringPropSels(mySymSrcMC)
+	val myPropSels = new MathStringPropSels(mySymSrcMC)
+	
+	val myFuncDefIndivSel = new TypedIndivSel(getTypeID("hev:FuncDef"))	
+	val myFullExprIndivSel = new TypedIndivSel(getTypeID("hev:FullExpr"))
+	
+	def getTypeID(typeQN : String) : Ident = {
+		mySymSrcMC.makeIdentForQName(typeQN)
+	} 
 	// val posExprProp_QN = "hev:expr_pos_vec3f"
 	// val posExprProp_ID = mySymSrcMC.makeIdentForQName(posExprProp_QN)
 	
@@ -163,15 +196,21 @@ class MathTextSource(val mySymSrcMC : ModelClient) {
 	// Here items are thought of as parents for expression properties
 	def findParentItem(itemIndivQN : String) : Item = mySymSrcMC.makeItemForQName(itemIndivQN)
 	
-	def funcDefText(parentIndivItem : Item) : String = mySels.mySel_funcDef.getOneVal(parentIndivItem)
-	def positionExprText(parentIndivItem : Item) : String = mySels.mySel_posVec3f.getOneVal(parentIndivItem)
-	def orientExprText(parentIndivItem : Item) : String = mySels.mySel_oriSphtwVec3f.getOneVal(parentIndivItem)
-	def colorExprText(parentIndivItem : Item) : String = mySels.mySel_colorVec4f.getOneVal(parentIndivItem)
+	// Some useful set of functions to load, not itself a result-producing node
+	def funcDefText(parentIndivItem : Item) : String = myPropSels.mySel_funcDef.getOneVal(parentIndivItem)
 	
-	def checkAndPrintExprs(parentIndivItem : Item) {
+	// Most common result production nodes for goody and camera-like things:  Position, Orientation, and Color
+	def positionExprText(parentIndivItem : Item) : String = myPropSels.mySel_posVec3f.getOneVal(parentIndivItem)
+	def orientExprText(parentIndivItem : Item) : String = myPropSels.mySel_oriSphtwVec3f.getOneVal(parentIndivItem)
+	def colorExprText(parentIndivItem : Item) : String = myPropSels.mySel_colorVec4f.getOneVal(parentIndivItem)
+	
+	def checkAndPrintCommonExprs(parentIndivItem : Item) {
 	
 	}
 	// parentIndivItem.getValString(posExprProp_ID, EqnExtractors.NOT_FOUND_EXPR)
-				
+	
+	def getIndivsMatchingTypeSel(itsel : TypedIndivSel) : Set[Item] = {
+		itsel.getAllIndivs(mySymSrcMC)
+	}
 }
 
