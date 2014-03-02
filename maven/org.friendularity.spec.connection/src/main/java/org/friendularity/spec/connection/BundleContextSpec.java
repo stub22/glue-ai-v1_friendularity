@@ -17,6 +17,8 @@ package org.friendularity.spec.connection;
 
 import org.osgi.framework.BundleContext;
 import org.appdapter.bind.rdf.jena.assembly.KnownComponentImpl;
+import org.osgi.framework.FrameworkUtil;
+import org.rwshop.swing.common.lifecycle.ServiceManagerPanel;
 
 /**
  *
@@ -34,6 +36,9 @@ public class BundleContextSpec extends KnownComponentImpl {
     }
 
     public BundleContext getContext() {
+        if(context == null){
+            context = FrameworkUtil.getBundle(ServiceManagerPanel.class).getBundleContext();
+        }
         return this.context;
     }
 }
