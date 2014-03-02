@@ -73,7 +73,7 @@ public class Activator extends BundleActivatorBase {
 //                                7,
 //                                classloaders);
                 new OnlineSheetRepoSpec(
-                "0AivIV8RvlFTvdGduX29BTF9BZVhISjYyMkp5c2JxcXc",
+                "0AivIV8RvlFTvdGlqNVlMUkQyd0szb1VMSGtYSDBfNHc",
                 0,
                 7,
                 classloaders);
