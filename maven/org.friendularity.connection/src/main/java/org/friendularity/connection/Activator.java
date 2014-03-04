@@ -25,18 +25,11 @@ import org.cogchar.impl.scene.read.BehavMasterConfigTest;
  * @author Yishuai Li & Jason Eads
  */
 public class Activator extends BundleActivatorBase {
-
-//    private final static String CONNECTION_GRAPH_QN =
-//            "fc:connection_sheet_1";
-    private final static String SERVICE_BINDING_GRAPH_QN =
-            "csi:service_manager_1";
-    private final static String LIFECYCLE_DEFINITION_GRAPH_QN =
-            "csi:lifecycle_1";
-//    private final static String PIPELINE_QN = "csi:pipeline_sheet_77";
     private final static String MERGED_MODEL_MANAGER_QN =
             "csi:merged_manager_1001";
-    private final static String MERGED_MODEL_MANAGER_QN2 =
-            "csi:merged_manager_1002";
+    
+//    private final static String MERGED_MODEL_MANAGER_QN2 =
+//            "csi:merged_manager_1002";
 
     public void start(BundleContext context) throws Exception {
         forceLog4jConfig();
@@ -82,29 +75,19 @@ public class Activator extends BundleActivatorBase {
         EnhancedRepoClient enhancedRepoSpec = new EnhancedRepoClient(repoSpec, bmcMemoryRepoHandle,
                 BehavMasterConfigTest.TGT_GRAPH_SPARQL_VAR(), BehavMasterConfigTest.QUERY_SOURCE_GRAPH_QN());
 
-        //RepoConnector rc = new RepoConnector();
-        //EnhancedRepoClient enhancedRepoSpec =  rc.connectDemoRepoClient(repoSpec);
-
         RegisterWiring.loadAndRegisterSpec(context, enhancedRepoSpec, MERGED_MODEL_MANAGER_QN);
         
 
         // Load the specs from the repo, and register them with JFlux
-        ServiceManagerWiring.loadAndRegisterSpecs(
-                context,
-                enhancedRepoSpec,
-                LIFECYCLE_DEFINITION_GRAPH_QN,
-                SERVICE_BINDING_GRAPH_QN,
-                MERGED_MODEL_MANAGER_QN2);
+//        ServiceManagerWiring.loadAndRegisterSpecs(
+//                context,
+//                enhancedRepoSpec,
+//                LIFECYCLE_DEFINITION_GRAPH_QN,
+//                SERVICE_BINDING_GRAPH_QN,
+//                MERGED_MODEL_MANAGER_QN2);
 
         //Extender listens for specs and creates objects from them
         ServiceManagerWiring.startSpecExtender(context, null);
-    }
-
-    private void setLookAndFeel() {
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception ex) {
-        }
     }
 
     @Override
