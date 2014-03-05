@@ -13,31 +13,26 @@
 
     <name>org.friendularity.connection - OSGi Bundle</name>
 
-    <properties>
-        <com.hrkind.robot.connections>robot01;127.0.0.1</com.hrkind.robot.connections>
-        
-    </properties>
-
     <dependencies>
         <dependency>
-			<groupId>org.cogchar</groupId>
-			<artifactId>org.cogchar.bundle.core</artifactId>
-			<version>${cogchar.version}</version>
+			<groupId>org.jflux</groupId>
+			<artifactId>org.jflux.spec.services</artifactId>
+			<version>${jflux.version}</version>
 		</dependency>
-<!--        <dependency>
-			<groupId>org.cogchar</groupId>
-			<artifactId>org.cogchar.bundle.temp.wire</artifactId>
-			<version>${cogchar.version}</version>
-		</dependency>-->
         <dependency>
-            <artifactId>org.friendularity.spec.connection</artifactId>
+			<groupId>org.jflux</groupId>
+			<artifactId>org.jflux.spec.messaging</artifactId>
+			<version>${jflux.version}</version>
+		</dependency>
+        <dependency>
             <groupId>${project.groupId}</groupId>
+            <artifactId>org.friendularity.spec.connection</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.rwshop</groupId>
-            <artifactId>org.rwshop.swing.common</artifactId>
-            <version>${rwshop.version}</version>
+            <groupId>org.jflux</groupId>
+            <artifactId>org.jflux.swing.services</artifactId>
+            <version>${jflux.version}</version>
         </dependency>
     </dependencies>
     

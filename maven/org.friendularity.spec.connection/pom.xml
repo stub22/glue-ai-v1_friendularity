@@ -32,7 +32,7 @@
         </dependency>
         <dependency>
             <groupId>org.appdapter</groupId>
-            <artifactId>org.appdapter.lib.bind.jflux</artifactId>
+            <artifactId>org.appdapter.bundle.core</artifactId>
             <version>${appdapter.version}</version>
         </dependency>
         <dependency>
@@ -74,11 +74,6 @@
             <groupId>org.jflux</groupId>
             <artifactId>org.jflux.impl.messaging.rk</artifactId>
             <version>${jflux.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.rwshop</groupId>
-            <artifactId>org.rwshop.swing.common</artifactId>
-            <version>${rwshop.version}</version>
         </dependency>
     </dependencies>
 
