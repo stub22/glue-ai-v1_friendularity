@@ -53,14 +53,18 @@ object EqnExtractors extends VarargsLogging {
 		val mathMCI : ModelClient = new ModelClientImpl(mathGraph);
 		val mathTxtSrc = new MathTextSource(mathMCI)
 		
-		val allFuncDefs = mathTxtSrc.getIndivsMatchingTypeSel(mathTxtSrc.myFuncDefIndivSel)
-		val allFullExprs = mathTxtSrc.getIndivsMatchingTypeSel(mathTxtSrc.myFullExprIndivSel)
-		
 		val msf = new MathSpaceFactory();
 		val mg : MathGate = msf.makeUnscriptedMathGate();
 
 		testMathWithKnownItems(mg, mathTxtSrc)
-				
+		
+		findMathItemsByType(mathTxtSrc)
+	}
+	def findMathItemsByType(mathTxtSrc : MathTextSource) { 
+		
+		val allFuncDefs = mathTxtSrc.getIndivsMatchingTypeSel(mathTxtSrc.myFuncDefIndivSel)
+		val allFullExprs = mathTxtSrc.getIndivsMatchingTypeSel(mathTxtSrc.myFullExprIndivSel)
+		
 		info1("All funcDefs size: {}", allFuncDefs.size : java.lang.Integer)
 		for (fdi : Item <- allFuncDefs) {
 			val funcDefText : String =  mathTxtSrc.funcDefText(fdi)
@@ -93,62 +97,60 @@ object EqnExtractors extends VarargsLogging {
 	def testMathWithKnownItems(mg : MathGate,  mathTxtSrc : MathTextSource) { 
 		// Here we grab two FullExprs with known QNames and prove we can parse and evaluate math expressions from the input graph.
 		val (eq1_QN, eq2_QN) = ("hevi:test_01", "hevi:test_02")
-		grappleFullExpr(eq1_QN, mg, mathTxtSrc)
-		grappleFullExpr(eq2_QN, mg, mathTxtSrc)		
+		findEvalAndPrintPosExpr(eq1_QN, mg, mathTxtSrc)
+		findEvalAndPrintPosExpr(eq2_QN, mg, mathTxtSrc)		
 	}
-	def grappleFullExpr(exprIndivQN: String, mg : MathGate,  mTxtSrc : MathTextSource) = {
+	def findEvalAndPrintPosExpr(exprIndivQN: String, mg : MathGate,  mTxtSrc : MathTextSource) = {
 		val indivItem = mTxtSrc.findParentItem(exprIndivQN)
 		
 		debug2("At indiv-QN {} found expr-Item: {}", exprIndivQN, indivItem)		
-		evalAndPrint(indivItem, mg, mTxtSrc)
+		evalAndPrintPos(indivItem, mg, mTxtSrc)
 	}
-	def evalAndPrint(indivItem: Item, mg : MathGate,  mTxtSrc : MathTextSource) : Array[Double] = { 
+	def evalAndPrintPos(indivItem: Item, mg : MathGate,  mTxtSrc : MathTextSource) : Array[Double] = { 
 		val localDebugName = indivItem.getIdent.getLocalName
 		val posExprText =  mTxtSrc.positionExprText(indivItem)
 		val posOutDubVec : Array[Double] = mg.parseAndEvalExprToDoubleVec(posExprText, null)	
 		
 		info3("At local {}, math-expr {} evals to double-vec {}", localDebugName, posExprText, posOutDubVec.deep)	
-		
 		posOutDubVec
 	}
-	
-	def getAllIndivs(mcSrc : ModelClient) : List[Item] = {
-		var incrResult = Nil
-		
-		incrResult
-	}
-	
 }
-abstract class EqnHaver {
-}
-case class FuncDef(funcDefExpr : String) extends EqnHaver
-case class Other extends EqnHaver
 
 
-trait Sel[T] {
-	// def getOneVal(parentItem : Item) : T
-}
-trait IndivSel extends Sel[Item] {
-	def getAllIndivs(modelCli : ModelClient) : Set[Item]
-}
-trait PropSel[T] extends Sel[T] {
-	def getOneVal(parentItem : Item) : T
-}
-class TypedIndivSel(val myTypeID: Ident) extends IndivSel {
-	override def getAllIndivs(modelCli : ModelClient) : Set[Item] = {
-		// Find all resources that are marked with property "rdf:type" equiv to myTypeID
-		val typeItem = modelCli.makeItemForIdent(myTypeID)
-		val typeProp = modelCli.makeIdentForQName("rdf:type")
-		val indivSet = typeItem.getLinkedItemSet(typeProp, Item.LinkDirection.REVERSE);
 
-		import scala.collection.JavaConversions._;
-		indivSet.toSet
-	}
-}
-class StringPropSel(val myPropID: Ident) extends PropSel[String] { 
-	def getOneVal(parentIndivItem : Item) : String = parentIndivItem.getValString(myPropID, EqnExtractors.NOT_FOUND_EXPR)
-}
 trait Expr { 
+}
+class MathBlockKind(val myPropID : Ident) {
+}
+object MathBlockKinds {
+}
+
+class LoadedTextBlock(val myGraphID : Ident, val myItemID : Ident, val myTextPropID : Ident, val myLoadTStamp : Long, val myText : String) {	
+	def getDescription : String = { "LTB[gid=" + myGraphID + ", ...]" }
+}
+
+trait MathBlock { 
+	def getDescription : String
+	def getMathText : String
+	// def getOptResultBuf : Option[] = None
+	def evalToDubVec(mg : MathGate, bufOrNull : Array[Double]) : Array[Double] = {
+		val mathText = getMathText
+		mg.parseAndEvalExprToDoubleVec(mathText, bufOrNull)
+	}
+}
+class BasicMathBlock(myDesc : String, myMathText : String) extends MathBlock {
+	override def getDescription = myDesc
+	override def getMathText = myMathText
+}
+
+class LoadedMathBlock(graphID : Ident, itemID : Ident, textPropID : Ident, loadTStamp : Long, text : String) 
+		extends LoadedTextBlock(graphID, itemID, textPropID, loadTStamp, text) with MathBlock {
+	
+	override def getMathText = myText	
+}
+class MathBlockPropLoader(myPropSel : StringPropSel) { 
+}
+class FuncDefBlock(myItemID : Ident, val myText : String) {
 }
 class MathFunc {	
 }
@@ -182,14 +184,8 @@ class MathTextSource(val mySymSrcMC : ModelClient) {
 	def getTypeID(typeQN : String) : Ident = {
 		mySymSrcMC.makeIdentForQName(typeQN)
 	} 
-	// val posExprProp_QN = "hev:expr_pos_vec3f"
-	// val posExprProp_ID = mySymSrcMC.makeIdentForQName(posExprProp_QN)
-	
-	// val posExprPropSel = 
-	// new StringPropSel(posExprProp_ID)
-	// hev:expr_pos_vec3f	hev:expr_funcDef	hev:expr_ori_sphtw_vec3f	hev:expr_color_vec4f	hev:goodySpace	hev:goodyCount	hev:goodyIndex	hev:spatialForm	
 		
-	// Here items are thought of as parents for expression properties
+	// Here items are thought of as parents for expression-block properties
 	def findParentItem(itemIndivQN : String) : Item = mySymSrcMC.makeItemForQName(itemIndivQN)
 	
 	// Some useful set of functions to load, not itself a result-producing node
@@ -200,10 +196,7 @@ class MathTextSource(val mySymSrcMC : ModelClient) {
 	def orientExprText(parentIndivItem : Item) : String = myPropSels.mySel_oriSphtwVec3f.getOneVal(parentIndivItem)
 	def colorExprText(parentIndivItem : Item) : String = myPropSels.mySel_colorVec4f.getOneVal(parentIndivItem)
 	
-	def checkAndPrintCommonExprs(parentIndivItem : Item) {
-	
-	}
-	// parentIndivItem.getValString(posExprProp_ID, EqnExtractors.NOT_FOUND_EXPR)
+	def checkAndPrintCommonExprs(parentIndivItem : Item) {	}
 	
 	def getIndivsMatchingTypeSel(itsel : TypedIndivSel) : Set[Item] = {
 		itsel.getAllIndivs(mySymSrcMC)
