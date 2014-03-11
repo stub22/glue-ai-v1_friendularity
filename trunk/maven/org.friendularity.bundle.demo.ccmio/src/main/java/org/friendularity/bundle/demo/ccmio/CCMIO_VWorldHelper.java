@@ -15,11 +15,14 @@
  */
 package org.friendularity.bundle.demo.ccmio;
 
+import java.util.Properties;
 import org.appdapter.core.name.Ident;
 
 import org.cogchar.render.sys.module.RenderModule;
 import org.cogchar.bundle.app.puma.PumaAppUtils;
 import org.cogchar.bundle.app.puma.PumaAppUtils.GreedyHandleSet;
+import org.cogchar.bundle.app.vworld.central.VWorldRegistry;
+import org.cogchar.bundle.app.vworld.central.VirtualWorldFactory;
 import org.cogchar.bundle.app.vworld.startup.PumaVirtualWorldMapper;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
@@ -39,20 +42,41 @@ public class CCMIO_VWorldHelper {
 		// PumaVirtualWorldMapper pvwm = srec.pumaRegClient.getVWorldMapper(optVWorldSpecID);
 		PumaVirtualWorldMapper pvwm = getVWorldMapper(optVWorldSpecID);
 		if (pvwm != null) {
+			theLogger.info("Attaching RenderModule {} to VWorldMapper {}", rMod, pvwm);
 			pvwm.attachRenderModule(rMod);
 		} else {
 			theLogger.error("Cannot find VWorld to attach renderModel [optVWorldSpecID={}]", optVWorldSpecID);
 		}
 	} 
+
+	// Now that we see this works with new-PUMA+Vworld setup, we can start switching over to just using the 
+	// VWorldRegistry (not the Mapper).
 	private PumaVirtualWorldMapper	myVWorldMapper;
-	public PumaVirtualWorldMapper getVWorldMapper(Ident optSpecID) {
+	private PumaVirtualWorldMapper getVWorldMapper(Ident optSpecID) {
+		if (myVWorldMapper == null) {
+			BundleContext bc = VirtualWorldFactory.getBundleContext();
+			Properties props = new Properties();
+			
+			VWorldRegistry vwr = VirtualWorldFactory.getOSGiVWorldMapper(bc, props);
+			theLogger.info("VWorldRegistry = {}", vwr);
+			if (vwr != null) {
+				myVWorldMapper = vwr.getVW();
+				theLogger.info("VWorldMapper = {}", myVWorldMapper);
+			}
+		}
 		return myVWorldMapper;
 	}
+	/*
 	// Who is gonna call this now?
-	
 	public void putVWorldMapper(PumaVirtualWorldMapper vwm, Ident optSpecID) {
 		myVWorldMapper = vwm;
-	}	
+	}
+	*/
+	public void launchVWorldLifecycles(BundleContext bundleCtx) { 
+		// The startVWorldLifecycle call is only necessary under new-PUMA regime.
+		theLogger.info("StartingVWorldLifecycle using bundleContext {}", bundleCtx);
+        VirtualWorldFactory.startVWorldLifecycle(bundleCtx);		
+	}
 	
 	//  2014-02-22 - Noted most of the stuff below is now captured in the new VWorldRegistry class.
 	
