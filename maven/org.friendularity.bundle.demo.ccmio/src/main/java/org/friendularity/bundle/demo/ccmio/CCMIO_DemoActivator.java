@@ -173,6 +173,9 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 	// Until 2014-02-20, we used:	PumaAppUtils.attachVWorldRenderModule(bundleCtx, werm, null);
 	// But now instead:
 		CCMIO_VWorldHelper	vwHelper = new CCMIO_VWorldHelper();
+		// Are objects created on this thread, or some other thread?
+		vwHelper.launchVWorldLifecycles(bundleCtx);
+		// Under what conditions should this call succeed?
 		vwHelper.attachVWorldRenderModule(bundleCtx, werm, null);
 		
 		EstimateVisualizer eViz = werm.setupVisualizer(null, null, null);
