@@ -56,15 +56,15 @@ Version-less parent will be allowed in Maven 3.1.
 
 		<cogchar.version>1.0.8.1-SNAPSHOT</cogchar.version>
 		<!--  o.f.b.demo.repo   has a direct dependence on Appdapter. -->
-		<appdapter.version>1.1.6-SNAPSHOT</appdapter.version>
+		<appdapter.version>1.1.6</appdapter.version>
 		
-        <mechio.version>1.0.1-SNAPSHOT</mechio.version>
+        <mechio.version>1.0.1</mechio.version>
 
-		<rwshop.version>0.9.5-SNAPSHOT</rwshop.version>
+		<rwshop.version>0.9.5</rwshop.version>
 
 		<freckler.version>1.0.1-SNAPSHOT</freckler.version>
         
-        <jflux.version>0.2.0-SNAPSHOT</jflux.version>
+        <jflux.version>0.2.0</jflux.version>
 
 		<!--  JME3 is used directly in o.f.demo.jme3.maven -->
 		<jmonkey.version>3.0.0.20121220-SNAPSHOT</jmonkey.version>		
