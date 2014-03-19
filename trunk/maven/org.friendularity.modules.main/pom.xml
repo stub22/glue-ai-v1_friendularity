@@ -83,6 +83,7 @@
         <module>../org.friendularity.test.camera.r50</module>
         <module>../org.friendularity.test.facedetect.r50</module>
         <module>../org.friendularity.test.sensors.r50</module>
+        <module>../org.friendularity.test.audio.r50</module>
         <module>../org.friendularity.demo.basic.r25</module>
 
 	</modules>
