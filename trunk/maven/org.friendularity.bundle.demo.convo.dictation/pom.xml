@@ -25,6 +25,11 @@
 			<artifactId>org.cogchar.bundle.demo.dictation</artifactId>
 			<version>${cogchar.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.appdapter</groupId>
+			<artifactId>org.appdapter.bundle.core</artifactId>
+			<version>${appdapter.version}</version>
+		</dependency>
     </dependencies>
 
     <build>
