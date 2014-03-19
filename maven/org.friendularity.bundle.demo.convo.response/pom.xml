@@ -36,6 +36,11 @@
 			<artifactId>org.mechio.impl.speechrec</artifactId>
 			<version>${mechio.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.appdapter</groupId>
+			<artifactId>org.appdapter.bundle.core</artifactId>
+			<version>${appdapter.version}</version>
+		</dependency>
     </dependencies>
 
     <build>
