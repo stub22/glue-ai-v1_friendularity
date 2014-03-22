@@ -66,9 +66,10 @@ object RespirationTest extends VarargsLogging {
 		val dfltTestRC = rspec.makeRepoClient(dfltTestRepo); 
 		testMathAndDynaGoodies(dfltTestRepo, dfltTestRC);
 	}
+	
 	def testMathAndDynaGoodies (dfltTestRepo: Repo,  dfltTestRC : RepoClient) : Unit = {
-		
-		EqnExtractors.testMathGraphLoadEval(dfltTestRepo, dfltTestRC)
+		val mathSrcGraphQN = "ccrti:math_sheet_60";
+		EqnExtractors.testMathGraphLoadEval(dfltTestRepo, dfltTestRC, mathSrcGraphQN)
 
 		// This does not diretly create any V-World goodies, just tests the config mechanism
 		DynaGoodies.testDynaGoodyItemLoad(dfltTestRepo, dfltTestRC)		

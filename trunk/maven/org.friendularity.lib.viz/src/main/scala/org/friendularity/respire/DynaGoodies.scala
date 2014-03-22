@@ -31,7 +31,7 @@ import org.cogchar.render.goody.dynamic.{DynamicGoody, DynamicGoodySpace}
 
 
 object DynaGoodies  extends VarargsLogging  {
-	def testDynaGoodyItemLoad(repo : Repo, repoClient : RepoClient) : Unit = { 
+	def testDynaGoodyItemLoad(repo : Repo, repoClient : RepoClient) : DynamicGoodySpace = { 
 		val graphQN = "ccrti:math_sheet_60";
 		val spaceSpecQN = "hevi:space_01";
 		val spaceLink_PropQN = "hev:goodySpace";
@@ -60,5 +60,9 @@ object DynaGoodies  extends VarargsLogging  {
 			val dg = dgs.getGoodyAtIndex(dgIndex_oneBased)
 			dg.updateFromSpecItem(mathModelClient, gsi);
 		}	
+		dgs
 	}
+}
+class SweetDynaGoody(goodyIdxWithinSpace : Int) extends DynamicGoody(goodyIdxWithinSpace) {
+	
 }

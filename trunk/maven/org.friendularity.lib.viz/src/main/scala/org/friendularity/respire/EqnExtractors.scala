@@ -28,6 +28,8 @@ import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.impl.store.{ModelClientImpl, ResourceResolver};
 
 import org.cogchar.bind.symja.{MathGate, MathSpaceFactory}
+import org.cogchar.api.space.{TextVal}
+
 
 /** Here we bind to presumed ontology for app objects that contain equations in typical patterns for:
  *		rigid bodies,
@@ -36,29 +38,32 @@ import org.cogchar.bind.symja.{MathGate, MathSpaceFactory}
  *		joint curves
  */
 
+
 object EqnExtractors extends VarargsLogging {
 	val NOT_FOUND_EXPR : String = "None"	
-	def testMathGraphLoadEval(dfltTestRepo : Repo, dfltTestRC : RepoClient) : Unit = {  
-		val spatSheetQN = "ccrti:spatial_sheet_60";
-		val mathSheetQN = "ccrti:math_sheet_60";
-		val spatGraphID = dfltTestRC.makeIdentForQName(spatSheetQN);   // AssumedGraphDir.estimVizTestCfgGraphQN);
+	def testMathGraphLoadEval(dfltTestRepo : Repo, dfltTestRC : RepoClient, mathSrcGraphQN : String) : Unit = {  
+		// val spatSheetQN = "ccrti:spatial_sheet_60";
+		val mathSheetQN = mathSrcGraphQN; // "ccrti:math_sheet_60";
+		// val spatGraphID = dfltTestRC.makeIdentForQName(spatSheetQN);   // AssumedGraphDir.estimVizTestCfgGraphQN);
 		val mathGraphID = dfltTestRC.makeIdentForQName(mathSheetQN);
-		info1("viz spatial graphID = {} ", spatGraphID);
-		val spatGraph = dfltTestRepo.getNamedModel(spatGraphID);
+		// info1("viz spatial graphID = {} ", spatGraphID);
+		// val spatGraph = dfltTestRepo.getNamedModel(spatGraphID);
 		// println("Fetched spat model: " + spatGraph);
 		val mathGraph  = dfltTestRepo.getNamedModel(mathGraphID); 
 		
 		ensurePrefixesAligned(mathGraph)
 
+		
 		val mathMCI : ModelClient = new ModelClientImpl(mathGraph);
-		val mathTxtSrc = new MathTextSource(mathMCI)
+		val mgb = new MathGraphBinding(mathMCI)
+	//	val mathTxtSrc = new MathTextSource(mathMCI)
 		
-		val msf = new MathSpaceFactory();
-		val mg : MathGate = msf.makeUnscriptedMathGate();
+	//	val msf = new MathSpaceFactory();
+	//	val mg : MathGate = msf.makeUnscriptedMathGate();
 
-		testMathWithKnownItems(mg, mathTxtSrc)
+		testMathWithKnownItems(mgb.myGate, mgb.myMathTxtSrc)
 		
-		findMathItemsByType(mathTxtSrc)
+		findMathItemsByType(mgb.myMathTxtSrc)
 	}
 	def findMathItemsByType(mathTxtSrc : MathTextSource) { 
 		
@@ -111,11 +116,22 @@ object EqnExtractors extends VarargsLogging {
 		val posExprText =  mTxtSrc.positionExprText(indivItem)
 		val posOutDubVec : Array[Double] = mg.parseAndEvalExprToDoubleVec(posExprText, null)	
 		
-		info3("At local {}, math-expr {} evals to double-vec {}", localDebugName, posExprText, posOutDubVec.deep)	
+		info3("At local {}, .pos-expr {} evals to double-vec {}", localDebugName, posExprText, posOutDubVec.deep)	
 		posOutDubVec
 	}
+	def makeEqnTextVal() : TextVal = {
+		val tvCand = new TextVal("some eqn text");
+		tvCand
+	}
+	def updateResultTextVal(toUpdate : DubArrTextVal, resDubArr : Array[Double]) : Unit = {
+		
+	}
+	
 }
 
+class DubArrTextVal extends TextVal("{3.14, -99, 22}") {
+	def txtVal() = "wow"
+}
 
 
 trait Expr { 
@@ -157,49 +173,5 @@ class MathFunc {
 trait EqnProvider {
 //	def makeExprs(parentItem : Item, selector : Sel )
 }
-class MathStringPropSels(val mySymSrcMC : ModelClient) {
-	private def makeSel(propQN : String) : StringPropSel = {
-		val propID : Ident = mySymSrcMC.makeIdentForQName(propQN)
-		new StringPropSel(propID)
-	}
-	// These String QNames match the equation-text property-names(= sheet column headings) in the source graph.
-	private val QN_expr_funcDef				= "hev:expr_funcDef"
-	private val QN_expr_pos_vec3f			= "hev:expr_pos_vec3f"
-	private val QN_expr_ori_sphtw_vec3f		= "hev:expr_ori_sphtw_vec3f"
-	private val QN_expr_color_vec4f			= "hev:expr_color_vec4f"
 
-	// Selectors are made from the propIdents
-	val mySel_posVec3f  = makeSel(QN_expr_pos_vec3f)
-	val mySel_funcDef  = makeSel(QN_expr_funcDef)
-	val mySel_oriSphtwVec3f  = makeSel(QN_expr_ori_sphtw_vec3f)
-	val mySel_colorVec4f  = makeSel(QN_expr_color_vec4f)
-}
-
-class MathTextSource(val mySymSrcMC : ModelClient) {
-	val myPropSels = new MathStringPropSels(mySymSrcMC)
-	
-	val myFuncDefIndivSel = new TypedIndivSel(getTypeID("hev:FuncDef"))	
-	val myFullExprIndivSel = new TypedIndivSel(getTypeID("hev:FullExpr"))
-	
-	def getTypeID(typeQN : String) : Ident = {
-		mySymSrcMC.makeIdentForQName(typeQN)
-	} 
-		
-	// Here items are thought of as parents for expression-block properties
-	def findParentItem(itemIndivQN : String) : Item = mySymSrcMC.makeItemForQName(itemIndivQN)
-	
-	// Some useful set of functions to load, not itself a result-producing node
-	def funcDefText(parentIndivItem : Item) : String = myPropSels.mySel_funcDef.getOneVal(parentIndivItem)
-	
-	// Most common result production nodes for goody and camera-like things:  Position, Orientation, and Color
-	def positionExprText(parentIndivItem : Item) : String = myPropSels.mySel_posVec3f.getOneVal(parentIndivItem)
-	def orientExprText(parentIndivItem : Item) : String = myPropSels.mySel_oriSphtwVec3f.getOneVal(parentIndivItem)
-	def colorExprText(parentIndivItem : Item) : String = myPropSels.mySel_colorVec4f.getOneVal(parentIndivItem)
-	
-	def checkAndPrintCommonExprs(parentIndivItem : Item) {	}
-	
-	def getIndivsMatchingTypeSel(itsel : TypedIndivSel) : Set[Item] = {
-		itsel.getAllIndivs(mySymSrcMC)
-	}
-}
 

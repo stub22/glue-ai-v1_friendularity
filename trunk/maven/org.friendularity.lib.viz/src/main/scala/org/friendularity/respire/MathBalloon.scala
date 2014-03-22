@@ -50,7 +50,7 @@ object MathBalloon extends BasicDebugger {
 		// Start the JME3 Virtual world, running all init (i.e. simpleInitApp()) on *this* thread,
 		// including blocking waiting for user to say OK to jME launch box.  
 		tbApp.start();
-		getLogger().info("main() - returned from blocking V-World launch, we now expect OpenGL VWorld to be running.");
+		getLogger().info("main() - returned from blocking V-World launch (+ on-thread initApp); we now expect OpenGL VWorld to be running.");
 		
 		// Attach repeated math evaluation viz
 		
