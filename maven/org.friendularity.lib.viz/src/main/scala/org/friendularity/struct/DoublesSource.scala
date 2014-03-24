@@ -17,9 +17,6 @@
 package org.friendularity.struct
 import org.cogchar.bind.symja.MathGate;
 
-object DoublesSource {
-
-}
 // Scala's  Array[Double] compiles to java:  double[]  
 class ArrayOfDoubles(val myVals : Array[Double]) extends DataValue  {
 	override def toString(): String = "AOD[" + myVals.mkString(", ") + "]"

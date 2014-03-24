@@ -23,7 +23,7 @@ import org.friendularity.api.struct.Maker;
  */
 
 // A Struct is just an interface to some state that can be read/written using the value type FieldVal.
-// These methods read/write a private copy of the data, separate from dVal.
+// The readField and writeField methods read/write a struct-private copy of the data, separate from dVal.
 // This trait does not specify whether the fields must exist internally before being written,
 // or how fields might be made if they are not available, or whether an error should occur instead.
 // Those issues are addressed by subtypes of this Trait.
@@ -38,7 +38,8 @@ trait Struct[FieldKey, FieldVal] extends DataValue {
 	def readField(fk : FieldKey, dVal : FieldVal)
 }
 
-// Knows how to 
+// An updatable set of bindings for keyed fields, which can be used to map from any compatible data source
+// into any compatible struct.  
 class StructMapper[FK, DV <: DataValue, DE <: DataExpr] {
 	var myFieldExprMap = new scala.collection.immutable.HashMap[FK, DataBinding[DE, DV]]
 
@@ -46,10 +47,17 @@ class StructMapper[FK, DV <: DataValue, DE <: DataExpr] {
 		val binding = new DataBinding(de, bufferDV)
 		myFieldExprMap += (fk -> binding)
 	}
+	// Updates the fields of a given struct, using mappings embedded in our DataBindings for each field,
+	// and source data from the given DataSource.  
+	// For each "field expression" in this mapper, read current value for that field from the given DataSource, using the field's
+	// DataBinding (which contains some hidden DataExpr that we don't see directly, as well as an unsafe buffer we don't see), 
+	// and write it into the given struct.
 	// Again, we avoid assuming that it is easy to create new values, and instead we write into exsiting values.
 	def mapSourceDataToStruct( ds : DataSource[DE, DV], s : Struct[FK, DV]) : Unit = {
 		for ((fk,b) <- myFieldExprMap) {
-			b.readSourceField(ds)
+			// Read data from the DataSource, using the expression embedded in the binding
+			b.readSourceField(ds) // Now the data is held in the private buffer of the binding
+			// Copy from the binding's buffer into the target struct.
 			s.writeField(fk, b.myBufferDV)
 		}
 	}

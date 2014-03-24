@@ -50,6 +50,15 @@ class MathStringPropSels(val mySymSrcMC : ModelClient) {
 	val mySel_colorVec4f  = makeSel(QN_expr_color_vec4f)
 }
 
+// MathTextSource is a rather shrill extractor for a certain expected categories of math expressions found in 
+// a source graph.   It mainly knows ho to get particular source properties from a given item; so essentially
+// it just encapsulates the names of these properties and the ability to traverse them from a given "parent item".
+// Because it supplies a fixed set of these encapsulating methods, it has a narrow view of what properties are
+// available and interesting.  This view is the same as that encoded in MathStringPopSels above.
+// 
+// The MathTextSource also has the ability to find all the parent items of a particular type, or to find
+// a particular item based on its QName.
+
 class MathTextSource(val mySymSrcMC : ModelClient) {
 	val myPropSels = new MathStringPropSels(mySymSrcMC)
 	
