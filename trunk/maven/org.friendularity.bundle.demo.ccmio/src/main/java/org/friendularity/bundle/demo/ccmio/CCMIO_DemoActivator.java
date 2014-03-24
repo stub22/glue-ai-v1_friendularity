@@ -138,7 +138,6 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
     }
 
 	private void startPumaDemo(BundleContext bundleCtx) {
-
 		
 		PumaBooter pumaBooter = new PumaBooter();
 		PumaContextMediator mediator = PumaGlobalPrebootInjector.getTheInjector().getMediator();

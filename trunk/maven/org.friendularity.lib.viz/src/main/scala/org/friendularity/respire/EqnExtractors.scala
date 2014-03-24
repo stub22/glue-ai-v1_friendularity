@@ -30,6 +30,7 @@ import org.appdapter.impl.store.{ModelClientImpl, ResourceResolver};
 import org.cogchar.bind.symja.{MathGate, MathSpaceFactory}
 import org.cogchar.api.space.{TextVal}
 
+import org.friendularity.struct.{MathBlock}
 
 /** Here we bind to presumed ontology for app objects that contain equations in typical patterns for:
  *		rigid bodies,
@@ -133,30 +134,11 @@ class DubArrTextVal extends TextVal("{3.14, -99, 22}") {
 	def txtVal() = "wow"
 }
 
-
-trait Expr { 
-}
-class MathBlockKind(val myPropID : Ident) {
-}
-object MathBlockKinds {
-}
+// trait Expr { 
+// }
 
 class LoadedTextBlock(val myGraphID : Ident, val myItemID : Ident, val myTextPropID : Ident, val myLoadTStamp : Long, val myText : String) {	
 	def getDescription : String = { "LTB[gid=" + myGraphID + ", ...]" }
-}
-
-trait MathBlock { 
-	def getDescription : String
-	def getMathText : String
-	// def getOptResultBuf : Option[] = None
-	def evalToDubVec(mg : MathGate, bufOrNull : Array[Double]) : Array[Double] = {
-		val mathText = getMathText
-		mg.parseAndEvalExprToDoubleVec(mathText, bufOrNull)
-	}
-}
-class BasicMathBlock(myDesc : String, myMathText : String) extends MathBlock {
-	override def getDescription = myDesc
-	override def getMathText = myMathText
 }
 
 class LoadedMathBlock(graphID : Ident, itemID : Ident, textPropID : Ident, loadTStamp : Long, text : String) 

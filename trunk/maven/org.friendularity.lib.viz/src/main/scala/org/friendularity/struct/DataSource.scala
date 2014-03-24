@@ -27,7 +27,7 @@ trait DataSource[DE <: DataExpr, DV <: DataValue] {
 }
 // A Binding attaches a particular expression to a value-buffer, but leaves the DataSource floating until eval-time.
 // The expression may be evaluated many times, overwrite-updating the value in the buffer each time.
-// The buffer is an unsafe temp-buffer for us to use in bridging between data-source and (all) structs
+// The buffer is an unsafe temp-buffer for us to use in bridging between (Any given) data-source and (any given) struct.
 class DataBinding[DE <: DataExpr, BDV <: DataValue](val myExpr : DE, val myBufferDV : BDV) {
 	// Here at eval-time we finally must have a data-soruce
 	def readSourceField(ds : DataSource[DE, BDV]) : Unit = {

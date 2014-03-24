@@ -1,4 +1,4 @@
-/*
+ /*
  *  Copyright 2013 by The Friendularity Project (www.friendularity.org).
  * 
  *  Licensed under the Apache License, Version 2.0 (the "License");

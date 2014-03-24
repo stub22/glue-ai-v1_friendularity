@@ -22,6 +22,8 @@ import org.slf4j.LoggerFactory;
 /**
  *
  * @author Stu B. <www.texpedient.com>
+ * 
+ * This class is used from CCMIO in defining the Visual
  */
 public abstract class MathExprNode<NumType> extends NumericNode<NumType> {
 	static Logger theLogger = LoggerFactory.getLogger(MathExprNode.class);
