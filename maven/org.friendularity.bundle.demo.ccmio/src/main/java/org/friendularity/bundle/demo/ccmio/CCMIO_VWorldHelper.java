@@ -43,24 +43,24 @@ import org.slf4j.LoggerFactory;
 /**
  *
  * @author Stu B22 <stub22@appstract.com>
+ *
+ * This class is now instantiated via a lifecycle that depends on the VWorldRegistry being available.
  */
 public class CCMIO_VWorldHelper extends BasicDebugger {
+
 	static Logger theLogger = LoggerFactory.getLogger(CCMIO_VWorldHelper.class);
-	
-	private	WorldEstimateRenderModule			myWERM;
-		
-	private CCMIO_DemoMidiCommandMapper			myMidiMapper;
-	private PumaVirtualWorldMapper	myVWorldMapper;
+	private WorldEstimateRenderModule myWERM;
+	private CCMIO_DemoMidiCommandMapper myMidiMapper;
+	private PumaVirtualWorldMapper myVWorldMapper;
+	private boolean myFlag_connectMidiIn = true;
+	private boolean myFlag_connectMidiOut = true;
+	private boolean myFlag_connectMidiSwitcheroo = true;
 
-	private	boolean		myFlag_connectMidiIn = true;
-	private	boolean		myFlag_connectMidiOut = true;
-	private	boolean		myFlag_connectMidiSwitcheroo = true;
-
-	public void doWermStuff() { 
-	// Hey, let's get some fused-sensor-data visualization going too, while we're at it!
+	public void doWermStuff() {
+		// Hey, let's get some fused-sensor-data visualization going too, while we're at it!
 		myWERM = new WorldEstimateRenderModule();
 		initOptionalMidiStuff();
-	    if (myMidiMapper != null) {
+		if (myMidiMapper != null) {
 			// TODO:  Can probably remove this link
 			myMidiMapper.setWERM(myWERM);
 			myWERM.setMidiMapper(myMidiMapper);
@@ -69,11 +69,12 @@ public class CCMIO_VWorldHelper extends BasicDebugger {
 		// Should be a dont-care whether this happens before/after   startVisionMonitors() below.
 		// TODO:  Re-verify in detail.
 		myWERM.setFlag_JVisionTextureRoutingEnabled(CCMIO_DemoActivator.myFlag_connectJVision);
-		
-		getLogger().info("$$$$$$$$$$$$$$$    $$$$$$$$$$$$$$$$$   disabled PumaAppUtils.attachVWorldRenderModule");		
+
+		getLogger().info("$$$$$$$$$$$$$$$    $$$$$$$$$$$$$$$$$   disabled PumaAppUtils.attachVWorldRenderModule");
 	}
 	// 2014-02-20      PumaAppUtils.attachVWorldRenderModule(bundleCtx, werm, null);
-	public  	void attachVWorldRenderModule(// BundleContext bundleCtx, 
+
+	public void attachVWorldRenderModule(// BundleContext bundleCtx, 
 			RenderModule rMod, Ident optVWorldSpecID) {
 		// srec-access not currently used *directly*, but we will probly want it again.
 		GreedyHandleSet srec = PumaAppUtils.obtainGreedyHandleSet();
@@ -86,24 +87,13 @@ public class CCMIO_VWorldHelper extends BasicDebugger {
 		} else {
 			theLogger.error("Cannot find VWorld to attach renderModel [optVWorldSpecID={}]", optVWorldSpecID);
 		}
-	} 
-
-	// Now that we see this works with new-PUMA+Vworld setup, we can start switching over to just using the 
+	}
+	// Now that we see this works with new-PUMA+Vworld setup, we can consider switching over to just using the 
 	// VWorldRegistry (not the Mapper).
-
 	private PumaVirtualWorldMapper getVWorldMapper(Ident optSpecID) {
 		if (myVWorldMapper == null) {
-			BundleContext bc = VirtualWorldFactory.getBundleContext();
-			Properties props = new Properties();
-			
-			VWorldRegistry vwr = VirtualWorldFactory.getOSGiVWorldMapper(bc, props);
-			theLogger.info("VWorldRegistry = {}", vwr);
-			if (vwr != null) {
-				myVWorldMapper = vwr.getVW();
-				theLogger.info("VWorldMapper = {}", myVWorldMapper);
-			} else {
-				theLogger.warn("Cannot resolve VWorldRegistry");
-			}
+			theLogger.warn("Obsolete call to lookupVWorldMapperDirectly");
+			myVWorldMapper = lookupVWorldMapperDirectly(optSpecID);
 		}
 		return myVWorldMapper;
 	}
@@ -112,15 +102,16 @@ public class CCMIO_VWorldHelper extends BasicDebugger {
 		myVWorldMapper = vwm;
 	}
 
-	public static void launchVWorldLifecycles(BundleContext bundleCtx) { 
+	public static void launchVWorldLifecycles(BundleContext bundleCtx) {
 		// The startVWorldLifecycle call is only necessary under new-PUMA regime.
 		theLogger.info("StartingVWorldLifecycle using bundleContext {}", bundleCtx);
-        VirtualWorldFactory.startVWorldLifecycle(bundleCtx);		
+		VirtualWorldFactory.startVWorldLifecycle(bundleCtx);
 	}
-	public void finishDemoSetup(BundleContext bundleCtx) { 
+
+	public void finishDemoSetup(BundleContext bundleCtx) {
 		// Under what conditions should this call succeed?
 		attachVWorldRenderModule(myWERM, null);
-		
+
 		EstimateVisualizer eViz = myWERM.setupVisualizer(null, null, null);
 		// Needs to be done at least once for the selfEstim to exist.
 		MathSpaceFactory msf = new MathSpaceFactory();
@@ -131,12 +122,16 @@ public class CCMIO_VWorldHelper extends BasicDebugger {
 		Ident worldEstimID = new FreeIdent(WorldEstimate.ESTIM_NS + "world_estim_31");
 		WorldEstimate we = new WorldEstimate(worldEstimID);
 		myWERM.setWorldEstimate(we);
-		Robot.Id optRobotID_elseAllRobots = null;		
-		startMotionComputers(bundleCtx, optRobotID_elseAllRobots, we);	
-	}	
-	private void initOptionalMidiStuff() { 
+		Robot.Id optRobotID_elseAllRobots = new Robot.Id("Sinbad");
+		startMotionComputers(bundleCtx, optRobotID_elseAllRobots, we);
+
+		// Force some animation to play
+
+	}
+
+	private void initOptionalMidiStuff() {
 		myMidiMapper = new CCMIO_DemoMidiCommandMapper();
-		
+
 		if (myFlag_connectMidiIn) {
 			myMidiMapper.startMidiRouters();
 		}
@@ -145,26 +140,44 @@ public class CCMIO_VWorldHelper extends BasicDebugger {
 		}
 		if (myFlag_connectMidiSwitcheroo) {
 			myMidiMapper.startMidiSwitcherooDemo();
-		}		
+		}
 	}
-	private void startMotionComputers(BundleContext bundleCtx, Robot.Id optRobotID_elseAllRobots, WorldEstimate we) { 
+
+	private void startMotionComputers(BundleContext bundleCtx, Robot.Id optRobotID_elseAllRobots, WorldEstimate we) {
 		List<CogcharMotionSource> cogMotSrcList = CogcharMotionSource.findCogcharMotionSources(bundleCtx, optRobotID_elseAllRobots);
-		
+
 		for (CogcharMotionSource cms : cogMotSrcList) {
 			Robot srcBot = cms.getRobot();
 			Robot.Id srcBotID = srcBot.getRobotId();
-			if ((optRobotID_elseAllRobots == null)  || optRobotID_elseAllRobots.equals(srcBotID)) {
+			if ((optRobotID_elseAllRobots == null) || optRobotID_elseAllRobots.equals(srcBotID)) {
 				getLogger().info("Found CogcharMotionSource for Robot-ID {} matching pattern {}", srcBotID, optRobotID_elseAllRobots);
-				// Start a motion computer implemented locally in demo CCRK - tries to swing Sinbad around his spine
+				// Start a motion computer implemented locally in demo CCRK - tries to move each of Sinbads joints in turn
 				CCMIO_DemoMotionComputer dmc = new CCMIO_DemoMotionComputer();
 				dmc.setWorldEstimate(we);
 				cms.addJointComputer(dmc);
 				// append a trivial Sinbad-waist-sinusoid-demo implemented in CC-Puma.  Because it acts last, it has last
 				// word, but should not unnecessarily override joint-pos from "earlier" phases=computers.
-				// PumaAppUtils.startSillyMotionComputersDemoForVWorldOnly(bundleCtx, srcBotID); 		
+				PumaAppUtils.startSillyMotionComputersDemoForVWorldOnly(bundleCtx, srcBotID); 		
 			} else {
-				getLogger().debug("Skipping Robot-ID {} because it doesn't match pattern {}", srcBotID, optRobotID_elseAllRobots);
+				getLogger().info("Skipping Robot-ID {} because it doesn't match pattern {}", srcBotID, optRobotID_elseAllRobots);
 			}
 		}
-	}	
+	}
+
+	private PumaVirtualWorldMapper lookupVWorldMapperDirectly(Ident optSpecID) {
+		PumaVirtualWorldMapper pvwm = null;
+
+		BundleContext bc = VirtualWorldFactory.getBundleContext();
+		Properties props = new Properties();
+
+		VWorldRegistry vwr = VirtualWorldFactory.getOSGiVWorldMapper(bc, props);
+		theLogger.info("VWorldRegistry = {}", vwr);
+		if (vwr != null) {
+			myVWorldMapper = vwr.getVW();
+			theLogger.info("VWorldMapper = {}", myVWorldMapper);
+		} else {
+			theLogger.warn("Cannot resolve VWorldRegistry");
+		}
+		return pvwm;
+	}
 }

@@ -25,6 +25,12 @@
 			<artifactId>org.cogchar.bundle.app.puma</artifactId>
 			<version>${cogchar.version}</version>
 		</dependency>
+		<!-- o.a.b.gui allows us to use DemoBrowser object inspector -->
+		<dependency>
+			<groupId>org.appdapter</groupId>
+			<artifactId>org.appdapter.bundle.gui</artifactId>
+			<version>${appdapter.version}</version>
+		</dependency>		
 		<dependency>
 			<groupId>org.cogchar</groupId>
 			<artifactId>org.cogchar.bundle.app.vworld.startup</artifactId>
