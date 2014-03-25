@@ -55,7 +55,7 @@ object RespirationTest extends VarargsLogging {
 		mc.testDoubleVecFetch();
 	}
 	
-	def initReposLoadMathEval() : Unit = {
+	def initReposLoadMathEval() : SweetDynaSpace = {
 		// Note this calls testGoodySpace at the end
 		getLogger().info("Why hello there!  Yes, respiration is the order of the hour...")
 		val rspec = makeDfltOSRS();
@@ -67,7 +67,7 @@ object RespirationTest extends VarargsLogging {
 		testMathAndDynaGoodies(dfltTestRepo, dfltTestRC);
 	}
 	
-	def testMathAndDynaGoodies (dfltTestRepo: Repo,  dfltTestRC : RepoClient) : Unit = {
+	def testMathAndDynaGoodies (dfltTestRepo: Repo,  dfltTestRC : RepoClient) : SweetDynaSpace = {
 		val mathSrcGraphQN = "ccrti:math_sheet_60";
 		EqnExtractors.testMathGraphLoadEval(dfltTestRepo, dfltTestRC, mathSrcGraphQN)
 
