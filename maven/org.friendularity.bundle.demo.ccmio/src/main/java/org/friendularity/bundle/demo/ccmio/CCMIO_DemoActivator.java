@@ -65,16 +65,15 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 	 * and perhaps also the textures/materials on the V-World side? 
 	 */
 	
-	private	boolean		myFlag_connectJVision = true;  
+	public static	boolean		myFlag_connectJVision = true;  
 	private	boolean		myFlag_connectObsoleteNetworkVision = false;  
 	
-	private	boolean		myFlag_connectMidiIn = true;
-	private	boolean		myFlag_connectMidiOut = true;
-	private	boolean		myFlag_connectMidiSwitcheroo = true;
+
 	private	boolean		myFlag_connectSwingDebugGUI = false;
 	private boolean		myFlag_monitorLifecycles = true;
 	
-	private CCMIO_DemoMidiCommandMapper	myMidiMapper;
+	// private	CCMIO_VWorldHelper					myVWorldHelper;
+
 	
 	@Override public void start(final BundleContext context) throws Exception {
 		// Need to tell the MacroBundle system that we are the main launcher, so that forceLog4JConfig will work.
@@ -128,6 +127,15 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 	@Override protected void handleFrameworkStartedEvent(BundleContext bundleCtx) {
 		getLogger().info("Calling startPumaDemo()");
 		startPumaDemo(bundleCtx);
+		// This part really needs to be done after all lifecycles have had their say.
+		/*
+		 *      [java] 105920  INFO [FelixDispatchQueue] (CCMIO_VWorldHelper.java:81) launchVWorldLifecycles - StartingVWorldLifecycle using bundleContext org.apache.felix.framework.BundleContextImpl@41539e8b
+     [java] 106245  INFO [FelixDispatchQueue] (CCMIO_DemoActivator.java:182) startPumaDemo - We have a cheater's Puma-App-Context, but we're not cheatin with it today - hooray!
+     [java] 106281  INFO [FelixDispatchQueue] (CCMIO_VWorldHelper.java:61) getVWorldMapper - VWorldRegistry = null
+     [java] 106282  WARN [FelixDispatchQueue] (CCMIO_VWorldHelper.java:66) getVWorldMapper - Cannot resolve VWorldRegistry
+
+		 */
+		// finishDemoSetup(bundleCtx);
 		
 		// Here we *could start some extra app-specific (e.g. Cogbot binding) goodies, and tell them to attach to 
 		// PUMA  behavior system.  However, the Cogchar config system is intended to be sufficiently general to
@@ -155,66 +163,26 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 			localDemoCheatersContext = ((DemoMediator) mediator).myDemoPACtx;
 		}
 
-		// Hey, let's get some fused-sensor-data visualization going too, while we're at it!
-		WorldEstimateRenderModule werm = new WorldEstimateRenderModule();
-		initOptionalMidiStuff();
-	    if (myMidiMapper != null) {
-			// TODO:  Can probably remove this link
-			myMidiMapper.setWERM(werm);
-			werm.setMidiMapper(myMidiMapper);
-		}
-		// Enable/Disable this texture flow based on whether we are launching JVision or not.
-		// Should be a dont-care whether this happens before/after   startVisionMonitors() below.
-		// TODO:  Re-verify in detail.
-		werm.setFlag_JVisionTextureRoutingEnabled(myFlag_connectJVision);
+		CCMIO_VWorldHelperLifecycle.startHelperLifecycle(bundleCtx);
 		
-		getLogger().info("$$$$$$$$$$$$$$$    $$$$$$$$$$$$$$$$$   disabled PumaAppUtils.attachVWorldRenderModule");
-	// Until 2014-02-20, we used:	PumaAppUtils.attachVWorldRenderModule(bundleCtx, werm, null);
-	// But now instead:
-		CCMIO_VWorldHelper	vwHelper = new CCMIO_VWorldHelper();
-		// Are objects created on this thread, or some other thread?
-		vwHelper.launchVWorldLifecycles(bundleCtx);
-		// Under what conditions should this call succeed?
-		vwHelper.attachVWorldRenderModule(bundleCtx, werm, null);
-		
-		EstimateVisualizer eViz = werm.setupVisualizer(null, null, null);
-		// Needs to be done at least once for the selfEstim to exist.
-		MathSpaceFactory msf = new MathSpaceFactory();
-		// Decided we don't want extra layer of "Scripted"; in part b/c old impl wanted to cache evaluation results.
-		// MathGate mg = msf.makeScriptedMathGate();
-		MathGate mg = msf.makeUnscriptedMathGate();
-		werm.setMathGate(mg);
-		Ident worldEstimID = new FreeIdent(WorldEstimate.ESTIM_NS + "world_estim_31");
-		WorldEstimate we = new WorldEstimate(worldEstimID);
-		werm.setWorldEstimate(we);
-		Robot.Id optRobotID_elseAllRobots = null;		
-		startMotionComputers(bundleCtx, optRobotID_elseAllRobots, we);	
+		CCMIO_VWorldHelper.launchVWorldLifecycles(bundleCtx);
 		
 		if (myFlag_connectObsoleteNetworkVision) {
 			//	Startup the obsolete netrowk vision connection
 			startObsoleteNetworkVisionMonitors();
 		}
 		if (myFlag_connectSwingDebugGUI) {
-			setupDebuggingScaffold(mg, we);
-		}
+			// setupDebuggingScaffold(mg, we);
+		}			
+	
+	// Until 2014-02-20, we used:	PumaAppUtils.attachVWorldRenderModule(bundleCtx, werm, null);
+	
 		if (localDemoCheatersContext != null) {
 			getLogger().info("We have a cheater's Puma-App-Context, but we're not cheatin with it today - hooray!");
-		}
-	}
-	
-	private void initOptionalMidiStuff() { 
-		myMidiMapper = new CCMIO_DemoMidiCommandMapper();
-		
-		if (myFlag_connectMidiIn) {
-			myMidiMapper.startMidiRouters();
-		}
-		if (myFlag_connectMidiOut) {
-			myMidiMapper.startMidiOutputDemo();
-		}
-		if (myFlag_connectMidiSwitcheroo) {
-			myMidiMapper.startMidiSwitcherooDemo();
 		}		
 	}
+
+	
 
 
 	private void setupDebuggingScaffold(MathGate mg, WorldEstimate we) { 
@@ -234,26 +202,7 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 	 * @param bundleCtx
 	 * @param optRobotID_elseAllRobots 
 	 */
-	private void startMotionComputers(BundleContext bundleCtx, Robot.Id optRobotID_elseAllRobots, WorldEstimate we) { 
-		List<CogcharMotionSource> cogMotSrcList = CogcharMotionSource.findCogcharMotionSources(bundleCtx, optRobotID_elseAllRobots);
-		
-		for (CogcharMotionSource cms : cogMotSrcList) {
-			Robot srcBot = cms.getRobot();
-			Robot.Id srcBotID = srcBot.getRobotId();
-			if ((optRobotID_elseAllRobots == null)  || optRobotID_elseAllRobots.equals(srcBotID)) {
-				getLogger().info("Found CogcharMotionSource for Robot-ID {} matching pattern {}", srcBotID, optRobotID_elseAllRobots);
-				// Start a motion computer implemented locally in demo CCRK - tries to swing Sinbad around his spine
-				CCMIO_DemoMotionComputer dmc = new CCMIO_DemoMotionComputer();
-				dmc.setWorldEstimate(we);
-				cms.addJointComputer(dmc);
-				// append a trivial Sinbad-waist-sinusoid-demo implemented in CC-Puma.  Because it acts last, it has last
-				// word, but should not unnecessarily override joint-pos from "earlier" phases=computers.
-				// PumaAppUtils.startSillyMotionComputersDemoForVWorldOnly(bundleCtx, srcBotID); 		
-			} else {
-				getLogger().debug("Skipping Robot-ID {} because it doesn't match pattern {}", srcBotID, optRobotID_elseAllRobots);
-			}
-		}
-	}
+
 	private void startObsoleteNetworkVisionMonitors() { 
 		UnusedNetworkVisionDataFeed vdf = new UnusedNetworkVisionDataFeed();
 		boolean svcsOK = vdf.connectServices();

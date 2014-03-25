@@ -15,8 +15,12 @@
  */
 package org.friendularity.bundle.demo.ccmio;
 
+import java.util.List;
 import java.util.Properties;
+import org.appdapter.core.log.BasicDebugger;
+import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
+import org.cogchar.bind.mio.robot.motion.CogcharMotionSource;
 
 import org.cogchar.render.sys.module.RenderModule;
 import org.cogchar.bundle.app.puma.PumaAppUtils;
@@ -24,6 +28,14 @@ import org.cogchar.bundle.app.puma.PumaAppUtils.GreedyHandleSet;
 import org.cogchar.bundle.app.vworld.central.VWorldRegistry;
 import org.cogchar.bundle.app.vworld.central.VirtualWorldFactory;
 import org.cogchar.bundle.app.vworld.startup.PumaVirtualWorldMapper;
+
+import org.cogchar.bind.symja.MathSpaceFactory;
+import org.cogchar.bind.symja.MathGate;
+
+import org.friendularity.api.west.WorldEstimate;
+import org.friendularity.impl.visual.EstimateVisualizer;
+import org.friendularity.impl.visual.WorldEstimateRenderModule;
+import org.mechio.api.motion.Robot;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,10 +44,37 @@ import org.slf4j.LoggerFactory;
  *
  * @author Stu B22 <stub22@appstract.com>
  */
-public class CCMIO_VWorldHelper {
+public class CCMIO_VWorldHelper extends BasicDebugger {
 	static Logger theLogger = LoggerFactory.getLogger(CCMIO_VWorldHelper.class);
+	
+	private	WorldEstimateRenderModule			myWERM;
+		
+	private CCMIO_DemoMidiCommandMapper			myMidiMapper;
+	private PumaVirtualWorldMapper	myVWorldMapper;
+
+	private	boolean		myFlag_connectMidiIn = true;
+	private	boolean		myFlag_connectMidiOut = true;
+	private	boolean		myFlag_connectMidiSwitcheroo = true;
+
+	public void doWermStuff() { 
+	// Hey, let's get some fused-sensor-data visualization going too, while we're at it!
+		myWERM = new WorldEstimateRenderModule();
+		initOptionalMidiStuff();
+	    if (myMidiMapper != null) {
+			// TODO:  Can probably remove this link
+			myMidiMapper.setWERM(myWERM);
+			myWERM.setMidiMapper(myMidiMapper);
+		}
+		// Enable/Disable this texture flow based on whether we are launching JVision or not.
+		// Should be a dont-care whether this happens before/after   startVisionMonitors() below.
+		// TODO:  Re-verify in detail.
+		myWERM.setFlag_JVisionTextureRoutingEnabled(CCMIO_DemoActivator.myFlag_connectJVision);
+		
+		getLogger().info("$$$$$$$$$$$$$$$    $$$$$$$$$$$$$$$$$   disabled PumaAppUtils.attachVWorldRenderModule");		
+	}
 	// 2014-02-20      PumaAppUtils.attachVWorldRenderModule(bundleCtx, werm, null);
-	public  	void attachVWorldRenderModule(BundleContext bundleCtx, RenderModule rMod, Ident optVWorldSpecID) {
+	public  	void attachVWorldRenderModule(// BundleContext bundleCtx, 
+			RenderModule rMod, Ident optVWorldSpecID) {
 		// srec-access not currently used *directly*, but we will probly want it again.
 		GreedyHandleSet srec = PumaAppUtils.obtainGreedyHandleSet();
 		// Old way:
@@ -51,7 +90,7 @@ public class CCMIO_VWorldHelper {
 
 	// Now that we see this works with new-PUMA+Vworld setup, we can start switching over to just using the 
 	// VWorldRegistry (not the Mapper).
-	private PumaVirtualWorldMapper	myVWorldMapper;
+
 	private PumaVirtualWorldMapper getVWorldMapper(Ident optSpecID) {
 		if (myVWorldMapper == null) {
 			BundleContext bc = VirtualWorldFactory.getBundleContext();
@@ -62,192 +101,70 @@ public class CCMIO_VWorldHelper {
 			if (vwr != null) {
 				myVWorldMapper = vwr.getVW();
 				theLogger.info("VWorldMapper = {}", myVWorldMapper);
+			} else {
+				theLogger.warn("Cannot resolve VWorldRegistry");
 			}
 		}
 		return myVWorldMapper;
 	}
-	/*
-	// Who is gonna call this now?
-	public void putVWorldMapper(PumaVirtualWorldMapper vwm, Ident optSpecID) {
+
+	public void setVWorldMapper(PumaVirtualWorldMapper vwm, Ident optSpecID) {
 		myVWorldMapper = vwm;
 	}
-	*/
-	public void launchVWorldLifecycles(BundleContext bundleCtx) { 
+
+	public static void launchVWorldLifecycles(BundleContext bundleCtx) { 
 		// The startVWorldLifecycle call is only necessary under new-PUMA regime.
 		theLogger.info("StartingVWorldLifecycle using bundleContext {}", bundleCtx);
         VirtualWorldFactory.startVWorldLifecycle(bundleCtx);		
 	}
-	
-	//  2014-02-22 - Noted most of the stuff below is now captured in the new VWorldRegistry class.
-	
-	/*  2014-02-20 removed from PumaAppContext
-	 * 	public boolean hasVWorldMapper() {
-		return (myRegClient.getVWorldMapper(null) != null);
-	}
-
-	public PumaVirtualWorldMapper getOrMakeVWorldMapper() {
-		PumaVirtualWorldMapper pvwm = myRegClient.getVWorldMapper(null);
-		if (pvwm == null) {
-			pvwm = new PumaVirtualWorldMapper(this);
-			myRegClient.putVWorldMapper(pvwm, null);
-		}
-		return pvwm;
-	}
-	protected void startOpenGLCanvas(boolean wrapInJFrameFlag, java.awt.event.WindowListener optWinLis) throws Exception {
-		if (hasVWorldMapper()) {
-			PumaVirtualWorldMapper pvwm = myRegClient.getVWorldMapper(null);
-			pvwm.startOpenGLCanvas(wrapInJFrameFlag, optWinLis);
-		} else {
-			getLogger().warn("Ignoring startOpenGLCanvas command - no vWorldMapper present");
-		}
-	}
-protected void initCinema(boolean clearFirst) {
-		if (hasVWorldMapper()) {
-			PumaVirtualWorldMapper pvwm = myRegClient.getVWorldMapper(null);
-			if (clearFirst) {
-				pvwm.clearCinematicStuff();
-			}
-			CommandSpace cmdSpc = myRegClient.getCommandSpace(null);
-			PumaConfigManager pcm = getConfigManager();
-			BasicThingActionRouter router = GruesomeTAProcessingFuncs.getActionRouter();
-			pvwm.initVirtualWorlds(cmdSpc, pcm, router);
-//          Moved connectWeb call to PumaBooter so we can get lifter without the VWorld - Matt, Sep 20 2013
-//			connectWeb();
-
-			ClassLoader vizResCL = getSingleClassLoaderOrNull(ResourceFileCategory.RESFILE_OPENGL_JME3_OGRE);
-			pvwm.connectVisualizationResources(vizResCL);
-		} else {
-			getLogger().warn("Ignoring initCinema command - no vWorldMapper present");
-		}
-	}
-	* // protected void stopAndReleaseAllHumanoids() {
-	//...
-			PumaVirtualWorldMapper pvwm = getOrMakeVWorldMapper();
-		pvwm.detachAllHumanoidFigures();
-		* }
-	//...
-	protected void disconnectAllCharsAndMappers() throws Throwable {
-		BundleContext bunCtx = getBundleContext();
-
-		if (hasVWorldMapper()) {
-			PumaVirtualWorldMapper vWorldMapper = getOrMakeVWorldMapper();
-			vWorldMapper.clearCinematicStuff();
-			// Consider:  also set the context/registry vWorldMapper to null, expecting
-			// PumaBooter or somesuch to find it again.
-		}
-	//...
-	protected void reloadAll(boolean resetMainConfigFlag) {
-	  initCinema(true);
-	 */
-	
-// 2014-02-20  these were removed from PumaRegistryClient and Impl
-//	public PumaVirtualWorldMapper getVWorldMapper(Ident optSpecID);
-//	public void putVWorldMapper (PumaVirtualWorldMapper v, Ident optSpecID);	
-// Impl: 
-	//private PumaVirtualWorldMapper	myVWorldMapper;
-	//	@Override public PumaVirtualWorldMapper getVWorldMapper(Ident optSpecID) {
-//		return myVWorldMapper;
-//	}
-//
-//	@Override public void putVWorldMapper(PumaVirtualWorldMapper vwm, Ident optSpecID) {
-//		myVWorldMapper = vwm;
-//	}
-	
-	
-// From PumaBooter:
-//         boolean wantVWorld = mediator.getFlagIncludeVirtualWorld();
-//		if (wantVWorld) {
-//			initVWorldUnsafe(pac, mediator);
-//		}	
-	
-//        if (wantVWorld) {
-//            getLogger().debug("%%% connectDualRobotChars() completed , calling initCinema()");
-//
-//            // Lights, Cameras, and Cinematics were once configured during PumaDualCharacter init
-//            // Since we can support multiple characters now (and connect cameras to them), this needs to 
-//            // happen after connectDualRobotChars().
-//            // We'll let pac take care of this, since it is currently "Home of the Global Mode"
-//            //pac.initCinema(false);
-//        }
-//	private void initVWorldUnsafe(final PumaAppContext pac, PumaContextMediator mediator) throws Throwable {
-//		// Mediator must be able to decide panelKind before the HumanoidRenderContext is built.
-//		String panelKind = mediator.getPanelKind();
-//		getLogger().debug("%%%%%%%%%%%%%%%%%%% Calling initHumanoidRenderContext()");
-//		PumaVirtualWorldMapper pvwm = pac.getOrMakeVWorldMapper();
-//		HumanoidRenderContext hrc = pvwm.initHumanoidRenderContext(panelKind);
-//		getLogger().debug("%%%%%%%%%%%%%%%%%%% Calling mediator.notifyPanelsConstructed()");
-//		mediator.notifyPanelsConstructed(pac);
-//		/*
-//		 * Start up the JME OpenGL canvas, which will in turn initialize the Cogchar rendering "App" (in JME3 lingo).
-//		 *
-//		 * Firing up the OpenGL canvas requires access to sun.misc.Unsafe, which must be explicitly imported by
-//		 * ext.bundle.osgi.jmonkey, and explicitly allowed by the container when using Netigso
-//		 */
-//		boolean allowJFrames = mediator.getFlagAllowJFrames();
-//		if (allowJFrames) {
-//			WindowAdapter winLis = new WindowAdapter() {
-//				@Override public void	windowClosed(WindowEvent e) {
-//					getLogger().warn("PumaBooter caught window CLOSED event for OpenGL frame:  {}", e);
-//					notifyVWorldWindowClosed();
-//				}
-//			};
-//			getLogger().debug("%%%%%%%%%%%%%%%%%%% Calling startOpenGLCanvas");
-//			pac.startOpenGLCanvas(allowJFrames, winLis);
-//			
-//		}
-//		getLogger().debug("%%%%%%%%%%%%%%%%%%% startOpenGLCanvas completed, enqueueing final boot phase on JME3 thread, and waiting for completion.");
-//
-//		/**
-//		 * Populate the virtual world with humanoids, cameras, lights, and other goodies. This step will load all the 3D
-//		 * models (and other rendering resources) that Cogchar needs, based on what is implied by the sysContextURI we
-//		 * supplied to the PumaAppContext constructor above.
-//		 *
-//		 * We enqueue this work to occur,on JME3 update thread. Otherwise we'll get an: IllegalStateException: Scene
-//		 * graph is not properly updated for rendering.
-//		 * 
-//		 * This call first waits for a WorkaroundAppStub to appear, so that it can enqueue the main call on the JME3 
-//		 * thread.  THEN it waits for that enqueued call to finish, allowing us to be sure that all this init is
-//		 * completed, on the proper thread, before we continue the PUMA boot process.
-//		 */					
-//		hrc.runPostInitLaunchOnJmeThread();
-//		getLogger().debug("%%%%%%%%%%%%%%%%%%% Context.runPostInitLaunch completed");
-//	}
-	/*-------------------------------------------------
-	 * From PumaContextCommandBox:
-	 
-	 * 	protected HumanoidRenderContext getHRC() { 
-		return myPAC.getOrMakeVWorldMapper().getHumanoidRenderContext();
-	}
-	public GoodyGameFeatureAdapter getGameFeatureAdapter() { 
-		return getHRC().getGameFeatureAdapter();
-	}
-	public HumanoidFigureManager getFigureManager() { 
-		return getHRC().getHumanoidFigureManager();
-	}
-	public PathMgr getPathMgr() {
-		return getHRC().getGoodyRenderRegistryClient().getScenePathFacade(null);
-	}
-	public SpatialAnimMgr getThingAnimMgr() {
-		return getHRC().getGoodyRenderRegistryClient().getSceneAnimFacade(null);
-	}
-	public void resetMainCameraLocation() { 
-		getHRC().setDefaultCameraLocation();
-	}
-
-	public HumanoidFigure_SinbadTest getSinbad() { 
-		BonyRenderContext brc = getHRC();
-		RenderConfigEmitter bce = brc.getConfigEmitter();
-		HumanoidFigureManager hfm = getFigureManager();
-		return (HumanoidFigure_SinbadTest) hfm.getHumanoidFigure(bce.SINBAD_CHAR_IDENT());
+	public void finishDemoSetup(BundleContext bundleCtx) { 
+		// Under what conditions should this call succeed?
+		attachVWorldRenderModule(myWERM, null);
+		
+		EstimateVisualizer eViz = myWERM.setupVisualizer(null, null, null);
+		// Needs to be done at least once for the selfEstim to exist.
+		MathSpaceFactory msf = new MathSpaceFactory();
+		// Decided we don't want extra layer of "Scripted"; in part b/c old impl wanted to cache evaluation results.
+		// MathGate mg = msf.makeScriptedMathGate();
+		MathGate mg = msf.makeUnscriptedMathGate();
+		myWERM.setMathGate(mg);
+		Ident worldEstimID = new FreeIdent(WorldEstimate.ESTIM_NS + "world_estim_31");
+		WorldEstimate we = new WorldEstimate(worldEstimID);
+		myWERM.setWorldEstimate(we);
+		Robot.Id optRobotID_elseAllRobots = null;		
+		startMotionComputers(bundleCtx, optRobotID_elseAllRobots, we);	
 	}	
-	public PumaVirtualWorldMapper getVWM() { 
-		return myPAC.getOrMakeVWorldMapper();
+	private void initOptionalMidiStuff() { 
+		myMidiMapper = new CCMIO_DemoMidiCommandMapper();
+		
+		if (myFlag_connectMidiIn) {
+			myMidiMapper.startMidiRouters();
+		}
+		if (myFlag_connectMidiOut) {
+			myMidiMapper.startMidiOutputDemo();
+		}
+		if (myFlag_connectMidiSwitcheroo) {
+			myMidiMapper.startMidiSwitcherooDemo();
+		}		
 	}
-	* 
-	private boolean processUpdateRequestNow(String request, final boolean resetMainConfigFlag) {
-		boolean successFlag = true;
-		if (WORLD_CONFIG.equals(request.toLowerCase())) {
-			//myPAC.initCinema(true);* 
-	
-	 */
+	private void startMotionComputers(BundleContext bundleCtx, Robot.Id optRobotID_elseAllRobots, WorldEstimate we) { 
+		List<CogcharMotionSource> cogMotSrcList = CogcharMotionSource.findCogcharMotionSources(bundleCtx, optRobotID_elseAllRobots);
+		
+		for (CogcharMotionSource cms : cogMotSrcList) {
+			Robot srcBot = cms.getRobot();
+			Robot.Id srcBotID = srcBot.getRobotId();
+			if ((optRobotID_elseAllRobots == null)  || optRobotID_elseAllRobots.equals(srcBotID)) {
+				getLogger().info("Found CogcharMotionSource for Robot-ID {} matching pattern {}", srcBotID, optRobotID_elseAllRobots);
+				// Start a motion computer implemented locally in demo CCRK - tries to swing Sinbad around his spine
+				CCMIO_DemoMotionComputer dmc = new CCMIO_DemoMotionComputer();
+				dmc.setWorldEstimate(we);
+				cms.addJointComputer(dmc);
+				// append a trivial Sinbad-waist-sinusoid-demo implemented in CC-Puma.  Because it acts last, it has last
+				// word, but should not unnecessarily override joint-pos from "earlier" phases=computers.
+				// PumaAppUtils.startSillyMotionComputersDemoForVWorldOnly(bundleCtx, srcBotID); 		
+			} else {
+				getLogger().debug("Skipping Robot-ID {} because it doesn't match pattern {}", srcBotID, optRobotID_elseAllRobots);
+			}
+		}
+	}	
 }
