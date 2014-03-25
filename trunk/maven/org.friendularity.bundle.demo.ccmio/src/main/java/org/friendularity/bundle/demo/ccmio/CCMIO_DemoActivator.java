@@ -13,7 +13,7 @@ import org.appdapter.core.matdat.RepoSpec;
 import org.appdapter.core.matdat.OnlineSheetRepoSpec;
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
-// import org.appdapter.gui.demo.DemoBrowser;
+import org.appdapter.gui.demo.DemoBrowser;
 import org.cogchar.app.puma.boot.PumaAppContext;
 import org.cogchar.bind.mio.robot.motion.CogcharMotionSource;
 import org.cogchar.bundle.app.puma.PumaAppUtils;
@@ -126,17 +126,10 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 	*/
 	@Override protected void handleFrameworkStartedEvent(BundleContext bundleCtx) {
 		getLogger().info("Calling startPumaDemo()");
-		startPumaDemo(bundleCtx);
-		// This part really needs to be done after all lifecycles have had their say.
-		/*
-		 *      [java] 105920  INFO [FelixDispatchQueue] (CCMIO_VWorldHelper.java:81) launchVWorldLifecycles - StartingVWorldLifecycle using bundleContext org.apache.felix.framework.BundleContextImpl@41539e8b
-     [java] 106245  INFO [FelixDispatchQueue] (CCMIO_DemoActivator.java:182) startPumaDemo - We have a cheater's Puma-App-Context, but we're not cheatin with it today - hooray!
-     [java] 106281  INFO [FelixDispatchQueue] (CCMIO_VWorldHelper.java:61) getVWorldMapper - VWorldRegistry = null
-     [java] 106282  WARN [FelixDispatchQueue] (CCMIO_VWorldHelper.java:66) getVWorldMapper - Cannot resolve VWorldRegistry
-
-		 */
-		// finishDemoSetup(bundleCtx);
 		
+		launchPumaRobotsAndChars(bundleCtx);
+		launchVWorldLifecycles(bundleCtx);
+		launchOtherStuffLate();	
 		// Here we *could start some extra app-specific (e.g. Cogbot binding) goodies, and tell them to attach to 
 		// PUMA  behavior system.  However, the Cogchar config system is intended to be sufficiently general to
 		// handle most initialization cases without help from bundle activators.		
@@ -145,28 +138,37 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 		super.stop(context);
     }
 
-	private void startPumaDemo(BundleContext bundleCtx) {
-		
+	private void launchPumaRobotsAndChars(BundleContext bundleCtx) {
 		PumaBooter pumaBooter = new PumaBooter();
 		PumaContextMediator mediator = PumaGlobalPrebootInjector.getTheInjector().getMediator();
-		
+
+		// This part no longer includes the V-World.
+		// N
 		PumaBooter.BootResult bootResult = pumaBooter.bootUnderOSGi(bundleCtx, mediator);
 		getLogger().info("Got PUMA BootResult: " + bootResult);
-		// TODO:  Pay attention to {the set of relevant charIDs and component configs}, as we set up these
-		// motionComputer + estimateVisualizer components.
-		
-		// Cheaters context is available locally only for our demo-specific debugging features.
-		// [It is currently unused]
-		// If another mediator took over instead, then we won't try to "cheat" to make those debugging features run.
-		PumaAppContext localDemoCheatersContext = null;
-		if (mediator instanceof DemoMediator) {
-			localDemoCheatersContext = ((DemoMediator) mediator).myDemoPACtx;
-		}
-
+	}
+	private void launchVWorldLifecycles(BundleContext bundleCtx) {
+		CCMIO_VWorldHelper.launchVWorldLifecycles(bundleCtx);	
 		CCMIO_VWorldHelperLifecycle.startHelperLifecycle(bundleCtx);
-		
-		CCMIO_VWorldHelper.launchVWorldLifecycles(bundleCtx);
-		
+		// This seems to actually launch the VWorld inline, on this thread.
+/*
+ *   [java] 	at org.cogchar.bundle.app.vworld.startup.PumaVirtualWorldMapper.initCinematicStuff(PumaVirtualWorldMapper.java:165)
+     [java] 	at org.cogchar.bundle.app.vworld.startup.PumaVirtualWorldMapper.initVirtualWorlds(PumaVirtualWorldMapper.java:115)
+     [java] 	at org.cogchar.bundle.app.vworld.central.VWorldRegistry.initCinema(VWorldRegistry.java:117)
+     [java] 	at org.cogchar.bundle.app.vworld.central.VWorldMapperLifecycle.createService(VWorldMapperLifecycle.java:100)
+     [java] 	at org.cogchar.bundle.app.vworld.central.VWorldMapperLifecycle.createService(VWorldMapperLifecycle.java:28)
+     [java] 	at org.jflux.api.service.ServiceManager.tryCreate(ServiceManager.java:184)
+     [java] 	at org.jflux.api.service.ServiceManager.bindDependencies(ServiceManager.java:162)
+     [java] 	at org.jflux.api.service.ServiceManager.start(ServiceManager.java:128)
+     [java] 	at org.cogchar.bundle.app.vworld.central.VirtualWorldFactory.startVWorldLifecycle(VirtualWorldFactory.java:73)
+     [java] 	at org.friendularity.bundle.demo.ccmio.CCMIO_VWorldHelper.launchVWorldLifecycles(CCMIO_VWorldHelper.java:118)
+    ...
+     [java] 	at org.friendularity.bundle.demo.ccmio.CCMIO_DemoActivator.handleFrameworkStartedEvent(CCMIO_DemoActivator.java:129)
+
+ */
+	}
+	private void launchOtherStuffLate()  {
+	
 		if (myFlag_connectObsoleteNetworkVision) {
 			//	Startup the obsolete netrowk vision connection
 			startObsoleteNetworkVisionMonitors();
@@ -174,19 +176,10 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 		if (myFlag_connectSwingDebugGUI) {
 			// setupDebuggingScaffold(mg, we);
 		}			
-	
-	// Until 2014-02-20, we used:	PumaAppUtils.attachVWorldRenderModule(bundleCtx, werm, null);
-	
-		if (localDemoCheatersContext != null) {
-			getLogger().info("We have a cheater's Puma-App-Context, but we're not cheatin with it today - hooray!");
-		}		
 	}
 
-	
-
-
 	private void setupDebuggingScaffold(MathGate mg, WorldEstimate we) { 
-	/*		
+	/*
 		DemoBrowser.showObject("werm-MG", mg, false, false); // true, true);
 		DemoBrowser.showObject("amazingly accurate estimate", we, false, false);
 		PumaAppUtils.GreedyHandleSet greedyHandles = new PumaAppUtils.GreedyHandleSet();
@@ -231,6 +224,7 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 		@Override public void notifyBeforeBootComplete(PumaAppContext ctx) throws Throwable {
 			myDemoPACtx = ctx;
 			// We could do some additional init here, if desired.
+			// We are on the frameworkStartedCallback() thread.  
 		}
 	}	
 

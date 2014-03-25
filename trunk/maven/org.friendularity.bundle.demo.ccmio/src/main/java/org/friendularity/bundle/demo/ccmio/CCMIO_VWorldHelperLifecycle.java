@@ -51,16 +51,21 @@ public class CCMIO_VWorldHelperLifecycle extends BasicDebugger implements Servic
 				ServiceDependency.UpdateStrategy.STATIC, Collections.EMPTY_MAP);
 	}
 
+	// Here is the callback that launches our CCMIO VWorld  "Helper" demonstration object, AFTER the
+	// VWorldRegistry is loaded.
     @Override public CCMIO_VWorldHelper createService(Map<String, Object> dependencyMap) {
 		getLogger().info("Creating CCMIO_VWorldHelper service");
 		CCMIO_VWorldHelper helper = new CCMIO_VWorldHelper();
         VWorldRegistry vwReg = (VWorldRegistry) dependencyMap.get(DEPKEY_VWorldReg);
 		PumaVirtualWorldMapper pvwm = vwReg.getVW();
+		// Tell the helper about the VWorld.
 		helper.setVWorldMapper(pvwm, null);
+		// Do some loosely defined VWorld visualization setup.
 		helper.doWermStuff();
 		Bundle b = FrameworkUtil.getBundle(CCMIO_VWorldHelper.class);
         if (b != null) {
 			BundleContext bundleCtx = b.getBundleContext();
+			// 
 			helper.finishDemoSetup(bundleCtx);
         }
 		return helper;
