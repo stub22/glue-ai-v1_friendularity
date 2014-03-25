@@ -39,10 +39,13 @@ object MathBalloon extends BasicDebugger {
 		org.cogchar.api.space.GridSpaceTest.go;
 		
 		getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^  main() testing math-repo+goody load (respiration)");		
-		RespirationTest.initReposLoadMathEval;
+		val sweetDS = RespirationTest.initReposLoadMathEval : SweetDynaSpace;
 		
 		getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^  main() constructing a TrialBalloon OpenGL+MIDI app");
-		val tbApp : TrialBalloon = new TrialBalloon();
+		val tbApp : BigBalloon = new BigBalloon();
+		
+		tbApp.attachVWorldUpdater(sweetDS);
+		
 		getLogger().info("calling tbApp.initMidi()");
 		// Initialize available MIDI devices and sequence library.
 		tbApp.initMidi();
@@ -73,6 +76,18 @@ object MathBalloon extends BasicDebugger {
 		 */
 		getLogger().info("^^^^^^^^^^ End of MathBalloon.main()");
 		
+		
+	}
+}
+import org.cogchar.render.sys.context.CogcharRenderContext;
+import org.cogchar.render.sys.registry.RenderRegistryClient;
+class BigBalloon extends TrialBalloon {
+	
+	def moreInit_whatThread() : Unit = {
+		val crc  : CogcharRenderContext = getRenderContext();
+		val rrc : RenderRegistryClient = crc.getRenderRegistryClient();
+		val rootDeepNode = rrc.getJme3RootDeepNode(null)
+		val rootFlatNode = rrc.getJme3RootOverlayNode(null)
 		
 	}
 }
