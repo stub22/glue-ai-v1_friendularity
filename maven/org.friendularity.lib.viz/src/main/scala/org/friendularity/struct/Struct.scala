@@ -40,12 +40,32 @@ trait Struct[FieldKey, FieldVal] extends DataValue {
 
 // An updatable set of bindings for keyed fields, which can be used to map from any compatible data source
 // into any compatible struct.  
-class StructMapper[FK, DV <: DataValue, DE <: DataExpr] {
+trait FactorySupplier[FK, FV] {
+	var myValueFactoryMap = new scala.collection.immutable.HashMap[FK, Factory[FV]]
+	def getValueFactoryForField(fk : FK) : Factory[FV] = myValueFactoryMap.apply(fk)  
+	// alt:  apply, applyOrElse(fk, defaultFactory)
+	def makeFieldVal(fk : FK) : FV = {
+		val factory = getValueFactoryForField(fk) 
+		// This default impl uses the fieldFactory
+		// Override to make() a correct variation based on the fieldKey.
+		println("Using factory to make default field config for " + fk)
+		factory.make()
+	}
+	def bindFactory(fk : FK, dvFactory : Factory[FV]) {
+		myValueFactoryMap += (fk -> dvFactory)
+	}
+	
+}
+class StructMapper[FK, DV <: DataValue, DE <: DataExpr] extends FactorySupplier[FK, DV] {
 	var myFieldExprMap = new scala.collection.immutable.HashMap[FK, DataBinding[DE, DV]]
-
-	def bindField(fk : FK, de : DE, bufferDV : DV) {
+//	var myValueFactoryMap = new scala.collection.immutable.HashMap[FK, Factory[DV]]
+// 	def getValueFactoryForField(fk : FK) : Factory[DV] = myValueFactoryMap.apply(fk)  
+	def bindField(fk : FK, de : DE, dvFactory : Factory[DV]) {
+		val bufferDV = dvFactory.make()
 		val binding = new DataBinding(de, bufferDV)
+		myFieldExprMap -= fk // Remove any old binding for this key.
 		myFieldExprMap += (fk -> binding)
+		bindFactory(fk, dvFactory)
 	}
 	// Updates the fields of a given struct, using mappings embedded in our DataBindings for each field,
 	// and source data from the given DataSource.  
@@ -61,11 +81,14 @@ class StructMapper[FK, DV <: DataValue, DE <: DataExpr] {
 			s.writeField(fk, b.myBufferDV)
 		}
 	}
-}
 
-// Uses a fieldFactory to copy values as required, and *by default* to make new values.
-class BasicStruct[FK, FV](val myFieldFactory : Factory[FV]) extends Struct[FK, FV] {
+}
+abstract class BaseStruct[FK, FV]() extends Struct[FK, FV] {
 	var myFieldValMap : Map[FK, FV] = new scala.collection.immutable.HashMap[FK, FV]
+
+	protected def makeFieldVal(fk : FK) : FV = getFactory(fk).make()
+	protected def getFactory(fk : FK) : Factory[FV]
+
 	override def writeField(fk : FK, dVal : FV) {
 		val tgtFV : FV = 
 			if (myFieldValMap.contains(fk)) {
@@ -75,17 +98,41 @@ class BasicStruct[FK, FV](val myFieldFactory : Factory[FV]) extends Struct[FK, F
 				myFieldValMap += (fk -> tfv)
 				tfv
 			}
-		myFieldFactory.shallowCopyContents(dVal, tgtFV)
+		getFactory(fk).shallowCopyContents(dVal, tgtFV)
 	}
 	override def readField(fk : FK, tgtFV : FV) {
 		val srcFV = myFieldValMap.apply(fk)
-		myFieldFactory.shallowCopyContents(srcFV, tgtFV)
+		getFactory(fk).shallowCopyContents(srcFV, tgtFV)
 	}
-	protected def makeFieldVal(fk : FK) : FV = {
-		// This default impl uses the fieldFactory
-		// Override to make() a correct variation based on the fieldKey.
-		println("Using factory to make default field config for " + fk)
-		myFieldFactory.make()
-	}
+
+}
+class BetterStruct[FK, FV](myFactorySupplier : FactorySupplier[FK,FV]) extends BaseStruct[FK, FV] {
+	override protected def getFactory(fk : FK) : Factory[FV] = myFactorySupplier.getValueFactoryForField(fk)
+}
+	
+// Uses a fieldFactory to copy values as required, and *by default* to make new values.
+class BasicStruct[FK, FV](val myFieldFactory : Factory[FV]) extends BaseStruct[FK, FV] {
+	override protected def getFactory(fk : FK) : Factory[FV] = myFieldFactory
+	
 	override def toString(): String = "BasicStruct[" + myFieldValMap + "]"	
+}
+
+abstract class MappedStructHandle[FK, DV <: DataValue, DE <: DataExpr](val myMapper : StructMapper[FK, DV, DE]) {
+	// StructMapper is a somewhat tricky object, intended for single-threaded use (contains "unsafe" buffers)
+	// The mapper arg here is used by the struct *only* as the source of value factories for the fields.
+	// Assumptions about what expressions are bound to the field are independent, although in this handle's design,
+	// the same mapper instance is used for both purposes.
+	val myStruct = new BetterStruct[FK, DV](myMapper)
+	
+	def getDataSource : DataSource[DE, DV]
+	
+	def updateSourcedFields() {
+		val dataSource = getDataSource
+		myMapper.mapSourceDataToStruct(dataSource, myStruct)
+	}
+	def readCachedFieldValue(fk : FK, tgtDV : DV) {
+		myStruct.readField(fk, tgtDV)
+	}
+	
+	
 }

@@ -30,54 +30,143 @@ import org.appdapter.impl.store.{ModelClientImpl, ResourceResolver};
 import org.cogchar.render.goody.dynamic.{DynamicGoody, DynamicGoodySpace, DynaShapeGoody}
 
 
+
+
+
 object DynaGoodies  extends VarargsLogging  {
 	def testDynaGoodyItemLoad(repo : Repo, repoClient : RepoClient) : SweetDynaSpace = { 
 		val graphQN = "ccrti:math_sheet_60";
 		val spaceSpecQN = "hevi:space_01";
-		val spaceLink_PropQN = "hev:goodySpace";
-		
 		val graphID = repoClient.makeIdentForQName(graphQN);
 		val mathModel = repo.getNamedModel(graphID)
 		val mathModelClient = new ModelClientImpl(mathModel)
 		val spaceSpecItem = mathModelClient.makeItemForQName(spaceSpecQN);
-		val parentDGS = null;
-		val dgs = new SweetDynaSpace(parentDGS, -999, graphID, spaceSpecItem.getIdent);
 		info1("Got Goody-Space-Spec Item: {}", spaceSpecItem)
-
-		dgs.refreshModelClient(mathModelClient)
-		
-		val spaceLink_Prop = mathModelClient.makeIdentForQName(spaceLink_PropQN);
-		info1("Space Link Prop: {}", spaceLink_Prop)
-		val linkedGSItems = spaceSpecItem.getLinkedItemSet(spaceLink_Prop, Item.LinkDirection.REVERSE);
-		info1("linkedGSItems: {}",  linkedGSItems)
-		val goodyIndex_PropQN = "hev:goodyIndex";
-		val goodyIndex_Prop = mathModelClient.makeIdentForQName(goodyIndex_PropQN);
-
-		import scala.collection.JavaConversions._;	
-		for (gsi <- linkedGSItems) {
-			info1("Got Goody-Spec Item: {}", gsi)
-			val dgIndex_oneBased = gsi.getValInteger(goodyIndex_Prop, -1)
-			val dg = dgs.getGoodyAtIndex(dgIndex_oneBased)
-			dg.updateFromSpecItem(mathModelClient, gsi);
-		}	
+		val parentDGS = null;
+		val dgs = new MathyGoodySpace(parentDGS, -999, graphID, spaceSpecItem.getIdent);
+		// This sets the desired size of the space, but does not actually cause the goodies to be created.
+		// That happens during update() on the render thread.
+		dgs.refreshFromModelClient(mathModelClient)
 		dgs
 	}
 }
 import org.cogchar.bind.symja.MathGate;
-class SweetDynaGoody(goodyIdxWithinSpace : Int) extends DynaShapeGoody(goodyIdxWithinSpace : Int) {
+abstract class SweetDynaGoody(goodyIdxWithinSpace : Int) extends DynaShapeGoody(goodyIdxWithinSpace : Int) {
+
 	// var			myCachedModelClient : ModelClient
+	def reconfigureFromSpecItem(mc : ModelClient, specItem : Item) 
+	
+	// This method cannot assume it is executed on the renderThread.
+	override def doFastVWorldUpdate_onRendThrd() : Unit = { 
+		// getLogger().info("FastUpdate to dynaGoody {} at index {}", Seq(getUniqueName, getIndex) :_*);
+	}
+	// def initShapeAndAttach
+}
+abstract class SweetDynaSpace(parentDGS : DynamicGoodySpace[_], idxIntoParent : Int, val mySpecGraphID : Ident, val mySpecID : Ident) 
+		extends DynamicGoodySpace[SweetDynaGoody](parentDGS, idxIntoParent) {
+			
+	var		myPendingSpecItems : Set[Item] = Set()
+	var		mySpecModelClient : ModelClient = null
+	
 /*
-	var			myMathGate : MathGate;
-	def refreshMathGate(mg : MathGate) {
-		myMathGate = mg;
-	}	
+ * 
+ 	override def makeGoody(oneBasedIdx : Integer) : SweetDynaGoody = {
+		new SweetDynaGoody(oneBasedIdx)
+	}
 */
-	def updateFromSpecItem(mc : ModelClient, specItem : Item) {
-		
-		// TODO:  These property names need to come from ontology-generated constants.
+	// Occurs on slowUpdate-thread, off the renderThread
+	def    refreshFromModelClient(mc : ModelClient) : Unit = {
+		mySpecModelClient = mc;
+		val spaceSpecItem : Item = mc.makeItemForIdent(mySpecID);
+		getLogger().info("Got space-specItem: {}", spaceSpecItem);
+		val goodyCount_Prop_QN = "hev:goodyCount";
+		val goodyCount_Prop_ID = mc.makeIdentForQName(goodyCount_Prop_QN);
+		val goodyCount = spaceSpecItem.getValInteger(goodyCount_Prop_ID, 0);
+		getLogger().info("About to setDesiredSize of space to {}", goodyCount);
+		setDesiredSize(goodyCount);
+		val spaceLink_PropQN = "hev:goodySpace";		
+		val spaceLink_Prop = mySpecModelClient.makeIdentForQName(spaceLink_PropQN);
+		getLogger().info("Space Link Prop: {}", spaceLink_Prop)
+		val linkedGSItems = spaceSpecItem.getLinkedItemSet(spaceLink_Prop, Item.LinkDirection.REVERSE);
+		getLogger.info("linkedGSItems: {}",  linkedGSItems)
+		// import scala.collection.JavaConversions._;	
+		import scala.collection.JavaConverters._
+		myPendingSpecItems = linkedGSItems.asScala.toSet
+	}	
+	// Not guaranteed to be on the renderThread
+	def applyPendingSpecItems() : Unit = {
+		if (mySpecModelClient != null) {
+			val goodyIndex_PropQN = "hev:goodyIndex";
+			val goodyIndex_Prop = mySpecModelClient.makeIdentForQName(goodyIndex_PropQN);
+			for (gsi <- myPendingSpecItems) {
+				// Here we use explicit integers for mocking purposes, but normally authors should not need
+				// to be aware of the indices of goodies they create.
+				val dgIndex_oneBased = gsi.getValInteger(goodyIndex_Prop, -1)
+				getLogger().info("Got Goody-Spec Item: {} with index {}", Seq(gsi, dgIndex_oneBased) :_*)
+				this.synchronized {
+					if (hasGoodyAtIndex(dgIndex_oneBased)) {
+						val dg = getGoodyAtIndex(dgIndex_oneBased)
+						getLogger().info("Looked up DynaGoody: {}", dg)
+						dg.reconfigureFromSpecItem(mySpecModelClient, gsi);
+						myPendingSpecItems = myPendingSpecItems - gsi;
+					}
+				}
+			}
+		}
+	}
+	override def doFastVWorldUpdate_onRendThrd() {
+		super.doFastVWorldUpdate_onRendThrd()
+		applyPendingSpecItems()
+	}
+}
+
+import org.cogchar.bind.symja.{MathGate, MathSpaceFactory}
+import org.friendularity.struct.{AODFactory, _};
+
+
+class MathyGoody (goodyIdx : Int, val myMathGate : MathGate) extends SweetDynaGoody(goodyIdx) {
+	// Each goody manages data using instances of a single datatype:  A "Struct" (= NV pair set) of
+	// fields, each containing an updatable (fixed-size) array of doubles.  
+	// For example : position[3], orientation[3], color[4].
+	// A single "struct mapper" (per MS-Goody) holds a math expression for each field.
+	// 
+	// The expressions stored in the mapper are read from the properties of the superclass's specItem,
+	// and may be refreshed via that pathway.  (Our "slow" update loop, in the docs).
+	// TODO:  Further factor goodies so that this reading feature is *fully* orthogonal (it's already mostly so)
+
+	val		myMathyHandleGroup = new MathyMappedHandleGroup(myMathGate)
+	
+	// The goody can make as many different instances of this complete "state" struct as it wants to, 
+	// including representing a time sequence of past (or future!) states.  These objects may be
+	// manipulated in code as needed,  while simultaneously allowing the state to interact with
+	// our mathGate calculation space as needed.
+	// 
+	// Typically the "current" struct state will be updated (for all fields) on every openGL update callback
+	// (and it will be used to update the visual state of the displayed goody).
+	// This is our "fast" update loop, as discussed in design docs.
+	// TODO:  Add throttling and runaway-calc management.
+	
+	val		myCurrentStateHandle = myMathyHandleGroup.makeHandle
+	
+	def reconfigureFromSpecItem(mc : ModelClient, specItem : Item) {
+		// Can be used to configure the dynaGoody initially, or to subsequently reconfig
+		// TODO:  These property names need to come from ontology-linked constants.
+		// 
+		// We work initially with a small fixed number of dynaGoody parameter expression fields:
+		// Numeric:   Position, Orientation, Scale, Color
+		// These are MathGate expressions to be evaluated and re-applied on each render-pass.
+		// Here are the QNames for these expression fields.
 		val posVecExpr_Prop_QN = "hev:expr_pos_vec3f";
+		val oriVecExpr_Prop_QN = "hev:expr_ori_vec3f";		// Which orientation form are we using?
+		val scaleVecExpr_Prop_QN = "hev:expr_scale_vec3f";  // What if we want unary scale? 
 		val colorVecExpr_Prop_QN = "hev:expr_color_vec4f";
-		// This resolution (and hence direct dependence on ModelClient mc) could be done "once", on a per-space or global basis.
+		// Textual:   Nickname, Label, Description
+		// Label is always displayed (when practical), may be updating frequently.  Description is extra detail,
+		// not evaluated unless this object is in focus by user.
+		// Nickname is short and usually unchanging.
+		
+		// This resolution process from QN to ID (and hence direct dependence on ModelClient mc) could be done "once", 
+		// on a per-space or global basis.
 		val posVecExpr_Prop_ID = mc.makeIdentForQName(posVecExpr_Prop_QN);
 		val colorVecExpr_Prop_ID = mc.makeIdentForQName(colorVecExpr_Prop_QN);
 		
@@ -85,72 +174,42 @@ class SweetDynaGoody(goodyIdxWithinSpace : Int) extends DynaShapeGoody(goodyIdxW
 		val posVecExpr = specItem.getValString(posVecExpr_Prop_ID, "{0, 0, 0}");		
 		val colorVecExpr = specItem.getValString(colorVecExpr_Prop_ID, "{0, 0, 0, 0}");
 		getLogger().info("posVecExpr=" + posVecExpr + ", colorVecExpr=" + colorVecExpr);
-	}	
+		
+		
+	}
+
 }
-class SweetDynaSpace(parentDGS : DynamicGoodySpace[_], idxIntoParent : Int, val mySpecGraphID : Ident, val mySpecID : Ident) 
-		extends DynamicGoodySpace[SweetDynaGoody](parentDGS, idxIntoParent) {
+class MathyGoodySpace (parentDGS : DynamicGoodySpace[_], idxIntoParent : Int, specGraphID : Ident, specID : Ident)
+		extends SweetDynaSpace(parentDGS, idxIntoParent, specGraphID, specID)  {
 			
+	val myMathSpaceFactory = new MathSpaceFactory();
+	val myMathGate : MathGate = myMathSpaceFactory.makeUnscriptedMathGate();
+	
 	override def makeGoody(oneBasedIdx : Integer) : SweetDynaGoody = {
-		new SweetDynaGoody(oneBasedIdx)
+		new MathyGoody(oneBasedIdx, myMathGate)
 	}
-	def    refreshModelClient(mc : ModelClient) : Unit = {
-		// myCachedModelClient = mc;
-		val specItem : Item = mc.makeItemForIdent(mySpecID);
-		getLogger().info("Got space-specItem: {}", specItem);
-		val goodyCount_Prop_QN = "hev:goodyCount";
-		val goodyCount_Prop_ID = mc.makeIdentForQName(goodyCount_Prop_QN);
-		val goodyCount = specItem.getValInteger(goodyCount_Prop_ID, 0);
-		getLogger().info("goodyCount=" + goodyCount);
-		resizeSpace(goodyCount);		
-		// TODO:  Reload Stuff
-	}	
-	/*
-	protected void reloadConfig(ModelClient mc) { }	
-	public void updateStuff(ModelClient mc) { 
-		Ident	goodyID = myGoodyID;
-	}
-	*/
-
 }
-
-	/*	public Ident mapGoodyIndexToID(Integer idx) {		return null;	}
-	*/
-	// This graph operation belongs in a different layer.
-	/*
-
+/*  
 	public Set<Item> getGoodySpecItems() { 
 		Set<Item> specItems = new HashSet<Item>();
 		return specItems;
 	}
-	*/
 	// private	ModelClient		myCachedModelClient;
 	// private	MathGate		myMathGate;
 	// private	Integer			myGoodyCount;
-	
 	// Currently we need the ModelClient to resolve QNames to idents.
-	/*
-
-	*/
-	/* public void readSpec
 	public Ident getIdent() { 
 		if (myGoodyID = null) {
 			String qName = "h"
 			myGoodyID = new 
 		}
 	}
-		/*
 	public static class Spec {
 		Ident	myKind;
 	}
-	*/
 	// This goody is knowable to the outside world by its graph-eligible ID:
 	// private	Ident					myGoodyID, myTypeID;
-	/*
 	protected Ident getGoodyID() {
 		return myGoodyID;
 	} 
-	*/
-	
- 
- 
 	*/

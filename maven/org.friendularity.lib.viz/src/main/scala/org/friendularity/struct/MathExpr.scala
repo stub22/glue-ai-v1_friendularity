@@ -19,12 +19,12 @@ package org.friendularity.struct
 import org.appdapter.core.name.{Ident}
 import org.cogchar.bind.symja.{MathGate}
 
-class MathGateExpr(val myExprString : String) extends DataExpr {
-}
+/*
 class MathBlockKind(val myPropID : Ident) {
 }
 object MathBlockKinds {
 }
+*/
 trait MathBlock { 
 	def getDescription : String
 	def getMathText : String
@@ -34,14 +34,20 @@ trait MathBlock {
 		mg.parseAndEvalExprToDoubleVec(mathText, bufOrNull)
 	}
 }
-class BasicMathBlock(myDesc : String, aMathText : String) extends MathGateExpr(aMathText) 
-		with MathBlock {
+class MathGateExpr(val myExprString : String, val optDesc : Option[String]) extends DataExpr with MathBlock {
+	override def getMathText = myExprString
+	override def getDescription = optDesc.getOrElse("NO_DESCRIPTION_AVAIL")
+
 	// Has 2 paths to execution of the expr:  evalToDubVec and   MathGateDoublesSource.
 	// Former reads into an optional explicit Array[Double], or allocates a new one to return.
 	// Latter knows how to read into (required) existing target dataValue of type: ArrayOfDoubles.
 	// read(expr : MathGateExpr, dataValue : ArrayOfDoubles) = {
 	//	myMG.parseAndEvalExprToDoubleVec(expr.myExprString, dataValue.myVals);
-		
-	override def getDescription = myDesc
-	override def getMathText = myExprString
+
 }
+/*
+class BasicMathBlock(myDesc : String, aMathText : String) extends MathGateExpr(aMathText) 
+		with MathBlock {
+	override def getDescription = myDesc
+}
+*/

@@ -32,13 +32,15 @@ object MathBalloon extends BasicDebugger {
 		org.friendularity.struct.StructTest.testStructs;
 		
 		getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^  main() starting StructTest.testMathSource()");				
-		org.friendularity.struct.StructTest.testMathSource;
+		org.friendularity.struct.StructTest.testClumsyMathSource;
 		
 		getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^  main() starting GridSpaceTest.go");
 		// GridSpaceTest 
 		org.cogchar.api.space.GridSpaceTest.go;
 		
-		getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^  main() testing math-repo+goody load (respiration)");		
+		getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^  main() testing math-repo+goody load (respiration)");	
+		// This reads in a config model and begins seting up the space, but the individual goodies
+		// are not created until render update() callbacks start.
 		val sweetDS = RespirationTest.initReposLoadMathEval : SweetDynaSpace;
 		
 		getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^  main() constructing a TrialBalloon OpenGL+MIDI app");
@@ -54,6 +56,8 @@ object MathBalloon extends BasicDebugger {
 		// including blocking waiting for user to say OK to jME launch box.  
 		tbApp.start();
 		getLogger().info("main() - returned from blocking V-World launch (+ on-thread initApp); we now expect OpenGL VWorld to be running.");
+		// Now render thread has started, and sweetDS is getting render-thread callbacks.
+		// Goodies are being created and displayed on that thread.
 		
 		// Attach repeated math evaluation viz
 		
