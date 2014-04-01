@@ -36,7 +36,8 @@ object StructTest  extends org.friendularity.respire.VarargsLogging {
 		getLogger().info("Sweet, app logging works!")
 		info1("Whooopee, also short-varargs, such as seven={}", new Integer(7))
 		testStructs()
-		testMathSource()
+		testClumsyMathSource()
+		testBetterMathSource()
 	}
 	def testStructs() { 
 		// Make factories for the double-Array sizes we commonly use
@@ -54,7 +55,7 @@ object StructTest  extends org.friendularity.respire.VarargsLogging {
 		val inDat1 = aodf1.make()
 		inDat1.myVals(0) = -2.8
 		
-		info0("inDat1: " + inDat1)
+		info0("one dimensional, initialized : inDat1: " + inDat1)
 		
 		val inDat2 = aodf2.make()
 		inDat2.myVals(1) = 3.7
@@ -76,7 +77,7 @@ object StructTest  extends org.friendularity.respire.VarargsLogging {
 		bs2.writeField("pair3", inDat3)
 		info0("bs2 - after write-2: " + bs2)
 	}
-	def testMathSource() { 
+	def testClumsyMathSource() { 
 		val msf = new MathSpaceFactory();
 		// val mg : MathGate = msf.makeScriptedMathGate();
 		val mg : MathGate = msf.makeUnscriptedMathGate();
@@ -85,19 +86,49 @@ object StructTest  extends org.friendularity.respire.VarargsLogging {
 		val bs2 = new BasicStruct[String, ArrayOfDoubles](aodf2)
 		
 		val smp = new StructMapper[String, ArrayOfDoubles, MathGateExpr]
-		val expr11 = new MathGateExpr("{-44.0,33.3}")
-		smp.bindField("v1", expr11, aodf2.make())
+		val expr11 = new MathGateExpr("{-44.0,33.3}", None)
+		smp.bindField("v1", expr11, aodf2)
 		info0("bs2 - before map-1: " + bs2)
 		smp.mapSourceDataToStruct(mgds, bs2)
 		info0("bs2 - after map-1: " + bs2)
-		val expr12 = new MathGateExpr("7 * {3.5, 2}")
-		val expr22 = new MathGateExpr("{99, -0.05}")
-		smp.bindField("v2", expr22, aodf2.make())
-		smp.bindField("v1", expr12, aodf2.make())
+		val expr12 = new MathGateExpr("7 * {3.5, 2}", None)
+		val expr22 = new MathGateExpr("{99, -0.05}", None)
+		smp.bindField("v2", expr22, aodf2)
+		smp.bindField("v1", expr12, aodf2)
 		info0("bs2 - before map-2: " + bs2)
 		smp.mapSourceDataToStruct(mgds, bs2)
 		info0("bs2 - after map-2: " + bs2)
 		
+	}
+	def testBetterMathSource() { 
+
+		val msf = new MathSpaceFactory();
+		// val mg : MathGate = msf.makeScriptedMathGate();
+		val mg : MathGate = msf.makeUnscriptedMathGate();
+
+		val  wildMapper = new MathStructMapper
+		
+		wildMapper.bindFieldToMathExpr("nutty", 3, "{6, 7.0, -8} - {1,1,1}");
+		wildMapper.bindFieldToMathExpr("silly", 2, "0.5 * {3, 9*5}");
+		
+		val wildStructHandle1 = new MathSourcedStructHandle(mg, wildMapper)
+		
+		info0("Wild struct handle, before exec: " + wildStructHandle1)
+		// No fields exist in the struct right now (even though they exist in the mapper)
+		// So, this would throw an exception:
+		//info0("result-copy for nutty: " + wildStructHandle1.getResultFieldCopy("nutty"))
+
+		wildStructHandle1.updateSourcedFields
+		
+		info0("Wild struct handle, after exec: " + wildStructHandle1)
+		info0("result-copy for nutty: " + wildStructHandle1.getResultFieldCopy("nutty"))
+		info0("result-copy for nutty: " + wildStructHandle1.getResultFieldCopy("silly"))
+
+		val  mapperForTameExprFields = new MathStructMapper
+		
+		
+		//val msm1 = new MathStructMapper()
+		//val msw1 = new MathStructWrapper(mg)
 	}
 }
 

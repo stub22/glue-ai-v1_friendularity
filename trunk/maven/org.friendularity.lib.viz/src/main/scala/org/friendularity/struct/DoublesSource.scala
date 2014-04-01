@@ -19,7 +19,8 @@ import org.cogchar.bind.symja.MathGate;
 
 // Scala's  Array[Double] compiles to java:  double[]  
 class ArrayOfDoubles(val myVals : Array[Double]) extends DataValue  {
-	override def toString(): String = "AOD[" + myVals.mkString(", ") + "]"
+	lazy val myStringRep = "AOD[" + myVals.mkString(", ") + "]"
+	override def toString(): String = myStringRep
 }
 class AODFactory(val myArraySize : Int) extends Factory[ArrayOfDoubles] {
 	override def makeOne() : ArrayOfDoubles = {
