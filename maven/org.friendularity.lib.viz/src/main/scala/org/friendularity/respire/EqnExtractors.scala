@@ -54,11 +54,10 @@ object EqnExtractors extends VarargsLogging {
 		
 		ensurePrefixesAligned(mathGraph)
 
-		
 		val mathMCI : ModelClient = new ModelClientImpl(mathGraph);
 		val mgb = new MathGraphBinding(mathMCI)
-	//	val mathTxtSrc = new MathTextSource(mathMCI)
-		
+		// Started abstracting the code below into MathGraphBinding, but this is too low level, not enough bang for buck
+	//	val mathTxtSrc = new MathTextSource(mathMCI)		
 	//	val msf = new MathSpaceFactory();
 	//	val mg : MathGate = msf.makeUnscriptedMathGate();
 
