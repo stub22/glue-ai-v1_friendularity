@@ -23,10 +23,13 @@ import org.cogchar.api.space.{TextVal}
 import org.appdapter.core.item.{Item}
 import org.appdapter.core.name.{Ident, FreeIdent}
 
+/*
 object MathSource {
-
 }
+*/
 class MathGraphBinding(mathMCI : ModelClient) {
+//	 This class is the beginning of a low-level abstraction of what EqnExtractors test code was doing previously,
+//		but is too general/low-level, will probably be axed soon.
 		val myMathTxtSrc = new MathTextSource(mathMCI)
 		
 		private val msf = new MathSpaceFactory();

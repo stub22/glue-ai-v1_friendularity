@@ -119,7 +119,7 @@ class BasicStruct[FK, FV](val myFieldFactory : Factory[FV]) extends BaseStruct[F
 
 abstract class MappedStructHandle[FK, DV <: DataValue, DE <: DataExpr](val myMapper : StructMapper[FK, DV, DE]) {
 	// StructMapper is a somewhat tricky object, intended for single-threaded use (contains "unsafe" buffers)
-	// The mapper arg here is used by the struct *only* as the source of value factories for the fields.
+	// The mapper arg here is used by the struct *only* as the supplier of value factories for the fields.
 	// Assumptions about what expressions are bound to the field are independent, although in this handle's design,
 	// the same mapper instance is used for both purposes.
 	val myStruct = new BetterStruct[FK, DV](myMapper)
