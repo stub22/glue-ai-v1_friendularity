@@ -20,6 +20,7 @@ import org.appdapter.core.name.Ident;
 
 import org.cogchar.render.sys.registry.RenderRegistryClient;
 import org.cogchar.render.goody.dynamic.VizShapeGroup;
+import org.cogchar.render.goody.dynamic.VizShapeSiblingGroup;
 import org.cogchar.render.goody.dynamic.VizShape;
 import org.friendularity.api.west.ThingEstimate;
 
@@ -33,33 +34,33 @@ import org.cogchar.render.app.humanoid.HumanoidRenderContext;
  */
 public class SingleShapeVisualizer<TE extends ThingEstimate> extends BaseVisualizer<TE> {
 
-	public		VizShape			myCachedVizObject;
+	public		VizShape					myCachedVizObject;
 		
-	private		VizShapeGroup		myShapeGroup;
+	private		VizShapeSiblingGroup		myShapeGroup;
 	
-	private		Ident				myOwnedShapeGroupID; // remains null if we are passed an existing group.
+	private		Ident						myOwnedShapeGroupID; // remains null if we are passed an existing group.
 	
 	public SingleShapeVisualizer(HumanoidRenderContext hrc, Ident ownedShapeGroupID) {
 		super(hrc);
 		myOwnedShapeGroupID = ownedShapeGroupID;
 	}
-	public SingleShapeVisualizer(HumanoidRenderContext hrc, VizShapeGroup existingGroup) {
+	public SingleShapeVisualizer(HumanoidRenderContext hrc, VizShapeSiblingGroup existingGroup) {
 		super(hrc);
 		myShapeGroup = existingGroup;
 	}
-	public SingleShapeVisualizer(BaseVisualizer<?> otherViz, VizShapeGroup existingGroup) {
+	public SingleShapeVisualizer(BaseVisualizer<?> otherViz, VizShapeSiblingGroup existingGroup) {
 		super(otherViz);
 		myShapeGroup = existingGroup;
 	}	
 
-	@Override public VizShapeGroup getShapeGroup() {
+	@Override public VizShapeSiblingGroup getShapeGroup() {
 		return myShapeGroup;
 	}
 
 	@Override public void ensureDisplayed_onRendThrd(TE te, float timePerFrame) {
 		if (myShapeGroup == null) {
 			RenderRegistryClient rrc = getRenderRegistryClient();
-			myShapeGroup = new VizShapeGroup(myOwnedShapeGroupID);
+			myShapeGroup = new VizShapeSiblingGroup(myOwnedShapeGroupID);
 			myShapeGroup.setupMaterials(rrc);
 			myShapeGroup.enable_onRendThrd(rrc);
 		}
@@ -94,7 +95,8 @@ public class SingleShapeVisualizer<TE extends ThingEstimate> extends BaseVisuali
 		Vector3f basePos = new Vector3f(35.0f, 35.0f, -5.0f);
 		myCachedVizObject = new VizShape(te.getIdent(), basePos, initRadius, initColor);
 		RenderRegistryClient rrc = getRenderRegistryClient();
-		VizShapeGroup vsg = getShapeGroup();
-		vsg.attachChild_onRendThrd(rrc, myCachedVizObject);
+		VizShapeSiblingGroup vsg = getShapeGroup();
+		// This also performs an attachment to parent node...sigh
+		vsg.configureMemberGeom_onRendThrd(rrc, myCachedVizObject);
 	}
 }

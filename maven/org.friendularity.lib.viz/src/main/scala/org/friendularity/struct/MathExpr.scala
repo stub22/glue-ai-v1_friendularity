@@ -34,7 +34,14 @@ trait MathBlock {
 		mg.parseAndEvalExprToDoubleVec(mathText, bufOrNull)
 	}
 }
-class MathGateExpr(val myExprString : String, val optDesc : Option[String]) extends DataExpr with MathBlock {
+import org.friendularity.api.struct.MathExprNode;
+class MathGateExpr(val myExprString : String, resultDim : Int, val optDesc : Option[String]) 
+		// This extension is for type-compatibility (with VisualMathExprLib, in particular)
+		// rather than functionality, so far.
+		// The null parameter indicates "no initial builtin out-obj
+		extends MathExprNode(myExprString, resultDim, null) with DataExpr with MathBlock {
+			
+		
 	override def getMathText = myExprString
 	override def getDescription = optDesc.getOrElse("NO_DESCRIPTION_AVAIL")
 

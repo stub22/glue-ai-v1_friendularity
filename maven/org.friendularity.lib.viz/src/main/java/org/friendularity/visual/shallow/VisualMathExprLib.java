@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.friendularity.impl.visual;
+package org.friendularity.visual.shallow;
 
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;

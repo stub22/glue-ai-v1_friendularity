@@ -16,7 +16,7 @@
 package org.friendularity.impl.visual;
 
 import org.cogchar.render.sys.registry.RenderRegistryClient;
-import org.cogchar.render.goody.dynamic.VizShapeGroup;
+import org.cogchar.render.goody.dynamic.VizShapeSiblingGroup;
 import org.friendularity.api.west.ThingEstimate;
 
 
@@ -31,7 +31,7 @@ public interface EstimateVisualizer<TE extends ThingEstimate> {
 	 * This shapeGroup may be either local to this visualizer, or shared with others.
 	 * @return 
 	 */
-	public VizShapeGroup getShapeGroup();
+	public VizShapeSiblingGroup getShapeGroup();
 	
 	public void renderCurrentEstimates_onRendThrd(TE estim, float timePerFrame);
 

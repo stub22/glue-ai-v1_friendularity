@@ -19,17 +19,22 @@ package org.friendularity.api.struct;
 import java.lang.reflect.Array;
 
 /**
+ * Shows how we would start a RingBuffer type in Java.
+ * But we are instead using the Scala class OtherRingBuf.
+ * 
  * Fixed size buffer of fixed elements, which have updatable contents.
  * @author Stu B. <www.texpedient.com>
  * 
  */
 
 class UnusedJavaRB<Elem> {
+	/*
 	private		Elem[]	myDataRing;
 	int		myLastWrittenIdx = -1;
 	
 	public UnusedJavaRB(int size, Class<Elem> clazz, Maker<Elem> maker) {
 		myDataRing = (Elem[]) Array.newInstance(clazz, size);
 	}
+	*/
 
 }

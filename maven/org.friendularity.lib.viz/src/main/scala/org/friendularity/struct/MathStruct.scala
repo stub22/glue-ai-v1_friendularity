@@ -28,7 +28,7 @@ class MathStructMapper extends StructMapper [String, ArrayOfDoubles, MathGateExp
 		val arrayFactoryForField = MathStructMapper.factoryForDim(resultDim)
 		//  MathGate implements caching of the actual parsed expr for us, in case of mathText being reused often.
 		val optDesc : Option[String] = None
-		val mathExpr = new MathGateExpr(mathText, optDesc)
+		val mathExpr = new MathGateExpr(mathText, resultDim, optDesc)
 		// This establishes both the mathExpr binding, and the value-factory binding. 
 		bindField(fieldName, mathExpr, arrayFactoryForField)
 	}

@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.friendularity.impl.visual;
+package org.friendularity.visual.shallow;
 
 import org.cogchar.bind.symja.MathGate;
 
