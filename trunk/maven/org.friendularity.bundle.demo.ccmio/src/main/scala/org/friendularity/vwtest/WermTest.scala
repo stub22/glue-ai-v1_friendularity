@@ -21,7 +21,7 @@ import org.appdapter.core.name.{Ident, FreeIdent}
 
 import org.cogchar.bind.symja.{MathGate, MathSpaceFactory}
 
-import org.friendularity.respire.{RespirationTest, MoltenCore}  
+import org.friendularity.respire.{RespirationTest}  
 
 object WermTest {
 	def main(args: Array[String]) : Unit = {
@@ -33,8 +33,7 @@ object WermTest {
 		
 		RespirationTest.initReposLoadMathEval()
 		// Optional: Wander off into a long looping computation...
-		val mc = new MoltenCore()
-		mc.testDoubleVecFetch();
+		RespirationTest.testDoubleVecFetch();
 		//Unfinished:  testWermCalcs();		
 	}	
 	def testWermCalcs() : Unit = { 
