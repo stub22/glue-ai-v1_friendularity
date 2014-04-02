@@ -29,7 +29,7 @@ import org.cogchar.bind.symja.MathGate;
 public abstract class NumericNode<NumType> implements NumericMapper<NumType> {
 	private		NumType		myCachedResultObj;
 	
-	// The "number" should be equivalent to an array-vector of this many doubles.
+	// The "numeric" produced by this node should be equivalent to an array-vector of this many doubles.
 	private		double[]	myBuffer;
 	
 	private		NumericMapper	myOptMapperDelegate;

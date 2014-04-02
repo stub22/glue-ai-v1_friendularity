@@ -98,6 +98,9 @@ class MathyGoody (goodyIdx : Int, val myMathGate : MathGate) extends SweetDynaGo
 		myCurrentStateHandle.updateSourcedFields
 		applyPositionField_onRendThrd
 	}
+
+	protected def ensureDummyShapeSetup_onRendThrd() { 
+	}
 	protected def applyPositionField_onRendThrd() {
 		// def readCachedFieldValue(fk : FK, tgtDV : DV) 
 	}

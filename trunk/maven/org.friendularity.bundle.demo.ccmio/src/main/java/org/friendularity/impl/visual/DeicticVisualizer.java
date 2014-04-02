@@ -39,7 +39,7 @@ import java.util.HashMap;
 
 import com.jme3.math.Quaternion;
 import org.friendularity.api.west.SelfEstimate;
-import org.cogchar.render.goody.dynamic.VizShapeGroup;
+import org.cogchar.render.goody.dynamic.VizShapeSiblingGroup;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -179,7 +179,7 @@ public class DeicticVisualizer extends BaseVisualizer<SelfEstimate> {
 		}
 	}
 
-	@Override public VizShapeGroup getShapeGroup() {
+	@Override public VizShapeSiblingGroup getShapeGroup() {
 		throw new UnsupportedOperationException("Not supported yet.");
 	}
 

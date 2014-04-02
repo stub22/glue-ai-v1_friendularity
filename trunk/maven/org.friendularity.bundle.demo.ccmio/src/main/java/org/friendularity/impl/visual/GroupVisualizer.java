@@ -22,7 +22,7 @@ import java.util.Set;
 import org.friendularity.api.west.ThingEstimate;
 import org.friendularity.api.west.CompoundEstimate;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
-import org.cogchar.render.goody.dynamic.VizShapeGroup;
+import org.cogchar.render.goody.dynamic.VizShapeSiblingGroup;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -62,7 +62,7 @@ public abstract class GroupVisualizer <CTE extends CompoundEstimate> extends Bas
 		EstimateVisualizer subViz = mySubVizMap.get(subEstimate);
 		if (subViz == null) {
 			getLogger().info("Making sub-visualizer for {}", subEstimate);
-			VizShapeGroup existingGroup = getShapeGroup();
+			VizShapeSiblingGroup existingGroup = getShapeGroup();
 			
 			subViz = new SingleShapeVisualizer(this, existingGroup);
 			mySubVizMap.put(subEstimate, subViz);

@@ -16,7 +16,7 @@
 package org.friendularity.impl.visual;
 
 import org.cogchar.render.sys.registry.RenderRegistryClient;
-import org.cogchar.render.goody.dynamic.VizShapeGroup;
+import org.cogchar.render.goody.dynamic.VizShapeSiblingGroup;
 import org.cogchar.render.goody.dynamic.VizShape;
 import org.friendularity.api.west.StuffEstimate;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
@@ -37,7 +37,7 @@ public class StuffVisualizer extends SingleShapeVisualizer<StuffEstimate> {
 	}
 	private Kind myKind = Kind.REGULAR;
 	
-	public StuffVisualizer(HumanoidRenderContext hrc, VizShapeGroup existingGroup, Kind shapeKind) {
+	public StuffVisualizer(HumanoidRenderContext hrc, VizShapeSiblingGroup existingGroup, Kind shapeKind) {
 		super(hrc, existingGroup);
 		myKind = shapeKind;
 	}
@@ -56,7 +56,7 @@ public class StuffVisualizer extends SingleShapeVisualizer<StuffEstimate> {
 		Vector3f basePos = new Vector3f(10.0f, 10.0f, 10.0f);
 		myCachedVizObject = new VizShape(est.getIdent(), basePos, initRadius, initColor);
 		RenderRegistryClient rrc = getRenderRegistryClient();
-		VizShapeGroup vsg = getShapeGroup();
-		vsg.attachChild_onRendThrd(rrc, myCachedVizObject);
+		VizShapeSiblingGroup vsg = getShapeGroup();
+		vsg.configureMemberGeom_onRendThrd(rrc, myCachedVizObject);
 	}
 }

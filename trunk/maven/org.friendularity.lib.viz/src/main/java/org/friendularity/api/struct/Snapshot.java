@@ -21,6 +21,7 @@ import org.cogchar.bind.symja.MathGate;
  */
 
 public class Snapshot {
+	/*
 	private	long	myWriteStamp;
 	private	long	myDataNominalStamp;
 	
@@ -28,5 +29,6 @@ public class Snapshot {
 		myWriteStamp = writeStamp;
 		myDataNominalStamp = nominalStamp;
 	}
+	*/
 	
 }
