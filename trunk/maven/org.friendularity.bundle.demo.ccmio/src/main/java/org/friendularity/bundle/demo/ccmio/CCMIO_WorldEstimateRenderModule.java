@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.friendularity.impl.visual;
+package org.friendularity.bundle.demo.ccmio;
 
 import org.cogchar.bind.symja.MathGate;
 import org.appdapter.core.name.Ident;
@@ -27,6 +27,8 @@ import org.cogchar.render.sys.registry.RenderRegistryClient;
 import com.jme3.scene.Node;
 import org.friendularity.api.west.WorldEstimate;
 import org.friendularity.bundle.demo.ccmio.CCMIO_DemoMidiCommandMapper;
+import org.friendularity.impl.visual.DemoWorldVisualizer;
+import org.friendularity.impl.visual.EstimateVisualizer;
 import org.friendularity.vworld.JVisionTextureMapper;
 import org.friendularity.vworld.MagicVisionBoxScene;
 import org.friendularity.vworld.SnapshotMonitor;
@@ -34,7 +36,7 @@ import org.friendularity.vworld.SnapshotMonitor;
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class WorldEstimateRenderModule extends RenderModule implements WorldEstimate.Consumer {
+public class CCMIO_WorldEstimateRenderModule extends RenderModule implements WorldEstimate.Consumer {
 
 	private EstimateVisualizer<WorldEstimate> myWorldEstimVisualizer;
 	// calc engine holds a set of variables defining our state.
@@ -52,7 +54,7 @@ public class WorldEstimateRenderModule extends RenderModule implements WorldEsti
 	private SnapshotMonitor			mySnapMon;
 	private CCMIO_DemoMidiCommandMapper		myMidiMapper;
 	
-	public WorldEstimateRenderModule() {
+	public CCMIO_WorldEstimateRenderModule() {
 		setDebugRateModulus(1000);
 	}
 

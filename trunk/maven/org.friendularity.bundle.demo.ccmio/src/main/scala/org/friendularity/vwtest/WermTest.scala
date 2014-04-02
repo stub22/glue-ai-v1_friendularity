@@ -16,7 +16,7 @@
 
 package org.friendularity.vwtest
 import org.friendularity.api.west.{ThingEstimate, WorldEstimate}
-import org.friendularity.impl.visual.{WorldEstimateRenderModule}
+import org.friendularity.bundle.demo.ccmio.{WorldEstimateRenderModule}
 import org.appdapter.core.name.{Ident, FreeIdent}
 
 import org.cogchar.bind.symja.{MathGate, MathSpaceFactory}
