@@ -34,7 +34,6 @@ import org.cogchar.bind.symja.MathGate;
 
 import org.friendularity.api.west.WorldEstimate;
 import org.friendularity.impl.visual.EstimateVisualizer;
-import org.friendularity.impl.visual.WorldEstimateRenderModule;
 import org.mechio.api.motion.Robot;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
@@ -49,7 +48,7 @@ import org.slf4j.LoggerFactory;
 public class CCMIO_VWorldHelper extends BasicDebugger {
 
 	static Logger theLogger = LoggerFactory.getLogger(CCMIO_VWorldHelper.class);
-	private WorldEstimateRenderModule myWERM;
+	private CCMIO_WorldEstimateRenderModule myWERM;
 	private CCMIO_DemoMidiCommandMapper myMidiMapper;
 	private PumaVirtualWorldMapper myVWorldMapper;
 	private boolean myFlag_connectMidiIn = true;
@@ -58,7 +57,7 @@ public class CCMIO_VWorldHelper extends BasicDebugger {
 
 	public void doWermStuff() {
 		// Hey, let's get some fused-sensor-data visualization going too, while we're at it!
-		myWERM = new WorldEstimateRenderModule();
+		myWERM = new CCMIO_WorldEstimateRenderModule();
 		initOptionalMidiStuff();
 		if (myMidiMapper != null) {
 			// TODO:  Can probably remove this link

@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.friendularity.vworld;
+package org.friendularity.impl.visual;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector2f;

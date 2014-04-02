@@ -17,7 +17,6 @@ package org.friendularity.bundle.demo.ccmio;
 
 import org.appdapter.core.log.BasicDebugger;
 import org.friendularity.api.west.WorldEstimate;
-import org.friendularity.impl.visual.WorldEstimateRenderModule;
 import org.cogchar.bind.midi.in.InterestingMidiEvent;
 import org.cogchar.bind.midi.in.InterestingMidiEvent.NoteOn;
 import org.cogchar.bind.midi.in.InterestingMidiEvent.ControlChange;
@@ -33,7 +32,7 @@ import org.cogchar.bind.midi.in.CCParamRouter;
  */
 public class CCMIO_DemoMidiCommandMapper extends BasicDebugger implements MidiEventReporter.Listener {
 
-	public	WorldEstimateRenderModule	myWERM;
+	public	CCMIO_WorldEstimateRenderModule	myWERM;
 	public	FunMidiEventRouter			myFMER = new FunMidiEventRouter();
 	public	NovLpadTest					myNLT  = new NovLpadTest();
 	public	DemoMidiOutputPlayer		myDMOP  = new DemoMidiOutputPlayer();
@@ -74,7 +73,7 @@ public class CCMIO_DemoMidiCommandMapper extends BasicDebugger implements MidiEv
 		myFMER.startPumpingMidiEvents();		
 		myCCPR = new CCParamRouter(myFMER);
 	}	
-	public void setWERM(WorldEstimateRenderModule werm) { 
+	public void setWERM(CCMIO_WorldEstimateRenderModule werm) { 
 		myWERM = werm;
 	}
 	protected void startMidiOutputDemo() { 

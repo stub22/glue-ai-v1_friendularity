@@ -20,7 +20,6 @@ import org.cogchar.bundle.app.puma.PumaAppUtils;
 import org.cogchar.bind.symja.MathSpaceFactory;
 import org.cogchar.bind.symja.MathGate;
 import org.friendularity.api.west.WorldEstimate;
-import org.friendularity.impl.visual.WorldEstimateRenderModule;
 
 import org.friendularity.impl.visual.EstimateVisualizer;
 // import org.cogchar.test.symcalc.ScriptEngineExperiment;

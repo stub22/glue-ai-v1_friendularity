@@ -20,14 +20,14 @@ import org.appdapter.core.name.Ident;
 import org.cogchar.bind.symja.MathGate;
 
 
-import org.friendularity.struct.*;
+// import org.friendularity.struct.*;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
 
 public class TrackingEstimate extends ThingEstimate {
-	private		OtherRingBuf<Struct<String, ArrayOfDoubles>>		mySnaps;
+	// private		OtherRingBuf<Struct<String, ArrayOfDoubles>>		mySnaps;
 
 	public TrackingEstimate(Ident id) {
 		super(id);

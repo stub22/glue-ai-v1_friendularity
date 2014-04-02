@@ -23,7 +23,7 @@ import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 import org.cogchar.blob.emit.RenderConfigEmitter;
 
 import org.friendularity.api.west.WorldEstimate;
-import org.friendularity.vworld.MeshTest;
+// import org.friendularity.vworld.MeshTest;
 
 import org.cogchar.render.trial.TrialContent;
 
