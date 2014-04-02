@@ -51,8 +51,8 @@ object RespirationTest extends VarargsLogging {
 		initReposLoadMathEval();  // Chains to call testGoodySpace
 		
 		// Optional: Wander off into a long looping computation...
-		val mc = new MoltenCore()
-		mc.testDoubleVecFetch();
+		
+		testDoubleVecFetch();
 	}
 	
 	def initReposLoadMathEval() : SweetDynaSpace = {
@@ -86,5 +86,25 @@ object RespirationTest extends VarargsLogging {
 		//   5) Application objects such as DynamicGoodys.
 	}
 	
-
+	def testDoubleVecFetch() : Unit = {
+		val msf : MathSpaceFactory = new  MathSpaceFactory();
+		val mg : MathGate = msf.makeUnscriptedMathGate();
+		// for difference implied by the "new" in this case, see:
+		// http://stackoverflow.com/questions/2700175/scala-array-constructor
+		val tgtArray = new Array[Double](4)
+		val baseExpr = "{-4.0, 5/2, 14 /-7, Sqrt[1.001]}";
+		val oneHundred = 100
+		for (idx <- 1 to oneHundred) {
+			var lastDvec : Array[Double] = new Array[Double](0)
+			val oneMillion = 1000000
+			// Create a string expr multiplying index (scalar, integer) and baseExpr (vector of floats + ints) 
+			val fullExpr = "" + idx + " * " + baseExpr;
+			for (jdx <- 0 to oneMillion) {
+				val dvec : Array[Double] = mg.parseAndEvalExprToDoubleVec(fullExpr, tgtArray);
+				lastDvec = dvec;
+			}
+			val idxObject : java.lang.Integer = idx
+			info2("Loop # {} produced {}", idxObject, lastDvec.deep)
+		}
+	}
 }
