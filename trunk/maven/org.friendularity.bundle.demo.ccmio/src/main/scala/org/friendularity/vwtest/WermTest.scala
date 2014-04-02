@@ -16,7 +16,7 @@
 
 package org.friendularity.vwtest
 import org.friendularity.api.west.{ThingEstimate, WorldEstimate}
-import org.friendularity.bundle.demo.ccmio.{WorldEstimateRenderModule}
+import org.friendularity.bundle.demo.ccmio.{CCMIO_WorldEstimateRenderModule}
 import org.appdapter.core.name.{Ident, FreeIdent}
 
 import org.cogchar.bind.symja.{MathGate, MathSpaceFactory}
@@ -38,7 +38,7 @@ object WermTest {
 		//Unfinished:  testWermCalcs();		
 	}	
 	def testWermCalcs() : Unit = { 
-		val werm : WorldEstimateRenderModule  = new WorldEstimateRenderModule();
+		val werm : CCMIO_WorldEstimateRenderModule  = new CCMIO_WorldEstimateRenderModule();
 		// PumaAppUtils.attachVWorldRenderModule(bundleCtx, werm, null);
 		// werm.setupVisualizer(null, null, null);
 		// Needs to be done at least once for the selfEstim to exist.
