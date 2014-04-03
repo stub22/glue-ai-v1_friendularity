@@ -20,7 +20,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <mechio.version>1.0.0-SNAPSHOT</mechio.version>
+        <mechio.version>1.0.1</mechio.version>
     </properties>
 
     <dependencies>
