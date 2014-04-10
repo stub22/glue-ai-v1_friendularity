@@ -29,5 +29,10 @@
             <artifactId>org.mechio.client.basic</artifactId>
             <version>${mechio.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.appdapter</groupId>
+            <artifactId>ext.bundle.osgi.common</artifactId>
+            <version>${appdapter.version}</version>
+        </dependency>
     </dependencies>
 </project>
