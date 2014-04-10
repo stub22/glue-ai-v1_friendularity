@@ -23,8 +23,10 @@ public class App {
         long animLen;
         
         // If running on a robot instead of an avatar:
-        //     uncomment the next two lines and change the IP to the robot's IP
+        //     uncomment the next four lines and change the IP to the robot's IP
         //UserSettings.setRobotAddress("127.0.0.1");
+        //UserSettings.setAnimationAddress("127.0.0.1");
+        //UserSettings.setSpeechAddress("127.0.0.1");
         //UserSettings.setRobotId("myRobot");
         
         myRobot = MechIO.connectRobot();
