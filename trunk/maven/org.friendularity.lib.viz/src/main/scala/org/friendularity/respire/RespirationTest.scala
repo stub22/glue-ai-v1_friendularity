@@ -46,7 +46,7 @@ object RespirationTest extends VarargsLogging {
 		// Must enable "compile" or "provided" scope for Log4J dep in order to compile this code.
 		// Note that these settings can cause double-logging, if there is a log4j.properties found.
 		org.apache.log4j.BasicConfigurator.configure();
-		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.INFO);
+		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.ALL);
 		
 		initReposLoadMathEval();  // Chains to call testGoodySpace
 		
@@ -69,10 +69,10 @@ object RespirationTest extends VarargsLogging {
 	
 	def testMathAndDynaGoodies (dfltTestRepo: Repo,  dfltTestRC : RepoClient) : SweetDynaSpace = {
 		val mathSrcGraphQN = "ccrti:math_sheet_60";
-		EqnExtractors.testMathGraphLoadEval(dfltTestRepo, dfltTestRC, mathSrcGraphQN)
+	//	org.friendularity.shrill.EqnExtractors.testMathGraphLoadEval(dfltTestRepo, dfltTestRC, mathSrcGraphQN)
 
 		// This does not diretly create any V-World goodies, just tests the config mechanism
-		DynaGoodies.testDynaGoodyItemLoad(dfltTestRepo, dfltTestRC)		
+		MathyGoodyTest.testDynaGoodyItemLoad(dfltTestRepo, dfltTestRC)		
 	}
 
 	def powerLoad() { 

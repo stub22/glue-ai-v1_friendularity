@@ -29,31 +29,12 @@ import org.appdapter.impl.store.{ModelClientImpl, ResourceResolver};
 
 import org.cogchar.render.goody.dynamic.{DynamicGoody, DynamicGoodySpace, DynaShapeGoody}
 
+import org.cogchar.render.sys.registry.RenderRegistryClient;
 
-
-
-
-object DynaGoodies  extends VarargsLogging  {
-	def testDynaGoodyItemLoad(repo : Repo, repoClient : RepoClient) : SweetDynaSpace = { 
-		val graphQN = "ccrti:math_sheet_60";
-		val spaceSpecQN = "hevi:space_01";
-		val graphID = repoClient.makeIdentForQName(graphQN);
-		val mathModel = repo.getNamedModel(graphID)
-		val mathModelClient = new ModelClientImpl(mathModel)
-		val spaceSpecItem = mathModelClient.makeItemForQName(spaceSpecQN);
-		info1("Got Goody-Space-Spec Item: {}", spaceSpecItem)
-		val parentDGS = null;
-		val dgs = new MathyGoodySpace(parentDGS, -999, graphID, spaceSpecItem.getIdent);
-		// This sets the desired size of the space, but does not actually cause the goodies to be created.
-		// That happens during update() on the render thread.
-		dgs.refreshFromModelClient(mathModelClient)
-		dgs
-	}
-}
-import org.cogchar.bind.symja.MathGate;
 abstract class SweetDynaGoody(goodyIdxWithinSpace : Int) extends DynaShapeGoody(goodyIdxWithinSpace : Int) {
 
-	// var			myCachedModelClient : ModelClient
+	// This method is called by the space to tell us that configuration is available.
+	// It is not (necessarily) called on the render thread.
 	def reconfigureFromSpecItem(mc : ModelClient, specItem : Item) 
 	// 
 	//	// Textual:   Nickname, Label, Description
@@ -63,10 +44,9 @@ abstract class SweetDynaGoody(goodyIdxWithinSpace : Int) extends DynaShapeGoody(
 	//
 	
 	// This method cannot assume it is executed on the renderThread.
-	override def doFastVWorldUpdate_onRendThrd() : Unit = { 
+	override def doFastVWorldUpdate_onRendThrd(rrc : RenderRegistryClient) : Unit = { 
 		// getLogger().info("FastUpdate to dynaGoody {} at index {}", Seq(getUniqueName, getIndex) :_*);
 	}
-	// def initShapeAndAttach
 }
 abstract class SweetDynaSpace(parentDGS : DynamicGoodySpace[_], idxIntoParent : Int, val mySpecGraphID : Ident, val mySpecID : Ident) 
 		extends DynamicGoodySpace[SweetDynaGoody](parentDGS, idxIntoParent) {
@@ -74,12 +54,6 @@ abstract class SweetDynaSpace(parentDGS : DynamicGoodySpace[_], idxIntoParent : 
 	var		myPendingSpecItems : Set[Item] = Set()
 	var		mySpecModelClient : ModelClient = null
 	
-/*
- * 
- 	override def makeGoody(oneBasedIdx : Integer) : SweetDynaGoody = {
-		new SweetDynaGoody(oneBasedIdx)
-	}
-*/
 	// Occurs on slowUpdate-thread, off the renderThread
 	def    refreshFromModelClient(mc : ModelClient) : Unit = {
 		mySpecModelClient = mc;
@@ -120,8 +94,9 @@ abstract class SweetDynaSpace(parentDGS : DynamicGoodySpace[_], idxIntoParent : 
 			}
 		}
 	}
-	override def doFastVWorldUpdate_onRendThrd() {
-		super.doFastVWorldUpdate_onRendThrd()
+	override def doFastVWorldUpdate_onRendThrd(rrc : RenderRegistryClient) {
+		super.doFastVWorldUpdate_onRendThrd(rrc)
+		// We currently *happen* to be doing this slow update on the rendThrd, but there is no requirement that we do so.
 		applyPendingSpecItems()
 	}
 }

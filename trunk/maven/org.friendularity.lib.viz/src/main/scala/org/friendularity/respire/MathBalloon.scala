@@ -25,7 +25,7 @@ object MathBalloon extends BasicDebugger {
 		// These two lines activate Log4J without requiring a log4j.properties file.  
 		// However, when a log4j.properties file is present, these commands should not be used.
 		org.apache.log4j.BasicConfigurator.configure();
-		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.INFO);
+		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.ALL);
 
 
 		getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^  main() starting StructTest.testStructs()");		
@@ -44,26 +44,23 @@ object MathBalloon extends BasicDebugger {
 		val sweetDS = RespirationTest.initReposLoadMathEval : SweetDynaSpace;
 		
 		getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^  main() constructing a TrialBalloon OpenGL+MIDI app");
-		val tbApp : BigBalloon = new BigBalloon();
-		
-		tbApp.attachVWorldUpdater(sweetDS);
+		val bbApp : BigBalloon = new BigBalloon();
 		
 		getLogger().info("calling tbApp.initMidi()");
 		// Initialize available MIDI devices and sequence library.
-		tbApp.initMidi();
+		bbApp.initMidi();
 		getLogger().info("main() calling tbApp (JME3) start(), which will block this thread until done, and will call TrialBalloon.simpleInitApp()");
 		// Start the JME3 Virtual world, running all init (i.e. simpleInitApp()) on *this* thread,
 		// including blocking waiting for user to say OK to jME launch box.  
-		tbApp.start();
+		bbApp.start();
 		getLogger().info("main() - returned from blocking V-World launch (+ on-thread initApp); we now expect OpenGL VWorld to be running.");
-		// Now render thread has started, and sweetDS is getting render-thread callbacks.
+		// Now render thread has started
+		bbApp.attachDeepDynaSpace(sweetDS)		
+		//  and sweetDS is getting render-thread callbacks.
 		// Goodies are being created and displayed on that thread.
 		
-		// Attach repeated math evaluation viz
-		
-		// app.optLoadConfig();
 		getLogger().info("main() calling tbApp.playMidiOutput()");
-		tbApp.playMidiOutput();
+		bbApp.playMidiOutput();
 		
 		// If user escapes out of OpenGL Canvas window while MIDI output still playing in this playMidiOutput method, we get:
 		/*
@@ -85,13 +82,29 @@ object MathBalloon extends BasicDebugger {
 }
 import org.cogchar.render.sys.context.CogcharRenderContext;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
-class BigBalloon extends TrialBalloon {
+import com.jme3.scene.{Node}
+
+import org.cogchar.render.goody.dynamic.{DynamicGoodyParent}
+
+// Binds us in to attach a 
+class BigBalloon extends TrialBalloon with DynamicGoodyParent {
 	
-	def moreInit_whatThread() : Unit = {
+	def attachDeepDynaSpace(sweetDS: SweetDynaSpace) { 
+		sweetDS.setParent(this)
+		// Attaches the space for callbacks
+		attachVWorldUpdater(sweetDS);
+	}
+	
+	override   def getUniqueName() : String = { 
+		"generatedName_99";
+	}
+	
+	override def getDisplayNode() : Node = { 	
 		val crc  : CogcharRenderContext = getRenderContext();
 		val rrc : RenderRegistryClient = crc.getRenderRegistryClient();
 		val rootDeepNode = rrc.getJme3RootDeepNode(null)
-		val rootFlatNode = rrc.getJme3RootOverlayNode(null)
-		
+		rootDeepNode
 	}
+	
+	
 }

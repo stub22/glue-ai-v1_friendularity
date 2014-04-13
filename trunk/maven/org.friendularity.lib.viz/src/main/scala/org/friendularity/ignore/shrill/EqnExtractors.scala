@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.friendularity.respire
+package org.friendularity.shrill
 import org.appdapter.core.name.{Ident, FreeIdent}
 import org.appdapter.core.item.{Item}
 import org.appdapter.core.store.{Repo, InitialBinding, ModelClient }
@@ -31,6 +31,8 @@ import org.cogchar.bind.symja.{MathGate, MathSpaceFactory}
 import org.cogchar.api.space.{TextVal}
 
 import org.friendularity.struct.{MathBlock}
+
+import org.friendularity.respire.VarargsLogging
 
 /** Here we bind to presumed ontology for app objects that contain equations in typical patterns for:
  *		rigid bodies,

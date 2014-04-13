@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.friendularity.respire
+package org.friendularity.shrill
 import org.appdapter.core.store.{Repo, InitialBinding, ModelClient }
 import org.appdapter.help.repo.{RepoClient, RepoClientImpl, InitialBindingImpl} 
 import org.cogchar.bind.symja.{MathGate, MathSpaceFactory}
