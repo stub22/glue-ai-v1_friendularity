@@ -24,6 +24,9 @@ import org.appdapter.core.item.{Item}
 import org.appdapter.core.store.{Repo, InitialBinding, ModelClient }
 import org.cogchar.render.goody.dynamic.{DynamicGoody, DynamicGoodySpace, DynaShapeGoody}
 
+
+
+
 class MGPropertyBinding (val myPropQN : String, val myFieldKey : String, val myValueDim : Int) extends VarargsLogging {
 	// class StringPropSel(val myPropID: Ident) extends PropSel[String] { 
 	def readExprAndBind(parentSpecItem : Item, resolverModelCli : ModelClient, mathSM : MathStructMapper) {
@@ -54,7 +57,7 @@ object MGBindings {
 	
 	val allGoodyBindings = List[MGPropertyBinding](MGPB_position, MGPB_orientation, MGPB_scale, MGPB_color)
 }
-
+import org.cogchar.render.sys.registry.RenderRegistryClient;
 class MathyGoody (goodyIdx : Int, val myMathGate : MathGate) extends SweetDynaGoody(goodyIdx) {
 	// Each goody manages data using instances of a single datatype:  A "Struct" (= NV pair set) of
 	// fields, each containing an updatable (fixed-size) array of doubles.  
@@ -84,26 +87,90 @@ class MathyGoody (goodyIdx : Int, val myMathGate : MathGate) extends SweetDynaGo
 			b.readExprAndBind(specItem, modelCli, myMathyHandleGroup.myMapper)
 		}
 	}
-	// This is our "slow" update path.
+	// This reconfigure action is our "slow" update path, which we expect to be called only when the specItem
+	// has changed.  It is also called to initizlize this goody the first time.
 	// Generally *not* assumed to be on the render thread.
 	// Collision with render thread should not be catastrophic, so we hope to avoid needing synchronized(this)
 	// (which carries a performance penalty).  
 	override def reconfigureFromSpecItem(mc : ModelClient, specItem : Item) {
 		readAndBindExprs(mc, specItem, MGBindings.allGoodyBindings)
 	}
-	override def doFastVWorldUpdate_onRendThrd() : Unit = { 
-		super.doFastVWorldUpdate_onRendThrd();
+	override def doFastVWorldUpdate_onRendThrd(rrc : RenderRegistryClient) : Unit = { 
+		super.doFastVWorldUpdate_onRendThrd(rrc);
 		// Read data from myMathGate, using exprs bound in the mapper, into the fields of this particular state-struct.
 		// TODO:  add capability to do this only once every K loops, configured from the goody's spec item.
 		myCurrentStateHandle.updateSourcedFields
-		applyPositionField_onRendThrd
+		ensureDummyShapeSetup_onRendThrd(rrc)
+		ensureAttachedToParentNode_onRendThrd()
+		applyCurrentState_onRendThrd()
 	}
+	
+import com.jme3.scene.{Node, Geometry, Spatial}
+import com.jme3.material.Material;
+import com.jme3.scene.shape.Cylinder;
+import com.jme3.scene.shape.Dome;
+import com.jme3.scene.shape.Quad;
+import com.jme3.material.RenderState;
+import com.jme3.material.RenderState.FaceCullMode;
+import com.jme3.renderer.queue.RenderQueue;
 
-	protected def ensureDummyShapeSetup_onRendThrd() { 
+import com.jme3.math.ColorRGBA;
+import com.jme3.asset.AssetManager;
+import org.cogchar.render.sys.registry.RenderRegistryClient;
+
+	protected def applyCurrentState_onRendThrd() { 
+		
+	}
+	protected def ensureDummyShapeSetup_onRendThrd(rrc : RenderRegistryClient) {
+		val goodyNode = getDisplayNode();
+		val childList = goodyNode.getChildren
+		if (childList.size == 0) {
+			getLogger().info("Making dummy child for goody at index {}", getIndex() : Integer)
+			attachDummyChild(rrc)
+		}
+	}
+	private def attachDummyChild (rrc : RenderRegistryClient) {
+		val goodyNode = getDisplayNode();
+		val goodyIndex = getIndex()
+		val geomName = "whoopeeGeom_"  + goodyIndex
+		val geom  = new Geometry(geomName, new Quad(125, 75));
+		val assetMgr : AssetManager = rrc.getJme3AssetManager(null);
+		
+		val opacity : Float = Math.sqrt(1.0f / goodyIndex).asInstanceOf[Float]
+		
+		val  color : ColorRGBA  = new ColorRGBA(1.0f, 0.4f, 0.05f, opacity);
+		
+		val mat = makeAlphaBlendedUnshadedMaterial(assetMgr, color)
+		
+		geom.setMaterial(mat)
+		configureRenderingForSpatial(geom);  // Sets the rendering bucket and cull mode
+		
+		goodyNode.attachChild(geom);
+		goodyNode.setLocalTranslation(60.0f * goodyIndex - 100.0f, -10.0f + 20.0f * goodyIndex , -3.0f - 1.0f * goodyIndex);
 	}
 	protected def applyPositionField_onRendThrd() {
 		// def readCachedFieldValue(fk : FK, tgtDV : DV) 
 	}
+
+	def makeAlphaBlendedUnshadedMaterial( assetMgr : AssetManager, color : ColorRGBA) : Material = { 
+		val matFaceCullMode : FaceCullMode = FaceCullMode.Off;  		// Render both sides
+		val unshMat : Material = new Material(assetMgr, "Common/MatDefs/Misc/Unshaded.j3md");
+		// For transparency/lucency we set the BlendMode on addtlRenderState.
+		val matBlendMode : RenderState.BlendMode  = RenderState.BlendMode.Alpha;
+		// But note that to get transparency, we also need to put spatials into eligible buckets
+		unshMat.getAdditionalRenderState().setBlendMode(matBlendMode);
+		unshMat.getAdditionalRenderState().setFaceCullMode(matFaceCullMode);
+		unshMat.setColor("Color", color);
+		unshMat;
+	}
+	def configureRenderingForSpatial(spat : Spatial) {
+		val spatRenderBucket : RenderQueue.Bucket   = RenderQueue.Bucket.Transparent;
+		val spatCullHint : Spatial.CullHint  = Spatial.CullHint.Never;  // Others are CullHint.Always, CullHint.Inherit
+		// Setup transparency for the spatia, but note that the material blend-mode must 
+		// also support transparency.
+		spat.setQueueBucket(spatRenderBucket); 
+		spat.setCullHint(spatCullHint);	
+	}	
 }
 class MathyGoodySpace (parentDGS : DynamicGoodySpace[_], idxIntoParent : Int, specGraphID : Ident, specID : Ident)
 		extends SweetDynaSpace(parentDGS, idxIntoParent, specGraphID, specID)  {
@@ -114,6 +181,32 @@ class MathyGoodySpace (parentDGS : DynamicGoodySpace[_], idxIntoParent : Int, sp
 	override def makeGoody(oneBasedIdx : Integer) : SweetDynaGoody = {
 		new MathyGoody(oneBasedIdx, myMathGate)
 	}
+	override def doFastVWorldUpdate_onRendThrd(rrc : RenderRegistryClient) {
+		super.doFastVWorldUpdate_onRendThrd(rrc)
+		ensureAttachedToParentNode_onRendThrd()
+	}
+}
+
+
+import org.appdapter.help.repo.{RepoClient}
+import org.appdapter.impl.store.{ModelClientImpl}
+
+object MathyGoodyTest extends VarargsLogging {
+	def testDynaGoodyItemLoad(repo : Repo, repoClient : RepoClient) : SweetDynaSpace = { 
+		val graphQN = "ccrti:math_sheet_60";
+		val spaceSpecQN = "hevi:space_01";
+		val graphID = repoClient.makeIdentForQName(graphQN);
+		val mathModel = repo.getNamedModel(graphID)
+		val mathModelClient = new ModelClientImpl(mathModel)
+		val spaceSpecItem = mathModelClient.makeItemForQName(spaceSpecQN);
+		info1("Got Goody-Space-Spec Item: {}", spaceSpecItem)
+		val parentDGS = null;
+		val dgs = new MathyGoodySpace(parentDGS, -999, graphID, spaceSpecItem.getIdent);
+		// This sets the desired size of the space, but does not actually cause the goodies to be created.
+		// That happens during update() on the render thread.
+		dgs.refreshFromModelClient(mathModelClient)
+		dgs
+	}	
 }
 /*  
 	public Set<Item> getGoodySpecItems() { 
@@ -146,14 +239,8 @@ class MathyGoodySpace (parentDGS : DynamicGoodySpace[_], idxIntoParent : Int, sp
 		// We work initially with a small fixed number of dynaGoody parameter expression fields:
 		// Numeric:   Position, Orientation, Scale, Color
 		// These are MathGate expressions to be evaluated and re-applied on each render-pass.
-		// Here are the QNames for these expression fields.
-		
-		val posVecExpr_Prop_QN = "hev:expr_pos_vec3f";
-		val oriVecExpr_Prop_QN = "hev:expr_ori_vec3f";		
-		val scaleVecExpr_Prop_QN = "hev:expr_scale_vec3f";  
-		val colorVecExpr_Prop_QN = "hev:expr_color_vec4f";
 	
-		// This resolution process from QN to ID (and hence direct dependence on ModelClient mc) could be done "once", 
+		// The resolution process from QN to ID (and hence direct dependence on ModelClient mc) could be done "once", 
 		// on a per-space or global basis.
 		val posVecExpr_Prop_ID = mc.makeIdentForQName(posVecExpr_Prop_QN);
 		val colorVecExpr_Prop_ID = mc.makeIdentForQName(colorVecExpr_Prop_QN);
