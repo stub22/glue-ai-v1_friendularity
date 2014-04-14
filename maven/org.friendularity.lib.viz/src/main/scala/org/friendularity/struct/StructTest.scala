@@ -86,14 +86,14 @@ object StructTest  extends org.friendularity.respire.VarargsLogging {
 		val aodf2 = new	AODFactory(2)
 		val bs2 = new BasicStruct[String, ArrayOfDoubles](aodf2)
 		
-		val smp = new StructMapper[String, ArrayOfDoubles, MathGateExpr]
-		val expr11 = new MathGateExpr("{-44.0,33.3}", testExprDim, None)
+		val smp = new StructMapper[String, ArrayOfDoubles, MathGateExpr[ArrayOfDoubles]]
+		val expr11 = new MathGateExpr[ArrayOfDoubles]("{-44.0,33.3}", testExprDim, None, None)
 		smp.bindField("v1", expr11, aodf2)
 		info0("bs2 - before map-1: " + bs2)
 		smp.mapSourceDataToStruct(mgds, bs2)
 		info0("bs2 - after map-1: " + bs2)
-		val expr12 = new MathGateExpr("7 * {3.5, 2}", testExprDim, None)
-		val expr22 = new MathGateExpr("{99, -0.05}", testExprDim, None)
+		val expr12 = new MathGateExpr[ArrayOfDoubles]("7 * {3.5, 2}", testExprDim, None, None)
+		val expr22 = new MathGateExpr[ArrayOfDoubles]("{99, -0.05}", testExprDim, None, None)
 		smp.bindField("v2", expr22, aodf2)
 		smp.bindField("v1", expr12, aodf2)
 		info0("bs2 - before map-2: " + bs2)

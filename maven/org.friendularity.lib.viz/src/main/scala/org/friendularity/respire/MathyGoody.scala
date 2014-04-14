@@ -17,7 +17,8 @@
 package org.friendularity.respire
 
 import org.cogchar.bind.symja.{MathGate, MathSpaceFactory}
-import org.friendularity.struct.{AODFactory, _};
+import org.friendularity.struct.{Factory, AODFactory, AODCompatFactory, MathStructMapper, ArrayOfDoubles, 
+								 MathSourcedStructHandle, MathyMappedHandleGroup};
 
 import org.appdapter.core.name.{Ident, FreeIdent}
 import org.appdapter.core.item.{Item}
@@ -25,9 +26,12 @@ import org.appdapter.core.store.{Repo, InitialBinding, ModelClient }
 import org.cogchar.render.goody.dynamic.{DynamicGoody, DynamicGoodySpace, DynaShapeGoody}
 
 
+// This binding can be used to set up expressions for any number of separate MathStructMappers,
+// each of which is encapsulated in a MathyMappedHandleGroup.  The group may be used to produce
+// any number of Handles, each of which contains a struct of updatable data.
 
-
-class MGPropertyBinding (val myPropQN : String, val myFieldKey : String, val myValueDim : Int) extends VarargsLogging {
+class MGPropertyBinding[OutType] (val myPropQN : String, val myFieldKey : String, val myValueDim : Int, 
+								val myResultFactory : AODCompatFactory[OutType]) extends VarargsLogging {
 	// class StringPropSel(val myPropID: Ident) extends PropSel[String] { 
 	def readExprAndBind(parentSpecItem : Item, resolverModelCli : ModelClient, mathSM : MathStructMapper) {
 		val expr_Prop_ID = resolverModelCli.makeIdentForQName(myPropQN);
@@ -35,27 +39,36 @@ class MGPropertyBinding (val myPropQN : String, val myFieldKey : String, val myV
 		val exprText = parentSpecItem.getValString(expr_Prop_ID, todoDefault);
 		if (exprText != todoDefault) {
 			info3("Binding field {} of dim {} to expr {}", myFieldKey, myValueDim : Integer, exprText);
-			mathSM.bindFieldToMathExpr(myFieldKey, myValueDim, exprText);
+		//	val targetResVal = myResultFactory.make
+			mathSM.bindFieldToMathExpr(myFieldKey, myValueDim, exprText); // , myResultFactory); //  Some(targetResVal));
 		} else {
 			warn4("Cannot bind field {} of dim {}, no valid expr found at prop {} in parent item {}", myFieldKey, 
 						myValueDim : Integer, expr_Prop_ID, parentSpecItem)
 		}
 	}
-	def allocateResultValue(mathSM : MathStructMapper) : ArrayOfDoubles = {
+	def allocateAOD(mathSM : MathStructMapper) : ArrayOfDoubles = {
 		val factory = mathSM.getValueFactoryForField(myFieldKey)
 		factory.make()
 	}
-	def readResultValue(mssh : MathSourcedStructHandle, resultValue : ArrayOfDoubles) {
-		mssh.readResultField(myFieldKey, resultValue)
+	def readFieldToAOD(mssh : MathSourcedStructHandle, resultValue : ArrayOfDoubles) {
+		mssh.readResultFieldToAOD(myFieldKey, resultValue)
+	}
+	def makeVPExpr()  { 
 	}
 }
+import com.jme3.math.Vector3f;
+import com.jme3.math.ColorRGBA;
+import com.jme3.math.Quaternion;
+
+import org.friendularity.struct.{Vec3fFactory, QuaternFactory, ColorFactory}
+
 object MGBindings {
-	val MGPB_position = new MGPropertyBinding("hev:expr_pos_vec3f", "position", 3)
-	val MGPB_orientation  = new MGPropertyBinding("hev:expr_ori_vec3f", "orient", 3)  // Which orientation form are we using?
-	val MGPB_scale = new MGPropertyBinding("hev:expr_scale_vec3f", "scale", 3) // What if we want unary scale? 
-	val MGPB_color = new MGPropertyBinding("hev:expr_color_vec4f", "color", 4)
+	val MGPB_position = new MGPropertyBinding[Vector3f]("hev:expr_pos_vec3f", "position", 3, new Vec3fFactory)
+	val MGPB_orientation  = new MGPropertyBinding[Quaternion]("hev:expr_ori_vec3f", "orient", 3, new QuaternFactory)  // Which orientation form are we using?
+	val MGPB_scale = new MGPropertyBinding[Vector3f]("hev:expr_scale_vec3f", "scale", 3, new Vec3fFactory) // What if we want unary scale? 
+	val MGPB_color = new MGPropertyBinding[ColorRGBA]("hev:expr_color_vec4f", "color", 4, new ColorFactory)
 	
-	val allGoodyBindings = List[MGPropertyBinding](MGPB_position, MGPB_orientation, MGPB_scale, MGPB_color)
+	val allGoodyBindings = List[MGPropertyBinding[_]](MGPB_position, MGPB_orientation, MGPB_scale, MGPB_color)
 }
 import org.cogchar.render.sys.registry.RenderRegistryClient;
 class MathyGoody (goodyIdx : Int, val myMathGate : MathGate) extends SweetDynaGoody(goodyIdx) {
@@ -82,7 +95,7 @@ class MathyGoody (goodyIdx : Int, val myMathGate : MathGate) extends SweetDynaGo
 	
 	val		myCurrentStateHandle = myMathyHandleGroup.makeHandle
 	
-	def readAndBindExprs(modelCli : ModelClient, specItem : Item, bindings : List[MGPropertyBinding]) {
+	def readAndBindExprs(modelCli : ModelClient, specItem : Item, bindings : List[MGPropertyBinding[_]]) {
 		for (b <- bindings) {
 			b.readExprAndBind(specItem, modelCli, myMathyHandleGroup.myMapper)
 		}
@@ -119,7 +132,7 @@ import com.jme3.asset.AssetManager;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
 
 	protected def applyCurrentState_onRendThrd() { 
-		
+		// val posVec3f : Vector3f = myCurrentStateHandle . 
 	}
 	protected def ensureDummyShapeSetup_onRendThrd(rrc : RenderRegistryClient) {
 		val goodyNode = getDisplayNode();

@@ -56,6 +56,11 @@ trait FactorySupplier[FK, FV] {
 	}
 	
 }
+// Despite allowing type arguments, this class is still rigid in that it expects all values
+// of the StructMapper to conform to the same DV value type.  Thus a StructMapper may not easily
+// output to both Vector3f and Quaternion, for example.    In outer layers, we work around this 
+// limitation by routing all numeric data through ArrayOfDoubles objects, which are used as the
+// currency of the MathStructMappers.  
 class StructMapper[FK, DV <: DataValue, DE <: DataExpr] extends FactorySupplier[FK, DV] {
 	var myFieldExprMap = new scala.collection.immutable.HashMap[FK, DataBinding[DE, DV]]
 //	var myValueFactoryMap = new scala.collection.immutable.HashMap[FK, Factory[DV]]
@@ -81,6 +86,16 @@ class StructMapper[FK, DV <: DataValue, DE <: DataExpr] extends FactorySupplier[
 			s.writeField(fk, b.myBufferDV)
 		}
 	}
+	protected def getFieldExpr(fk : FK ) : Option[DataExpr] = {
+		val binding = myFieldExprMap.get(fk)
+		if (binding.isDefined) {
+			Some(binding.get.myExpr)
+		} else {
+			None
+		}
+
+	}
+	
 
 }
 abstract class BaseStruct[FK, FV]() extends Struct[FK, FV] {
@@ -133,6 +148,13 @@ abstract class MappedStructHandle[FK, DV <: DataValue, DE <: DataExpr](val myMap
 	def readCachedFieldValue(fk : FK, tgtDV : DV) {
 		myStruct.readField(fk, tgtDV)
 	}
+
+	def allocateFieldVal(fk : FK) : DV =  myMapper.makeFieldVal(fk)
 	
+	def getResultFieldCopy(fk : FK) : DV = {
+		val tgtFV = allocateFieldVal(fk)
+		readCachedFieldValue(fk, tgtFV)
+		tgtFV
+	}
 	
 }
