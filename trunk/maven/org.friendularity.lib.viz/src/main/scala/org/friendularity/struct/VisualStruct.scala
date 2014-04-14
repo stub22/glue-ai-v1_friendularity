@@ -26,17 +26,7 @@ class VisualStruct {
 
 }
 
-class Vec3fFactory extends Factory[Vector3f] {
-	override def makeOne() : Vector3f = {
-		new Vector3f()
-	}
-	override def makeArray(size : Int) : Array[Vector3f] = {
-		new Array[Vector3f](size)
-	}
-	override def shallowCopyContents(source : Vector3f, target: Vector3f) {
-		target.set(source)
-	}
-}
+
 object JME3Factorys {
 	val vec3fFactory = new Vec3fFactory()
 }

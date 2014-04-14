@@ -23,30 +23,53 @@ object MathStructMapper {
 		def factoryForDim(baseOneDim : Int) = theFactories(baseOneDim - 1)
 		// val aodf2 = factoryForDim(2)
 }
-class MathStructMapper extends StructMapper [String, ArrayOfDoubles, MathGateExpr] {
+
+class MathStructMapper extends StructMapper [String, ArrayOfDoubles, MathGateExpr[ArrayOfDoubles]] {
+	var myVPWrappers = new scala.collection.immutable.HashMap[String,VirtParamExpr[_]]
+	
 	def bindFieldToMathExpr(fieldName : String, resultDim : Int, mathText : String) {
+										 
 		val arrayFactoryForField = MathStructMapper.factoryForDim(resultDim)
 		//  MathGate implements caching of the actual parsed expr for us, in case of mathText being reused often.
 		val optDesc : Option[String] = None
-		val mathExpr = new MathGateExpr(mathText, resultDim, optDesc)
+		val underMathExpr = new MathGateExpr[ArrayOfDoubles](mathText, resultDim, optDesc, None);
 		// This establishes both the mathExpr binding, and the value-factory binding. 
-		bindField(fieldName, mathExpr, arrayFactoryForField)
+		bindField(fieldName, underMathExpr, arrayFactoryForField)
+
+		
+		// WrappedMGExpr[ArrayOfDoubles,NumType](underMathExpr, optInitRes.getOrElse(null.asInstanceOf[NumType]))
 	}
+	def makeWrappedExpr[XformedType](fieldName : String, aodcf : Option[AODCompatFactory[XformedType]]) {
+		val underMathExpr = getFieldExpr(fieldName) 
+		
+		//if (aodcf.isDefined) {
+		//	val vpWrappedExpr = new VirtParamExpr[XformedType](underMathExpr, aodcf.get)
+		//	myVPWrappers -= fieldName 
+		//	myVPWrappers += (fieldName -> vpWrappedExpr)
+		// }
+		
+	}
+									
+	def refreshWrappers() { 
+		for ((fk,b) <- myVPWrappers) {
+			
+		}
+	}
+
 }
 class MathSourcedStructHandle(val myMathGate : MathGate, structMapper : MathStructMapper) 
-		extends MappedStructHandle [String, ArrayOfDoubles, MathGateExpr](structMapper) {
+		extends MappedStructHandle [String, ArrayOfDoubles, MathGateExpr[ArrayOfDoubles]](structMapper) {
 	
 	val myCalcDoublesSource = new MathGateDoublesSource(myMathGate)
-	override def getDataSource : DataSource[MathGateExpr, ArrayOfDoubles] = myCalcDoublesSource
+	override def getDataSource : DataSource[MathGateExpr[ArrayOfDoubles], ArrayOfDoubles] = myCalcDoublesSource
 
-	def readResultField(fieldName : String, tgtFV : ArrayOfDoubles) {
+	// TODO:  This is where the wrapper value state needs to be bound and made available to the client
+	
+	def readResultFieldToAOD(fieldName : String, tgtFV : ArrayOfDoubles) {
 		readCachedFieldValue(fieldName, tgtFV)
 	}
-
-	def getResultFieldCopy(fieldName : String) : ArrayOfDoubles = {
-		val tgtFV = myMapper.makeFieldVal(fieldName)
-		myStruct.readField(fieldName, tgtFV)
-		tgtFV
+	def readAndConvertResultField[ResultType](fieldName : String, result : ResultType) {
+		// Get the wrapperExpr from the mapper
 	}
 }
 class MathyMappedHandleGroup(val myMathGate : MathGate)  {

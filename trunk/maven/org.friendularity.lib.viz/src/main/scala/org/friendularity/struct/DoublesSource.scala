@@ -36,8 +36,8 @@ class AODFactory(val myArraySize : Int) extends Factory[ArrayOfDoubles] {
 }
 class OneDouble(val myVal : Double) extends DataValue {
 }
-class MathGateDoublesSource(val myMG : MathGate) extends DataSource[MathGateExpr, ArrayOfDoubles] {
-	override def read(expr : MathGateExpr, dataValue : ArrayOfDoubles) = {
+class MathGateDoublesSource(val myMG : MathGate) extends DataSource[MathGateExpr[ArrayOfDoubles], ArrayOfDoubles] {
+	override def read(expr : MathGateExpr[ArrayOfDoubles], dataValue : ArrayOfDoubles) = {
 		myMG.parseAndEvalExprToDoubleVec(expr.myExprString, dataValue.myVals);
 	}
 }

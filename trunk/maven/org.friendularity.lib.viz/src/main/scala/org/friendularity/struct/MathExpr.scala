@@ -34,12 +34,16 @@ trait MathBlock {
 		mg.parseAndEvalExprToDoubleVec(mathText, bufOrNull)
 	}
 }
+// Here we pull in a Java incarnation of the feature, not for functionality, but
+// rather as a burden to ensure compatibility with alternate implementations branching
+// out from the rudimentary Java contract in o.f.api.struct. 
 import org.friendularity.api.struct.MathExprNode;
-class MathGateExpr(val myExprString : String, resultDim : Int, val optDesc : Option[String]) 
+
+class MathGateExpr[NumType](val myExprString : String, resultDim : Int, val optDesc : Option[String], val optInitRes : Option[NumType])
 		// This extension is for type-compatibility (with VisualMathExprLib, in particular)
 		// rather than functionality, so far.
 		// The null parameter indicates "no initial builtin out-obj
-		extends MathExprNode(myExprString, resultDim, null) with DataExpr with MathBlock {
+		extends MathExprNode[NumType](myExprString, resultDim, optInitRes.getOrElse(null.asInstanceOf[NumType])) with DataExpr with MathBlock {
 			
 		
 	override def getMathText = myExprString
@@ -52,6 +56,26 @@ class MathGateExpr(val myExprString : String, resultDim : Int, val optDesc : Opt
 	//	myMG.parseAndEvalExprToDoubleVec(expr.myExprString, dataValue.myVals);
 
 }
+trait Transform[InType, OutType] {
+	def updateOutput(input : InType, output : OutType)
+}
+abstract class WrappedMGExpr[NumType,ResultType](val myMGExpr : MathGateExpr[NumType], val myResultObj : ResultType) 
+		extends Transform[NumType,ResultType] {
+	
+	def evalAndUpdate() { 
+		// myMGExpr.
+	
+		val currNum : NumType = myMGExpr.getOutputObject	
+		updateOutput(currNum, myResultObj)
+	}
+}
+class VirtParamExpr[VPType](mgExpr : MathGateExpr[ArrayOfDoubles], aodcf : AODCompatFactory[VPType]) 
+		extends WrappedMGExpr[ArrayOfDoubles, VPType](mgExpr, aodcf.make) {
+	override def updateOutput(input : ArrayOfDoubles, output : VPType)	{
+		aodcf.copyFromAOD(input, output)
+	}
+}
+
 /*
 class BasicMathBlock(myDesc : String, aMathText : String) extends MathGateExpr(aMathText) 
 		with MathBlock {
