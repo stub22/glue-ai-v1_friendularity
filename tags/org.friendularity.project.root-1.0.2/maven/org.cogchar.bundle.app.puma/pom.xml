@@ -1,0 +1,88 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.cogchar</groupId>
+		<artifactId>org.cogchar.modules.main</artifactId>
+		<version>1.0.8.0-SNAPSHOT</version>
+		<relativePath>../../../org.cogchar/maven/org.cogchar.modules.main/pom.xml</relativePath>
+	</parent>	
+
+    <artifactId>org.cogchar.bundle.app.puma</artifactId>
+    <packaging>bundle</packaging>
+    <name>${project.artifactId}  OSGi Bundle</name>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>org.cogchar.bundle.bind.mechio</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+<!--         <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>org.cogchar.bundle.boot.vworld</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+		-->
+<!--        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>org.cogchar.bundle.render.opengl</artifactId>
+            <version>${project.version}</version>
+        </dependency>-->
+<!--        <dependency>
+			 Temporarily adding this dep so we can pass classloader to Jena for bony config load - may be time to get rid of it
+            <groupId>${project.groupId}</groupId>
+            <artifactId>org.cogchar.bundle.render.resources</artifactId>
+            <version>${project.version}</version>
+        </dependency>-->
+		<!--  This drags along some HTTP-Client deps that we would rather not have in PUMA.
+		<dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>org.cogchar.bundle.bind.cogbot</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+		-->
+		
+		<!--  
+         <dependency>
+            <groupId>org.appdapter</groupId>
+            <artifactId>org.appdapter.bundle.gui</artifactId>
+            <version>${appdapter.version}</version>
+        </dependency>
+		-->
+		<dependency>
+			<!-- We want this dependence to be replaced by cleaner mechanisms in o.c.b.temp.wire 
+			-->
+			<groupId>${project.groupId}</groupId>
+			<artifactId>org.cogchar.bundle.bind.lift</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>2.3.7</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+						<Import-Package>*,org_cogchar_user;resolution:=optional</Import-Package>
+                        <Bundle-Activator>org.cogchar.bundle.app.puma.PumaAppBundleActivator</Bundle-Activator>
+                    </instructions>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
