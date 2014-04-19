@@ -68,8 +68,6 @@ object RespirationTest extends VarargsLogging {
 	}
 	
 	def testMathAndDynaGoodies (dfltTestRepo: Repo,  dfltTestRC : RepoClient) : SweetDynaSpace = {
-		val mathSrcGraphQN = "ccrti:math_sheet_60";
-	//	org.friendularity.shrill.EqnExtractors.testMathGraphLoadEval(dfltTestRepo, dfltTestRC, mathSrcGraphQN)
 
 		// This does not diretly create any V-World goodies, just tests the config mechanism
 		MathyGoodyTest.testDynaGoodyItemLoad(dfltTestRepo, dfltTestRC)		
@@ -78,12 +76,17 @@ object RespirationTest extends VarargsLogging {
 	def powerLoad() { 
 		// We want to iterate over the subcategories of exprs to load them up.
 		// Order within a subcat generally should not matter.  
+		// These things all constitute
 		//   1) Optional Symbols - Any globals or builtins - not for state
-		//   2) Optional Types - including state vector names/patterns may come from RDF,
-		//   3) FuncDef - Transformations und mappings = the essence of our model.
-		//   4) FullExpr - A query/calculation result stream node, used for state and as view for display.
+		//   2) Optional Types - including state vector names/patterns.  
+		//   These usually come from RDF-based schemas: RDFS, OWL.
+		//   3) FuncDef - Transformations und mappings = the essence of our mathematical model.
+		//   4) FullExpr (and variants) - A query/calculation result stream node, used for state and as view for display.
 		//		Establishing one of these in a context causes actual state to be streamed. 
-		//   5) Application objects such as DynamicGoodys.
+		//		When we use only some subset of this feature, we can get by with variants that are less than a "full" expr.
+		//   5) Application objects used to interface with extern subsystems.  In particular:
+		//		a) Joint data stream bindings bound to MechIO robot movement data mapping system.
+		//		b) DynamicGoodys bound to HeDSpc V-World (via shared, passive Cogchar v-world API objects).
 	}
 	
 	def testDoubleVecFetch() : Unit = {
