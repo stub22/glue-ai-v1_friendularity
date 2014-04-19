@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.friendularity.shrill
+package org.friendularity.ignore.shrill
 import org.appdapter.core.name.{Ident, FreeIdent}
 import org.appdapter.core.item.{Item}
 import org.appdapter.core.store.{Repo, InitialBinding, ModelClient }
@@ -34,7 +34,7 @@ import org.friendularity.struct.{MathBlock}
 
 import org.friendularity.respire.VarargsLogging
 
-/** Here we bind to presumed ontology for app objects that contain equations in typical patterns for:
+/** Here we make a shallow binding to presumed ontology for app objects that contain equations in typical patterns for:
  *		rigid bodies,
  *		cameras (real + virtual),
  *		estimators,
@@ -44,6 +44,25 @@ import org.friendularity.respire.VarargsLogging
 
 object EqnExtractors extends VarargsLogging {
 	val NOT_FOUND_EXPR : String = "None"	
+	
+	def main(args: Array[String]) : Unit = {
+		// Backup - if logging is not working, try enabling these two lines.
+		// Must enable "compile" or "provided" scope for Log4J dep in order to compile this code.
+		// Note that these settings can cause double-logging, if there is a log4j.properties found.
+		org.apache.log4j.BasicConfigurator.configure();
+		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.ALL);
+		val rspec = org.friendularity.respire.RespirationTest.makeDfltOSRS();
+		getLogger().info("Let's load some equations from different properties in our source models at: {}", rspec)
+		
+		val dfltTestRepo = rspec.makeRepo();
+		
+		//dbRepo.addNamedModel(copyID, lightsModelFromSheet);
+		//val copiedModel = dbRepo.getNamedModel(copyID)	
+		val dfltTestRC = rspec.makeRepoClient(dfltTestRepo);
+		val mathSrcGraphQN = "ccrti:math_sheet_60";
+		testMathGraphLoadEval(dfltTestRepo, dfltTestRC, mathSrcGraphQN);
+		getLogger().info("Finito!");
+	}
 	def testMathGraphLoadEval(dfltTestRepo : Repo, dfltTestRC : RepoClient, mathSrcGraphQN : String) : Unit = {  
 		// val spatSheetQN = "ccrti:spatial_sheet_60";
 		val mathSheetQN = mathSrcGraphQN; // "ccrti:math_sheet_60";

@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.friendularity.shrill
+package org.friendularity.ignore.shrill
 
 import org.appdapter.core.name.{Ident, FreeIdent}
 import org.appdapter.core.item.{Item}
