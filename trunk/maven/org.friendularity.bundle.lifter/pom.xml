@@ -16,48 +16,31 @@
 	<name>${project.artifactId} - OSGi</name>
 	
 	<dependencies>
-		<dependency>
-			<groupId>org.apache.felix</groupId>
-			<artifactId>org.osgi.core</artifactId>
-			<version>1.4.0</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<!-- This is a big honking hunk of code, but so far is working better than trying
-				to mix-and-match our own version of Jetty + PAX.
-			-->
-			<groupId>org.ops4j.pax.web</groupId>
-			<artifactId>pax-web-jetty-bundle</artifactId>
-			<version>1.1.2</version>
-
-		</dependency>
-		<dependency>
-			<!--  		http://team.ops4j.org/wiki/display/paxweb/WAR+Extender
-			"Once installed the war extender will watch over the bundles that get started / stopped. 
-			Once your war bundle gets deployed and started, the war extender will parse your web.xml 
-			and registers all elements with http service."
-			-->
-			<groupId>org.ops4j.pax.web</groupId>
-			<artifactId>pax-web-extender-war</artifactId>
-			<version>1.1.2</version>
-		</dependency>
 
 		<dependency>
-			<!--  We do not use JSP technology, but apparently pax-web-jsp is needed, to resolve:
-				org.ops4j.pax.web.pax-web-jetty-bundle imports (package=org.eclipse.jdt.core.compiler)
-			-->			
-			<groupId>org.ops4j.pax.web</groupId>
-			<artifactId>pax-web-jsp</artifactId>
-			<version>1.1.2</version>
+			<groupId>org.cogchar</groupId>
+			<artifactId>ext.bundle.ops4j.pax.web</artifactId>
+			<version>${cogchar.version}</version>
 		</dependency>
 
-				
+
+		<!-- Main Lift-based webapp, which we expect PAX services above to find and launch to HTTP for us -->		
 		<dependency>
-			<!-- Our Lift-based webapp, which we expect PAX services above to find and launch to HTTP for us -->
 			<groupId>org.cogchar</groupId>
 			<artifactId>org.cogchar.bundle.bind.lift</artifactId>
 			<version>${cogchar.version}</version>
-		</dependency>		
+		</dependency>
+		<!-- We cannot currently run two separate instances of lift, sharing the same classloader (from ext.bundle.lift),
+		because the singletons get confused.  
+		-->
+		<!--	
+		<dependency>
+			<groupId>org.friendularity</groupId>
+			<artifactId>org.friendularity.bundle.xweb.minlift</artifactId>
+			<version>${project.version}</version>
+		</dependency>	
+		-->
+		<!--				
 		<dependency>
 			<groupId>org.appdapter</groupId>
 			<artifactId>org.appdapter.bundle.core</artifactId>
@@ -69,20 +52,13 @@
 			<type>jar</type>
 			<version>${appdapter.version}</version>
 		</dependency>
-		<!-- We want the same deps as CCRK, but not the full PUMA boot peformed by CCRK activator.
 		-->
 		<dependency>
 			<groupId>org.cogchar</groupId>
 			<artifactId>org.cogchar.bundle.app.puma</artifactId>
 			<version>${cogchar.version}</version>
 		</dependency>
-		<!--
-		<dependency>
-			<groupId>org.cogchar</groupId>
-			<artifactId>org.cogchar.bundle.render.resources</artifactId>
-			<version>${cogchar.version}</version>
-		</dependency>
-		-->
+
 		<dependency>
 			<!-- Note that o.f.project.root and o.f.modules.main must also have been built and avail in local repo,
 				in order for variables like "mechio.version" to resolve when applied *transitively*
@@ -104,13 +80,8 @@
 				<extensions>true</extensions>
 				<configuration>
 					<instructions>
-			<!--				Web-ContextPath is from the OSGi spec.
-								With no Web-ContextPath, PAX assigns a default context path like:
-								http://localhost:8080/org.cogchar.org.cogchar.lifter/
-			-->
 
-						<Web-ContextPath>${web.contextPath}</Web-ContextPath>
-						<Export-Package>etc.*, Data.*</Export-Package>						
+						<Export-Package>etc.*</Export-Package>						
 						<Bundle-Activator>org.friendularity.bundle.lifter.Activator</Bundle-Activator>
 					</instructions>
 				</configuration>
@@ -298,7 +269,8 @@
 									<entry key="org.osgi.framework.bootdelegation" value="*" />
 									<!-- Allow sun.misc package to be used by LWJGL -->
                                     <!-- org.w3c.dom.* are missing from default.properties in felix 4.2.1, they are present in 3.0.7 -->
-									<entry key="org.osgi.framework.system.packages.extra" value="sun.misc, org.w3c.dom.css, org.w3c.dom.html, org.w3c.dom.stylesheets, org.w3c.dom.traversal, org.w3c.dom.ranges, org.w3c.dom.views,                                                     org.w3c.dom.xpath" />
+									<entry key="org.osgi.framework.system.packages.extra" 
+										   value="sun.misc, org.w3c.dom.css, org.w3c.dom.html, org.w3c.dom.stylesheets, org.w3c.dom.traversal, org.w3c.dom.ranges, org.w3c.dom.views,                                                     org.w3c.dom.xpath" />
 								</propertyfile>
 								<makeurl property="run.properties.url" file="${project.build.directory}/run.properties" />
 								<java fork="true" jar="${maven.dependency.org.apache.felix.org.apache.felix.main.jar.path}">

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE web-app
+PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+"http://java.sun.com/dtd/web-app_2_3.dtd">
+
+<web-app>
+<filter>
+  <filter-name>MinLiftFilter</filter-name>
+  <display-name>Min Lift Filter</display-name>
+  <description>A (minimal) Filter that intercepts lift calls</description>
+  <filter-class>net.liftweb.http.LiftFilter</filter-class>
+   <init-param>     
+    <param-name>bootloader</param-name>
+    <param-value>org.friendularity.minlift.boot.Booter</param-value>
+  </init-param>    
+</filter>
+  	
+
+<filter-mapping>
+  <filter-name>MinLiftFilter</filter-name>
+  <url-pattern>/*</url-pattern>
+</filter-mapping>
+
+</web-app>
