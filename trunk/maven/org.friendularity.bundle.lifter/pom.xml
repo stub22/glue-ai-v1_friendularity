@@ -16,7 +16,11 @@
 	<name>${project.artifactId} - OSGi</name>
 	
 	<dependencies>
-
+			<!-- Note that o.f.project.root and o.f.modules.main must also have been built and avail in local repo,
+				in order for variables like "cogchar.version" to resolve when applied *transitively*
+				(The built main+root is not required to resolve the variables used directly in this pom; 
+					those are allowed to come from the source-tree poms).
+			-->
 		<dependency>
 			<groupId>org.cogchar</groupId>
 			<artifactId>ext.bundle.ops4j.pax.web</artifactId>
@@ -31,7 +35,8 @@
 			<version>${cogchar.version}</version>
 		</dependency>
 		<!-- We cannot currently run two separate instances of lift, sharing the same classloader (from ext.bundle.lift),
-		because the singletons get confused.  
+		because the singletons get confused (the last webapp initialized appears at both URLs).  So must disable the 
+		above o.c.b.bind.lift before enabling the below o.f.b.xweb.minlift. 
 		-->
 		<!--	
 		<dependency>
@@ -40,19 +45,7 @@
 			<version>${project.version}</version>
 		</dependency>	
 		-->
-		<!--				
-		<dependency>
-			<groupId>org.appdapter</groupId>
-			<artifactId>org.appdapter.bundle.core</artifactId>
-			<version>${appdapter.version}</version>
-		</dependency>		
-		<dependency>
-			<groupId>org.appdapter</groupId>
-			<artifactId>ext.bundle.jena_all_2_10_1</artifactId>
-			<type>jar</type>
-			<version>${appdapter.version}</version>
-		</dependency>
-		-->
+
 		<dependency>
 			<groupId>org.cogchar</groupId>
 			<artifactId>org.cogchar.bundle.app.puma</artifactId>
@@ -60,11 +53,7 @@
 		</dependency>
 
 		<dependency>
-			<!-- Note that o.f.project.root and o.f.modules.main must also have been built and avail in local repo,
-				in order for variables like "mechio.version" to resolve when applied *transitively*
-				(The built main+root is not required to resolve the variables used directly in this pom; 
-					those are allowed to come from the source-tree poms).
-			-->
+
 			<groupId>${project.groupId}</groupId>
 			<artifactId>org.friendularity.bundle.netconfig</artifactId>
 			<version>${project.version}</version>
