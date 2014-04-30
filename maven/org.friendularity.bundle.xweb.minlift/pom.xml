@@ -18,13 +18,13 @@
 		<web.contextPath>friendu_xweb_ml</web.contextPath>
 	</properties>
     <dependencies>
-		
+		<!--
 		<dependency>
 			<groupId>org.cogchar</groupId>
 			<artifactId>org.cogchar.bundle.core</artifactId>
 			<version>${cogchar.version}</version>
 		</dependency>
-		
+		-->
 		<dependency>
 			<groupId>org.cogchar</groupId>
 			<artifactId>ext.bundle.lift</artifactId>
@@ -56,8 +56,13 @@
                     <instructions>
                         <Bundle-Activator>org.friendularity.minlift.osgi.Activator</Bundle-Activator>                    
 						<Web-ContextPath>${web.contextPath}</Web-ContextPath>
+						
 						<Export-Package>
 							org.friendularity.minlift.*
+							<!--  , 
+							bootstrap.liftweb  
+							for compat with ImportPackage in ext.bundle.lift 
+							-->
 						</Export-Package>						
                     </instructions>
                 </configuration>

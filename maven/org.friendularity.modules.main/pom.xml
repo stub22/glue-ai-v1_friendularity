@@ -73,8 +73,9 @@
 
 		<module>../org.friendularity.demo.music</module>
 		<module>../org.friendularity.demo.speech.hear</module>
--->
+
         <module>../org.friendularity.bundle.netconfig</module>
+-->		
         <module>../org.friendularity.model.test</module>
         <module>../org.friendularity.demo.lifecycles</module>
         <module>../org.friendularity.demo.rkbasic</module>

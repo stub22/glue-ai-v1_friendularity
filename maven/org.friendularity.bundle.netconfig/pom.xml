@@ -25,11 +25,14 @@
             <version>1.4.0</version>
             <scope>provided</scope>
         </dependency>
+	
 		<dependency>
 			<groupId>org.cogchar</groupId>
-			<artifactId>org.cogchar.bundle.bind.lift</artifactId>
+			<artifactId>org.cogchar.bundle.core</artifactId>
 			<version>${cogchar.version}</version>
 		</dependency>
+		
+	
     </dependencies>
 
     <build>
