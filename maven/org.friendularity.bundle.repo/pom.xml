@@ -30,45 +30,12 @@
                org.cogchar.app.puma.boot, org.cogchar.app.puma.config, org.cogchar.app.puma.web, org.cogchar.joswrap, org.cogchar.name.dir
         </force-imports>
 	</properties>
-	
+			<!-- Note that o.f.project.root and o.f.modules.main must also have been built and avail in local repo,
+				in order for variables like "mechio.version" to resolve when applied *transitively*
+				(The built main+root is not required to resolve the variables used directly in this pom; 
+					those are allowed to come from the source-tree poms).
+			-->	
 	<dependencies>
-		<dependency>
-			<groupId>org.apache.felix</groupId>
-			<artifactId>org.osgi.core</artifactId>
-			<version>1.4.0</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<!-- This is a big honking hunk of code, but so far is working better than trying
-				to mix-and-match our own version of Jetty + PAX.
-			-->
-			<groupId>org.ops4j.pax.web</groupId>
-			<artifactId>pax-web-jetty-bundle</artifactId>
-			<version>1.1.2</version>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<!--  		http://team.ops4j.org/wiki/display/paxweb/WAR+Extender
-			"Once installed the war extender will watch over the bundles that get started / stopped. 
-			Once your war bundle gets deployed and started, the war extender will parse your web.xml 
-			and registers all elements with http service."
-			-->
-
-			<groupId>org.ops4j.pax.web</groupId>
-			<artifactId>pax-web-extender-war</artifactId>
-			<version>1.1.2</version>
-			<scope>runtime</scope>
-		</dependency>
-
-		<dependency>
-			<!--  We do not use JSP technology, but apparently pax-web-jsp is needed, to resolve:
-				org.ops4j.pax.web.pax-web-jetty-bundle imports (package=org.eclipse.jdt.core.compiler)
-			-->			
-			<groupId>org.ops4j.pax.web</groupId>
-			<artifactId>pax-web-jsp</artifactId>
-			<version>1.1.2</version>
-			<scope>runtime</scope>
-		</dependency>
 
 				
 		<dependency>
@@ -83,27 +50,20 @@
 			<version>${cogchar.version}</version>
 		</dependency>		
 		<!-- We want the same deps as CCRK, but not the full PUMA boot peformed by CCRK activator.
-		-->
+		
 		<dependency>
 			<groupId>org.cogchar</groupId>
 			<artifactId>org.cogchar.bundle.app.puma</artifactId>
 			<version>${cogchar.version}</version>
 		</dependency>
+		-->
+		<!--
 		<dependency>
 			<groupId>org.cogchar</groupId>
 			<artifactId>org.cogchar.bundle.render.resources</artifactId>
 			<version>${cogchar.version}</version>
 		</dependency>
-		<dependency>
-			<!-- Note that o.f.project.root and o.f.modules.main must also have been built and avail in local repo,
-				in order for variables like "mechio.version" to resolve when applied *transitively*
-				(The built main+root is not required to resolve the variables used directly in this pom; 
-					those are allowed to come from the source-tree poms).
-			-->
-			<groupId>${project.groupId}</groupId>
-			<artifactId>org.friendularity.bundle.netconfig</artifactId>
-			<version>${project.version}</version>
-		</dependency>
+		-->
 	</dependencies>
 
 	<build>
