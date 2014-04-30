@@ -83,13 +83,14 @@
             in order for variables like "mechio.version" to resolve when applied *transitively*
             (The built main+root is not required to resolve the variables used directly in this pom; 
                 those are allowed to come from the source-tree poms).
-        -->
+        
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>org.friendularity.bundle.netconfig</artifactId>
 			<version>${project.version}</version>
-            <scope>provided</scope> <!--the demoserv uses this  compile-->
+            <scope>provided</scope> 
 		</dependency>
+		-->		
 	</dependencies>
 
 	<build>
