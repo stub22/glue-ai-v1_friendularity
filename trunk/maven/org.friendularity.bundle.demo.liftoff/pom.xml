@@ -15,6 +15,11 @@
 	<name>${project.artifactId} - OSGi</name>
 	
 	<dependencies>
+		<!-- Our OSGi-enabled web container, using Jetty 
+				Discovery happens when Ops4J Pax web server starts up, 
+				which appears to be during activator.start() of one of
+				its bundles - often before our Log4J bindings are set.
+		-->
 		<dependency>
 			<!-- Our Lift-based webapp, which we expect PAX services above to find and launch to HTTP for us -->
 			<groupId>org.cogchar</groupId>
@@ -22,20 +27,19 @@
 			<version>${cogchar.version}</version>
 		</dependency>
 		<dependency>
-			<!-- Our Joseki-based webapp. -->
+			<!-- Our Joseki-based webapp, discovered by PAX services. -->
 			<groupId>org.cogchar</groupId>
 			<artifactId>org.cogchar.bundle.bind.joseki</artifactId>
 			<version>${cogchar.version}</version>
 		</dependency>
 		
-		
-		
 		<dependency>
-			<groupId>org.osgi</groupId>
-			<artifactId>org.osgi.core</artifactId>
-			<version>4.2.0</version>
-			<scope>provided</scope>
-		</dependency>
+			<groupId>org.cogchar</groupId>
+			<artifactId>ext.bundle.ops4j.pax.web</artifactId>
+			<version>${cogchar.version}</version>
+		</dependency>		
+		
+
 		
 	<!--  
 			
@@ -64,46 +68,23 @@ MNG-1412 / MNG-3111 introduced deterministic ordering of dependencies on the cla
 			<version>${project.version}</version>
 		
 		</dependency>	
-		<dependency>
-			<!-- This is a big honking hunk of code, but so far is working better than trying
-				to mix-and-match our own version of Jetty + PAX.
-			-->
-			<groupId>org.ops4j.pax.web</groupId>
-			<artifactId>pax-web-jetty-bundle</artifactId>
-			<version>1.1.2</version>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<!--  		http://team.ops4j.org/wiki/display/paxweb/WAR+Extender
-			"Once installed the war extender will watch over the bundles that get started / stopped. 
-			Once your war bundle gets deployed and started, the war extender will parse your web.xml 
-			and registers all elements with http service."
-			-->
-
-			<groupId>org.ops4j.pax.web</groupId>
-			<artifactId>pax-web-extender-war</artifactId>
-			<version>1.1.2</version>
-			<scope>runtime</scope>
-		</dependency>
-
-		<dependency>
-			<!--  We do not use JSP technology, but apparently pax-web-jsp is needed, to resolve:
-				org.ops4j.pax.web.pax-web-jetty-bundle imports (package=org.eclipse.jdt.core.compiler)
-			-->			
-			<groupId>org.ops4j.pax.web</groupId>
-			<artifactId>pax-web-jsp</artifactId>
-			<version>1.1.2</version>
-			<scope>runtime</scope>
-		</dependency>
 		
 		<dependency>
-			<!-- What exactly is this one doing for us? -->
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.core</artifactId>
+			<version>4.3.0</version>
+			<scope>provided</scope>
+		</dependency>
+		
+		<!-- Appears this one is not needed. 
+		<dependency>
+		
 			<groupId>org.ops4j.pax.web</groupId>
 			<artifactId>pax-web-extender-whiteboard</artifactId>
 			<version>1.1.2</version>
 			<scope>runtime</scope>
 		</dependency> 
-    		
+    	-->
 
 	</dependencies>
 
