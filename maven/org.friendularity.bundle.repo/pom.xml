@@ -36,7 +36,11 @@
 					those are allowed to come from the source-tree poms).
 			-->	
 	<dependencies>
-
+		<dependency>
+			<groupId>org.cogchar</groupId>
+			<artifactId>ext.bundle.ops4j.pax.web</artifactId>
+			<version>${cogchar.version}</version>
+		</dependency>
 				
 		<dependency>
 			<!-- Our Lift-based webapp, which we expect PAX services above to find and launch to HTTP for us -->
