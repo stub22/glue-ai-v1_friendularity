@@ -31,26 +31,29 @@
 
 
 		<!-- Regular "full" Lift-based webapp from Cogchar, which we expect PAX services above to find and 
-		launch to HTTP for us.
+		launch to HTTP for us.  
+		This webapp will always launch, but requires injected repo-bound config (e.g. from PUMA)  
+		in order to run properly.
+		-->	
 		<dependency>
 			<groupId>org.cogchar</groupId>
 			<artifactId>org.cogchar.bundle.bind.lift</artifactId>
 			<version>${cogchar.version}</version>
 		</dependency>
-		-->	
+
 		<!-- Above is the regular lift webapp, below is an experimental minimal lift webapp.
-		We cannot currently run two separate instances of lift, sharing the same classloader (from ext.bundle.lift),
-		because the singletons get confused (the last webapp initialized appears at both URLs).  So must disable the 
-		above o.c.b.bind.lift before enabling the below o.f.b.xweb.minlift.   
-		
+		These bundles each use an OSGi private-pkg of net.liftweb, thus giving them a separate set of singletons -
+		most notably :  LiftRules.
+		https://github.com/lift/framework/blob/master/web/webkit/src/main/scala/net/liftweb/http/LiftRules.scala
 		o.f.b.xweb.minlift - runs a set of technology feature tests demonstrating that Lift Webapp functions work for us.
 		-->
-			
+		
 		<dependency>
 			<groupId>org.friendularity</groupId>
 			<artifactId>org.friendularity.bundle.xweb.minlift</artifactId>
 			<version>${project.version}</version>
 		</dependency>	
+			
 		<!-- 
 		<dependency>
 			<groupId>org.cogchar</groupId>

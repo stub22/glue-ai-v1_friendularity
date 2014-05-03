@@ -13,7 +13,7 @@ public class Activator extends BundleActivatorBase {
 	// public static Dataset theMainConfigDataset;
 	
 	public void start(BundleContext context) throws Exception {
-		// It seems that Lift calls bootstrap.liftweb.Boot.boot before this -
+		// Lift calls bootstrap.liftweb.Boot.boot before this -
 		// as a result of classloading...triggered during PAX processing of web.xml?
 		forceLog4jConfig0();
 		doLaunch(context);

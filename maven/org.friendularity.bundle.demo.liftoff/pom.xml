@@ -21,11 +21,21 @@
 				its bundles - often before our Log4J bindings are set.
 		-->
 		<dependency>
-			<!-- Our Lift-based webapp, which we expect PAX services above to find and launch to HTTP for us -->
+			<!-- Our full Lift-based webapp, which we expect PAX services above to find and launch to HTTP for us -->
 			<groupId>org.cogchar</groupId>
 			<artifactId>org.cogchar.bundle.bind.lift</artifactId>
 			<version>${cogchar.version}</version>
 		</dependency>
+		<!-- 
+		o.f.b.xweb.minlift - runs a set of technology feature tests demonstrating that Lift Webapp functions work for us.
+		-->
+		
+		<dependency>
+			<groupId>org.friendularity</groupId>
+			<artifactId>org.friendularity.bundle.xweb.minlift</artifactId>
+			<version>${project.version}</version>
+		</dependency>			
+		
 		<dependency>
 			<!-- Our Joseki-based webapp, discovered by PAX services. -->
 			<groupId>org.cogchar</groupId>
