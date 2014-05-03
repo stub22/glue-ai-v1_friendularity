@@ -14,18 +14,12 @@
  *  limitations under the License.
  */
 
-package bootstrap.liftweb
+package org.friendularity.minlift.snippet
 
 /**
- * We want ths package to exist and be exported, for OSGi-wiring harmony
- * with current ext.liftweb expectations (which perhaps we should bag
- * in favor of requiring an explicit param in web.xml).
- * But we are not actually using this package from our custom web.xml,
- * in this bundle's webapp.
- *
  * @author Stu B. <www.texpedient.com>
  */
 
-class Dummy {
+class YowzaSnips {
 
 }

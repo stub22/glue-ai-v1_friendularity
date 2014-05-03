@@ -63,7 +63,30 @@
 							bootstrap.liftweb  
 							for compat with ImportPackage in ext.bundle.lift 
 							-->
-						</Export-Package>						
+						</Export-Package>
+						<!-- To try making our own private copy of the LiftWeb static/singleton state, we add: -->
+						<Private-Package>
+							net.liftweb.*,
+							toserve.*,							<!-- needed for "blueprint" jquery.js -->
+							i18n				<!-- lift-core_* properties files for localization.  -->
+						</Private-Package>
+						<!--   But then we must also do at least some of these import exclusions from ext.bundle :
+						-->
+						<Import-Package>
+							<!--
+							!nu.xom.*,
+							!org.mozilla.*,
+							-->
+							!ch.qos.logback.*, 
+							!org.specs2.*, 
+							!scala.tools.scalap.*, 
+							<!-- We do not want import links to this *old* version of httpclient.
+								We are using httpclient 4.3.1.   When we see "commons" in the name,
+								it is referring to httpclient version 3.* (or earlier).
+							-->
+							!org.apache.commons.httpclient.*,
+							*
+						</Import-Package>								
                     </instructions>
                 </configuration>
             </plugin>

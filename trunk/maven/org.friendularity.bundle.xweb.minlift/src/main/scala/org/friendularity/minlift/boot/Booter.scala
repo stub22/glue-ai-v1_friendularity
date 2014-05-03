@@ -16,12 +16,42 @@
 
 package org.friendularity.minlift.boot
 
-/**
+import net.liftweb.http.{Html5Properties, LiftRules, Req, LiftSession}
+import net.liftweb.sitemap.{Menu, SiteMap}
+
+/** Started with "from scratch" init code section here:    http://cookbook.liftweb.net/
+ *
  * @author Stu B. <www.texpedient.com>
  */
 
 class Booter extends net.liftweb.http.Bootable {
  override def boot {
 	 println("********************** minlift Booter.boot says..... Boo!")
+
+	 // 
+    // where to search for subdirs incl: snippet, 
+    LiftRules.addToPackages("org.friendularity.minlift")
+
+    // Build SiteMap
+    def sitemap(): SiteMap = SiteMap(
+      Menu.i("Home") / "index"
+    )
+
+    // Use HTML5 for rendering.
+	// Without this it appears we get XHTML which works as long as templates, etc. are well-formed.
+	// Lift 2.5 download template default.html contains a few unclosed tag errors (for "img" and "hr" tags).
+    LiftRules.htmlProperties.default.set((r: Req) =>
+      new Html5Properties(r.userAgent))
+ 
+		
+		// Also from Cookbok:
+		LiftSession.afterSessionCreate ::=
+ ( (s:LiftSession, r:Req) => println("Session created") )
+
+LiftSession.onBeginServicing ::=
+ ( (s:LiftSession, r:Req) => println("Processing request") )
+
+LiftSession.onShutdownSession ::=
+ ( (s:LiftSession) => println("Session going away") )
  }
 }
