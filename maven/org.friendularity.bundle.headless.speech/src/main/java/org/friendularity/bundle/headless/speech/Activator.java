@@ -8,6 +8,7 @@ import org.jflux.api.core.Adapter;
 import org.jflux.api.core.util.EmptyAdapter;
 import org.jflux.api.messaging.rk.services.ServiceCommand;
 import org.jflux.api.messaging.rk.services.ServiceError;
+import org.jflux.impl.messaging.rk.JMSAvroServiceFacade;
 import org.jflux.impl.messaging.rk.ServiceCommandRecord;
 import org.jflux.impl.messaging.rk.ServiceErrorRecord;
 import org.jflux.impl.messaging.rk.lifecycle.JMSAvroAsyncReceiverLifecycle;
@@ -117,13 +118,15 @@ public class Activator implements BundleActivator {
                 new JMSAvroMessageSenderLifecycle(
                         new EmptyAdapter(), 
                         ServiceCommand.class, ServiceCommandRecord.class, 
-                        commandSenderId, connectionId, commandDestId);
+                        commandSenderId, connectionId, commandDestId, 
+                        JMSAvroServiceFacade.COMMAND_MIME_TYPE);
         new OSGiComponent(context, commandSender, groupProps).start();
         
         JMSAvroMessageSenderLifecycle configSender = 
                 new JMSAvroMessageSenderLifecycle(
                         configMsgRecAdapter, msgClass, recClass, 
-                        configSenderId, connectionId, configDestId);
+                        configSenderId, connectionId, configDestId, 
+                        JMSAvroServiceFacade.CONFIG_MIME_TYPE);
         new OSGiComponent(context, configSender, groupProps).start();
         
         JMSAvroAsyncReceiverLifecycle errorReceiver = 
