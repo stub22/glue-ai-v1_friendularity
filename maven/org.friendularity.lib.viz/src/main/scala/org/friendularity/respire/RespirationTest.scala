@@ -48,6 +48,7 @@ object RespirationTest extends VarargsLogging {
 		org.apache.log4j.BasicConfigurator.configure();
 		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.ALL);
 		
+
 		initReposLoadMathEval();  // Chains to call testGoodySpace
 		
 		// Optional: Wander off into a long looping computation...
@@ -55,6 +56,7 @@ object RespirationTest extends VarargsLogging {
 		testDoubleVecFetch();
 	}
 	
+
 	def initReposLoadMathEval() : SweetDynaSpace = {
 		// Note this calls testGoodySpace at the end
 		getLogger().info("Why hello there!  Yes, respiration is the order of the hour...")
@@ -110,4 +112,6 @@ object RespirationTest extends VarargsLogging {
 			info2("Loop # {} produced {}", idxObject, lastDvec.deep)
 		}
 	}
+
+	
 }
