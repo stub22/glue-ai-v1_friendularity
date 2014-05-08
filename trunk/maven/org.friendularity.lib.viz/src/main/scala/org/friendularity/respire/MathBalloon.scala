@@ -19,6 +19,7 @@ package org.friendularity.respire
 import  org.cogchar.render.trial.{TrialBalloon}
 import org.appdapter.core.log.BasicDebugger;
 
+
 object MathBalloon extends BasicDebugger {
 	def main(args: Array[String]) : Unit = {
 
@@ -26,7 +27,9 @@ object MathBalloon extends BasicDebugger {
 		// However, when a log4j.properties file is present, these commands should not be used.
 		org.apache.log4j.BasicConfigurator.configure();
 		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.ALL);
-
+		import org.appdapter.gui.demo.DemoBrowser;
+		DemoBrowser.ensureRunning(true, "no-args");
+		DemoBrowser.show();
 
 		getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^  main() starting StructTest.testStructs()");		
 		org.friendularity.struct.StructTest.testStructs;
@@ -46,6 +49,9 @@ object MathBalloon extends BasicDebugger {
 		getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^  main() constructing a TrialBalloon OpenGL+MIDI app");
 		val bbApp : BigBalloon = new BigBalloon();
 		
+				
+		DemoBrowser.showObject("mathBalloon-bbApp", bbApp, false, false); // true, true);
+		
 		getLogger().info("calling tbApp.initMidi()");
 		// Initialize available MIDI devices and sequence library.
 		bbApp.initMidi();
@@ -58,7 +64,7 @@ object MathBalloon extends BasicDebugger {
 		bbApp.attachDeepDynaSpace(sweetDS)		
 		//  and sweetDS is getting render-thread callbacks.
 		// Goodies are being created and displayed on that thread.
-		
+		DemoBrowser.showObject("mathBalloon-sweetDS", sweetDS, true, true); 
 		getLogger().info("main() calling tbApp.playMidiOutput()");
 		bbApp.playMidiOutput();
 		

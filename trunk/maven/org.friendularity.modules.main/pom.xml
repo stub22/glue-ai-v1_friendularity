@@ -51,6 +51,7 @@
         <module>../org.friendularity.bundle.bento</module>
 		
 		<module>../org.friendularity.bundle.xweb.minlift</module>
+		<module>../org.friendularity.bundle.xweb.fustdb</module>
 
         <module>../org.friendularity.bundle.demoserv.semrepo</module>
         <module>../org.friendularity.bundle.webapp.semrepo</module>

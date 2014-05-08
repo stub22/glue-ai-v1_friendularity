@@ -39,6 +39,12 @@
 			<groupId>org.cogchar</groupId>
 			<artifactId>org.cogchar.bundle.bind.lift</artifactId>
 			<version>${cogchar.version}</version>
+		 <exclusions>
+		  <exclusion>
+		   <artifactId>javax.servlet</artifactId>
+		   <groupId>org.apache.felix</groupId>
+		  </exclusion>
+		 </exclusions>
 		</dependency>
 
 		<!-- Above is the regular lift webapp, below is an experimental minimal lift webapp.
@@ -53,7 +59,12 @@
 			<artifactId>org.friendularity.bundle.xweb.minlift</artifactId>
 			<version>${project.version}</version>
 		</dependency>	
-			
+
+		<dependency>
+			<groupId>org.friendularity</groupId>
+			<artifactId>org.friendularity.bundle.xweb.fustdb</artifactId>
+			<version>${project.version}</version>
+		</dependency>							
 		<!-- 
 		<dependency>
 			<groupId>org.cogchar</groupId>

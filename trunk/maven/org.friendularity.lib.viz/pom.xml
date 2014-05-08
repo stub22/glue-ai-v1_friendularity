@@ -19,7 +19,12 @@
 			<groupId>org.cogchar</groupId>
 			<artifactId>org.cogchar.bundle.render.opengl</artifactId>
 			<version>${cogchar.version}</version>
-		</dependency>		
+		</dependency>
+		<dependency>
+            <groupId>org.appdapter</groupId>
+            <artifactId>org.appdapter.bundle.gui</artifactId>
+            <version>${appdapter.version}</version>
+        </dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
