@@ -68,7 +68,7 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 	private	boolean		myFlag_connectObsoleteNetworkVision = false;  
 	
 
-	private	boolean		myFlag_connectSwingDebugGUI = false;
+	private	boolean		myFlag_connectSwingDebugGUI = true;
 	private boolean		myFlag_monitorLifecycles = true;
 	
 	// private	CCMIO_VWorldHelper					myVWorldHelper;
