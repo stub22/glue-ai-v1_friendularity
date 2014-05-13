@@ -60,11 +60,13 @@
 			<version>${project.version}</version>
 		</dependency>	
 
+		<!-- fustdb is not working yet
 		<dependency>
 			<groupId>org.friendularity</groupId>
 			<artifactId>org.friendularity.bundle.xweb.fustdb</artifactId>
 			<version>${project.version}</version>
-		</dependency>							
+		</dependency>				
+		-->			
 		<!-- 
 		<dependency>
 			<groupId>org.cogchar</groupId>
