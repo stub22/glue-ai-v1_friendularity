@@ -1,14 +1,14 @@
 package org.friendularity.test.sensors.r50;
 
 import org.jflux.api.core.Listener;
-import org.mechio.api.sensor.DeviceBoolEvent;
 import org.mechio.api.sensor.DeviceReadPeriodEvent;
 import org.mechio.api.sensor.FilteredVector3Event;
-import org.mechio.api.sensor.Vector3Event;
 import org.mechio.api.sensor.gpio.RemoteGpioServiceClient;
 import org.mechio.api.sensor.imu.RemoteAccelerometerServiceClient;
 import org.mechio.api.sensor.imu.RemoteCompassServiceClient;
 import org.mechio.api.sensor.imu.RemoteGyroscopeServiceClient;
+import org.mechio.api.sensor.packet.channel.ChannelBoolEvent;
+import org.mechio.api.sensor.packet.num.Double3Event;
 import org.mechio.impl.sensor.AccelerometerConfigRecord;
 import org.mechio.impl.sensor.CompassConfigRecord;
 import org.mechio.impl.sensor.DeviceReadPeriodRecord;
@@ -101,9 +101,9 @@ public class App {
         compass.addListener(new TestCompassListener());
     }
     
-    private static class TestGpioListener implements Listener<DeviceBoolEvent> {
+    private static class TestGpioListener implements Listener<ChannelBoolEvent> {
         @Override
-        public void handleEvent(DeviceBoolEvent t) {
+        public void handleEvent(ChannelBoolEvent t) {
             System.out.println(t.getChannelId() + ": " +
                     (t.getBoolValue() ? "on" : "off"));
         }
@@ -113,8 +113,8 @@ public class App {
         implements Listener<FilteredVector3Event> {
         @Override
         public void handleEvent(FilteredVector3Event t) {
-            Vector3Event v = t.getFilteredVector();
-            Vector3Event r = t.getRawVector();
+            Double3Event v = t.getFilteredVector();
+            Double3Event r = t.getRawVector();
             System.out.println("Accelerometer (f): " + v.getX() + ", " +
                     v.getY() + ", " + v.getZ());
             System.out.println("Accelerometer (r): " + r.getX() + ", " +
@@ -126,8 +126,8 @@ public class App {
         implements Listener<FilteredVector3Event> {
         @Override
         public void handleEvent(FilteredVector3Event t) {
-            Vector3Event v = t.getFilteredVector();
-            Vector3Event r = t.getRawVector();
+            Double3Event v = t.getFilteredVector();
+            Double3Event r = t.getRawVector();
             System.out.println("Gyroscope (f): " + v.getX() + ", " +
                     v.getY() + ", " + v.getZ());
             System.out.println("Gyroscope (r): " + r.getX() + ", " +
@@ -139,8 +139,8 @@ public class App {
         implements Listener<FilteredVector3Event> {
         @Override
         public void handleEvent(FilteredVector3Event t) {
-            Vector3Event v = t.getFilteredVector();
-            Vector3Event r = t.getRawVector();
+            Double3Event v = t.getFilteredVector();
+            Double3Event r = t.getRawVector();
             System.out.println("Compass (f): " + v.getX() + ", " +
                     v.getY() + ", " + v.getZ());
             System.out.println("Compass (r): " + r.getX() + ", " +
