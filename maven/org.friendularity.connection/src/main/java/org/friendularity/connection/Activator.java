@@ -6,10 +6,10 @@ import org.appdapter.core.boot.ClassLoaderUtils;
 // import org.cogchar.outer.behav.demo.RepoConnector;
 import org.osgi.framework.BundleContext;
 
-// import org.appdapter.core.matdat.*;
+// import org.appdapter.core.repo.*;
 
 import org.appdapter.core.matdat.OnlineSheetRepoSpec;
-import org.appdapter.core.matdat.EnhancedRepoClient;
+import org.appdapter.core.repo.EnhancedRepoClient;
 import org.appdapter.core.store.Repo;
 import org.appdapter.osgi.core.BundleActivatorBase;
 import org.jflux.spec.services.RegisterWiring;

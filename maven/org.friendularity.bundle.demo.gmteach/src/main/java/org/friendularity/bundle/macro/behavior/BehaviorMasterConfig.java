@@ -6,13 +6,11 @@ package org.friendularity.bundle.macro.behavior;
 
 import java.util.List;
 
-import org.appdapter.core.matdat.OfflineXlsSheetRepoSpec;
+import org.appdapter.core.repo.OfflineXlsSheetRepoSpec;
 import org.appdapter.core.matdat.OnlineSheetRepoSpec;
-import org.appdapter.core.matdat.URLRepoSpec;
+import org.appdapter.core.repo.URLRepoSpec;
 import org.cogchar.platform.util.ClassLoaderUtils;
 import org.osgi.framework.BundleContext;
-// Boo to promiscuious imports.  Don't do this.
-// import org.appdapter.core.matdat.*;
 
 /**
  *

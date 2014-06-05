@@ -22,7 +22,7 @@ import org.cogchar.platform.util.ClassLoaderUtils;
 
 // The new two promiscuous imports allows running of both cogchar-1.0.6.2 and cogchar-1.0.7.0
 import org.cogchar.blob.emit.*;
-import org.appdapter.core.matdat.*;
+import org.appdapter.core.repo.*;
 
 
 /**

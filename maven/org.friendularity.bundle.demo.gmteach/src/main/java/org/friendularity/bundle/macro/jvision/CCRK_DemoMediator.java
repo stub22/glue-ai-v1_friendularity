@@ -1,7 +1,7 @@
 package org.friendularity.bundle.macro.jvision;
 
 import org.appdapter.core.matdat.OnlineSheetRepoSpec;
-import org.appdapter.core.matdat.RepoSpec;
+import org.appdapter.core.repo.RepoSpec;
 import org.cogchar.app.puma.boot.PumaAppContext;
 import org.cogchar.app.puma.config.PumaContextMediator;
 

@@ -8,7 +8,7 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
 import org.appdapter.core.matdat.OnlineSheetRepoSpec;
-import org.appdapter.core.matdat.EnhancedRepoClient;
+import org.appdapter.core.repo.EnhancedRepoClient;
 import org.appdapter.core.store.Repo;
 import org.cogchar.impl.scene.read.BehavMasterConfigTest;
 
