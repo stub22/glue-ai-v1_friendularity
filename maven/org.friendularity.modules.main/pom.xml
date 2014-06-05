@@ -61,7 +61,7 @@
         
         <module>../org.friendularity.bundle.discovery</module>
 
-		<module>../org.friendularity.demo.egosphere</module>
+<!--		<module>../org.friendularity.demo.egosphere</module>-->
 
 
 		<module>../org.friendularity.demo.jme3.maven</module>
