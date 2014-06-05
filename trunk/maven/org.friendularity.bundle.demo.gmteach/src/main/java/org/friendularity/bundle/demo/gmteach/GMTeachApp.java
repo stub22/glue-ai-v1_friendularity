@@ -22,8 +22,8 @@ import javax.swing.UIManager;
 
 import org.apache.log4j.PropertyConfigurator;
 import org.appdapter.core.log.Debuggable;
-import org.appdapter.core.matdat.EnhancedRepoClient;
-import org.appdapter.core.matdat.RepoSpec;
+import org.appdapter.core.repo.EnhancedRepoClient;
+import org.appdapter.core.repo.RepoSpec;
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
 import org.appdapter.core.store.Repo;

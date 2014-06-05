@@ -4,7 +4,7 @@ import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
 import org.appdapter.osgi.core.BundleActivatorBase;
 import org.appdapter.core.matdat.OnlineSheetRepoSpec;
-import org.appdapter.core.matdat.RepoSpec;
+import org.appdapter.core.repo.RepoSpec;
 import org.cogchar.app.puma.boot.PumaAppContext;
 import org.cogchar.app.puma.web.PumaWebMapper;
 import org.cogchar.app.puma.config.PumaContextMediator;

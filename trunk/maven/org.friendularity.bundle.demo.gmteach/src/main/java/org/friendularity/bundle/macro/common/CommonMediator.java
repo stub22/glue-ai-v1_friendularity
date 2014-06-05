@@ -8,8 +8,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-import org.appdapter.core.matdat.RepoSpec;
-import org.appdapter.core.matdat.URLRepoSpec;
+import org.appdapter.core.repo.RepoSpec;
+import org.appdapter.core.repo.URLRepoSpec;
 import org.cogchar.app.puma.boot.PumaAppContext;
 import org.cogchar.app.puma.config.PumaContextMediator;
 import org.cogchar.app.puma.registry.ResourceFileCategory;

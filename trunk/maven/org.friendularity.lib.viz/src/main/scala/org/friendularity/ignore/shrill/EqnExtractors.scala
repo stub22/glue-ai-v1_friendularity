@@ -15,24 +15,22 @@
  */
 
 package org.friendularity.ignore.shrill
-import org.appdapter.core.name.{Ident, FreeIdent}
-import org.appdapter.core.item.{Item}
-import org.appdapter.core.store.{Repo, InitialBinding, ModelClient }
-import org.appdapter.help.repo.{RepoClient, RepoClientImpl, InitialBindingImpl} 
-import org.appdapter.impl.store.{FancyRepo};
-import org.appdapter.core.matdat.{SheetRepo, OnlineSheetRepoSpec}
-import com.hp.hpl.jena.query.{QuerySolution} // Query, QueryFactory, QueryExecution, QueryExecutionFactory, , QuerySolutionMap, Syntax};
-import com.hp.hpl.jena.rdf.model.{Model}
-import org.appdapter.core.log.BasicDebugger;
 
-import org.appdapter.impl.store.{ModelClientImpl, ResourceResolver};
-
-import org.cogchar.bind.symja.{MathGate, MathSpaceFactory}
-import org.cogchar.api.space.{TextVal}
-
-import org.friendularity.struct.{MathBlock}
-
+import org.appdapter.core.item.Item
+import org.appdapter.core.log.BasicDebugger
+import org.appdapter.core.matdat.OnlineSheetRepoSpec
+import org.appdapter.core.name.Ident
+import org.appdapter.core.store.{ModelClient, Repo}
+import org.appdapter.help.repo.{InitialBindingImpl, RepoClient, RepoClientImpl}
+import org.appdapter.impl.store.{FancyRepo, ModelClientImpl}
+import org.cogchar.api.space.TextVal
+import org.cogchar.bind.symja.MathGate
 import org.friendularity.respire.VarargsLogging
+import org.friendularity.struct.MathBlock
+
+import com.hp.hpl.jena.rdf.model.Model
+
+
 
 /** Here we make a shallow binding to presumed ontology for app objects that contain equations in typical patterns for:
  *		rigid bodies,

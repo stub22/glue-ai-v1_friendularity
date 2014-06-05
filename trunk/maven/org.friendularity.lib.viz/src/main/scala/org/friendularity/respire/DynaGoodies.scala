@@ -15,21 +15,18 @@
  */
 
 package org.friendularity.respire
-import org.appdapter.core.name.{Ident, FreeIdent}
-import org.appdapter.core.item.{Item}
-import org.appdapter.core.store.{Repo, InitialBinding, ModelClient }
-import org.appdapter.help.repo.{RepoClient, RepoClientImpl, InitialBindingImpl} 
-import org.appdapter.impl.store.{FancyRepo};
-import org.appdapter.core.matdat.{SheetRepo, OnlineSheetRepoSpec}
-import com.hp.hpl.jena.query.{QuerySolution} // Query, QueryFactory, QueryExecution, QueryExecutionFactory, , QuerySolutionMap, Syntax};
-import com.hp.hpl.jena.rdf.model.{Model}
-import org.appdapter.core.log.BasicDebugger;
 
-import org.appdapter.impl.store.{ModelClientImpl, ResourceResolver};
+import org.appdapter.core.item.Item
+import org.appdapter.core.log.BasicDebugger
+import org.appdapter.core.matdat.OnlineSheetRepoSpec
+import org.appdapter.core.name.Ident
+import org.appdapter.core.store.ModelClient
+import org.appdapter.help.repo.{InitialBindingImpl, RepoClient, RepoClientImpl}
+import org.appdapter.impl.store.{FancyRepo, ModelClientImpl}
+import org.cogchar.render.goody.dynamic.{DynaShapeGoody, DynamicGoodySpace}
+import org.cogchar.render.sys.registry.RenderRegistryClient
 
-import org.cogchar.render.goody.dynamic.{DynamicGoody, DynamicGoodySpace, DynaShapeGoody}
 
-import org.cogchar.render.sys.registry.RenderRegistryClient;
 
 abstract class SweetDynaGoody(goodyIdxWithinSpace : Int) extends DynaShapeGoody(goodyIdxWithinSpace : Int) {
 
