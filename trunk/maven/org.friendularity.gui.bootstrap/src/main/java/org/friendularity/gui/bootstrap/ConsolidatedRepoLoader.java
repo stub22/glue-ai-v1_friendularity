@@ -18,7 +18,7 @@ package org.friendularity.gui.bootstrap;
 import java.util.List;
 import org.appdapter.core.boot.ClassLoaderUtils;
 import org.appdapter.core.repo.EnhancedRepoClient;
-import org.appdapter.core.repo.OfflineXlsSheetRepoSpec;
+import org.appdapter.core.matdat.OfflineXlsSheetRepoSpec;
 import org.appdapter.core.matdat.OnlineSheetRepoSpec;
 import org.appdapter.help.repo.RepoClient;
 import org.cogchar.outer.behav.demo.RepoConnector;
