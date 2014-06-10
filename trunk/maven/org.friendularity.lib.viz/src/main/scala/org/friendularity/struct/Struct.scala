@@ -29,6 +29,8 @@ import org.friendularity.api.struct.Maker;
 // Those issues are addressed by subtypes of this Trait.
 // This approach implies that all exposed fields are readable/writable using type FieldVal.
 // This policy is somewhat restrictive.  Alternatives require an additional layer of indirection.
+// 
+// Note that as of 2014-06-01, DataValue is still just an unused marker trait, should perhaps be an annotation instead of trait
 trait Struct[FieldKey, FieldVal] extends DataValue {
 
 	def writeField(fk : FieldKey, dVal : FieldVal)
