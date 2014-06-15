@@ -14,7 +14,9 @@
  *  limitations under the License.
  */
 
-package org.friendularity.respire
+package org.friendularity.ignore.nexjen
+
+import org.friendularity.respire.VarargsLogging
 
 /**
  * @author Stu B. <www.texpedient.com>
