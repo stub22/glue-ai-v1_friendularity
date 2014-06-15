@@ -37,9 +37,7 @@
 		<module>../org.friendularity.bundle.demo.ccmio</module>
 		<module>../org.friendularity.bundle.demo.convo.dictation</module>
 		<module>../org.friendularity.bundle.demo.convo.response</module>
-		<module>../org.friendularity.bundle.demo.liftoff</module>
         <module>../org.friendularity.bundle.repo</module>
-		<module>../org.friendularity.bundle.lifter</module>
         <module>../org.friendularity.bundle.messagemonitor</module>
         <module>../org.friendularity.bundle.messageplayer</module>
         <module>../org.friendularity.bundle.test.facedetect.r50</module>
@@ -49,6 +47,9 @@
 		<module>../org.friendularity.bundle.jvision</module>
 		<module>../org.friendularity.bundle.blockflow</module>
         <module>../org.friendularity.bundle.bento</module>
+
+		<module>../org.friendularity.bundle.launcher.oglweb</module>
+		<module>../org.friendularity.bundle.launcher.webonly</module>
 		
 		<module>../org.friendularity.bundle.xweb.minlift</module>
 		<module>../org.friendularity.bundle.xweb.fustdb</module>
