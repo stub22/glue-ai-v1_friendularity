@@ -9,7 +9,7 @@
 		<relativePath>../org.friendularity.modules.main/pom.xml</relativePath>
 	</parent>	
 	
-	<artifactId>org.friendularity.bundle.lifter</artifactId>	
+	<artifactId>org.friendularity.bundle.launcher.webonly</artifactId>	
 
 	<packaging>bundle</packaging>
 

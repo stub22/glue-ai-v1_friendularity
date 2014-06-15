@@ -9,7 +9,7 @@
 		<relativePath>../org.friendularity.modules.main/pom.xml</relativePath>
 	</parent>		
 
-	<artifactId>org.friendularity.bundle.demo.liftoff</artifactId>
+	<artifactId>org.friendularity.bundle.launcher.oglweb</artifactId>
 	<packaging>bundle</packaging>
 
 	<name>${project.artifactId} - OSGi</name>
