@@ -4,7 +4,7 @@
 	<parent>
         <groupId>org.friendularity</groupId>
 		<artifactId>org.friendularity.modules.main</artifactId>
-		<version>1.0.3-SNAPSHOT</version>
+		<version>1.0.3</version>
 		<relativePath>../org.friendularity.modules.main/pom.xml</relativePath>
     </parent>
 
