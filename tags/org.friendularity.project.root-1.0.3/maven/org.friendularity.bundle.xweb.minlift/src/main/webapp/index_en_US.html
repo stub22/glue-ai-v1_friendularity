@@ -1,0 +1,157 @@
+<div class="lift:surround?with=default;at=content" style="height:100%; background-color:#00668e;">
+	<h1>Herro Dere!</h1>
+	<span class="lift:Loc.rickle">This "rickle" will be replaced if possible</span> 
+	<span class="lift:Loc.hoodle">Replace with lift:Loc.hoodle</span> 
+<br/>
+This webapp will not work very well if your computer's locale is not set to en_US.
+<br/>
+	<span>
+This content comes from index_en_US.html, which is the US-English version of index.html, and is
+the *first* file that Lift attempts to access in order to serve the URL "/index.html".
+<br/>
+It refers or depends on a number of other files.  Here are the ones loaded to serve the initial HTTP request.
+	</span>
+	<ul>
+		<li>_resources_index_en_US.html = page-specific + locale-specific "resources" file (really XML), see:  _____ </li>
+		<li>_resources_en_US.html = app-wide + locale-specific "resources" (really XML) </li>
+		<li>/templates-hidden/default_en_US.html = template invoked via:  lift:surround?with=default;at=content </li>
+	</ul>
+
+That's enough to deliver the HTML, and so after these resources are found, on the server we see:
+     [java] 9232    INFO [qtp303575666-14 - /friendu_xweb_ml/] net.liftweb.util.TimeHelpers (Logging.scala:195) 
+	 info - Service request (GET) /friendu_xweb_ml/ returned 200, took 1386 Milliseconds
+	 
+<p>but now the index.html content delivered to the browser, contains references to these .css entities from "classpath",
+	which appear to be resolved directly by Lift using the "toserve" package hierarchy:
+	
+		
+	http://stackoverflow.com/questions/12573783/scala-lift-reading-a-file-from-resources-toserve
+	
+	
+<br/>/friendu_xweb_ml/classpath/blueprint/screen.css  --  getResource - found resource: bundle://18.0:0/toserve/blueprint/screen.css
+<br/>/friendu_xweb_ml/classpath/blueprint/blueprint.css
+<br/> href="/friendu_xweb_ml/classpath/blueprint/plugins/fancy-type/screen.css"
+<br/> and these .js files:
+<br/> src="/friendu_xweb_ml/classpath/jquery.js"   - found resource: bundle://18.0:0/toserve/jquery-1.3.2.js
+<br/> src="/friendu_xweb_ml/classpath/json.js"   - Resource found as url [bundle://18.0:0/toserve/json2-min.js]
+</p>
+
+<p>
+	src="/friendu_xweb_ml/images/ajax-loader.gif" 
+	 "script" src="/friendu_xweb_ml/ajax_request/liftAjax.js" type="text/javascript"
+</p>
+
+
+The files Lift is accessing can be seen by activating the following log level
+for PAX-WEb, which shows what PAXWeb ServletContext objects (e.g.
+org.ops4j.pax.web.service.jetty.internal.HttpServiceContext,
+org.ops4j.pax.web.extender.war.internal.WebAppWebContainerContext,
+)
+are doing as they attempt to resolve resources requested by LiftWeb.
+
+
+http://docs.oracle.com/javaee/6/api/javax/servlet/ServletContext.html#getResource(java.lang.String)
+
+
+These lookups pass through:
+
+net/liftweb/http/provider/servlet/HTTPServletContext.getResource()
+
+That class is a wrapper for 
+http://docs.oracle.com/javaee/6/api/javax/servlet/ServletContext.html#getResource(java.lang.String)
+
+as shown by this decl:
+class HTTPServletContext(val ctx: ServletContext) extends HTTPContext ...
+(see:   https://github.com/lift/framework/blob/master/web/webkit/src/main/scala/net/liftweb/http/provider/servlet/HTTPServletContext.scala)
+
+
+...and is generally invoked from LiftRules.getResource
+
+http://stackoverflow.com/questions/7546887/how-to-read-a-file-from-a-lift-webapp
+
+http://stackoverflow.com/questions/12573783/scala-lift-reading-a-file-from-resources-toserve
+
+https://www.assembla.com/wiki/show/liftweb/Properties
+
+http://www.eltimn.com/blog/002-javascript-apps-with-lift-best-practices
+
+https://www.assembla.com/spaces/liftweb/wiki/When_the_container_handles_requests_before_Lift
+
+http://scala-programming-language.1934581.n4.nabble.com/Liftajax-js-added-to-pop-up-dialogs-td1976218.html
+
+https://github.com/lift/lift/blob/master/framework/lift-base/lift-webkit/src/main/scala/net/liftweb/http/LiftServlet.scala
+ toReturn()   calls 
+ 
+https://github.com/lift/framework/tree/master/web/webkit/src/main/scala/net/liftweb/http/js
+
+Default:
+/**
+   * Returns the Ajax script as a JavaScript response
+   */
+  @volatile var serveAjaxScript: (LiftSession, Req) => Box[LiftResponse] =
+  (liftSession, requestState) => {
+    val modTime = ajaxScriptUpdateTime(liftSession)
+
+    requestState.testFor304(modTime) or
+            Full(JavaScriptResponse(renderAjaxScript(liftSession),
+              List("Last-Modified" -> toInternetDate(modTime),
+                "Expires" -> toInternetDate(modTime + 10.minutes)),
+              Nil, 200))
+  }
+/**
+   * Returns the JavaScript that manages Ajax requests.
+   */
+  @volatile var renderAjaxScript: LiftSession => JsCmd = session => ScriptRenderer.ajaxScript
+
+https://groups.google.com/forum/#!topic/liftweb/Je7yX6R76LQ
+//Provide own implementation of liftajax.js
+LiftRules.renderAjaxScript = (session : LiftSession) => MyScriptRenderer.ajaxScript
+
+https://github.com/dhobi/liftajax/blob/master/src/main/scala/bootstrap/liftweb/Boot.scala
+
+
+/**
+   * Returns the Ajax script as a JavaScript response
+   */
+  @volatile var serveAjaxScript: (LiftSession, Req) => Box[LiftResponse] =
+  (liftSession, requestState) => {
+    val modTime = ajaxScriptUpdateTime(liftSession)
+
+    requestState.testFor304(modTime) or
+            Full(JavaScriptResponse(renderAjaxScript(liftSession),
+              List("Last-Modified" -> toInternetDate(modTime),
+                "Expires" -> toInternetDate(modTime + 10.minutes)),
+              Nil, 200))
+  }
+
+
+https://groups.google.com/forum/#!topic/liftweb/6ZdwukjWdtQ
+
+"
+I've moved the JavaScript for Comet and Ajax to separately loaded JS files rather than putting them on the page.
+
+LiftRules.autoIncludeComet allows you to determine if the Comet stuff will be automatically included
+LiftRules.autoIncludeAjax allows you to determine if the Ajax stuff will be auto-included
+
+LiftRules.renderCometScript and LiftRules.renderAjaxScript render the contents of the Script files
+
+LiftRules.renderCometPageContents renders the page-specific stuff for Comet (the GUIDs and versions)
+
+LiftRules.ajaxScriptUpdateTime and LiftRules.cometScriptUpdateTime are used to calculate if a new script is needed or if you can return a 304
+
+Using the above features, one can use all, some, or none of Lift's Ajax and Comet stuff.
+"
+
+
+<pre>log4j.logger.org.ops4j=ALL</pre>
+<br/>
+
+Lift OSGi support removed in 2.5:
+
+http://osdir.com/ml/liftweb/2013-01/msg00779.html
+
+
+	<!--
+		<lift:embed what="loading" />
+	-->
+</div>
