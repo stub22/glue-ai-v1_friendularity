@@ -29,18 +29,18 @@ public class Activator extends BundleActivatorBase {
 		// TODO add deactivation code here
 	}
 
-	public void initWebapps(BundleContext context) {
+	public void initWebapps(BundleContext bundleCtx) {
 		// Since we are not running PumaBooter, we must at least start the query service to get sheet-based config going
 		PumaContextMediator mediator = new RepoPumaMediator();
 		String roleShortName = "pumaCtx_FrienduRepo";
 		Ident ctxID = new FreeIdent(NamespaceDir.RKRT_NS_PREFIX + roleShortName, roleShortName);		
-		PumaAppContext pac = new PumaAppContext(context, mediator, ctxID);
+		PumaAppContext pac = new PumaAppContext(bundleCtx, mediator, ctxID);
 		pac.startRepositoryConfigServices();
 		// ... and set our app context with PumaWebMapper, so lift can issue repo update requests
 		PumaWebMapper pwm = pac.getOrMakeWebMapper();	
-		pwm.connectLiftInterface(context);
+		pwm.connectAvailableCommands(bundleCtx);
 		// Tell the lifter lifecycle to start, once its OSGi dependencies are satisfied
-		pwm.startLifterLifecycle(context);
+		pwm.startLifterLifecycle(bundleCtx);
 		setupJosekiSparqlAccess(pwm);
 	}
 	protected void setupJosekiSparqlAccess(PumaWebMapper pwm) { 
