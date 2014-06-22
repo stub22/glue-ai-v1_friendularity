@@ -47,7 +47,7 @@ object TopicalRouterTest extends VarargsLogging {
 		info0("This conversation is FINISHED.")
 	}
 }
-import javax.jms.{ConnectionFactory, Session, Destination}
+import javax.jms.{ConnectionFactory, Connection, Session, Destination}
 import javax.jms.{MessageConsumer, MessageProducer}
 import javax.jms.{Message, BytesMessage, TextMessage}
 import javax.jms.JMSException;
@@ -55,51 +55,125 @@ import javax.jms.JMSException;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import java.util.Properties;
+
+object QPid_010_Names {
+	// These values are taken from the QPid 0.10 "hello.properties"
+	// Later versions of QPid use different values.
+
+	val qpConnFactoryKey_tail = "qpidConnectionfactory";
+	val qpConnFactoryKey_full = "connectionfactory" + "." + qpConnFactoryKey_tail;
+	val qpConnFactoryURL = "amqp://guest:guest@clientid/test?brokerlist='tcp://localhost:5672'"
+	val jndiNamingFactory_key = "java.naming.factory.initial"
+	val jndiNamingFactory_val =  "org.apache.qpid.jndi.PropertiesFileInitialContextFactory"
+	val destName_key_prefix =  "destination";
+
+	val topicExchangeDestName_value = "amq.topic";		
+			//// Changing the above from amq.topic yields, with QPid client 0.10 running against broker 0.12
+			//	The name 'niceTopic001' supplied in the address doesn't resolve to an exchange or a queue	
+			/*
+			 * 
+	Caused by: org.apache.qpid.AMQException: The name 'niceTopic001' supplied in the address doesn't resolve to an exchange or a queue
+	at org.apache.qpid.client.AMQSession_0_10.handleAddressBasedDestination(AMQSession_0_10.java:1239)
+	at org.apache.qpid.client.BasicMessageProducer_0_10.declareDestination(BasicMessageProducer_0_10.java:86)
+			 */
+
+}
+
+class QPid_010_NameManager extends VarargsLogging {
+	def makeJndiPropsForTopicSetup(topicExchangeNames : List[String]) : Properties = {
+		// properties.load(this.getClass().getResourceAsStream("hello.properties"));
+		val jndiProps = new Properties();
+		jndiProps.put(QPid_010_Names.jndiNamingFactory_key, QPid_010_Names.jndiNamingFactory_val)
+		// connectionfactory.[jndiname] = [ConnectionURL]
+		jndiProps.put(QPid_010_Names.qpConnFactoryKey_full, QPid_010_Names.qpConnFactoryURL); 
+		// "connectionfactory.qpidConnectionfactory", "amqp://guest:guest@clientid/test?brokerlist='tcp://localhost:5672'")
+		for (topicExchName <- topicExchangeNames) {
+			// Register an AMQP destination in JNDI
+			// destination.[jniName] = [Address Format]
+			val destName_full = QPid_010_Names.destName_key_prefix + "." + topicExchName
+			jndiProps.put(destName_full, QPid_010_Names.topicExchangeDestName_value)
+		}
+		jndiProps
+	}
+}
+class QPidConnector(val myJndiProps : Properties) extends VarargsLogging  {
+	// The supplied jndiProps are used to define the available destinations, so this current impl
+	// does not support dynamically adding topics after the QPidConnector is created.
+
+	val myJndiCtx = new InitialContext(myJndiProps);
+	
+	val myJmsConn : javax.jms.Connection = makeConn();
+	def makeConn() : javax.jms.Connection = {
+		info0("================= Creating InitialContext")
+		
+		val connFactoryKeyTail = QPid_010_Names.qpConnFactoryKey_tail
+		info1("================= Looking up ConnFactory at key_tail: {}", connFactoryKeyTail)
+		val jmsConnFactory = myJndiCtx.lookup(connFactoryKeyTail).asInstanceOf[ConnectionFactory];
+		info0("================= Creating Connection")
+		val jmsConn  = jmsConnFactory.createConnection();
+		jmsConn
+	}
+	def startConn() = {
+		info1("================= Starting Connection : {}", myJmsConn)
+		myJmsConn.start();		
+	}
+
+	def makeSessionAutoAck() = {
+		// Creates a session. This session is not transactional (transactions='false'), 
+		// and messages are automatically acknowledged.
+		// QPid HelloWorld uses AUTO_ACKNOWLEDGE,  // R25 uses   CLIENT_ACKNOWLEDGE
+		info0("================= Creating Session")
+		myJmsConn.createSession(false, Session.AUTO_ACKNOWLEDGE);
+	}
+	
+	def makeDestination(destNameTail : String)  = {
+		// Creates a destination for the topic exchange, so senders and receivers can use it.
+		info0("================= Creating Destination")
+		myJndiCtx.lookup(destNameTail).asInstanceOf[Destination];
+	}
+	
+	def close() = {
+		info0("================= Closing JMS Connection : {}")
+		myJmsConn.close();
+		info0("================= Closing JNDI context")
+		myJndiCtx.close();
+	}
+}
 class QpidHelloWorld extends VarargsLogging {
 	def chopWood() = {
 		try {
-			val jndiProps = new Properties();
-			// properties.load(this.getClass().getResourceAsStream("hello.properties"));
-			// These values are taken from the QPid 0.10 "hello.properties"
-			// Later versions of QPid use different values.
-			jndiProps.put("java.naming.factory.initial", "org.apache.qpid.jndi.PropertiesFileInitialContextFactory")
-			// connectionfactory.[jndiname] = [ConnectionURL]
-			jndiProps.put("connectionfactory.qpidConnectionfactory", "amqp://guest:guest@clientid/test?brokerlist='tcp://localhost:5672'")
-			// Register an AMQP destination in JNDI
-			// destination.[jniName] = [Address Format]
-			jndiProps.put("destination.topicExchange", "amq.topic")
-			info0("================= Creating InitialContext")
-			val jndiContext = new InitialContext(jndiProps);
-			info0("================= Looking up qpidConnectionFactory")
-			val jmsConnFactory = jndiContext.lookup("qpidConnectionfactory").asInstanceOf[ConnectionFactory];
-			info0("================= Creating Connection")
-			val jmsConn  = jmsConnFactory.createConnection();
-			info0("================= Starting Connection")
-			jmsConn.start();	  
-			// Creates a session. This session is not transactional (transactions='false'), 
-			// and messages are automatically acknowledged.
-			info0("================= Creating Session")
+			val topic001_name_tail = "niceTopicExch001" //  "topicExchange";
+			val topic002_name_tail = "niceTopicExch002"
 			
-		
-			// QPid HelloWorld uses AUTO_ACKNOWLEDGE,  // R25 uses   CLIENT_ACKNOWLEDGE
-			val jmsSession = jmsConn.createSession(false, Session.AUTO_ACKNOWLEDGE); 
-			// Creates a destination for the topic exchange, so senders and receivers can use it.
-			info0("================= Creating Destination")
-			val jmsDestination = jndiContext.lookup("topicExchange").asInstanceOf[Destination];
+			val topicExchangeNames = List(topic001_name_tail, topic002_name_tail)
+			
+			val nameMgr = new QPid_010_NameManager()
+			
+			val jndiProps = nameMgr.makeJndiPropsForTopicSetup(topicExchangeNames)
+
+			val qpidConn = new QPidConnector(jndiProps) 
+			qpidConn.startConn()
+			
+			val jmsSession =  qpidConn.makeSessionAutoAck() //   jmsConn.createSession(false, Session.AUTO_ACKNOWLEDGE); 
+			val jmsDest_001 = qpidConn.makeDestination(topic001_name_tail) // connector.myJndiCtx.lookup(topic001_name_tail).asInstanceOf[Destination];
+			
 			info0("================= Creating Producer")
-			val jmsMsgProducer = jmsSession.createProducer(jmsDestination);
+			val jmsProducer_001 = jmsSession.createProducer(jmsDest_001);
 			info0("================= Creating Consumer")
-			val jmsMsgConsumer = jmsSession.createConsumer(jmsDestination);
+			val jmsConsumer_001 = jmsSession.createConsumer(jmsDest_001);
 
 			info0("*********************\n********************* Calling send-and-consume")
-			sendAndConsumeTestMsg(jmsSession, jmsMsgProducer, jmsMsgConsumer)
+			sendAndConsumeTestMsg(jmsSession, jmsProducer_001, jmsConsumer_001)
 			info0("*********************\n********************* Calling send-and-consume")
-			sendAndConsumeTestMsg(jmsSession, jmsMsgProducer, jmsMsgConsumer)
+			sendAndConsumeTestMsg(jmsSession, jmsProducer_001, jmsConsumer_001)
+			
+			val taf = new ThingActionFlow()
+			// val btas = taf.makeThingActionSpec()
+			// info1("Made ThingActionSpec: {}", btas)
+			info0("*********************\n********************* Calling send-and-consume-TAMsg")
+			taf.sendAndConsumeTAMsg(jmsSession, jmsProducer_001, jmsConsumer_001)
 			// TODO:  Put the close calls into a finally block
-			info0("================= Closing JMS Connection")
-			jmsConn.close();
-			info0("================= Closing JNDI context")
-			jndiContext.close();
+			qpidConn.close()
 		} catch  {
 			case except : Exception => {
 				except.printStackTrace();

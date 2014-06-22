@@ -40,7 +40,7 @@ public class Activator extends BundleActivatorBase {
 		pac.startRepositoryConfigServices();
 		// ... and set our app context with PumaWebMapper, so lift can issue repo update requests
 		PumaWebMapper pwm = pac.getOrMakeWebMapper();	
-		pwm.connectLiftInterface(context);
+		pwm.connectAvailableCommands(context);
 		// Tell the lifter lifecycle to start, once its OSGi dependencies are satisfied
 		pwm.startLifterLifecycle(context);
 		setupJosekiSparqlAccess(pwm);
