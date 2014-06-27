@@ -467,7 +467,7 @@ and the SPARQL Graph Store protocol.
  
  */
 
-import org.appdapter.core.store.{ Repo, BasicRepoImpl, BasicStoredMutableRepoImpl, QueryProcessor, InitialBinding, ModelClient }
+import org.appdapter.core.store.{ Repo, BasicRepoImpl, BasicStoredMutableRepoImpl, InitialBinding, ModelClient }
 
 class ExplicitDatasetRepo(val myDset: Dataset, val myDirGraphID: Ident) extends BasicRepoImpl with FancyRepo with Repo.Updatable {
  // def loadSheetModelsIntoMainDataset(): Unit = {}

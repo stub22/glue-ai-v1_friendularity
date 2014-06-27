@@ -57,6 +57,9 @@ object ExImBank extends VarargsLogging {
 		val DIRECTORY_SHEET_NUM = 8
 		new OnlineSheetRepoSpec(REPO_SHEET_KEY, NAMESPACE_SHEET_NUM, DIRECTORY_SHEET_NUM, emptyFileResModelCLs);
 	}	
+		// GluePuma_HRKR25_TestFull (default for opengl.r25)
+		// 0AmvzRRq-Hhz7dFVpSDFaaHhMWmVPRFl4RllXSHVxb2c
+		// 
 		// https://docs.google.com/spreadsheet/ccc?key=0AsAJ7pzOB_F2dGVkcUlTSkJ1ZXhzUFVIckhxN25tQkE&usp=drive_web#gid=8
 		// = GluePuma_HRKR25_CoreData_May2014_JustinsTestBuild
 	
