@@ -163,8 +163,8 @@ PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX ex: <http://example.org/>
 			
 INSERT DATA {  GRAPH <""" + loadingGraphName_B + """> {
-	ex:subject1 ex:title "foo" ;
-	ex:description "bar" ;
+	ex:subject1 ex:title "foozzly" ;
+	ex:description "bardtleuix" ;
 	rdf:type ex:FooBar .  
 }}
 			
@@ -187,7 +187,8 @@ INSERT DATA {  GRAPH <""" + loadingGraphName_B + """> {
 						
 		} finally { 
 			info0("\n\n\n\n***************** Ending")
-			monitoredFSDSet.end() ; 
+			// Exception in thread "main" java.lang.UnsupportedOperationException: Transactions not supported
+			monitoredFSDSet.end(); 
 			// Close the dataset, potentially releasing any associated resources. 
 			// The dataset can not be used for query after this call.
 			// Not important in terms of TDB/ARQ impact, in the transactional case: 
@@ -205,7 +206,7 @@ import com.hp.hpl.jena.rdf.model.{ Model, Resource, Literal }
 import com.hp.hpl.jena.shared.PrefixMapping
 import com.hp.hpl.jena.sparql.modify.request.{ UpdateCreate, UpdateLoad }
 import com.hp.hpl.jena.sparql.sse.SSE
-import com.hp.hpl.jena.update.{ GraphStore, GraphStoreFactory, UpdateAction, UpdateRequest, UpdateFactory }
+import com.hp.hpl.jena.update.{ GraphStore, GraphStoreFactory, UpdateAction, UpdateRequest, UpdateFactory, Update }
 /*
  * UpdateRequest request = UpdateFactory.create() ;
 request.add("DROP ALL")
@@ -251,7 +252,12 @@ but be aware that each operation added needs to be a complete SPARQL Update oper
 
 	def applyUpdateText(dset : Dataset, supTxt : String) {
 
-		val upReq = UpdateFactory.create(supTxt);
+		val upReq : UpdateRequest = UpdateFactory.create(supTxt);
+		
+		val ops : java.util.List[Update] = upReq.getOperations
+		
+		info1("opsList = {}", ops)
+		
 		val gstore =  GraphStoreFactory.create(dset) ;		
 		 UpdateAction.execute(upReq, gstore);
 	}
