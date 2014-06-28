@@ -476,10 +476,11 @@ class ExplicitDatasetRepo(val myDset: Dataset, val myDirGraphID: Ident) extends 
 //  val myDirectoryModel: Model = directoryModel;
 
 	override def getDirectoryModel: Model = getNamedModel(myDirGraphID);
-  
+  /*
 	override def callLoadingInLock() {
 		throw new RuntimeException("The callLoadingInLock method was called")
 	}
+*/
 
 }
 // class DatabaseRepo(store: Store, val myDirGraphID: Ident)
