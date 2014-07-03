@@ -12,8 +12,6 @@
 	<packaging>jar</packaging>
 	<name>${project.artifactId} - Temp Scala math lab quickrun</name>	
 
-
-
 	<dependencies>
 		<dependency>
 			<groupId>org.cogchar</groupId>

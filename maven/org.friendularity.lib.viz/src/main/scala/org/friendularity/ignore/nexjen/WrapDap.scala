@@ -14,13 +14,10 @@
  *  limitations under the License.
  */
 
-package org.friendularity.ignore.nexjen
+package org.friendularity.ignore.nexjen 
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
 
-trait WrapDap {
-	// Dataset		
-	
-}
+class WrapDap {}
