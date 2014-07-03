@@ -69,6 +69,13 @@ object TestLoops {
 		studFol_A.addComment("Hey everybody, ha cha")
 		studFol_B.addComment("Noone cares, sniff")
 		
+		studFol_B.setPoints(22)  //      xsd:integer in schema, but xsd:int in asserted value
+		studFol_B.setStatDouble(19.3423425)
+		studFol_A.setStatFloat(0.3f)
+		studFol_A.addFlag(true)
+		studFol_A.addFlag(false)
+		studFol_A.setFlag(true)
+		
 		println("After Folios created, rm01=" + rm01.toString)
 		println("rm01.size=" + rm01.size)
 
