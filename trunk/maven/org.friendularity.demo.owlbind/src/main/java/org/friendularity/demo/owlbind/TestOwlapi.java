@@ -12,11 +12,11 @@ import org.semanticweb.owlapi.util.SimpleIRIMapper;
  * Hello world!
  *
  */
-public class App {
+public class TestOwlapi {
 
 	public static void main(String[] args) {
-		System.out.println("Hello World!");
-		App a = new App();
+		System.out.println("Testing OwlAPI");
+		TestOwlapi a = new TestOwlapi();
 		try {
 			a.shouldLoad();
 

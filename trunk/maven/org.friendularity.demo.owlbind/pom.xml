@@ -1,18 +1,18 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.friendularity</groupId>
+		<artifactId>org.friendularity.modules.main</artifactId>
+		<version>1.0.4-SNAPSHOT</version>
+		<relativePath>../org.friendularity.modules.main/pom.xml</relativePath>
+	</parent>	
 
-	<groupId>org.friendularity</groupId>
 	<artifactId>org.friendularity.demo.owlbind</artifactId>
-	<version>1.0-SNAPSHOT</version>
+
 	<packaging>jar</packaging>
-
-	<name>org.friendularity.demo.owlbind</name>
-	<url>http://maven.apache.org</url>
-
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
+	<name>${project.artifactId} - Experiment in java/graph binding</name>	
+	
 	<repositories>
 		<repository>
 			<id>semweb4j-repo</id>
@@ -59,13 +59,18 @@
 			<version>4.8.3</version>
 			<type>pom</type>
 		</dependency>
-		<!--
+		
 		<dependency>
 			<groupId>org.semweb4j</groupId>
 			<artifactId>rdf2go.impl.jena</artifactId>
 			<version>4.8.3</version>
 		</dependency>
-		-->
+		<dependency>
+            <groupId>org.appdapter</groupId>
+            <artifactId>org.appdapter.bundle.core</artifactId>
+            <version>${appdapter.version}</version>
+        </dependency>		
+		
 		<!--  Appears included Sesame version requires Java 7, for java.nio.charset.StandardCharsets
 			<dependency>
 				<groupId>org.semweb4j</groupId>
@@ -112,9 +117,37 @@ https://code.google.com/p/semweb4j/source/browse/trunk/org.semweb4j.rdfreactor.m
 							<rdfReactorLogfile>target/rdfreactor_percept.log</rdfReactorLogfile>
 						</configuration>
 					</execution>
-					
+
+					<execution>
+						<id>lessonPath</id>
+						<goals>
+							<goal>rdfs-classes</goal>
+						</goals>
+						<configuration>
+							<schemaFile>src/test/resources/schemas/LessonPath_owl2.n3</schemaFile>
+							<packageName>org.friendularity.gen.reacted.lpath</packageName>
+							<rdfReactorLogfile>target/rdfreactor_lpath.log</rdfReactorLogfile>
+						</configuration>
+					</execution>
+
+										
 				</executions>
 			</plugin>	
+			<plugin>
+				<groupId>org.scala-tools</groupId>
+				<artifactId>maven-scala-plugin</artifactId>
+				<version>2.15.2</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>compile</goal>
+							<!-- We're not actually using any scala tests right now
+							<goal>testCompile</goal>
+							-->
+						</goals>
+					</execution>
+				</executions>
+			</plugin>			
 		</plugins>	
 	</build>
 </project>
