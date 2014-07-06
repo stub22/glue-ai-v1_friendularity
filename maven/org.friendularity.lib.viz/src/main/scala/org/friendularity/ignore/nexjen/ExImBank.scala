@@ -75,6 +75,8 @@ object ExImBank extends VarargsLogging {
 		info2("Got {} input-repo graph stats: {}", dfltGraphStatsJL.size : java.lang.Integer, dfltGraphStatsJL)
 	
 		tgtDataset.begin(ReadWrite.WRITE);
+		val inputMQDset = inputRepo.getMainQueryDataset
+		inputMQDset.begin(ReadWrite.READ);
 		try {
 			import scala.collection.JavaConversions._
 
@@ -102,6 +104,7 @@ object ExImBank extends VarargsLogging {
 			// 21571 [main] WARN TDB  - Transaction not commited or aborted: Transaction: 2 : Mode=WRITE : State=ACTIVE : --mem--/
 			// ...and implicity abort.
 			tgtDataset.end()
+			inputMQDset.end();
 		}
 	}
 	case class Stat(myName : String, myCount : Long) {

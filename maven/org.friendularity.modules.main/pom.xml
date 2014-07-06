@@ -52,6 +52,7 @@
 		<module>../org.friendularity.bundle.launcher.webonly</module>
 		
 		<module>../org.friendularity.bundle.xweb.minlift</module>
+		<module>../org.friendularity.bundle.xweb.xgra</module>
 		<module>../org.friendularity.bundle.xweb.fustdb</module>
 
         <module>../org.friendularity.bundle.demoserv.semrepo</module>

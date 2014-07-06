@@ -58,8 +58,14 @@
 			<groupId>org.friendularity</groupId>
 			<artifactId>org.friendularity.bundle.xweb.minlift</artifactId>
 			<version>${project.version}</version>
-		</dependency>	
+		</dependency>
 
+		<dependency>
+			<groupId>org.friendularity</groupId>
+			<artifactId>org.friendularity.bundle.xweb.xgra</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		
 		<!-- fustdb is not working yet
 		<dependency>
 			<groupId>org.friendularity</groupId>
