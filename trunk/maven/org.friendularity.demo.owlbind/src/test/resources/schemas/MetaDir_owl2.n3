@@ -1,0 +1,545 @@
+@prefix : <http://onto.cogchar.org/onto/201407/MetaDir_OWL2#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@base <http://onto.cogchar.org/onto/201407/MetaDir_OWL2> .
+
+<http://onto.cogchar.org/onto/201407/MetaDir_OWL2> rdf:type owl:Ontology ;
+                                                   
+                                                   rdfs:comment """Our MetaDir ontology governs data used to facilitate team sharing of 
+domain-focused graphs, version tracking, imports, and graph editing.
+
+Typically it should *not* be needed or used directly at character runtime,
+except voluntarily in an uber-dynamic experiment.
+
+Thus our tone is more \"helpful metadata\" than \"vital bootstrap\".""" .
+
+
+#################################################################
+#
+#    Annotation properties
+#
+#################################################################
+
+
+
+
+#################################################################
+#
+#    Datatypes
+#
+#################################################################
+
+
+
+
+#################################################################
+#
+#    Object Properties
+#
+#################################################################
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#hasGraphHost
+
+:hasGraphHost rdf:type owl:ObjectProperty ;
+              
+              rdfs:subPropertyOf :mObjProp .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#hasSourceGP
+
+:hasSourceGP rdf:type owl:ObjectProperty ;
+             
+             rdfs:domain :GraphOp ;
+             
+             rdfs:range :GraphPointer ;
+             
+             rdfs:subPropertyOf :mObjProp .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#hasTargetGP
+
+:hasTargetGP rdf:type owl:FunctionalProperty ,
+                      owl:ObjectProperty ;
+             
+             rdfs:domain :GraphOp ;
+             
+             rdfs:range :GraphPointer ;
+             
+             rdfs:subPropertyOf :mObjProp .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#isDescendedFrom
+
+:isDescendedFrom rdf:type owl:AsymmetricProperty ,
+                          owl:ObjectProperty ,
+                          owl:TransitiveProperty ;
+                 
+                 rdfs:range :GraphPointer ;
+                 
+                 rdfs:domain :GraphPointer ;
+                 
+                 rdfs:subPropertyOf :mObjProp .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#mObjProp
+
+:mObjProp rdf:type owl:ObjectProperty ;
+          
+          rdfs:domain :MThing ;
+          
+          rdfs:range :MThing .
+
+
+
+
+
+#################################################################
+#
+#    Data properties
+#
+#################################################################
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#hasFilenameTailWithExt
+
+:hasFilenameTailWithExt rdf:type owl:DatatypeProperty ;
+                        
+                        rdfs:subPropertyOf :mDataProp ;
+                        
+                        rdfs:range xsd:string .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#hasJavaPackageName
+
+:hasJavaPackageName rdf:type owl:DatatypeProperty ;
+                    
+                    rdfs:subPropertyOf :mDataProp ;
+                    
+                    rdfs:range xsd:string .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#hasMavenArtifactId
+
+:hasMavenArtifactId rdf:type owl:DatatypeProperty ;
+                    
+                    rdfs:subPropertyOf :mDataProp ;
+                    
+                    rdfs:range xsd:string .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#hasMavenGroupId
+
+:hasMavenGroupId rdf:type owl:DatatypeProperty ;
+                 
+                 rdfs:subPropertyOf :mDataProp ;
+                 
+                 rdfs:range xsd:string .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#hasMavenVersion
+
+:hasMavenVersion rdf:type owl:DatatypeProperty ;
+                 
+                 rdfs:subPropertyOf :mDataProp ;
+                 
+                 rdfs:range xsd:string .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#hasOpComment
+
+:hasOpComment rdf:type owl:DatatypeProperty ;
+              
+              rdfs:subPropertyOf :mDataProp ;
+              
+              rdfs:range xsd:string .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#hasOpStamp
+
+:hasOpStamp rdf:type owl:DatatypeProperty ;
+            
+            rdfs:subPropertyOf :mDataProp ;
+            
+            rdfs:range xsd:string .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#hasOpUsername
+
+:hasOpUsername rdf:type owl:DatatypeProperty ;
+               
+               rdfs:subPropertyOf :mDataProp ;
+               
+               rdfs:range xsd:string .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#hasOsgiBundleSymbolicName
+
+:hasOsgiBundleSymbolicName rdf:type owl:DatatypeProperty ;
+                           
+                           rdfs:subPropertyOf :mDataProp ;
+                           
+                           rdfs:range xsd:string .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#hasOsgiBundleVersion
+
+:hasOsgiBundleVersion rdf:type owl:DatatypeProperty ;
+                      
+                      rdfs:subPropertyOf :mDataProp ;
+                      
+                      rdfs:range xsd:string .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#hasUrlText
+
+:hasUrlText rdf:type owl:DatatypeProperty ;
+            
+            rdfs:subPropertyOf :mDataProp ;
+            
+            rdfs:range xsd:anyURI ,
+                       xsd:string .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#mDataProp
+
+:mDataProp rdf:type owl:DatatypeProperty ;
+           
+           rdfs:domain :MThing .
+
+
+
+
+
+#################################################################
+#
+#    Classes
+#
+#################################################################
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#GOTD_Add
+
+:GOTD_Add rdf:type owl:Class ;
+          
+          rdfs:subClassOf :GraphOpTripleDelta .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#GOTD_Remove
+
+:GOTD_Remove rdf:type owl:Class ;
+             
+             rdfs:subClassOf :GraphOpTripleDelta .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#GOTD_RemoveAndAdd
+
+:GOTD_RemoveAndAdd rdf:type owl:Class ;
+                   
+                   rdfs:subClassOf :GraphOpTripleDelta .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#GO_CopyAsAdd
+
+:GO_CopyAsAdd rdf:type owl:Class ;
+              
+              rdfs:subClassOf :GraphOpCopy .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#GO_CopyAsNew
+
+:GO_CopyAsNew rdf:type owl:Class ;
+              
+              rdfs:subClassOf :GraphOpCopy .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#GO_CopyAsReplace
+
+:GO_CopyAsReplace rdf:type owl:Class ;
+                  
+                  rdfs:subClassOf :GraphOpCopy .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#GP_Open
+
+:GP_Open rdf:type owl:Class ;
+         
+         rdfs:subClassOf :GraphPointer .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#GP_Release
+
+:GP_Release rdf:type owl:Class ;
+            
+            rdfs:subClassOf :GraphPointer .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#GP_Snapshot
+
+:GP_Snapshot rdf:type owl:Class ;
+             
+             rdfs:subClassOf :GraphPointer .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#GraphHost
+
+:GraphHost rdf:type owl:Class ;
+           
+           rdfs:subClassOf :MThing ;
+           
+           rdfs:comment "Either a dataset (=quadstore) or a \"standalone\" (=triplestore) graph model or file (of whatvever kind, in-mem or N3 file) is a host.   However, a dataset host does not \"contain\" little hosts inside it for each graph.  If you make a copy of that graph outside the dataset (e.g. as a \"checkout\"), now you have a new host." .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#GraphOp
+
+:GraphOp rdf:type owl:Class ;
+         
+         rdfs:subClassOf :MThing ;
+         
+         rdfs:comment "An operation in the audit-log of a particular Graph(Pointer)." .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#GraphOpCopy
+
+:GraphOpCopy rdf:type owl:Class ;
+             
+             rdfs:subClassOf :GraphOp .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#GraphOpTripleDelta
+
+:GraphOpTripleDelta rdf:type owl:Class ;
+                    
+                    rdfs:subClassOf :GraphOp .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#GraphOpWholeDelete
+
+:GraphOpWholeDelete rdf:type owl:Class ;
+                    
+                    rdfs:subClassOf :GraphOp .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#GraphOpWholeNew
+
+:GraphOpWholeNew rdf:type owl:Class ;
+                 
+                 rdfs:subClassOf :GraphOp .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#GraphPointer
+
+:GraphPointer rdf:type owl:Class ;
+              
+              rdfs:subClassOf :MThing ;
+              
+              rdfs:comment """Refers to a single graph in some GraphHost.
+Is required to be in one of the forms GP_Snapshot, GP_Release, or GP_Open - which typically apply textual contraints to the form of the URI used.  Thus we practically ensure that a graph URI may not try to \"change states\" by changing it's associated type - the URI must be changed too, typically by copying the graph.    (If the types were actually re-assignable, that would be nonmonotonic logic).""" .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#HLTDB_InMem
+
+:HLTDB_InMem rdf:type owl:Class ;
+             
+             rdfs:subClassOf :HostLocalTDB .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#HLTDB_OnDisk
+
+:HLTDB_OnDisk rdf:type owl:Class ;
+              
+              rdfs:subClassOf :HostLocalTDB .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#HostAtURL
+
+:HostAtURL rdf:type owl:Class ;
+           
+           rdfs:subClassOf :GraphHost .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#HostLoadedLocal
+
+:HostLoadedLocal rdf:type owl:Class ;
+                 
+                 rdfs:subClassOf :GraphHost .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#HostLocalMemNotrans
+
+:HostLocalMemNotrans rdf:type owl:Class ;
+                     
+                     rdfs:subClassOf :HostLoadedLocal .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#HostLocalTDB
+
+:HostLocalTDB rdf:type owl:Class ;
+              
+              rdfs:subClassOf :HostLoadedLocal .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#HostN3
+
+:HostN3 rdf:type owl:Class ;
+        
+        rdfs:subClassOf :HostSerialTriples .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#HostN4
+
+:HostN4 rdf:type owl:Class ;
+        
+        rdfs:subClassOf :HostSerialQuads .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#HostOnClasspath
+
+:HostOnClasspath rdf:type owl:Class ;
+                 
+                 rdfs:subClassOf :GraphHost .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#HostSerialQuads
+
+:HostSerialQuads rdf:type owl:Class ;
+                 
+                 rdfs:subClassOf :HostUnparsed .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#HostSerialTriples
+
+:HostSerialTriples rdf:type owl:Class ;
+                   
+                   rdfs:subClassOf :HostUnparsed .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#HostSpreadsheet
+
+:HostSpreadsheet rdf:type owl:Class ;
+                 
+                 rdfs:subClassOf :HostSerialQuads .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#HostStorePointer
+
+:HostStorePointer rdf:type owl:Class ;
+                  
+                  rdfs:subClassOf :GraphHost .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#HostStorePointerHttp
+
+:HostStorePointerHttp rdf:type owl:Class ;
+                      
+                      rdfs:subClassOf :HostAtURL ,
+                                      :HostStorePointer .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#HostTrig
+
+:HostTrig rdf:type owl:Class ;
+          
+          rdfs:subClassOf :HostSerialQuads .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#HostTripleCSV
+
+:HostTripleCSV rdf:type owl:Class ;
+               
+               rdfs:subClassOf :HostSerialTriples .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#HostUnparsed
+
+:HostUnparsed rdf:type owl:Class ;
+              
+              rdfs:subClassOf :GraphHost .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#MThing
+
+:MThing rdf:type owl:Class .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#SPH_Fuseki_SOH
+
+:SPH_Fuseki_SOH rdf:type owl:Class ;
+                
+                rdfs:subClassOf :HostStorePointerHttp .
+
+
+
+
+
+#################################################################
+#
+#    General axioms
+#
+#################################################################
+
+
+[ rdf:type owl:AllDisjointClasses ;
+  owl:members ( :GP_Open
+                :GP_Release
+                :GP_Snapshot
+              )
+] .
+
+
+
+
+###  Generated by the OWL API (version 3.3.1957) http://owlapi.sourceforge.net
+

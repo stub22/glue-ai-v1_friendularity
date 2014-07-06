@@ -18,24 +18,14 @@ package org.friendularity.bindx
 
 /**
  * @author Stu B. <www.texpedient.com>
- * 
- * If a Fuseki server is run with the command:
-
-fuseki-server --mem /dataset
-then the service endpoints are:
-
-HTTP: http://localhost:3030/dataset/data
-Query: http://localhost:3030/dataset/query
-Update: http://localhost:3030/dataset/update
-
- 
  */
+
 
 import com.hp.hpl.jena.query.{DatasetAccessor, Dataset, DatasetAccessorFactory}
 
 import org.appdapter.core.name.{Ident, FreeIdent}
 
-object TestLoops {
+object MdirEdit {
 	def main(args: Array[String]) : Unit = {
 		org.apache.log4j.BasicConfigurator.configure();
 		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.INFO);
@@ -45,29 +35,32 @@ object TestLoops {
 		
 		val jacc = new JenaArqCheckoutConn(dAcc)
 		
-		val gnBase = "urn:ftd:cogchar.org:20140701:runtime#graph_7"
-		val gn01 = gnBase + "01"
-		val gn02 = gnBase + "02"
+		val mdmGnBase = "urn:ftd:cogchar.org:20140701:runtime:open#graph_8"
 		
-		val gid01 = new FreeIdent(gn01)
-		val gid02 = new FreeIdent(gn02)
-		val ck01 = jacc.makeCheckoutHandle(gid01)
-		val ck02 = jacc.makeCheckoutHandle(gid02)
+		val gn_mdm = mdmGnBase + "01"
 		
-		ck01.refreshCheckout
 		
-		val rm01 : org.ontoware.rdf2go.model.Model = ck01.getAsReactorModel
-		val rm02 : org.ontoware.rdf2go.model.Model = ck02.getAsReactorModel
+// 		val gn02 = gnBase + "02"
 		
-		import org.friendularity.gen.reacted.lpath._
+		val gid_md = new FreeIdent(gn_mdm)
+//		val gid02 = new FreeIdent(gn02)
+		val ck_md = jacc.makeCheckoutHandle(gid_md)
+// 		val ck02 = jacc.makeCheckoutHandle(gid02)
 		
-		rm01.open()
+		ck_md.refreshCheckout
 		
-		val studFol_A = new StudentFolio(rm01, true)
-		val studFol_B = new StudentFolio(rm01, false)
+		val mdm01 : org.ontoware.rdf2go.model.Model = ck_md.getAsReactorModel
+
+		import org.friendularity.gen.reacted.mdir._
+
+		val gn_sheetHost_01 = "urn:ftd:cogchar.org:20140701:runtime:open#sheetHost_987"
 		
-		studFol_A.addComment("Hey everybody, ha cha")
-		studFol_B.addComment("Noone cares, sniff")
+		mdm01.open()
+		
+		val hostSheet_A = new HostSpreadsheet(mdm01, gn_sheetHost_01, true);
+		
+		hostSheet_A.addComment("A known spreadsheet is commented upon here")
+/*
 		
 		studFol_B.setPoints(22)  //      xsd:integer in schema, but xsd:int in asserted value
 		studFol_B.setStatDouble(19.3423425)
@@ -75,12 +68,12 @@ object TestLoops {
 		studFol_A.addFlag(true)
 		studFol_A.addFlag(false)
 		studFol_A.setFlag(true)
-		
-		println("After Folios created, rm01.size=" + rm01.size)
+*/		
+		println("After Host-recs created, rm01.size=" + mdm01.size)
 
-		ck01.checkinAsReplace
+		ck_md.checkinAsReplace
 		
-		println("Finished checkin to " + ck01)
+		println("Finished checkin to " + ck_md)
 		
 	}
 }

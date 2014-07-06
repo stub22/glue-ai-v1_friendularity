@@ -130,7 +130,17 @@ https://code.google.com/p/semweb4j/source/browse/trunk/org.semweb4j.rdfreactor.m
 						</configuration>
 					</execution>
 
-										
+					<execution>
+						<id>metaDir</id>
+						<goals>
+							<goal>rdfs-classes</goal>
+						</goals>
+						<configuration>
+							<schemaFile>src/test/resources/schemas/MetaDir_owl2.n3</schemaFile>
+							<packageName>org.friendularity.gen.reacted.mdir</packageName>
+							<rdfReactorLogfile>target/rdfreactor_mdir.log</rdfReactorLogfile>
+						</configuration>
+					</execution>										
 				</executions>
 			</plugin>	
 			<plugin>

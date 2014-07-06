@@ -18,11 +18,17 @@ package org.friendularity.bindx
 
 /**
  * @author Stu B. <www.texpedient.com>
+ * 
+ *  : class XMLLiteral
+location: package org.ontoware.rdfreactor.schema.rdfs
+
+ 
  */
 
 
 
 import org.appdapter.core.name.{Ident, FreeIdent}
+import org.appdapter.core.log.BasicDebugger;
 
 trait CheckoutConn {
 	def	makeCheckoutHandle(graphURI : Ident) : ModelCheckoutHandle
@@ -69,10 +75,11 @@ class JenaArqCheckoutConn(private val myDsetAcc : DatasetAccessor) extends Check
  * Uses a private in-memory model to hold contents of the checkout.
  * Chose this design because it appears that DatasetAccessor for a *local* dataset returns a modifiable
  * model, which does not fit the idea of "checkout".   So, we go ahead and make sure there is always a
- * local copy, i.e. the checkout, and build up conceptually from there.
+ * local copy, i.e. the checkout, and build up conceptually from there (even tho it means we might make
+ * an unnecessary extra copy in the case that the conn is actually remote, which already implies copying).
  */
 case class JenaModelCheckoutHandle(private val myGraphId : Ident, private val myConn : JenaArqCheckoutConn) 
-		extends ModelCheckoutHandle {
+		extends BasicDebugger with ModelCheckoutHandle {
 			
 	val myLocalModel : Model = ModelFactory.createDefaultModel
 	lazy val myReactorModel = new org.ontoware.rdf2go.impl.jena.ModelImplJena(myLocalModel)
@@ -81,8 +88,13 @@ case class JenaModelCheckoutHandle(private val myGraphId : Ident, private val my
 	
 	override def refreshCheckout {
 		val fromConn : Model = myConn.getJenaModel(myGraphId)
-		myLocalModel.removeAll()
-		myLocalModel.add(fromConn)
+		myLocalModel.removeAll() 
+		if (fromConn != null) {
+			getLogger().info("Adding {} triples from retrieved model {} to local checkout copy", fromConn.size, myGraphId)
+			myLocalModel.add(fromConn)
+		} else {
+			getLogger().info("No model found at {}, starting from empty local checkout model", myGraphId)
+		}
 	}
 	override def checkinAsAdd {
 		myConn.postJenaModel(myGraphId, myLocalModel)
