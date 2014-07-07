@@ -105,10 +105,18 @@ object MdirEdit {
 
 
 /*
- * 
+Here is a query to show the contents of the metaData graph read/written above,
+nicely formatted using namespace prefixes.
+
+PREFIX og: <urn:ftd:friendularity.org:201407:graph.open.mdirtst#>
+PREFIX mdo: <http://onto.cogchar.org/onto/201407/MetaDir_OWL2#>
+PREFIX mdi: <urn:fdc:friendularity.org:2014:gmdinst#>
 PREFIX  rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX  rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX  xsd: <http://www.w3.org/2001/XMLSchema#>
+
+SELECT ?s ?p ?o 
+WHERE { Graph og:metaDataTest_803 {?s ?p ?o} }
 
  * 
  * 
