@@ -61,6 +61,7 @@ object MdirEdit {
 		// First we need a handle to an RDF2Go model wrapper.
 		val mdm01 : org.ontoware.rdf2go.model.Model = ck_md.getAsReactorModel
 		mdm01.open()
+		val r2goModelWrapper = new R2GoModelWrapper(mdm01)
 		// How large is the graph before we start updating it?
 		val beforeUpdatesSize = mdm01.size
 		println("Before updates started, mdm01.size=" + beforeUpdatesSize)
@@ -68,7 +69,7 @@ object MdirEdit {
 		// Temporary promiscuous import during prototype development phase.
 		import org.friendularity.gen.reacted.mdir._
 		
-		// So far we have 3 test bindings below, using the following input test data, which describes one of our
+		// So far we have 4 test bindings below, using the following input test data, which describes one of our
 		// legacy test data spreadsheets.
 		val sheetKeyA = "0ArBjkBoH40tndDdsVEVHZXhVRHFETTB5MGhGcWFmeGc" 
 		val namespaceTabNum = 9
@@ -80,9 +81,9 @@ object MdirEdit {
 		
 		hostSheet_A.setComment("Host record for spreadsheet GluePuma_HRKR50_TestFull")
 		hostSheet_A.setSpreadsheetKey(sheetKeyA)
-		
+		val fragTail_a8Dir = "testy_A8_dir"
 		// 2) Bind a host for the "dir" tab within that host sheet
-		val urn_tabHost_A8 = ns_gmdinst + "host4tab_testy_A8_dir"
+		val urn_tabHost_A8 = ns_gmdinst + "host4tab_" + fragTail_a8Dir
 		val hostTab_A8 = new GH3STabInSpreadsheet(mdm01, urn_tabHost_A8, true);
 		hostTab_A8.setComment("Reading from the dir model in tab 8 of GluePuma_HRKR50_TestFull at YYYY-MM-DD ")
 		hostTab_A8.setParentHost4Quads(hostSheet_A)
@@ -92,15 +93,43 @@ object MdirEdit {
 		val urn_nsTab_A8 =  ns_gmdinst + "nsChunkTab_testy_A9_ns"		
 		val nsTab_A9 = new NVPairTabInSheet(mdm01, urn_nsTab_A8, true)
 
+		val fragPrefix_gptr = "gptr."
+		val fragPrefix_gptrOpen =  fragPrefix_gptr + "open."
+		// 4) Now let's make a graphPointer referring to the dir-graph host.  
+		// By convention we mark the fragment with "gptr.open" to signify an open gptr.
+		val urn_graphPtr_toA8dir = ns_gmdinst + fragPrefix_gptrOpen  + fragTail_a8Dir;
+		val opnGPtr_toA8dir = new GPOpen(mdm01, urn_graphPtr_toA8dir, true);
+		opnGPtr_toA8dir.setPointsToGraphHost(hostTab_A8)
+		// val uri = opnGPtr_toA8dir.get
+		
+		val optBo : Option[GH3STabInSpreadsheet] = r2goModelWrapper.getSingleBoundObj(opnGPtr_toA8dir, GraphPointer.POINTSTOGRAPHHOST, classOf[GH3STabInSpreadsheet])
 	
+		println("Fetched optFo: " + optBo)
+		val innerBo :GH3STabInSpreadsheet = optBo.get
+		println("innerBo class=" + innerBo.getClass)
+		println("innerBo tabNums=" + innerBo.getAllTabNumber_as.asList)
+		println("innerBo tabNums.first=" + innerBo.getAllTabNumber_as.firstValue)
 		val afterUpdatesSize = mdm01.size
-		println("After Host-recs created, model size=", afterUpdatesSize, ", net change=", afterUpdatesSize - beforeUpdatesSize )
+		println("After Host-recs created, model size=", afterUpdatesSize, " net change=", afterUpdatesSize - beforeUpdatesSize )
 		println("Replacing stored contents of graph")
 		ck_md.checkinAsReplace
 		
 		println("Finished checkin to " + ck_md)
 		
 	}
+}
+import org.ontoware.rdfreactor.runtime.Base;
+class R2GoModelWrapper(val myRdf2goModel : org.ontoware.rdf2go.model.Model) {
+	def getSingleBoundObj [BT <: org.ontoware.rdfreactor.schema.rdfs.Class](r : org.ontoware.rdf2go.model.node.Resource, 
+						p : org.ontoware.rdf2go.model.node.URI, desiredClass : Class[BT]): Option[BT] = {
+		val found : BT = Base.get(myRdf2goModel, r, p, desiredClass).asInstanceOf[BT]
+		if (found != null) {
+			Some(found)
+		} else {
+			None
+		}
+	}
+	
 }
 
 
@@ -117,6 +146,7 @@ PREFIX  xsd: <http://www.w3.org/2001/XMLSchema#>
 
 SELECT ?s ?p ?o 
 WHERE { GRAPH og:metaDataTest_803 {?s ?p ?o} }
+ORDER by ?s ?p ?o
 
  * 
  * 
