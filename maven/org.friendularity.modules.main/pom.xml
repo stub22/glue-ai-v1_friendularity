@@ -67,7 +67,8 @@
 
 
 		<module>../org.friendularity.demo.jme3.maven</module>
-
+		<module>../org.friendularity.demo.owlbind</module>
+		
 <!--		<module>../org.friendularity.demo.weber</module>-->
 		
 <!--
