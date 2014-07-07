@@ -57,11 +57,12 @@ object MdirEdit {
 		// urn:fdc:DomainName.org:2014:glue-mdir-inst#gptr.open.speech_out_sammy
 		
 		
-		val gn_sheetHost_01 = "urn:fdc:cogchar.org:20140701:runtime:open#sheetHost_680"
+		val urn_sheetHost_A = "urn:fdc:friendularity.org:2014:gmdinst#host4sheet_testy_A"
+		
 		
 		mdm01.open()
 		
-		val hostSheet_A = new GH4SSpreadsheet(mdm01, gn_sheetHost_01, true);
+		val hostSheet_A = new GH4SSpreadsheet(mdm01, urn_sheetHost_A, true);
 		
 		hostSheet_A.setComment("A known spreadsheet has this revised comment.")
 		val REPO_SHEET_KEY = "0ArBjkBoH40tndDdsVEVHZXhVRHFETTB5MGhGcWFmeGc" 
@@ -70,9 +71,9 @@ object MdirEdit {
 		
 		hostSheet_A.setSpreadsheetKey(REPO_SHEET_KEY)
 
-		val gn_sheetHost_01 = "urn:fdc:cogchar.org:20140701:runtime:open#sheetHost_680"
+		val gn_tab_A8 = "urn:fdc:cogchar.org:20140701:runtime:open#sheetHost_680"
 		
-		val hostTab_A8 = new GH3STabInSpreadsheet(mdm01, gn_sheetHost_01, true);
+		// val hostTab_A8 = new GH3STabInSpreadsheet(mdm01, gn_sheetHost_01, true);
 /*
 		
 		studFol_B.setPoints(22)  //      xsd:integer in schema, but xsd:int in asserted value
