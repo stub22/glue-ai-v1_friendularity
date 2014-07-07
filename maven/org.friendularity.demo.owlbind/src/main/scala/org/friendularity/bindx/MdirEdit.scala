@@ -116,7 +116,7 @@ PREFIX  rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX  xsd: <http://www.w3.org/2001/XMLSchema#>
 
 SELECT ?s ?p ?o 
-WHERE { Graph og:metaDataTest_803 {?s ?p ?o} }
+WHERE { GRAPH og:metaDataTest_803 {?s ?p ?o} }
 
  * 
  * 
