@@ -97,13 +97,19 @@ case class JenaModelCheckoutHandle(private val myGraphId : Ident, private val my
 		}
 	}
 	override def checkinAsAdd {
+		getLogger().info("Posting {} triples from local checkout copy to {} - as ADD", myLocalModel.size, myGraphId)
 		myConn.postJenaModel(myGraphId, myLocalModel)
+		getLogger.info("Finished posting ADD")
 	}
 	override def checkinAsReplace {
+		getLogger().info("Posting {} triples from local checkout copy to {} - as REPLACE", myLocalModel.size, myGraphId)
 		myConn.putJenaModel(myGraphId, myLocalModel)
+		getLogger.info("Finished posting REPLACE")
 	}
 	override def deleteGraph {
+		getLogger().info("Deleting remote jenaGraph at {}, *without* clearing local model", myGraphId)		
 		myConn.deleteJenaGraph(myGraphId)
+		getLogger.info("Finished DELETE {}", myGraphId)
 	}
 	override def getAsReactorModel = myReactorModel
 	
