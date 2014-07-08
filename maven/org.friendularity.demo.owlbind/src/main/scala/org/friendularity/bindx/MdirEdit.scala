@@ -29,25 +29,39 @@ object MdirEdit {
 	def main(args: Array[String]) : Unit = {
 		org.apache.log4j.BasicConfigurator.configure();
 		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.INFO);
+
+		// A scratchpad server that noone should rely on for anything.  Could contain in-mem or persist - who knows?
+		val dummyTest_ServerUrl = "http://lima.nodeset.com:4001"
 		
-		// The server dataset we are accessing (for both read + write)
-		val serviceUrl = "http://lima.nodeset.com:4001/dstst_4001/data"
-		
-		// Create an accessor object for that service - stateless as far as we know
-		val dAcc = DatasetAccessorFactory.createHTTP(serviceUrl)
-		
-		// Make a little accessor wrappor guy giving us some skeletal "checkout" semantics.
-		val jacc = new JenaArqCheckoutConn(dAcc)
+		// The first persistent cataloging server, including metadata and working dev character data, 
+		// mainly imported from serial forms
+		val persistDev_ServerUrl = "http://lima.nodeset.com:4002"
+
+		// The test data-data server dataset we are importing data into (to be moved to pdev_4002)
+		val dummyTest_ServiceUrl =  dummyTest_ServerUrl +  "/dstst_4001/data"
+
+		val mdirReal_ServiceUrl = persistDev_ServerUrl + "/mdir_4002/data"
+		val pdevReal_ServiceUrl = persistDev_ServerUrl + "/pdev_4002/data"
 
 		// Namespace for our current target graphURIs 
-		val nsOpenGraph_july2014 = "urn:ftd:friendularity.org:201407:graph.open.mdirtst#"
+		val nsOpenMdir_july2014 = "urn:ftd:friendularity.org:201407:graph.open.mdirtst#"
+		val nsOpenLessonDev_july2014 = "urn:ftd:friendularity.org:201407:graph.open.lessdev#"
 		
 		// Namespace for our current mdir metadata *instance* records, grounded in the Mdir ontology (which has its
 		// own, different namespace).
 		val ns_gmdinst = "urn:fdc:friendularity.org:2014:gmdinst#"
 		
-		// A particular source/target graph URN we will create/update for test purposes.
-		val gn_mdm = nsOpenGraph_july2014 + "metaDataTest_803";
+		val testSeqNum = "805"
+		// Our working metadata graph URI
+		val gn_mdm = nsOpenMdir_july2014 + "metaDataTest_" + testSeqNum;
+		// Our first import target graph URI
+		val gn_dirImport = nsOpenLessonDev_july2014 + "dirImp_" + testSeqNum;
+
+		// Create an accessor object for that service - stateless as far as we know
+		val dAcc = DatasetAccessorFactory.createHTTP(dummyTest_ServiceUrl)
+		
+		// Make a little accessor wrappor guy giving us some skeletal "checkout" semantics.
+		val jacc = new JenaArqCheckoutConn(dAcc)
 		
 		val gid_md = new FreeIdent(gn_mdm)
 		
@@ -79,13 +93,13 @@ object MdirEdit {
 		val urn_sheetHost_A = ns_gmdinst + "host4sheet_testy_A"
 		val hostSheet_A = new GH4SSpreadsheet(mdm01, urn_sheetHost_A, true);
 		
-		hostSheet_A.setComment("Host record for spreadsheet GluePuma_HRKR50_TestFull")
+		hostSheet_A.setComment("Host record for spreadsheet GluePuma_R50_TestFull")
 		hostSheet_A.setSpreadsheetKey(sheetKeyA)
-		val fragTail_a8Dir = "testy_A8_dir"
+		val fragTail_a8Dir = "source_A8_dirTab"
 		// 2) Bind a host for the "dir" tab within that host sheet
-		val urn_tabHost_A8 = ns_gmdinst + "host4tab_" + fragTail_a8Dir
+		val urn_tabHost_A8 = ns_gmdinst + "host3tab_" + fragTail_a8Dir
 		val hostTab_A8 = new GH3STabInSpreadsheet(mdm01, urn_tabHost_A8, true);
-		hostTab_A8.setComment("Reading from the dir model in tab 8 of GluePuma_HRKR50_TestFull at YYYY-MM-DD ")
+		hostTab_A8.setComment("Reading from the dir model in tab 8 of GluePuma_R50_TestFull at YYYY-MM-DD")
 		hostTab_A8.setParentHost4Quads(hostSheet_A)
 		hostTab_A8.setTabNumber(dirTabNum)
 
@@ -98,9 +112,10 @@ object MdirEdit {
 		// 4) Now let's make a graphPointer referring to the dir-graph host.  
 		// By convention we mark the fragment with "gptr.open" to signify an open gptr.
 		val urn_graphPtr_toA8dir = ns_gmdinst + fragPrefix_gptrOpen  + fragTail_a8Dir;
+		// This is a pointer to an importable dir sheet-graph.   It does not have a proper graphNameURI of its own.
 		val opnGPtr_toA8dir = new GPOpen(mdm01, urn_graphPtr_toA8dir, true);
 		opnGPtr_toA8dir.setPointsToGraphHost(hostTab_A8)
-		// val uri = opnGPtr_toA8dir.get
+		// No GraphNameURI set - on purpose - see comment above.
 		
 		val optBo : Option[GH3STabInSpreadsheet] = r2goModelWrapper.getSingleBoundObj(opnGPtr_toA8dir, GraphPointer.POINTSTOGRAPHHOST, classOf[GH3STabInSpreadsheet])
 	
@@ -109,6 +124,36 @@ object MdirEdit {
 		println("innerBo class=" + innerBo.getClass)
 		println("innerBo tabNums=" + innerBo.getAllTabNumber_as.asList)
 		println("innerBo tabNums.first=" + innerBo.getAllTabNumber_as.firstValue)
+		
+		// 6) Now we need GHosts for the target data server (order 5) and quadstores (order 4).
+		// We do not need 3rd order hosts when working with a proper quadstore server, other than
+		// external import/exports hosts like the ones above.
+		val urn_tgtServHost_T = ns_gmdinst + "ghost5serv_tgt_importTest"
+		val tgtServHost_importTest = new GH5RSFusekiServer(mdm01, urn_tgtServHost_T, true);
+		tgtServHost_importTest.setUrlText(dummyTest_ServerUrl)
+
+		val urn_tgtChardatSvc4q = ns_gmdinst + "ghost4q_tchar"
+		val tgtChardatSvc4q = new GH4RSOHFusekiDataset(mdm01, urn_tgtChardatSvc4q, true)
+		tgtChardatSvc4q.setParentHost5Quints(tgtServHost_importTest)
+		tgtChardatSvc4q.setUrlText(dummyTest_ServiceUrl)
+		
+		val urn_gpTgtImportedDir = ns_gmdinst + fragPrefix_gptrOpen +  "impDirTst"
+		val opnGPtr_tgtImpDir = new GPOpen(mdm01, urn_gpTgtImportedDir, true);
+		// 7) Next we need a pointer for a graph to read the old dir model into		
+		// We point to the graphHost, thus essentially getting the URL for the SOH dataset access.
+		// Then all we need ... is a graph Name URI!
+		opnGPtr_tgtImpDir.setPointsToGraphHost(tgtChardatSvc4q) // gn_dirImport
+		val r2goURI = new org.ontoware.rdf2go.model.node.impl.URIImpl(gn_dirImport);
+		opnGPtr_tgtImpDir.setGraphNameUri(r2goURI)
+		
+		// 8) An auditable operation recording the import attempt.
+		// Has a generated blank-node for its own name, so we can use the two-args constructor.
+		// This implies that a new instance will be created every time we run an object-CRUD test.
+
+		val importOp = new GOCopyToNewOpen(mdm01, true);
+		importOp.setSourceGP(opnGPtr_toA8dir)
+		importOp.setTargetGP(opnGPtr_tgtImpDir)
+		
 		val afterUpdatesSize = mdm01.size
 		println("After Host-recs created, model size=", afterUpdatesSize, " net change=", afterUpdatesSize - beforeUpdatesSize )
 		println("Replacing stored contents of graph")
@@ -116,6 +161,12 @@ object MdirEdit {
 		
 		println("Finished checkin to " + ck_md)
 		
+	}
+import org.appdapter.core.matdat.OnlineSheetRepoSpec
+import org.appdapter.core.repo.{RepoSpec, DatabaseRepoSpec}
+
+	def onlineSheetSpec() { 
+		// new OnlineSheetRepoSpec(REPO_SHEET_KEY, NAMESPACE_SHEET_NUM, DIRECTORY_SHEET_NUM, emptyFileResModelCLs);
 	}
 }
 import org.ontoware.rdfreactor.runtime.Base;
@@ -128,7 +179,13 @@ class R2GoModelWrapper(val myRdf2goModel : org.ontoware.rdf2go.model.Model) {
 		} else {
 			None
 		}
-	}
+	}	
+}
+import org.appdapter.core.store.Repo
+import org.appdapter.demo.DemoResources
+import org.appdapter.help.repo.{RepoClient, RepoClientImpl}
+
+class RepoMdirBinder {
 	
 }
 
