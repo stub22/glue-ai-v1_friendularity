@@ -175,7 +175,8 @@ object MdirEdit {
 		
 	}
 import org.appdapter.core.matdat.OnlineSheetRepoSpec
-import org.appdapter.core.repo.{RepoSpec, DatabaseRepoSpec}
+import org.appdapter.core.repo.{RepoSpec}
+import org.appdapter.impl.store.{DatabaseRepoSpec}
 
 	def onlineSheetSpec() { 
 		// new OnlineSheetRepoSpec(REPO_SHEET_KEY, NAMESPACE_SHEET_NUM, DIRECTORY_SHEET_NUM, emptyFileResModelCLs);
