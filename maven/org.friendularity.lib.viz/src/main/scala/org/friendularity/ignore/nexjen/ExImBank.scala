@@ -27,7 +27,8 @@ import org.appdapter.impl.store.FancyRepo
 import org.cogchar.name.dir.{AssumedGraphDir, AssumedQueryDir}
 import org.appdapter.demo.DemoResources
 
-import org.appdapter.core.repo.{RepoSpec, DatabaseRepoSpec, DatabaseRepoFactoryLoader}
+import org.appdapter.core.repo.{RepoSpec}
+import org.appdapter.impl.store.{DatabaseRepoSpec, DatabaseRepoFactoryLoader}
 
 import com.hp.hpl.jena.query.{ Dataset, DatasetFactory, ReadWrite }
 
