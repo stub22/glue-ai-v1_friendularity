@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">HRK Android Viewer</string>
+    <string name="app_version">Alpha Rev.6</string>
+    <string name="alert_dialog_neutral">OK</string>
+    <string name="speech_problem_title">Speech Input Failed :(</string>
+    <string name="general_speech_req_problem">Oops, Google is reporting a problem with speech recognition! Try again in a minute.</string>
+    <string name="no_match_speech_req_problem">Google didn\'t understand you. Try again.</string>
+    <string name="no_recognizer_speech_req_problem">Voice Input Requested, but recognizer app not present</string>
+    <string name="invalid_input">Problem with your input</string>
+    <string name="negative_number">Your input appears to be negative, ignoring</string>
+    <string name="not_a_number">Your input was not recognized as a number</string>
+    <string name="speech_input_in_progress">The robot is listening!</string>
+
+</resources>

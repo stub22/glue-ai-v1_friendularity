@@ -1,0 +1,1091 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Skein rootNode="node-0x024B2C10" xmlns="http://www.logicalshift.org.uk/IF/Skein">
+  <generator>Inform 7 for Windows</generator>
+  <activeNode nodeId="node-0x024B2C10"/>
+  <item nodeId="node-0x024B2C10">
+    <command xml:space="preserve">- start -</command>
+    <result xml:space="preserve">GMTEACH1&#x000A;An Interactive Fiction by GLUE-AI&#x000A;Release 1 / Serial number 140120 / Inform 7 build 6G60 (I6/v6.32 lib 6/12N) SD&#x000A;&#x000A;Desk&#x000A;You are at the far end of a musical scale that you cant quite remember. A recent boy-band rise to fame prevents all further hopes of remembering any performance  other than their smash hit that is strangely reminiscent of the flight of the bumblebees.  A large Grumpy music teacher to the east emits a faint green light.  Type "test me" to win fast! &#x000A;&#x000A;A musician seems to have left his book of music performances lying out in plain view!&#x000A;&#x000A;You can also see a large Grumpy music teacher and a big colorfull midi device here.&#x000A;&#x000A;Q&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">NO</temporary>
+    <children>
+      <child nodeId="node-0x024B2C80"/>
+      <child nodeId="node-0x024B30E0"/>
+      <child nodeId="node-0x024B33F0"/>
+      <child nodeId="node-0x024B3690"/>
+      <child nodeId="node-0x024B3770"/>
+      <child nodeId="node-0x024B3A10"/>
+      <child nodeId="node-0x024B3BE0"/>
+      <child nodeId="node-0x024B4B30"/>
+      <child nodeId="node-0x024BAAA0"/>
+    </children>
+  </item>
+  <item nodeId="node-0x024B2C80">
+    <command xml:space="preserve">look</command>
+    <result xml:space="preserve">Desk&#x000A;You are at the far end of a musical scale that you cant quite remember. A recent boy-band rise to fame prevents all further hopes of remembering any tune  other than their smash hit that is strangely reminiscent of the flight of the bumblebees.  A large Grumpy music teacher to the east emits a faint green light.  Type "test me" to win fast! &#x000A;&#x000A;The wizard seems to have left his book of magic spells lying out in plain view!&#x000A;&#x000A;You can also see a large Grumpy music teacher and a big round beach ball here.&#x000A;&#x000A;Q&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x024B2CF0"/>
+      <child nodeId="node-0x024B2E40"/>
+    </children>
+  </item>
+  <item nodeId="node-0x024B2CF0">
+    <command xml:space="preserve">look at grumpy</command>
+    <result xml:space="preserve">He looks glumly back. There's still a purple-ish bruise on his cheekbone from the disaster Thursday afternoon.&#x000A;&#x000A;Q&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x024B2D60"/>
+    </children>
+  </item>
+  <item nodeId="node-0x024B2D60">
+    <command xml:space="preserve">look at ball</command>
+    <result xml:space="preserve">Big and round and bright red and yellow.&#x000A;&#x000A;Q&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x024B2DD0"/>
+    </children>
+  </item>
+  <item nodeId="node-0x024B2DD0">
+    <command xml:space="preserve">test me</command>
+    <result xml:space="preserve">(Testing.)&#x000A;&#x000A;&gt;[1] x hand&#x000A;It is the same green hand that has Inscribed in on the blackboard of the the words remember the scala of Sinbads Theme  to find your way forward."&#x000A;&#x000A;Q&gt;[2] push hand&#x000A;There is an aura of magic about the large grumpity hand that prevents you doing this.  Perhaps name the notes of the musical bar: say egbdf&#x000A;Q&gt;[3] say egbdf&#x000A;With an eerie musical scale, the hand falls to the side hearing songA&#x000A;Q&gt;[4] e&#x000A;&#x000A;Small stage&#x000A;A flight of steps leads down into the darkness.&#x000A;&#x000A;&gt;[5] d&#x000A;&#x000A;Dance Floor&#x000A;The Dance Floor is just the dance floor below the stage and west of the rest of the pub. An alien presence invades your mind and deep in your bones you hear a voice echo "Welcome brave soul. You have passed the first hurdle. Before you proceed, you must answer the following questions."&#x000A;&#x000A;What is your name?&#x000A;&#x000A;Enter your name &gt;[6] peter&#x000A;Welcome to this venture, peter&#x000A;&#x000A;How old are you?&#x000A;&#x000A;Please enter a number &gt;[7] 34&#x000A;Thank you: You are 34 for the remainder of your venture into the unknown&#x000A;&#x000A;Do you want to play as a male, female or neutral character&#x000A;&#x000A;Please enter M, F or N (Male or Female or Neuter) &gt;[8] m&#x000A;Thank you. You are Masculine gender&#x000A;&#x000A;Which of the following is your preferred character type:&#x000A;1 - Drummer&#x000A;2 - Keyboardist&#x000A;3 - Lipsyncer&#x000A;4 - Other Faker&#x000A;&#x000A;Please select a number between 1 and 4 &gt;[9] 3&#x000A;Thank you, you are playing as a Lipsyncer&#x000A;&#x000A;You have chosen:&#x000A;Name: peter&#x000A;Age: 34&#x000A;Sex: Masculine&#x000A;Character: Lipsyncer&#x000A;&#x000A;Are you happy with your responses?&#x000A;&#x000A;Please enter Y or N (Yes or No) &gt;[10] y&#x000A;Thank you. Venture into the unknown brave Lipsyncer&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+  </item>
+  <item nodeId="node-0x024B2E40">
+    <command xml:space="preserve">x ball</command>
+    <result xml:space="preserve">Big and round and bright red and yellow.&#x000A;&#x000A;Q&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x024B2EB0"/>
+    </children>
+  </item>
+  <item nodeId="node-0x024B2EB0">
+    <command xml:space="preserve">ball</command>
+    <result xml:space="preserve">Big and round and bright red and yellow.&#x000A;&#x000A;Q&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x024B2F20"/>
+    </children>
+  </item>
+  <item nodeId="node-0x024B2F20">
+    <command xml:space="preserve">look at ball</command>
+    <result xml:space="preserve">Big and round and bright red and yellow.&#x000A;&#x000A;Q&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x024B2F90"/>
+    </children>
+  </item>
+  <item nodeId="node-0x024B2F90">
+    <command xml:space="preserve">look at tea</command>
+    <result xml:space="preserve">&gt;LOOK AT TEACHER&#x000A;He looks glumly back. There's still a purple-ish bruise on his cheekbone from the disaster Thursday afternoon.&#x000A;&#x000A;Q&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x024B3000"/>
+    </children>
+  </item>
+  <item nodeId="node-0x024B3000">
+    <command xml:space="preserve">look at ba</command>
+    <result xml:space="preserve">You can't see any such thing.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x024B3070"/>
+    </children>
+  </item>
+  <item nodeId="node-0x024B3070">
+    <command xml:space="preserve">look at bal</command>
+    <result xml:space="preserve">&gt;LOOK AT BALL&#x000A;Big and round and bright red and yellow.&#x000A;&#x000A;Q&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+  </item>
+  <item nodeId="node-0x024B30E0">
+    <command xml:space="preserve">help</command>
+    <result xml:space="preserve">[Try typing LOOK for a description of your surroundings. Any directions indicate exits which you can use by typing EAST (or E). Some of the objects mentioned in the description might be worth a closer look with a command like EXAMINE BIG ROUND BEACH BALL. You can also TAKE or DROP some things, type INVENTORY to see a list of what you're carrying already, OPEN or CLOSE containers or doors, and so on.]&#x000A;&#x000A;[To stop these messages entirely, type NOVICE OFF.&#x000A;]&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>YES</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x024B3150"/>
+    </children>
+  </item>
+  <item nodeId="node-0x024B3150">
+    <command xml:space="preserve">look</command>
+    <result xml:space="preserve">Desk&#x000A;You are at the far end of a musical scale that you cant quite remember. A recent boy-band rise to fame prevents all further hopes of remembering any tune  other than their smash hit that is strangely reminiscent of the flight of the bumblebees.  A large Grumpy music teacher to the east emits a faint green light.  Type "test me" to win fast! &#x000A;&#x000A;The wizard seems to have left his book of magic spells lying out in plain view!&#x000A;&#x000A;You can also see a large Grumpy music teacher and a big round beach ball here.&#x000A;&#x000A;Q&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x024B31C0"/>
+    </children>
+  </item>
+  <item nodeId="node-0x024B31C0">
+    <command xml:space="preserve">verbs</command>
+    <result xml:space="preserve">That's not a verb I recognise.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x024B3230"/>
+    </children>
+  </item>
+  <item nodeId="node-0x024B3230">
+    <command xml:space="preserve">verb</command>
+    <result xml:space="preserve">That's not a verb I recognise.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x024B32A0"/>
+    </children>
+  </item>
+  <item nodeId="node-0x024B32A0">
+    <command xml:space="preserve">jump</command>
+    <result xml:space="preserve">You jump on the spot, fruitlessly.&#x000A;&#x000A;Q&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x024B3310"/>
+    </children>
+  </item>
+  <item nodeId="node-0x024B3310">
+    <command xml:space="preserve">e</command>
+    <result xml:space="preserve">(first opening the large hand)&#x000A;There is an aura of magic about the large grumpity hand that prevents you doing this.  Perhaps name the notes of the musical bar: say egbdf&#x000A;Q&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x024B3380"/>
+    </children>
+  </item>
+  <item nodeId="node-0x024B3380">
+    <command xml:space="preserve">eat</command>
+    <result xml:space="preserve">(your beanscript)&#x000A;He's plainly inedible.&#x000A;&#x000A;Q&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+  </item>
+  <item nodeId="node-0x024B33F0">
+    <command xml:space="preserve">unlock hand</command>
+    <result xml:space="preserve">There is an aura of magic about the large grumpity hand that prevents you doing this.  Perhaps name the notes of the musical bar: say egbdf&#x000A;Q&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x024B3460"/>
+    </children>
+  </item>
+  <item nodeId="node-0x024B3460">
+    <command xml:space="preserve"></command>
+    <result xml:space="preserve">I beg your pardon?&#x000A;&#x000A;Q&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x024B34D0"/>
+    </children>
+  </item>
+  <item nodeId="node-0x024B34D0">
+    <command xml:space="preserve"></command>
+    <result xml:space="preserve">I beg your pardon?&#x000A;&#x000A;Q&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x024B3540"/>
+    </children>
+  </item>
+  <item nodeId="node-0x024B3540">
+    <command xml:space="preserve"></command>
+    <result xml:space="preserve">I beg your pardon?&#x000A;&#x000A;Q&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x024B35B0"/>
+    </children>
+  </item>
+  <item nodeId="node-0x024B35B0">
+    <command xml:space="preserve">look</command>
+    <result xml:space="preserve">Desk&#x000A;You are at the far end of a musical scale that you cant quite remember. A recent boy-band rise to fame prevents all further hopes of remembering any tune  other than their smash hit that is strangely reminiscent of the flight of the bumblebees.  A large Grumpy music teacher to the east emits a faint green light.  Type "test me" to win fast! &#x000A;&#x000A;The wizard seems to have left his book of magic spells lying out in plain view!&#x000A;&#x000A;You can also see a large Grumpy music teacher and a big round beach ball here.&#x000A;&#x000A;Q&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x024B3620"/>
+    </children>
+  </item>
+  <item nodeId="node-0x024B3620">
+    <command xml:space="preserve">w</command>
+    <result xml:space="preserve">You can't go that way.&#x000A;&#x000A;Q&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+  </item>
+  <item nodeId="node-0x024B3690">
+    <command xml:space="preserve">e</command>
+    <result xml:space="preserve">(first opening the large hand)&#x000A;(first unlocking the large hand)&#x000A;There is an aura of magic about the large grumpity hand that prevents you doing this.  Perhaps name the notes of the musical bar: say egbdf&#x000A;Q&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x024B3700"/>
+    </children>
+  </item>
+  <item nodeId="node-0x024B3700">
+    <command xml:space="preserve">Include Rewrite the Command Line by Ron Newcomb.</command>
+    <result xml:space="preserve">That's not a verb I recognise.&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+  </item>
+  <item nodeId="node-0x024B3770">
+    <command xml:space="preserve">fly</command>
+    <result xml:space="preserve">That's not a verb I recognise.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x024B37E0"/>
+    </children>
+  </item>
+  <item nodeId="node-0x024B37E0">
+    <command xml:space="preserve">think</command>
+    <result xml:space="preserve">What a good idea.&#x000A;&#x000A;Q&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x024B3850"/>
+    </children>
+  </item>
+  <item nodeId="node-0x024B3850">
+    <command xml:space="preserve">think it</command>
+    <result xml:space="preserve">I only understood you as far as wanting to think.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x024B38C0"/>
+    </children>
+  </item>
+  <item nodeId="node-0x024B38C0">
+    <command xml:space="preserve">ok</command>
+    <result xml:space="preserve">That's not a verb I recognise.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x024B3930"/>
+    </children>
+  </item>
+  <item nodeId="node-0x024B3930">
+    <command xml:space="preserve">think about it</command>
+    <result xml:space="preserve">I only understood you as far as wanting to think.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x024B39A0"/>
+    </children>
+  </item>
+  <item nodeId="node-0x024B39A0">
+    <command xml:space="preserve">think about it</command>
+    <result xml:space="preserve">I only understood you as far as wanting to think.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+  </item>
+  <item nodeId="node-0x024B3A10">
+    <command xml:space="preserve">look at t</command>
+    <result xml:space="preserve">You can't see any such thing.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x024B3A80"/>
+    </children>
+  </item>
+  <item nodeId="node-0x024B3A80">
+    <command xml:space="preserve">look at tea</command>
+    <result xml:space="preserve">&gt;LOOK AT TEACHER&#x000A;He looks glumly back. There's still a purple-ish bruise on his cheekbone from the disaster Thursday afternoon.&#x000A;&#x000A;Q&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+  </item>
+  <item nodeId="node-0x024B3BE0">
+    <command xml:space="preserve">l</command>
+    <result xml:space="preserve">Desk&#x000A;You are at the far end of a musical scale that you cant quite remember. A recent boy-band rise to fame prevents all further hopes of remembering any performance  other than their smash hit that is strangely reminiscent of the flight of the bumblebees.  A large Grumpy music teacher to the east emits a faint green light.  Type "test me" to win fast! &#x000A;&#x000A;A musician seems to have left his book of music performances lying out in plain view!&#x000A;&#x000A;You can also see a large Grumpy music teacher and a big colorfull midi device here.&#x000A;&#x000A;Q&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>YES</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x024B3C50"/>
+      <child nodeId="node-0x024B42E0"/>
+      <child nodeId="node-0x02452B10"/>
+    </children>
+  </item>
+  <item nodeId="node-0x024B3C50">
+    <command xml:space="preserve">L</command>
+    <result xml:space="preserve">-- Created using Adventure Book for Inform 7 by Edward Griffiths&#x000A; Based on Adventure Book by Jon Ingold&#x000A; Command Summary:&#x000A; LOOK / L          Repeat the last page&#x000A; INVENTORY / I     Show player inventory&#x000A; SAVE / S          Save the game&#x000A; RESTORE / R       Restore the game&#x000A; QUIT / Q          Quit the game&#x000A; RESTART / X       Restart the game&#x000A; HELP / H          This text&#x000A; &#x000A; Select options by their number.  To use an object, type its name as it appears in the inventory list.&#x000A;&#x000A;*** 1) Continue.&#x000A;&#x000A;Q&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x024B3CC0"/>
+    </children>
+  </item>
+  <item nodeId="node-0x024B3CC0">
+    <command xml:space="preserve"></command>
+    <result xml:space="preserve">&gt;LOOK&#x000A;-- Created using Adventure Book for Inform 7 by Edward Griffiths&#x000A; Based on Adventure Book by Jon Ingold&#x000A; Command Summary:&#x000A; LOOK / L          Repeat the last page&#x000A; INVENTORY / I     Show player inventory&#x000A; SAVE / S          Save the game&#x000A; RESTORE / R       Restore the game&#x000A; QUIT / Q          Quit the game&#x000A; RESTART / X       Restart the game&#x000A; HELP / H          This text&#x000A; &#x000A; Select options by their number.  To use an object, type its name as it appears in the inventory list.&#x000A;&#x000A;*** 1) Continue.&#x000A;&#x000A;Q&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x024B3D30"/>
+    </children>
+  </item>
+  <item nodeId="node-0x024B3D30">
+    <command xml:space="preserve"></command>
+    <result xml:space="preserve">&gt;LOOK&#x000A;-- Created using Adventure Book for Inform 7 by Edward Griffiths&#x000A; Based on Adventure Book by Jon Ingold&#x000A; Command Summary:&#x000A; LOOK / L          Repeat the last page&#x000A; INVENTORY / I     Show player inventory&#x000A; SAVE / S          Save the game&#x000A; RESTORE / R       Restore the game&#x000A; QUIT / Q          Quit the game&#x000A; RESTART / X       Restart the game&#x000A; HELP / H          This text&#x000A; &#x000A; Select options by their number.  To use an object, type its name as it appears in the inventory list.&#x000A;&#x000A;*** 1) Continue.&#x000A;&#x000A;Q&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x024B3DA0"/>
+    </children>
+  </item>
+  <item nodeId="node-0x024B3DA0">
+    <command xml:space="preserve"></command>
+    <result xml:space="preserve">&gt;LOOK&#x000A;-- Created using Adventure Book for Inform 7 by Edward Griffiths&#x000A; Based on Adventure Book by Jon Ingold&#x000A; Command Summary:&#x000A; LOOK / L          Repeat the last page&#x000A; INVENTORY / I     Show player inventory&#x000A; SAVE / S          Save the game&#x000A; RESTORE / R       Restore the game&#x000A; QUIT / Q          Quit the game&#x000A; RESTART / X       Restart the game&#x000A; HELP / H          This text&#x000A; &#x000A; Select options by their number.  To use an object, type its name as it appears in the inventory list.&#x000A;&#x000A;*** 1) Continue.&#x000A;&#x000A;Q&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x024B3E10"/>
+    </children>
+  </item>
+  <item nodeId="node-0x024B3E10">
+    <command xml:space="preserve">x</command>
+    <result xml:space="preserve">Are you sure you want to restart?</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x024B3E80"/>
+    </children>
+  </item>
+  <item nodeId="node-0x024B3E80">
+    <command xml:space="preserve">y</command>
+    <result xml:space="preserve">GMTEACH&#x000A;An Interactive Fiction by GLUE-AI&#x000A;Release 1 / Serial number 140120 / Inform 7 build 6G60 (I6/v6.32 lib 6/12N) SD&#x000A;&#x000A;-- Created using Adventure Book for Inform 7 by Edward Griffiths&#x000A; Based on Adventure Book by Jon Ingold&#x000A; Command Summary:&#x000A; LOOK / L          Repeat the last page&#x000A; INVENTORY / I     Show player inventory&#x000A; SAVE / S          Save the game&#x000A; RESTORE / R       Restore the game&#x000A; QUIT / Q          Quit the game&#x000A; RESTART / X       Restart the game&#x000A; HELP / H          This text&#x000A; &#x000A; Select options by their number.  To use an object, type its name as it appears in the inventory list.&#x000A;&#x000A;*** 1) Continue.&#x000A;&#x000A;Q&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x024B3EF0"/>
+    </children>
+  </item>
+  <item nodeId="node-0x024B3EF0">
+    <command xml:space="preserve">i</command>
+    <result xml:space="preserve">You are carrying:&#x000A;  your beanscript&#x000A;&#x000A;Q&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x024B3F60"/>
+    </children>
+  </item>
+  <item nodeId="node-0x024B3F60">
+    <command xml:space="preserve">l</command>
+    <result xml:space="preserve">-- Created using Adventure Book for Inform 7 by Edward Griffiths&#x000A; Based on Adventure Book by Jon Ingold&#x000A; Command Summary:&#x000A; LOOK / L          Repeat the last page&#x000A; INVENTORY / I     Show player inventory&#x000A; SAVE / S          Save the game&#x000A; RESTORE / R       Restore the game&#x000A; QUIT / Q          Quit the game&#x000A; RESTART / X       Restart the game&#x000A; HELP / H          This text&#x000A; &#x000A; Select options by their number.  To use an object, type its name as it appears in the inventory list.&#x000A;&#x000A;*** 1) Continue.&#x000A;&#x000A;Q&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x024B3FD0"/>
+    </children>
+  </item>
+  <item nodeId="node-0x024B3FD0">
+    <command xml:space="preserve"></command>
+    <result xml:space="preserve">&gt;LOOK&#x000A;-- Created using Adventure Book for Inform 7 by Edward Griffiths&#x000A; Based on Adventure Book by Jon Ingold&#x000A; Command Summary:&#x000A; LOOK / L          Repeat the last page&#x000A; INVENTORY / I     Show player inventory&#x000A; SAVE / S          Save the game&#x000A; RESTORE / R       Restore the game&#x000A; QUIT / Q          Quit the game&#x000A; RESTART / X       Restart the game&#x000A; HELP / H          This text&#x000A; &#x000A; Select options by their number.  To use an object, type its name as it appears in the inventory list.&#x000A;&#x000A;*** 1) Continue.&#x000A;&#x000A;Q&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x024B4040"/>
+    </children>
+  </item>
+  <item nodeId="node-0x024B4040">
+    <command xml:space="preserve">1</command>
+    <result xml:space="preserve">Q&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x024B40B0"/>
+    </children>
+  </item>
+  <item nodeId="node-0x024B40B0">
+    <command xml:space="preserve">2</command>
+    <result xml:space="preserve">Q&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x024B4120"/>
+    </children>
+  </item>
+  <item nodeId="node-0x024B4120">
+    <command xml:space="preserve">l</command>
+    <result xml:space="preserve">Q&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x024B4190"/>
+    </children>
+  </item>
+  <item nodeId="node-0x024B4190">
+    <command xml:space="preserve">1</command>
+    <result xml:space="preserve">Q&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x024B4200"/>
+    </children>
+  </item>
+  <item nodeId="node-0x024B4200">
+    <command xml:space="preserve">1</command>
+    <result xml:space="preserve">Q&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x024B4270"/>
+    </children>
+  </item>
+  <item nodeId="node-0x024B4270">
+    <command xml:space="preserve">s</command>
+    <result xml:space="preserve">Save failed.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+  </item>
+  <item nodeId="node-0x024B42E0">
+    <command xml:space="preserve">w</command>
+    <result xml:space="preserve">You can't go that way.&#x000A;&#x000A;From here, the only way out is to the east.&#x000A;&#x000A;Q&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x024B4350"/>
+    </children>
+  </item>
+  <item nodeId="node-0x024B4350">
+    <command xml:space="preserve">e</command>
+    <result xml:space="preserve">(first opening the large hand)&#x000A;(first unlocking the large hand)&#x000A;There is an aura of magic about the large grumpity hand that prevents you doing this.  Perhaps name the notes of the musical bar: say egbdf&#x000A;Q&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x024B43C0"/>
+    </children>
+  </item>
+  <item nodeId="node-0x024B43C0">
+    <command xml:space="preserve">d</command>
+    <result xml:space="preserve">You can't go that way.&#x000A;&#x000A;From here, the only way out is to the east.&#x000A;&#x000A;Q&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x024B4430"/>
+    </children>
+  </item>
+  <item nodeId="node-0x024B4430">
+    <command xml:space="preserve">say egbdf</command>
+    <result xml:space="preserve">With an eerie musical scale, the hand falls to the side hearing songA&#x000A;Q&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x024B44A0"/>
+    </children>
+  </item>
+  <item nodeId="node-0x024B44A0">
+    <command xml:space="preserve">look</command>
+    <result xml:space="preserve">Desk&#x000A;You are at the far end of a musical scale that you cant quite remember. A recent boy-band rise to fame prevents all further hopes of remembering any tune  other than their smash hit that is strangely reminiscent of the flight of the bumblebees.  A large Grumpy music teacher to the east emits a faint green light.  Type "test me" to win fast! &#x000A;&#x000A;The wizard seems to have left his book of magic spells lying out in plain view!&#x000A;&#x000A;You can also see a large Grumpy music teacher and a big round beach ball here.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x024B4510"/>
+    </children>
+  </item>
+  <item nodeId="node-0x024B4510">
+    <command xml:space="preserve">e</command>
+    <result xml:space="preserve">Small stage&#x000A;A flight of steps leads down into the darkness.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x024B4580"/>
+    </children>
+  </item>
+  <item nodeId="node-0x024B4580">
+    <command xml:space="preserve">d</command>
+    <result xml:space="preserve">Dance Floor&#x000A;The Dance Floor is just the dance floor below the stage and west of the rest of the pub. An alien presence invades your mind and deep in your bones you hear a voice echo "Welcome brave soul. You have passed the first hurdle. Before you proceed, you must answer the following questions."&#x000A;&#x000A;What is your name?&#x000A;&#x000A;Enter your name &gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x024B45F0"/>
+    </children>
+  </item>
+  <item nodeId="node-0x024B45F0">
+    <command xml:space="preserve">test me</command>
+    <result xml:space="preserve">I think we will simply refer to you as test&#x000A;&#x000A;How old are you?&#x000A;&#x000A;Please enter a number &gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x024B4660"/>
+    </children>
+  </item>
+  <item nodeId="node-0x024B4660">
+    <command xml:space="preserve"></command>
+    <result xml:space="preserve">Please enter a number &gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x024B46D0"/>
+    </children>
+  </item>
+  <item nodeId="node-0x024B46D0">
+    <command xml:space="preserve"></command>
+    <result xml:space="preserve">Please enter a number &gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x024B4740"/>
+    </children>
+  </item>
+  <item nodeId="node-0x024B4740">
+    <command xml:space="preserve">quit</command>
+    <result xml:space="preserve">Please enter a number &gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x024B47B0"/>
+    </children>
+  </item>
+  <item nodeId="node-0x024B47B0">
+    <command xml:space="preserve">exit</command>
+    <result xml:space="preserve">Please enter a number &gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x024B4820"/>
+    </children>
+  </item>
+  <item nodeId="node-0x024B4820">
+    <command xml:space="preserve">1</command>
+    <result xml:space="preserve">It seems improbable that one of such tender years would be venturing so far.&#x000A;&#x000A;Please enter a number &gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x024B4890"/>
+    </children>
+  </item>
+  <item nodeId="node-0x024B4890">
+    <command xml:space="preserve">1</command>
+    <result xml:space="preserve">It seems improbable that one of such tender years would be venturing so far.&#x000A;&#x000A;Please enter a number &gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x024B4900"/>
+    </children>
+  </item>
+  <item nodeId="node-0x024B4900">
+    <command xml:space="preserve">2</command>
+    <result xml:space="preserve">It seems improbable that one of such tender years would be venturing so far.&#x000A;&#x000A;Please enter a number &gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x024B4970"/>
+    </children>
+  </item>
+  <item nodeId="node-0x024B4970">
+    <command xml:space="preserve">7</command>
+    <result xml:space="preserve">Thank you: You are 7 for the remainder of your venture into the unknown&#x000A;&#x000A;Do you want to play as a male, female or neutral character&#x000A;&#x000A;Please enter M, F or N (Male or Female or Neuter) &gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x024B49E0"/>
+    </children>
+  </item>
+  <item nodeId="node-0x024B49E0">
+    <command xml:space="preserve"></command>
+    <result xml:space="preserve">Please enter M, F or N (Male or Female or Neuter) &gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x024B4A50"/>
+    </children>
+  </item>
+  <item nodeId="node-0x024B4A50">
+    <command xml:space="preserve"></command>
+    <result xml:space="preserve">Please enter M, F or N (Male or Female or Neuter) &gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x024B4AC0"/>
+    </children>
+  </item>
+  <item nodeId="node-0x024B4AC0">
+    <command xml:space="preserve">quit</command>
+    <result xml:space="preserve">Please enter M, F or N (Male or Female or Neuter) &gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+  </item>
+  <item nodeId="node-0x02452B10">
+    <command xml:space="preserve">performances</command>
+    <result xml:space="preserve">You are the master of the following performances:&#x000A;nifty:   The nifty performance causes objects to light up.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x02452B80"/>
+    </children>
+  </item>
+  <item nodeId="node-0x02452B80">
+    <command xml:space="preserve">play nifty on midi</command>
+    <result xml:space="preserve">The device bounces several times and then comes to rest.&#x000A;&#x000A;Q&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x02452BF0"/>
+    </children>
+  </item>
+  <item nodeId="node-0x02452BF0">
+    <command xml:space="preserve">play nifty on midi</command>
+    <result xml:space="preserve">The device bounces several times and then comes to rest.&#x000A;&#x000A;Q&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x07B9D4F8"/>
+    </children>
+  </item>
+  <item nodeId="node-0x07B9D4F8">
+    <command xml:space="preserve">play frotz on midi</command>
+    <result xml:space="preserve">I'm not quite sure what you meant by that.&#x000A;&#x000A;Q&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x07B9D568"/>
+    </children>
+  </item>
+  <item nodeId="node-0x07B9D568">
+    <command xml:space="preserve">frotz</command>
+    <result xml:space="preserve">I'm not quite sure what you meant by that.&#x000A;&#x000A;Q&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x07B9D5D8"/>
+    </children>
+  </item>
+  <item nodeId="node-0x07B9D5D8">
+    <command xml:space="preserve">nitfol</command>
+    <result xml:space="preserve">I'm not quite sure what you meant by that.&#x000A;&#x000A;Q&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x07B9D648"/>
+    </children>
+  </item>
+  <item nodeId="node-0x07B9D648">
+    <command xml:space="preserve">play nitfol</command>
+    <result xml:space="preserve">I'm not quite sure what you meant by that.&#x000A;&#x000A;Q&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x07B9D6B8"/>
+    </children>
+  </item>
+  <item nodeId="node-0x07B9D6B8">
+    <command xml:space="preserve">play nitfol on mini</command>
+    <result xml:space="preserve">You can't see any such thing.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x07B9D728"/>
+    </children>
+  </item>
+  <item nodeId="node-0x07B9D728">
+    <command xml:space="preserve">play nitfol on midi</command>
+    <result xml:space="preserve">I'm not quite sure what you meant by that.&#x000A;&#x000A;Q&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x07B9D798"/>
+    </children>
+  </item>
+  <item nodeId="node-0x07B9D798">
+    <command xml:space="preserve">play nitfol on device</command>
+    <result xml:space="preserve">I'm not quite sure what you meant by that.&#x000A;&#x000A;Q&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x07B9D808"/>
+    </children>
+  </item>
+  <item nodeId="node-0x07B9D808">
+    <command xml:space="preserve">play nitfol at device</command>
+    <result xml:space="preserve">I didn't understand that sentence.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x07B9D878"/>
+    </children>
+  </item>
+  <item nodeId="node-0x07B9D878">
+    <command xml:space="preserve">play nitfol on device</command>
+    <result xml:space="preserve">I'm not quite sure what you meant by that.&#x000A;&#x000A;Q&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x07B9D8E8"/>
+    </children>
+  </item>
+  <item nodeId="node-0x07B9D8E8">
+    <command xml:space="preserve">test learning</command>
+    <result xml:space="preserve">(Testing.)&#x000A;&#x000A;&gt;[1] performances&#x000A;You are the master of the following performances:&#x000A;nifty:   The nifty performance causes objects to light up.&#x000A;&#x000A;&gt;[2] look up nitfol in book&#x000A;You find the page in the book that describes the nitfol performance, and commit the performance to memory.&#x000A;&#x000A;Q&gt;[3] performances&#x000A;You are the master of the following performances:&#x000A;nifty:   The nifty performance causes objects to light up.&#x000A;nitfol:   The nitfol performance does something completely different.&#x000A;&#x000A;&gt;[4] nitfol&#x000A;You play the nitfol performance, but nothing happens.&#x000A;&#x000A;Q&gt;[5] nitfol the device&#x000A;You play nitfol on the big colorfull midi device, but nothing happens.&#x000A;&#x000A;Q&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x07B9D958"/>
+    </children>
+  </item>
+  <item nodeId="node-0x07B9D958">
+    <command xml:space="preserve">performances</command>
+    <result xml:space="preserve">You are the master of the following performances:&#x000A;nifty:   The nifty performance causes objects to light up.&#x000A;nitfol:   The nitfol performance does something completely different.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x07B9D9C8"/>
+    </children>
+  </item>
+  <item nodeId="node-0x07B9D9C8">
+    <command xml:space="preserve">nitfol</command>
+    <result xml:space="preserve">You play the nitfol performance, but nothing happens.&#x000A;&#x000A;Q&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x07B9DA38"/>
+    </children>
+  </item>
+  <item nodeId="node-0x07B9DA38">
+    <command xml:space="preserve">nitfol on midi</command>
+    <result xml:space="preserve">That's neither a verb I recognise nor a keyword you can use right now.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x07B9DAA8"/>
+    </children>
+  </item>
+  <item nodeId="node-0x07B9DAA8">
+    <command xml:space="preserve">nitfol on device</command>
+    <result xml:space="preserve">That's neither a verb I recognise nor a keyword you can use right now.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x07B9DB18"/>
+    </children>
+  </item>
+  <item nodeId="node-0x07B9DB18">
+    <command xml:space="preserve">play nitfol on device</command>
+    <result xml:space="preserve">You play nitfol on the big colorfull midi device, but nothing happens.&#x000A;&#x000A;Q&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x07B9DB88"/>
+    </children>
+  </item>
+  <item nodeId="node-0x07B9DB88">
+    <command xml:space="preserve">learn frotz from book</command>
+    <result xml:space="preserve">You find the page in the book that describes the frotz performance, and commit the performance to memory.&#x000A;&#x000A;Q&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x07B9DBF8"/>
+    </children>
+  </item>
+  <item nodeId="node-0x07B9DBF8">
+    <command xml:space="preserve">performances</command>
+    <result xml:space="preserve">You are the master of the following performances:&#x000A;nifty:   The nifty performance causes objects to light up.&#x000A;frotz:   The frotz performance causes spherical objects to quiver.&#x000A;nitfol:   The nitfol performance does something completely different.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x07B9DC68"/>
+    </children>
+  </item>
+  <item nodeId="node-0x07B9DC68">
+    <command xml:space="preserve">play frotz on device</command>
+    <result xml:space="preserve">The device bounces several times and then comes to rest.&#x000A;&#x000A;Q&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+  </item>
+  <item nodeId="node-0x024B4B30">
+    <command xml:space="preserve">w</command>
+    <result xml:space="preserve">You can't go that way.&#x000A;&#x000A;From here, the only way out is to the east.&#x000A;&#x000A;Q&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x024BA8E0"/>
+    </children>
+  </item>
+  <item nodeId="node-0x024BA8E0">
+    <command xml:space="preserve">e</command>
+    <result xml:space="preserve">(first opening the large hand)&#x000A;(first unlocking the large hand)&#x000A;There is an aura of magic about the large grumpity hand that prevents you doing this.  Perhaps name the notes of the musical bar: say egbdf&#x000A;Q&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x024BA950"/>
+    </children>
+  </item>
+  <item nodeId="node-0x024BA950">
+    <command xml:space="preserve">jump</command>
+    <result xml:space="preserve">Jumping would have no effect, or that's not the way to do so.&#x000A;&#x000A;Q&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x024BA9C0"/>
+    </children>
+  </item>
+  <item nodeId="node-0x024BA9C0">
+    <command xml:space="preserve">foo</command>
+    <result xml:space="preserve">That's neither a verb I recognise nor a keyword you can use right now.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x024BAA30"/>
+    </children>
+  </item>
+  <item nodeId="node-0x024BAA30">
+    <command xml:space="preserve">look</command>
+    <result xml:space="preserve">Desk&#x000A;You are at the far end of a musical scale that you cant quite remember. A recent boy-band rise to fame prevents all further hopes of remembering any tune  other than their smash hit that is strangely reminiscent of the flight of the bumblebees.  A large Grumpy music teacher to the east emits a faint green light.  Type "test me" to win fast! &#x000A;&#x000A;The wizard seems to have left his book of magic spells lying out in plain view!&#x000A;&#x000A;You can also see a large Grumpy music teacher and a big round beach ball here.&#x000A;&#x000A;Q&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+  </item>
+  <item nodeId="node-0x024BAAA0">
+    <command xml:space="preserve">look under</command>
+    <result xml:space="preserve">(your beanscript)&#x000A;You find nothing of interest.&#x000A;&#x000A;Q&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x024BAB10"/>
+    </children>
+  </item>
+  <item nodeId="node-0x024BAB10">
+    <command xml:space="preserve">look under teacher</command>
+    <result xml:space="preserve">You find nothing of interest.&#x000A;&#x000A;Q&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x024BAB80"/>
+    </children>
+  </item>
+  <item nodeId="node-0x024BAB80">
+    <command xml:space="preserve">look under me</command>
+    <result xml:space="preserve">You find nothing of interest.&#x000A;&#x000A;Q&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x024BABF0"/>
+    </children>
+  </item>
+  <item nodeId="node-0x024BABF0">
+    <command xml:space="preserve">l</command>
+    <result xml:space="preserve">Desk&#x000A;You are at the far end of a musical scale that you cant quite remember. A recent boy-band rise to fame prevents all further hopes of remembering any tune  other than their smash hit that is strangely reminiscent of the flight of the bumblebees.  A large Grumpy music teacher to the east emits a faint green light.  Type "test me" to win fast! &#x000A;&#x000A;The wizard seems to have left his book of magic spells lying out in plain view!&#x000A;&#x000A;You can also see a large Grumpy music teacher and a big round beach ball here.&#x000A;&#x000A;Q&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x024BAC60"/>
+    </children>
+  </item>
+  <item nodeId="node-0x024BAC60">
+    <command xml:space="preserve">ball</command>
+    <result xml:space="preserve">Big and round and bright red and yellow.&#x000A;&#x000A;Q&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x024BACD0"/>
+    </children>
+  </item>
+  <item nodeId="node-0x024BACD0">
+    <command xml:space="preserve">take ball</command>
+    <result xml:space="preserve">Taken.&#x000A;&#x000A;Q&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+  </item>
+</Skein>
