@@ -15,7 +15,11 @@
 	<description>All libraries and OSGi bundles</description>
 	
 	<repositories>
-		
+		<!-- 	Explicit reference to Maven central ... ensures it is always checked first (we think).	-->		
+		<repository>
+			<id>maven-central</id>
+			<url>http://repo.maven.apache.org/maven2/</url>
+		</repository>			
 		<repository>
 			<id>sonatype-public</id>
 			<!-- Needed for snapshots -->
@@ -29,7 +33,19 @@
 			<url>https://oss.sonatype.org/content/groups/staging/</url>
 		</repository>
 	</repositories>
-	
+	<pluginRepositories>
+		<!-- 	Explicit reference to Maven central ... ensures it is always checked first (we think).	-->
+		<pluginRepository>
+			<id>maven-central</id>
+			<url>http://repo.maven.apache.org/maven2/</url>
+		</pluginRepository>			
+		<pluginRepository>
+			<!-- Necessary to find JFlux plugins during an empty-repo build from SNAPSHOTs -->
+			<id>sonatype-public</id>
+			<name>sonatype public</name>
+			<url>https://oss.sonatype.org/content/groups/public/</url>
+		</pluginRepository>		
+	</pluginRepositories>  	
 	<modules>
         <module>../org.friendularity.bundle.headless.animation</module>
         <module>../org.friendularity.bundle.headless.messaging</module>
