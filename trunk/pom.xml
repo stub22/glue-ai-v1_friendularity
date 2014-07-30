@@ -100,6 +100,40 @@ Version-less parent will be allowed in Maven 3.1.
 		<developerConnection>scm:svn:https://subversion.assembla.com/svn/friendularity/trunk</developerConnection>
 		<url>https://www.assembla.com/code/friendularity/subversion/nodes/trunk</url>
 	</scm>
+	
+	<repositories>
+		<!-- 	Explicit reference to Maven central ... ensures it is always checked first (we think).	-->		
+		<repository>
+			<id>maven-central</id>
+			<url>http://repo.maven.apache.org/maven2/</url>
+		</repository>			
+		<repository>
+			<id>sonatype-public</id>
+			<!-- Needed for snapshots -->
+			<name>sonatype public</name>
+			<url>https://oss.sonatype.org/content/groups/public/</url>
+		</repository>
+		<!-- Needed during staging tests -->
+		<repository>
+			<id>sonatype-staging</id>
+			<name>sonatype staging</name>
+			<url>https://oss.sonatype.org/content/groups/staging/</url>
+		</repository>
+	</repositories>
+	<pluginRepositories>
+		<!-- 	Explicit reference to Maven central ... ensures it is always checked first (we think).	-->
+		<pluginRepository>
+			<id>maven-central</id>
+			<url>http://repo.maven.apache.org/maven2/</url>
+		</pluginRepository>			
+		<pluginRepository>
+			<!-- Necessary to find JFlux plugins during an empty-repo build from SNAPSHOTs -->
+			<id>sonatype-public</id>
+			<name>sonatype public</name>
+			<url>https://oss.sonatype.org/content/groups/public/</url>
+		</pluginRepository>		
+	</pluginRepositories>  		
+	
 	<build>
 		
 		<pluginManagement>
