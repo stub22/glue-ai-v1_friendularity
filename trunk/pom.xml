@@ -87,6 +87,7 @@
             <version.maven.compiler.plugin>2.3.2</version.maven.compiler.plugin>
             <version.maven.jar.plugin>2.3.2</version.maven.jar.plugin>
             <version.maven.resources.plugin>2.4.3</version.maven.resources.plugin>
+            <version.maven.scala.plugin>2.15.2</version.maven.scala.plugin>
             <version.maven.surefire.plugin>2.9</version.maven.surefire.plugin>
             <version.org.apache.felix.main>4.2.1</version.org.apache.felix.main>
             <!-- vscaladoc settings -->
@@ -642,6 +643,7 @@
 				<plugin>
 					<groupId>org.scala-tools</groupId>
 					<artifactId>maven-scala-plugin</artifactId>
+                                        <version>${version.maven.scala.plugin}</version>
 					<configuration>
                                         <!-- On Frogbait this option drops Scala proj build time about 20% -->
 						<jvmArgs>
