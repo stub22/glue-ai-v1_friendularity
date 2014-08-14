@@ -23,63 +23,48 @@
 		<dependency>
 			<groupId>org.cogchar</groupId>
 			<artifactId>org.cogchar.bundle.app.puma</artifactId>
-			<version>${cogchar.version}</version>
 		</dependency>
 		<!-- o.a.b.gui allows us to use DemoBrowser object inspector -->
 		<dependency>
 			<groupId>org.appdapter</groupId>
 			<artifactId>org.appdapter.bundle.gui</artifactId>
-			<version>${appdapter.version}</version>
 		</dependency>		
 		<dependency>
 			<groupId>org.cogchar</groupId>
 			<artifactId>org.cogchar.bundle.app.vworld.startup</artifactId>
-			<version>${cogchar.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.cogchar</groupId>
 			<artifactId>org.cogchar.bundle.render.resources</artifactId>
-			<version>${cogchar.version}</version>
 			<scope>runtime</scope>
 		</dependency>
-
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>org.friendularity.bundle.headless.speech</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-			
-		
 		<dependency>
 			<groupId>org.rwshop</groupId>
 			<artifactId>org.rwshop.swing.common</artifactId>
-			<version>${rwshop.version}</version>
 		</dependency>		
-		
-		
 		<dependency>
 			<groupId>org.mechio</groupId>
 			<artifactId>org.mechio.api.vision</artifactId>
-			<version>${mechio.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.mechio</groupId>
 			<artifactId>org.mechio.impl.vision</artifactId>
-			<version>${mechio.version}</version>
 		</dependency>
-
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>org.friendularity.bundle.jvision</artifactId>
 			<version>${project.version}</version>
 		</dependency>	
-
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>org.friendularity.lib.viz</artifactId>
 			<version>${project.version}</version>
 		</dependency>				
-
 	</dependencies>
 
 	<build>
@@ -87,7 +72,6 @@
 			<plugin>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
-				<version>2.3.7</version>
 				<extensions>true</extensions>
 				<configuration>
 					<instructions>
@@ -114,16 +98,10 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.3.2</version>
-				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
-				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.scala-tools</groupId>
 				<artifactId>maven-scala-plugin</artifactId>
-				<version>2.15.2</version>
 				<executions>
 					<execution>
 						<goals>
@@ -145,8 +123,6 @@
 				<dependency>
 					<groupId>org.apache.felix</groupId>
 					<artifactId>org.apache.felix.main</artifactId>
-					<version>4.2.1</version>
-					<scope>provided</scope>
 				</dependency>
                 <!-- To include a shell:
                 <dependency>
@@ -161,7 +137,6 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-antrun-plugin</artifactId>
-						<version>1.6</version>
 						<executions>
 							<execution>
 								<id>compile</id>
@@ -197,7 +172,6 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-assembly-plugin</artifactId>
-						<version>2.2</version>
 						<executions>
 							<execution>
 								<id>create-executable-jar</id>
@@ -223,8 +197,6 @@
 				<dependency>
 					<groupId>org.apache.felix</groupId>
 					<artifactId>org.apache.felix.main</artifactId>
-					<version>4.2.1</version>
-					<scope>provided</scope>
 				</dependency>
                 <!-- org.apache.felix:org.apache.felix.gogo.shell:0.6.1 useless from Maven since stdin is swallowed -->
 			</dependencies>
@@ -233,7 +205,6 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-antrun-plugin</artifactId>
-						<version>1.6</version>
 						<configuration>
 							<target>
 								<!-- Friendularity custom :  Note the log4j.debug flag

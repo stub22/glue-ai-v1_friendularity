@@ -1,65 +1,50 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <parent>
         <groupId>org.friendularity</groupId>
         <artifactId>org.friendularity.modules.main</artifactId>
         <version>1.0.5-SNAPSHOT</version>
         <relativePath>../org.friendularity.modules.main/pom.xml</relativePath>
     </parent>
-
     <groupId>org.friendularity</groupId>
     <artifactId>org.friendularity.demo.spec.connection</artifactId>
     <packaging>bundle</packaging>
 
     <name>${project.artifactId} - OSGi Bundle</name>
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
-
     <dependencies>
-
         <dependency>
             <groupId>org.appdapter</groupId>
             <artifactId>ext.bundle.apache_qpid_010</artifactId>
-            <version>1.0.5</version>
         </dependency>
         <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.core</artifactId>
-            <version>4.3.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.appdapter</groupId>
             <artifactId>org.appdapter.bundle.core</artifactId>
-            <version>${appdapter.version}</version>
         </dependency>
         <dependency>
             <groupId>org.appdapter</groupId>
             <artifactId>ext.bundle.jena_all_2_10_1</artifactId>
-            <version>${appdapter.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jflux</groupId>
             <artifactId>org.jflux.api.common.rk</artifactId>
-            <version>${jflux.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jflux</groupId>
             <artifactId>org.jflux.api.core</artifactId>
-            <version>${jflux.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jflux</groupId>
             <artifactId>org.jflux.api.services</artifactId>
-            <version>${jflux.version}</version>
         </dependency>
         <dependency>
 			<groupId>org.jflux</groupId>
 			<artifactId>org.jflux.impl.registry.osgi</artifactId>
-			<version>${jflux.version}</version>
 		</dependency>
     </dependencies>
 
@@ -68,7 +53,6 @@
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
-                <version>2.3.7</version>
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
@@ -87,8 +71,6 @@
                 <dependency>
                     <groupId>org.apache.felix</groupId>
                     <artifactId>org.apache.felix.main</artifactId>
-                    <version>4.0.3</version>
-                    <scope>provided</scope>
                 </dependency>
                 <!-- To include a shell:
                 <dependency>
@@ -103,7 +85,6 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-antrun-plugin</artifactId>
-                        <version>1.7</version>
                         <executions>
                             <execution>
                                 <id>compile</id>
@@ -139,7 +120,6 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-assembly-plugin</artifactId>
-                        <version>2.3</version>
                         <executions>
                             <execution>
                                 <id>create-executable-jar</id>
@@ -165,8 +145,6 @@
                 <dependency>
                     <groupId>org.apache.felix</groupId>
                     <artifactId>org.apache.felix.main</artifactId>
-                    <version>4.0.3</version>
-                    <scope>provided</scope>
                 </dependency>
                 <!-- org.apache.felix:org.apache.felix.gogo.shell:0.6.1 useless from Maven since stdin is swallowed -->
             </dependencies>
@@ -175,7 +153,6 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-antrun-plugin</artifactId>
-                        <version>1.7</version>
                         <configuration>
                             <target>
                                 <property name="vm.args" value="" />

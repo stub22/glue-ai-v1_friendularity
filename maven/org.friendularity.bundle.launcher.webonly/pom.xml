@@ -8,17 +8,15 @@
 		<version>1.0.5-SNAPSHOT</version>
 		<relativePath>../org.friendularity.modules.main/pom.xml</relativePath>
 	</parent>	
-	
+
 	<artifactId>org.friendularity.bundle.launcher.webonly</artifactId>	
-
 	<packaging>bundle</packaging>
-
 	<name>${project.artifactId} - OSGi</name>
-	
+
 	<!-- This project is a launcher for Web feature tests.
 	-->
 	<dependencies>
-			<!-- Note that o.f.project.root and o.f.modules.main must also have been built and avail in local repo,
+		<!-- Note that o.f.project.root and o.f.modules.main must also have been built and avail in local repo,
 				in order for variables like "cogchar.version" to resolve when applied *transitively*
 				(The built main+root is not required to resolve the variables used directly in this pom; 
 					those are allowed to come from the source-tree poms).
@@ -26,9 +24,7 @@
 		<dependency>
 			<groupId>org.cogchar</groupId>
 			<artifactId>ext.bundle.ops4j.pax.web</artifactId>
-			<version>${cogchar.version}</version>
 		</dependency>
-
 
 		<!-- Regular "full" Lift-based webapp from Cogchar, which we expect PAX services above to find and 
 		launch to HTTP for us.  
@@ -38,13 +34,12 @@
 		<dependency>
 			<groupId>org.cogchar</groupId>
 			<artifactId>org.cogchar.bundle.bind.lift</artifactId>
-			<version>${cogchar.version}</version>
-		 <exclusions>
-		  <exclusion>
-		   <artifactId>javax.servlet</artifactId>
-		   <groupId>org.apache.felix</groupId>
-		  </exclusion>
-		 </exclusions>
+			<exclusions>
+				<exclusion>
+					<artifactId>javax.servlet</artifactId>
+					<groupId>org.apache.felix</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<!-- Above is the regular lift webapp, below is an experimental minimal lift webapp.
@@ -53,7 +48,7 @@
 		https://github.com/lift/framework/blob/master/web/webkit/src/main/scala/net/liftweb/http/LiftRules.scala
 		o.f.b.xweb.minlift - runs a set of technology feature tests demonstrating that Lift Webapp functions work for us.
 		-->
-		
+
 		<dependency>
 			<groupId>org.friendularity</groupId>
 			<artifactId>org.friendularity.bundle.xweb.minlift</artifactId>
@@ -65,7 +60,7 @@
 			<artifactId>org.friendularity.bundle.xweb.xgra</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		
+
 		<!-- fustdb is not working yet
 		<dependency>
 			<groupId>org.friendularity</groupId>
@@ -84,14 +79,12 @@
 		<dependency>
 			<groupId>org.cogchar</groupId>
 			<artifactId>org.cogchar.bundle.core</artifactId>
-			<version>${cogchar.version}</version>
 		</dependency>		
-        <dependency>
-            <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.core</artifactId>
-            <version>4.3.0</version>
-            <scope>provided</scope>
-        </dependency>		
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.core</artifactId>
+			<scope>provided</scope>
+		</dependency>		
 	</dependencies>
 
 	<build>
@@ -99,11 +92,9 @@
 			<plugin>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
-				<version>2.3.7</version>
 				<extensions>true</extensions>
 				<configuration>
 					<instructions>
-
 						<Export-Package>etc.*</Export-Package>						
 						<Bundle-Activator>org.friendularity.bundle.lifter.Activator</Bundle-Activator>
 					</instructions>
@@ -147,7 +138,6 @@
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>
 					<artifactId>lifecycle-mapping</artifactId>
-					<version>1.0.0</version>
 					<configuration>
 						<lifecycleMappingMetadata>
 							<pluginExecutions>
@@ -185,10 +175,8 @@
 				<dependency>
 					<groupId>org.apache.felix</groupId>
 					<artifactId>org.apache.felix.main</artifactId>
-					<version>4.2.1</version>
-					<scope>provided</scope>
 				</dependency>
-                <!-- To include a shell:
+				<!-- To include a shell:
                 <dependency>
                     <groupId>org.apache.felix</groupId>
                     <artifactId>org.apache.felix.gogo.shell</artifactId>
@@ -201,7 +189,6 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-antrun-plugin</artifactId>
-						<version>1.6</version>
 						<executions>
 							<execution>
 								<id>compile</id>
@@ -237,7 +224,6 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-assembly-plugin</artifactId>
-						<version>2.2</version>
 						<executions>
 							<execution>
 								<id>create-executable-jar</id>
@@ -263,17 +249,14 @@
 				<dependency>
 					<groupId>org.apache.felix</groupId>
 					<artifactId>org.apache.felix.main</artifactId>
-					<version>4.2.1</version>
-					<scope>provided</scope>
 				</dependency>
-                <!-- org.apache.felix:org.apache.felix.gogo.shell:0.6.1 useless from Maven since stdin is swallowed -->
+				<!-- org.apache.felix:org.apache.felix.gogo.shell:0.6.1 useless from Maven since stdin is swallowed -->
 			</dependencies>
 			<build>
 				<plugins>
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-antrun-plugin</artifactId>
-						<version>1.6</version>
 						<configuration>
 							<target>
 								<property name="vm.args" value="" />
@@ -291,7 +274,7 @@
 									<entry key="org.osgi.framework.storage" value="${project.build.directory}${file.separator}felix-cache" />
 									<entry key="org.osgi.framework.bootdelegation" value="*" />
 									<!-- Allow sun.misc package to be used by LWJGL -->
-                                    <!-- org.w3c.dom.* are missing from default.properties in felix 4.2.1, they are present in 3.0.7 -->
+									<!-- org.w3c.dom.* are missing from default.properties in felix 4.2.1, they are present in 3.0.7 -->
 									<entry key="org.osgi.framework.system.packages.extra" value="sun.misc, org.w3c.dom.css, org.w3c.dom.html, org.w3c.dom.stylesheets, org.w3c.dom.traversal, org.w3c.dom.ranges, org.w3c.dom.views, org.w3c.dom.xpath" />
 								</propertyfile>
 								<makeurl property="run.properties.url" file="${project.build.directory}/run.properties" />

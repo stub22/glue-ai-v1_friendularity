@@ -18,40 +18,31 @@
 		<dependency>
 			<groupId>org.rwshop</groupId>
 			<artifactId>org.rwshop.swing.vision</artifactId>
-			<version>${rwshop.version}</version>
 		</dependency>			
 		<dependency>
 			<groupId>org.jflux</groupId>
 			<artifactId>org.jflux.api.messaging.rk</artifactId>
-			<version>${jflux.version}</version>
 		</dependency>
-
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>org.friendularity.bundle.headless.messaging</artifactId>
 			<version>${project.version}</version>
 		</dependency>	
-			
 		<dependency>
 			<groupId>org.mechio</groupId>
 			<artifactId>org.mechio.api.vision</artifactId>
-			<version>${mechio.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.mechio</groupId>
 			<artifactId>org.mechio.impl.vision</artifactId>
-			<version>${mechio.version}</version>
 		</dependency>
-	
 		<dependency>
 			<groupId>org.cogchar</groupId>
 			<artifactId>org.cogchar.bundle.bind.mechio</artifactId>
-			<version>${cogchar.version}</version>
 		</dependency>		
 		<dependency>
 			<groupId>org.apache.felix</groupId>
 			<artifactId>org.osgi.core</artifactId>
-			<version>1.4.0</version>
 			<scope>provided</scope>
 		</dependency>		
 	</dependencies>
@@ -61,7 +52,6 @@
 			<plugin>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
-				<version>2.3.7</version>
 				<extensions>true</extensions>
 				<configuration>
 					<instructions>
@@ -79,8 +69,6 @@
 				<dependency>
 					<groupId>org.apache.felix</groupId>
 					<artifactId>org.apache.felix.main</artifactId>
-					<version>4.2.1</version>
-					<scope>provided</scope>
 				</dependency>
 				<!-- To include a shell:
 				<dependency>
@@ -95,7 +83,6 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-antrun-plugin</artifactId>
-						<version>1.6</version>
 						<executions>
 							<execution>
 								<id>compile</id>
@@ -131,7 +118,6 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-assembly-plugin</artifactId>
-						<version>2.2</version>
 						<executions>
 							<execution>
 								<id>create-executable-jar</id>
@@ -157,8 +143,6 @@
 				<dependency>
 					<groupId>org.apache.felix</groupId>
 					<artifactId>org.apache.felix.main</artifactId>
-					<version>4.2.1</version>
-					<scope>provided</scope>
 				</dependency>
 				<!-- org.apache.felix:org.apache.felix.gogo.shell:0.6.1 useless from Maven since stdin is swallowed -->
 			</dependencies>
@@ -167,7 +151,6 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-antrun-plugin</artifactId>
-						<version>1.6</version>
 						<configuration>
 							<target>
 								<property name="vm.args" value="" />

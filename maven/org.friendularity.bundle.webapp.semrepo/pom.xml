@@ -1,7 +1,6 @@
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-
 	<parent>
 		<groupId>org.friendularity</groupId>
 		<artifactId>org.friendularity.modules.main</artifactId>
@@ -11,12 +10,10 @@
 	
 	<artifactId>org.friendularity.bundle.webapp.semrepo</artifactId>	
 
-
     <!--
             When we use "bundle" packaging, then we get a ".jar" file which is easily loaded as a bundle.	
             PAX services are able to find the webapp within this bundle.
     -->
-
 	<packaging>bundle</packaging>
 
 	<!-- Important: Establish the Web URL, which is used in OSGi spec
@@ -38,38 +35,29 @@
 		<dependency>
 			<groupId>org.apache.felix</groupId>
 			<artifactId>org.osgi.core</artifactId>
-			<version>1.4.0</version>
 			<scope>provided</scope>
 		</dependency>
-				
 		<dependency>
 			<!-- Our Lift-based webapp, which we expect PAX services above to find and launch to HTTP for us -->
 			<groupId>org.cogchar</groupId>
 			<artifactId>org.cogchar.bundle.bind.lift</artifactId>
-			<version>${cogchar.version}</version>
             <scope>provided</scope> <!--the demoserv uses this  compile-->
 		</dependency>
-
 		<dependency>
 			<groupId>org.cogchar</groupId>
 			<artifactId>org.cogchar.bundle.bind.joseki</artifactId>
-			<version>${cogchar.version}</version>
             <scope>provided</scope> <!--the demoserv uses this  compile-->
 		</dependency>   
-
-
 		<!-- We want the same deps as CCRK, but not the full PUMA boot peformed by CCRK activator.
 		-->
 		<dependency>
 			<groupId>org.cogchar</groupId>
 			<artifactId>org.cogchar.bundle.app.puma</artifactId>
-			<version>${cogchar.version}</version>
             <!--<scope>provided</scope> the demoserv uses this  compile-->
 		</dependency>
 		<dependency>
 			<groupId>org.cogchar</groupId>
 			<artifactId>org.cogchar.bundle.render.resources</artifactId>
-			<version>${cogchar.version}</version>
 		</dependency>
         <!--
 		<dependency>
@@ -105,7 +93,6 @@
                 <!-- Reconfigured based on http://leshazlewood.com/2010/09/08/osgi-maven-pax-and-web-applications/  -->
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
-				<version>2.3.7</version>
 				<extensions>true</extensions>
                 <configuration>
                     <instructions>
