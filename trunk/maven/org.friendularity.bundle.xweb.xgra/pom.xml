@@ -10,7 +10,6 @@
     <packaging>bundle</packaging>
 
 	<name>${project.artifactId} - Webapp in OSGi bundle</name>
-
 	
 	<!-- Set the baseURL for http access to be boostraped by PAX-Web (or equiv) OSGi discovery -->
 	<properties>
@@ -27,16 +26,12 @@
 		<dependency>
 			<groupId>org.cogchar</groupId>
 			<artifactId>ext.bundle.lift</artifactId>
-			<version>${cogchar.version}</version>
 		</dependency>		
-			
         <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.core</artifactId>
-            <version>4.3.0</version>
             <scope>provided</scope>
         </dependency>
-		
     </dependencies>
 
     <build>
@@ -49,7 +44,6 @@
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
-                <version>2.3.7</version>
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
@@ -90,7 +84,6 @@
 			<plugin>
 				<groupId>org.scala-tools</groupId>
 				<artifactId>maven-scala-plugin</artifactId>
-				<version>2.14.3</version>
 				<configuration>
 					<charset>${project.build.sourceEncoding}</charset>
 					<jvmArgs>
@@ -117,8 +110,6 @@
                 <dependency>
                     <groupId>org.apache.felix</groupId>
                     <artifactId>org.apache.felix.main</artifactId>
-                    <version>4.0.3</version>
-                    <scope>provided</scope>
                 </dependency>
                 <!-- To include a shell:
                 <dependency>
@@ -129,12 +120,10 @@
                 -->
             </dependencies>
             <build>
-			
                 <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-antrun-plugin</artifactId>
-                        <version>1.7</version>
                         <executions>
                             <execution>
                                 <id>compile</id>
@@ -170,7 +159,6 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-assembly-plugin</artifactId>
-                        <version>2.3</version>
                         <executions>
                             <execution>
                                 <id>create-executable-jar</id>
@@ -196,8 +184,6 @@
                 <dependency>
                     <groupId>org.apache.felix</groupId>
                     <artifactId>org.apache.felix.main</artifactId>
-                    <version>4.0.3</version>
-                    <scope>provided</scope>
                 </dependency>
                 <!-- org.apache.felix:org.apache.felix.gogo.shell:0.6.1 useless from Maven since stdin is swallowed -->
             </dependencies>
@@ -206,7 +192,6 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-antrun-plugin</artifactId>
-                        <version>1.7</version>
                         <configuration>
                             <target>
                                 <property name="vm.args" value="" />

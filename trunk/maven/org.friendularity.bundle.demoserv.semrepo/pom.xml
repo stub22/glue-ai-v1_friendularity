@@ -9,11 +9,8 @@
         <relativePath>../org.friendularity.modules.main/pom.xml</relativePath>
     </parent>	
 	
-
     <artifactId>org.friendularity.bundle.demoserv.semrepo</artifactId>	
-
 	<packaging>bundle</packaging>
-
 	<name>${project.artifactId} - OSGi</name>
 
 	<properties>
@@ -36,19 +33,13 @@
 		<dependency>
 			<groupId>org.apache.felix</groupId>
 			<artifactId>org.osgi.core</artifactId>
-			<version>1.4.0</version>
 			<scope>provided</scope>
 		</dependency>
-	
-
         <dependency><!-- Our PAX-JETTY service -->
             <groupId>org.appdapter</groupId>
             <artifactId>ext.bundle.jetty_osgi</artifactId>
-            <version>${appdapter.version}</version>
             <scope>runtime</scope>
         </dependency>
-				
-				
         <!-- Our Lift-based webapp, which we expect PAX services above to find and launch to HTTP for us  -->
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -56,27 +47,21 @@
             <version>${project.version}</version>
             <scope>runtime</scope>
         </dependency>   
-       
         <dependency>
             <groupId>org.cogchar</groupId>
             <artifactId>org.cogchar.bundle.bind.joseki</artifactId>
-            <version>${cogchar.version}</version>
             <scope>compile</scope>
         </dependency>   
 		<dependency>
 			<groupId>org.cogchar</groupId>
 			<artifactId>org.cogchar.bundle.bind.lift</artifactId>
-			<version>${cogchar.version}</version>
             <scope>provided</scope>  <!--  *is* "provided" above by org.friendularity.bundle.webapp.semrepo at "runtime"-->
 		</dependency> 
-       
-
 		<!-- We want the same deps as CCRK, but not the full PUMA boot peformed by CCRK activator.
 		-->
 		<dependency>
 			<groupId>org.cogchar</groupId>
 			<artifactId>org.cogchar.bundle.app.puma</artifactId>
-			<version>${cogchar.version}</version>
 		</dependency>
         <!--
 		<dependency>
@@ -105,7 +90,6 @@
 			<plugin>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
-				<version>2.3.7</version>
 				<extensions>true</extensions>
                 <configuration>
                     <instructions>
@@ -115,7 +99,6 @@
             ${questionalbe.depends},
 
             -->
-
                         <Bundle-Activator>${project.artifactId}.Activator</Bundle-Activator>                        
                         <!-- 
 
@@ -133,7 +116,6 @@
 					</instructions>
 				</configuration>
 			</plugin>
-
 		</plugins>	  
 	</build>
 </project>

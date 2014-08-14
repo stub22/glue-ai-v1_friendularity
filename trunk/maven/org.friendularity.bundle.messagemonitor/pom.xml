@@ -11,91 +11,69 @@
     <artifactId>org.friendularity.bundle.messagemonitor</artifactId>
     <name>org.friendularity.bundle.messagemonitor OSGi Bundle</name>
     <packaging>bundle</packaging>
-    
-    <repositories>
-        <repository>
-            <id>com.springsource.repository.bundles.external</id>
-            <name>Spring EBR External Release Repository</name>
-            <url>http://repository.springsource.com/maven/bundles/external</url>
-        </repository>
-    </repositories>
 
     <dependencies>
         <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.core</artifactId>
-            <version>4.3.1</version>
+            <!--version>4.3.1</version-->
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.mechio</groupId>
             <artifactId>org.mechio.impl.animation</artifactId>
-            <version>${mechio.version}</version>
         </dependency>
         <dependency>
             <groupId>org.mechio</groupId>
             <artifactId>org.mechio.impl.audio</artifactId>
-            <version>${mechio.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jflux</groupId>
             <artifactId>org.jflux.impl.messaging.rk</artifactId>
-            <version>${jflux.version}</version>
         </dependency>
         <dependency>
             <groupId>org.mechio</groupId>
             <artifactId>org.mechio.impl.motion</artifactId>
-            <version>${mechio.version}</version>
         </dependency>
         <dependency>
             <groupId>org.mechio</groupId>
             <artifactId>org.mechio.impl.motion.dynamixel</artifactId>
-            <version>${mechio.version}</version>
         </dependency>
         <dependency>
             <groupId>org.mechio</groupId>
             <artifactId>org.mechio.impl.motion.pololu</artifactId>
-            <version>${mechio.version}</version>
         </dependency>
         <dependency>
             <groupId>org.mechio</groupId>
             <artifactId>org.mechio.impl.sensor</artifactId>
-            <version>${mechio.version}</version>
         </dependency>
         <dependency>
             <groupId>org.mechio</groupId>
             <artifactId>org.mechio.impl.speech</artifactId>
-            <version>${mechio.version}</version>
         </dependency>
         <dependency>
             <groupId>org.mechio</groupId>
             <artifactId>org.mechio.impl.speechrec</artifactId>
-            <version>${mechio.version}</version>
         </dependency>
         <dependency>
             <groupId>org.mechio</groupId>
             <artifactId>org.mechio.impl.vision</artifactId>
-            <version>${mechio.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jflux</groupId>
             <artifactId>org.jflux.swing.messaging</artifactId>
-            <version>${jflux.version}</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>1.7.5</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
-            <version>1.7.5</version>
         </dependency>
         <dependency>
             <groupId>org.appdapter</groupId>
             <artifactId>ext.bundle.osgi.common</artifactId>
-            <version>${appdapter.version}</version>
         </dependency>
     </dependencies>
 
@@ -104,7 +82,6 @@
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
-                <version>2.3.7</version>
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
@@ -123,8 +100,6 @@
                 <dependency>
                     <groupId>org.apache.felix</groupId>
                     <artifactId>org.apache.felix.main</artifactId>
-                    <version>4.0.3</version>
-                    <scope>provided</scope>
                 </dependency>
                 <!-- To include a shell:
                 <dependency>
@@ -139,7 +114,6 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-antrun-plugin</artifactId>
-                        <version>1.7</version>
                         <executions>
                             <execution>
                                 <id>compile</id>
@@ -175,7 +149,6 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-assembly-plugin</artifactId>
-                        <version>2.3</version>
                         <executions>
                             <execution>
                                 <id>create-executable-jar</id>
@@ -201,8 +174,6 @@
                 <dependency>
                     <groupId>org.apache.felix</groupId>
                     <artifactId>org.apache.felix.main</artifactId>
-                    <version>4.0.3</version>
-                    <scope>provided</scope>
                 </dependency>
                 <!-- org.apache.felix:org.apache.felix.gogo.shell:0.6.1 useless from Maven since stdin is swallowed -->
             </dependencies>
@@ -211,7 +182,6 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-antrun-plugin</artifactId>
-                        <version>1.7</version>
                         <configuration>
                             <target>
                                 <property name="vm.args" value="" />

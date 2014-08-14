@@ -13,7 +13,7 @@
 	<packaging>bundle</packaging>
 
 	<name>${project.artifactId} - OSGi</name>
-	
+
 	<dependencies>
 		<!-- Our OSGi-enabled web container, using Jetty 
 				Discovery happens when Ops4J Pax web server starts up, 
@@ -24,42 +24,32 @@
 			<!-- Our full Lift-based webapp, which we expect PAX services above to find and launch to HTTP for us -->
 			<groupId>org.cogchar</groupId>
 			<artifactId>org.cogchar.bundle.bind.lift</artifactId>
-			<version>${cogchar.version}</version>
 		</dependency>
 		<!-- 
 		o.f.b.xweb.minlift - runs a set of technology feature tests demonstrating that Lift Webapp functions work for us.
 		-->
-		
+
 		<dependency>
 			<groupId>org.friendularity</groupId>
 			<artifactId>org.friendularity.bundle.xweb.minlift</artifactId>
 			<version>${project.version}</version>
 		</dependency>			
-		
 		<dependency>
 			<!-- Our Joseki-based webapp, discovered by PAX services. -->
 			<groupId>org.cogchar</groupId>
 			<artifactId>org.cogchar.bundle.bind.joseki</artifactId>
-			<version>${cogchar.version}</version>
 		</dependency>
-		
 		<dependency>
 			<groupId>org.cogchar</groupId>
 			<artifactId>ext.bundle.ops4j.pax.web</artifactId>
-			<version>${cogchar.version}</version>
 		</dependency>		
-		
 
-		
-	<!--  
+		<!--  
 			
 From the release notes of maven 2.0.9:
 MNG-1412 / MNG-3111 introduced deterministic ordering of dependencies on the classpath. 
 ...The ordering is now preserved from your pom, with dependencies added by inheritence added last. 
 	-->
-
-	
-	
 		<dependency>
 			<!-- Note that o.f.project.root and o.f.modules.main must also have been built and avail in local repo,
 				in order for variables like "mechio.version" to resolve when applied *transitively*
@@ -69,29 +59,21 @@ MNG-1412 / MNG-3111 introduced deterministic ordering of dependencies on the cla
 			<groupId>${project.groupId}</groupId>
 			<artifactId>org.friendularity.bundle.demo.ccmio</artifactId>
 			<version>${project.version}</version>
-		
 		</dependency>
-
-		
 		<dependency>
 			<groupId>org.osgi</groupId>
 			<artifactId>org.osgi.core</artifactId>
-			<version>4.3.0</version>
 			<scope>provided</scope>
 		</dependency>
-		
-
-
 	</dependencies>
 
-<!-- Only one edit from archetype boilerplate below this point, so far, to allow sun.misc. -->
+	<!-- Only one edit from archetype boilerplate below this point, so far, to allow sun.misc. -->
 
 	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
-				<version>2.3.7</version>
 				<extensions>true</extensions>
 				<configuration>
 					<instructions>
@@ -109,10 +91,8 @@ MNG-1412 / MNG-3111 introduced deterministic ordering of dependencies on the cla
 				<dependency>
 					<groupId>org.apache.felix</groupId>
 					<artifactId>org.apache.felix.main</artifactId>
-					<version>4.2.1</version>
-					<scope>provided</scope>
 				</dependency>
-                <!-- To include a shell:
+				<!-- To include a shell:
                 <dependency>
                     <groupId>org.apache.felix</groupId>
                     <artifactId>org.apache.felix.gogo.shell</artifactId>
@@ -125,7 +105,6 @@ MNG-1412 / MNG-3111 introduced deterministic ordering of dependencies on the cla
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-antrun-plugin</artifactId>
-						<version>1.6</version>
 						<executions>
 							<execution>
 								<id>compile</id>
@@ -161,7 +140,6 @@ MNG-1412 / MNG-3111 introduced deterministic ordering of dependencies on the cla
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-assembly-plugin</artifactId>
-						<version>2.2</version>
 						<executions>
 							<execution>
 								<id>create-executable-jar</id>
@@ -187,17 +165,14 @@ MNG-1412 / MNG-3111 introduced deterministic ordering of dependencies on the cla
 				<dependency>
 					<groupId>org.apache.felix</groupId>
 					<artifactId>org.apache.felix.main</artifactId>
-					<version>4.2.1</version>
-					<scope>provided</scope>
 				</dependency>
-                <!-- org.apache.felix:org.apache.felix.gogo.shell:0.6.1 useless from Maven since stdin is swallowed -->
+				<!-- org.apache.felix:org.apache.felix.gogo.shell:0.6.1 useless from Maven since stdin is swallowed -->
 			</dependencies>
 			<build>
 				<plugins>
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-antrun-plugin</artifactId>
-						<version>1.6</version>
 						<configuration>
 							<target>
 								<property name="vm.args" value="-XX:MaxPermSize=192M" />
@@ -208,23 +183,23 @@ MNG-1412 / MNG-3111 introduced deterministic ordering of dependencies on the cla
 								<makeurl property="urls" separator=" ">
 									<path path="${plugins.jars}" />
 									<path location="${project.build.directory}/${project.build.finalName}.jar" />
-									
+
 								</makeurl>
 								<propertyfile file="${project.build.directory}/run.properties">
 									<entry key="felix.auto.start" value="${urls}" />
 									<entry key="felix.auto.deploy.action" value="uninstall,install,update,start" />
 									<entry key="org.osgi.framework.storage" value="${project.build.directory}${file.separator}felix-cache" />
 									<entry key="org.osgi.framework.bootdelegation" value="*" />
-									
+
 									<!-- Friendularity edit:  Allow sun.misc package to be used by LWJGL -->
-                                    <!-- org.w3c.dom.* are missing from default.properties in felix 4.2.1, they are present in 3.0.7 -->
+									<!-- org.w3c.dom.* are missing from default.properties in felix 4.2.1, they are present in 3.0.7 -->
 									<entry key="org.osgi.framework.system.packages.extra" value="sun.misc, org.w3c.dom.css, org.w3c.dom.html, org.w3c.dom.stylesheets, org.w3c.dom.traversal, org.w3c.dom.ranges, org.w3c.dom.views, org.w3c.dom.xpath" />
 									<!-- end Friendularity edit (above and below the edit is boilerplate from archetype) -->
-									
+
 								</propertyfile>
 								<makeurl property="run.properties.url" file="${project.build.directory}/run.properties" />
 								<java fork="true" jar="${maven.dependency.org.apache.felix.org.apache.felix.main.jar.path}">
-									
+
 									<sysproperty key="felix.config.properties" value="${run.properties.url}" />
 									<!-- Friendularity edit:  Allow Jetty to listen for remote clients 
 										Seems to not be necessary under Jetty version bundled by PAX,

@@ -10,9 +10,7 @@
 	</parent>	
 	
 	<artifactId>org.friendularity.bundle.repo</artifactId>	
-
 	<packaging>bundle</packaging>
-
 	<name>${project.artifactId} - OSGi</name>
 	<!-- Important: Establish the Web URL, which is used in OSGi spec
 			Web-ContextPath instruction far below, in maven-bundle-plugin.instructions
@@ -39,22 +37,17 @@
 		<dependency>
 			<groupId>org.cogchar</groupId>
 			<artifactId>ext.bundle.ops4j.pax.web</artifactId>
-			<version>${cogchar.version}</version>
 		</dependency>
-				
 		<dependency>
 			<!-- Our Lift-based webapp, which we expect PAX services above to find and launch to HTTP for us -->
 			<groupId>org.cogchar</groupId>
 			<artifactId>org.cogchar.bundle.bind.lift</artifactId>
-			<version>${cogchar.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.cogchar</groupId>
 			<artifactId>org.cogchar.bundle.bind.joseki</artifactId>
-			<version>${cogchar.version}</version>
 		</dependency>		
 		<!-- We want the same deps as CCRK, but not the full PUMA boot peformed by CCRK activator.
-		
 		<dependency>
 			<groupId>org.cogchar</groupId>
 			<artifactId>org.cogchar.bundle.app.puma</artifactId>
@@ -75,7 +68,6 @@
 			<plugin>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
-				<version>2.3.7</version>
 				<extensions>true</extensions>
 				<configuration>
 					<instructions>

@@ -11,63 +11,28 @@
 
 	<packaging>jar</packaging>
 	<name>${project.artifactId} - Experiment in java/graph binding</name>	
-	
-	<repositories>
-		<repository>
-			<id>semweb4j-repo</id>
-			<name>FZI Maven Repository</name>
-			<url>http://mavenrepo.fzi.de/semweb4j.org/repo</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-	</repositories>	
 
-	<pluginRepositories>
-		<pluginRepository>
-			<id>semweb4j-repo</id>
-			<name>FZI Maven Repository</name>
-			<url>http://mavenrepo.fzi.de/semweb4j.org/repo</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</pluginRepository>
-	</pluginRepositories>
 	<dependencies>
-		
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.11</version>
-			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.sourceforge.owlapi</groupId>
 			<artifactId>owlapi-distribution</artifactId>
-			<version>3.5.0</version>
 		</dependency>	
 		<dependency>
 			<groupId>org.semweb4j</groupId>
 			<artifactId>rdfreactor.dist</artifactId>
-			<version>4.8.3</version>
 			<type>pom</type>
 		</dependency>
-		
 		<dependency>
 			<groupId>org.semweb4j</groupId>
 			<artifactId>rdf2go.impl.jena</artifactId>
-			<version>4.8.3</version>
 		</dependency>
 		<dependency>
             <groupId>org.appdapter</groupId>
             <artifactId>org.appdapter.bundle.core</artifactId>
-            <version>${appdapter.version}</version>
         </dependency>		
 		
 		<!--  Appears included Sesame version requires Java 7, for java.nio.charset.StandardCharsets
@@ -80,13 +45,10 @@
 		-->
 	</dependencies>
 	<build>
-
 		<plugins>
 			<plugin>
 				<groupId>org.semweb4j</groupId>
 				<artifactId>rdfreactor-maven-plugin</artifactId>
-				<version>4.8.3</version>
-
 				<executions>
 					<execution>
 						<id>bindingTest</id>
@@ -145,7 +107,6 @@ https://code.google.com/p/semweb4j/source/browse/trunk/org.semweb4j.rdfreactor.m
 			<plugin>
 				<groupId>org.scala-tools</groupId>
 				<artifactId>maven-scala-plugin</artifactId>
-				<version>2.15.2</version>
 				<executions>
 					<execution>
 						<goals>
