@@ -27,6 +27,7 @@
 		<groupId>com.jme3</groupId>
 		<artifactId>jME3-core</artifactId>
 		<scope>provided</scope>	
+		<version>${jmonkey.version}</version>
 	</dependency>
 	<dependency>
 		<groupId>org.jdesktop</groupId>
