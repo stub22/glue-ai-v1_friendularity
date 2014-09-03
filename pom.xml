@@ -109,6 +109,7 @@
         
         <dependencyManagement>
             <dependencies>
+<!--				
                 <dependency>
                     <groupId>com.jme3</groupId>
                     <artifactId>eventbus</artifactId>
@@ -244,6 +245,8 @@
                     <artifactId>xmlpull-xpp3</artifactId>
                     <version>${jmonkey.version}</version>
                 </dependency>
+				
+	-->
                 <dependency>
                     <groupId>junit</groupId>
                     <artifactId>junit</artifactId>
