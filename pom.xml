@@ -70,7 +70,7 @@
             <maven.compiler.target>1.6</maven.compiler.target>
             <netbeans.version>RELEASE721</netbeans.version>
             <netbeans.hint.license>friendularity-apache20</netbeans.hint.license>
-            <opengl.jmonkey.version>1.0.4</opengl.jmonkey.version>
+            
             <org.jdesktop>1.2.1</org.jdesktop>
             <org.osgi.version>4.3.0</org.osgi.version>
             <org.semweb4j.version>4.8.3</org.semweb4j.version>	
@@ -314,7 +314,7 @@
                 <dependency>
                     <groupId>org.cogchar</groupId>
                     <artifactId>ext.bundle.opengl.jmonkey</artifactId>
-                    <version>${opengl.jmonkey.version}</version>
+                    <version>${cogchar.version}</version>
                 </dependency>
                 <dependency>
                     <groupId>org.cogchar</groupId>
