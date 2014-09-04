@@ -79,8 +79,10 @@
             <project.reporting.outputEncoding>${project.build.sourceEncoding}</project.reporting.outputEncoding>
             <scala.version>2.10.2</scala.version>
             <slf4j.version>1.7.5</slf4j.version>
+            <wagon.webdav.version>1.0-beta-7</wagon.webdav.version>
             <!-- Plugins version -->
             <version.lifecycle.mapping>1.0.0</version.lifecycle.mapping>
+            <version.license.maven.plugin>1.7</version.license.maven.plugin>
             <version.maven.antrun.plugin>1.6</version.maven.antrun.plugin>
             <version.maven.assembly.plugin>2.2</version.maven.assembly.plugin>
             <version.maven.bundle.plugin>2.3.7</version.maven.bundle.plugin>
@@ -88,6 +90,7 @@
             <version.maven.jar.plugin>2.3.2</version.maven.jar.plugin>
             <version.maven.resources.plugin>2.4.3</version.maven.resources.plugin>
             <version.maven.scala.plugin>2.15.2</version.maven.scala.plugin>
+            <version.maven.site.plugin>3.4</version.maven.site.plugin>
             <version.maven.surefire.plugin>2.9</version.maven.surefire.plugin>
             <version.org.apache.felix.main>4.2.1</version.org.apache.felix.main>
             <!-- vscaladoc settings -->
@@ -489,9 +492,23 @@
                         <enabled>false</enabled>
                     </snapshots>
                 </pluginRepository>		
-	</pluginRepositories>  		
+	</pluginRepositories>  	
+        
+        <distributionManagement>
+            <site>
+                <id>nexus-site</id>
+                <url>dav:http://localhost:8081/nexus/content/sites/site/org/friendularity</url>
+            </site>
+        </distributionManagement>	
 	
 	<build>
+                <extensions>
+                    <extension>
+                        <groupId>org.apache.maven.wagon</groupId>
+                        <artifactId>wagon-webdav-jackrabbit</artifactId>
+                        <version>${wagon.webdav.version}</version>
+                    </extension>
+                </extensions>
 		<pluginManagement>
 			<plugins>
                             <plugin>
@@ -591,7 +608,25 @@
                 </plugin>
             </plugins>
         </pluginManagement>
+        <plugins>
+            <plugin>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>${version.maven.site.plugin}</version>
+            </plugin>
+        </plugins>
     </build>
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+                <version>${version.license.maven.plugin}</version>
+                <configuration>
+                    <goal>third-party-report</goal>
+                </configuration>
+            </plugin>
+        </plugins>
+    </reporting>
     <profiles>
         <profile>
             <id>build-for-felix</id>
