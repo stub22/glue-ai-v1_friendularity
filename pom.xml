@@ -53,7 +53,7 @@
             <appdapter.version>1.2.0</appdapter.version>
             <appdapter.msg.version>1.0.5</appdapter.msg.version>
             <appdapter.jscience.version>1.0.9</appdapter.jscience.version>
-            <cogchar.version>1.1.0-SNAPSHOT</cogchar.version>
+            <cogchar.version>1.1.0</cogchar.version>
             <jflux.version>0.2.2</jflux.version>
             <mechio.version>1.0.3</mechio.version>
             <rwshop.version>0.9.7</rwshop.version>
@@ -493,14 +493,14 @@
                     </snapshots>
                 </pluginRepository>		
 	</pluginRepositories>  	
-        
+        <!-- Disabling, since this is incompatible with project release process
         <distributionManagement>
             <site>
                 <id>nexus-site</id>
                 <url>dav:http://localhost:8081/nexus/content/sites/site/org/friendularity</url>
             </site>
         </distributionManagement>	
-	
+	-->
 	<build>
                 <extensions>
                     <extension>
