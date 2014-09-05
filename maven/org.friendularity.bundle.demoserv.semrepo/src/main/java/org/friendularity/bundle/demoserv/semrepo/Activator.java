@@ -3,8 +3,8 @@ package org.friendularity.bundle.demoserv.semrepo;
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
 import org.appdapter.osgi.core.BundleActivatorBase;
-import org.appdapter.core.matdat.OnlineSheetRepoSpec;
-import org.appdapter.core.repo.RepoSpec;
+import org.appdapter.fancy.rspec.OnlineSheetRepoSpec;
+import org.appdapter.fancy.rspec.RepoSpec;
 import org.cogchar.app.puma.boot.PumaAppContext;
 import org.cogchar.app.puma.web.PumaWebMapper;
 import org.cogchar.app.puma.config.PumaContextMediator;
@@ -45,7 +45,7 @@ public class Activator extends BundleActivatorBase {
 	}
 	protected void setupJosekiSparqlAccess(PumaWebMapper pwm) { 
 		// First stab at connecting outer code to our config dataset uses this ugly static variable.  
-		theMainConfigDataset = pwm.getMainSparqlDataset();
+		theMainConfigDataset = pwm.getMainLocalSparqlDataset();
 		RepoUpdateCallbackAdapter.registerCallback(new RepoUpdateCallbackAdapter.Callback() {
 			public void repoUpdateCompleted() {
 				getLogger().info("o.f.b.repo activator got SPARQL-UPDATE callback");

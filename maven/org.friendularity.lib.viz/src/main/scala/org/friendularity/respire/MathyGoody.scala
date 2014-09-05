@@ -22,9 +22,12 @@ import org.friendularity.struct.{Factory, AODFactory, AODCompatFactory, MathStru
 
 import org.appdapter.core.name.{Ident, FreeIdent}
 import org.appdapter.core.item.{Item}
-import org.appdapter.core.store.{Repo, InitialBinding, ModelClient }
+import org.appdapter.core.query.{InitialBinding }
+import org.appdapter.core.model.{RdfNodeTranslator }
+import org.appdapter.core.store.{Repo }
 import org.cogchar.render.goody.dynamic.{DynamicGoody, DynamicGoodySpace, DynaShapeGoody}
 
+import org.appdapter.fancy.log.VarargsLogging
 
 // This binding can be used to set up expressions for any number of separate MathStructMappers,
 // each of which is encapsulated in a MathyMappedHandleGroup.  The group may be used to produce
@@ -33,7 +36,7 @@ import org.cogchar.render.goody.dynamic.{DynamicGoody, DynamicGoodySpace, DynaSh
 class MGPropertyBinding[OutType] (val myPropQN : String, val myFieldKey : String, val myValueDim : Int, 
 								val myResultFactory : AODCompatFactory[OutType]) extends VarargsLogging {
 	// class StringPropSel(val myPropID: Ident) extends PropSel[String] { 
-	def readExprAndBind(parentSpecItem : Item, resolverModelCli : ModelClient, mathSM : MathStructMapper) {
+	def readExprAndBind(parentSpecItem : Item, resolverModelCli : RdfNodeTranslator, mathSM : MathStructMapper) {
 		val expr_Prop_ID = resolverModelCli.makeIdentForQName(myPropQN);
 		val todoDefault = "{-987654321}";
 		val exprText = parentSpecItem.getValString(expr_Prop_ID, todoDefault);
@@ -95,7 +98,7 @@ class MathyGoody (goodyIdx : Int, val myMathGate : MathGate) extends SweetDynaGo
 	
 	val		myCurrentStateHandle = myMathyHandleGroup.makeHandle
 	
-	def readAndBindExprs(modelCli : ModelClient, specItem : Item, bindings : List[MGPropertyBinding[_]]) {
+	def readAndBindExprs(modelCli : RdfNodeTranslator, specItem : Item, bindings : List[MGPropertyBinding[_]]) {
 		for (b <- bindings) {
 			b.readExprAndBind(specItem, modelCli, myMathyHandleGroup.myMapper)
 		}
@@ -105,7 +108,7 @@ class MathyGoody (goodyIdx : Int, val myMathGate : MathGate) extends SweetDynaGo
 	// Generally *not* assumed to be on the render thread.
 	// Collision with render thread should not be catastrophic, so we hope to avoid needing synchronized(this)
 	// (which carries a performance penalty).  
-	override def reconfigureFromSpecItem(mc : ModelClient, specItem : Item) {
+	override def reconfigureFromSpecItem(mc : RdfNodeTranslator, specItem : Item) {
 		readAndBindExprs(mc, specItem, MGBindings.allGoodyBindings)
 	}
 	override def doFastVWorldUpdate_onRendThrd(rrc : RenderRegistryClient) : Unit = { 
@@ -201,14 +204,15 @@ class MathyGoodySpace (parentDGS : DynamicGoodySpace[_], idxIntoParent : Int, sp
 }
 
 
-import org.appdapter.help.repo.{RepoClient}
-import org.appdapter.impl.store.{ModelClientImpl}
+import org.appdapter.fancy.rclient.{RepoClient, RepoClientImpl}
+import org.appdapter.fancy.model.{ModelClientImpl}
+
 
 object MathyGoodyTest extends VarargsLogging {
 	def testDynaGoodyItemLoad(repo : Repo, repoClient : RepoClient) : SweetDynaSpace = { 
 		val graphQN = "ccrti:math_sheet_60";
 		val spaceSpecQN = "hevi:space_01";
-		val graphID = repoClient.makeIdentForQName(graphQN);
+		val graphID = repoClient.getDefaultRdfNodeTranslator.makeIdentForQName(graphQN);
 		val mathModel = repo.getNamedModel(graphID)
 		val mathModelClient = new ModelClientImpl(mathModel)
 		val spaceSpecItem = mathModelClient.makeItemForQName(spaceSpecQN);

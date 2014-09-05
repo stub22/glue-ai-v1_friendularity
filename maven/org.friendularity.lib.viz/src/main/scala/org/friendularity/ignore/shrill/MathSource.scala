@@ -15,8 +15,12 @@
  */
 
 package org.friendularity.ignore.shrill
-import org.appdapter.core.store.{Repo, InitialBinding, ModelClient }
-import org.appdapter.help.repo.{RepoClient, RepoClientImpl, InitialBindingImpl} 
+import org.appdapter.core.store.{Repo  }
+import org.appdapter.core.query.{InitialBinding }
+import org.appdapter.core.model.{RdfNodeTranslator }
+import org.appdapter.fancy.rclient.{RepoClient, RepoClientImpl}
+import org.appdapter.fancy.query.{InitialBindingImpl}
+
 import org.cogchar.bind.symja.{MathGate, MathSpaceFactory}
 import org.cogchar.api.space.{TextVal}
 
@@ -27,7 +31,7 @@ import org.appdapter.core.name.{Ident, FreeIdent}
 object MathSource {
 }
 */
-class MathGraphBinding(mathMCI : ModelClient) {
+class MathGraphBinding(mathMCI : RdfNodeTranslator) {
 //	 This class is the beginning of a low-level abstraction of what EqnExtractors test code was doing previously,
 //		but is too general/low-level, will probably be axed soon.
 		val myMathTxtSrc = new MathTextSource(mathMCI)
@@ -35,7 +39,7 @@ class MathGraphBinding(mathMCI : ModelClient) {
 		private val msf = new MathSpaceFactory();
 		val myGate : MathGate = msf.makeUnscriptedMathGate();
 }
-class MathStringPropSels(val mySymSrcMC : ModelClient) {
+class MathStringPropSels(val mySymSrcMC : RdfNodeTranslator) {
 	private def makeSel(propQN : String) : StringPropSel = {
 		val propID : Ident = mySymSrcMC.makeIdentForQName(propQN)
 		new StringPropSel(propID)
@@ -62,7 +66,7 @@ class MathStringPropSels(val mySymSrcMC : ModelClient) {
 // The MathTextSource also has the ability to find all the parent items of a particular type, or to find
 // a particular item based on its QName.
 
-class MathTextSource(val mySymSrcMC : ModelClient) {
+class MathTextSource(val mySymSrcMC : RdfNodeTranslator) {
 	val myPropSels = new MathStringPropSels(mySymSrcMC)
 	
 	val myFuncDefIndivSel = new TypedIndivSel(getTypeID("hev:FuncDef"))	

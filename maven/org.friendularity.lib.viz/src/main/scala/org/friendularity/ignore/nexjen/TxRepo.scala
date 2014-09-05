@@ -24,11 +24,12 @@ import com.hp.hpl.jena.sparql.util.Context
 
 import org.apache.jena.riot.RDFDataMgr
 
-import org.appdapter.core.repo._
 import org.appdapter.core.name.{Ident, FreeIdent}
 import org.appdapter.core.item.{Item}
-import org.appdapter.core.store.{Repo, InitialBinding, ModelClient }
-import org.appdapter.help.repo.{RepoClient, RepoClientImpl, InitialBindingImpl} 
+import org.appdapter.core.store.{Repo}
+import org.appdapter.core.query.{ InitialBinding }
+import org.appdapter.fancy.rclient.{RepoClient, RepoClientImpl}
+import org.appdapter.fancy.query.{InitialBindingImpl}
 
 /**
  * @author Stu B. <www.texpedient.com>

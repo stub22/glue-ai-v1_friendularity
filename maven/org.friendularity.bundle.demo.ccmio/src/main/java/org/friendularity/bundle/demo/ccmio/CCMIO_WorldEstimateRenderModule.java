@@ -17,7 +17,7 @@ package org.friendularity.bundle.demo.ccmio;
 
 import org.cogchar.bind.symja.MathGate;
 import org.appdapter.core.name.Ident;
-import org.appdapter.help.repo.RepoClient;
+import org.appdapter.fancy.rclient.RepoClient;
 
 import org.cogchar.render.sys.module.RenderGateway;
 import org.cogchar.render.sys.module.RenderModule;

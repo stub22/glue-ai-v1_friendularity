@@ -8,8 +8,8 @@ import org.osgi.framework.BundleContext;
 
 // import org.appdapter.core.repo.*;
 
-import org.appdapter.core.matdat.OnlineSheetRepoSpec;
-import org.appdapter.core.repo.EnhancedRepoClient;
+import org.appdapter.fancy.rspec.OnlineSheetRepoSpec;
+import org.appdapter.fancy.rclient.EnhancedRepoClient;
 import org.appdapter.core.store.Repo;
 import org.appdapter.osgi.core.BundleActivatorBase;
 import org.jflux.spec.services.RegisterWiring;

@@ -9,8 +9,8 @@ import org.cogchar.app.puma.config.PumaContextMediator;
 import org.cogchar.app.puma.registry.PumaGlobalPrebootInjector;
 import org.osgi.framework.BundleContext;
 
-import org.appdapter.core.repo.RepoSpec;
-import org.appdapter.core.matdat.OnlineSheetRepoSpec;
+import org.appdapter.fancy.rspec.RepoSpec;
+import org.appdapter.fancy.rspec.OnlineSheetRepoSpec;
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
 import org.appdapter.gui.demo.DemoBrowser;

@@ -1,11 +1,16 @@
 <div class="lift:surround?with=default;at=content" style="height:100%; background-color:#00668e;">
-	<h1>Herro Dere!</h1>
-	<span class="lift:Loc.rickle">This "rickle" will be replaced if possible</span> 
-	<span class="lift:Loc.hoodle">Replace with lift:Loc.hoodle</span> 
-<br/>
+	This div is surrounded with lift:surround?with=default;at=content
+	<h1>X G R A</h1>
+	Rickle: <span class="lift:Loc.rickle">This "rickle" will be replaced if possible</span> 
+	
+	<br/>hoodle: <span class="lift:Loc.hoodle">Replace with lift:Loc.hoodle</span> 
+<br/>You can't put something outside the "main div" of a "template" like this, or you'll get:
+<b>:35:49: document must contain exactly one element</b>
 This webapp will not work very well if your computer's locale is not set to en_US.
 <H1>XGRA</H1>
 <br/>
+Yow-wrig: <lift:YowzaSnips.wriggly />
+
 	<span>
 This content comes from index_en_US.html, which is the US-English version of index.html, and is
 the *first* file that Lift attempts to access in order to serve the URL "/index.html".
@@ -17,8 +22,46 @@ It refers or depends on a number of other files.  Here are the ones loaded to se
 		<li>_resources_en_US.html = app-wide + locale-specific "resources" (really XML) </li>
 		<li>/templates-hidden/default_en_US.html = template invoked via:  lift:surround?with=default;at=content </li>
 	</ul>
+Yow-snig: <div data-lift="YowzaSnips.sniggly" />
+<pre>snuggled: log4j.logger.org.ops4j=ALL</pre>
+<br/>
 
-<pre>log4j.logger.org.ops4j=ALL</pre>
+  <div>
+   Each chunk of our form is matched by a handler setup using SHtml.onSubmit, which transforms the form element
+   to have a "name" known to lift).
+  </div>
+<!--     <form class="lift:FormTestSnips?form=post">  -->   
+  <div data-lift="FormTestSnips?form=post">
+
+      Appellido: <input fkey="appellido" size="80"/><br/>
+      Edad: <input fkey="edad" value="4"/><br/>
+	  Historia: <textarea fkey="story" rows="12" columns="80"/><br/>
+      <input type="submit" value="Submit 765A"/>
+
+  </div>
+
+<!--
+
+     Appellido: <input fkey="appellido" width="80" name="F530272791606LMEYRC" /><br />
+      Edad: <input fkey="edad" value="4" name="F530272791607KWESFP" /><br />
+      <input type="submit" value="Submit 765A" name="F530272891608JTZG40" />
+
+     [java] Made css-sel: <function1>
+     [java] Made NodeSeq: <form>
+     [java]       Appellido: <input name="F629700172111ACOVFQ"/><br/>
+     [java]       Edad: <input value="0" name="F6297001721121CLKSN"/><br/>
+     [java]       <input type="submit" value="Submit 765A" name="F629700272113QW04IS"/>
+     [java]     </form>
+
+    <form method="post" action="/friendu_xweb_xgra/">
+      Appellido: <input name="F629700172111ACOVFQ" /><br />
+      Edad: <input value="0" name="F6297001721121CLKSN" /><br />
+      <input type="submit" value="Submit 765A" name="F629700272113QW04IS" />
+    </form>
+
+
+-->
+
 <br/>
 
 Lift OSGi support removed in 2.5:

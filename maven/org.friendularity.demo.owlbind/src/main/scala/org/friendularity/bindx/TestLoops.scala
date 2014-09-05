@@ -40,7 +40,7 @@ object TestLoops {
 		org.apache.log4j.BasicConfigurator.configure();
 		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.INFO);
 		
-		val serviceUrl = "http://lima.nodeset.com:4001/dstst_4001/data"
+		val serviceUrl = "http://lima.nodeset.com:4001/temp_4001/data"
 		val dAcc = DatasetAccessorFactory.createHTTP(serviceUrl)
 		
 		val jacc = new JenaArqCheckoutConn(dAcc)

@@ -23,10 +23,8 @@ import java.util.Properties;
 import java.util.Set;
 import org.appdapter.core.name.Ident;
 import org.osgi.framework.BundleContext;
-import org.appdapter.core.matdat.OnlineSheetRepoSpec;
-import org.appdapter.help.repo.*;
-import org.appdapter.impl.store.*;
-import org.appdapter.core.repo.*;
+import org.appdapter.fancy.rspec.OnlineSheetRepoSpec;
+import org.appdapter.fancy.rclient.EnhancedRepoClient;
 import org.jflux.api.registry.Registry;
 import org.jflux.impl.registry.OSGiRegistry;
 import org.jflux.impl.services.rk.lifecycle.ManagedService;
@@ -67,7 +65,7 @@ public class ConnectionWiring {
     private static List<ConnectionSpec> loadConnectionSpecs(EnhancedRepoClient defaultDemoRepoClient, String connectionGraphQN) {
         List<ConnectionSpec> specs = new ArrayList();
         // Determine the URI for the 'qualified name' which identifies the data in the repo
-        Ident connectionGraphID = defaultDemoRepoClient.makeIdentForQName(connectionGraphQN);
+        Ident connectionGraphID = defaultDemoRepoClient.getDefaultRdfNodeTranslator().makeIdentForQName(connectionGraphQN);
         // Collect the objects from the repo, building them from RDF raw data
         Set<Object> assembledRoots = defaultDemoRepoClient.assembleRootsFromNamedModel(connectionGraphID);
         for (Object root : assembledRoots) {

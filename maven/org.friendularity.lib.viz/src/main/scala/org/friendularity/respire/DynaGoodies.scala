@@ -18,21 +18,24 @@ package org.friendularity.respire
 
 import org.appdapter.core.item.Item
 import org.appdapter.core.log.BasicDebugger
-import org.appdapter.core.matdat.OnlineSheetRepoSpec
+
 import org.appdapter.core.name.Ident
-import org.appdapter.core.store.ModelClient
-import org.appdapter.help.repo.{InitialBindingImpl, RepoClient, RepoClientImpl}
-import org.appdapter.impl.store.{FancyRepo, ModelClientImpl}
+import org.appdapter.core.model.RdfNodeTranslator
 import org.cogchar.render.goody.dynamic.{DynaShapeGoody, DynamicGoodySpace}
 import org.cogchar.render.sys.registry.RenderRegistryClient
 
+import org.appdapter.fancy.rclient.{RepoClient, RepoClientImpl}
+import org.appdapter.fancy.query.{InitialBindingImpl}
+import org.appdapter.fancy.repo.{FancyRepo}
+import org.appdapter.fancy.model.{ModelClientImpl}
+import org.appdapter.fancy.rspec.OnlineSheetRepoSpec
 
 
 abstract class SweetDynaGoody(goodyIdxWithinSpace : Int) extends DynaShapeGoody(goodyIdxWithinSpace : Int) {
 
 	// This method is called by the space to tell us that configuration is available.
 	// It is not (necessarily) called on the render thread.
-	def reconfigureFromSpecItem(mc : ModelClient, specItem : Item) 
+	def reconfigureFromSpecItem(mc : RdfNodeTranslator, specItem : Item) 
 	// 
 	//	// Textual:   Nickname, Label, Description
 		// Label is always displayed (when practical), may be updating frequently.  Description is extra detail,
@@ -49,10 +52,10 @@ abstract class SweetDynaSpace(parentDGS : DynamicGoodySpace[_], idxIntoParent : 
 		extends DynamicGoodySpace[SweetDynaGoody](parentDGS, idxIntoParent) {
 			
 	var		myPendingSpecItems : Set[Item] = Set()
-	var		mySpecModelClient : ModelClient = null
+	var		mySpecModelClient : RdfNodeTranslator = null
 	
 	// Occurs on slowUpdate-thread, off the renderThread
-	def    refreshFromModelClient(mc : ModelClient) : Unit = {
+	def    refreshFromModelClient(mc : RdfNodeTranslator) : Unit = {
 		mySpecModelClient = mc;
 		val spaceSpecItem : Item = mc.makeItemForIdent(mySpecID);
 		getLogger().info("Got space-specItem: {}", spaceSpecItem);
