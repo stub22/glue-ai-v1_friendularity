@@ -1,0 +1,307 @@
+@prefix : <http://onto.cogchar.org/onto/201407/LessonPath_OWL2#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@base <http://onto.cogchar.org/onto/201407/LessonPath_OWL2> .
+
+<http://onto.cogchar.org/onto/201407/LessonPath_OWL2> rdf:type owl:Ontology .
+
+
+#################################################################
+#
+#    Annotation properties
+#
+#################################################################
+
+
+
+
+#################################################################
+#
+#    Datatypes
+#
+#################################################################
+
+
+
+
+#################################################################
+#
+#    Object Properties
+#
+#################################################################
+
+
+###  http://onto.cogchar.org/onto/201407/LessonPath_OWL2#hasHelperFolio
+
+:hasHelperFolio rdf:type owl:ObjectProperty ;
+                
+                rdfs:range :HelperFolio ;
+                
+                rdfs:subPropertyOf :ourObjectProperty .
+
+
+
+###  http://onto.cogchar.org/onto/201407/LessonPath_OWL2#hasLesson
+
+:hasLesson rdf:type owl:ObjectProperty ;
+           
+           rdfs:range :Lesson ;
+           
+           rdfs:subPropertyOf :ourObjectProperty .
+
+
+
+###  http://onto.cogchar.org/onto/201407/LessonPath_OWL2#hasLessonPrompt
+
+:hasLessonPrompt rdf:type owl:ObjectProperty ;
+                 
+                 rdfs:range :LessonPrompt ;
+                 
+                 rdfs:subPropertyOf :ourObjectProperty .
+
+
+
+###  http://onto.cogchar.org/onto/201407/LessonPath_OWL2#hasLessonResponse
+
+:hasLessonResponse rdf:type owl:ObjectProperty ;
+                   
+                   rdfs:range :LessonResponse ;
+                   
+                   rdfs:subPropertyOf :ourObjectProperty .
+
+
+
+###  http://onto.cogchar.org/onto/201407/LessonPath_OWL2#hasLessonUsage
+
+:hasLessonUsage rdf:type owl:ObjectProperty ;
+                
+                rdfs:range :LessonUsage ;
+                
+                rdfs:subPropertyOf :ourObjectProperty .
+
+
+
+###  http://onto.cogchar.org/onto/201407/LessonPath_OWL2#hasStudentFolio
+
+:hasStudentFolio rdf:type owl:ObjectProperty ;
+                 
+                 rdfs:range :StudentFolio ;
+                 
+                 rdfs:subPropertyOf :ourObjectProperty .
+
+
+
+###  http://onto.cogchar.org/onto/201407/LessonPath_OWL2#ourObjectProperty
+
+:ourObjectProperty rdf:type owl:ObjectProperty ;
+                   
+                   rdfs:range :LThing ;
+                   
+                   rdfs:domain :LThing .
+
+
+
+
+
+#################################################################
+#
+#    Data properties
+#
+#################################################################
+
+
+###  http://onto.cogchar.org/onto/201407/LessonPath_OWL2#hasFlag
+
+:hasFlag rdf:type owl:DatatypeProperty ;
+         
+         rdfs:subPropertyOf :ourDataProperty ;
+         
+         rdfs:range xsd:boolean .
+
+
+
+###  http://onto.cogchar.org/onto/201407/LessonPath_OWL2#hasPoints
+
+:hasPoints rdf:type owl:DatatypeProperty ;
+           
+           rdfs:subPropertyOf :ourDataProperty ;
+           
+           rdfs:range xsd:integer .
+
+
+
+###  http://onto.cogchar.org/onto/201407/LessonPath_OWL2#hasStampCreated
+
+:hasStampCreated rdf:type owl:DatatypeProperty ;
+                 
+                 rdfs:subPropertyOf :ourDataProperty ;
+                 
+                 rdfs:range xsd:dateTime .
+
+
+
+###  http://onto.cogchar.org/onto/201407/LessonPath_OWL2#hasStampCreatedJava
+
+:hasStampCreatedJava rdf:type owl:DatatypeProperty ;
+                     
+                     rdfs:subPropertyOf :ourDataProperty ;
+                     
+                     rdfs:range xsd:long .
+
+
+
+###  http://onto.cogchar.org/onto/201407/LessonPath_OWL2#hasStatDouble
+
+:hasStatDouble rdf:type owl:DatatypeProperty ;
+               
+               rdfs:subPropertyOf :ourDataProperty ;
+               
+               rdfs:range xsd:double .
+
+
+
+###  http://onto.cogchar.org/onto/201407/LessonPath_OWL2#hasStatFloat
+
+:hasStatFloat rdf:type owl:DatatypeProperty ;
+              
+              rdfs:subPropertyOf :ourDataProperty ;
+              
+              rdfs:range xsd:float .
+
+
+
+###  http://onto.cogchar.org/onto/201407/LessonPath_OWL2#hasText
+
+:hasText rdf:type owl:DatatypeProperty ;
+         
+         rdfs:comment "Using XMLLiteral as range type causes missing class in RDFReactor 4.8.3" ;
+         
+         rdfs:subPropertyOf :ourDataProperty ;
+         
+         rdfs:range xsd:string .
+
+
+
+###  http://onto.cogchar.org/onto/201407/LessonPath_OWL2#ourDataProperty
+
+:ourDataProperty rdf:type owl:DatatypeProperty ;
+                 
+                 rdfs:domain :LThing .
+
+
+
+
+
+#################################################################
+#
+#    Classes
+#
+#################################################################
+
+
+###  http://onto.cogchar.org/onto/201407/LessonPath_OWL2#Content
+
+:Content rdf:type owl:Class ;
+         
+         rdfs:subClassOf :LThing ;
+         
+         rdfs:comment "Metadata record for any piece of content." .
+
+
+
+###  http://onto.cogchar.org/onto/201407/LessonPath_OWL2#Folio
+
+:Folio rdf:type owl:Class ;
+       
+       rdfs:subClassOf :LThing .
+
+
+
+###  http://onto.cogchar.org/onto/201407/LessonPath_OWL2#HelperFolio
+
+:HelperFolio rdf:type owl:Class ;
+             
+             rdfs:subClassOf :Folio .
+
+
+
+###  http://onto.cogchar.org/onto/201407/LessonPath_OWL2#LPromptButton
+
+:LPromptButton rdf:type owl:Class ;
+               
+               rdfs:subClassOf :LessonPrompt .
+
+
+
+###  http://onto.cogchar.org/onto/201407/LessonPath_OWL2#LThing
+
+:LThing rdf:type owl:Class .
+
+
+
+###  http://onto.cogchar.org/onto/201407/LessonPath_OWL2#Lesson
+
+:Lesson rdf:type owl:Class ;
+        
+        rdfs:subClassOf :Content ;
+        
+        rdfs:comment "Metadata for some Lesson." .
+
+
+
+###  http://onto.cogchar.org/onto/201407/LessonPath_OWL2#LessonPrompt
+
+:LessonPrompt rdf:type owl:Class ;
+              
+              rdfs:subClassOf :Content ;
+              
+              rdfs:comment "Metadata for some prompt a student may respond to.   " .
+
+
+
+###  http://onto.cogchar.org/onto/201407/LessonPath_OWL2#LessonResponse
+
+:LessonResponse rdf:type owl:Class ;
+                
+                rdfs:subClassOf :Response .
+
+
+
+###  http://onto.cogchar.org/onto/201407/LessonPath_OWL2#LessonUsage
+
+:LessonUsage rdf:type owl:Class ;
+             
+             rdfs:subClassOf :Usage .
+
+
+
+###  http://onto.cogchar.org/onto/201407/LessonPath_OWL2#Response
+
+:Response rdf:type owl:Class ;
+          
+          rdfs:subClassOf :LThing .
+
+
+
+###  http://onto.cogchar.org/onto/201407/LessonPath_OWL2#StudentFolio
+
+:StudentFolio rdf:type owl:Class ;
+              
+              rdfs:subClassOf :Folio .
+
+
+
+###  http://onto.cogchar.org/onto/201407/LessonPath_OWL2#Usage
+
+:Usage rdf:type owl:Class ;
+       
+       rdfs:subClassOf :LThing .
+
+
+
+
+###  Generated by the OWL API (version 3.3.1957) http://owlapi.sourceforge.net
+

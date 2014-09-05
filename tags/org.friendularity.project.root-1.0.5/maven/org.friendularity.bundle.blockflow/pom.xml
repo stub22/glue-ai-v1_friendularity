@@ -1,0 +1,49 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.friendularity</groupId>
+		<artifactId>org.friendularity.modules.main</artifactId>
+		<version>1.0.5</version>
+		<relativePath>../org.friendularity.modules.main/pom.xml</relativePath>
+	</parent>		
+	<artifactId>org.friendularity.bundle.blockflow</artifactId>
+
+	<packaging>bundle</packaging>
+
+	<name>${project.artifactId} - OSGi</name>	
+
+	<dependencies>
+		<!-- 2013-08-25 We currently inherit our logger-binding dependencies from JVision -->
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>org.friendularity.bundle.jvision</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<!-- Pulls in Cogchar basics, Appdapter (incl Swing-GUI tools), Symja-Math, Jena-RDF -->
+		<dependency>
+			<groupId>org.cogchar</groupId>
+			<artifactId>org.cogchar.bundle.core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.core</artifactId>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<extensions>true</extensions>
+				<configuration>
+					<instructions>
+						<Bundle-Activator>org.friendularity.bundle.blockflow.BlockflowBundleActivator</Bundle-Activator>
+						<Export-Package />
+					</instructions>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

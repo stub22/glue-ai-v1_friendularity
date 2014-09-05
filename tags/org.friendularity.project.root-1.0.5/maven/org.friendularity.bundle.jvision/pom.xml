@@ -1,0 +1,226 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.friendularity</groupId>
+		<artifactId>org.friendularity.modules.main</artifactId>
+		<version>1.0.5</version>
+		<relativePath>../org.friendularity.modules.main/pom.xml</relativePath>
+	</parent>
+	<artifactId>org.friendularity.bundle.jvision</artifactId>
+	<packaging>bundle</packaging>
+
+	<name>${project.artifactId} - OSGi</name>
+
+	<properties>
+		<!-- this will be a System.getProperty("behavior.master.type")  -->
+		<!-- headless or emptystring -->
+		<behavior.master.type>headless</behavior.master.type>        
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.osgi.core</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+		</dependency>
+		<!-- 
+		2013-08-04:  JVision is currently not using any of the Cogchar or Robokind libraries, but it does use Appdapter 
+		2014-02-19:  Not true any more, we're migrating into the real world
+		-->
+		<dependency>
+			<groupId>org.appdapter</groupId>
+			<artifactId>org.appdapter.bundle.core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.jflux</groupId>
+			<artifactId>org.jflux.impl.messaging.rk</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.jflux</groupId>
+			<artifactId>org.jflux.swing.messaging</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<extensions>true</extensions>
+				<configuration>
+					<instructions>
+						<Bundle-Activator>org.friendularity.bundle.jvision.JVisionBundleActivator</Bundle-Activator>
+						<!--   Example of a tricky Import-Package statement, which we don't currently need in this bundle.
+						<Import-Package>sun.misc, *;resolution:=optional</Import-Package>
+						-->
+						<!-- Omitting this "Export-Package" should actually work fine as long as we don't have deps.  
+						"native" is not exported by default, but it seems Felix doesn't care about that "package" 
+						being formally "exported" (in our Manifest.MF) when it looks for the native libs using 
+						directives below in Bundle-NativeCode (which also wind up in Manifest.MF).  
+						
+						Formally, it actually seems we would prefer to *not* export "native.*" if it's not needed,
+						since this would let other bundles smell our DLLs directly (as "files"), which should 
+						never be necessary.
+						
+						OK, taking it out:   native.*,
+						-->
+						<Export-Package>org.friendularity.jvision.*, org.friendularity.bundle.jvision, org.opencv.*</Export-Package>
+						<Bundle-NativeCode>
+							native/win_x64/opencv_calib3d246.dll;
+							native/win_x64/opencv_contrib246.dll;
+							native/win_x64/opencv_core246.dll;
+							native/win_x64/opencv_features2d246.dll;
+							native/win_x64/opencv_ffmpeg246_64.dll;
+							native/win_x64/opencv_flann246.dll;
+							native/win_x64/opencv_gpu246.dll;
+							native/win_x64/opencv_highgui246.dll;
+							native/win_x64/opencv_imgproc246.dll;
+							native/win_x64/opencv_java246.dll;
+							native/win_x64/opencv_legacy246.dll;
+							native/win_x64/opencv_ml246.dll;
+							native/win_x64/opencv_nonfree246.dll;
+							native/win_x64/opencv_objdetect246.dll;
+							native/win_x64/opencv_ocl246.dll;
+							native/win_x64/opencv_photo246.dll;
+							native/win_x64/opencv_stitching246.dll;
+							native/win_x64/opencv_superres246.dll;
+							native/win_x64/opencv_ts246.dll;
+							native/win_x64/opencv_video246.dll;
+							native/win_x64/opencv_videostab246.dll;
+							osname=win32;
+                            processor=x86-64,
+                            native/linux_x86/libopencv_java247.so;
+                            native/linux_x86/cv2.so;
+                            osname=linux;
+                            processor=x86,
+                            native/linux_x64/libopencv_java246.so;
+                            native/linux_x64/cv2.so;
+                            osname=linux;
+                            processor=x86-64,
+                            native/linux_arm/libopencv_java246.so;
+                            osname=linux;
+                            processor=arm
+						</Bundle-NativeCode>						
+
+						<!--
+                            native/linux/liblwjgl.so;
+							native/linux/libjinput-linux.so;
+							native/linux/libopenal.so;
+                            osname=linux;
+                            processor=x86,
+							
+                            native/linux/liblwjgl64.so;
+							native/linux/libjinput-linux.so;
+							native/linux/libopenal64.so;
+                            osname=linux;
+                            processor=x86-64,
+													
+                            native/windows/lwjgl.dll;
+							native/windows/jinput-dx8.dll;
+							native/windows/jinput-raw.dll;
+							native/windows/OpenAL32.dll;
+                            osname=win32;
+                            processor=x86,
+
+                            native/windows/lwjgl64.dll;
+							native/windows/jinput-dx8_64.dll;
+							native/windows/jinput-raw_64.dll;
+							native/windows/OpenAL64.dll;
+                            osname=win32;
+                            processor=x86-64,
+                
+                           
+                            native/macosx/liblwjgl.jnilib;
+							native/macosx/libjinput-osx.jnilib;
+							native/macosx/openal.dylib;
+                            osname=mac os x;
+                            processor=x86;
+                            processor=ppc
+						-->
+					</instructions>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+			</plugin>			
+		</plugins>
+	</build>
+	<profiles>
+		<profile>
+			<id>run-on-felix</id>
+			<dependencies>
+				<dependency>
+					<groupId>org.apache.felix</groupId>
+					<artifactId>org.apache.felix.main</artifactId>
+				</dependency>
+				<dependency>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-api</artifactId>
+				</dependency>
+				<dependency>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-log4j12</artifactId>
+				</dependency>
+
+				<!-- org.apache.felix:org.apache.felix.gogo.shell:0.6.1 useless from Maven since stdin is swallowed -->
+			</dependencies>
+
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<configuration>
+							<target>
+								<!-- HRK custom :  Note the log4j.debug flag -->
+								<property name="vm.args" value="-Dlog4j.debug -Xmx16G -XX:MaxPermSize=3G" />
+								<property name="vm.localargs" value="" />
+								<pathconvert property="plugins.jars" pathsep="${path.separator}">
+									<path refid="maven.runtime.classpath" />
+									<map from="${project.build.directory}${file.separator}classes" to="" />
+								</pathconvert>
+								<makeurl property="urls" separator=" ">
+									<path path="${plugins.jars}" />
+									<path location="${project.build.directory}/${project.build.finalName}.jar" />
+								</makeurl>
+								<propertyfile file="${project.build.directory}/run.properties">
+									<entry key="felix.auto.start" value="${urls}" />
+									<entry key="felix.auto.deploy.action" value="uninstall,install,update,start" />
+									<entry key="org.osgi.framework.storage" value="${project.build.directory}${file.separator}felix-cache" />
+									<entry key="org.osgi.framework.bootdelegation" value="*" />
+									<!-- HRK Customization:   Allow sun.misc package to be used by LWJGL under OSGi -->
+									<!-- org.w3c.dom.* are missing from default.properties in felix 4.2.1, they are present in 3.0.7 -->
+									<entry key="org.osgi.framework.system.packages.extra" value="sun.misc, org.w3c.dom.css, org.w3c.dom.html, org.w3c.dom.stylesheets, org.w3c.dom.traversal, org.w3c.dom.ranges, org.w3c.dom.views,                org.w3c.dom.xpath" />
+								</propertyfile>
+								<makeurl property="run.properties.url" file="${project.build.directory}/run.properties" />
+								<java fork="true" jar="${maven.dependency.org.apache.felix.org.apache.felix.main.jar.path}">
+									<sysproperty key="felix.config.properties" value="${run.properties.url}" />
+									<sysproperty key="com.hrkind.robot.connections" value="${com.hrkind.robot.connections}" />
+									<sysproperty key="com.hrkind.demo.behavior.master.source" value="${com.hrkind.demo.behavior.master.source}" />
+									<sysproperty key="puma.boot.config.local" value="${puma.boot.config.local}" />
+									<sysproperty key="behavior.master.type" value="${behavior.master.type}" />
+									<!-- <sysproperty key="RKExtraVoices" value="klaus:saul" />-->
+									<jvmarg line="${vm.args} ${vm.localargs}" />
+								</java>
+							</target>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+</project>

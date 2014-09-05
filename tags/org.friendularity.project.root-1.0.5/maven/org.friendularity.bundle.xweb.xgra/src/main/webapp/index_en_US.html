@@ -1,0 +1,31 @@
+<div class="lift:surround?with=default;at=content" style="height:100%; background-color:#00668e;">
+	<h1>Herro Dere!</h1>
+	<span class="lift:Loc.rickle">This "rickle" will be replaced if possible</span> 
+	<span class="lift:Loc.hoodle">Replace with lift:Loc.hoodle</span> 
+<br/>
+This webapp will not work very well if your computer's locale is not set to en_US.
+<H1>XGRA</H1>
+<br/>
+	<span>
+This content comes from index_en_US.html, which is the US-English version of index.html, and is
+the *first* file that Lift attempts to access in order to serve the URL "/index.html".
+<br/>
+It refers or depends on a number of other files.  Here are the ones loaded to serve the initial HTTP request.
+	</span>
+	<ul>
+		<li>_resources_index_en_US.html = page-specific + locale-specific "resources" file (really XML), see:  _____ </li>
+		<li>_resources_en_US.html = app-wide + locale-specific "resources" (really XML) </li>
+		<li>/templates-hidden/default_en_US.html = template invoked via:  lift:surround?with=default;at=content </li>
+	</ul>
+
+<pre>log4j.logger.org.ops4j=ALL</pre>
+<br/>
+
+Lift OSGi support removed in 2.5:
+
+http://osdir.com/ml/liftweb/2013-01/msg00779.html
+
+	<!--
+		<lift:embed what="loading" />
+	-->
+</div>

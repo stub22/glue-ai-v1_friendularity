@@ -1,0 +1,474 @@
+@prefix : <http://onto.coghcar.org/onto/201406/PerceptObsEstim_OWL2#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@base <http://onto.coghcar.org/onto/201406/PerceptObsEstim_OWL2> .
+
+<http://onto.coghcar.org/onto/201406/PerceptObsEstim_OWL2> rdf:type owl:Ontology ;
+                                                           
+                                                           rdfs:label "Glue.AI Perception Observations and Estimates" ;
+                                                           
+                                                           rdfs:comment "Defines perception records in terms of observations, summary estimates, and shared descriptive elements." .
+
+
+#################################################################
+#
+#    Annotation properties
+#
+#################################################################
+
+
+
+
+#################################################################
+#
+#    Datatypes
+#
+#################################################################
+
+
+
+
+#################################################################
+#
+#    Object Properties
+#
+#################################################################
+
+
+###  file:/E:/_mount/cogchar_trunk/src_resources_core/org/cogchar/onto/org.cogchar.onto/perceptObsEstim#ourTopObjectProperty
+
+<file:/E:/_mount/cogchar_trunk/src_resources_core/org/cogchar/onto/org.cogchar.onto/perceptObsEstim#ourTopObjectProperty> rdf:type owl:ObjectProperty .
+
+
+
+###  http://onto.coghcar.org/onto/201406/PerceptObsEstim_OWL2#foundIn
+
+:foundIn rdf:type owl:ObjectProperty ;
+         
+         rdfs:subPropertyOf <file:/E:/_mount/cogchar_trunk/src_resources_core/org/cogchar/onto/org.cogchar.onto/perceptObsEstim#ourTopObjectProperty> .
+
+
+
+###  http://onto.coghcar.org/onto/201406/PerceptObsEstim_OWL2#hasDataPointer
+
+:hasDataPointer rdf:type owl:ObjectProperty ;
+                
+                rdfs:subPropertyOf <file:/E:/_mount/cogchar_trunk/src_resources_core/org/cogchar/onto/org.cogchar.onto/perceptObsEstim#ourTopObjectProperty> .
+
+
+
+###  http://onto.coghcar.org/onto/201406/PerceptObsEstim_OWL2#hasFrag
+
+:hasFrag rdf:type owl:ObjectProperty ;
+         
+         rdfs:subPropertyOf <file:/E:/_mount/cogchar_trunk/src_resources_core/org/cogchar/onto/org.cogchar.onto/perceptObsEstim#ourTopObjectProperty> .
+
+
+
+###  http://onto.coghcar.org/onto/201406/PerceptObsEstim_OWL2#hasPosition
+
+:hasPosition rdf:type owl:ObjectProperty ;
+             
+             rdfs:subPropertyOf :hasFrag .
+
+
+
+###  http://onto.coghcar.org/onto/201406/PerceptObsEstim_OWL2#hasSize
+
+:hasSize rdf:type owl:ObjectProperty ;
+         
+         rdfs:subPropertyOf :hasFrag .
+
+
+
+
+
+#################################################################
+#
+#    Data properties
+#
+#################################################################
+
+
+###  file:/E:/_mount/cogchar_trunk/src_resources_core/org/cogchar/onto/org.cogchar.onto/perceptObsEstim#ourTopDataProperty
+
+<file:/E:/_mount/cogchar_trunk/src_resources_core/org/cogchar/onto/org.cogchar.onto/perceptObsEstim#ourTopDataProperty> rdf:type owl:DatatypeProperty .
+
+
+
+###  http://onto.coghcar.org/onto/201406/PerceptObsEstim_OWL2#myConceivedTimestamp
+
+:myConceivedTimestamp rdf:type owl:DatatypeProperty ;
+                      
+                      rdfs:subPropertyOf <file:/E:/_mount/cogchar_trunk/src_resources_core/org/cogchar/onto/org.cogchar.onto/perceptObsEstim#ourTopDataProperty> .
+
+
+
+###  http://onto.coghcar.org/onto/201406/PerceptObsEstim_OWL2#myDepth
+
+:myDepth rdf:type owl:DatatypeProperty ;
+         
+         rdfs:subPropertyOf <file:/E:/_mount/cogchar_trunk/src_resources_core/org/cogchar/onto/org.cogchar.onto/perceptObsEstim#ourTopDataProperty> .
+
+
+
+###  http://onto.coghcar.org/onto/201406/PerceptObsEstim_OWL2#myHeight
+
+:myHeight rdf:type owl:DatatypeProperty ;
+          
+          rdfs:subPropertyOf <file:/E:/_mount/cogchar_trunk/src_resources_core/org/cogchar/onto/org.cogchar.onto/perceptObsEstim#ourTopDataProperty> .
+
+
+
+###  http://onto.coghcar.org/onto/201406/PerceptObsEstim_OWL2#myRecordedTimestamp
+
+:myRecordedTimestamp rdf:type owl:DatatypeProperty ,
+                              owl:FunctionalProperty ;
+                     
+                     rdfs:comment "This functional property indicates when a  subject datum (often a Sample or other PerceptFrag) was snapshot by the recording system, which is typically sometime after the presumed physical event time.  " ;
+                     
+                     rdfs:subPropertyOf <file:/E:/_mount/cogchar_trunk/src_resources_core/org/cogchar/onto/org.cogchar.onto/perceptObsEstim#ourTopDataProperty> ;
+                     
+                     rdfs:range xsd:dateTime ,
+                                xsd:dateTimeStamp ,
+                                xsd:long .
+
+
+
+###  http://onto.coghcar.org/onto/201406/PerceptObsEstim_OWL2#mySourceTimestamp
+
+:mySourceTimestamp rdf:type owl:DatatypeProperty ;
+                   
+                   rdfs:subPropertyOf <file:/E:/_mount/cogchar_trunk/src_resources_core/org/cogchar/onto/org.cogchar.onto/perceptObsEstim#ourTopDataProperty> ;
+                   
+                   rdfs:range xsd:dateTime ,
+                              xsd:dateTimeStamp ,
+                              xsd:long .
+
+
+
+###  http://onto.coghcar.org/onto/201406/PerceptObsEstim_OWL2#myW
+
+:myW rdf:type owl:DatatypeProperty ;
+     
+     rdfs:subPropertyOf <file:/E:/_mount/cogchar_trunk/src_resources_core/org/cogchar/onto/org.cogchar.onto/perceptObsEstim#ourTopDataProperty> .
+
+
+
+###  http://onto.coghcar.org/onto/201406/PerceptObsEstim_OWL2#myWidth
+
+:myWidth rdf:type owl:DatatypeProperty ;
+         
+         rdfs:subPropertyOf <file:/E:/_mount/cogchar_trunk/src_resources_core/org/cogchar/onto/org.cogchar.onto/perceptObsEstim#ourTopDataProperty> .
+
+
+
+###  http://onto.coghcar.org/onto/201406/PerceptObsEstim_OWL2#myX
+
+:myX rdf:type owl:DatatypeProperty ;
+     
+     rdfs:subPropertyOf <file:/E:/_mount/cogchar_trunk/src_resources_core/org/cogchar/onto/org.cogchar.onto/perceptObsEstim#ourTopDataProperty> ;
+     
+     rdfs:range xsd:decimal ,
+                xsd:double ,
+                xsd:float ,
+                xsd:int ,
+                xsd:integer ,
+                xsd:positiveInteger ,
+                owl:rational ,
+                owl:real .
+
+
+
+###  http://onto.coghcar.org/onto/201406/PerceptObsEstim_OWL2#myY
+
+:myY rdf:type owl:DatatypeProperty ;
+     
+     rdfs:subPropertyOf <file:/E:/_mount/cogchar_trunk/src_resources_core/org/cogchar/onto/org.cogchar.onto/perceptObsEstim#ourTopDataProperty> ;
+     
+     rdfs:range owl:real .
+
+
+
+###  http://onto.coghcar.org/onto/201406/PerceptObsEstim_OWL2#myZ
+
+:myZ rdf:type owl:DatatypeProperty ;
+     
+     rdfs:subPropertyOf <file:/E:/_mount/cogchar_trunk/src_resources_core/org/cogchar/onto/org.cogchar.onto/perceptObsEstim#ourTopDataProperty> .
+
+
+
+
+
+#################################################################
+#
+#    Classes
+#
+#################################################################
+
+
+###  file:/E:/_mount/cogchar_trunk/src_resources_core/org/cogchar/onto/org.cogchar.onto/perceptObsEstim#Estimate
+
+<file:/E:/_mount/cogchar_trunk/src_resources_core/org/cogchar/onto/org.cogchar.onto/perceptObsEstim#Estimate> rdf:type owl:Class ;
+                                                                                                              
+                                                                                                              rdfs:subClassOf <file:/E:/_mount/cogchar_trunk/src_resources_core/org/cogchar/onto/org.cogchar.onto/perceptObsEstim#Perception> .
+
+
+
+###  file:/E:/_mount/cogchar_trunk/src_resources_core/org/cogchar/onto/org.cogchar.onto/perceptObsEstim#FaceDetectObs
+
+<file:/E:/_mount/cogchar_trunk/src_resources_core/org/cogchar/onto/org.cogchar.onto/perceptObsEstim#FaceDetectObs> rdf:type owl:Class ;
+                                                                                                                   
+                                                                                                                   rdfs:subClassOf <file:/E:/_mount/cogchar_trunk/src_resources_core/org/cogchar/onto/org.cogchar.onto/perceptObsEstim#VisionObs> .
+
+
+
+###  file:/E:/_mount/cogchar_trunk/src_resources_core/org/cogchar/onto/org.cogchar.onto/perceptObsEstim#Hypothesis
+
+<file:/E:/_mount/cogchar_trunk/src_resources_core/org/cogchar/onto/org.cogchar.onto/perceptObsEstim#Hypothesis> rdf:type owl:Class ;
+                                                                                                                
+                                                                                                                rdfs:subClassOf <file:/E:/_mount/cogchar_trunk/src_resources_core/org/cogchar/onto/org.cogchar.onto/perceptObsEstim#Perception> .
+
+
+
+###  file:/E:/_mount/cogchar_trunk/src_resources_core/org/cogchar/onto/org.cogchar.onto/perceptObsEstim#Observation
+
+<file:/E:/_mount/cogchar_trunk/src_resources_core/org/cogchar/onto/org.cogchar.onto/perceptObsEstim#Observation> rdf:type owl:Class ;
+                                                                                                                 
+                                                                                                                 rdfs:subClassOf <file:/E:/_mount/cogchar_trunk/src_resources_core/org/cogchar/onto/org.cogchar.onto/perceptObsEstim#Perception> .
+
+
+
+###  file:/E:/_mount/cogchar_trunk/src_resources_core/org/cogchar/onto/org.cogchar.onto/perceptObsEstim#PThing
+
+<file:/E:/_mount/cogchar_trunk/src_resources_core/org/cogchar/onto/org.cogchar.onto/perceptObsEstim#PThing> rdf:type owl:Class .
+
+
+
+###  file:/E:/_mount/cogchar_trunk/src_resources_core/org/cogchar/onto/org.cogchar.onto/perceptObsEstim#PerceptFrag
+
+<file:/E:/_mount/cogchar_trunk/src_resources_core/org/cogchar/onto/org.cogchar.onto/perceptObsEstim#PerceptFrag> rdf:type owl:Class ;
+                                                                                                                 
+                                                                                                                 rdfs:subClassOf <file:/E:/_mount/cogchar_trunk/src_resources_core/org/cogchar/onto/org.cogchar.onto/perceptObsEstim#PThing> .
+
+
+
+###  file:/E:/_mount/cogchar_trunk/src_resources_core/org/cogchar/onto/org.cogchar.onto/perceptObsEstim#Perception
+
+<file:/E:/_mount/cogchar_trunk/src_resources_core/org/cogchar/onto/org.cogchar.onto/perceptObsEstim#Perception> rdf:type owl:Class ;
+                                                                                                                
+                                                                                                                rdfs:subClassOf <file:/E:/_mount/cogchar_trunk/src_resources_core/org/cogchar/onto/org.cogchar.onto/perceptObsEstim#PThing> .
+
+
+
+###  file:/E:/_mount/cogchar_trunk/src_resources_core/org/cogchar/onto/org.cogchar.onto/perceptObsEstim#PixelMatrixSample
+
+<file:/E:/_mount/cogchar_trunk/src_resources_core/org/cogchar/onto/org.cogchar.onto/perceptObsEstim#PixelMatrixSample> rdf:type owl:Class ;
+                                                                                                                       
+                                                                                                                       rdfs:subClassOf <file:/E:/_mount/cogchar_trunk/src_resources_core/org/cogchar/onto/org.cogchar.onto/perceptObsEstim#Sample> ;
+                                                                                                                       
+                                                                                                                       rdfs:comment """Any pixel-oriented image or video frame may be a PixelMatrixSample.
+Normally no pixel data is \"packaged\" with this sample data, it is
+instead referred to indirectly through the hasDataPointer property.
+The usefulness of this identity is just to uniquely identify an image/frame,
+with attached timestamp information and other metadata, such as height,
+width, and depth of the image sample.""" .
+
+
+
+###  file:/E:/_mount/cogchar_trunk/src_resources_core/org/cogchar/onto/org.cogchar.onto/perceptObsEstim#Sample
+
+<file:/E:/_mount/cogchar_trunk/src_resources_core/org/cogchar/onto/org.cogchar.onto/perceptObsEstim#Sample> rdf:type owl:Class ;
+                                                                                                            
+                                                                                                            rdfs:subClassOf <file:/E:/_mount/cogchar_trunk/src_resources_core/org/cogchar/onto/org.cogchar.onto/perceptObsEstim#PerceptFrag> ;
+                                                                                                            
+                                                                                                            rdfs:comment "Samples describe common data structures, and are often received in semi-regular streams." .
+
+
+
+###  file:/E:/_mount/cogchar_trunk/src_resources_core/org/cogchar/onto/org.cogchar.onto/perceptObsEstim#VectorSample
+
+<file:/E:/_mount/cogchar_trunk/src_resources_core/org/cogchar/onto/org.cogchar.onto/perceptObsEstim#VectorSample> rdf:type owl:Class ;
+                                                                                                                  
+                                                                                                                  rdfs:subClassOf <file:/E:/_mount/cogchar_trunk/src_resources_core/org/cogchar/onto/org.cogchar.onto/perceptObsEstim#Sample> .
+
+
+
+###  file:/E:/_mount/cogchar_trunk/src_resources_core/org/cogchar/onto/org.cogchar.onto/perceptObsEstim#VisionObs
+
+<file:/E:/_mount/cogchar_trunk/src_resources_core/org/cogchar/onto/org.cogchar.onto/perceptObsEstim#VisionObs> rdf:type owl:Class ;
+                                                                                                               
+                                                                                                               rdfs:subClassOf <file:/E:/_mount/cogchar_trunk/src_resources_core/org/cogchar/onto/org.cogchar.onto/perceptObsEstim#Observation> .
+
+
+
+###  http://onto.coghcar.org/onto/201406/PerceptObsEstim_OWL2#DataPointer
+
+:DataPointer rdf:type owl:Class ;
+             
+             rdfs:subClassOf <file:/E:/_mount/cogchar_trunk/src_resources_core/org/cogchar/onto/org.cogchar.onto/perceptObsEstim#PThing> .
+
+
+
+###  http://onto.coghcar.org/onto/201406/PerceptObsEstim_OWL2#LyricToken
+
+:LyricToken rdf:type owl:Class ;
+            
+            rdfs:subClassOf :MusicToken .
+
+
+
+###  http://onto.coghcar.org/onto/201406/PerceptObsEstim_OWL2#MusicNoteToken
+
+:MusicNoteToken rdf:type owl:Class ;
+                
+                rdfs:subClassOf :MusicToken .
+
+
+
+###  http://onto.coghcar.org/onto/201406/PerceptObsEstim_OWL2#MusicParamToken
+
+:MusicParamToken rdf:type owl:Class ;
+                 
+                 rdfs:subClassOf :MusicToken .
+
+
+
+###  http://onto.coghcar.org/onto/201406/PerceptObsEstim_OWL2#MusicToken
+
+:MusicToken rdf:type owl:Class ;
+            
+            rdfs:subClassOf :Token .
+
+
+
+###  http://onto.coghcar.org/onto/201406/PerceptObsEstim_OWL2#Token
+
+:Token rdf:type owl:Class ;
+       
+       rdfs:subClassOf <file:/E:/_mount/cogchar_trunk/src_resources_core/org/cogchar/onto/org.cogchar.onto/perceptObsEstim#PerceptFrag> ;
+       
+       rdfs:comment """Tokens are often perceived irregularly.
+""" .
+
+
+
+###  http://onto.coghcar.org/onto/201406/PerceptObsEstim_OWL2#VectorSample1D
+
+:VectorSample1D rdf:type owl:Class ;
+                
+                rdfs:subClassOf <file:/E:/_mount/cogchar_trunk/src_resources_core/org/cogchar/onto/org.cogchar.onto/perceptObsEstim#VectorSample> .
+
+
+
+###  http://onto.coghcar.org/onto/201406/PerceptObsEstim_OWL2#VectorSample2D
+
+:VectorSample2D rdf:type owl:Class ;
+                
+                rdfs:subClassOf <file:/E:/_mount/cogchar_trunk/src_resources_core/org/cogchar/onto/org.cogchar.onto/perceptObsEstim#VectorSample> .
+
+
+
+###  http://onto.coghcar.org/onto/201406/PerceptObsEstim_OWL2#VectorSample3D
+
+:VectorSample3D rdf:type owl:Class ;
+                
+                rdfs:subClassOf <file:/E:/_mount/cogchar_trunk/src_resources_core/org/cogchar/onto/org.cogchar.onto/perceptObsEstim#VectorSample> .
+
+
+
+###  http://onto.coghcar.org/onto/201406/PerceptObsEstim_OWL2#VectorSample4D
+
+:VectorSample4D rdf:type owl:Class ;
+                
+                rdfs:subClassOf <file:/E:/_mount/cogchar_trunk/src_resources_core/org/cogchar/onto/org.cogchar.onto/perceptObsEstim#VectorSample> .
+
+
+
+
+
+#################################################################
+#
+#    Individuals
+#
+#################################################################
+
+
+###  http://onto.coghcar.org/onto/201406/PerceptObsEstim_OWL2#example_faceDetectObs_288
+
+:example_faceDetectObs_288 rdf:type <file:/E:/_mount/cogchar_trunk/src_resources_core/org/cogchar/onto/org.cogchar.onto/perceptObsEstim#FaceDetectObs> ,
+                                    owl:NamedIndividual ;
+                           
+                           :hasPosition :example_facePos_288 ;
+                           
+                           :hasSize :example_faceSize_288 ;
+                           
+                           :foundIn :example_pixMatSample_571 .
+
+
+
+###  http://onto.coghcar.org/onto/201406/PerceptObsEstim_OWL2#example_facePos_288
+
+:example_facePos_288 rdf:type :VectorSample2D ,
+                              owl:NamedIndividual ;
+                     
+                     :myX 148 ;
+                     
+                     :myY 219 .
+
+
+
+###  http://onto.coghcar.org/onto/201406/PerceptObsEstim_OWL2#example_faceSize_288
+
+:example_faceSize_288 rdf:type :VectorSample2D ,
+                               owl:NamedIndividual ;
+                      
+                      :myHeight 109 ;
+                      
+                      :myWidth 89 .
+
+
+
+###  http://onto.coghcar.org/onto/201406/PerceptObsEstim_OWL2#example_image_data_571
+
+:example_image_data_571 rdf:type :DataPointer ,
+                                 owl:NamedIndividual ;
+                        
+                        rdfs:comment """Contains some information that helps us find this image.
+""" .
+
+
+
+###  http://onto.coghcar.org/onto/201406/PerceptObsEstim_OWL2#example_person_estim_008
+
+:example_person_estim_008 rdf:type <file:/E:/_mount/cogchar_trunk/src_resources_core/org/cogchar/onto/org.cogchar.onto/perceptObsEstim#Estimate> ,
+                                   owl:NamedIndividual .
+
+
+
+###  http://onto.coghcar.org/onto/201406/PerceptObsEstim_OWL2#example_pixMatSample_571
+
+:example_pixMatSample_571 rdf:type <file:/E:/_mount/cogchar_trunk/src_resources_core/org/cogchar/onto/org.cogchar.onto/perceptObsEstim#PixelMatrixSample> ,
+                                   owl:NamedIndividual ;
+                          
+                          :myRecordedTimestamp "2004-04-12T13:20:00.262Z"^^xsd:dateTime ;
+                          
+                          :myHeight "240"^^xsd:int ;
+                          
+                          :myWidth "320"^^xsd:int ;
+                          
+                          :mySourceTimestamp "2004-04-12T13:20:00.250Z" ;
+                          
+                          rdfs:comment """Example vision frame sample, resolution 320x240.  The \"recorded\" timestamp is 12 ms after the \"source\" timestamp.  The timestamps could instead be java/unix long timestamps.
+The image data itself could be found through some unspecified content at the example_image_data_571 pointer.""" ;
+                          
+                          :hasDataPointer :example_image_data_571 .
+
+
+
+
+###  Generated by the OWL API (version 3.3.1957) http://owlapi.sourceforge.net
+
