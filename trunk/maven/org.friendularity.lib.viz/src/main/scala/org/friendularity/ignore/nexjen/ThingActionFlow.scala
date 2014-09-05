@@ -20,7 +20,7 @@ package org.friendularity.ignore.nexjen
  * @author Stu B. <www.texpedient.com>
  */
 
-import org.friendularity.respire.VarargsLogging
+import org.appdapter.fancy.log.VarargsLogging
 import javax.jms.{ConnectionFactory, Session, Destination}
 import javax.jms.{MessageConsumer, MessageProducer}
 import javax.jms.{Message, BytesMessage, TextMessage, MapMessage, ObjectMessage}
@@ -39,9 +39,22 @@ import org.cogchar.impl.thing.basic.BasicThingActionSpec;
 import org.cogchar.api.vworld.GoodyActionParamWriter;
 import org.cogchar.name.goody.GoodyNames;
 
+/**
+ * Demonstration of ThingAction sent as a serialized Java object through JMS interface to QPid.
+ * This approach is interoperable with other Java agents, but not with general non-Java AMQP agents.
+ * For platform-independent sharing of ThingActions, general agents can use HTTP-SPARQL mechanisms, but those
+ * do not presently provide async notification.   Hence our nascent effort to put a proper RDF-to-(avro/)AMQP
+ * serializer+publisher into Fuseski-based semantic server deployment.  See discussion on "Jena-Users" 
+ * mailing list.
+ * 
+ * Meanwhile, this java-serialized ThingAction payload allows us to complete initial implementations of
+ * Glue.AI features, which will eventually migrate to use the proper serializations over AMQP, when those 
+ * are available.   (Possible incremental step:  Offer AMQP-published string-serializations of RDF-turtle, 
+ * within some restrictions on payload).
+ */
 class ThingActionFlow extends VarargsLogging {
 	def sendAndConsumeTAMsg(jmsSession : Session, jmsMsgProducer : MessageProducer, jmsMsgConsumer : MessageConsumer ) { 
-		info0("================= Creating MapMessage to hold TA")
+		info0("================= Creating ObjectMessage to hold TA")
 		
 		val thingActionKey = "thingAction"
 

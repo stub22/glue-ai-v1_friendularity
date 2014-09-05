@@ -33,7 +33,9 @@ class Booter extends Bootable {
     LiftRules.addToPackages("org.friendularity.xgra")
 
     def sitemap(): SiteMap = SiteMap(
-      Menu.i("Home") / "index"
+      Menu.i("Homey") / "index",
+	  Menu.i("Dancy") / "second",
+	  Menu.i("Phoosy") / "third"
     )
 	// Cookbook does not include the actual set-the-sitemap part!
     val oneSM = sitemap()
@@ -48,13 +50,13 @@ class Booter extends Bootable {
 		
 		// Also from Cookbok:
 		LiftSession.afterSessionCreate ::=
- ( (s:LiftSession, r:Req) => println("Session created") )
+ ( (s:LiftSession, r:Req) => println("Session created: " + s) )
 
 LiftSession.onBeginServicing ::=
- ( (s:LiftSession, r:Req) => println("Processing request") )
+ ( (s:LiftSession, r:Req) => println("Processing request " + r + " for session: " + s) )
 
 LiftSession.onShutdownSession ::=
- ( (s:LiftSession) => println("Session going away") )
+ ( (s:LiftSession) => println("Session going away: " + s) )
  }
 }
 

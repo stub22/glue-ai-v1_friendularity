@@ -18,20 +18,23 @@ package org.friendularity.ignore.shrill
 
 import org.appdapter.core.name.{Ident, FreeIdent}
 import org.appdapter.core.item.{Item}
-import org.appdapter.core.store.{Repo, InitialBinding, ModelClient }
+import org.appdapter.core.store.{Repo  }
+import org.appdapter.core.query.{InitialBinding }
+import org.appdapter.core.model.{RdfNodeTranslator }
+
 
 object Selectors {}
 trait Sel[T] {
 	// def getOneVal(parentItem : Item) : T
 }
 trait IndivSel extends Sel[Item] {
-	def getAllIndivs(modelCli : ModelClient) : Set[Item]
+	def getAllIndivs(modelCli : RdfNodeTranslator) : Set[Item]
 }
 trait PropSel[T] extends Sel[T] {
 	def getOneVal(parentItem : Item) : T
 }
 class TypedIndivSel(val myTypeID: Ident) extends IndivSel {
-	override def getAllIndivs(modelCli : ModelClient) : Set[Item] = {
+	override def getAllIndivs(modelCli : RdfNodeTranslator) : Set[Item] = {
 		// Find all resources that are marked with property "rdf:type" equiv to myTypeID
 		val typeItem = modelCli.makeItemForIdent(myTypeID)
 		val typeProp = modelCli.makeIdentForQName("rdf:type")

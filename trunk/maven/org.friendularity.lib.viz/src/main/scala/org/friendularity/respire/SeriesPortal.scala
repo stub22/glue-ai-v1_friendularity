@@ -157,6 +157,8 @@ class TestTimeIndex extends TimeIndex
 
 class TestTimeIndexRange extends TimeIndexRange
 
+import org.appdapter.fancy.log.VarargsLogging
+
 object SeriesPortal extends VarargsLogging {
 	def main(args: Array[String]) : Unit = {
 		// Backup - if logging is not working, try enabling these two lines.

@@ -19,18 +19,22 @@ package org.friendularity.ignore.nexjen
 /**
  * @author Stu B. <www.texpedient.com>
  */
-import org.appdapter.core.repo._
+// import org.appdapter.core.repo._
+// import org.appdapter.impl.store._
+
 import org.appdapter.core.name.{Ident, FreeIdent}
 import org.appdapter.core.item.{Item}
-import org.appdapter.core.store.{Repo, InitialBinding, ModelClient }
-import org.appdapter.help.repo.{RepoClient, RepoClientImpl, InitialBindingImpl} 
-import org.appdapter.impl.store._
-import org.appdapter.core.repo._
+import org.appdapter.core.store.{Repo }
+import org.appdapter.core.query.{InitialBinding }
+import org.appdapter.fancy.rclient.{RepoClient, RepoClientImpl}
+import org.appdapter.fancy.rspec.{URLRepoSpec}
+import org.appdapter.fancy.query.{InitialBindingImpl}
+
 import com.hp.hpl.jena.query.{QuerySolution} // Query, QueryFactory, QueryExecution, QueryExecutionFactory, , QuerySolutionMap, Syntax};
 import com.hp.hpl.jena.rdf.model.{Model}
 import org.appdapter.core.log.BasicDebugger
 
-import org.appdapter.impl.store.{ModelClientImpl, ResourceResolver};
+import org.appdapter.fancy.model.{ ResourceResolver};
 
 import org.cogchar.bind.symja.{MathGate, MathSpaceFactory}
 
@@ -45,7 +49,7 @@ case class FsdirDatasetSpec extends ModernDatasetSpec
 case class AssemblerGraphDatasetSpec extends ModernDatasetSpec { // An assembler graph in some form
 }
 
-import org.friendularity.respire.VarargsLogging
+import org.appdapter.fancy.log.VarargsLogging
 
 object BehavTrix extends VarargsLogging {
 
@@ -467,7 +471,9 @@ and the SPARQL Graph Store protocol.
  
  */
 
-import org.appdapter.core.store.{ Repo, BasicRepoImpl, BasicStoredMutableRepoImpl, InitialBinding, ModelClient }
+import org.appdapter.core.store.{ Repo, BasicRepoImpl, BasicStoredMutableRepoImpl}
+import org.appdapter.core.query.{ InitialBinding }
+import org.appdapter.fancy.repo.{ FancyRepo }
 
 class ExplicitDatasetRepo(val myDset: Dataset, val myDirGraphID: Ident) extends BasicRepoImpl with FancyRepo with Repo.Updatable {
  // def loadSheetModelsIntoMainDataset(): Unit = {}

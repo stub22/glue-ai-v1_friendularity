@@ -18,14 +18,19 @@ package org.friendularity.ignore.shrill
 
 import org.appdapter.core.item.Item
 import org.appdapter.core.log.BasicDebugger
-import org.appdapter.core.matdat.OnlineSheetRepoSpec
+
 import org.appdapter.core.name.Ident
-import org.appdapter.core.store.{ModelClient, Repo}
-import org.appdapter.help.repo.{InitialBindingImpl, RepoClient, RepoClientImpl}
-import org.appdapter.impl.store.{FancyRepo, ModelClientImpl}
+import org.appdapter.core.store.{Repo}
+import org.appdapter.core.model.{RdfNodeTranslator}
+import org.appdapter.fancy.log.VarargsLogging
+import org.appdapter.fancy.rclient.{RepoClient, RepoClientImpl}
+import org.appdapter.fancy.query.{InitialBindingImpl}
+import org.appdapter.fancy.repo.{FancyRepo}
+import org.appdapter.fancy.model.{ModelClientImpl}
+import org.appdapter.fancy.rspec.OnlineSheetRepoSpec
 import org.cogchar.api.space.TextVal
 import org.cogchar.bind.symja.MathGate
-import org.friendularity.respire.VarargsLogging
+
 import org.friendularity.struct.MathBlock
 
 import com.hp.hpl.jena.rdf.model.Model
@@ -52,7 +57,7 @@ object EqnExtractors extends VarargsLogging {
 		val rspec = org.friendularity.respire.RespirationTest.makeDfltOSRS();
 		getLogger().info("Let's load some equations from different properties in our source models at: {}", rspec)
 		
-		val dfltTestRepo = rspec.makeRepo();
+		val dfltTestRepo = rspec.getOrMakeRepo();
 		
 		//dbRepo.addNamedModel(copyID, lightsModelFromSheet);
 		//val copiedModel = dbRepo.getNamedModel(copyID)	
@@ -65,7 +70,7 @@ object EqnExtractors extends VarargsLogging {
 		// val spatSheetQN = "ccrti:spatial_sheet_60";
 		val mathSheetQN = mathSrcGraphQN; // "ccrti:math_sheet_60";
 		// val spatGraphID = dfltTestRC.makeIdentForQName(spatSheetQN);   // AssumedGraphDir.estimVizTestCfgGraphQN);
-		val mathGraphID = dfltTestRC.makeIdentForQName(mathSheetQN);
+		val mathGraphID = dfltTestRC.getDefaultRdfNodeTranslator.makeIdentForQName(mathSheetQN);
 		// info1("viz spatial graphID = {} ", spatGraphID);
 		// val spatGraph = dfltTestRepo.getNamedModel(spatGraphID);
 		// println("Fetched spat model: " + spatGraph);
@@ -73,7 +78,7 @@ object EqnExtractors extends VarargsLogging {
 		
 		ensurePrefixesAligned(mathGraph)
 
-		val mathMCI : ModelClient = new ModelClientImpl(mathGraph);
+		val mathMCI : RdfNodeTranslator = new ModelClientImpl(mathGraph);
 		val mgb = new MathGraphBinding(mathMCI)
 		// Started abstracting the code below into MathGraphBinding, but this is too low level, not enough bang for buck
 	//	val mathTxtSrc = new MathTextSource(mathMCI)		

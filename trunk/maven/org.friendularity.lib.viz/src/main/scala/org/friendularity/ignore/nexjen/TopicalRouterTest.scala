@@ -16,7 +16,7 @@
 
 package org.friendularity.ignore.nexjen
 
-import org.friendularity.respire.VarargsLogging
+import org.appdapter.fancy.log.VarargsLogging
 
 /**
  * @author Stu B. <www.texpedient.com>

@@ -16,13 +16,17 @@
 package org.friendularity.respire
 
 import org.appdapter.core.log.BasicDebugger
-import org.appdapter.core.matdat.OnlineSheetRepoSpec
+
 import org.appdapter.core.store.Repo
-import org.appdapter.help.repo.{InitialBindingImpl, RepoClient, RepoClientImpl}
-import org.appdapter.impl.store.{FancyRepo, ModelClientImpl}
+import org.appdapter.fancy.rclient.{RepoClient, RepoClientImpl}
+import org.appdapter.fancy.rspec.{OnlineSheetRepoSpec}
+import org.appdapter.fancy.query.{InitialBindingImpl}
+import org.appdapter.fancy.repo.{FancyRepo}
+import org.appdapter.fancy.model.{ModelClientImpl}
+
 import org.cogchar.bind.symja.{MathGate, MathSpaceFactory}
 
-
+import org.appdapter.fancy.log.VarargsLogging
 
 
 object RespirationTest extends VarargsLogging {
@@ -57,7 +61,7 @@ object RespirationTest extends VarargsLogging {
 		// Note this calls testGoodySpace at the end
 		getLogger().info("Why hello there!  Yes, respiration is the order of the hour...")
 		val rspec = makeDfltOSRS();
-		val dfltTestRepo = rspec.makeRepo();
+		val dfltTestRepo = rspec.getOrMakeRepo();
 		
 		//dbRepo.addNamedModel(copyID, lightsModelFromSheet);
 		//val copiedModel = dbRepo.getNamedModel(copyID)	

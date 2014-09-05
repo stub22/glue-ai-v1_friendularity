@@ -16,13 +16,19 @@
 		<web.contextPath>friendu_xweb_xgra</web.contextPath>
 	</properties>
     <dependencies>
-		<!--
+		
 		<dependency>
-			<groupId>org.cogchar</groupId>
-			<artifactId>org.cogchar.bundle.core</artifactId>
-			<version>${cogchar.version}</version>
+			<groupId>org.appdapter</groupId>
+			<artifactId>org.appdapter.bundle.core</artifactId>
+			<version>${appdapter.version}</version>
 		</dependency>
-		-->
+		
+		<dependency>
+			<groupId>org.friendularity</groupId>
+			<artifactId>org.friendularity.lib.viz</artifactId>
+			<version>${project.version}</version>
+		</dependency>		
+	
 		<dependency>
 			<groupId>org.cogchar</groupId>
 			<artifactId>ext.bundle.lift</artifactId>
@@ -60,6 +66,7 @@
 						</Export-Package>
 						<!-- To make our own private copy of the LiftWeb static/singleton state, we add: -->
 						<Private-Package>
+							org.friendularity.ignore.nexjen,
 							net.liftweb.*,
 							toserve.*,							<!-- needed for "blueprint" jquery.js -->
 							i18n				<!-- lift-core_* properties files for localization.  -->

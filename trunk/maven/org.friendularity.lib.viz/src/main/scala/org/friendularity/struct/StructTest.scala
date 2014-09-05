@@ -17,15 +17,15 @@
 package org.friendularity.struct
 
 import org.appdapter.core.log.BasicDebugger;
+import org.appdapter.fancy.log.VarargsLogging
 
 import org.cogchar.bind.symja.{MathGate, MathSpaceFactory}
-
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
 
-object StructTest  extends org.friendularity.respire.VarargsLogging {
+object StructTest  extends VarargsLogging {
 	def main(args: Array[String]) : Unit = {
 		// Backup - if logging is not working, try enabling these two lines.
 		// Must enable "compile" or "provided" scope for Log4J dep in order to compile this code.
