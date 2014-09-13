@@ -85,7 +85,7 @@ public class AnimPromptPanel extends javax.swing.JPanel implements Source<Animat
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        pnlPromptConnect = new org.cogchar.bundle.demo.convo.ui.MessagingConnectPanel();
+        pnlPromptConnect = new org.friendularity.bundle.ui.swing.animation.MessagingConnectPanel();
         btnConnect = new javax.swing.JButton();
         btnStart = new javax.swing.JButton();
 
@@ -214,7 +214,7 @@ private void btnStartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnConnect;
     private javax.swing.JButton btnStart;
-    private org.cogchar.bundle.demo.convo.ui.MessagingConnectPanel pnlPromptConnect;
+    private org.friendularity.bundle.ui.swing.animation.MessagingConnectPanel pnlPromptConnect;
     // End of variables declaration//GEN-END:variables
 
     @Override
