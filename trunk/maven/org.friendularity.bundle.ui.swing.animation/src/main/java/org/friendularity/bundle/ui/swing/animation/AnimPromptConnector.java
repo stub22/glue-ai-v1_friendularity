@@ -25,7 +25,6 @@ import java.util.logging.Logger;
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Session;
-import org.cogchar.bundle.demo.convo.ui.MessagingConnectImpl;
 import org.jflux.api.common.rk.config.VersionProperty;
 import org.jflux.api.core.Listener;
 import org.jflux.api.core.Source;
