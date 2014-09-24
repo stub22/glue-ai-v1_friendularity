@@ -49,51 +49,51 @@
 		<module>maven/org.friendularity.modules.main</module>
 	</modules>
 	<properties>
-            <!--  Glue Dependencies -->
-            <appdapter.version>1.2.1-SNAPSHOT</appdapter.version>
+		<!--  Glue Dependencies -->
+		<appdapter.version>1.2.1-SNAPSHOT</appdapter.version>
 		<appdapter.msg.version>1.0.5</appdapter.msg.version>
 		<appdapter.jscience.version>1.0.9</appdapter.jscience.version>
-            <cogchar.version>1.1.1-SNAPSHOT</cogchar.version>
-            <jflux.version>0.2.3-SNAPSHOT</jflux.version>
-        <mechio.version>1.0.4-SNAPSHOT</mechio.version>
+		<cogchar.version>1.1.1-SNAPSHOT</cogchar.version>
+		<jflux.version>0.2.3-SNAPSHOT</jflux.version>
+		<mechio.version>1.0.4-SNAPSHOT</mechio.version>
 		<rwshop.version>0.9.8-SNAPSHOT</rwshop.version>
-            <!-- Non Glue Dependencies -->
-            <encoding>UTF-8</encoding>
-            <felix.org.osgi.core.version>1.4.0</felix.org.osgi.core.version>
+		<!-- Non Glue Dependencies -->
+		<encoding>UTF-8</encoding>
+		<felix.org.osgi.core.version>1.4.0</felix.org.osgi.core.version>
 		<freckler.version>1.0.1-SNAPSHOT</freckler.version>
 		<!--  JME3 is used directly in o.f.demo.jme3.maven -->
-            <jmonkey.version>3.0.0.20140325-SNAPSHOT</jmonkey.version>
-            <junit.version>4.11</junit.version>
-            <jscience.version>4.3.1</jscience.version>
-            <lwjgl.version>2.8.4</lwjgl.version>
+		<jmonkey.version>3.0.0.20140325-SNAPSHOT</jmonkey.version>
+		<junit.version>4.11</junit.version>
+		<jscience.version>4.3.1</jscience.version>
+		<lwjgl.version>2.8.4</lwjgl.version>
 		<maven.compiler.source>1.6</maven.compiler.source>
 		<maven.compiler.target>1.6</maven.compiler.target>
-            <netbeans.version>RELEASE721</netbeans.version>
-            <netbeans.hint.license>friendularity-apache20</netbeans.hint.license>
-            
-            <org.jdesktop>1.2.1</org.jdesktop>
-            <org.osgi.version>4.3.0</org.osgi.version>
-            <org.semweb4j.version>4.8.3</org.semweb4j.version>	
-            <owlapi.version>3.5.0</owlapi.version>
+		<netbeans.version>RELEASE721</netbeans.version>
+		<netbeans.hint.license>friendularity-apache20</netbeans.hint.license>
+
+		<org.jdesktop>1.2.1</org.jdesktop>
+		<org.osgi.version>4.3.0</org.osgi.version>
+		<org.semweb4j.version>4.8.3</org.semweb4j.version>	
+		<owlapi.version>3.5.0</owlapi.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>${project.build.sourceEncoding}</project.reporting.outputEncoding>
-            <scala.version>2.10.2</scala.version>
-            <slf4j.version>1.7.5</slf4j.version>
-            <wagon.webdav.version>1.0-beta-7</wagon.webdav.version>
-            <!-- Plugins version -->
-            <version.lifecycle.mapping>1.0.0</version.lifecycle.mapping>
-            <version.license.maven.plugin>1.7</version.license.maven.plugin>
-            <version.maven.antrun.plugin>1.6</version.maven.antrun.plugin>
-            <version.maven.assembly.plugin>2.2</version.maven.assembly.plugin>
-            <version.maven.bundle.plugin>2.3.7</version.maven.bundle.plugin>
-            <version.maven.compiler.plugin>2.3.2</version.maven.compiler.plugin>
-            <version.maven.jar.plugin>2.3.2</version.maven.jar.plugin>
-            <version.maven.resources.plugin>2.4.3</version.maven.resources.plugin>
-            <version.maven.scala.plugin>2.15.2</version.maven.scala.plugin>
-            <version.maven.site.plugin>3.4</version.maven.site.plugin>
-            <version.maven.surefire.plugin>2.9</version.maven.surefire.plugin>
-            <version.org.apache.felix.main>4.2.1</version.org.apache.felix.main>
-    <!-- vscaladoc settings -->
+		<scala.version>2.10.2</scala.version>
+		<slf4j.version>1.7.5</slf4j.version>
+		<wagon.webdav.version>1.0-beta-7</wagon.webdav.version>
+		<!-- Plugins version -->
+		<version.lifecycle.mapping>1.0.0</version.lifecycle.mapping>
+		<version.license.maven.plugin>1.7</version.license.maven.plugin>
+		<version.maven.antrun.plugin>1.6</version.maven.antrun.plugin>
+		<version.maven.assembly.plugin>2.2</version.maven.assembly.plugin>
+		<version.maven.bundle.plugin>2.3.7</version.maven.bundle.plugin>
+		<version.maven.compiler.plugin>2.3.2</version.maven.compiler.plugin>
+		<version.maven.jar.plugin>2.3.2</version.maven.jar.plugin>
+		<version.maven.resources.plugin>2.4.3</version.maven.resources.plugin>
+		<version.maven.scala.plugin>2.15.2</version.maven.scala.plugin>
+		<version.maven.site.plugin>3.4</version.maven.site.plugin>
+		<version.maven.surefire.plugin>2.9</version.maven.surefire.plugin>
+		<version.org.apache.felix.main>4.2.1</version.org.apache.felix.main>
+		<!-- vscaladoc settings -->
 		<maven.scaladoc.vscaladocVersion>1.2-m1</maven.scaladoc.vscaladocVersion>
 		<vscaladoc.links.liftweb.pathsufix>scaladocs/</vscaladoc.links.liftweb.pathsufix>
 		<vscaladoc.links.liftweb.baseurl>http://scala-tools.org/mvnsites/liftweb</vscaladoc.links.liftweb.baseurl>		

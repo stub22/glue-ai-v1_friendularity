@@ -21,7 +21,6 @@ package org.friendularity.bindx
  * 
  *  : class XMLLiteral
 location: package org.ontoware.rdfreactor.schema.rdfs
-
  
  */
 

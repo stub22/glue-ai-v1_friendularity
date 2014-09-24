@@ -213,7 +213,8 @@ object ExImBank extends VarargsLogging {
 		 http://host/dataset/data -- the SPARQL Graph Store Protocol endpoint.
 		 http://host/dataset/upload -- the file upload endpoint.
 		 */		
-		
+	
+		//FIXME: Now we can use FusekiRemotePortal, which takes care of these URL strings.
 		val remotePortalBaseURL = "http://lima.nodeset.com:4001/temp_major_L5SG_4001";
 		val remoteGraphStoreURL = remotePortalBaseURL + "/data"
 		val remoteQueryURL = remotePortalBaseURL + "/query"
