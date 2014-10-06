@@ -9,6 +9,7 @@ import org.osgi.framework.BundleContext;
 
 import org.appdapter.fancy.rspec.OnlineSheetRepoSpec;
 import org.appdapter.fancy.rclient.EnhancedRepoClient;
+import org.appdapter.fancy.rclient.EnhancedLocalRepoClient;
 import org.appdapter.core.store.Repo;
 import org.cogchar.impl.scene.read.BehavMasterConfigTest;
 
@@ -45,7 +46,7 @@ public class Activator implements BundleActivator {
 		//          RepoConnector rc = new RepoConnector();
 		//       rc.connectDemoRepoClient(repoSpec);
         Repo.WithDirectory bmcMemoryRepoHandle = repoSpec.makeRepo();
-		EnhancedRepoClient enhancedRepoSpec = new EnhancedRepoClient(repoSpec, bmcMemoryRepoHandle, 
+		EnhancedRepoClient enhancedRepoSpec = new EnhancedLocalRepoClient(repoSpec, bmcMemoryRepoHandle, 
 					BehavMasterConfigTest.TGT_GRAPH_SPARQL_VAR(), BehavMasterConfigTest.QUERY_SOURCE_GRAPH_QN());    
         
         //Extender listens for specs and creates lifecycles
