@@ -423,7 +423,7 @@ import com.hp.hpl.jena.rdf.model.Statement
 import com.hp.hpl.jena.rdf.listeners.StatementListener
 
 class TellMe extends StatementListener {
-	val myLog = new VarargsLogging
+	val myLog = new VarargsLogging {}
 	
 	var myAddedCount = 0
 	var myRemovedCount = 0
