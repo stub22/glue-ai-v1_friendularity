@@ -39,6 +39,7 @@ import org.jflux.api.core.util.EmptyAdapter;
 import org.jflux.api.messaging.rk.services.ServiceCommand;
 import org.jflux.impl.messaging.JMSAvroUtils;
 import org.jflux.impl.messaging.rk.ServiceCommandRecord;
+import org.jflux.impl.messaging.rk.utils.ConnectionUtils;
 import org.mechio.api.animation.Animation;
 import org.mechio.api.animation.library.AnimationLibrary;
 import org.mechio.api.animation.library.DefaultAnimationLibrary;
@@ -65,8 +66,8 @@ public class AnimPromptPanel extends javax.swing.JPanel implements Source<Animat
                         "127.0.0.1");
         pnlPromptConnect.setBrokerAddress(ipAddrProp.getSource(), ipAddrProp.getSetter(), 
                 new DefaultSource<String>("5672"), 
-                new DefaultSource<String>("admin"), 
-                new DefaultSource<String>("admin"), 
+                new DefaultSource<String>(ConnectionUtils.getUsername()), 
+                new DefaultSource<String>(ConnectionUtils.getPassword()), 
                 new DefaultSource<String>("client1"), 
                 new DefaultSource<String>("test"));
         myLibrary = new DefaultAnimationLibrary("prompt");

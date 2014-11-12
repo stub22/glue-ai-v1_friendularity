@@ -47,6 +47,7 @@ import org.jflux.impl.messaging.rk.JMSAvroServiceFacade;
 import org.jflux.impl.messaging.rk.ServiceCommandRecord;
 import org.jflux.impl.messaging.rk.ServiceErrorRecord;
 import org.jflux.impl.messaging.rk.services.PortableServiceCommand;
+import org.jflux.impl.messaging.rk.utils.ConnectionUtils;
 import org.mechio.api.vision.ImageEvent;
 import org.mechio.api.vision.ImageRegion;
 import org.mechio.api.vision.ImageRegionList;
@@ -106,7 +107,11 @@ public class UnusedNetworkVisionDataFeed extends BasicDebugger {
 	public boolean connectServices() {
 
 		String brokerTCP_Addr = "127.0.0.1:5672";
-		String brokerAMQP_URL = "amqp://admin:admin@clientid/test?brokerlist='tcp://" + brokerTCP_Addr + "'";
+		String brokerAMQP_URL =
+                        "amqp://" + ConnectionUtils.getUsername() + ":" +
+                        ConnectionUtils.getPassword() +
+                        "@clientid/test?brokerlist='tcp://" + brokerTCP_Addr +
+                        "'";
 		try {
 			myVideoService = connectToVisionImgSvc(brokerAMQP_URL);
 			myFaceService = connectToVisionRegionSvc(brokerAMQP_URL);

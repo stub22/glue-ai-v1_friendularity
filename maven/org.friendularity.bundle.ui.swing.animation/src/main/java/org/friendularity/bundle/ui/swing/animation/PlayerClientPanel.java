@@ -158,8 +158,8 @@ public class PlayerClientPanel extends javax.swing.JPanel implements Source<Remo
         BundleContext context = OSGiUtils.getBundleContext(Animation.class);
         String ip = myModel.getSelectedItem().toString();
         Connection con = ConnectionManager.createConnection(
-                "admin", "admin", "client1", "test", 
-                "tcp://" + ip + ":5672");
+                ConnectionUtils.getUsername(), ConnectionUtils.getPassword(),
+                "client1", "test",  "tcp://" + ip + ":5672");
         try{
             con.start();
         }catch(JMSException ex){

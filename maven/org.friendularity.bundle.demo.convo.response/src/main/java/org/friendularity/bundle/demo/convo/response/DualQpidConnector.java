@@ -29,12 +29,13 @@ import org.jflux.impl.messaging.rk.JMSAvroRecordAsyncReceiver;
 import org.jflux.impl.messaging.rk.JMSAvroRecordSender;
 import org.jflux.impl.messaging.rk.JMSBytesMessageSender;
 import org.jflux.impl.messaging.rk.utils.ConnectionManager;
+import org.jflux.impl.messaging.rk.utils.ConnectionUtils;
 import org.mechio.impl.speech.SpeechRequestRecord;
 import org.mechio.impl.speechrec.SpeechRecEventListRecord;
 
 /**
  *
- * @author Jason G. Pallack <jgpallack@gmail.com>
+ * @author Amy Jessica Book <jgpallack@gmail.com>
  */
 public class DualQpidConnector extends DefaultNotifier<SpeechRecEventListRecord> {
     private final static Logger theLogger =
@@ -60,7 +61,8 @@ public class DualQpidConnector extends DefaultNotifier<SpeechRecEventListRecord>
         //IP Address needs port number, the default port is 5672
         try {
             myConnection = ConnectionManager.createConnection(
-                    "admin", "admin", "client1", "test",
+                    ConnectionUtils.getUsername(),
+                    ConnectionUtils.getPassword(), "client1", "test",
                     "tcp://" + myIPAddress + ":5672");
             myDestination =
                     ConnectionManager.createDestination(myDestinationString);

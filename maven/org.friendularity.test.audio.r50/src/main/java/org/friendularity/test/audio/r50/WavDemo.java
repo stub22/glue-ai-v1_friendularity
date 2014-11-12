@@ -23,6 +23,7 @@ import javax.jms.Session;
 import org.jflux.impl.messaging.rk.JMSAvroRecordSender;
 import org.jflux.impl.messaging.rk.JMSBytesMessageSender;
 import org.jflux.impl.messaging.rk.utils.ConnectionManager;
+import org.jflux.impl.messaging.rk.utils.ConnectionUtils;
 import org.mechio.impl.audio.config.WavPlayerConfigRecord;
 
 /**
@@ -101,7 +102,8 @@ public class WavDemo
         
         try {
             theConnection = ConnectionManager.createConnection(
-                    "admin", "admin", "client1", "test",
+                    ConnectionUtils.getUsername(),
+                    ConnectionUtils.getPassword(), "client1", "test",
                     "tcp://" + ipAddress + ":5672");
             theDestination = ConnectionManager.createDestination(destString);
             try {
