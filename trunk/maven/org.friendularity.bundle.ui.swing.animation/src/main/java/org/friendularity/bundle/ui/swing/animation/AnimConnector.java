@@ -74,8 +74,8 @@ public class AnimConnector implements Source<RemoteAnimationPlayerClient>{
         BundleContext context = OSGiUtils.getBundleContext(Animation.class);
         String ip = myIPSource.getValue();
         myConnection = ConnectionManager.createConnection(
-                "admin", "admin", "client1", "test", 
-                "tcp://" + ip + ":5672");
+                ConnectionUtils.getUsername(), ConnectionUtils.getPassword(),
+                "client1", "test", "tcp://" + ip + ":5672");
         try{
             myConnection.start();
         }catch(JMSException ex){

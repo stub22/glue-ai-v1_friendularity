@@ -31,7 +31,7 @@ public class Activator implements BundleActivator {
     private void connectMotion(BundleContext context) throws Exception {
         theLogger.info("Registering Motion Connection and Destinations");
         Connection con = ConnectionManager.createConnection(
-                "admin", "admin", "client1", "test", 
+                getUsername(), getPassword(), "client1", "test", 
                 "tcp://127.0.0.1:5672");
         con.start();
         ConnectionUtils.ensureSession(context, 
@@ -45,7 +45,7 @@ public class Activator implements BundleActivator {
     
     private void connectSpeech(BundleContext context) throws Exception {
         Connection con = ConnectionManager.createConnection(
-                "admin", "admin", "client1", "test", 
+                getUsername(), getPassword(), "client1", "test", 
                 "tcp://127.0.0.1:5672");
         con.start();
         theLogger.info("Registering Speech Connection and Destinations");
@@ -62,7 +62,7 @@ public class Activator implements BundleActivator {
     
     private void connectAnimation(BundleContext context) throws Exception {
         Connection con = ConnectionManager.createConnection(
-                "admin", "admin", "client1", "test", 
+                getUsername(), getPassword(), "client1", "test", 
                 "tcp://127.0.0.1:5672");
         con.start();
         theLogger.info("Registering Animation Connection and Destinations");
@@ -75,7 +75,7 @@ public class Activator implements BundleActivator {
     
     private void connectVision(BundleContext context) throws Exception {
         Connection con = ConnectionManager.createConnection(
-                "admin", "admin", "client1", "test", 
+                getUsername(), getPassword(), "client1", "test", 
                 "tcp://127.0.0.1:5672");
         con.start();
         theLogger.info("Registering Vision Connection and Destinations");
