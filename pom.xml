@@ -50,12 +50,12 @@
 	</modules>
 	<properties>
 		<!--  Glue Dependencies -->
-		<appdapter.version>1.2.1-SNAPSHOT</appdapter.version>
+		<appdapter.version>1.2.2</appdapter.version>
 		<appdapter.msg.version>1.0.5</appdapter.msg.version>
 		<appdapter.jscience.version>1.0.9</appdapter.jscience.version>
 		<cogchar.version>1.1.1-SNAPSHOT</cogchar.version>
-		<jflux.version>0.2.3-SNAPSHOT</jflux.version>
-		<mechio.version>1.0.4-SNAPSHOT</mechio.version>
+		<jflux.version>0.2.3</jflux.version>
+		<mechio.version>1.0.4</mechio.version>
 		<rwshop.version>0.9.8-SNAPSHOT</rwshop.version>
 		<!-- Non Glue Dependencies -->
 		<encoding>UTF-8</encoding>
