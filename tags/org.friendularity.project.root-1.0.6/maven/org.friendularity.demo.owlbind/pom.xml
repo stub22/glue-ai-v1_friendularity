@@ -1,0 +1,123 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.friendularity</groupId>
+		<artifactId>org.friendularity.modules.main</artifactId>
+		<version>1.0.6</version>
+		<relativePath>../org.friendularity.modules.main/pom.xml</relativePath>
+	</parent>	
+
+	<artifactId>org.friendularity.demo.owlbind</artifactId>
+
+	<packaging>jar</packaging>
+	<name>${project.artifactId} - Experiment in java/graph binding</name>	
+
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>net.sourceforge.owlapi</groupId>
+			<artifactId>owlapi-distribution</artifactId>
+		</dependency>	
+		<dependency>
+			<groupId>org.semweb4j</groupId>
+			<artifactId>rdfreactor.dist</artifactId>
+			<type>pom</type>
+		</dependency>
+		<dependency>
+			<groupId>org.semweb4j</groupId>
+			<artifactId>rdf2go.impl.jena</artifactId>
+		</dependency>
+		<dependency>
+            <groupId>org.appdapter</groupId>
+            <artifactId>org.appdapter.bundle.core</artifactId>
+        </dependency>		
+		
+		<!--  Appears included Sesame version requires Java 7, for java.nio.charset.StandardCharsets
+			<dependency>
+				<groupId>org.semweb4j</groupId>
+				<artifactId>rdfreactor.dist</artifactId>
+				<version>5.0.0</version>
+				<type>pom</type>
+			</dependency>
+		-->
+	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.semweb4j</groupId>
+				<artifactId>rdfreactor-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>bindingTest</id>
+						<goals>
+							<goal>rdfs-classes</goal>
+						</goals>
+						<configuration>
+							<schemaFile>src/test/resources/schemas/BindingTest_owl2.n3</schemaFile>
+							<packageName>org.friendularity.gen.reacted.btest</packageName>
+							<!-- important to set the logFile when using multiple executions, otherwise
+							needsRegeneration()
+							can throw a NPE
+https://code.google.com/p/semweb4j/source/browse/trunk/org.semweb4j.rdfreactor.maven-plugin/src/main/java/org/apache/maven/plugins/rdfreactor_generate/RdfSClassGenerator.java?r=1879
+							-->
+							<rdfReactorLogfile>target/rdfreactor_bindingTest.log</rdfReactorLogfile>
+						</configuration>						
+					</execution>
+										
+					<execution>
+						<id>perceptObsEstim</id>
+						<goals>
+							<goal>rdfs-classes</goal>
+						</goals>
+						<configuration>
+							<schemaFile>src/test/resources/schemas/PerceptObsEstim_owl2.n3</schemaFile>
+							<packageName>org.friendularity.gen.reacted.percept</packageName>
+							<rdfReactorLogfile>target/rdfreactor_percept.log</rdfReactorLogfile>
+						</configuration>
+					</execution>
+
+					<execution>
+						<id>lessonPath</id>
+						<goals>
+							<goal>rdfs-classes</goal>
+						</goals>
+						<configuration>
+							<schemaFile>src/test/resources/schemas/LessonPath_owl2.n3</schemaFile>
+							<packageName>org.friendularity.gen.reacted.lpath</packageName>
+							<rdfReactorLogfile>target/rdfreactor_lpath.log</rdfReactorLogfile>
+						</configuration>
+					</execution>
+
+					<execution>
+						<id>metaDir</id>
+						<goals>
+							<goal>rdfs-classes</goal>
+						</goals>
+						<configuration>
+							<schemaFile>src/test/resources/schemas/MetaDir_owl2.n3</schemaFile>
+							<packageName>org.friendularity.gen.reacted.mdir</packageName>
+							<rdfReactorLogfile>target/rdfreactor_mdir.log</rdfReactorLogfile>
+						</configuration>
+					</execution>										
+				</executions>
+			</plugin>	
+			<plugin>
+				<groupId>org.scala-tools</groupId>
+				<artifactId>maven-scala-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>compile</goal>
+							<!-- We're not actually using any scala tests right now
+							<goal>testCompile</goal>
+							-->
+						</goals>
+					</execution>
+				</executions>
+			</plugin>			
+		</plugins>	
+	</build>
+</project>

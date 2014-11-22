@@ -1,0 +1,415 @@
+<Robot>
+	<RobotId>myRobot</RobotId>
+	<ServoControllers>
+	<!-- List of ServoControllers backing this device -->
+		<ServoControllerParameters>
+			<Connector>
+				<Version type="ControllerType">
+				<!-- Version identifying the Physical (or virtual) Controller.  Helps identify the ServiceConnector to use -->
+					<Name>Dynamixel RX</Name>
+					<Number>1.0</Number>
+				</Version>
+				<Version type="ConfigFormat">
+				<!-- Version identifying the format of the ServoControllerParameters.  Helps identify the ServiceConfigurationLoader to use -->
+					<Name>Dynamixel XML Config</Name>
+					<Number>1.0</Number>
+				</Version>
+			</Connector>
+			<ServoControllerConfig>
+				<ServoControllerId>BodyController</ServoControllerId>
+				<ConnectionParameters>
+					<PortName>/dev/ttyUSB0</PortName>
+					<BaudRate>1000000</BaudRate>
+				</ConnectionParameters>
+				<ServoParameters>
+					<Servo>
+						<Name>Waist</Name>
+						<ServoId>0</ServoId>
+						<MinPosition>600</MinPosition>
+						<MaxPosition>440</MaxPosition>
+						<DefaultPosition>498</DefaultPosition>
+					</Servo>
+					<Servo>
+						<Name>Left Shoulder Pitch</Name>
+						<ServoId>1</ServoId>
+						<MinPosition>990</MinPosition>
+						<MaxPosition>163</MaxPosition>
+						<DefaultPosition>808</DefaultPosition>
+					</Servo>
+					<Servo>
+						<Name>Left Shoulder Roll</Name>
+						<ServoId>2</ServoId>
+						<MinPosition>919</MinPosition>
+						<MaxPosition>645</MaxPosition>
+						<DefaultPosition>900</DefaultPosition>
+					</Servo>
+					<Servo>
+						<Name>Left Elbow Yaw</Name>
+						<ServoId>3</ServoId>
+						<MinPosition>820</MinPosition>
+						<MaxPosition>340</MaxPosition>
+						<DefaultPosition>657</DefaultPosition>
+					</Servo>
+					<Servo>
+						<Name>Left Elbow Pitch</Name>
+						<ServoId>4</ServoId>
+						<MinPosition>520</MinPosition>
+						<MaxPosition>815</MaxPosition>
+						<DefaultPosition>551</DefaultPosition>
+					</Servo>
+					<Servo>
+						<Name>Right Shoulder Pitch</Name>
+						<ServoId>5</ServoId>
+						<MinPosition>0</MinPosition>
+						<MaxPosition>740</MaxPosition>
+						<DefaultPosition>131</DefaultPosition>
+					</Servo>
+					<Servo>
+						<Name>Right Shoulder Roll</Name>
+						<ServoId>6</ServoId>
+						<MinPosition>220</MinPosition>
+						<MaxPosition>510</MaxPosition>
+						<DefaultPosition>237</DefaultPosition>
+					</Servo>
+					<Servo>
+						<Name>Right Elbow Yaw</Name>
+						<ServoId>7</ServoId>
+						<MinPosition>300</MinPosition>
+						<MaxPosition>810</MaxPosition>
+						<DefaultPosition>521</DefaultPosition>
+					</Servo>
+					<Servo>
+						<Name>Right Elbow Pitch</Name>
+						<ServoId>8</ServoId>
+						<MinPosition>510</MinPosition>
+						<MaxPosition>200</MaxPosition>
+						<DefaultPosition>456</DefaultPosition>
+					</Servo>
+					<Servo>
+						<Name>Left Hip Roll</Name>
+						<ServoId>9</ServoId>
+						<MinPosition>20</MinPosition>
+						<MaxPosition>200</MaxPosition>
+						<DefaultPosition>65</DefaultPosition>
+					</Servo>
+					<Servo>
+						<Name>Left Hip Yaw</Name>
+						<ServoId>10</ServoId>
+						<MinPosition>800</MinPosition>
+						<MaxPosition>267</MaxPosition>
+						<DefaultPosition>570</DefaultPosition>
+					</Servo>
+					<Servo>
+						<Name>Left Hip Pitch</Name>
+						<ServoId>11</ServoId>
+						<MinPosition>450</MinPosition>
+						<MaxPosition>800</MaxPosition>
+						<DefaultPosition>588</DefaultPosition>
+					</Servo>
+					<Servo>
+						<Name>Left Knee Pitch</Name>
+						<ServoId>12</ServoId>
+						<MinPosition>783</MinPosition>
+						<MaxPosition>500</MaxPosition>
+						<DefaultPosition>505</DefaultPosition>
+					</Servo>
+					<Servo>
+						<Name>Left Ankle Pitch</Name>
+						<ServoId>13</ServoId>
+						<MinPosition>450</MinPosition>
+						<MaxPosition>550</MaxPosition>
+						<DefaultPosition>460</DefaultPosition>
+					</Servo>
+					<Servo>
+						<Name>Left Ankle Roll</Name>
+						<ServoId>14</ServoId>
+						<MinPosition>500</MinPosition>
+						<MaxPosition>355</MaxPosition>
+						<DefaultPosition>433</DefaultPosition>
+					</Servo>
+					<Servo>
+						<Name>Right Hip Roll</Name>
+						<ServoId>15</ServoId>
+						<MinPosition>420</MinPosition>
+						<MaxPosition>220</MaxPosition>
+						<DefaultPosition>350</DefaultPosition>
+					</Servo>
+					<Servo>
+						<Name>Right Hip Yaw</Name>
+						<ServoId>16</ServoId>
+						<MinPosition>260</MinPosition>
+						<MaxPosition>630</MaxPosition>
+						<DefaultPosition>436</DefaultPosition>
+					</Servo>
+					<Servo>
+						<Name>Right Hip Pitch</Name>
+						<ServoId>17</ServoId>
+						<MinPosition>665</MinPosition>
+						<MaxPosition>350</MaxPosition>
+						<DefaultPosition>385</DefaultPosition>
+					</Servo>
+					<Servo>
+						<Name>Right Pitch</Name>
+						<ServoId>18</ServoId>
+						<MinPosition>220</MinPosition>
+						<MaxPosition>510</MaxPosition>
+						<DefaultPosition>505</DefaultPosition>
+					</Servo>
+					<Servo>
+						<Name>Right Ankle Pitch</Name>
+						<ServoId>19</ServoId>
+						<MinPosition>585</MinPosition>
+						<MaxPosition>335</MaxPosition>
+						<DefaultPosition>430</DefaultPosition>
+					</Servo>
+					<Servo>
+						<Name>Right Ankle Roll</Name>
+						<ServoId>20</ServoId>
+						<MinPosition>340</MinPosition>
+						<MaxPosition>495</MaxPosition>
+						<DefaultPosition>420</DefaultPosition>
+					</Servo>
+				</ServoParameters>
+			</ServoControllerConfig>
+		</ServoControllerParameters>
+		<ServoControllerParameters>
+			<Connector>
+				<Version type="ControllerType">
+				<!-- Version identifying the Physical (or virtual) Controller.  Helps identify the ServiceConnector to use -->
+					<Name>Pololu Mini Maestro</Name>
+					<Number>1.0</Number>
+				</Version>
+				<Version type="ConfigFormat">
+				<!-- Version identifying the format of the ServoControllerParameters.  Helps identify the ServiceConfigurationLoader to use -->
+					<Name>Maestro XML Config</Name>
+					<Number>1.0</Number>
+				</Version>
+			</Connector>
+			<ServoControllerConfig>
+				<ServoControllerId>HeadController</ServoControllerId>
+				<ConnectionParameters>
+					<PortName>/dev/ttyUSB4</PortName>
+					<BaudRate>115200</BaudRate>
+				</ConnectionParameters>
+				<ServoParameters>
+					<Servo>
+						<Name>Neck Yaw</Name>
+						<ServoId>0</ServoId>
+						<MinPosition>1248</MinPosition>
+						<MaxPosition>1808</MaxPosition>
+						<DefaultPosition>1440</DefaultPosition>
+					</Servo>
+					<Servo>
+						<Name>Neck Roll</Name>
+						<ServoId>1</ServoId>
+						<MinPosition>1504</MinPosition>
+						<MaxPosition>2000</MaxPosition>
+						<DefaultPosition>1999</DefaultPosition>
+					</Servo>
+					<Servo>
+						<Name>Neck Pitch</Name>
+						<ServoId>2</ServoId>
+						<MinPosition>1000</MinPosition>
+						<MaxPosition>2000</MaxPosition>
+						<DefaultPosition>1142</DefaultPosition>
+					</Servo>
+					<Servo>
+						<Name>Brows Pitch</Name>
+						<ServoId>3</ServoId>
+						<MinPosition>1056</MinPosition>
+						<MaxPosition>1952</MaxPosition>
+						<DefaultPosition>1594</DefaultPosition>
+					</Servo>
+					<Servo>
+						<Name>Eyelids</Name>
+						<ServoId>4</ServoId>
+						<MinPosition>1248</MinPosition>
+						<MaxPosition>1680</MaxPosition>
+						<DefaultPosition>1337</DefaultPosition>
+					</Servo>
+					<Servo>
+						<Name>Eyes Pitch</Name>
+						<ServoId>5</ServoId>
+						<MinPosition>1600</MinPosition>
+						<MaxPosition>1950</MaxPosition>
+						<DefaultPosition>1845</DefaultPosition>
+					</Servo>
+					<Servo>
+						<Name>Jaw</Name>
+						<ServoId>6</ServoId>
+						<MinPosition>1328</MinPosition>
+						<MaxPosition>1472</MaxPosition>
+						<DefaultPosition>1400</DefaultPosition>
+					</Servo>
+					<Servo>
+						<Name>Smile Left</Name>
+						<ServoId>9</ServoId>
+						<MinPosition>1376</MinPosition>
+						<MaxPosition>1776</MaxPosition>
+						<DefaultPosition>1589</DefaultPosition>
+					</Servo>
+					<Servo>
+						<Name>Smile Right</Name>
+						<ServoId>11</ServoId>
+						<MinPosition>1712</MinPosition>
+						<MaxPosition>1264</MaxPosition>
+						<DefaultPosition>1472</DefaultPosition>
+					</Servo>
+				</ServoParameters>
+			</ServoControllerConfig>
+		</ServoControllerParameters>
+	</ServoControllers>
+	<Joints>
+	<!-- List of Joints and corresponding Servos -->
+		<Joint>
+			<JointId>100</JointId>
+			<ServoControllerId>BodyController</ServoControllerId>
+			<ServoId>0</ServoId>
+		</Joint>
+		<Joint>
+			<JointId>200</JointId>
+			<ServoControllerId>HeadController</ServoControllerId>
+			<ServoId>0</ServoId>
+		</Joint>
+		<Joint>
+			<JointId>201</JointId>
+			<ServoControllerId>HeadController</ServoControllerId>
+			<ServoId>1</ServoId>
+		</Joint>
+		<Joint>
+			<JointId>202</JointId>
+			<ServoControllerId>HeadController</ServoControllerId>
+			<ServoId>2</ServoId>
+		</Joint>
+		<Joint>
+			<JointId>300</JointId>
+			<ServoControllerId>HeadController</ServoControllerId>
+			<ServoId>3</ServoId>
+		</Joint>
+		<Joint>
+			<JointId>301</JointId>
+			<ServoControllerId>HeadController</ServoControllerId>
+			<ServoId>4</ServoId>
+		</Joint>
+		<Joint>
+			<JointId>310</JointId>
+			<ServoControllerId>HeadController</ServoControllerId>
+			<ServoId>5</ServoId>
+		</Joint>
+		<Joint>
+			<JointId>322</JointId>
+			<ServoControllerId>HeadController</ServoControllerId>
+			<ServoId>6</ServoId>
+		</Joint>
+		<Joint>
+			<JointId>320</JointId>
+			<ServoControllerId>HeadController</ServoControllerId>
+			<ServoId>9</ServoId>
+		</Joint>
+		<Joint>
+			<JointId>321</JointId>
+			<ServoControllerId>HeadController</ServoControllerId>
+			<ServoId>11</ServoId>
+		</Joint>
+		<Joint>
+			<JointId>400</JointId>
+			<ServoControllerId>BodyController</ServoControllerId>
+			<ServoId>1</ServoId>
+		</Joint>
+		<Joint>
+			<JointId>401</JointId>
+			<ServoControllerId>BodyController</ServoControllerId>
+			<ServoId>2</ServoId>
+		</Joint>
+		<Joint>
+			<JointId>410</JointId>
+			<ServoControllerId>BodyController</ServoControllerId>
+			<ServoId>3</ServoId>
+		</Joint>
+		<Joint>
+			<JointId>411</JointId>
+			<ServoControllerId>BodyController</ServoControllerId>
+			<ServoId>4</ServoId>
+		</Joint>
+		<Joint>
+			<JointId>500</JointId>
+			<ServoControllerId>BodyController</ServoControllerId>
+			<ServoId>5</ServoId>
+		</Joint>
+		<Joint>
+			<JointId>501</JointId>
+			<ServoControllerId>BodyController</ServoControllerId>
+			<ServoId>6</ServoId>
+		</Joint>
+		<Joint>
+			<JointId>510</JointId>
+			<ServoControllerId>BodyController</ServoControllerId>
+			<ServoId>7</ServoId>
+		</Joint>
+		<Joint>
+			<JointId>511</JointId>
+			<ServoControllerId>BodyController</ServoControllerId>
+			<ServoId>8</ServoId>
+		</Joint>
+		<Joint>
+			<JointId>600</JointId>
+			<ServoControllerId>BodyController</ServoControllerId>
+			<ServoId>9</ServoId>
+		</Joint>
+		<Joint>
+			<JointId>601</JointId>
+			<ServoControllerId>BodyController</ServoControllerId>
+			<ServoId>10</ServoId>
+		</Joint>
+		<Joint>
+			<JointId>602</JointId>
+			<ServoControllerId>BodyController</ServoControllerId>
+			<ServoId>11</ServoId>
+		</Joint>
+		<Joint>
+			<JointId>610</JointId>
+			<ServoControllerId>BodyController</ServoControllerId>
+			<ServoId>12</ServoId>
+		</Joint>
+		<Joint>
+			<JointId>620</JointId>
+			<ServoControllerId>BodyController</ServoControllerId>
+			<ServoId>13</ServoId>
+		</Joint>
+		<Joint>
+			<JointId>621</JointId>
+			<ServoControllerId>BodyController</ServoControllerId>
+			<ServoId>14</ServoId>
+		</Joint>
+		<Joint>
+			<JointId>700</JointId>
+			<ServoControllerId>BodyController</ServoControllerId>
+			<ServoId>15</ServoId>
+		</Joint>
+		<Joint>
+			<JointId>701</JointId>
+			<ServoControllerId>BodyController</ServoControllerId>
+			<ServoId>16</ServoId>
+		</Joint>
+		<Joint>
+			<JointId>702</JointId>
+			<ServoControllerId>BodyController</ServoControllerId>
+			<ServoId>17</ServoId>
+		</Joint>
+		<Joint>
+			<JointId>710</JointId>
+			<ServoControllerId>BodyController</ServoControllerId>
+			<ServoId>18</ServoId>
+		</Joint>
+		<Joint>
+			<JointId>720</JointId>
+			<ServoControllerId>BodyController</ServoControllerId>
+			<ServoId>19</ServoId>
+		</Joint>
+		<Joint>
+			<JointId>721</JointId>
+			<ServoControllerId>BodyController</ServoControllerId>
+			<ServoId>20</ServoId>
+		</Joint>
+	</Joints>
+</Robot>
