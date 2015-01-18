@@ -38,7 +38,7 @@ object MdirEdit {
 		val persistDev_ServerUrl = "http://lima.nodeset.com:4002"
 
 		// The test data-data server dataset we are importing data into (to be moved to pdev_4002)
-		val dummyTest_ServiceUrl =  dummyTest_ServerUrl +  "/dstst_4001/data"
+		val dummyTest_ServiceUrl =  dummyTest_ServerUrl +  "/temp_4001/data"
 
 		val mdirReal_ServiceUrl = persistDev_ServerUrl + "/mdir_4002/data"
 		val pdevReal_ServiceUrl = persistDev_ServerUrl + "/pdev_4002/data"
