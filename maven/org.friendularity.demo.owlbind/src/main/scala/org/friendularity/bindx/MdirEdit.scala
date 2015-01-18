@@ -82,7 +82,7 @@ object MdirEdit {
 		// How large is the graph before we start updating it?
 		val beforeUpdatesSize = mdm01.size
 		println("Before updates started, mdm01.size=" + beforeUpdatesSize)
-		
+/******/
 		// Temporary promiscuous import during prototype development phase.
 		import org.friendularity.gen.reacted.mdir._
 		
@@ -171,15 +171,15 @@ object MdirEdit {
 		println("Final R2go reported size is=", mdm01.size)
 		ck_md.checkinAsReplace
 		println("Finished final checkin to " + ck_md)
-		
-		
+				
 	}
-import org.appdapter.fancy.rspec.{RepoSpec, OnlineSheetRepoSpec}
+// import org.appdapter.fancy.rspec.{RepoSpec, OnlineSheetRepoSpec}
 
 	def onlineSheetSpec() { 
 		// new OnlineSheetRepoSpec(REPO_SHEET_KEY, NAMESPACE_SHEET_NUM, DIRECTORY_SHEET_NUM, emptyFileResModelCLs);
 	}
 }
+
 
 import org.appdapter.core.store.Repo
 import org.appdapter.demo.DemoResources
@@ -188,6 +188,7 @@ import org.appdapter.fancy.rclient.{RepoClient, RepoClientImpl}
 class RepoMdirBinder {
 	
 }
+
 
 
 /*
