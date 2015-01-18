@@ -49,6 +49,10 @@
 		<module>maven/org.friendularity.modules.main</module>
 	</modules>
 	<properties>
+		
+		<!-- Disable compile-on-save to launch programs using maven-plugins for OSGi and Scala, under Netbeans 8 -->
+		<netbeans.compile.on.save>none</netbeans.compile.on.save>
+		
 		<!--  Glue Dependencies -->
 		<appdapter.version>1.2.3-SNAPSHOT</appdapter.version>
 		<appdapter.msg.version>1.0.5</appdapter.msg.version>
