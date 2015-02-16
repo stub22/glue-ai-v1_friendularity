@@ -43,7 +43,7 @@ object MdirEdit {
 		val mdirReal_ServiceUrl = persistDev_ServerUrl + "/mdir_4002/data"
 		val pdevReal_ServiceUrl = persistDev_ServerUrl + "/pdev_4002/data"
 
-		// Namespace for our current target graphURIs 
+		// Namespace for our current target graphURIs (basis for URIs used in ?g column of target datasets).
 		val nsOpenMdir_july2014 = "urn:ftd:friendularity.org:201407:graph.open.mdirtst#"
 		val nsOpenLessonDev_july2014 = "urn:ftd:friendularity.org:201407:graph.open.lessdev#"
 		
@@ -54,13 +54,13 @@ object MdirEdit {
 		val testSeqNum = "805"
 		// Our working metadata graph URI
 		val gn_mdm = nsOpenMdir_july2014 + "metaDataTest_" + testSeqNum;
-		// Our first import target graph URI
+		// Our first import target graph Name URI - this goes in the ?g column of the target Dataset.
 		val gn_dirImport = nsOpenLessonDev_july2014 + "dirImp_" + testSeqNum;
 
 		// Create an accessor object for that service - stateless as far as we know
 		val dAcc = DatasetAccessorFactory.createHTTP(dummyTest_ServiceUrl)
 		
-		// Make a little accessor wrappor guy giving us some skeletal "checkout" semantics.
+		// Make a little accessor wrapper guy giving us some skeletal "checkout" semantics.
 		val jacc = new JenaArqCheckoutConn(dAcc)
 		
 		val gid_md = new FreeIdent(gn_mdm)
@@ -189,6 +189,8 @@ class RepoMdirBinder {
 	
 }
 
+class GoDoIt { 
+}
 
 
 /*

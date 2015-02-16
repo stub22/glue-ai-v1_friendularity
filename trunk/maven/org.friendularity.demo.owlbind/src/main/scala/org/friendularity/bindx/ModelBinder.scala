@@ -24,6 +24,7 @@ trait ModelBinder {
 	import org.ontoware.rdfreactor.runtime.Base;
 	
 	def getR2goModel : org.ontoware.rdf2go.model.Model
+	// Finds ?o matching {?r ?p ?o.} and instantiates desired type (or yields None).
 	def getSingleBoundObj [BT <: org.ontoware.rdfreactor.schema.rdfs.Class](r : org.ontoware.rdf2go.model.node.Resource, 
 						p : org.ontoware.rdf2go.model.node.URI, desiredClass : Class[BT]): Option[BT] = {
 					
@@ -42,9 +43,9 @@ class ModelBinderChecky(val myCheckoutHandle : ModelCheckoutHandle) extends Mode
 	override def getR2goModel : org.ontoware.rdf2go.model.Model = myR2goModel
 	
 	def freshen() {
-		// What would be effects of  myR2goModel.close()  ?
+		// What are all effects of  myR2goModel.close()  ?
 		myCheckoutHandle.refreshCheckout
-		myR2goModel.open() // OK to open a second time?
+		myR2goModel.open() // If it's not first open, we get a warning.
 	}
 	def checkinAsReplace() {
 		myCheckoutHandle.checkinAsReplace;
@@ -64,6 +65,7 @@ class MDirBinder(checkHandle :  ModelCheckoutHandle) extends ModelBinderChecky(c
 	
 	def makeURI(absUriText : String) : URI = new URIImpl(absUriText)
 	def makeInstanceURI(fragTail : String) : URI = makeURI(ns_gmdinst + fragTail)
+	// Uri for an Open GP instance (which is quite different from the graphNameURI literal property value!)
 	def makeGPOpenUri(fragTail : String) = makeInstanceURI(fragPrefix_gptrOpen + fragTail)
 	
 	def findHost5FusekiServer(ghost5Res : Resource) : GH5RSFusekiServer = {

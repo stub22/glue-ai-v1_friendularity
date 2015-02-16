@@ -39,7 +39,7 @@ object MathBalloon extends BasicDebugger {
 		
 		getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^  main() starting GridSpaceTest.go");
 		// GridSpaceTest 
-		org.cogchar.api.space.GridSpaceTest.go;
+		org.cogchar.api.space.GridSpaceTest.goGoGo;
 		
 		getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^  main() testing math-repo+goody load (respiration)");	
 		// This reads in a config model and begins seting up the space, but the individual goodies
