@@ -63,7 +63,7 @@ package org.friendularity.bindx
 
 trait AreaBroker {
 }
-// "Meta" is not a feature.  Everything else is.
+// "Meta" information is not a "feature" area, but everything else is.
 trait FeatureAB { 
 	// Configured by onto-type cr:BR_Feature
 }

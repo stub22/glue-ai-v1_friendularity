@@ -34,7 +34,10 @@
             <groupId>org.appdapter</groupId>
             <artifactId>org.appdapter.bundle.core</artifactId>
         </dependency>		
-		
+		<dependency>
+            <groupId>org.cogchar</groupId>
+            <artifactId>org.cogchar.bundle.core</artifactId>
+        </dependency>		
 		<!--  Appears included Sesame version requires Java 7, for java.nio.charset.StandardCharsets
 			<dependency>
 				<groupId>org.semweb4j</groupId>
@@ -77,31 +80,7 @@ https://code.google.com/p/semweb4j/source/browse/trunk/org.semweb4j.rdfreactor.m
 							<packageName>org.friendularity.gen.reacted.percept</packageName>
 							<rdfReactorLogfile>target/rdfreactor_percept.log</rdfReactorLogfile>
 						</configuration>
-					</execution>
-
-					<execution>
-						<id>lessonPath</id>
-						<goals>
-							<goal>rdfs-classes</goal>
-						</goals>
-						<configuration>
-							<schemaFile>src/test/resources/schemas/LessonPath_owl2.n3</schemaFile>
-							<packageName>org.friendularity.gen.reacted.lpath</packageName>
-							<rdfReactorLogfile>target/rdfreactor_lpath.log</rdfReactorLogfile>
-						</configuration>
-					</execution>
-
-					<execution>
-						<id>metaDir</id>
-						<goals>
-							<goal>rdfs-classes</goal>
-						</goals>
-						<configuration>
-							<schemaFile>src/test/resources/schemas/MetaDir_owl2.n3</schemaFile>
-							<packageName>org.friendularity.gen.reacted.mdir</packageName>
-							<rdfReactorLogfile>target/rdfreactor_mdir.log</rdfReactorLogfile>
-						</configuration>
-					</execution>										
+					</execution>							
 				</executions>
 			</plugin>	
 			<plugin>

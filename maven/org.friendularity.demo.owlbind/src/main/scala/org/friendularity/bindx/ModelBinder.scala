@@ -53,7 +53,8 @@ class ModelBinderChecky(val myCheckoutHandle : ModelCheckoutHandle) extends Mode
 }
 	
 class MDirBinder(checkHandle :  ModelCheckoutHandle) extends ModelBinderChecky(checkHandle) {
-	import org.friendularity.gen.reacted.mdir._
+	import org.cogchar.api.owrap.mdir._
+	// import org.friendularity.gen.reacted.mdir._
 	import org.ontoware.rdf2go.model.node.Resource
 	import org.ontoware.rdf2go.model.node.URI
 	import org.ontoware.rdf2go.model.node.impl.URIImpl

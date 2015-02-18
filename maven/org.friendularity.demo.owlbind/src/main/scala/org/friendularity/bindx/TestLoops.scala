@@ -58,29 +58,6 @@ object TestLoops {
 		
 		val rm01 : org.ontoware.rdf2go.model.Model = ck01.getAsReactorModel
 		val rm02 : org.ontoware.rdf2go.model.Model = ck02.getAsReactorModel
-		
-		import org.friendularity.gen.reacted.lpath._
-		
-		rm01.open()
-		
-		val studFol_A = new StudentFolio(rm01, true)
-		val studFol_B = new StudentFolio(rm01, false)
-		
-		studFol_A.addComment("Hey everybody, ha cha")
-		studFol_B.addComment("Noone cares, sniff")
-		
-		studFol_B.setPoints(22)  //      xsd:integer in schema, but shows up as xsd:int in asserted value
-		studFol_B.setStatDouble(19.3423425)
-		studFol_A.setStatFloat(0.3f)
-		studFol_A.addFlag(true)
-		studFol_A.addFlag(false)
-		studFol_A.setFlag(true)
-		
-		println("After Folios created, rm01.size=" + rm01.size)
 
-		ck01.checkinAsReplace
-		
-		println("Finished checkin to " + ck01)
-		
 	}
 }
