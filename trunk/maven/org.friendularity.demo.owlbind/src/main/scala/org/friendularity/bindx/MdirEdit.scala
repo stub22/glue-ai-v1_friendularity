@@ -84,7 +84,7 @@ object MdirEdit {
 		println("Before updates started, mdm01.size=" + beforeUpdatesSize)
 /******/
 		// Temporary promiscuous import during prototype development phase.
-		import org.friendularity.gen.reacted.mdir._
+		import org.cogchar.api.owrap.mdir._
 		
 		// Our overall goal for this test is to absorb input test data from this legacy data repo-sheet.
 		val sheetKeyA = "0ArBjkBoH40tndDdsVEVHZXhVRHFETTB5MGhGcWFmeGc" 
@@ -118,7 +118,7 @@ object MdirEdit {
 		opnGPtr_toA8dir.setPointsToGraphHost(hostTab_A8)
 		// No GraphNameURI set - on purpose - see comment above.
 		
-		val optBo : Option[GH3STabInSpreadsheet] = mdirBinder.getSingleBoundObj(opnGPtr_toA8dir, GraphPointer.POINTSTOGRAPHHOST, classOf[GH3STabInSpreadsheet])
+		val optBo : Option[GH3STabInSpreadsheet] = mdirBinder.getSingleBoundObj(opnGPtr_toA8dir, Pointer.POINTSTOGRAPHHOST, classOf[GH3STabInSpreadsheet])
 	
 		println("Fetched optFo: " + optBo)
 		val innerBo :GH3STabInSpreadsheet = optBo.get
