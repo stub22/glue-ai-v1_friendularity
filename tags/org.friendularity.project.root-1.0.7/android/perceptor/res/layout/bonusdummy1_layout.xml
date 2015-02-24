@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LinearLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/dummy1View"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    	<TextView 
+   			android:text="Dummy Bonus Activity Is Me!"
+   			android:textSize="48sp"
+			android:layout_width="match_parent"  
+     		android:layout_height="wrap_content"
+     	/> 
+     	<TextView 
+   			android:text="This Android activity does nothing but display this message, but it could do anything we want it to"
+   			android:textSize="16sp"
+			android:layout_width="match_parent"  
+     		android:layout_height="wrap_content"
+     	/>   
+ </LinearLayout>    	

@@ -1,0 +1,30 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix flo: <http://www.friendularity.org/ontology/flo#> .
+
+# Named toplevel resources (3)
+
+flo:blockviewer95cd4644-1b53-11e3-a418-9368e09b114d
+	a flo:Block ;
+	flo:hasType flo:viewer .
+
+flo:c
+	a flo:Block ;
+	flo:hasType flo:camera .
+
+flo:g
+	a flo:Block ;
+	flo:hasType flo:gray .
+
+# Toplevel blank-nodes (2)
+[ a flo:Connection ;
+  flo:lhs flo:c ;
+  flo:lhsParm "O" ;
+  flo:rhs flo:g ;
+  flo:rhsParm "A"
+] .
+[ a flo:Connection ;
+  flo:lhs flo:g ;
+  flo:lhsParm "O" ;
+  flo:rhs flo:blockviewer95cd4644-1b53-11e3-a418-9368e09b114d ;
+  flo:rhsParm "A"
+] .

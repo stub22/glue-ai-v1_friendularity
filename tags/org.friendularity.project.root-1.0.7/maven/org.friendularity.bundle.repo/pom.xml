@@ -1,0 +1,122 @@
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.friendularity</groupId>
+		<artifactId>org.friendularity.modules.main</artifactId>
+		<version>1.0.7</version>
+		<relativePath>../org.friendularity.modules.main/pom.xml</relativePath>
+	</parent>	
+	
+	<artifactId>org.friendularity.bundle.repo</artifactId>	
+	<packaging>bundle</packaging>
+	<name>${project.artifactId} - OSGi</name>
+	<!-- Important: Establish the Web URL, which is used in OSGi spec
+			Web-ContextPath instruction far below, in maven-bundle-plugin.instructions
+			
+		When starting from a "New bundle project", to create a webapp, besides the
+		PAX-Web dependencies we need those instructions (and optionally this 
+		highly-visible web.contextPath variable.
+	-->
+
+	<properties>
+		<web.contextPath>friendu_joseki</web.contextPath>
+        <force-imports>
+               org.joseki.servlets, org.joseki.http, org.joseki.validation, org.joseki, org.joseki.module, org.joseki.vocabulary, 
+			   javax.servlet, javax.servlet.http,
+               org.cogchar.app.puma.boot, org.cogchar.app.puma.config, org.cogchar.app.puma.web, org.cogchar.joswrap, org.cogchar.name.dir
+        </force-imports>
+	</properties>
+			<!-- Note that o.f.project.root and o.f.modules.main must also have been built and avail in local repo,
+				in order for variables like "mechio.version" to resolve when applied *transitively*
+				(The built main+root is not required to resolve the variables used directly in this pom; 
+					those are allowed to come from the source-tree poms).
+			-->	
+	<dependencies>
+		<dependency>
+			<groupId>org.cogchar</groupId>
+			<artifactId>ext.bundle.ops4j.pax.web</artifactId>
+		</dependency>
+		<dependency>
+			<!-- Our Lift-based webapp, which we expect PAX services above to find and launch to HTTP for us -->
+			<groupId>org.cogchar</groupId>
+			<artifactId>org.cogchar.bundle.bind.lift</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.cogchar</groupId>
+			<artifactId>org.cogchar.bundle.bind.joseki</artifactId>
+		</dependency>		
+		<!-- We want the same deps as CCRK, but not the full PUMA boot peformed by CCRK activator.
+		<dependency>
+			<groupId>org.cogchar</groupId>
+			<artifactId>org.cogchar.bundle.app.puma</artifactId>
+			<version>${cogchar.version}</version>
+		</dependency>
+		-->
+		<!--
+		<dependency>
+			<groupId>org.cogchar</groupId>
+			<artifactId>org.cogchar.bundle.render.resources</artifactId>
+			<version>${cogchar.version}</version>
+		</dependency>
+		-->
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<extensions>true</extensions>
+				<configuration>
+					<instructions>
+			<!--				Web-ContextPath is from the OSGi spec.
+								With no Web-ContextPath, PAX assigns a default context path like:
+								http://localhost:8080/org.cogchar.org.cogchar.lifter/
+			-->
+
+						<Web-ContextPath>${web.contextPath}</Web-ContextPath>
+						<Export-Package>
+							etc.*;-split-package:=merge-first, 
+							Data.*;-split-package:=merge-first
+						</Export-Package>						
+                        <Bundle-Activator>${project.artifactId}.Activator</Bundle-Activator>
+                        <Import-Package>${force-imports},javax.security.auth.x500,*</Import-Package>
+					</instructions>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>compile</phase>
+						<configuration>
+							<tasks>
+								<property name="runtime_classpath" refid="maven.runtime.classpath" />
+								<echo message="Rendering AnimMotivMapBlend.owl into Java constants" />
+								<java classname="jena.schemagen" classpath="${runtime_classpath}">
+									<arg value="--inference" />
+									<arg value="-i" />
+									<arg value="../../../cogchar_trunk/src_resources_core/org/cogchar/onto/AnimMotivMapBlend.owl" />
+									<arg value="-a" />
+									<arg value="http://www.cogchar.org/ontologies/y2012m06/AnimMotivMapBlend.owl#" />
+									<arg value="--package" />
+									<arg value="org.friendu.otest" />
+									<arg value="-o" />
+									<arg value="src/main/java" />
+									<arg value="-n" />
+									<arg value="AnimSchema" />
+								</java>
+							</tasks>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>	
+		</plugins>
+			</build>
+</project>

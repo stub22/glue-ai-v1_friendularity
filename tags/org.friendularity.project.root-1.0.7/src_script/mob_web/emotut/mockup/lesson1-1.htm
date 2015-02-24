@@ -1,0 +1,32 @@
+<!DOCTYPE = html>
+<html=en>
+<audio preload=auto>
+</audio>
+<script>
+ function playSound(soundfile) 
+{
+ document.getElementById("arbitrary").innerHTML=
+ "<embed src=\""+soundfile+"\" hidden=\"true\" autostart=\"true\" loop=\"false\" />";
+ }
+
+ function incorrect() {
+  document.getElementById("rightwrong").innerHTML="Oops!  Not quite right.  Try the other one.";
+}
+
+  function correct() {
+   document.getElementById("rightwrong").innerHTML="Well done!  Now for the next segment.";
+}
+ </script>
+
+<body bgcolor="#94CE3F">
+<span id="arbitrary"></span>
+<h1>"Tutor1-Alpha"</h1>
+<h2>LESSON 1</h2>
+<p>(Audio Prompt): "Hello, I'm Zeno."<br> "I'm going to make a face.  Then touch the picture that looks like the face I made.  Ready?  Ok, here we go..."</p>
+<p>(Robot makes facial expresion; in this case, happiness.)</p>
+<p>"Now touch the face that reminds you of the face that I just made."</p>
+<img id="sad" onclick="playSound('incorrect.wav'); incorrect();" src="sad1.png" width="201px" height="201px" /img>
+<img id="happy" onclick="playSound('correct.wav'); correct();" src="happy1.png" width="201px" height="201px"</img>
+<p id="rightwrong" /p>
+</body>
+</html>

@@ -1,0 +1,35 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix flo: <http://www.friendularity.org/ontology/flo#> .
+
+# Named toplevel resources (4)
+
+flo:blockviewerd69533d8-50a7-11e3-b466-63f3c2f3e3cf
+	a flo:Block ;
+	flo:hasType flo:viewer .
+
+flo:c
+	a flo:Block ;
+	flo:hasType flo:camera .
+
+flo:g
+	a flo:Block ;
+	flo:hasType flo:gray .
+
+<http://www.friendularity.org/ontology/flo#org.friendularity.test.block.TestCaseTwo>
+	a flo:JavaBinding ;
+	flo:javaName "TestCaseTwo" ;
+	flo:javaPackage "org.friendularity.test.block" .
+
+# Toplevel blank-nodes (2)
+[ a flo:Connection ;
+  flo:lhs flo:c ;
+  flo:lhsParm "O" ;
+  flo:rhs flo:g ;
+  flo:rhsParm "A"
+] .
+[ a flo:Connection ;
+  flo:lhs flo:g ;
+  flo:lhsParm "O" ;
+  flo:rhs flo:blockviewerd69533d8-50a7-11e3-b466-63f3c2f3e3cf ;
+  flo:rhsParm "A"
+] .
