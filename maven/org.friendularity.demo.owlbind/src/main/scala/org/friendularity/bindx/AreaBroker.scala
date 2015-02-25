@@ -57,7 +57,9 @@ package org.friendularity.bindx
  *				Not fully persistent to disk.  
  *	-------------------
  *	
- *	Different area brokers use different graph pattern combinations (circuses).
+ *	Building on the first-degree logical and physical persistence model above, 
+ *	different area brokers use different physical graph pattern combinations.
+ *	Commonly these combinations are deployed and accessed using auditable circuses.
  *		
  */
 
