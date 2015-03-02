@@ -101,4 +101,21 @@ public class Discoverer extends DefaultNotifier<RobotService>
             }
         }
     }
+	
+	public static void main(String[] args) {
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+        Thread thread = new Thread(new Beacon());
+        thread.start();
+                SelectorFrame frame = new SelectorFrame();
+                Discoverer discoverer = new Discoverer();
+                Thread discoThread = new Thread(discoverer);
+                
+                frame.initialize(discoverer);
+                discoThread.start();
+                frame.setVisible(true);
+			}
+		});
+    }
 }
