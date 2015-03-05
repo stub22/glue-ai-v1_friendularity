@@ -59,7 +59,18 @@
 							<packageName>org.friendularity.sw4j.phys</packageName>
 							<rdfReactorLogfile>target/rdfreactor_physicsTest.log</rdfReactorLogfile>
 						</configuration>						
-					</execution>	
+					</execution>
+					<execution>
+						<id>physicsTest_brokenCard</id>
+						<goals>
+							<goal>rdfs-classes</goal>
+						</goals>
+						<configuration>
+							<schemaFile>src/test/resources/schemas/PhysicsTest_brokenCard_owl2.n3</schemaFile>
+							<packageName>org.friendularity.sw4j.physbc</packageName>
+							<rdfReactorLogfile>target/rdfreactor_physicsTest_brokenCard.log</rdfReactorLogfile>
+						</configuration>						
+					</execution>					
 				</executions>
 			</plugin>
 		</plugins>
