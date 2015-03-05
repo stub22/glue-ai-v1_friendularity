@@ -95,21 +95,6 @@ If there were subclasses of Atom that had other parent classes outside of Atom, 
 #################################################################
 
 
-###  http://onto.friendularity.org/onto/201503/PhysicsTest_brokenCard_OWL2#hasDataPropInheritedSingly
-
-:hasDataPropInheritedSingly rdf:type owl:DatatypeProperty ,
-                                     owl:FunctionalProperty ;
-                            
-                            owl:maxCardinality "1" ;
-                            
-                            rdfs:domain :Electron ;
-                            
-                            rdfs:subPropertyOf :hasPhysicalData ;
-                            
-                            rdfs:range xsd:float .
-
-
-
 ###  http://onto.friendularity.org/onto/201503/PhysicsTest_brokenCard_OWL2#hasElementaryCharge
 
 :hasElementaryCharge rdf:type owl:DatatypeProperty ,
@@ -117,11 +102,12 @@ If there were subclasses of Atom that had other parent classes outside of Atom, 
                      
                      rdfs:comment """If we try to set owl:maxCardinality to 1 on this property, we will wind up with
 Java-compile errors due to a missing import of CardinalityException in the
-generated classes that (confirm this part) RDFReactor chooses to
-have the field defined locally.
+generated classes where  RDFReactor chooses to have the field defined locally.
 
-So ChargedThing.java will get the import correctly, but Positron.java may not,
-in the case where RDFReactor decides Electron.java should inherit from Lepton.java, rather than ChargedThing_Neg.java.""" ;
+So while ChargedThing.java will get the import correctly, Positron.java may not,
+in the case where RDFReactor-generator decides Positron.java should inherit from Lepton.java, rather than ChargedThing.java.   
+
+Since Positron.java also needs :hasRestMassInGrams, it cannot be generated correctly by RDFReactor 5.0.1 (or 4.8.3).   """ ;
                      
                      owl:maxCardinality "1" ;
                      
@@ -144,11 +130,30 @@ in the case where RDFReactor decides Electron.java should inherit from Lepton.ja
 :hasRestMassInGrams rdf:type owl:DatatypeProperty ,
                              owl:FunctionalProperty ;
                     
+                    rdfs:comment "Since a generated Positron.java must try to have both this field and the elementatryCharge field, inherited from different superclasses, it will need to have at least one of the fields patched-in directly, and it will be required to import the CardinalityException class." ;
+                    
+                    owl:maxCardinality "1" ;
+                    
                     rdfs:domain :MassiveThing ;
                     
                     rdfs:subPropertyOf :hasPhysicalData ;
                     
                     rdfs:range xsd:float .
+
+
+
+###  http://onto.friendularity.org/onto/201503/PhysicsTest_brokenCard_OWL2#hasSimpleSingleValuedDataProp
+
+:hasSimpleSingleValuedDataProp rdf:type owl:DatatypeProperty ,
+                                        owl:FunctionalProperty ;
+                               
+                               owl:maxCardinality "1" ;
+                               
+                               rdfs:domain :Electron ;
+                               
+                               rdfs:subPropertyOf :hasPhysicalData ;
+                               
+                               rdfs:range xsd:float .
 
 
 
