@@ -25,19 +25,33 @@
 			<groupId>org.semweb4j</groupId>
 			<artifactId>rdfreactor.dist</artifactId>
 			<type>pom</type>
+			<exclusions>
+				<exclusion>
+					<groupId>org.semweb4j</groupId>
+					<artifactId>rdf2go.impl.sesame</artifactId>
+				</exclusion>
+				<exclusion>
+					<artifactId>rdfreactor-maven-plugin</artifactId>
+					<groupId>org.semweb4j</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>rdfreactor.generator</artifactId>
+					<groupId>org.semweb4j</groupId>
+				</exclusion>				
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.semweb4j</groupId>
 			<artifactId>rdf2go.impl.jena</artifactId>
 		</dependency>
 		<dependency>
-            <groupId>org.appdapter</groupId>
-            <artifactId>org.appdapter.bundle.core</artifactId>
-        </dependency>		
+			<groupId>org.appdapter</groupId>
+			<artifactId>org.appdapter.bundle.core</artifactId>
+		</dependency>		
 		<dependency>
-            <groupId>org.cogchar</groupId>
-            <artifactId>org.cogchar.bundle.core</artifactId>
-        </dependency>		
+			<groupId>org.cogchar</groupId>
+			<artifactId>org.cogchar.bundle.core</artifactId>
+		</dependency>		
 		<!--  Appears included Sesame version requires Java 7, for java.nio.charset.StandardCharsets
 			<dependency>
 				<groupId>org.semweb4j</groupId>
@@ -69,7 +83,17 @@ https://code.google.com/p/semweb4j/source/browse/trunk/org.semweb4j.rdfreactor.m
 							<rdfReactorLogfile>target/rdfreactor_bindingTest.log</rdfReactorLogfile>
 						</configuration>						
 					</execution>
-										
+					<execution>
+						<id>physicsTest</id>
+						<goals>
+							<goal>rdfs-classes</goal>
+						</goals>
+						<configuration>
+							<schemaFile>src/test/resources/schemas/PhysicsTest_owl2.n3</schemaFile>
+							<packageName>org.friendularity.gen.reacted.phys</packageName>
+							<rdfReactorLogfile>target/rdfreactor_physicsTest.log</rdfReactorLogfile>
+						</configuration>						
+					</execution>										
 					<execution>
 						<id>perceptObsEstim</id>
 						<goals>

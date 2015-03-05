@@ -1,0 +1,548 @@
+@prefix : <http://onto.friendularity.org/onto/201503/PhysicsTest_OWL2#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@base <http://onto.friendularity.org/onto/201503/PhysicsTest_OWL2> .
+
+<http://onto.friendularity.org/onto/201503/PhysicsTest_OWL2> rdf:type owl:Ontology ;
+                                                             
+                                                             rdfs:comment """Experimental ontology testing advanced features of RDFReactor code generation,
+especially multiple inheritance.""" .
+
+
+#################################################################
+#
+#    Annotation properties
+#
+#################################################################
+
+
+###  http://www.w3.org/2002/07/owl#maxCardinality
+
+owl:maxCardinality rdf:type owl:AnnotationProperty .
+
+
+
+
+
+#################################################################
+#
+#    Object Properties
+#
+#################################################################
+
+
+###  http://onto.friendularity.org/onto/201503/PhysicsTest_OWL2#hasAtomicElectron
+
+:hasAtomicElectron rdf:type owl:ObjectProperty ;
+                   
+                   rdfs:domain :Atom ;
+                   
+                   rdfs:range :Electron ;
+                   
+                   rdfs:subPropertyOf :hasSubParticle .
+
+
+
+###  http://onto.friendularity.org/onto/201503/PhysicsTest_OWL2#hasAtomicNucleus
+
+:hasAtomicNucleus rdf:type owl:ObjectProperty ;
+                  
+                  rdfs:domain :Atom ;
+                  
+                  rdfs:range :Nucleus ;
+                  
+                  rdfs:subPropertyOf :hasSubParticle .
+
+
+
+###  http://onto.friendularity.org/onto/201503/PhysicsTest_OWL2#hasPhysicalObject
+
+:hasPhysicalObject rdf:type owl:ObjectProperty .
+
+
+
+###  http://onto.friendularity.org/onto/201503/PhysicsTest_OWL2#hasSubNucleon
+
+:hasSubNucleon rdf:type owl:ObjectProperty ;
+               
+               rdfs:range :Nucleon ;
+               
+               rdfs:domain :Nucleus ;
+               
+               rdfs:subPropertyOf :hasSubParticle .
+
+
+
+###  http://onto.friendularity.org/onto/201503/PhysicsTest_OWL2#hasSubParticle
+
+:hasSubParticle rdf:type owl:ObjectProperty ;
+                
+                rdfs:domain :CompositeParticle ;
+                
+                rdfs:range :Particle ;
+                
+                rdfs:subPropertyOf :hasPhysicalObject .
+
+
+
+###  http://onto.friendularity.org/onto/201503/PhysicsTest_OWL2#hasSubQuark
+
+:hasSubQuark rdf:type owl:ObjectProperty ;
+             
+             rdfs:domain :Hadron ;
+             
+             rdfs:range :Quark ;
+             
+             rdfs:subPropertyOf :hasSubParticle .
+
+
+
+
+
+#################################################################
+#
+#    Data properties
+#
+#################################################################
+
+
+###  http://onto.friendularity.org/onto/201503/PhysicsTest_OWL2#hasElementaryCharge
+
+:hasElementaryCharge rdf:type owl:DatatypeProperty ,
+                              owl:FunctionalProperty ;
+                     
+                     rdfs:domain :ChargedThing ;
+                     
+                     rdfs:subPropertyOf :hasPhysicalData ;
+                     
+                     rdfs:range xsd:float .
+
+
+
+###  http://onto.friendularity.org/onto/201503/PhysicsTest_OWL2#hasMeanLifetimeInSec
+
+:hasMeanLifetimeInSec rdf:type owl:DatatypeProperty ,
+                               owl:FunctionalProperty ;
+                      
+                      rdfs:domain :CommonlyUnstableThing ;
+                      
+                      rdfs:subPropertyOf :hasPhysicalData ;
+                      
+                      rdfs:range xsd:double .
+
+
+
+###  http://onto.friendularity.org/onto/201503/PhysicsTest_OWL2#hasPhysicalData
+
+:hasPhysicalData rdf:type owl:DatatypeProperty .
+
+
+
+###  http://onto.friendularity.org/onto/201503/PhysicsTest_OWL2#hasRestMassInGrams
+
+:hasRestMassInGrams rdf:type owl:DatatypeProperty ,
+                             owl:FunctionalProperty ;
+                    
+                    rdfs:domain :RestMassiveThing ;
+                    
+                    rdfs:subPropertyOf :hasPhysicalData ;
+                    
+                    rdfs:range xsd:float .
+
+
+
+###  http://onto.friendularity.org/onto/201503/PhysicsTest_OWL2#hasSpin
+
+:hasSpin rdf:type owl:DatatypeProperty ,
+                  owl:FunctionalProperty ;
+         
+         rdfs:comment "We would like to define Spin as a rational number." ;
+         
+         rdfs:domain :SpinningThing ;
+         
+         rdfs:subPropertyOf :hasPhysicalData ;
+         
+         rdfs:range xsd:float .
+
+
+
+
+
+#################################################################
+#
+#    Classes
+#
+#################################################################
+
+
+###  http://onto.friendularity.org/onto/201503/PhysicsTest_OWL2#Antimatter
+
+:Antimatter rdf:type owl:Class ;
+            
+            rdfs:subClassOf :PThing .
+
+
+
+###  http://onto.friendularity.org/onto/201503/PhysicsTest_OWL2#Atom
+
+:Atom rdf:type owl:Class ;
+      
+      rdfs:subClassOf :CompositeParticle .
+
+
+
+###  http://onto.friendularity.org/onto/201503/PhysicsTest_OWL2#Baryon
+
+:Baryon rdf:type owl:Class ;
+        
+        rdfs:subClassOf :Hadron ;
+        
+        rdfs:comment "A Bayron has three quarks." .
+
+
+
+###  http://onto.friendularity.org/onto/201503/PhysicsTest_OWL2#Boson
+
+:Boson rdf:type owl:Class ;
+       
+       rdfs:subClassOf :QuantumThing ;
+       
+       owl:disjointWith :Fermion .
+
+
+
+###  http://onto.friendularity.org/onto/201503/PhysicsTest_OWL2#ChargedThing
+
+:ChargedThing rdf:type owl:Class ;
+              
+              rdfs:subClassOf :PThing .
+
+
+
+###  http://onto.friendularity.org/onto/201503/PhysicsTest_OWL2#ChargedThing_Neg
+
+:ChargedThing_Neg rdf:type owl:Class ;
+                  
+                  rdfs:subClassOf :ChargedThing .
+
+
+
+###  http://onto.friendularity.org/onto/201503/PhysicsTest_OWL2#ChargedThing_Pos
+
+:ChargedThing_Pos rdf:type owl:Class ;
+                  
+                  rdfs:subClassOf :ChargedThing .
+
+
+
+###  http://onto.friendularity.org/onto/201503/PhysicsTest_OWL2#ChargelessThing
+
+:ChargelessThing rdf:type owl:Class ;
+                 
+                 rdfs:subClassOf :PThing .
+
+
+
+###  http://onto.friendularity.org/onto/201503/PhysicsTest_OWL2#CommonlyStableThing
+
+:CommonlyStableThing rdf:type owl:Class ;
+                     
+                     rdfs:subClassOf :PThing .
+
+
+
+###  http://onto.friendularity.org/onto/201503/PhysicsTest_OWL2#CommonlyUnstableThing
+
+:CommonlyUnstableThing rdf:type owl:Class ;
+                       
+                       rdfs:subClassOf :PThing .
+
+
+
+###  http://onto.friendularity.org/onto/201503/PhysicsTest_OWL2#CompositeParticle
+
+:CompositeParticle rdf:type owl:Class ;
+                   
+                   rdfs:subClassOf :Particle ,
+                                   :RestMassiveThing ;
+                   
+                   owl:disjointWith :ElementaryParticle .
+
+
+
+###  http://onto.friendularity.org/onto/201503/PhysicsTest_OWL2#DeuteriumNucleus
+
+:DeuteriumNucleus rdf:type owl:Class ;
+                  
+                  rdfs:subClassOf :StableNucleusOfEvenMassNumber .
+
+
+
+###  http://onto.friendularity.org/onto/201503/PhysicsTest_OWL2#Electron
+
+:Electron rdf:type owl:Class ;
+          
+          rdfs:subClassOf :ChargedThing_Neg ,
+                          :Lepton .
+
+
+
+###  http://onto.friendularity.org/onto/201503/PhysicsTest_OWL2#ElementaryParticle
+
+:ElementaryParticle rdf:type owl:Class ;
+                    
+                    rdfs:subClassOf :Particle .
+
+
+
+###  http://onto.friendularity.org/onto/201503/PhysicsTest_OWL2#Fermion
+
+:Fermion rdf:type owl:Class ;
+         
+         rdfs:subClassOf :QuantumThing ;
+         
+         rdfs:comment "Fermions have half integer spin and are subject to the Pauli Exclusion Principle." .
+
+
+
+###  http://onto.friendularity.org/onto/201503/PhysicsTest_OWL2#GaugeBoson
+
+:GaugeBoson rdf:type owl:Class ;
+            
+            rdfs:subClassOf :Boson ,
+                            :ElementaryParticle ,
+                            :RestMasslessThing ;
+            
+            rdfs:comment "For our toy model purposes, the GaugeBosons are massless." .
+
+
+
+###  http://onto.friendularity.org/onto/201503/PhysicsTest_OWL2#Gluon
+
+:Gluon rdf:type owl:Class ;
+       
+       rdfs:subClassOf :GaugeBoson .
+
+
+
+###  http://onto.friendularity.org/onto/201503/PhysicsTest_OWL2#Hadron
+
+:Hadron rdf:type owl:Class ;
+        
+        rdfs:subClassOf :CompositeParticle ;
+        
+        rdfs:comment "made of quarks held together by the strong force" .
+
+
+
+###  http://onto.friendularity.org/onto/201503/PhysicsTest_OWL2#Lepton
+
+:Lepton rdf:type owl:Class ;
+        
+        rdfs:subClassOf :ElementaryParticle ,
+                        :Fermion ,
+                        :RestMassiveThing .
+
+
+
+###  http://onto.friendularity.org/onto/201503/PhysicsTest_OWL2#Matter
+
+:Matter rdf:type owl:Class ;
+        
+        rdfs:subClassOf :PThing .
+
+
+
+###  http://onto.friendularity.org/onto/201503/PhysicsTest_OWL2#Meson
+
+:Meson rdf:type owl:Class ;
+       
+       rdfs:subClassOf :CommonlyUnstableThing ,
+                       :Hadron .
+
+
+
+###  http://onto.friendularity.org/onto/201503/PhysicsTest_OWL2#Muon
+
+:Muon rdf:type owl:Class ;
+      
+      rdfs:subClassOf :CommonlyUnstableThing ,
+                      :Lepton .
+
+
+
+###  http://onto.friendularity.org/onto/201503/PhysicsTest_OWL2#Neutrino
+
+:Neutrino rdf:type owl:Class ;
+          
+          rdfs:subClassOf :Lepton .
+
+
+
+###  http://onto.friendularity.org/onto/201503/PhysicsTest_OWL2#Neutron
+
+:Neutron rdf:type owl:Class ;
+         
+         rdfs:subClassOf :Nucleon .
+
+
+
+###  http://onto.friendularity.org/onto/201503/PhysicsTest_OWL2#Nucleon
+
+:Nucleon rdf:type owl:Class ;
+         
+         rdfs:subClassOf :Baryon .
+
+
+
+###  http://onto.friendularity.org/onto/201503/PhysicsTest_OWL2#Nucleus
+
+:Nucleus rdf:type owl:Class ;
+         
+         rdfs:subClassOf :CompositeParticle .
+
+
+
+###  http://onto.friendularity.org/onto/201503/PhysicsTest_OWL2#PThing
+
+:PThing rdf:type owl:Class .
+
+
+
+###  http://onto.friendularity.org/onto/201503/PhysicsTest_OWL2#Particle
+
+:Particle rdf:type owl:Class ;
+          
+          rdfs:subClassOf :SpinningThing .
+
+
+
+###  http://onto.friendularity.org/onto/201503/PhysicsTest_OWL2#Phonon
+
+:Phonon rdf:type owl:Class ;
+        
+        rdfs:subClassOf :QuasiParticle .
+
+
+
+###  http://onto.friendularity.org/onto/201503/PhysicsTest_OWL2#Photon
+
+:Photon rdf:type owl:Class ;
+        
+        rdfs:subClassOf :GaugeBoson .
+
+
+
+###  http://onto.friendularity.org/onto/201503/PhysicsTest_OWL2#PiMeson
+
+:PiMeson rdf:type owl:Class ;
+         
+         rdfs:subClassOf :Meson ;
+         
+         rdfs:comment "http://en.wikipedia.org/wiki/Pion" .
+
+
+
+###  http://onto.friendularity.org/onto/201503/PhysicsTest_OWL2#Positron
+
+:Positron rdf:type owl:Class ;
+          
+          rdfs:subClassOf :Antimatter ,
+                          :ChargedThing_Pos ,
+                          :Lepton .
+
+
+
+###  http://onto.friendularity.org/onto/201503/PhysicsTest_OWL2#Proton
+
+:Proton rdf:type owl:Class ;
+        
+        rdfs:subClassOf :ChargedThing_Pos ,
+                        :Nucleon .
+
+
+
+###  http://onto.friendularity.org/onto/201503/PhysicsTest_OWL2#QuantumThing
+
+:QuantumThing rdf:type owl:Class ;
+              
+              rdfs:subClassOf :PThing .
+
+
+
+###  http://onto.friendularity.org/onto/201503/PhysicsTest_OWL2#Quark
+
+:Quark rdf:type owl:Class ;
+       
+       rdfs:subClassOf :ElementaryParticle ,
+                       :Fermion .
+
+
+
+###  http://onto.friendularity.org/onto/201503/PhysicsTest_OWL2#QuasiParticle
+
+:QuasiParticle rdf:type owl:Class ;
+               
+               rdfs:subClassOf :PThing .
+
+
+
+###  http://onto.friendularity.org/onto/201503/PhysicsTest_OWL2#RestMassiveThing
+
+:RestMassiveThing rdf:type owl:Class ;
+                  
+                  rdfs:subClassOf :PThing ;
+                  
+                  rdfs:comment """A thing with rest mass.
+
+http://en.wikipedia.org/wiki/Invariant_mass
+
+quoted:
+'If a center of momentum frame exists for the system, then the invariant mass of a system is simply the total energy divided by the speed of light squared.'
+""" .
+
+
+
+###  http://onto.friendularity.org/onto/201503/PhysicsTest_OWL2#RestMasslessThing
+
+:RestMasslessThing rdf:type owl:Class ;
+                   
+                   rdfs:subClassOf :PThing ;
+                   
+                   rdfs:comment """From WP article for InvariantMass:
+
+'Systems whose four-momentum is a null vector (for example a single photon or many photons moving in exactly the same direction) have zero invariant mass, and are referred to as massless.' """ .
+
+
+
+###  http://onto.friendularity.org/onto/201503/PhysicsTest_OWL2#SpinningThing
+
+:SpinningThing rdf:type owl:Class ;
+               
+               rdfs:subClassOf :PThing .
+
+
+
+###  http://onto.friendularity.org/onto/201503/PhysicsTest_OWL2#StableNucleusOfEvenMassNumber
+
+:StableNucleusOfEvenMassNumber rdf:type owl:Class ;
+                               
+                               rdfs:subClassOf :Boson ,
+                                               :Nucleus .
+
+
+
+###  http://onto.friendularity.org/onto/201503/PhysicsTest_OWL2#TauParticle
+
+:TauParticle rdf:type owl:Class ;
+             
+             rdfs:subClassOf :Lepton .
+
+
+
+
+###  Generated by the OWL API (version 3.4.2) http://owlapi.sourceforge.net
+
