@@ -1,0 +1,289 @@
+@prefix : <http://onto.friendularity.org/onto/201503/PhysicsTest_brokenCard_OWL2#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@base <http://onto.friendularity.org/onto/201503/PhysicsTest_brokenCard_OWL2> .
+
+<http://onto.friendularity.org/onto/201503/PhysicsTest_brokenCard_OWL2> rdf:type owl:Ontology ;
+                                                                        
+                                                                        rdfs:comment """Experimental ontology testing advanced features of RDFReactor code generation,
+especially multiple inheritance.""" .
+
+
+#################################################################
+#
+#    Annotation properties
+#
+#################################################################
+
+
+###  http://www.w3.org/2002/07/owl#maxCardinality
+
+owl:maxCardinality rdf:type owl:AnnotationProperty .
+
+
+
+
+
+#################################################################
+#
+#    Object Properties
+#
+#################################################################
+
+
+###  http://onto.friendularity.org/onto/201503/PhysicsTest_brokenCard_OWL2#hasAtomicElectron
+
+:hasAtomicElectron rdf:type owl:ObjectProperty ;
+                   
+                   rdfs:domain :Atom ;
+                   
+                   rdfs:range :Electron ;
+                   
+                   rdfs:subPropertyOf :hasSubParticle .
+
+
+
+###  http://onto.friendularity.org/onto/201503/PhysicsTest_brokenCard_OWL2#hasAtomicNucleus
+
+:hasAtomicNucleus rdf:type owl:FunctionalProperty ,
+                           owl:ObjectProperty ;
+                  
+                  owl:maxCardinality "1" ;
+                  
+                  rdfs:comment """An atom has only one nucleus.  
+
+This maxCardinality constraint works OK, because the property is on a
+class that doesn't have a complex inheritance hierarchy beneath it.
+
+If there were subclasses of Atom that had other parent classes outside of Atom, then this maxCardinality restriction *could* cause compile errors, when using RDFReactor 5.0.1.""" ;
+                  
+                  rdfs:domain :Atom ;
+                  
+                  rdfs:range :Nucleus ;
+                  
+                  rdfs:subPropertyOf :hasSubParticle .
+
+
+
+###  http://onto.friendularity.org/onto/201503/PhysicsTest_brokenCard_OWL2#hasPhysicalObject
+
+:hasPhysicalObject rdf:type owl:ObjectProperty .
+
+
+
+###  http://onto.friendularity.org/onto/201503/PhysicsTest_brokenCard_OWL2#hasSubParticle
+
+:hasSubParticle rdf:type owl:ObjectProperty ;
+                
+                rdfs:domain :CompositeParticle ;
+                
+                rdfs:range :Particle ;
+                
+                rdfs:subPropertyOf :hasPhysicalObject .
+
+
+
+
+
+#################################################################
+#
+#    Data properties
+#
+#################################################################
+
+
+###  http://onto.friendularity.org/onto/201503/PhysicsTest_brokenCard_OWL2#hasDataPropInheritedSingly
+
+:hasDataPropInheritedSingly rdf:type owl:DatatypeProperty ,
+                                     owl:FunctionalProperty ;
+                            
+                            owl:maxCardinality "1" ;
+                            
+                            rdfs:domain :Electron ;
+                            
+                            rdfs:subPropertyOf :hasPhysicalData ;
+                            
+                            rdfs:range xsd:float .
+
+
+
+###  http://onto.friendularity.org/onto/201503/PhysicsTest_brokenCard_OWL2#hasElementaryCharge
+
+:hasElementaryCharge rdf:type owl:DatatypeProperty ,
+                              owl:FunctionalProperty ;
+                     
+                     rdfs:comment """If we try to set owl:maxCardinality to 1 on this property, we will wind up with
+Java-compile errors due to a missing import of CardinalityException in the
+generated classes that (confirm this part) RDFReactor chooses to
+have the field defined locally.
+
+So ChargedThing.java will get the import correctly, but Positron.java may not,
+in the case where RDFReactor decides Electron.java should inherit from Lepton.java, rather than ChargedThing_Neg.java.""" ;
+                     
+                     owl:maxCardinality "1" ;
+                     
+                     rdfs:domain :ChargedThing ;
+                     
+                     rdfs:subPropertyOf :hasPhysicalData ;
+                     
+                     rdfs:range xsd:float .
+
+
+
+###  http://onto.friendularity.org/onto/201503/PhysicsTest_brokenCard_OWL2#hasPhysicalData
+
+:hasPhysicalData rdf:type owl:DatatypeProperty .
+
+
+
+###  http://onto.friendularity.org/onto/201503/PhysicsTest_brokenCard_OWL2#hasRestMassInGrams
+
+:hasRestMassInGrams rdf:type owl:DatatypeProperty ,
+                             owl:FunctionalProperty ;
+                    
+                    rdfs:domain :MassiveThing ;
+                    
+                    rdfs:subPropertyOf :hasPhysicalData ;
+                    
+                    rdfs:range xsd:float .
+
+
+
+###  http://onto.friendularity.org/onto/201503/PhysicsTest_brokenCard_OWL2#hasSpin
+
+:hasSpin rdf:type owl:DatatypeProperty ,
+                  owl:FunctionalProperty ;
+         
+         rdfs:comment "We would like to define Spin as a rational number." ;
+         
+         rdfs:domain :SpinningThing ;
+         
+         rdfs:subPropertyOf :hasPhysicalData ;
+         
+         rdfs:range xsd:float .
+
+
+
+
+
+#################################################################
+#
+#    Classes
+#
+#################################################################
+
+
+###  http://onto.friendularity.org/onto/201503/PhysicsTest_brokenCard_OWL2#Atom
+
+:Atom rdf:type owl:Class ;
+      
+      rdfs:subClassOf :CompositeParticle .
+
+
+
+###  http://onto.friendularity.org/onto/201503/PhysicsTest_brokenCard_OWL2#ChargedThing
+
+:ChargedThing rdf:type owl:Class ;
+              
+              rdfs:subClassOf :PThing .
+
+
+
+###  http://onto.friendularity.org/onto/201503/PhysicsTest_brokenCard_OWL2#CompositeParticle
+
+:CompositeParticle rdf:type owl:Class ;
+                   
+                   rdfs:subClassOf :MassiveThing ,
+                                   :Particle ;
+                   
+                   owl:disjointWith :ElementaryParticle .
+
+
+
+###  http://onto.friendularity.org/onto/201503/PhysicsTest_brokenCard_OWL2#Electron
+
+:Electron rdf:type owl:Class ;
+          
+          rdfs:subClassOf :ChargedThing ,
+                          :Lepton .
+
+
+
+###  http://onto.friendularity.org/onto/201503/PhysicsTest_brokenCard_OWL2#ElementaryParticle
+
+:ElementaryParticle rdf:type owl:Class ;
+                    
+                    rdfs:subClassOf :Particle .
+
+
+
+###  http://onto.friendularity.org/onto/201503/PhysicsTest_brokenCard_OWL2#Lepton
+
+:Lepton rdf:type owl:Class ;
+        
+        rdfs:subClassOf :ElementaryParticle ,
+                        :MassiveThing .
+
+
+
+###  http://onto.friendularity.org/onto/201503/PhysicsTest_brokenCard_OWL2#MassiveThing
+
+:MassiveThing rdf:type owl:Class ;
+              
+              rdfs:subClassOf :PThing ;
+              
+              rdfs:comment """A thing with rest mass.
+
+http://en.wikipedia.org/wiki/Invariant_mass
+
+quoted:
+'If a center of momentum frame exists for the system, then the invariant mass of a system is simply the total energy divided by the speed of light squared.'
+""" .
+
+
+
+###  http://onto.friendularity.org/onto/201503/PhysicsTest_brokenCard_OWL2#Nucleus
+
+:Nucleus rdf:type owl:Class ;
+         
+         rdfs:subClassOf :CompositeParticle .
+
+
+
+###  http://onto.friendularity.org/onto/201503/PhysicsTest_brokenCard_OWL2#PThing
+
+:PThing rdf:type owl:Class .
+
+
+
+###  http://onto.friendularity.org/onto/201503/PhysicsTest_brokenCard_OWL2#Particle
+
+:Particle rdf:type owl:Class ;
+          
+          rdfs:subClassOf :SpinningThing .
+
+
+
+###  http://onto.friendularity.org/onto/201503/PhysicsTest_brokenCard_OWL2#Positron
+
+:Positron rdf:type owl:Class ;
+          
+          rdfs:subClassOf :ChargedThing ,
+                          :Lepton .
+
+
+
+###  http://onto.friendularity.org/onto/201503/PhysicsTest_brokenCard_OWL2#SpinningThing
+
+:SpinningThing rdf:type owl:Class ;
+               
+               rdfs:subClassOf :PThing .
+
+
+
+
+###  Generated by the OWL API (version 3.4.2) http://owlapi.sourceforge.net
+
