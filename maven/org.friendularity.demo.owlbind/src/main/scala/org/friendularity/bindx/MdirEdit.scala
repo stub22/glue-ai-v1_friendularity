@@ -123,8 +123,8 @@ object MdirEdit {
 		println("Fetched optFo: " + optBo)
 		val innerBo :GH3STabInSpreadsheet = optBo.get
 		println("innerBo class=" + innerBo.getClass)
-		println("innerBo tabNums=" + innerBo.getAllTabNumber_as.asList)
-		println("innerBo tabNums.first=" + innerBo.getAllTabNumber_as.firstValue)
+		println("innerBo tabNumber=" + innerBo.getTabNumber)
+		
 		
 		val afterUpdatesSize = mdm01.size
 		println("After Host-recs created, model size=", afterUpdatesSize, " net change=", afterUpdatesSize - beforeUpdatesSize )
