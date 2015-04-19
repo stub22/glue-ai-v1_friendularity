@@ -18,7 +18,7 @@ package org.friendularity.respire
 
 import  org.cogchar.render.trial.{TrialBalloon}
 import org.appdapter.core.log.BasicDebugger;
-
+import org.appdapter.gui.demo.DemoBrowser;
 
 object MathBalloon extends BasicDebugger {
 	def main(args: Array[String]) : Unit = {
@@ -27,30 +27,44 @@ object MathBalloon extends BasicDebugger {
 		// However, when a log4j.properties file is present, these commands should not be used.
 		org.apache.log4j.BasicConfigurator.configure();
 		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.ALL);
-		import org.appdapter.gui.demo.DemoBrowser;
-		DemoBrowser.ensureRunning(true, "no-args");
-		DemoBrowser.show();
+		
+		val extraDemos = false
+		val demoBrowser = false
+		if (demoBrowser) {
 
-		getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^  main() starting StructTest.testStructs()");		
-		org.friendularity.struct.StructTest.testStructs;
+			DemoBrowser.ensureRunning(true, "no-args");
+			DemoBrowser.show();
+		}
+		if (extraDemos) {
+			getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^  main() starting StructTest.testStructs()");		
+			org.friendularity.struct.StructTest.testStructs;
+
+			getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^  main() starting StructTest.testMathSource()");				
+			org.friendularity.struct.StructTest.testClumsyMathSource;
+
+			getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^  main() starting GridSpaceTest.go");
+			// GridSpaceTest 
+			org.cogchar.api.space.GridSpaceTest.goGoGo;
 		
-		getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^  main() starting StructTest.testMathSource()");				
-		org.friendularity.struct.StructTest.testClumsyMathSource;
-		
-		getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^  main() starting GridSpaceTest.go");
-		// GridSpaceTest 
-		org.cogchar.api.space.GridSpaceTest.goGoGo;
-		
-		getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^  main() testing math-repo+goody load (respiration)");	
-		// This reads in a config model and begins seting up the space, but the individual goodies
-		// are not created until render update() callbacks start.
-		val sweetDS = RespirationTest.initReposLoadMathEval : SweetDynaSpace;
+			getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^  main() testing math-repo+goody load (respiration)");	
+			// This reads in a config model and begins seting up the space, but the individual goodies
+			// are not created until render update() callbacks start.
+		}
+		val sweetDS : Option[SweetDynaSpace] = if (extraDemos) {
+			val sds =RespirationTest.initReposLoadMathEval : SweetDynaSpace 
+			if (demoBrowser) {
+				DemoBrowser.showObject("mathBalloon-sweetDS", sds, true, true); 
+				
+			}
+			Option(sds)
+		} else None
 		
 		getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^  main() constructing a TrialBalloon OpenGL+MIDI app");
 		val bbApp : BigBalloon = new BigBalloon();
 		
-				
-		DemoBrowser.showObject("mathBalloon-bbApp", bbApp, false, false); // true, true);
+		if (demoBrowser) {
+			DemoBrowser.showObject("mathBalloon-bbApp", bbApp, false, false); // true, true);
+		}
 		
 		getLogger().info("calling tbApp.initMidi()");
 		// Initialize available MIDI devices and sequence library.
@@ -61,10 +75,11 @@ object MathBalloon extends BasicDebugger {
 		bbApp.start();
 		getLogger().info("main() - returned from blocking V-World launch (+ on-thread initApp); we now expect OpenGL VWorld to be running.");
 		// Now render thread has started
-		bbApp.attachDeepDynaSpace(sweetDS)		
-		//  and sweetDS is getting render-thread callbacks.
-		// Goodies are being created and displayed on that thread.
-		DemoBrowser.showObject("mathBalloon-sweetDS", sweetDS, true, true); 
+		if (extraDemos) {
+			bbApp.attachDeepDynaSpace(sweetDS.get)		
+			//  ...and now sweetDS is getting render-thread callbacks.
+			// Thus goodies are being created and displayed on that thread.
+		}
 		getLogger().info("main() calling tbApp.playMidiOutput()");
 		bbApp.playMidiOutput();
 		
