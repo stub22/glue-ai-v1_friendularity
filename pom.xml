@@ -178,7 +178,7 @@
                 </dependency>
                 <dependency>
                     <groupId>org.cogchar</groupId>
-                    <artifactId>ext.bundle.fuseki_0_2_7</artifactId>
+                    <artifactId>ext.bundle.fuseki_2_0_0</artifactId>
                     <version>${cogchar.version}</version>
                 </dependency>
                 <dependency>
