@@ -32,7 +32,7 @@
         -->
 	<groupId>org.friendularity</groupId>
 	<artifactId>org.friendularity.project.root</artifactId>
-        <version>1.0.8</version>
+        <version>1.0.9-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>${project.artifactId} - Root pom, linked to Sonatype repo parent</name>
 	<description>Project Root Folder pom.xml - includes all code + doc directories when snapped.</description>
@@ -112,9 +112,9 @@
 	url - human-browsable view of SVN
         -->
 	<scm>
-		<connection>scm:svn:https://subversion.assembla.com/svn/friendularity/tags/org.friendularity.project.root-1.0.8</connection>
-		<developerConnection>scm:svn:https://subversion.assembla.com/svn/friendularity/tags/org.friendularity.project.root-1.0.8</developerConnection>
-		<url>https://www.assembla.com/code/friendularity/subversion/nodes/tags/org.friendularity.project.root-1.0.8</url>
+		<connection>scm:svn:https://subversion.assembla.com/svn/friendularity/trunk</connection>
+		<developerConnection>scm:svn:https://subversion.assembla.com/svn/friendularity/trunk</developerConnection>
+		<url>https://www.assembla.com/code/friendularity/subversion/nodes/trunk</url>
 	</scm>
 	
         <dependencyManagement>
