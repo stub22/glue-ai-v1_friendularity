@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="duplicateSpeechRequestIgnoreTime" type="integer" format="integer">5000</item>
+    <item name="delay_between_continuous_speech_inputs" format="integer" type="integer">6000</item>
+    <item name="delay_after_continuous_speech_error" format="integer" type="integer">2000</item>
+    
+</resources>

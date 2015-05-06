@@ -1,0 +1,51 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+  
+	<parent>
+		<groupId>org.friendularity</groupId>
+		<artifactId>org.friendularity.modules.main</artifactId>
+		<version>1.0.8</version>
+		<relativePath>../org.friendularity.modules.main/pom.xml</relativePath>
+	</parent>	
+
+	<artifactId>org.friendularity.lib.viz</artifactId>
+	<packaging>jar</packaging>
+	<name>${project.artifactId} - Temp Scala math lab quickrun</name>	
+
+	<dependencies>
+		<dependency>
+			<groupId>org.cogchar</groupId>
+			<artifactId>org.cogchar.bundle.render.opengl</artifactId>
+		</dependency>
+		<dependency>
+            <groupId>org.appdapter</groupId>
+            <artifactId>org.appdapter.bundle.gui</artifactId>
+        </dependency>
+		<dependency>
+            <groupId>org.jflux</groupId>
+            <artifactId>org.jflux.impl.transport.qpid</artifactId>
+        </dependency>		
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+		</dependency>
+	</dependencies>
+	<build>	
+		<plugins>
+			<plugin>
+				<groupId>org.scala-tools</groupId>
+				<artifactId>maven-scala-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>compile</goal>
+							<!-- We're not actually using any scala tests right now
+							<goal>testCompile</goal>
+							-->
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>  
+</project>

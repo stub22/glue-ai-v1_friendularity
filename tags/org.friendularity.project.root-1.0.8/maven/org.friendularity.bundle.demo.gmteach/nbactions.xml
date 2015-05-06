@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<actions>
+    <action>
+        <actionName>run</actionName>
+        <goals>
+            <goal>package</goal>
+            <goal>antrun:run</goal>
+        </goals>
+        <activatedProfiles>
+            <activatedProfile>run-on-felix</activatedProfile>
+        </activatedProfiles>
+    </action>
+    <action>
+        <actionName>debug</actionName>
+        <goals>
+            <goal>package</goal>
+            <goal>antrun:run</goal>
+        </goals>
+        <properties>
+            <vm.args>-Xdebug -Xrunjdwp:transport=dt_socket,server=n,address=${jpda.address}</vm.args>
+            <jpda.listen>true</jpda.listen>
+        </properties>
+        <activatedProfiles>
+            <activatedProfile>run-on-felix</activatedProfile>
+        </activatedProfiles>
+    </action>
+    <action>
+        <actionName>profile</actionName>
+        <goals>
+            <goal>package</goal>
+            <goal>antrun:run</goal>
+        </goals>
+        <properties>
+            <vm.args>${profiler.args}</vm.args>
+            <!-- XXX <java jvm="${profiler.java}" ...> -->
+            <profiler.action>profile</profiler.action>
+        </properties>
+        <activatedProfiles>
+            <activatedProfile>run-on-felix</activatedProfile>
+        </activatedProfiles>
+    </action>
+    <action>
+            <actionName>CUSTOM-Run file with Stu's VM args</actionName>
+            <displayName>Run file with Stu's VM args</displayName>
+            <goals>
+                <goal>process-classes</goal>
+                <goal>org.codehaus.mojo:exec-maven-plugin:1.2.1:exec</goal>
+            </goals>
+            <properties>
+                <exec.args>-classpath %classpath ${packageClassName}</exec.args>
+                <exec.executable>java</exec.executable>
+                <exec.classpathScope>${classPathScope}</exec.classpathScope>
+            </properties>
+        </action>
+    <action>
+            <actionName>run.single.main</actionName>
+            <goals>
+                <goal>process-classes</goal>
+                <goal>org.codehaus.mojo:exec-maven-plugin:1.2.1:exec</goal>
+            </goals>
+            <properties>
+                <exec.args>-classpath %classpath ${packageClassName}</exec.args>
+                <exec.executable>java</exec.executable>
+                <exec.classpathScope>${classPathScope}</exec.classpathScope>
+                
+            </properties>
+        </action>
+</actions>

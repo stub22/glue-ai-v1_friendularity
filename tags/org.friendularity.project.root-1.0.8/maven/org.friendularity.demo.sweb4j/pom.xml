@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<!--
+	<parent>
+		<groupId>org.friendularity</groupId>
+		<artifactId>org.friendularity.project.root</artifactId>
+		<version>1.0.8-SNAPSHOT</version>
+		<relativePath>../../pom.xml</relativePath>
+	</parent>
+	-->
+	<groupId>org.friendularity</groupId>	
+	<artifactId>org.friendularity.demo.sweb4j</artifactId>
+	<version>1.0.8-SNAPSHOT</version>
+	<packaging>jar</packaging>
+	<dependencies>
+		<dependency>
+			<groupId>org.semweb4j</groupId>
+			<artifactId>rdf2go.api</artifactId>
+			<version>5.0.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.semweb4j</groupId>
+			<artifactId>rdfreactor.runtime</artifactId>
+			<version>5.0.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.semweb4j</groupId>
+			<!-- does not have an OSGi manifest.  provides org.ontoware.rdf2go.impl.StaticBinding, which is in a 
+			package that is also defined by rdf2go.api  which does have an OSGi manifest.   Probably the .impl
+			bundle should be treated as a fragment, injected into the .api Fragment-host.
+			-->
+			<artifactId>rdf2go.impl.jena</artifactId>
+			<version>5.0.1</version>
+			<!--  Still needed?
+			<exclusions>
+				<exclusion>
+					<artifactId>httpclient</artifactId>
+					<groupId>org.apache.httpcomponents</groupId>
+				</exclusion>
+			</exclusions>
+			-->
+		</dependency>		
+	</dependencies>	
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.semweb4j</groupId>
+				<artifactId>rdfreactor-maven-plugin</artifactId>
+				<version>5.0.1</version>
+				<executions>	
+					<execution>
+						<id>physicsTest</id>
+						<goals>
+							<goal>rdfs-classes</goal>
+						</goals>
+						<configuration>
+							<schemaFile>src/test/resources/schemas/PhysicsTest_owl2.n3</schemaFile>
+							<packageName>org.friendularity.sw4j.phys</packageName>
+							<rdfReactorLogfile>target/rdfreactor_physicsTest.log</rdfReactorLogfile>
+						</configuration>						
+					</execution>
+					<!-- This onto is here to show the problem with broken imports when combining
+					owl:maxCardinality and multiple inheritance.
+					
+					<execution>
+						<id>physicsTest_brokenCard</id>
+						<goals>
+							<goal>rdfs-classes</goal>
+						</goals>
+						<configuration>
+							<schemaFile>src/test/resources/schemas/PhysicsTest_brokenCard_owl2.n3</schemaFile>
+							<packageName>org.friendularity.sw4j.physbc</packageName>
+							<rdfReactorLogfile>target/rdfreactor_physicsTest_brokenCard.log</rdfReactorLogfile>
+						</configuration>						
+					</execution>	
+					-->			
+				</executions>
+			</plugin>
+		</plugins>
+	</build>							
+</project>

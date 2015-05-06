@@ -1,0 +1,81 @@
+package org.friendularity.bundle.demoserv.semrepo;
+
+import org.appdapter.osgi.core.BundleActivatorBase;
+//import org.friendularity.bundle.webapp.semrepo.SemRepoWebAppUtil;
+import org.osgi.framework.BundleContext;
+import com.hp.hpl.jena.rdf.model.ModelChangedListener;
+
+import org.appdapter.osgi.core.BundleActivatorBase;
+
+import org.cogchar.app.puma.web.LifterLifecycle;
+
+import org.cogchar.bundle.app.puma.GruesomeTAProcessingFuncs;
+
+import org.cogchar.joswrap.RepoUpdateCallbackAdapter;
+import org.jflux.impl.services.rk.osgi.lifecycle.OSGiComponent;
+
+import org.osgi.framework.BundleContext;
+
+
+public class Activator extends BundleActivatorBase {
+
+	private Object makeingAWarningAboutUnusedPrivate;
+        	public void start(BundleContext context) throws Exception {		
+		initLifterWebappLifecycle(context);
+		setupRepoUpdateCallback();
+	}
+
+	public void stop(BundleContext context) throws Exception {
+		// TODO add deactivation code here
+	}
+
+	/**
+	 * Copied from Activator for Friendularity.Liftoff.
+	 *
+	 * @param context
+	 */
+	public void initLifterWebappLifecycle(BundleContext context) {
+
+		// Tell the lifter lifecycle to start, once its dependencies are satisfied
+		LifterLifecycle lifecycle = new LifterLifecycle();
+		OSGiComponent lifterComp = new OSGiComponent(context, lifecycle);
+		lifterComp.start();
+	}
+
+	public void setupRepoUpdateCallback() {
+		RepoUpdateCallbackAdapter.registerCallback(new RepoUpdateCallbackAdapter.Callback() {
+			public void repoUpdateCompleted() {
+				getLogger().info("c.h.b.oglweb.R50 activator got SPARQL-UPDATE callback");
+				GruesomeTAProcessingFuncs.processPendingThingActions();
+			}
+		});
+	}
+	// There are a number of issues preventing us from using this effectively, some of which we hope to discuss with
+	// Jena team.  Meanwhile, doing a few experiments.
+	// http://jena.apache.org/documentation/notes/event-handler-howto.html
+	private static  ModelChangedListener	theExperimentalModelListener;	
+
+/*
+	private BundleContext m_context;
+
+	// We dont like start().. code but for now we need to get in before anything calls their
+	// handleFrameworkStartedEvent
+	public void start(BundleContext context) throws Exception {
+		org.apache.xerces.jaxp.DocumentBuilderFactoryImpl.class.getMethods();
+		m_context = context;
+		forceLog4jConfig();
+	      //  SemRepoWebAppUtil.install(m_context);
+
+		scheduleFrameworkStartEventHandler(context);
+	}
+
+	@Override protected void handleFrameworkStartedEvent(BundleContext bundleCtx) {
+	       // SemRepoWebAppUtil.initWebapps(m_context);
+	}
+
+	public void stop(BundleContext context) throws Exception {
+		// TODO add deactivation code here
+	      //  SemRepoWebAppUtil.stopWebapps(m_context);
+	}
+*/
+}
