@@ -34,11 +34,17 @@
 			<artifactId>org.friendularity.bundle.xweb.minlift</artifactId>
 			<version>${project.version}</version>
 		</dependency>			
+		<!-- Our Joseki-based webapp, discovered by PAX services. -->
+		<!--
+	
+ Disabled 2015-05-05
+		
 		<dependency>
-			<!-- Our Joseki-based webapp, discovered by PAX services. -->
+			
 			<groupId>org.cogchar</groupId>
 			<artifactId>org.cogchar.bundle.bind.joseki</artifactId>
 		</dependency>
+		-->
 		<dependency>
 			<groupId>org.cogchar</groupId>
 			<artifactId>ext.bundle.ops4j.pax.web</artifactId>

@@ -11,9 +11,9 @@ import org.cogchar.app.puma.config.PumaContextMediator;
 import org.osgi.framework.BundleContext;
 import com.hp.hpl.jena.query.Dataset;
 
-import org.cogchar.joswrap.RepoUpdateCallbackAdapter;
+// import org.cogchar.joswrap.RepoUpdateCallbackAdapter;
 import org.cogchar.name.dir.NamespaceDir;
-import org.joseki.processors.ProcessorBase;
+// import org.joseki.processors.ProcessorBase;
 
 public class Activator extends BundleActivatorBase {
 
@@ -46,6 +46,8 @@ public class Activator extends BundleActivatorBase {
 		setupJosekiSparqlAccess(pwm);
 	}
 	protected void setupJosekiSparqlAccess(PumaWebMapper pwm) { 
+		/* 
+Disabled 2015-05-05
 		// First stab at connecting outer code to our config dataset uses this ugly static variable.  
 		theMainConfigDataset = pwm.getMainLocalSparqlDataset();
 		RepoUpdateCallbackAdapter.registerCallback(new RepoUpdateCallbackAdapter.Callback() {
@@ -54,6 +56,7 @@ public class Activator extends BundleActivatorBase {
 				// System.out.println("***\n*** (System.out direct) \n***\nYep, got repo SPARQL-UPDATE callback!!!");
 			}
 		});
+		*/
 		//ProcessorBase.stusLockingEnabledFlag = false;
 		//ProcessorBase.stusTransactEnabledFlag = false;
 	}

@@ -43,10 +43,12 @@
 			<groupId>org.cogchar</groupId>
 			<artifactId>org.cogchar.bundle.bind.lift</artifactId>
 		</dependency>
+		<!--
 		<dependency>
 			<groupId>org.cogchar</groupId>
 			<artifactId>org.cogchar.bundle.bind.joseki</artifactId>
-		</dependency>		
+		</dependency>	
+		-->	
 		<!-- We want the same deps as CCRK, but not the full PUMA boot peformed by CCRK activator.
 		<dependency>
 			<groupId>org.cogchar</groupId>
