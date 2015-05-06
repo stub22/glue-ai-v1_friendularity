@@ -41,7 +41,9 @@ Disabled 2015-05-05
 		<module>../org.friendularity.bundle.xweb.xgra</module>
 		<module>../org.friendularity.bundle.xweb.fustdb</module>
 
+<!--
         <module>../org.friendularity.bundle.demoserv.semrepo</module>
+-->
         <module>../org.friendularity.bundle.webapp.semrepo</module>
 
 		<module>../org.friendularity.lib.viz</module>
