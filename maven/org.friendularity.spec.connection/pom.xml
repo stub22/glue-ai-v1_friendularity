@@ -26,10 +26,6 @@
 			<artifactId>org.appdapter.bundle.core</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.appdapter</groupId>
-			<artifactId>ext.bundle.jena_all_2_10_1</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>org.jflux</groupId>
 			<artifactId>org.jflux.api.common.rk</artifactId>
 		</dependency>
