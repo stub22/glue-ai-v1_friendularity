@@ -21,31 +21,7 @@
 			<groupId>net.sourceforge.owlapi</groupId>
 			<artifactId>owlapi-distribution</artifactId>
 		</dependency>
-		<!--
-		<dependency>
-			<groupId>org.semweb4j</groupId>
-			<artifactId>rdfreactor.dist</artifactId>
-			<type>pom</type>
-			<exclusions>
-				<exclusion>
-					<groupId>org.semweb4j</groupId>
-					<artifactId>rdf2go.impl.sesame</artifactId>
-				</exclusion>
-				<exclusion>
-					<artifactId>rdfreactor-maven-plugin</artifactId>
-					<groupId>org.semweb4j</groupId>
-				</exclusion>
-				<exclusion>
-					<artifactId>rdfreactor.generator</artifactId>
-					<groupId>org.semweb4j</groupId>
-				</exclusion>				
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.semweb4j</groupId>
-			<artifactId>rdf2go.impl.jena</artifactId>
-		</dependency>
-		-->
+
 		<dependency>
 			<groupId>org.appdapter</groupId>
 			<artifactId>org.appdapter.bundle.core</artifactId>
@@ -54,14 +30,7 @@
 			<groupId>org.cogchar</groupId>
 			<artifactId>org.cogchar.bundle.core</artifactId>
 		</dependency>		
-		<!--  Appears included Sesame version requires Java 7, for java.nio.charset.StandardCharsets
-			<dependency>
-				<groupId>org.semweb4j</groupId>
-				<artifactId>rdfreactor.dist</artifactId>
-				<version>5.0.0</version>
-				<type>pom</type>
-			</dependency>
-		-->
+
 	</dependencies>
 	<build>
 		<plugins>

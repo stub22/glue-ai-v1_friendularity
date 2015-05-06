@@ -6,7 +6,7 @@ import org.cogchar.bundle.app.puma.GruesomeTAProcessingFuncs;
 
 import org.osgi.framework.BundleContext;
 import org.jflux.impl.services.rk.osgi.lifecycle.OSGiComponent;
-import org.cogchar.joswrap.RepoUpdateCallbackAdapter;
+// import org.cogchar.joswrap.RepoUpdateCallbackAdapter;
 
 public class Activator extends BundleActivatorBase {
 
@@ -32,11 +32,15 @@ public class Activator extends BundleActivatorBase {
 		 * that something in our "main memory" repo has changed.  At present we assume that any such update means
 		 * we should simply update the Goodies in our V-World.
 		 */
+		
+/*******
+ Disabled 2015-05-05
 		RepoUpdateCallbackAdapter.registerCallback(new RepoUpdateCallbackAdapter.Callback() {
 			public void repoUpdateCompleted() {
 				getLogger().info("o.f.b.demo.liftoff activator got SPARQL-UPDATE callback, now pumping Goody Updates!");
 				GruesomeTAProcessingFuncs.processPendingThingActions();
 			}
 		});
+		*/
 	}
 }
