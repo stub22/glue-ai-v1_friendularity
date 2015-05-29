@@ -123,7 +123,7 @@ object StructTest  extends VarargsLogging {
 		
 		info0("Wild struct handle, after exec: " + wildStructHandle1)
 		info0("result-copy for nutty: " + wildStructHandle1.getResultFieldCopy("nutty"))
-		info0("result-copy for nutty: " + wildStructHandle1.getResultFieldCopy("silly"))
+		info0("result-copy for silly: " + wildStructHandle1.getResultFieldCopy("silly"))
 
 		val  mapperForTameExprFields = new MathStructMapper
 		

@@ -60,7 +60,7 @@ object BehavTrix extends VarargsLogging {
 		org.apache.log4j.BasicConfigurator.configure();
 		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.INFO);
 		
-		// loadBonusRepo();
+		loadBonusRepo();
 		
 		val j = new Jiggy()
 		j.go()
@@ -78,10 +78,12 @@ object BehavTrix extends VarargsLogging {
 		info2("URI={}   URL={}", wfURI, wfURL)
 		val wfutxt = wfURL.toString
 		val ursPath = wfutxt; //  = "file:///E:/_mount/_supply/rk_char_repo_snaps/rk_bude_lessons/LessonDemo_20140506/LessonDemo/dir.ttl"
-		info1("****************************** loading from URL path:\n{}", ursPath)
+		info1("****************************** Creating spec from URL path:\n{}", ursPath)
 		
 		val uRepSpec = new URLRepoSpec(ursPath);
-		
+		info1("****************************** Creating repo from spec: {}", uRepSpec)
+		val repo = uRepSpec.getOrMakeRepo();
+		info1("****************************** Made repo : {}", repo)
 	}
 }
 
