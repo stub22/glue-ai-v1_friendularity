@@ -135,6 +135,11 @@ object ExImBank extends VarargsLogging {
 		//org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.INFO);
 		//	val legacyUnitSpec = spec_legacyUnitTestData();	
 		//	val behavCoreSpec = spec_coreBehavTestData();
+		//	
+		//	
+		// val dphysURI = "http://onto.appdapter.org/onto/dphys#"
+		// org.appdapter.fancy.query.QueryHelper.theDPhysURI_opt = Some(dphysURI)
+		
 		val sheetSpec_L5SG =  spec_testData_majL5SG();
 		val folderSpec_headless = spec_headlessR25(); 
 		val folderSpec_oglwebGlue = spec_oglwebGlue();
