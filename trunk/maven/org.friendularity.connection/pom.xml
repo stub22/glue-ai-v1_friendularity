@@ -28,6 +28,11 @@
             <groupId>org.jflux</groupId>
             <artifactId>org.jflux.swing.services</artifactId>
         </dependency>
+    	<dependency>
+			<groupId>org.appdapter</groupId>
+			<artifactId>org.appdapter.bundle.xload</artifactId>
+			<version>${appdapter.version}</version>
+		</dependency>				
     </dependencies>
     
     <build>

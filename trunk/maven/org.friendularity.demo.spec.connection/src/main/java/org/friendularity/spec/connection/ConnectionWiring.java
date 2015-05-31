@@ -23,7 +23,7 @@ import java.util.Properties;
 import java.util.Set;
 import org.appdapter.core.name.Ident;
 import org.osgi.framework.BundleContext;
-import org.appdapter.fancy.rspec.OnlineSheetRepoSpec;
+import org.appdapter.xload.rspec.OnlineSheetRepoSpec;
 import org.appdapter.fancy.rclient.EnhancedRepoClient;
 import org.jflux.api.registry.Registry;
 import org.jflux.impl.registry.OSGiRegistry;

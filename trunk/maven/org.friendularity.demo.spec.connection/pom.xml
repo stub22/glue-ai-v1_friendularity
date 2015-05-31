@@ -26,6 +26,11 @@
             <groupId>org.appdapter</groupId>
             <artifactId>org.appdapter.bundle.core</artifactId>
         </dependency>
+    	<dependency>
+			<groupId>org.appdapter</groupId>
+			<artifactId>org.appdapter.bundle.xload</artifactId>
+			<version>${appdapter.version}</version>
+		</dependency>				
         <dependency>
             <groupId>org.jflux</groupId>
             <artifactId>org.jflux.api.common.rk</artifactId>
@@ -169,7 +174,7 @@
                                 <makeurl property="run.properties.url" file="${project.build.directory}/run.properties" />
                                 <java fork="true" jar="${maven.dependency.org.apache.felix.org.apache.felix.main.jar.path}">
                                     <sysproperty key="felix.config.properties" value="${run.properties.url}" />
-                                    <jvmarg line="${vm.args}" />
+                                    jvmarg line="${vm.args}" />
                                 </java>
                             </target>
                         </configuration>

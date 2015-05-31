@@ -27,7 +27,7 @@ import org.appdapter.core.item.{Item}
 import org.appdapter.core.store.{Repo }
 import org.appdapter.core.query.{InitialBinding }
 import org.appdapter.fancy.rclient.{RepoClient, RepoClientImpl}
-import org.appdapter.fancy.rspec.{URLRepoSpec}
+import org.appdapter.xload.rspec.{URLRepoSpec}
 import org.appdapter.fancy.query.{InitialBindingImpl}
 
 import com.hp.hpl.jena.query.{QuerySolution} // Query, QueryFactory, QueryExecution, QueryExecutionFactory, , QuerySolutionMap, Syntax};
