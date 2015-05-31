@@ -3,7 +3,7 @@ package org.friendularity.bundle.webapp.semrepo;
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
 import org.appdapter.osgi.core.BundleActivatorBase;
-import org.appdapter.fancy.rspec.OnlineSheetRepoSpec;
+import org.appdapter.xload.rspec.OnlineSheetRepoSpec;
 import org.appdapter.fancy.rspec.RepoSpec;
 import org.cogchar.app.puma.boot.PumaAppContext;
 import org.cogchar.app.puma.web.PumaWebMapper;

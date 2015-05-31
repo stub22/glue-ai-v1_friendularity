@@ -23,8 +23,9 @@ import org.appdapter.core.name.{FreeIdent, Ident}
 import org.appdapter.core.store.Repo
 import org.appdapter.demo.DemoResources
 import org.appdapter.fancy.rclient.{RepoClient, RepoClientImpl, GraphPortalRepoClient}
-import org.appdapter.fancy.rspec.{RepoSpec, RepoSpecForDirectory, SdbSqlRepoSpec, OnlineSheetRepoSpec, URLRepoSpec, URLDirModelRepoSpec}
-import org.appdapter.fancy.loader.{SdbSqlRepoFactoryLoader}
+import org.appdapter.fancy.rspec.{RepoSpec}
+import org.appdapter.xload.rspec.{RepoSpecForDirectory, SdbSqlRepoSpec, OnlineSheetRepoSpec, URLRepoSpec, URLDirModelRepoSpec}
+import org.appdapter.xload.fancy.{SdbSqlRepoFactoryLoader}
 import org.appdapter.fancy.repo.FancyRepo
 import org.appdapter.fancy.gportal.{GraphPortal, GraphSupplier, SuppliedGraphStat, GraphPortalFuncs, DelegatingPortal, LazyLocalDelegatingPortal, LazyRemoteDelegatingPortal}
 import org.appdapter.demo.DemoResources

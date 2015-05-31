@@ -19,7 +19,7 @@ import org.appdapter.core.log.BasicDebugger
 
 import org.appdapter.core.store.Repo
 import org.appdapter.fancy.rclient.{RepoClient, RepoClientImpl}
-import org.appdapter.fancy.rspec.{OnlineSheetRepoSpec}
+import org.appdapter.xload.rspec.{OnlineSheetRepoSpec}
 import org.appdapter.fancy.query.{InitialBindingImpl}
 import org.appdapter.fancy.repo.{FancyRepo}
 import org.appdapter.fancy.model.{ModelClientImpl}

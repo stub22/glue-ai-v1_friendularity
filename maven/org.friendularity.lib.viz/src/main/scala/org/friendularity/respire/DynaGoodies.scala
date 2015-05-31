@@ -28,7 +28,7 @@ import org.appdapter.fancy.rclient.{RepoClient, RepoClientImpl}
 import org.appdapter.fancy.query.{InitialBindingImpl}
 import org.appdapter.fancy.repo.{FancyRepo}
 import org.appdapter.fancy.model.{ModelClientImpl}
-import org.appdapter.fancy.rspec.OnlineSheetRepoSpec
+import org.appdapter.xload.rspec.OnlineSheetRepoSpec
 
 
 abstract class SweetDynaGoody(goodyIdxWithinSpace : Int) extends DynaShapeGoody(goodyIdxWithinSpace : Int) {
