@@ -72,7 +72,7 @@ public class RemotePlayerFrame extends javax.swing.JFrame {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -100,6 +100,13 @@ public class RemotePlayerFrame extends javax.swing.JFrame {
             }
         });
     }
+
+
+	public DemoPlayerPanel getDemoPlayerPanel() {
+		return demoPlayerPanel1;
+	}
+	
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private org.friendularity.bundle.ui.swing.animation.DemoPlayerPanel demoPlayerPanel1;
     // End of variables declaration//GEN-END:variables
