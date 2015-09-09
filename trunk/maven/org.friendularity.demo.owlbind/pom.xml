@@ -75,7 +75,88 @@ https://code.google.com/p/semweb4j/source/browse/trunk/org.semweb4j.rdfreactor.m
 							<packageName>org.friendularity.gen.reacted.percept</packageName>
 							<rdfReactorLogfile>target/rdfreactor_percept.log</rdfReactorLogfile>
 						</configuration>
-					</execution>							
+					</execution>
+					<execution>
+						<id>spinSparql</id>
+						<goals>
+							<goal>rdfs-classes</goal>
+						</goals>
+						<configuration>
+							<schemaFile>src/test/resources/schemas/spinSparql.owl</schemaFile>
+							<packageName>org.friendularity.gen.reacted.spin.sparql</packageName>
+							<rdfReactorLogfile>target/rdfreactor_spinSparql.log</rdfReactorLogfile>
+						</configuration>
+					</execution>					
+					<execution>
+						<id>spinSchema</id>
+						<goals>
+							<goal>rdfs-classes</goal>
+						</goals>
+						<configuration>
+							<schemaFile>src/test/resources/schemas/spinSchema.owl</schemaFile>
+							<packageName>org.friendularity.gen.reacted.spin.schema</packageName>
+							<rdfReactorLogfile>target/rdfreactor_spinSchema.log</rdfReactorLogfile>
+						</configuration>
+					</execution>
+					<!--
+					This onto file contains a mixture of types and instances.
+					We must remove the rdf:ID properties for the 
+public class Visitrow extends SPRFunctions {
+
+    private static final long serialVersionUID = 3233278939737791826L;
+
+    /** http://spinrdf.org/spr#visitCol */
+	public static final URI RDFS_CLASS = new URIImpl("http://spinrdf.org/spr#visitCol", false);			
+	-->
+					<execution>
+						<id>spinResults</id>
+						<goals>
+							<goal>rdfs-classes</goal>
+						</goals>
+						<configuration>
+							<schemaFile>src/test/resources/schemas/spinResults_abridged.owl</schemaFile>
+							<packageName>org.friendularity.gen.reacted.spin.result</packageName>
+							<rdfReactorLogfile>target/rdfreactor_spinResults.log</rdfReactorLogfile>
+						</configuration>
+					</execution>
+				
+					<execution>
+						<id>spinBuiltinFuncs</id>
+						<goals>
+							<goal>rdfs-classes</goal>
+						</goals>
+						<configuration>
+							<schemaFile>src/test/resources/schemas/spinBuiltinFuncs.owl</schemaFile>
+							<packageName>org.friendularity.gen.reacted.spin.builtin</packageName>
+							<rdfReactorLogfile>target/rdfreactor_spinBuiltinFuncs.log</rdfReactorLogfile>
+						</configuration>
+					</execution>	
+					<!--
+\_mount\friendularity_trunk\maven\org.friendularity.demo.owlbind\target\generated-sources\rdfs-classes\org\friendularity\gen\reacted\spin\stdmod\ModuleCall.java:[210,23] error: method hasInstance(Model,Resource) is already defined in class ModuleCall
+\_mount\friendularity_trunk\maven\org.friendularity.demo.owlbind\target\generated-sources\rdfs-classes\org\friendularity\gen\reacted\spin\stdmod\URI.java:[12,0] error: org.friendularity.gen.reacted.spin.stdmod.URI is already defined in this compilation unit
+\_mount\friendularity_trunk\maven\org.friendularity.demo.owlbind\target\generated-sources\rdfs-classes\org\friendularity\gen\reacted\spin\stdmod\URI.java:[28,38] error: incompatible types
+\_mount\friendularity_trunk\maven\org.friendularity.demo.owlbind\target\generated-sources\rdfs-classes\org\friendularity\gen\reacted\spin\stdmod\URI.java:[52,2] error: no suitable constructor found for Ontologyfunctions(Model,org.friendularity.gen.reacted.spin.stdmod.URI,Resource,boolean)
+\_mount\friendularity_trunk\maven\org.friendularity.demo.owlbind\target\generated-sources\rdfs-classes\org\friendularity\gen\reacted\spin\stdmod\URI.java:[67,2] error: no suitable constructor found for Ontologyfunctions(Model,org.friendularity.gen.reacted.spin.stdmod.URI,Resource,boolean)
+\_mount\friendularity_trunk\maven\org.friendularity.demo.owlbind\target\generated-sources\rdfs-classes\org\friendularity\gen\reacted\spin\stdmod\URI.java:[82,2] error: no suitable constructor found for Ontologyfunctions(Model,org.friendularity.gen.reacted.spin.stdmod.URI,URIImpl,boolean)
+\_mount\friendularity_trunk\maven\org.friendularity.demo.owlbind\target\generated-sources\rdfs-classes\org\friendularity\gen\reacted\spin\stdmod\URI.java:[95,2] error: no suitable constructor found for Ontologyfunctions(Model,org.friendularity.gen.reacted.spin.stdmod.URI,BlankNode,boolean)
+\_mount\friendularity_trunk\maven\org.friendularity.demo.owlbind\target\generated-sources\rdfs-classes\org\friendularity\gen\reacted\spin\stdmod\URI.java:[108,2] error: no suitable constructor found for Ontologyfunctions(Model,org.friendularity.gen.reacted.spin.stdmod.URI,org.ontoware.rdf2go.model.node.URI,boolean)
+\_mount\friendularity_trunk\maven\org.friendularity.demo.owlbind\target\generated-sources\rdfs-classes\org\friendularity\gen\reacted\spin\stdmod\URI.java:[135,6] error: method createInstance in class Base cannot be applied to given types;
+\_mount\friendularity_trunk\maven\org.friendularity.demo.owlbind\target\generated-sources\rdfs-classes\org\friendularity\gen\reacted\spin\stdmod\URI.java:[156,13] error: method getAllInstances in class Base cannot be applied to given types;
+\_mount\friendularity_trunk\maven\org.friendularity.demo.owlbind\target\generated-sources\rdfs-classes\org\friendularity\gen\reacted\spin\stdmod\URI.java:[167,13] error: method getAllInstances_as in class Base cannot be applied to given types;
+\_mount\friendularity_trunk\maven\org.friendularity.demo.owlbind\target\generated-sources\rdfs-classes\org\friendularity\gen\reacted\spin\stdmod\URI.java:[179,6] error: method deleteInstance in class Base cannot be applied to given types;
+12 errors 						
+					<execution>
+						<id>spinStdModLib</id>
+						<goals>
+							<goal>rdfs-classes</goal>
+						</goals>
+						<configuration>
+							<schemaFile>src/test/resources/schemas/spinStdModLib.owl</schemaFile>
+							<packageName>org.friendularity.gen.reacted.spin.stdmod</packageName>
+							<rdfReactorLogfile>target/rdfreactor_spinStdMod.log</rdfReactorLogfile>
+						</configuration>
+					</execution>						
+			-->
 				</executions>
 			</plugin>	
 			<plugin>
