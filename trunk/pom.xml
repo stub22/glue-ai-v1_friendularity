@@ -58,7 +58,7 @@
 		
 		<!--  Glue Dependencies -->
 		<appdapter.version>1.2.4-SNAPSHOT</appdapter.version>
-		<appdapter.msg.version>1.0.5</appdapter.msg.version>
+		<appdapter.msg.version>1.2.4-SNAPSHOT</appdapter.msg.version>
 		<appdapter.jscience.version>1.0.9</appdapter.jscience.version>
 		<cogchar.version>1.1.4-SNAPSHOT</cogchar.version>
 		<jflux.version>0.2.5-SNAPSHOT</jflux.version>
@@ -143,7 +143,7 @@
                 </dependency>
                 <dependency>
                     <groupId>org.appdapter</groupId>
-                    <artifactId>ext.bundle.apache_qpid_010</artifactId>
+                    <artifactId>ext.bundle.apache_qpid_032</artifactId>
                     <version>${appdapter.msg.version}</version>
                 </dependency>
                 <dependency>

@@ -14,7 +14,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.appdapter</groupId>
-			<artifactId>ext.bundle.apache_qpid_010</artifactId>
+			<artifactId>ext.bundle.apache_qpid_032</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.osgi</groupId>
