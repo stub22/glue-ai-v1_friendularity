@@ -87,7 +87,7 @@ class ThingActionFlow extends VarargsLogging {
 		val postSendMsgID = msgToSend.getJMSMessageID
 		val postSendStamp : Long = msgToSend.getJMSTimestamp() // This is the java-time that the message was sent.
 		val postSendSysTimeMsec = System.currentTimeMillis
-		info3("================= Message was sent, the ID is now={} and Timestamp={}, now={}", postSendMsgID, 
+		info3("================= Message was sent,  ID={} post-sent-stamp={}, now={}", postSendMsgID, 
 				postSendStamp : java.lang.Long, postSendSysTimeMsec : java.lang.Long)
 
 		info0("================= Receiving BTAS-ObjMessage")

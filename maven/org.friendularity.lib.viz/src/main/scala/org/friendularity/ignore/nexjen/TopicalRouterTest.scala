@@ -79,6 +79,7 @@ object QPid_010_Names {
 
 }
 
+
 class QPid_010_NameManager extends VarargsLogging {
 	def makeJndiPropsForTopicSetup(topicExchangeNames : List[String]) : Properties = {
 		// properties.load(this.getClass().getResourceAsStream("hello.properties"));
@@ -96,14 +97,47 @@ class QPid_010_NameManager extends VarargsLogging {
 		jndiProps
 	}
 }
+object QPid_032_Names {
+
+	val qpConnFactoryKey_tail = "qpidConnectionfactory";
+	val qpConnFactoryKey_full = "connectionfactory" + "." + qpConnFactoryKey_tail;
+	// Update for 0.32:  Changed to use virtual host 'default' instead of 'test'.
+	// (which should give same result as omitting virutalhost).
+	// Determined the name 'default' by using broker web mgmt interface.  
+	val qpConnFactoryURL = "amqp://guest:guest@clientid/default?brokerlist='tcp://localhost:5672'"
+	val jndiNamingFactory_key = "java.naming.factory.initial"
+	val jndiNamingFactory_val =  "org.apache.qpid.jndi.PropertiesFileInitialContextFactory"
+	val destName_key_prefix =  "destination";
+
+	val topicExchangeDestName_value = "amq.topic";		
+}
+class QPid_032_NameManager extends VarargsLogging {
+	def makeJndiPropsForTopicSetup(topicExchangeNames : List[String]) : Properties = {
+		// properties.load(this.getClass().getResourceAsStream("hello.properties"));
+		val jndiProps = new Properties();
+		jndiProps.put(QPid_010_Names.jndiNamingFactory_key, QPid_032_Names.jndiNamingFactory_val)
+		// connectionfactory.[jndiname] = [ConnectionURL]
+		jndiProps.put(QPid_010_Names.qpConnFactoryKey_full, QPid_032_Names.qpConnFactoryURL); 
+		// "connectionfactory.qpidConnectionfactory", "amqp://guest:guest@clientid/test?brokerlist='tcp://localhost:5672'")
+		for (topicExchName <- topicExchangeNames) {
+			// Register an AMQP destination in JNDI
+			// destination.[jniName] = [Address Format]
+			val destName_full = QPid_032_Names.destName_key_prefix + "." + topicExchName
+			jndiProps.put(destName_full, QPid_032_Names.topicExchangeDestName_value)
+		}
+		jndiProps
+	}
+}
 class QPidConnector(val myJndiProps : Properties) extends VarargsLogging  {
 	// The supplied jndiProps are used to define the available destinations, so this current impl
 	// does not support dynamically adding topics after the QPidConnector is created.
 
 	val myJndiCtx = new InitialContext(myJndiProps);
 	
-	val myJmsConn : javax.jms.Connection = makeConn();
-	def makeConn() : javax.jms.Connection = {
+	// val myJmsConn : javax.jms.Connection = makeConn_010();
+	val myJmsConn : javax.jms.Connection = makeConn_032();
+	
+	def makeConn_010() : javax.jms.Connection = {
 		info0("================= Creating InitialContext")
 		
 		val connFactoryKeyTail = QPid_010_Names.qpConnFactoryKey_tail
@@ -113,6 +147,16 @@ class QPidConnector(val myJndiProps : Properties) extends VarargsLogging  {
 		val jmsConn  = jmsConnFactory.createConnection();
 		jmsConn
 	}
+	def makeConn_032() : javax.jms.Connection = {
+		info0("================= Creating InitialContext")
+		
+		val connFactoryKeyTail = QPid_032_Names.qpConnFactoryKey_tail
+		info1("================= Looking up ConnFactory at key_tail: {}", connFactoryKeyTail)
+		val jmsConnFactory = myJndiCtx.lookup(connFactoryKeyTail).asInstanceOf[ConnectionFactory];
+		info0("================= Creating Connection")
+		val jmsConn  = jmsConnFactory.createConnection();
+		jmsConn
+	}	
 	def startConn() = {
 		info1("================= Starting Connection : {}", myJmsConn)
 		myJmsConn.start();		
@@ -147,7 +191,8 @@ class QpidHelloWorld extends VarargsLogging {
 			
 			val topicExchangeNames = List(topic001_name_tail, topic002_name_tail)
 			
-			val nameMgr = new QPid_010_NameManager()
+			// val nameMgr = new QPid_010_NameManager()
+			val nameMgr = new QPid_032_NameManager()
 			
 			val jndiProps = nameMgr.makeJndiPropsForTopicSetup(topicExchangeNames)
 
