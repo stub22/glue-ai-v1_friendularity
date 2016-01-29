@@ -15,9 +15,16 @@
  */
 package org.friendularity.model.test;
 
+import com.jme3.animation.AnimChannel;
+import com.jme3.animation.AnimControl;
+import com.jme3.animation.AnimEventListener;
+import com.jme3.animation.LoopMode;
 import com.jme3.app.SimpleApplication;
 import com.jme3.asset.plugins.FileLocator;
 import com.jme3.font.BitmapText;
+import com.jme3.input.KeyInput;
+import com.jme3.input.controls.ActionListener;
+import com.jme3.input.controls.KeyTrigger;
 import com.jme3.light.DirectionalLight;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
@@ -33,6 +40,9 @@ public class ModelViewer extends SimpleApplication {
 	private static final String HUD_MESSAGE = "Use Mouse and W, A, S, D to move camera.\nPress Esc to exit and load new model.";
 	private String modelPath;
 	private File modelFile;
+	
+	private AnimChannel channel;
+	private AnimControl control;
 
 	ModelViewer(File file) {
 		modelFile = file;
@@ -72,8 +82,26 @@ public class ModelViewer extends SimpleApplication {
 		infoText.setText(HUD_MESSAGE);
 		infoText.setLocalTranslation(425, infoText.getLineHeight()*2, 0); // position
 		guiNode.attachChild(infoText);
+		// Set up animation player
+		control = testModel.getControl(AnimControl.class);
+		channel = control.createChannel();
+		initKeys();
 	}
 
+	private void initKeys() {
+		inputManager.addMapping("PlayAnim", new KeyTrigger(KeyInput.KEY_SPACE));
+		inputManager.addListener(actionListener, "PlayAnim");
+	}
+	private ActionListener actionListener = new ActionListener() {
+
+		public void onAction(String name, boolean keyPressed, float tpf) {
+			if (name.equals("PlayAnim") && !keyPressed) {
+				channel.setAnim("clip1", 0.50f);
+				channel.setLoopMode(LoopMode.Loop);
+			}
+		}
+	};
+	
 	@Override
 	public void destroy() {
 		super.destroy();
