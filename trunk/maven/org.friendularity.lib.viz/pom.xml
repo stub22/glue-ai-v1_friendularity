@@ -29,6 +29,15 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>com.typesafe.akka</groupId>
+			<artifactId>akka-osgi_2.10</artifactId>	
+			<!-- For OSGi use above, non-OSGi use below.   Last version of akka to support java 6-7 is 2.3.14.
+			<artifactId>akka-actor_2.10</artifactId>
+			--> 
+			<version>2.3.14</version>
+		</dependency>
+
 	</dependencies>
 	<build>	
 		<plugins>

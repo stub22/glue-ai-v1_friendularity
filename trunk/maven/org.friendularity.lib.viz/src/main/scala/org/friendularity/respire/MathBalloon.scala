@@ -23,12 +23,12 @@ import org.appdapter.gui.demo.DemoBrowser;
 object MathBalloon extends BasicDebugger {
 	def main(args: Array[String]) : Unit = {
 
-		// These two lines activate Log4J without requiring a log4j.properties file.  
+		// These two lines activate Log4J (at max verbosity!) without requiring a log4j.properties file.  
 		// However, when a log4j.properties file is present, these commands should not be used.
 		org.apache.log4j.BasicConfigurator.configure();
 		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.ALL);
 		
-		val extraDemos = false
+		val extraDemos = true
 		val demoBrowser = false
 		if (demoBrowser) {
 
