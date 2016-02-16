@@ -46,10 +46,10 @@ object StructTest  extends VarargsLogging {
 		val aodf2 = new	AODFactory(2)
 		val aodf1 = new	AODFactory(1)
 		
-		// All fields are of value type: double[1], because that is what the factory knows how to work with.
+		// Here, all fields are of value type: double[1], because that is what the factory knows how to work with.
 		val bs1 = new BasicStruct[String, ArrayOfDoubles](aodf1)
 		
-		// All fields are of value type: double[2]
+		// Here, all fields are instead of value type: double[2]
 		val bs2 = new BasicStruct[String, ArrayOfDoubles](aodf2)
 		
 		val inDat1 = aodf1.make()
