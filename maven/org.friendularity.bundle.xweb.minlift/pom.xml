@@ -25,7 +25,7 @@
 		-->
 		<dependency>
 			<groupId>org.cogchar</groupId>
-			<artifactId>ext.bundle.lift</artifactId>
+			<artifactId>ext.bundle.liftweb_v263_s210</artifactId>
 		</dependency>		
         <dependency>
             <groupId>org.osgi</groupId>
