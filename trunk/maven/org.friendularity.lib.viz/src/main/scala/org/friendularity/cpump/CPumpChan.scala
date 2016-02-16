@@ -23,7 +23,8 @@ trait CPumpChan {
 }
 // chanListen instances are supplied from user code, to handle received msgs.
 trait CPChanListen[MsgKind <: CPumpMsg] {
-	
+	// Magic challenge is to find/select/make the correct CPumpAdptr to route each msg.
+	// A simple listen chan could be simply a list of adptrs to try.
 }
 // chanPost instances are supplied by pump code, to allow sending messages.
 // Generally invoking a msg post.
