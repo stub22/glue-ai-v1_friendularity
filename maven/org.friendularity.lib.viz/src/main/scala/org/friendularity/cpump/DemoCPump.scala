@@ -26,6 +26,9 @@ import akka.actor.Terminated
 import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.core.name.{FreeIdent, Ident}
 
+case class DummyMsg(msg : String) extends CPumpMsg {
+	
+}
 object DemoCPump extends BasicDebugger {
 	def main(args: Array[String]) : Unit = {
 
@@ -39,6 +42,8 @@ object DemoCPump extends BasicDebugger {
 		val cpumpActorRef : ActorRef = myDCPM.initSystemPumpAndTerm
 		// Typical result dumps as   Actor[akka://demoCPAS/user/demoCPump01#618243248]
 		getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^  DemoCPump main() - got initial cpumpActorRef: {}", cpumpActorRef);
+		
+		
 		getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^  DemoCPump main().END");	
 	}
 }
