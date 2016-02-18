@@ -27,6 +27,16 @@
 			<groupId>org.cogchar</groupId>
 			<artifactId>ext.bundle.liftweb_v263_s210</artifactId>
 		</dependency>		
+		<!-- Trying this to get [servicemix.bundles].javax.mail   also need com.ibm.icu.lang - both may be picked
+		up by ext.bundle.jena.   Also want org.appdapter.bind.math.jscience.function
+		--> 
+		<dependency>
+			<groupId>org.cogchar</groupId>
+			<artifactId>org.cogchar.bundle.core</artifactId>
+			<version>${cogchar.version}</version>
+		</dependency>
+		
+		
         <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.core</artifactId>

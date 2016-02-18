@@ -17,5 +17,26 @@
 package org.friendularity.cpump
 
 trait CPumpCtx {
+	// PostChans are mainly just for bookeeping and reply/receipt routing, but a pumpCtx can also append 
+	// other tracking state as needed.
+	// The PumpCtx is responsible for mapping any input msg to a set of possible listeners.
+	// Many/all of the listers may actually choose to ignore the message, and it is acceptable
+	// (if not always efficient) for Ctx to return all channels, if it has no heuristic filter.
+	protected def findMsgListenChans[MK <: CPumpMsg](postChan : CPChanPost[MK], postedMsg : MK) : Traversable[CPChanListen[MK]]
+	
 
+	def postAndForget[MK <: CPumpMsg](postChan : CPChanPost[MK], postedMsg : MK) : Unit = {
+		// enq for mapping, or map then enq for each listener
+		// forget=> we don't care about receiving or tracking any of the results (immediate or eventual).
+	}
+
+}
+
+trait EZCPumpCtx extends CPumpCtx{
+	override def postAndForget[MK <: CPumpMsg](postChan : CPChanPost[MK], postedMsg : MK) : Unit = {
+		val listenChans = findMsgListenChans(postChan, postedMsg)
+		for (lc <- listenChans) {
+			
+		}
+	}
 }

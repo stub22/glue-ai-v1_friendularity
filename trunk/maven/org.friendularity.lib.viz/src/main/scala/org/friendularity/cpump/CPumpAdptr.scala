@@ -36,4 +36,8 @@ trait CPumpAdptr[InMsgType <: CPumpMsg, OutMsgType <: CPumpMsg, CtxType <: CPump
 	def processMsg(inMsg : InMsgType, pumpCtx : CtxType) : Traversable[OutMsgType] = {
 		Nil
 	}
+	
+	def getInMsgType : Class[InMsgType]
+	def getOutMsgType : Class[OutMsgType]
+	def getCtxType : Class[CtxType]
 }
