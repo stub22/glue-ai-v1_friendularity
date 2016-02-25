@@ -16,6 +16,8 @@
 
 package org.friendularity.cpump
 
+import org.appdapter.core.name.{FreeIdent, Ident}
+
 trait CPumpCtx {
 	// PostChans are mainly just for bookeeping and reply/receipt routing, but a pumpCtx can also append 
 	// other tracking state as needed.
@@ -38,5 +40,38 @@ trait EZCPumpCtx extends CPumpCtx{
 		for (lc <- listenChans) {
 			
 		}
+	}
+}
+
+class DullPumpCtx extends EZCPumpCtx {
+	val myChans = new scala.collection.mutable.HashMap[Ident, CPumpChan[DullPumpCtx]] // note outer-variance
+	
+	protected def allListenChans : Traversable[CPChanListen[_ <: CPumpMsg]] = {
+		myChans.values.filter(c =>{ c match {
+			case listenChan : CPChanListen [_] => true // [_ <: CPumpMsg]
+			case _ => false
+		}}).map(_.asInstanceOf[CPChanListen[_ <: CPumpMsg]]).toList
+	}
+	override protected def findMsgListenChans[MK <: CPumpMsg](postChan : CPChanPost[MK], postedMsg : MK) : Traversable[CPChanListen[MK]] = {
+		val allLCs = allListenChans
+		allLCs.filter(_.interestedIn(postChan, postedMsg))
+		Nil
+	}
+	// 
+	def makeOnewayListenChan[MK <: CPumpMsg](chanID : Ident, msgClz : Class[MK], 
+				adoptrs : Traversable[CPumpAdptr[MK, DullPumpCtx, CPumpMsg]]) : CPChanListen[MK] = { 
+// 				adoptrs : Traversable[CPumpAdptr[MK, _ >: DullPumpCtx,  _]]) : CPChanListen[MK] = { 
+
+		val listenChan = new EZListenChan[MK, DullPumpCtx, CPumpMsg](chanID, this, adoptrs)
+		myChans.put(chanID, listenChan)
+		// new EZListenChan[MK, _ >: DullPumpCtx, _ <: CPumpMsg](chanID, this, adoptrs)
+		// EZListenChan[InMsgKind <: CPumpMsg, CtxType <: CPumpCtx, OutBound <: CPumpMsg](chanID : Ident, ctx : CtxType, 
+			// myAdoptrs : Traversable[CPumpAdptr[InMsgKind, _, CtxType]]
+		listenChan
+	}
+	def makeOnewayPostChan[MK <: CPumpMsg](chanID : Ident, msgClz : Class[MK]) : CPChanPost[MK] = {
+		val postChan = new EZPostChan[MK, DullPumpCtx](chanID, this)
+		myChans.put(chanID, postChan)
+		postChan
 	}
 }
