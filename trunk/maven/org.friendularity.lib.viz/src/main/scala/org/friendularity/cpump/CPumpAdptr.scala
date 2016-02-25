@@ -23,7 +23,7 @@ trait WritableRecord
 trait WrittenResult
 
 
-trait CPumpAdptr[InMsgType <: CPumpMsg, OutMsgType <: CPumpMsg, CtxType <: CPumpCtx] {
+trait CPumpAdptr[InMsgType <: CPumpMsg, CtxType <: CPumpCtx, OutMsgType <: CPumpMsg] {
 	// Nonempty result collection => shortcut succeeded
 	protected def	attemptShortcut(inMsg : InMsgType, pumpCtx : CtxType) : Traversable[OutMsgType]
 	

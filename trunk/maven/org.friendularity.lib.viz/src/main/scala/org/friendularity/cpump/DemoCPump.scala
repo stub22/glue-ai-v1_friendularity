@@ -28,7 +28,7 @@ import org.appdapter.core.name.{FreeIdent, Ident}
 
 case class DummyMsg(msg : String) extends CPumpMsg {
 	
-}
+} 
 object DemoCPump extends BasicDebugger {
 	def main(args: Array[String]) : Unit = {
 
@@ -42,7 +42,9 @@ object DemoCPump extends BasicDebugger {
 		val cpumpActorRef : ActorRef = myDCPM.initSystemPumpAndTerm
 		// Typical result dumps as   Actor[akka://demoCPAS/user/demoCPump01#618243248]
 		getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^  DemoCPump main() - got initial cpumpActorRef: {}", cpumpActorRef);
+		val adm = new DummyMsg("First contents")
 		
+		cpumpActorRef ! adm
 		
 		getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^  DemoCPump main().END");	
 	}
@@ -77,14 +79,36 @@ class DemoCPumpMgr {
 case class WhoToGreet(who: String)
 case class Greeting(message: String)
 case class CheckGreeting // This is an object called "Greeting" in HelloWorld
+
+
 class DemoCPumpActor extends Actor with ActorLogging {
+	
+	lazy val myCPumpCtx = new DullPumpCtx () 
+	val postChanID : Ident = null
+	val listenChanID : Ident = null
+	val postChan = myCPumpCtx.makeOnewayPostChan(postChanID, classOf[DummyMsg])
+	val listenChan = myCPumpCtx.makeOnewayListenChan(postChanID, classOf[DummyMsg], Nil)
   var greeting = ""
 
   def receive = {
 	  // s"   syntax added in Scala 2.10.    http://docs.scala-lang.org/overviews/core/string-interpolation.html
     case WhoToGreet(who) => greeting = s"hello, $who"
     case CheckGreeting   => sender ! Greeting(greeting) // Send the current greeting back to the sender
+	case dmsg: DummyMsg => myCPumpCtx.postAndForget(postChan, dmsg)
   }
+}
+
+abstract class DMAdptrBase extends CPumpAdptr[DummyMsg, DullPumpCtx, DummyMsg] {
+	override def getCtxType: Class[DullPumpCtx] = classOf[DullPumpCtx]
+	override def getInMsgType: Class[DummyMsg] = classOf[DummyMsg]
+	override def getOutMsgType: Class[DummyMsg] = classOf[DummyMsg]
+	override protected def attemptShortcut(inMsg: DummyMsg, pumpCtx: DullPumpCtx): Traversable[DummyMsg] = ???	
+	override protected def mapIn(inMsg: DummyMsg,ctx: DullPumpCtx): Traversable[WritableRecord] = ???
+	override protected def mapOut(inMsg: DummyMsg,wr: WrittenResult,pumpCtx: DullPumpCtx): Traversable[DummyMsg] = ???
+	override protected def write(rec: WritableRecord,wc: WritingCtx): WrittenResult = ???	
+	override def processMsg(inMsg : DummyMsg, pumpCtx : DullPumpCtx) : Traversable[DummyMsg] = {
+		Nil
+	}
 }
 // Attaches to akka ActorSystem
 class MsgPumpImpl {
