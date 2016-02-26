@@ -24,6 +24,7 @@ import akka.actor.ActorLogging
 import akka.actor.Terminated
 
 import org.appdapter.core.log.BasicDebugger;
+import org.appdapter.fancy.log.VarargsLogging;
 import org.appdapter.core.name.{FreeIdent, Ident}
 
 case class DummyMsg(msg : String) extends CPumpMsg {
@@ -34,8 +35,8 @@ object DemoCPump extends BasicDebugger {
 
 		// These two lines activate Log4J (at max verbosity!) without requiring a log4j.properties file.  
 		// However, when a log4j.properties file is present, these commands should not be used.
-		org.apache.log4j.BasicConfigurator.configure();
-		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.ALL);
+	//	org.apache.log4j.BasicConfigurator.configure();
+	//	org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.ALL);
 		
 		getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^  DemoCPump main().START");
 		val myDCPM = new DemoCPumpMgr
@@ -78,7 +79,7 @@ class DemoCPumpMgr {
 }
 case class WhoToGreet(who: String)
 case class Greeting(message: String)
-case class CheckGreeting // This is an object called "Greeting" in HelloWorld
+case class CheckGreeting // This is an object called "Greeting" in akka-HelloWorld
 
 
 class DemoCPumpActor extends Actor with ActorLogging {
@@ -98,7 +99,7 @@ class DemoCPumpActor extends Actor with ActorLogging {
   }
 }
 
-abstract class DMAdptrBase extends CPumpAdptr[DummyMsg, DullPumpCtx, DummyMsg] {
+abstract class DMAdptrBase extends CPumpAdptr[DummyMsg, DullPumpCtx, DummyMsg] with VarargsLogging {
 	override def getCtxType: Class[DullPumpCtx] = classOf[DullPumpCtx]
 	override def getInMsgType: Class[DummyMsg] = classOf[DummyMsg]
 	override def getOutMsgType: Class[DummyMsg] = classOf[DummyMsg]
@@ -107,6 +108,7 @@ abstract class DMAdptrBase extends CPumpAdptr[DummyMsg, DullPumpCtx, DummyMsg] {
 	override protected def mapOut(inMsg: DummyMsg,wr: WrittenResult,pumpCtx: DullPumpCtx): Traversable[DummyMsg] = ???
 	override protected def write(rec: WritableRecord,wc: WritingCtx): WrittenResult = ???	
 	override def processMsg(inMsg : DummyMsg, pumpCtx : DullPumpCtx) : Traversable[DummyMsg] = {
+		info1("DmAdptrBase.processMsg {}", inMsg)
 		Nil
 	}
 }
