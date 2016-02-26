@@ -37,6 +37,8 @@ object DemoCPump extends BasicDebugger {
 		// However, when a log4j.properties file is present, these commands should not be used.
 	//	org.apache.log4j.BasicConfigurator.configure();
 	//	org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.ALL);
+	//	
+	//	Appears that currently Akka is automatically initing logging with our log4j.properties.
 		
 		getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^  DemoCPump main().START");
 		val myDCPM = new DemoCPumpMgr
@@ -88,7 +90,11 @@ class DemoCPumpActor extends Actor with ActorLogging {
 	val postChanID : Ident = null
 	val listenChanID : Ident = null
 	val postChan = myCPumpCtx.makeOnewayPostChan(postChanID, classOf[DummyMsg])
-	val listenChan = myCPumpCtx.makeOnewayListenChan(postChanID, classOf[DummyMsg], Nil)
+	val adp1 = new DMAdptrBase
+	val adp2 = new DMAdptrBase
+	val adptrs = List[CPumpAdptr[DummyMsg, DullPumpCtx, CPumpMsg]](adp1, adp2)
+	val inMsgClz = classOf[DummyMsg]
+	val listenChan = myCPumpCtx.makeOnewayListenChan(listenChanID, inMsgClz, adptrs)
   var greeting = ""
 
   def receive = {
@@ -99,23 +105,20 @@ class DemoCPumpActor extends Actor with ActorLogging {
   }
 }
 
-abstract class DMAdptrBase extends CPumpAdptr[DummyMsg, DullPumpCtx, DummyMsg] with VarargsLogging {
+class DMAdptrBase extends CPumpAdptr[DummyMsg, DullPumpCtx, DummyMsg] with VarargsLogging {
 	override def getCtxType: Class[DullPumpCtx] = classOf[DullPumpCtx]
 	override def getInMsgType: Class[DummyMsg] = classOf[DummyMsg]
 	override def getOutMsgType: Class[DummyMsg] = classOf[DummyMsg]
-	override protected def attemptShortcut(inMsg: DummyMsg, pumpCtx: DullPumpCtx): Traversable[DummyMsg] = ???	
-	override protected def mapIn(inMsg: DummyMsg,ctx: DullPumpCtx): Traversable[WritableRecord] = ???
-	override protected def mapOut(inMsg: DummyMsg,wr: WrittenResult,pumpCtx: DullPumpCtx): Traversable[DummyMsg] = ???
-	override protected def write(rec: WritableRecord,wc: WritingCtx): WrittenResult = ???	
+	override protected def attemptShortcut(inMsg: DummyMsg, pumpCtx: DullPumpCtx): Traversable[DummyMsg] = Nil	
+	override protected def mapIn(inMsg: DummyMsg,ctx: DullPumpCtx): Traversable[WritableRecord] = Nil
+	override protected def mapOut(inMsg: DummyMsg,wr: WrittenResult,pumpCtx: DullPumpCtx): Traversable[DummyMsg] = Nil
+	override protected def write(rec: WritableRecord,wc: WritingCtx): WrittenResult = null	
 	override def processMsg(inMsg : DummyMsg, pumpCtx : DullPumpCtx) : Traversable[DummyMsg] = {
-		info1("DmAdptrBase.processMsg {}", inMsg)
+		info2("DmAdptrBase.processMsg msg={} adptr={}", inMsg, this)
 		Nil
 	}
 }
-// Attaches to akka ActorSystem
-class MsgPumpImpl {
-	
-}
+
 /*
  * Last version of akka to support Java6-7 (+ Scala 2.10) was Akka 2.3.14, released Sep 2015.
  * Latest 2.4.1 now requires Java8 + Scala 11.

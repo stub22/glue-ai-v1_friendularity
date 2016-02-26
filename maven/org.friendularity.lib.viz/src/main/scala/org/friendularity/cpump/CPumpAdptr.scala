@@ -22,8 +22,7 @@ trait WritableRecord
 
 trait WrittenResult
 
-
-trait CPumpAdptr[InMsgType <: CPumpMsg, CtxType <: CPumpCtx, OutMsgType <: CPumpMsg] {
+trait CPumpAdptr[-InMsgType <: CPumpMsg, -CtxType <: CPumpCtx, +OutMsgType <: CPumpMsg] {
 	// Nonempty result collection => shortcut succeeded
 	protected def	attemptShortcut(inMsg : InMsgType, pumpCtx : CtxType) : Traversable[OutMsgType]
 	
@@ -37,7 +36,13 @@ trait CPumpAdptr[InMsgType <: CPumpMsg, CtxType <: CPumpCtx, OutMsgType <: CPump
 		Nil
 	}
 	
-	def getInMsgType : Class[InMsgType]
-	def getOutMsgType : Class[OutMsgType]
-	def getCtxType : Class[CtxType]
+	def getInMsgType : Class[_ >: InMsgType]
+	def getOutMsgType : Class[_ <: OutMsgType]
+	def getCtxType : Class[_ >: CtxType]
 }
+// Destinations are 
+// 
+// 
+// https://twitter.github.io/scala_school/type-basics.html
+// "A function’s return value type is covariant. If you need a function that returns a Bird but have a function 
+// that returns a Chicken, that’s great.""

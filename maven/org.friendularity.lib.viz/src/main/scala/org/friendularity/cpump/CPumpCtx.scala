@@ -61,13 +61,13 @@ class DullPumpCtx extends EZCPumpCtx {
 	// 
 	def makeOnewayListenChan[MK <: CPumpMsg](chanID : Ident, msgClz : Class[MK], 
 				adoptrs : Traversable[CPumpAdptr[MK, DullPumpCtx, CPumpMsg]]) : CPChanListen[MK] = { 
-// 				adoptrs : Traversable[CPumpAdptr[MK, _ >: DullPumpCtx,  _]]) : CPChanListen[MK] = { 
+				// 		adoptrs : Traversable[CPumpAdptr[MK, _ >: DullPumpCtx,  _]]) : CPChanListen[MK] = { 
 
 		val listenChan = new EZListenChan[MK, DullPumpCtx, CPumpMsg](chanID, this, adoptrs)
 		myChans.put(chanID, listenChan)
 		// new EZListenChan[MK, _ >: DullPumpCtx, _ <: CPumpMsg](chanID, this, adoptrs)
 		// EZListenChan[InMsgKind <: CPumpMsg, CtxType <: CPumpCtx, OutBound <: CPumpMsg](chanID : Ident, ctx : CtxType, 
-			// myAdoptrs : Traversable[CPumpAdptr[InMsgKind, _, CtxType]]
+		// myAdoptrs : Traversable[CPumpAdptr[InMsgKind, _, CtxType]]
 		listenChan
 	}
 	def makeOnewayPostChan[MK <: CPumpMsg](chanID : Ident, msgClz : Class[MK]) : CPChanPost[MK] = {
