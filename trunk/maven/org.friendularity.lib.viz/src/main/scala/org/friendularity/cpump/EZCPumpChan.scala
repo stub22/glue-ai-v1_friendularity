@@ -17,9 +17,10 @@
 package org.friendularity.cpump
 
 import org.appdapter.core.name.{FreeIdent, Ident}
+import org.appdapter.fancy.log.VarargsLogging;
 
-
-class EZCPumpChan[CtxType <: CPumpCtx](myChanID : Ident, myCtx : CtxType) extends CPumpChan[CtxType] {
+class EZCPumpChan[CtxType <: CPumpCtx](myChanID : Ident, myCtx : CtxType) extends CPumpChan[CtxType] with VarargsLogging {
+	
 	override def getChanIdent : Ident = myChanID
 	
 	override protected def getCtx : CtxType = myCtx
@@ -43,15 +44,16 @@ class EZListenChan[InMsgKind <: CPumpMsg, CtxType <: CPumpCtx, OutBound <: CPump
 	protected def findAdptrs(mk: InMsgKind) : Traversable[CPumpAdptr[InMsgKind, CtxType, _ ]] = myAdoptrs
 	// , outMsgClz : classOf[OutMsgType]
 	// This form of processMsg allows for further narrowing of expected output type, by explicit signal class.
- 	def processMsg[OMK <: OutBound](inMsg : InMsgKind, outMsgClz:Class[OMK]) : Traversable[OMK] = {
+ 	protected def processRcvdMsg[OMK <: OutBound](inMsg : InMsgKind, outMsgClz:Class[OMK]) : Traversable[OMK] = {
+		info2("processRcvdMsg inMsg={} outMsgClz=", inMsg, outMsgClz)
 		val ctx : CtxType = getCtx
 		val adptrs = findAdptrs(inMsg)
 		val allOutputs : Traversable[_] = adptrs.flatMap(_.processMsg(inMsg, ctx))
-		Nil
+		allOutputs.map(_.asInstanceOf[OMK])
 		//  	processMsg(inMsg : InMsgType, pumpCtx : CtxType) : Traversable[OutMsgType]
 	}
 	override def enqueueAndForget(inMsg : InMsgKind) : Unit = {
-		processMsg(inMsg, null) // classOf[OutBound])
+		processRcvdMsg(inMsg, null) // classOf[OutBound])
 	}
 	override def interestedIn(postChan : CPChanPost[_], postedMsg : CPumpMsg) : Boolean = {
 		isUsualMsgType(postedMsg)

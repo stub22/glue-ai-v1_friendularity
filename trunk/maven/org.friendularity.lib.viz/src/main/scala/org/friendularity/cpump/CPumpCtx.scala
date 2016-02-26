@@ -17,6 +17,7 @@
 package org.friendularity.cpump
 
 import org.appdapter.core.name.{FreeIdent, Ident}
+import org.appdapter.fancy.log.VarargsLogging;
 
 trait CPumpCtx {
 	// PostChans are mainly just for bookeeping and reply/receipt routing, but a pumpCtx can also append 
@@ -34,11 +35,11 @@ trait CPumpCtx {
 
 }
 
-trait EZCPumpCtx extends CPumpCtx{
+trait EZCPumpCtx extends CPumpCtx with VarargsLogging {
 	override def postAndForget[MK <: CPumpMsg](postChan : CPChanPost[MK], postedMsg : MK) : Unit = {
-		val listenChans = findMsgListenChans(postChan, postedMsg)
+		val listenChans = findMsgListenChans(postChan, postedMsg)  // These chans have already indicated "interest"
 		for (lc <- listenChans) {
-			
+			lc.enqueueAndForget(postedMsg)
 		}
 	}
 }
@@ -55,7 +56,7 @@ class DullPumpCtx extends EZCPumpCtx {
 	override protected def findMsgListenChans[MK <: CPumpMsg](postChan : CPChanPost[MK], postedMsg : MK) : Traversable[CPChanListen[MK]] = {
 		val allLCs = allListenChans
 		allLCs.filter(_.interestedIn(postChan, postedMsg))
-		Nil
+		allLCs.map(_.asInstanceOf[CPChanListen[MK]])
 	}
 	// 
 	def makeOnewayListenChan[MK <: CPumpMsg](chanID : Ident, msgClz : Class[MK], 
