@@ -111,11 +111,11 @@ class DMAdptrBase extends CPumpAdptr[DummyMsg, DullPumpCtx, DummyMsg] with Varar
 	override def getOutMsgType: Class[DummyMsg] = classOf[DummyMsg]
 	override protected def attemptShortcut(inMsg: DummyMsg, pumpCtx: DullPumpCtx): Traversable[DummyMsg] = Nil	
 	override protected def mapIn(inMsg: DummyMsg,ctx: DullPumpCtx): Traversable[WritableRecord] = Nil
-	override protected def mapOut(inMsg: DummyMsg,wr: WrittenResult,pumpCtx: DullPumpCtx): Traversable[DummyMsg] = Nil
-	override protected def write(rec: WritableRecord,wc: WritingCtx): WrittenResult = null	
+	override protected def mapOut(inMsg: DummyMsg,wresults : Traversable[WrittenResult],pumpCtx: DullPumpCtx): Traversable[DummyMsg] = Nil
+	override protected def write(rec: WritableRecord, wc: WritingCtx): WrittenResult = null	
 	override def processMsg(inMsg : DummyMsg, pumpCtx : DullPumpCtx) : Traversable[DummyMsg] = {
-		info2("DmAdptrBase.processMsg msg={} adptr={}", inMsg, this)
-		Nil
+		info2("DMAdptrBase.processMsg msg={} adptr={}", inMsg, this)
+		super.processMsg(inMsg, pumpCtx)
 	}
 }
 
