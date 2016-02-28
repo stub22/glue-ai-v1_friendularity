@@ -28,7 +28,13 @@ trait WrittenResult {
 // effects should all be routed through the wc WritingCtx.
 // 
 // Adptr design is somewhat monadic:  See the flow in processMsg.
+// 
+// To process a specific kind of input message, one should extend this trait directly.
+// Note that we do allow for a further amount of data-switched type narrowing via the 
+// getUsualInMsgType method.
+// Because InMsgType is a contravariant parameter.
 trait CPumpAdptr[-InMsgType <: CPumpMsg, -CtxType <: CPumpCtx, +OutMsgType <: CPumpMsg] {
+	
 	// Nonempty result collection => shortcut succeeded
 	protected def	attemptShortcut(inMsg : InMsgType, pumpCtx : CtxType) : Traversable[OutMsgType]
 	
@@ -46,6 +52,7 @@ trait CPumpAdptr[-InMsgType <: CPumpMsg, -CtxType <: CPumpCtx, +OutMsgType <: CP
 	// mapOut does not get to see the WritableRecord; to find state it must sepatately use 
 	protected def mapOut(inMsg : InMsgType, wresults : Traversable[WrittenResult], pumpCtx : CtxType) : Traversable[OutMsgType]
 	
+	// Deeper impls of processMsg should be elaborations of this same workflow, but use more queueing.
 	def processMsg(inMsg : InMsgType, pumpCtx : CtxType) : Traversable[OutMsgType] = {
 		
 		val shortcutResults = attemptShortcut(inMsg, pumpCtx)
@@ -65,9 +72,39 @@ trait CPumpAdptr[-InMsgType <: CPumpMsg, -CtxType <: CPumpCtx, +OutMsgType <: CP
 		}
 	}
 	
-	def getInMsgType : Class[_ >: InMsgType]
-	def getOutMsgType : Class[_ <: OutMsgType]
-	def getCtxType : Class[_ >: CtxType]
+	// "Legal" runtime type queries
+	// Type boundsare  defined in compliance with variance annotations on this trait.
+	// That means 1) We can cleanly inheritance-type-specialize our adopters on one 
+	// important axis: by output msg type.
+	 
+	def getLegalOutMsgType : Class[_ <: OutMsgType]
+	
+	// 2) But We cannot really inheritance-type-specialize over InMsgType or CtxType, except
+	// by binding the trait type parameters on each subtype binding.
+	// 
+	// Thus these next two methodsare not highly expressive, but can be crudely useful, occasionally.
+	// Somewhat useful to verify context assumptions from outside; could support some auto re-writing.
+	
+	def getLegalInMsgType : Class[_ >: InMsgType] // Usually just returns InMsgType.  
+	
+	def getLegalCtxType : Class[_ >: CtxType] // Usually just returns CtxType.
+	
+	// Finally, we have this extra accessor to support user narrowing of input semantic-type through simple inheritance.
+	// For clz.data-matching, not java type-matching.  Typebound is in covariant dir.
+	// Usage:  Suppose we have a FruitPump[FOut extends FruitOut] extends CPumpAdptr[Fruit,FCtx,FOut].  
+	// (Now FruitPump is a one-parameter type, whereas CPumpAdptr is a 3 parameter type)
+	// Then suppose Apple extends Fruit, and AppleCoresAndPeels extends FruitOut.
+	// Then  we can have  ApplePump extends FruitPump[AppleCoresAndPeels] and overrides   getUsualInMsgType = classOf[Apple].
+	// All the working methods of ApplePump must still accept input messages of any kind of fruit, type-wise, 
+	// but semantically they can auto-exclude non-apples, possibly helped by this method.
+	
+	def getUsualInMsgType : Class[_ >: InMsgType]  // Could return any subtype or supertype of InMsgType
+	
+	// Can be used internally in subtypes, or from listenChan.interested
+	def matchesUsualInType (msg : InMsgType) : Boolean = {
+		val usualInType = getUsualInMsgType
+		usualInType.isInstance(msg)
+	}
 }
 // Destinations are 
 // 

@@ -18,19 +18,25 @@ package org.friendularity.cpump
 
 import org.appdapter.core.name.{FreeIdent, Ident}
 
+// All pump chans have a context and (one or more) URI=Ident
 trait CPumpChan[CtxType <: CPumpCtx] {
 	def getChanIdent : Ident
 	
 	protected def getCtx : CtxType
 }
-// chanListen instances are supplied from user code, to handle received msgs.
+// chanListen instances are supplied fr om user code, to handle received msgs.
+
 trait CPChanListen[InMsgKind <: CPumpMsg] {
 	// Magic challenge is to find/select/make the correct CPumpAdptr to route each msg.
 	// But a simple listen chan could be simply a list of adptrs to try.
 
-	// Use in cases where no result tracking needed - may shortcut past result-gathering setup.
+	// Use enqueueAndForget in cases where no result tracking needed - may shortcut past result-gathering setup.
 	def enqueueAndForget(inMsg : InMsgKind) : Unit 	
 	
+	// TODO:  Add methods/subtraits allowing for explicit results propagation back to message sender, 
+	// or to third party downstream.
+	
+	// Chan can override this to help routing flow:
 	def interestedIn(postChan : CPChanPost[_], postedMsg : CPumpMsg) : Boolean = false
 }
 
@@ -42,8 +48,8 @@ trait CPChanListen[InMsgKind <: CPumpMsg] {
 trait ExpectedResult {
 	
 }
-// chanPost instances are supplied by pump code, to allow sending messages.
-// Generally invoking a msg post.
+// chanPost instances are supplied by pump code, to allow sending messages, which
+// generally translates into storage writes, queued packets, or both.   
 // PostChan always has a URI, usually unique locally, but possibly shared globally.
 trait CPChanPost[MsgKind <: CPumpMsg] {
 	

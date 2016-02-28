@@ -49,16 +49,21 @@ object DemoCPump extends BasicDebugger {
 		
 		cpumpActorRef ! adm
 		
+		val pp = akka.actor.PoisonPill
+		
+		cpumpActorRef ! pp
+		
 		getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^  DemoCPump main().END");	
 	}
 }
-
+// This Actor watches the ref, and when it terminates, this actor sends .shutdown to the context actorSystem.
 class AkkaSysTerminator(ref: ActorRef) extends Actor with ActorLogging {
-	// Uh, the concept here seems this Actor, when terminated, will .shutdown the rest of context actorSystem.
+	
+	// "watch" registers us for lifecycle events on ref
     context watch ref
     def receive = {
       case Terminated(_) => {
-        log.info("{} has terminated, shutting down system", ref.path)
+        log.info("{} has terminated, so now we will down actor system", ref.path)
         context.system.shutdown()
 	  }
     }
@@ -106,9 +111,10 @@ class DemoCPumpActor extends Actor with ActorLogging {
 }
 
 class DMAdptrBase extends CPumpAdptr[DummyMsg, DullPumpCtx, DummyMsg] with VarargsLogging {
-	override def getCtxType: Class[DullPumpCtx] = classOf[DullPumpCtx]
-	override def getInMsgType: Class[DummyMsg] = classOf[DummyMsg]
-	override def getOutMsgType: Class[DummyMsg] = classOf[DummyMsg]
+	override def getLegalCtxType: Class[DullPumpCtx] = classOf[DullPumpCtx]
+	override def getLegalInMsgType: Class[DummyMsg] = classOf[DummyMsg]
+	override def getLegalOutMsgType: Class[DummyMsg] = classOf[DummyMsg]
+	override def getUsualInMsgType : Class[DummyMsg] = classOf[DummyMsg]
 	override protected def attemptShortcut(inMsg: DummyMsg, pumpCtx: DullPumpCtx): Traversable[DummyMsg] = Nil	
 	override protected def mapIn(inMsg: DummyMsg,ctx: DullPumpCtx): Traversable[WritableRecord] = Nil
 	override protected def mapOut(inMsg: DummyMsg,wresults : Traversable[WrittenResult],pumpCtx: DullPumpCtx): Traversable[DummyMsg] = Nil
