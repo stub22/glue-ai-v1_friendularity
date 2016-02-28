@@ -16,8 +16,18 @@
 
 package org.friendularity.cpump
 
+// Empty (so far) marker trait for all msgs.
 trait CPumpMsg {
 
 }
 
+// Contains regular blocks of data, either binary or text
+trait CPSignalMsg extends CPumpMsg {
+	
+}
+
+// Contains graph metadata, as text or tuples
+trait CPSymbolMsg extends CPumpMsg {
+	
+}
 
