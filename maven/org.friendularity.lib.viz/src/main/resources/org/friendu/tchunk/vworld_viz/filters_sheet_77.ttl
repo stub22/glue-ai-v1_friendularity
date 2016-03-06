@@ -1,0 +1,308 @@
+# modelName=http://www.cogchar.org/schema/scene/instance#filters_sheet_77
+# modelSize=171
+
+
+
+
+@prefix csi:     <http://www.cogchar.org/schema/scene/instance#> .
+@prefix edt:     <http://www.cogchar.org/TODO/maybe_enhanced_demo/test_instance#> .
+@prefix ja:      <http://jena.hpl.hp.com/2005/11/Assembler#> .
+@prefix lua:     <http://www.cogchar.org/lift/user/action#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix tap:     <http://www.cogchar.org/TODO/tap#> .
+
+edt:AnswerPattern
+      rdfs:subClassOf ja:Object ;
+      rdf:type rdfs:Class ;
+      ja:assembler "org.cogchar.impl.thing.filters.ThingActionFilterBuilder" .
+
+<sc:BuildableThingActionFilterSpec>
+      rdfs:subClassOf ja:Object ;
+      rdf:type rdfs:Class ;
+      ja:assembler "org.cogchar.impl.thing.filters.ThingActionFilterBuilder" .
+
+edt:FlowActionPattern
+      rdfs:subClassOf ja:Object ;
+      rdf:type rdfs:Class ;
+      ja:assembler "org.cogchar.impl.thing.filters.ThingActionFilterBuilder" .
+
+csi:M1L2-S1B3-Filter-F1
+      rdf:type <sc:BuildableThingActionFilterSpec> ;
+      tap:hasParamName lua:action ;
+      tap:hasParamString "http://www.cogchar.org/lift/question_and_answer#M1L2-S1B2-QuestionResponseTA-Ans2" .
+
+csi:M1L2-S1B4-Filter-F1
+      rdf:type <sc:BuildableThingActionFilterSpec> ;
+      tap:hasParamName lua:action ;
+      tap:hasParamString "http://www.cogchar.org/lift/question_and_answer#M1L2-S1B2-QuestionResponseTA-Ans1" .
+
+csi:M1L2-S1B5-Filter-F1
+      rdf:type <sc:BuildableThingActionFilterSpec> ;
+      tap:hasParamName lua:action ;
+      tap:hasParamString "http://www.cogchar.org/lift/question_and_answer#M1L2-S1B2-QuestionResponseTA-Ans3" .
+
+csi:M1L2-S1B6-Filter-F1
+      rdf:type <sc:BuildableThingActionFilterSpec> ;
+      tap:hasParamName lua:action ;
+      tap:hasParamString "http://www.cogchar.org/lift/question_and_answer#M1L2-S1B2-QuestionResponseTA-Ans4" .
+
+csi:M1L5-S1B9-Filter-F1
+      rdf:type <sc:BuildableThingActionFilterSpec> ;
+      tap:hasParamName lua:action ;
+      tap:hasParamString "http://www.cogchar.org/lift/question_and_answer#M1L5-S1B7-VideoFinishedTA" .
+
+csi:M1L5-S1B12-Filter-F1
+      rdf:type <sc:BuildableThingActionFilterSpec> ;
+      tap:hasParamName lua:action ;
+      tap:hasParamString "http://www.cogchar.org/lift/question_and_answer#M1L5-S1B10-VideoFinishedTA" .
+
+csi:M1L5-S1B15-Filter-F1
+      rdf:type <sc:BuildableThingActionFilterSpec> ;
+      tap:hasParamName lua:action ;
+      tap:hasParamString "http://www.cogchar.org/lift/question_and_answer#M1L5-S1B13-VideoFinishedTA" .
+
+csi:M1L5-S1B20-Filter-F1
+      rdf:type <sc:BuildableThingActionFilterSpec> ;
+      tap:hasParamName lua:action ;
+      tap:hasParamString "http://www.cogchar.org/lift/question_and_answer#M1L5-S1B19-VideoFinishedTA" .
+
+csi:M1L5-S1B23-Filter-F1
+      rdf:type <sc:BuildableThingActionFilterSpec> ;
+      tap:hasParamName lua:action ;
+      tap:hasParamString "http://www.cogchar.org/lift/question_and_answer#M1L5-S1B21-QuestionResponseTA-Ans5" .
+
+csi:M1L5-S1B24-Filter-F1
+      rdf:type <sc:BuildableThingActionFilterSpec> ;
+      tap:hasParamName lua:action ;
+      tap:hasParamString "http://www.cogchar.org/lift/question_and_answer#M1L5-S1B22-QuestionResponseTA-Ans5" .
+
+csi:M1L5-S1B25-Filter-F1
+      rdf:type <sc:BuildableThingActionFilterSpec> ;
+      tap:hasParamName lua:action ;
+      tap:hasParamString "http://www.cogchar.org/lift/question_and_answer#M1L5-S1B22-QuestionResponseTA-Ans6" .
+
+csi:M1L5-S1B33-Filter-F1
+      rdf:type <sc:BuildableThingActionFilterSpec> ;
+      tap:hasParamName lua:action ;
+      tap:hasParamString "http://www.cogchar.org/lift/question_and_answer#M1L5-S1B30-VideoFinishedTA" .
+
+csi:M1L5-S1B40-Filter-F1
+      rdf:type <sc:BuildableThingActionFilterSpec> ;
+      tap:hasParamName lua:action ;
+      tap:hasParamString "http://www.cogchar.org/lift/question_and_answer#M1L5-S1B37-VideoFinishedTA" .
+
+csi:M1L5-S1B43-Filter-F1
+      rdf:type <sc:BuildableThingActionFilterSpec> ;
+      tap:hasParamName lua:action ;
+      tap:hasParamString "http://www.cogchar.org/lift/question_and_answer#M1L5-S1B38-QuestionResponseTA-Ans5" .
+
+csi:M1L5-S1B43-Filter-F2
+      rdf:type <sc:BuildableThingActionFilterSpec> ;
+      tap:hasParamName lua:action ;
+      tap:hasParamString "http://www.cogchar.org/lift/question_and_answer#M1L5-S1B41-QuestionResponseTA-Ans5" .
+
+csi:M1L5-S1B43-Filter-Merge
+      rdf:type <sc:BuildableThingActionFilterSpec> ;
+      tap:hasVerb csi:M1L5-S1B43-MergeTA .
+
+csi:M1L5-S1B44-Filter-F1
+      rdf:type <sc:BuildableThingActionFilterSpec> ;
+      tap:hasParamName lua:action ;
+      tap:hasParamString "http://www.cogchar.org/lift/question_and_answer#M1L5-S1B42-QuestionResponseTA-Ans5" .
+
+csi:M1L5-S1B44-Filter-F2
+      rdf:type <sc:BuildableThingActionFilterSpec> ;
+      tap:hasParamName lua:action ;
+      tap:hasParamString "http://www.cogchar.org/lift/question_and_answer#M1L5-S1B39-QuestionResponseTA-Ans5" .
+
+csi:M1L5-S1B44-Filter-Merge
+      rdf:type <sc:BuildableThingActionFilterSpec> ;
+      tap:hasVerb csi:M1L5-S1B44-MergeTA .
+
+csi:M1L5-S1B45-Filter-F1
+      rdf:type <sc:BuildableThingActionFilterSpec> ;
+      tap:hasParamName lua:action ;
+      tap:hasParamString "http://www.cogchar.org/lift/question_and_answer#M1L5-S1B42-QuestionResponseTA-Ans6" .
+
+csi:M1L5-S1B45-Filter-F2
+      rdf:type <sc:BuildableThingActionFilterSpec> ;
+      tap:hasParamName lua:action ;
+      tap:hasParamString "http://www.cogchar.org/lift/question_and_answer#M1L5-S1B39-QuestionResponseTA-Ans6" .
+
+csi:M1L5-S1B45-Filter-Merge
+      rdf:type <sc:BuildableThingActionFilterSpec> ;
+      tap:hasVerb csi:M1L5-S1B45-MergeTA .
+
+csi:M1L5-S1B51-Filter-F3
+      rdf:type <sc:BuildableThingActionFilterSpec> ;
+      tap:hasParamName lua:action ;
+      tap:hasParamString "http://www.cogchar.org/lift/question_and_answer#M1L5-S1B50-VideoFinishedTA" .
+
+csi:M1L5-S1B51-Filter-F4
+      rdf:type <sc:BuildableThingActionFilterSpec> ;
+      tap:hasParamName lua:action ;
+      tap:hasParamString "http://www.cogchar.org/lift/question_and_answer#M1L5-S1B35-VideoFinishedTA" .
+
+csi:M1L5-S1B51-Filter-Merge
+      rdf:type <sc:BuildableThingActionFilterSpec> ;
+      tap:hasVerb csi:M1L5-S1B51-MergeTA .
+
+csi:M1L5-S1B56-Filter-F1
+      rdf:type <sc:BuildableThingActionFilterSpec> ;
+      tap:hasParamName lua:action ;
+      tap:hasParamString "http://www.cogchar.org/lift/question_and_answer#M1L5-S1B55-VideoFinishedTA" .
+
+csi:M1L5-S1B59-Filter-F1
+      rdf:type <sc:BuildableThingActionFilterSpec> ;
+      tap:hasParamName lua:action ;
+      tap:hasParamString "http://www.cogchar.org/lift/question_and_answer#M1L5-S1B57-QuestionResponseTA-Ans6" .
+
+csi:M1L5-S1B60-Filter-F1
+      rdf:type <sc:BuildableThingActionFilterSpec> ;
+      tap:hasParamName lua:action ;
+      tap:hasParamString "http://www.cogchar.org/lift/question_and_answer#M1L5-S1B57-QuestionResponseTA-Ans5" .
+
+csi:M1L5-S1B61-Filter-F1
+      rdf:type <sc:BuildableThingActionFilterSpec> ;
+      tap:hasParamName lua:action ;
+      tap:hasParamString "http://www.cogchar.org/lift/question_and_answer#M1L5-S1B58-QuestionResponseTA-Ans5" .
+
+csi:M1L5-S1B70-Filter-F1
+      rdf:type <sc:BuildableThingActionFilterSpec> ;
+      tap:hasParamName lua:action ;
+      tap:hasParamString "http://www.cogchar.org/lift/question_and_answer#M1L5-S1B66-VideoFinishedTA" .
+
+csi:M1L5-S1B71-Filter-F1
+      rdf:type <sc:BuildableThingActionFilterSpec> ;
+      tap:hasParamName lua:action ;
+      tap:hasParamString "http://www.cogchar.org/lift/question_and_answer#M1L5-S1B69-VideoFinishedTA" .
+
+csi:M1L5-S1B76-Filter-F1
+      rdf:type <sc:BuildableThingActionFilterSpec> ;
+      tap:hasParamName lua:action ;
+      tap:hasParamString "http://www.cogchar.org/lift/question_and_answer#M1L5-S1B74-QuestionResponseTA-Ans5" .
+
+csi:M1L5-S1B76-Filter-F2
+      rdf:type <sc:BuildableThingActionFilterSpec> ;
+      tap:hasParamName lua:action ;
+      tap:hasParamString "http://www.cogchar.org/lift/question_and_answer#M1L5-S1B73-QuestionResponseTA-Ans5" .
+
+csi:M1L5-S1B76-Filter-Merge
+      rdf:type <sc:BuildableThingActionFilterSpec> ;
+      tap:hasVerb csi:M1L5-S1B76-MergeTA .
+
+csi:M1L5-S1B77-Filter-F1
+      rdf:type <sc:BuildableThingActionFilterSpec> ;
+      tap:hasParamName lua:action ;
+      tap:hasParamString "http://www.cogchar.org/lift/question_and_answer#M1L5-S1B72-QuestionResponseTA-Ans6" .
+
+csi:M1L5-S1B77-Filter-F2
+      rdf:type <sc:BuildableThingActionFilterSpec> ;
+      tap:hasParamName lua:action ;
+      tap:hasParamString "http://www.cogchar.org/lift/question_and_answer#M1L5-S1B75-QuestionResponseTA-Ans6" .
+
+csi:M1L5-S1B77-Filter-Merge
+      rdf:type <sc:BuildableThingActionFilterSpec> ;
+      tap:hasVerb csi:M1L5-S1B77-MergeTA .
+
+csi:M1L5-S1B78-Filter-F1
+      rdf:type <sc:BuildableThingActionFilterSpec> ;
+      tap:hasParamName lua:action ;
+      tap:hasParamString "http://www.cogchar.org/lift/question_and_answer#M1L5-S1B72-QuestionResponseTA-Ans5" .
+
+csi:M1L5-S1B78-Filter-F2
+      rdf:type <sc:BuildableThingActionFilterSpec> ;
+      tap:hasParamName lua:action ;
+      tap:hasParamString "http://www.cogchar.org/lift/question_and_answer#M1L5-S1B75-QuestionResponseTA-Ans5" .
+
+csi:M1L5-S1B78-Filter-Merge
+      rdf:type <sc:BuildableThingActionFilterSpec> ;
+      tap:hasVerb csi:M1L5-S1B78-MergeTA .
+
+csi:M1L5-S1B81-Filter-Merge
+      rdf:type <sc:BuildableThingActionFilterSpec> ;
+      tap:hasVerb csi:M1L5-S1B81-MergeTA .
+
+csi:M1L5-S1B86-Filter-F1
+      rdf:type <sc:BuildableThingActionFilterSpec> ;
+      tap:hasParamName lua:action ;
+      tap:hasParamString "http://www.cogchar.org/lift/question_and_answer#M1L5-S1B84-VideoFinishedTA" .
+
+csi:M1L5-S1B89-Filter-F1
+      rdf:type <sc:BuildableThingActionFilterSpec> ;
+      tap:hasParamName lua:action ;
+      tap:hasParamString "http://www.cogchar.org/lift/question_and_answer#M1L5-S1B87-QuestionResponseTA-Ans5" .
+
+csi:M1L5-S1B90-Filter-F1
+      rdf:type <sc:BuildableThingActionFilterSpec> ;
+      tap:hasParamName lua:action ;
+      tap:hasParamString "http://www.cogchar.org/lift/question_and_answer#M1L5-S1B87-QuestionResponseTA-Ans6" .
+
+csi:M1L5-S1B91-Filter-F1
+      rdf:type <sc:BuildableThingActionFilterSpec> ;
+      tap:hasParamName lua:action ;
+      tap:hasParamString "http://www.cogchar.org/lift/question_and_answer#M1L5-S1B88-QuestionResponseTA-Ans5" .
+
+csi:M1L5-S1B100-Filter-F1
+      rdf:type <sc:BuildableThingActionFilterSpec> ;
+      tap:hasParamName lua:action ;
+      tap:hasParamString "http://www.cogchar.org/lift/question_and_answer#M1L5-S1B96-VideoFinishedTA" .
+
+csi:M1L5-S1B101-Filter-F1
+      rdf:type <sc:BuildableThingActionFilterSpec> ;
+      tap:hasParamName lua:action ;
+      tap:hasParamString "http://www.cogchar.org/lift/question_and_answer#M1L5-S1B98-VideoFinishedTA" .
+
+csi:M1L5-S1B106-Filter-F1
+      rdf:type <sc:BuildableThingActionFilterSpec> ;
+      tap:hasParamName lua:action ;
+      tap:hasParamString "http://www.cogchar.org/lift/question_and_answer#M1L5-S1B103-QuestionResponseTA-Ans5" .
+
+csi:M1L5-S1B107-Filter-F1
+      rdf:type <sc:BuildableThingActionFilterSpec> ;
+      tap:hasParamName lua:action ;
+      tap:hasParamString "http://www.cogchar.org/lift/question_and_answer#M1L5-S1B105-QuestionResponseTA-Ans5" .
+
+csi:M1L5-S1B107-Filter-F2
+      rdf:type <sc:BuildableThingActionFilterSpec> ;
+      tap:hasParamName lua:action ;
+      tap:hasParamString "http://www.cogchar.org/lift/question_and_answer#M1L5-S1B102-QuestionResponseTA-Ans5" .
+
+csi:M1L5-S1B107-Filter-Merge
+      rdf:type <sc:BuildableThingActionFilterSpec> ;
+      tap:hasVerb csi:M1L5-S1B107-MergeTA .
+
+csi:M1L5-S1B108-Filter-F1
+      rdf:type <sc:BuildableThingActionFilterSpec> ;
+      tap:hasParamName lua:action ;
+      tap:hasParamString "http://www.cogchar.org/lift/question_and_answer#M1L5-S1B105-QuestionResponseTA-Ans6" .
+
+csi:M1L5-S1B108-Filter-F2
+      rdf:type <sc:BuildableThingActionFilterSpec> ;
+      tap:hasParamName lua:action ;
+      tap:hasParamString "http://www.cogchar.org/lift/question_and_answer#M1L5-S1B102-QuestionResponseTA-Ans6" .
+
+csi:M1L5-S1B108-Filter-Merge
+      rdf:type <sc:BuildableThingActionFilterSpec> ;
+      tap:hasVerb csi:M1L5-S1B108-MergeTA .
+
+csi:M1L5-S1B110-Filter-F1
+      rdf:type <sc:BuildableThingActionFilterSpec> ;
+      tap:hasParamName lua:action ;
+      tap:hasParamString "http://www.cogchar.org/lift/question_and_answer#M1L5-S1B104-QuestionResponseTA-Ans5" .
+
+csi:M1L5-S1B110-Filter-Merge
+      rdf:type <sc:BuildableThingActionFilterSpec> ;
+      tap:hasVerb csi:M1L5-S1B110-MergeTA .
+
+csi:M1L5-S1B111-Filter-Merge
+      rdf:type <sc:BuildableThingActionFilterSpec> ;
+      tap:hasVerb csi:M1L5-S1B111-MergeTA .
+
+edt:VideoFinishedPattern
+      rdfs:subClassOf ja:Object ;
+      rdf:type rdfs:Class ;
+      ja:assembler "org.cogchar.impl.thing.filters.ThingActionFilterBuilder" .
+
+

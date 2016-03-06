@@ -1,0 +1,172 @@
+# modelName=http://www.cogchar.org/schema/scene/instance#lifecycle_1
+# modelSize=93
+
+
+
+
+@prefix apsb:    <http://www.appdapter.org/schema/box#> .
+@prefix ja:      <http://jena.hpl.hp.com/2005/11/Assembler#> .
+@prefix jfrt:    <urn:ftd:jflux.org:2012:runtime#> .
+@prefix jfsd:    <http://www.jflux.org/service/dependency#> .
+@prefix jfsi:    <http://www.jflux.org/service/instance#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+
+jfsi:connection_dep
+      rdf:type jfrt:dependency ;
+      jfsd:countCardinality
+              "single" ;
+      jfsd:required "required" ;
+      apsb:serviceJavaFQCN
+              "javax.jms.Connection" ;
+      jfsd:updateStrategy "static" .
+
+jfsi:connection_lifecycle
+      rdf:type jfrt:lifecycle ;
+      jfsd:hasDependency jfsi:connection_spec_dep ;
+      apsb:lifecycleJavaFQCN
+              "org.friendularity.spec.connection.ConnectionLifecycle" ;
+      apsb:serviceJavaFQCN
+              "javax.jms.Connection" .
+
+jfsi:connection_spec_dep
+      rdf:type jfrt:dependency ;
+      jfsd:countCardinality
+              "single" ;
+      jfsd:required "required" ;
+      apsb:serviceJavaFQCN
+              "org.friendularity.spec.connection.ConnectionSpec" ;
+      jfsd:updateStrategy "static" .
+
+jfrt:dependency
+      rdfs:subClassOf ja:Object ;
+      rdf:type rdfs:Class ;
+      ja:assembler "org.friendularity.spec.connection.ServiceDependencySpecBuilder" .
+
+jfsi:destination_dep
+      rdf:type jfrt:dependency ;
+      jfsd:countCardinality
+              "single" ;
+      jfsd:required "required" ;
+      apsb:serviceJavaFQCN
+              "javax.jms.Destination" ;
+      jfsd:updateStrategy "dynamic" .
+
+jfsi:destination_lifecycle
+      rdf:type jfrt:lifecycle ;
+      jfsd:hasDependency jfsi:destination_spec_dep ;
+      apsb:lifecycleJavaFQCN
+              "org.friendularity.spec.connection.DestinationLifecycle" ;
+      apsb:serviceJavaFQCN
+              "javax.jms.Destination" .
+
+jfsi:destination_spec_dep
+      rdf:type jfrt:dependency ;
+      jfsd:countCardinality
+              "single" ;
+      jfsd:required "required" ;
+      apsb:serviceJavaFQCN
+              "org.friendularity.spec.connection.DestinationSpec" ;
+      jfsd:updateStrategy "static" .
+
+jfrt:lifecycle
+      rdfs:subClassOf ja:Object ;
+      rdf:type rdfs:Class ;
+      ja:assembler "org.friendularity.spec.connection.ServiceLifecycleSpecBuilder" .
+
+jfsi:msg_asyn_receiver_lifecycle
+      rdf:type jfrt:lifecycle ;
+      jfsd:hasDependency jfsi:session_dep , jfsi:destination_dep , jfsi:msg_config_dep ;
+      apsb:lifecycleJavaFQCN
+              "org.mechio.impl.messaging.lifecycle.MessageAsyncReceiverLifecycle" ;
+      apsb:serviceJavaFQCN
+              "org.mechio.impl.messaging.JMSAvroMessageAsyncReceiver" .
+
+jfsi:msg_config_dep
+      rdf:type jfrt:dependency ;
+      jfsd:countCardinality
+              "single" ;
+      jfsd:required "required" ;
+      apsb:serviceJavaFQCN
+              "org.jflux.api.core.config.Configuration" ;
+      jfsd:updateStrategy "dynamic" .
+
+jfsi:msg_sender_lifecycle
+      rdf:type jfrt:lifecycle ;
+      jfsd:hasDependency jfsi:session_dep , jfsi:destination_dep , jfsi:msg_config_dep ;
+      apsb:lifecycleJavaFQCN
+              "org.mechio.impl.messaging.lifecycle.MessageSenderLifecycle" ;
+      apsb:serviceJavaFQCN
+              "org.mechio.impl.messaging.JMSAvroMessageSender" .
+
+jfsi:remote_speech_service_lifecycle
+      rdf:type jfrt:lifecycle ;
+      jfsd:hasDependency jfsi:sp_config_sender_dep , jfsi:request_sender_dep , jfsi:svc_err_receiver_dep , jfsi:svc_cmd_sender_dep , jfsi:sp_event_receiver_dep ;
+      apsb:lifecycleJavaFQCN
+              "org.mechio.api.speech.lifecycle.RemoteSpeechServiceClientLifecycle" ;
+      apsb:serviceJavaFQCN
+              "org.mechio.api.speech.messaging.RemoteSpeechServiceClient" .
+
+jfsi:request_sender_dep
+      rdf:type jfrt:dependency ;
+      jfsd:countCardinality
+              "single" ;
+      jfsd:required "required" ;
+      apsb:serviceJavaFQCN
+              "org.mechio.api.messaging.MessageSender" ;
+      jfsd:updateStrategy "dynamic" .
+
+jfsi:session_dep
+      rdf:type jfrt:dependency ;
+      jfsd:countCardinality
+              "single" ;
+      jfsd:required "required" ;
+      apsb:serviceJavaFQCN
+              "javax.jms.Session" ;
+      jfsd:updateStrategy "dynamic" .
+
+jfsi:session_lifecycle
+      rdf:type jfrt:lifecycle ;
+      jfsd:hasDependency jfsi:connection_dep ;
+      apsb:lifecycleJavaFQCN
+              "org.friendularity.spec.connection.SessionLifecycle" ;
+      apsb:serviceJavaFQCN
+              "javax.jms.Session" .
+
+jfsi:sp_config_sender_dep
+      rdf:type jfrt:dependency ;
+      jfsd:countCardinality
+              "single" ;
+      jfsd:required "required" ;
+      apsb:serviceJavaFQCN
+              "org.mechio.api.messaging.MessageSender" ;
+      jfsd:updateStrategy "dynamic" .
+
+jfsi:sp_event_receiver_dep
+      rdf:type jfrt:dependency ;
+      jfsd:countCardinality
+              "single" ;
+      jfsd:required "required" ;
+      apsb:serviceJavaFQCN
+              "org.mechio.api.messaging.MessageAsyncReceiver" ;
+      jfsd:updateStrategy "dynamic" .
+
+jfsi:svc_cmd_sender_dep
+      rdf:type jfrt:dependency ;
+      jfsd:countCardinality
+              "single" ;
+      jfsd:required "required" ;
+      apsb:serviceJavaFQCN
+              "org.mechio.api.messaging.MessageSender" ;
+      jfsd:updateStrategy "dynamic" .
+
+jfsi:svc_err_receiver_dep
+      rdf:type jfrt:dependency ;
+      jfsd:countCardinality
+              "single" ;
+      jfsd:required "required" ;
+      apsb:serviceJavaFQCN
+              "org.mechio.api.messaging.MessageAsyncReceiver" ;
+      jfsd:updateStrategy "dynamic" .
+
+

@@ -1,0 +1,814 @@
+# modelName=http://www.cogchar.org/thing/action#taRuntime_forFiring_sheet_77
+# modelSize=553
+
+
+
+
+@prefix ccrt:    <urn:ftd:cogchar.org:2012:runtime#> .
+@prefix csi:     <http://www.cogchar.org/schema/scene/instance#> .
+@prefix ja:      <http://jena.hpl.hp.com/2005/11/Assembler#> .
+@prefix liftconfig:  <http://www.cogchar.org/lift/config/configroot#> .
+@prefix lua:     <http://www.cogchar.org/lift/user/action#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix ta:      <http://www.cogchar.org/thing/action#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+
+csi:Compound-Filter-Test-LifterTA-Indiv
+      rdf:type ccrt:ThingAction ;
+      ta:postTStampMsec 111111111 ;
+      ta:targetAction csi:Compound-Filter-Test-LifterTA-Param ;
+      ta:targetThing csi:Compound-Filter-Test-LifterTA-Indiv ;
+      ta:targetThingType ccrt:ThingAction ;
+      ta:verb csi:Compound-Filter-Test-LifterTA-Indiv .
+
+csi:Compound-Filter-Test-LifterTA-Param
+      rdf:type ccrt:ThingActionParam ;
+      ta:paramIdent lua:student ;
+      ta:paramIdentValue liftconfig:Compound-Filter-Test-Page-config .
+
+csi:Flow-TA-Test-FlowTA
+      rdf:type ccrt:ThingAction ;
+      ta:postTStampMsec 111111111 ;
+      ta:targetThing csi:Flow-TA-Test-FlowTA ;
+      ta:targetThingType ccrt:ThingAction ;
+      ta:verb csi:Flow-TA-Test-FlowTA .
+
+csi:Lifter-Blank-Page-Test-LifterTA-Indiv
+      rdf:type ccrt:ThingAction ;
+      ta:postTStampMsec 111111111 ;
+      ta:targetAction csi:Lifter-Blank-Page-Test-LifterTA-Param ;
+      ta:targetThing csi:Lifter-Blank-Page-Test-LifterTA-Indiv ;
+      ta:targetThingType ccrt:ThingAction ;
+      ta:verb csi:Lifter-Blank-Page-Test-LifterTA-Indiv .
+
+csi:Lifter-Blank-Page-Test-LifterTA-Param
+      rdf:type ccrt:ThingActionParam ;
+      ta:paramIdent lua:student ;
+      ta:paramIdentValue liftconfig:lifter-blank-page-config .
+
+csi:Lifter-Page-To-Facilitator-Test-LifterTA-Indiv
+      rdf:type ccrt:ThingAction ;
+      ta:postTStampMsec 111111111 ;
+      ta:targetAction csi:Lifter-Page-To-Facilitator-Test-LifterTA-Param ;
+      ta:targetThing csi:Lifter-Page-To-Facilitator-Test-LifterTA-Indiv ;
+      ta:targetThingType ccrt:ThingAction ;
+      ta:verb csi:Lifter-Page-To-Facilitator-Test-LifterTA-Indiv .
+
+csi:Lifter-Page-To-Facilitator-Test-LifterTA-Param
+      rdf:type ccrt:ThingActionParam ;
+      ta:paramIdent lua:facilitator ;
+      ta:paramIdentValue liftconfig:Facilitator-View-Test-Page-config .
+
+csi:Lifter-Page-To-Student-Test-LifterTA-Indiv
+      rdf:type ccrt:ThingAction ;
+      ta:postTStampMsec 111111111 ;
+      ta:targetAction csi:Lifter-Page-To-Student-Test-LifterTA-Param ;
+      ta:targetThing csi:Lifter-Page-To-Student-Test-LifterTA-Indiv ;
+      ta:targetThingType ccrt:ThingAction ;
+      ta:verb csi:Lifter-Page-To-Student-Test-LifterTA-Indiv .
+
+csi:Lifter-Page-To-Student-Test-LifterTA-Param
+      rdf:type ccrt:ThingActionParam ;
+      ta:paramIdent lua:student ;
+      ta:paramIdentValue liftconfig:Student-View-Test-Page-config .
+
+csi:Lifter-TA-Test-LifterTA-Indiv
+      rdf:type ccrt:ThingAction ;
+      ta:targetAction csi:Lifter-TA-Test-LifterTA-Param ;
+      ta:targetThing csi:Lifter-TA-Test-LifterTA-Indiv ;
+      ta:targetThingType ccrt:ThingAction ;
+      ta:verb csi:Lifter-TA-Test-LifterTA-Indiv .
+
+csi:Lifter-TA-Test-LifterTA-Param
+      rdf:type ccrt:ThingActionParam ;
+      ta:paramIdent lua:action ;
+      ta:paramIdentValue liftconfig:Lifter-TA-Test-Page-config .
+
+csi:Lifter-VideoDemo-Test-LifterTA-Indiv
+      rdf:type ccrt:ThingAction ;
+      ta:postTStampMsec 111111111 ;
+      ta:targetAction csi:Lifter-VideoDemo-Test-LifterTA-Param ;
+      ta:targetThing csi:Lifter-VideoDemo-Test-LifterTA-Indiv ;
+      ta:targetThingType ccrt:ThingAction ;
+      ta:verb csi:Lifter-VideoDemo-Test-LifterTA-Indiv .
+
+csi:Lifter-VideoDemo-Test-LifterTA-Param
+      rdf:type ccrt:ThingActionParam ;
+      ta:paramIdent lua:student ;
+      ta:paramIdentValue liftconfig:Lifter-VideoDemo-Test-Page-config .
+
+csi:Lifter-VideoPlay-Test-LifterTA-Indiv
+      rdf:type ccrt:ThingAction ;
+      ta:postTStampMsec 111111111 ;
+      ta:targetAction csi:Lifter-VideoPlay-Test-LifterTA-Param ;
+      ta:targetThing csi:Lifter-VideoPlay-Test-LifterTA-Indiv ;
+      ta:targetThingType ccrt:ThingAction ;
+      ta:verb csi:Lifter-VideoPlay-Test-LifterTA-Indiv .
+
+csi:Lifter-VideoPlay-Test-LifterTA-Param
+      rdf:type ccrt:ThingActionParam ;
+      ta:paramIdent lua:student ;
+      ta:paramIdentValue liftconfig:Lifter-VideoPlay-Test-Page-config .
+
+csi:M1L2-S1B2-AskQuestionTA-Indiv
+      rdf:type ccrt:ThingAction ;
+      ta:postTStampMsec 111111111 ;
+      ta:targetAction csi:M1L2-S1B2-AskQuestionTA-Param ;
+      ta:targetThing csi:M1L2-S1B2-AskQuestionTA-Indiv ;
+      ta:targetThingType ccrt:ThingAction ;
+      ta:verb csi:M1L2-S1B2-AskQuestionTA-Indiv .
+
+csi:M1L2-S1B2-AskQuestionTA-Param
+      rdf:type ccrt:ThingActionParam ;
+      ta:paramIdent lua:facilitator ;
+      ta:paramIdentValue liftconfig:Page_M1L2-S1B2_Video_config .
+
+csi:M1L5-S1B7VideoPlaybackTA-Indiv
+      rdf:type ccrt:ThingAction ;
+      ta:postTStampMsec 111111111 ;
+      ta:targetAction csi:M1L5-S1B7VideoPlaybackTA-Param ;
+      ta:targetThing csi:M1L5-S1B7VideoPlaybackTA-Indiv ;
+      ta:targetThingType ccrt:ThingAction ;
+      ta:verb csi:M1L5-S1B7VideoPlaybackTA-Indiv .
+
+csi:M1L5-S1B7VideoPlaybackTA-Param
+      rdf:type ccrt:ThingActionParam ;
+      ta:paramIdent lua:facilitator ;
+      ta:paramIdentValue liftconfig:Page_M1L5-S1B7_Video_config .
+
+csi:M1L5-S1B8VideoPlaybackTA-Indiv
+      rdf:type ccrt:ThingAction ;
+      ta:postTStampMsec 111111111 ;
+      ta:targetAction csi:M1L5-S1B8VideoPlaybackTA-Param ;
+      ta:targetThing csi:M1L5-S1B8VideoPlaybackTA-Indiv ;
+      ta:targetThingType ccrt:ThingAction ;
+      ta:verb csi:M1L5-S1B8VideoPlaybackTA-Indiv .
+
+csi:M1L5-S1B8VideoPlaybackTA-Param
+      rdf:type ccrt:ThingActionParam ;
+      ta:paramIdent lua:student ;
+      ta:paramIdentValue liftconfig:Page_M1L5-S1B8_Video_config .
+
+csi:M1L5-S1B10VideoPlaybackTA-Indiv
+      rdf:type ccrt:ThingAction ;
+      ta:postTStampMsec 111111111 ;
+      ta:targetAction csi:M1L5-S1B10VideoPlaybackTA-Param ;
+      ta:targetThing csi:M1L5-S1B10VideoPlaybackTA-Indiv ;
+      ta:targetThingType ccrt:ThingAction ;
+      ta:verb csi:M1L5-S1B10VideoPlaybackTA-Indiv .
+
+csi:M1L5-S1B10VideoPlaybackTA-Param
+      rdf:type ccrt:ThingActionParam ;
+      ta:paramIdent lua:facilitator ;
+      ta:paramIdentValue liftconfig:Page_M1L5-S1B10_Video_config .
+
+csi:M1L5-S1B11VideoPlaybackTA-Indiv
+      rdf:type ccrt:ThingAction ;
+      ta:postTStampMsec 111111111 ;
+      ta:targetAction csi:M1L5-S1B11VideoPlaybackTA-Param ;
+      ta:targetThing csi:M1L5-S1B11VideoPlaybackTA-Indiv ;
+      ta:targetThingType ccrt:ThingAction ;
+      ta:verb csi:M1L5-S1B11VideoPlaybackTA-Indiv .
+
+csi:M1L5-S1B11VideoPlaybackTA-Param
+      rdf:type ccrt:ThingActionParam ;
+      ta:paramIdent lua:student ;
+      ta:paramIdentValue liftconfig:Page_M1L5-S1B11_Video_config .
+
+csi:M1L5-S1B13VideoPlaybackTA-Indiv
+      rdf:type ccrt:ThingAction ;
+      ta:postTStampMsec 111111111 ;
+      ta:targetAction csi:M1L5-S1B13VideoPlaybackTA-Param ;
+      ta:targetThing csi:M1L5-S1B13VideoPlaybackTA-Indiv ;
+      ta:targetThingType ccrt:ThingAction ;
+      ta:verb csi:M1L5-S1B13VideoPlaybackTA-Indiv .
+
+csi:M1L5-S1B13VideoPlaybackTA-Param
+      rdf:type ccrt:ThingActionParam ;
+      ta:paramIdent lua:facilitator ;
+      ta:paramIdentValue liftconfig:Page_M1L5-S1B13_Video_config .
+
+csi:M1L5-S1B14VideoPlaybackTA-Indiv
+      rdf:type ccrt:ThingAction ;
+      ta:postTStampMsec 111111111 ;
+      ta:targetAction csi:M1L5-S1B14VideoPlaybackTA-Param ;
+      ta:targetThing csi:M1L5-S1B14VideoPlaybackTA-Indiv ;
+      ta:targetThingType ccrt:ThingAction ;
+      ta:verb csi:M1L5-S1B14VideoPlaybackTA-Indiv .
+
+csi:M1L5-S1B14VideoPlaybackTA-Param
+      rdf:type ccrt:ThingActionParam ;
+      ta:paramIdent lua:student ;
+      ta:paramIdentValue liftconfig:Page_M1L5-S1B14_Video_config .
+
+csi:M1L5-S1B18VideoPlaybackTA-Indiv
+      rdf:type ccrt:ThingAction ;
+      ta:postTStampMsec 111111111 ;
+      ta:targetAction csi:M1L5-S1B18VideoPlaybackTA-Param ;
+      ta:targetThing csi:M1L5-S1B18VideoPlaybackTA-Indiv ;
+      ta:targetThingType ccrt:ThingAction ;
+      ta:verb csi:M1L5-S1B18VideoPlaybackTA-Indiv .
+
+csi:M1L5-S1B18VideoPlaybackTA-Param
+      rdf:type ccrt:ThingActionParam ;
+      ta:paramIdent lua:student ;
+      ta:paramIdentValue liftconfig:Page_M1L5-S1B18_Video_config .
+
+csi:M1L5-S1B19VideoPlaybackTA-Indiv
+      rdf:type ccrt:ThingAction ;
+      ta:postTStampMsec 111111111 ;
+      ta:targetAction csi:M1L5-S1B19VideoPlaybackTA-Param ;
+      ta:targetThing csi:M1L5-S1B19VideoPlaybackTA-Indiv ;
+      ta:targetThingType ccrt:ThingAction ;
+      ta:verb csi:M1L5-S1B19VideoPlaybackTA-Indiv .
+
+csi:M1L5-S1B19VideoPlaybackTA-Param
+      rdf:type ccrt:ThingActionParam ;
+      ta:paramIdent lua:facilitator ;
+      ta:paramIdentValue liftconfig:Page_M1L5-S1B19_Video_config .
+
+csi:M1L5-S1B21-AskQuestionTA-Indiv
+      rdf:type ccrt:ThingAction ;
+      ta:postTStampMsec 111111111 ;
+      ta:targetAction csi:M1L5-S1B21-AskQuestionTA-Param ;
+      ta:targetThing csi:M1L5-S1B21-AskQuestionTA-Indiv ;
+      ta:targetThingType ccrt:ThingAction ;
+      ta:verb csi:M1L5-S1B21-AskQuestionTA-Indiv .
+
+csi:M1L5-S1B21-AskQuestionTA-Param
+      rdf:type ccrt:ThingActionParam ;
+      ta:paramIdent lua:facilitator ;
+      ta:paramIdentValue liftconfig:Page_M1L5-S1B21_Video_config .
+
+csi:M1L5-S1B22-AskQuestionTA-Indiv
+      rdf:type ccrt:ThingAction ;
+      ta:postTStampMsec 111111111 ;
+      ta:targetAction csi:M1L5-S1B22-AskQuestionTA-Param ;
+      ta:targetThing csi:M1L5-S1B22-AskQuestionTA-Indiv ;
+      ta:targetThingType ccrt:ThingAction ;
+      ta:verb csi:M1L5-S1B22-AskQuestionTA-Indiv .
+
+csi:M1L5-S1B22-AskQuestionTA-Param
+      rdf:type ccrt:ThingActionParam ;
+      ta:paramIdent lua:student ;
+      ta:paramIdentValue liftconfig:Page_M1L5-S1B22_Video_config .
+
+csi:M1L5-S1B29VideoPlaybackTA-Indiv
+      rdf:type ccrt:ThingAction ;
+      ta:postTStampMsec 111111111 ;
+      ta:targetAction csi:M1L5-S1B29VideoPlaybackTA-Param ;
+      ta:targetThing csi:M1L5-S1B29VideoPlaybackTA-Indiv ;
+      ta:targetThingType ccrt:ThingAction ;
+      ta:verb csi:M1L5-S1B29VideoPlaybackTA-Indiv .
+
+csi:M1L5-S1B29VideoPlaybackTA-Param
+      rdf:type ccrt:ThingActionParam ;
+      ta:paramIdent lua:student ;
+      ta:paramIdentValue liftconfig:Page_M1L5-S1B29_Video_config .
+
+csi:M1L5-S1B30VideoPlaybackTA-Indiv
+      rdf:type ccrt:ThingAction ;
+      ta:postTStampMsec 111111111 ;
+      ta:targetAction csi:M1L5-S1B30VideoPlaybackTA-Param ;
+      ta:targetThing csi:M1L5-S1B30VideoPlaybackTA-Indiv ;
+      ta:targetThingType ccrt:ThingAction ;
+      ta:verb csi:M1L5-S1B30VideoPlaybackTA-Indiv .
+
+csi:M1L5-S1B30VideoPlaybackTA-Param
+      rdf:type ccrt:ThingActionParam ;
+      ta:paramIdent lua:facilitator ;
+      ta:paramIdentValue liftconfig:Page_M1L5-S1B30_Video_config .
+
+csi:M1L5-S1B34VideoPlaybackTA-Indiv
+      rdf:type ccrt:ThingAction ;
+      ta:postTStampMsec 111111111 ;
+      ta:targetAction csi:M1L5-S1B34VideoPlaybackTA-Param ;
+      ta:targetThing csi:M1L5-S1B34VideoPlaybackTA-Indiv ;
+      ta:targetThingType ccrt:ThingAction ;
+      ta:verb csi:M1L5-S1B34VideoPlaybackTA-Indiv .
+
+csi:M1L5-S1B34VideoPlaybackTA-Param
+      rdf:type ccrt:ThingActionParam ;
+      ta:paramIdent lua:student ;
+      ta:paramIdentValue liftconfig:Page_M1L5-S1B34_Video_config .
+
+csi:M1L5-S1B35VideoPlaybackTA-Indiv
+      rdf:type ccrt:ThingAction ;
+      ta:postTStampMsec 111111111 ;
+      ta:targetAction csi:M1L5-S1B35VideoPlaybackTA-Param ;
+      ta:targetThing csi:M1L5-S1B35VideoPlaybackTA-Indiv ;
+      ta:targetThingType ccrt:ThingAction ;
+      ta:verb csi:M1L5-S1B35VideoPlaybackTA-Indiv .
+
+csi:M1L5-S1B35VideoPlaybackTA-Param
+      rdf:type ccrt:ThingActionParam ;
+      ta:paramIdent lua:facilitator ;
+      ta:paramIdentValue liftconfig:Page_M1L5-S1B35_Video_config .
+
+csi:M1L5-S1B36VideoPlaybackTA-Indiv
+      rdf:type ccrt:ThingAction ;
+      ta:postTStampMsec 111111111 ;
+      ta:targetAction csi:M1L5-S1B36VideoPlaybackTA-Param ;
+      ta:targetThing csi:M1L5-S1B36VideoPlaybackTA-Indiv ;
+      ta:targetThingType ccrt:ThingAction ;
+      ta:verb csi:M1L5-S1B36VideoPlaybackTA-Indiv .
+
+csi:M1L5-S1B36VideoPlaybackTA-Param
+      rdf:type ccrt:ThingActionParam ;
+      ta:paramIdent lua:student ;
+      ta:paramIdentValue liftconfig:Page_M1L5-S1B36_Video_config .
+
+csi:M1L5-S1B37VideoPlaybackTA-Indiv
+      rdf:type ccrt:ThingAction ;
+      ta:postTStampMsec 111111111 ;
+      ta:targetAction csi:M1L5-S1B37VideoPlaybackTA-Param ;
+      ta:targetThing csi:M1L5-S1B37VideoPlaybackTA-Indiv ;
+      ta:targetThingType ccrt:ThingAction ;
+      ta:verb csi:M1L5-S1B37VideoPlaybackTA-Indiv .
+
+csi:M1L5-S1B37VideoPlaybackTA-Param
+      rdf:type ccrt:ThingActionParam ;
+      ta:paramIdent lua:facilitator ;
+      ta:paramIdentValue liftconfig:Page_M1L5-S1B37_Video_config .
+
+csi:M1L5-S1B38-AskQuestionTA-Indiv
+      rdf:type ccrt:ThingAction ;
+      ta:postTStampMsec 111111111 ;
+      ta:targetAction csi:M1L5-S1B38-AskQuestionTA-Param ;
+      ta:targetThing csi:M1L5-S1B38-AskQuestionTA-Indiv ;
+      ta:targetThingType ccrt:ThingAction ;
+      ta:verb csi:M1L5-S1B38-AskQuestionTA-Indiv .
+
+csi:M1L5-S1B38-AskQuestionTA-Param
+      rdf:type ccrt:ThingActionParam ;
+      ta:paramIdent lua:facilitator ;
+      ta:paramIdentValue liftconfig:Page_M1L5-S1B38_Video_config .
+
+csi:M1L5-S1B39-AskQuestionTA-Indiv
+      rdf:type ccrt:ThingAction ;
+      ta:postTStampMsec 111111111 ;
+      ta:targetAction csi:M1L5-S1B39-AskQuestionTA-Param ;
+      ta:targetThing csi:M1L5-S1B39-AskQuestionTA-Indiv ;
+      ta:targetThingType ccrt:ThingAction ;
+      ta:verb csi:M1L5-S1B39-AskQuestionTA-Indiv .
+
+csi:M1L5-S1B39-AskQuestionTA-Param
+      rdf:type ccrt:ThingActionParam ;
+      ta:paramIdent lua:student ;
+      ta:paramIdentValue liftconfig:Page_M1L5-S1B39_Video_config .
+
+csi:M1L5-S1B41-AskQuestionTA-Indiv
+      rdf:type ccrt:ThingAction ;
+      ta:postTStampMsec 111111111 ;
+      ta:targetAction csi:M1L5-S1B41-AskQuestionTA-Param ;
+      ta:targetThing csi:M1L5-S1B41-AskQuestionTA-Indiv ;
+      ta:targetThingType ccrt:ThingAction ;
+      ta:verb csi:M1L5-S1B41-AskQuestionTA-Indiv .
+
+csi:M1L5-S1B41-AskQuestionTA-Param
+      rdf:type ccrt:ThingActionParam ;
+      ta:paramIdent lua:facilitator ;
+      ta:paramIdentValue liftconfig:Page_M1L5-S1B41_Video_config .
+
+csi:M1L5-S1B42-AskQuestionTA-Indiv
+      rdf:type ccrt:ThingAction ;
+      ta:postTStampMsec 111111111 ;
+      ta:targetAction csi:M1L5-S1B42-AskQuestionTA-Param ;
+      ta:targetThing csi:M1L5-S1B42-AskQuestionTA-Indiv ;
+      ta:targetThingType ccrt:ThingAction ;
+      ta:verb csi:M1L5-S1B42-AskQuestionTA-Indiv .
+
+csi:M1L5-S1B42-AskQuestionTA-Param
+      rdf:type ccrt:ThingActionParam ;
+      ta:paramIdent lua:student ;
+      ta:paramIdentValue liftconfig:Page_M1L5-S1B42_Video_config .
+
+csi:M1L5-S1B43-MergeTA
+      rdf:type ccrt:ThingAction ;
+      ta:postTStampMsec 111111111 ;
+      ta:targetThing csi:M1L5-S1B43-MergeTA ;
+      ta:targetThingType ccrt:ThingAction ;
+      ta:verb csi:M1L5-S1B43-MergeTA .
+
+csi:M1L5-S1B44-MergeTA
+      rdf:type ccrt:ThingAction ;
+      ta:postTStampMsec 111111111 ;
+      ta:targetThing csi:M1L5-S1B44-MergeTA ;
+      ta:targetThingType ccrt:ThingAction ;
+      ta:verb csi:M1L5-S1B44-MergeTA .
+
+csi:M1L5-S1B45-MergeTA
+      rdf:type ccrt:ThingAction ;
+      ta:postTStampMsec 111111111 ;
+      ta:targetThing csi:M1L5-S1B45-MergeTA ;
+      ta:targetThingType ccrt:ThingAction ;
+      ta:verb csi:M1L5-S1B45-MergeTA .
+
+csi:M1L5-S1B49VideoPlaybackTA-Indiv
+      rdf:type ccrt:ThingAction ;
+      ta:postTStampMsec 111111111 ;
+      ta:targetAction csi:M1L5-S1B49VideoPlaybackTA-Param ;
+      ta:targetThing csi:M1L5-S1B49VideoPlaybackTA-Indiv ;
+      ta:targetThingType ccrt:ThingAction ;
+      ta:verb csi:M1L5-S1B49VideoPlaybackTA-Indiv .
+
+csi:M1L5-S1B49VideoPlaybackTA-Param
+      rdf:type ccrt:ThingActionParam ;
+      ta:paramIdent lua:student ;
+      ta:paramIdentValue liftconfig:Page_M1L5-S1B49_Video_config .
+
+csi:M1L5-S1B50VideoPlaybackTA-Indiv
+      rdf:type ccrt:ThingAction ;
+      ta:postTStampMsec 111111111 ;
+      ta:targetAction csi:M1L5-S1B50VideoPlaybackTA-Param ;
+      ta:targetThing csi:M1L5-S1B50VideoPlaybackTA-Indiv ;
+      ta:targetThingType ccrt:ThingAction ;
+      ta:verb csi:M1L5-S1B50VideoPlaybackTA-Indiv .
+
+csi:M1L5-S1B50VideoPlaybackTA-Param
+      rdf:type ccrt:ThingActionParam ;
+      ta:paramIdent lua:facilitator ;
+      ta:paramIdentValue liftconfig:Page_M1L5-S1B50_Video_config .
+
+csi:M1L5-S1B51-MergeTA
+      rdf:type ccrt:ThingAction ;
+      ta:postTStampMsec 111111111 ;
+      ta:targetThing csi:M1L5-S1B51-MergeTA ;
+      ta:targetThingType ccrt:ThingAction ;
+      ta:verb csi:M1L5-S1B51-MergeTA .
+
+csi:M1L5-S1B54VideoPlaybackTA-Indiv
+      rdf:type ccrt:ThingAction ;
+      ta:postTStampMsec 111111111 ;
+      ta:targetAction csi:M1L5-S1B54VideoPlaybackTA-Param ;
+      ta:targetThing csi:M1L5-S1B54VideoPlaybackTA-Indiv ;
+      ta:targetThingType ccrt:ThingAction ;
+      ta:verb csi:M1L5-S1B54VideoPlaybackTA-Indiv .
+
+csi:M1L5-S1B54VideoPlaybackTA-Param
+      rdf:type ccrt:ThingActionParam ;
+      ta:paramIdent lua:student ;
+      ta:paramIdentValue liftconfig:Page_M1L5-S1B54_Video_config .
+
+csi:M1L5-S1B55VideoPlaybackTA-Indiv
+      rdf:type ccrt:ThingAction ;
+      ta:postTStampMsec 111111111 ;
+      ta:targetAction csi:M1L5-S1B55VideoPlaybackTA-Param ;
+      ta:targetThing csi:M1L5-S1B55VideoPlaybackTA-Indiv ;
+      ta:targetThingType ccrt:ThingAction ;
+      ta:verb csi:M1L5-S1B55VideoPlaybackTA-Indiv .
+
+csi:M1L5-S1B55VideoPlaybackTA-Param
+      rdf:type ccrt:ThingActionParam ;
+      ta:paramIdent lua:facilitator ;
+      ta:paramIdentValue liftconfig:Page_M1L5-S1B55_Video_config .
+
+csi:M1L5-S1B57-AskQuestionTA-Indiv
+      rdf:type ccrt:ThingAction ;
+      ta:postTStampMsec 111111111 ;
+      ta:targetAction csi:M1L5-S1B57-AskQuestionTA-Param ;
+      ta:targetThing csi:M1L5-S1B57-AskQuestionTA-Indiv ;
+      ta:targetThingType ccrt:ThingAction ;
+      ta:verb csi:M1L5-S1B57-AskQuestionTA-Indiv .
+
+csi:M1L5-S1B57-AskQuestionTA-Param
+      rdf:type ccrt:ThingActionParam ;
+      ta:paramIdent lua:student ;
+      ta:paramIdentValue liftconfig:Page_M1L5-S1B57_Video_config .
+
+csi:M1L5-S1B58-AskQuestionTA-Indiv
+      rdf:type ccrt:ThingAction ;
+      ta:postTStampMsec 111111111 ;
+      ta:targetAction csi:M1L5-S1B58-AskQuestionTA-Param ;
+      ta:targetThing csi:M1L5-S1B58-AskQuestionTA-Indiv ;
+      ta:targetThingType ccrt:ThingAction ;
+      ta:verb csi:M1L5-S1B58-AskQuestionTA-Indiv .
+
+csi:M1L5-S1B58-AskQuestionTA-Param
+      rdf:type ccrt:ThingActionParam ;
+      ta:paramIdent lua:facilitator ;
+      ta:paramIdentValue liftconfig:Page_M1L5-S1B58_Video_config .
+
+csi:M1L5-S1B66VideoPlaybackTA-Indiv
+      rdf:type ccrt:ThingAction ;
+      ta:postTStampMsec 111111111 ;
+      ta:targetAction csi:M1L5-S1B66VideoPlaybackTA-Param ;
+      ta:targetThing csi:M1L5-S1B66VideoPlaybackTA-Indiv ;
+      ta:targetThingType ccrt:ThingAction ;
+      ta:verb csi:M1L5-S1B66VideoPlaybackTA-Indiv .
+
+csi:M1L5-S1B66VideoPlaybackTA-Param
+      rdf:type ccrt:ThingActionParam ;
+      ta:paramIdent lua:facilitator ;
+      ta:paramIdentValue liftconfig:Page_M1L5-S1B66_Video_config .
+
+csi:M1L5-S1B67VideoPlaybackTA-Indiv
+      rdf:type ccrt:ThingAction ;
+      ta:postTStampMsec 111111111 ;
+      ta:targetAction csi:M1L5-S1B67VideoPlaybackTA-Param ;
+      ta:targetThing csi:M1L5-S1B67VideoPlaybackTA-Indiv ;
+      ta:targetThingType ccrt:ThingAction ;
+      ta:verb csi:M1L5-S1B67VideoPlaybackTA-Indiv .
+
+csi:M1L5-S1B67VideoPlaybackTA-Param
+      rdf:type ccrt:ThingActionParam ;
+      ta:paramIdent lua:student ;
+      ta:paramIdentValue liftconfig:Page_M1L5-S1B67_Video_config .
+
+csi:M1L5-S1B68VideoPlaybackTA-Indiv
+      rdf:type ccrt:ThingAction ;
+      ta:postTStampMsec 111111111 ;
+      ta:targetAction csi:M1L5-S1B68VideoPlaybackTA-Param ;
+      ta:targetThing csi:M1L5-S1B68VideoPlaybackTA-Indiv ;
+      ta:targetThingType ccrt:ThingAction ;
+      ta:verb csi:M1L5-S1B68VideoPlaybackTA-Indiv .
+
+csi:M1L5-S1B68VideoPlaybackTA-Param
+      rdf:type ccrt:ThingActionParam ;
+      ta:paramIdent lua:student ;
+      ta:paramIdentValue liftconfig:Page_M1L5-S1B68_Video_config .
+
+csi:M1L5-S1B69VideoPlaybackTA-Indiv
+      rdf:type ccrt:ThingAction ;
+      ta:postTStampMsec 111111111 ;
+      ta:targetAction csi:M1L5-S1B69VideoPlaybackTA-Param ;
+      ta:targetThing csi:M1L5-S1B69VideoPlaybackTA-Indiv ;
+      ta:targetThingType ccrt:ThingAction ;
+      ta:verb csi:M1L5-S1B69VideoPlaybackTA-Indiv .
+
+csi:M1L5-S1B69VideoPlaybackTA-Param
+      rdf:type ccrt:ThingActionParam ;
+      ta:paramIdent lua:facilitator ;
+      ta:paramIdentValue liftconfig:Page_M1L5-S1B69_Video_config .
+
+csi:M1L5-S1B72-AskQuestionTA-Indiv
+      rdf:type ccrt:ThingAction ;
+      ta:postTStampMsec 111111111 ;
+      ta:targetAction csi:M1L5-S1B72-AskQuestionTA-Param ;
+      ta:targetThing csi:M1L5-S1B72-AskQuestionTA-Indiv ;
+      ta:targetThingType ccrt:ThingAction ;
+      ta:verb csi:M1L5-S1B72-AskQuestionTA-Indiv .
+
+csi:M1L5-S1B72-AskQuestionTA-Param
+      rdf:type ccrt:ThingActionParam ;
+      ta:paramIdent lua:student ;
+      ta:paramIdentValue liftconfig:Page_M1L5-S1B72_Video_config .
+
+csi:M1L5-S1B73-AskQuestionTA-Indiv
+      rdf:type ccrt:ThingAction ;
+      ta:postTStampMsec 111111111 ;
+      ta:targetAction csi:M1L5-S1B73-AskQuestionTA-Param ;
+      ta:targetThing csi:M1L5-S1B73-AskQuestionTA-Indiv ;
+      ta:targetThingType ccrt:ThingAction ;
+      ta:verb csi:M1L5-S1B73-AskQuestionTA-Indiv .
+
+csi:M1L5-S1B73-AskQuestionTA-Param
+      rdf:type ccrt:ThingActionParam ;
+      ta:paramIdent lua:facilitator ;
+      ta:paramIdentValue liftconfig:Page_M1L5-S1B73_Video_config .
+
+csi:M1L5-S1B74-AskQuestionTA-Indiv
+      rdf:type ccrt:ThingAction ;
+      ta:postTStampMsec 111111111 ;
+      ta:targetAction csi:M1L5-S1B74-AskQuestionTA-Param ;
+      ta:targetThing csi:M1L5-S1B74-AskQuestionTA-Indiv ;
+      ta:targetThingType ccrt:ThingAction ;
+      ta:verb csi:M1L5-S1B74-AskQuestionTA-Indiv .
+
+csi:M1L5-S1B74-AskQuestionTA-Param
+      rdf:type ccrt:ThingActionParam ;
+      ta:paramIdent lua:facilitator ;
+      ta:paramIdentValue liftconfig:Page_M1L5-S1B74_Video_config .
+
+csi:M1L5-S1B75-AskQuestionTA-Indiv
+      rdf:type ccrt:ThingAction ;
+      ta:postTStampMsec 111111111 ;
+      ta:targetAction csi:M1L5-S1B75-AskQuestionTA-Param ;
+      ta:targetThing csi:M1L5-S1B75-AskQuestionTA-Indiv ;
+      ta:targetThingType ccrt:ThingAction ;
+      ta:verb csi:M1L5-S1B75-AskQuestionTA-Indiv .
+
+csi:M1L5-S1B75-AskQuestionTA-Param
+      rdf:type ccrt:ThingActionParam ;
+      ta:paramIdent lua:student ;
+      ta:paramIdentValue liftconfig:Page_M1L5-S1B75_Video_config .
+
+csi:M1L5-S1B76-MergeTA
+      rdf:type ccrt:ThingAction ;
+      ta:postTStampMsec 111111111 ;
+      ta:targetThing csi:M1L5-S1B76-MergeTA ;
+      ta:targetThingType ccrt:ThingAction ;
+      ta:verb csi:M1L5-S1B76-MergeTA .
+
+csi:M1L5-S1B77-MergeTA
+      rdf:type ccrt:ThingAction ;
+      ta:postTStampMsec 111111111 ;
+      ta:targetThing csi:M1L5-S1B77-MergeTA ;
+      ta:targetThingType ccrt:ThingAction ;
+      ta:verb csi:M1L5-S1B77-MergeTA .
+
+csi:M1L5-S1B78-MergeTA
+      rdf:type ccrt:ThingAction ;
+      ta:postTStampMsec 111111111 ;
+      ta:targetThing csi:M1L5-S1B78-MergeTA ;
+      ta:targetThingType ccrt:ThingAction ;
+      ta:verb csi:M1L5-S1B78-MergeTA .
+
+csi:M1L5-S1B81-MergeTA
+      rdf:type ccrt:ThingAction ;
+      ta:postTStampMsec 111111111 ;
+      ta:targetThing csi:M1L5-S1B81-MergeTA ;
+      ta:targetThingType ccrt:ThingAction ;
+      ta:verb csi:M1L5-S1B81-MergeTA .
+
+csi:M1L5-S1B84VideoPlaybackTA-Indiv
+      rdf:type ccrt:ThingAction ;
+      ta:postTStampMsec 111111111 ;
+      ta:targetAction csi:M1L5-S1B84VideoPlaybackTA-Param ;
+      ta:targetThing csi:M1L5-S1B84VideoPlaybackTA-Indiv ;
+      ta:targetThingType ccrt:ThingAction ;
+      ta:verb csi:M1L5-S1B84VideoPlaybackTA-Indiv .
+
+csi:M1L5-S1B84VideoPlaybackTA-Param
+      rdf:type ccrt:ThingActionParam ;
+      ta:paramIdent lua:facilitator ;
+      ta:paramIdentValue liftconfig:Page_M1L5-S1B84_Video_config .
+
+csi:M1L5-S1B85VideoPlaybackTA-Indiv
+      rdf:type ccrt:ThingAction ;
+      ta:postTStampMsec 111111111 ;
+      ta:targetAction csi:M1L5-S1B85VideoPlaybackTA-Param ;
+      ta:targetThing csi:M1L5-S1B85VideoPlaybackTA-Indiv ;
+      ta:targetThingType ccrt:ThingAction ;
+      ta:verb csi:M1L5-S1B85VideoPlaybackTA-Indiv .
+
+csi:M1L5-S1B85VideoPlaybackTA-Param
+      rdf:type ccrt:ThingActionParam ;
+      ta:paramIdent lua:student ;
+      ta:paramIdentValue liftconfig:Page_M1L5-S1B85_Video_config .
+
+csi:M1L5-S1B87-AskQuestionTA-Indiv
+      rdf:type ccrt:ThingAction ;
+      ta:postTStampMsec 111111111 ;
+      ta:targetAction csi:M1L5-S1B87-AskQuestionTA-Param ;
+      ta:targetThing csi:M1L5-S1B87-AskQuestionTA-Indiv ;
+      ta:targetThingType ccrt:ThingAction ;
+      ta:verb csi:M1L5-S1B87-AskQuestionTA-Indiv .
+
+csi:M1L5-S1B87-AskQuestionTA-Param
+      rdf:type ccrt:ThingActionParam ;
+      ta:paramIdent lua:student ;
+      ta:paramIdentValue liftconfig:Page_M1L5-S1B87_Video_config .
+
+csi:M1L5-S1B88-AskQuestionTA-Indiv
+      rdf:type ccrt:ThingAction ;
+      ta:postTStampMsec 111111111 ;
+      ta:targetAction csi:M1L5-S1B88-AskQuestionTA-Param ;
+      ta:targetThing csi:M1L5-S1B88-AskQuestionTA-Indiv ;
+      ta:targetThingType ccrt:ThingAction ;
+      ta:verb csi:M1L5-S1B88-AskQuestionTA-Indiv .
+
+csi:M1L5-S1B88-AskQuestionTA-Param
+      rdf:type ccrt:ThingActionParam ;
+      ta:paramIdent lua:facilitator ;
+      ta:paramIdentValue liftconfig:Page_M1L5-S1B88_Video_config .
+
+csi:M1L5-S1B96VideoPlaybackTA-Indiv
+      rdf:type ccrt:ThingAction ;
+      ta:postTStampMsec 111111111 ;
+      ta:targetAction csi:M1L5-S1B96VideoPlaybackTA-Param ;
+      ta:targetThing csi:M1L5-S1B96VideoPlaybackTA-Indiv ;
+      ta:targetThingType ccrt:ThingAction ;
+      ta:verb csi:M1L5-S1B96VideoPlaybackTA-Indiv .
+
+csi:M1L5-S1B96VideoPlaybackTA-Param
+      rdf:type ccrt:ThingActionParam ;
+      ta:paramIdent lua:facilitator ;
+      ta:paramIdentValue liftconfig:Page_M1L5-S1B96_Video_config .
+
+csi:M1L5-S1B97VideoPlaybackTA-Indiv
+      rdf:type ccrt:ThingAction ;
+      ta:postTStampMsec 111111111 ;
+      ta:targetAction csi:M1L5-S1B97VideoPlaybackTA-Param ;
+      ta:targetThing csi:M1L5-S1B97VideoPlaybackTA-Indiv ;
+      ta:targetThingType ccrt:ThingAction ;
+      ta:verb csi:M1L5-S1B97VideoPlaybackTA-Indiv .
+
+csi:M1L5-S1B97VideoPlaybackTA-Param
+      rdf:type ccrt:ThingActionParam ;
+      ta:paramIdent lua:student ;
+      ta:paramIdentValue liftconfig:Page_M1L5-S1B97_Video_config .
+
+csi:M1L5-S1B98VideoPlaybackTA-Indiv
+      rdf:type ccrt:ThingAction ;
+      ta:postTStampMsec 111111111 ;
+      ta:targetAction csi:M1L5-S1B98VideoPlaybackTA-Param ;
+      ta:targetThing csi:M1L5-S1B98VideoPlaybackTA-Indiv ;
+      ta:targetThingType ccrt:ThingAction ;
+      ta:verb csi:M1L5-S1B98VideoPlaybackTA-Indiv .
+
+csi:M1L5-S1B98VideoPlaybackTA-Param
+      rdf:type ccrt:ThingActionParam ;
+      ta:paramIdent lua:facilitator ;
+      ta:paramIdentValue liftconfig:Page_M1L5-S1B98_Video_config .
+
+csi:M1L5-S1B99VideoPlaybackTA-Indiv
+      rdf:type ccrt:ThingAction ;
+      ta:postTStampMsec 111111111 ;
+      ta:targetAction csi:M1L5-S1B99VideoPlaybackTA-Param ;
+      ta:targetThing csi:M1L5-S1B99VideoPlaybackTA-Indiv ;
+      ta:targetThingType ccrt:ThingAction ;
+      ta:verb csi:M1L5-S1B99VideoPlaybackTA-Indiv .
+
+csi:M1L5-S1B99VideoPlaybackTA-Param
+      rdf:type ccrt:ThingActionParam ;
+      ta:paramIdent lua:student ;
+      ta:paramIdentValue liftconfig:Page_M1L5-S1B99_Video_config .
+
+csi:M1L5-S1B102-AskQuestionTA-Indiv
+      rdf:type ccrt:ThingAction ;
+      ta:postTStampMsec 111111111 ;
+      ta:targetAction csi:M1L5-S1B102-AskQuestionTA-Param ;
+      ta:targetThing csi:M1L5-S1B102-AskQuestionTA-Indiv ;
+      ta:targetThingType ccrt:ThingAction ;
+      ta:verb csi:M1L5-S1B102-AskQuestionTA-Indiv .
+
+csi:M1L5-S1B102-AskQuestionTA-Param
+      rdf:type ccrt:ThingActionParam ;
+      ta:paramIdent lua:student ;
+      ta:paramIdentValue liftconfig:Page_M1L5-S1B102_Video_config .
+
+csi:M1L5-S1B103-AskQuestionTA-Indiv
+      rdf:type ccrt:ThingAction ;
+      ta:postTStampMsec 111111111 ;
+      ta:targetAction csi:M1L5-S1B103-AskQuestionTA-Param ;
+      ta:targetThing csi:M1L5-S1B103-AskQuestionTA-Indiv ;
+      ta:targetThingType ccrt:ThingAction ;
+      ta:verb csi:M1L5-S1B103-AskQuestionTA-Indiv .
+
+csi:M1L5-S1B103-AskQuestionTA-Param
+      rdf:type ccrt:ThingActionParam ;
+      ta:paramIdent lua:facilitator ;
+      ta:paramIdentValue liftconfig:Page_M1L5-S1B103_Video_config .
+
+csi:M1L5-S1B104-AskQuestionTA-Indiv
+      rdf:type ccrt:ThingAction ;
+      ta:postTStampMsec 111111111 ;
+      ta:targetAction csi:M1L5-S1B104-AskQuestionTA-Param ;
+      ta:targetThing csi:M1L5-S1B104-AskQuestionTA-Indiv ;
+      ta:targetThingType ccrt:ThingAction ;
+      ta:verb csi:M1L5-S1B104-AskQuestionTA-Indiv .
+
+csi:M1L5-S1B104-AskQuestionTA-Param
+      rdf:type ccrt:ThingActionParam ;
+      ta:paramIdent lua:facilitator ;
+      ta:paramIdentValue liftconfig:Page_M1L5-S1B104_Video_config .
+
+csi:M1L5-S1B105-AskQuestionTA-Indiv
+      rdf:type ccrt:ThingAction ;
+      ta:postTStampMsec 111111111 ;
+      ta:targetAction csi:M1L5-S1B105-AskQuestionTA-Param ;
+      ta:targetThing csi:M1L5-S1B105-AskQuestionTA-Indiv ;
+      ta:targetThingType ccrt:ThingAction ;
+      ta:verb csi:M1L5-S1B105-AskQuestionTA-Indiv .
+
+csi:M1L5-S1B105-AskQuestionTA-Param
+      rdf:type ccrt:ThingActionParam ;
+      ta:paramIdent lua:student ;
+      ta:paramIdentValue liftconfig:Page_M1L5-S1B105_Video_config .
+
+csi:M1L5-S1B107-MergeTA
+      rdf:type ccrt:ThingAction ;
+      ta:postTStampMsec 111111111 ;
+      ta:targetThing csi:M1L5-S1B107-MergeTA ;
+      ta:targetThingType ccrt:ThingAction ;
+      ta:verb csi:M1L5-S1B107-MergeTA .
+
+csi:M1L5-S1B108-MergeTA
+      rdf:type ccrt:ThingAction ;
+      ta:postTStampMsec 111111111 ;
+      ta:targetThing csi:M1L5-S1B108-MergeTA ;
+      ta:targetThingType ccrt:ThingAction ;
+      ta:verb csi:M1L5-S1B108-MergeTA .
+
+csi:M1L5-S1B110-MergeTA
+      rdf:type ccrt:ThingAction ;
+      ta:postTStampMsec 111111111 ;
+      ta:targetThing csi:M1L5-S1B110-MergeTA ;
+      ta:targetThingType ccrt:ThingAction ;
+      ta:verb csi:M1L5-S1B110-MergeTA .
+
+csi:M1L5-S1B111-MergeTA
+      rdf:type ccrt:ThingAction ;
+      ta:postTStampMsec 111111111 ;
+      ta:targetThing csi:M1L5-S1B111-MergeTA ;
+      ta:targetThingType ccrt:ThingAction ;
+      ta:verb csi:M1L5-S1B111-MergeTA .
+
+ccrt:ThingAction
+      rdfs:subClassOf ja:Object ;
+      rdf:type rdfs:Class ;
+      ja:assembler "org.cogchar.impl.thing.basic.BasicThingActionSpecBuilder" .
+
+

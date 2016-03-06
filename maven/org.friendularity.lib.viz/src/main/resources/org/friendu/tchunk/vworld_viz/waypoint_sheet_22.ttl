@@ -1,0 +1,112 @@
+# modelName=urn:ftd:cogchar.org:2012:runtime#waypoint_sheet_22
+# modelSize=68
+
+
+
+
+@prefix ccrt:    <urn:ftd:cogchar.org:2012:runtime#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix ta:      <http://www.cogchar.org/thing/action#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+
+ccrt:animLoc1
+      rdf:type ccrt:waypoint ;
+      ta:xPos "0"^^xsd:float ;
+      ta:yPos "40"^^xsd:float ;
+      ta:zPos "150"^^xsd:float .
+
+ccrt:animLoc2
+      rdf:type ccrt:waypoint ;
+      ta:xPos "80"^^xsd:float ;
+      ta:yPos "40"^^xsd:float ;
+      ta:zPos "0"^^xsd:float .
+
+ccrt:animLoc3
+      rdf:type ccrt:waypoint ;
+      ta:xPos "0"^^xsd:float ;
+      ta:yPos "40"^^xsd:float ;
+      ta:zPos "-150"^^xsd:float .
+
+ccrt:animLoc4
+      rdf:type ccrt:waypoint ;
+      ta:xPos "-80"^^xsd:float ;
+      ta:yPos "40"^^xsd:float ;
+      ta:zPos "0"^^xsd:float .
+
+ccrt:animRot1
+      rdf:type ccrt:orientation ;
+      ta:magnitudeRot "45"^^xsd:float ;
+      ta:xRotAxis "0.57735"^^xsd:float ;
+      ta:yRotAxis "0.57735"^^xsd:float ;
+      ta:zRotAxis "0.57735"^^xsd:float .
+
+ccrt:animRot2
+      rdf:type ccrt:orientation ;
+      ta:magnitudeRot "75"^^xsd:float ;
+      ta:xRotAxis "0.57735"^^xsd:float ;
+      ta:yRotAxis "-0.57735"^^xsd:float ;
+      ta:zRotAxis "0.57735"^^xsd:float .
+
+ccrt:animRot3
+      rdf:type ccrt:orientation ;
+      ta:magnitudeRot "35"^^xsd:float ;
+      ta:xRotAxis "0.57735"^^xsd:float ;
+      ta:yRotAxis "0.57735"^^xsd:float ;
+      ta:zRotAxis "-0.57735"^^xsd:float .
+
+ccrt:animRot4
+      rdf:type ccrt:orientation ;
+      ta:magnitudeRot "45"^^xsd:float ;
+      ta:xRotAxis "-0.57735"^^xsd:float ;
+      ta:yRotAxis "-0.57735"^^xsd:float ;
+      ta:zRotAxis "0.57735"^^xsd:float .
+
+ccrt:animScale1
+      rdf:type ccrt:vectorScale ;
+      ta:xScale "10"^^xsd:float ;
+      ta:yScale "20"^^xsd:float ;
+      ta:zScale "10"^^xsd:float .
+
+ccrt:animScale2
+      rdf:type ccrt:vectorScale ;
+      ta:xScale "5"^^xsd:float ;
+      ta:yScale "1"^^xsd:float ;
+      ta:zScale "5"^^xsd:float .
+
+ccrt:animScale3
+      rdf:type ccrt:vectorScale ;
+      ta:xScale "15"^^xsd:float ;
+      ta:yScale "25"^^xsd:float ;
+      ta:zScale "35"^^xsd:float .
+
+ccrt:animScale4
+      rdf:type ccrt:vectorScale ;
+      ta:xScale "1"^^xsd:float ;
+      ta:yScale "10"^^xsd:float ;
+      ta:zScale "1"^^xsd:float .
+
+ccrt:waypoint_DemoWpt1
+      rdf:type ccrt:waypoint ;
+      ta:xPos "0"^^xsd:float ;
+      ta:yPos "40"^^xsd:float ;
+      ta:zPos "80"^^xsd:float .
+
+ccrt:waypoint_DemoWpt2
+      rdf:type ccrt:waypoint ;
+      ta:xPos "80"^^xsd:float ;
+      ta:yPos "40"^^xsd:float ;
+      ta:zPos "0"^^xsd:float .
+
+ccrt:waypoint_DemoWpt3
+      rdf:type ccrt:waypoint ;
+      ta:xPos "0"^^xsd:float ;
+      ta:yPos "40"^^xsd:float ;
+      ta:zPos "-80"^^xsd:float .
+
+ccrt:waypoint_DemoWpt4
+      rdf:type ccrt:waypoint ;
+      ta:xPos "-80"^^xsd:float ;
+      ta:yPos "40"^^xsd:float ;
+      ta:zPos "0"^^xsd:float .
+
+

@@ -1,0 +1,25 @@
+# modelName=urn:ftd:cogchar.org:2012:runtime#user_access_sheet_22
+# modelSize=8
+
+
+
+
+@prefix ccrt:    <urn:ftd:cogchar.org:2012:runtime#> .
+@prefix liftconfig:  <http://www.cogchar.org/lift/config/configroot#> .
+@prefix liftuser:  <http://www.cogchar.org/lift/user#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix ua:      <http://www.cogchar.org/lift/user/config#> .
+
+liftuser:admin
+      rdf:type ccrt:userConfig ;
+      ua:homePage liftconfig:mainLiftConfig ;
+      ua:password "6b2e6278cc4c28fa732a2cc02d8c222d424421223b66fc041865a4796d93524c" ;
+      ua:salt "3efa0a6cbafa2426cd62b9f91f5cde33154d2ed02bd7878c367dd48766faa649" .
+
+liftuser:NotAdmin
+      rdf:type ccrt:userConfig ;
+      ua:homePage liftconfig:restrictedLiftConfig ;
+      ua:password "ef07c9d7e659ea20543a985d651801908fca11ef89a03d57d09677a0c0c77b2d" ;
+      ua:salt "7a512940db0256f87945a586b3b020920bd1178b965b21365ddfa8fdbd8899e7" .
+
+
