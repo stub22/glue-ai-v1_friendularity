@@ -75,7 +75,8 @@ abstract class SerialGraphChnkr extends VarargsLogging  {
 	}
 	
 	// Override this method to make appropriate graph pointers.  Return None when no pointer is desired.
-	protected def makeGraphPointerRec(modelForPointerRec : R2GoModel, hostToPointAt : GraphHost3Triples, dataModel : R2GoModel) : Option[MdirGraphPointer] 
+	protected def makeGraphPointerRec(modelForPointerRec : R2GoModel, hostToPointAt : GraphHost3Triples, 
+									  dataModel : R2GoModel) : Option[MdirGraphPointer] 
 		
 	// Here is one decent way to build an LGS-chunk, but it is not the only way.
 	// If you want to experiment with changes to this code, you can start with hacking the similar stuff in 

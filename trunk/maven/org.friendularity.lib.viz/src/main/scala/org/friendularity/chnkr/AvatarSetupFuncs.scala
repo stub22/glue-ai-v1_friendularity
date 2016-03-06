@@ -86,6 +86,7 @@ trait AvatarSetupFuncs extends VarargsLogging {
 
 	private def registerAvatarConfigRepoClient(bunCtx : BundleContext, avatarConfigERC : EnhancedRepoClient)  : Unit = {
 		info1("Registering legacy config EnhancedRepoClient: {}", avatarConfigERC);
+		
 		bunCtx.registerService(classOf[RepoClient].getName(), avatarConfigERC, null);
 	}
 	private def open4R2go(jmodel : JenaModel) : R2GoModel = {
@@ -94,3 +95,21 @@ trait AvatarSetupFuncs extends VarargsLogging {
 		r2goModel
 	}
 }
+/*
+
+:tdatabun_vworld_config_broker rdf:type mrcp:MFBR_Config ,
+                                        owl:NamedIndividual ;
+                               
+	   <http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#hasInGhostRecipe> :tdatabun_vworld_config_folderRecipe .
+
+:tdatabun_vworld_config_folderRecipe rdf:type <http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#GhR_Refer> ,
+                                              owl:NamedIndividual ;
+                                     
+     <http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#hasGraphHost> :tdatabun_vworld_config_folderGHost4 .
+
+:tdatabun_vworld_config_folderGHost4 rdf:type <http://onto.cogchar.org/onto/201407/MetaDir_OWL2#GH4S_Folder> ,
+                                              owl:NamedIndividual ;
+                                     
+     <http://onto.cogchar.org/onto/201407/MetaDir_OWL2#hasUrlText> "vwtest/data/config/grumpyvw" .
+
+ */
