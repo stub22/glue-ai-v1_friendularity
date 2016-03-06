@@ -1,0 +1,267 @@
+# modelName=urn:ftd:cogchar.org:2012:runtime#bindings_sheet_22
+# modelSize=170
+
+
+
+
+@prefix cc:      <http://www.cogchar.org/schema/crazyRandom#> .
+@prefix ccrt:    <urn:ftd:cogchar.org:2012:runtime#> .
+@prefix ccrti:   <urn:ftd:cogchar.org:2012:runtime_instance#> .
+@prefix kb:      <http://www.cogchar.org/key/binding#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+ccrti:binding_boogie
+      rdf:type ccrt:CommandKeybinding ;
+      kb:boundAction "BOOGIE" ;
+      kb:boundKey "B" ;
+      cc:command ccrti:cmd_Boogie ;
+      cc:featureCategory "SINBAD" .
+
+ccrti:binding_boom
+      rdf:type ccrt:CommandKeybinding ;
+      kb:boundAction "BOOM" ;
+      kb:boundKey "BUTTON_RIGHT" ;
+      cc:command ccrti:cmd_Boom ;
+      cc:featureCategory "GAME" .
+
+ccrti:binding_dangerYoga
+      rdf:type ccrt:CommandKeybinding ;
+      kb:boundAction "DANGER_YOGA_ZENO" ;
+      kb:boundKey "F9" ;
+      cc:command ccrti:cmd_dangerYogaZeno ;
+      cc:featureCategory "BEHAVIOR" .
+
+ccrti:binding_databalls
+      rdf:type ccrt:CommandKeybinding ;
+      kb:boundAction "SHOW_RESOURCE_BALLS" ;
+      kb:boundKey "Y" ;
+      cc:command ccrti:cmd_ShowResourceBalls ;
+      cc:featureCategory "GAME" .
+
+ccrti:binding_dySinbad
+      rdf:type ccrt:CommandKeybinding ;
+      kb:boundAction "DANGER_YOGA_SINBAD" ;
+      kb:boundKey "N" ;
+      cc:command ccrti:cmd_dangerYogaSinbad ;
+      cc:featureCategory "SINBAD" .
+
+ccrti:binding_help
+      rdf:type ccrt:CommandKeybinding ;
+      kb:boundAction "Help" ;
+      kb:boundKey "H" ;
+      cc:command ccrti:cmd_ToggleHelp ;
+      cc:featureCategory "SYSTEM" .
+
+ccrti:binding_permAnims
+      rdf:type ccrt:CommandKeybinding ;
+      kb:boundAction "USE_PERM_ANIMS" ;
+      kb:boundKey "F6" ;
+      cc:command ccrti:cmd_UsePermAnims ;
+      cc:featureCategory "RELOAD" .
+
+ccrti:binding_pickDataball
+      rdf:type ccrt:CommandKeybinding ;
+      kb:boundAction "PICK_BALLS" ;
+      kb:boundKey "P" ;
+      cc:command ccrti:cmd_PickBalls ;
+      cc:featureCategory "GAME" .
+
+ccrti:binding_projectileBigger
+      rdf:type ccrt:CommandKeybinding ;
+      kb:boundAction "BIGGER_PROJECTILE" ;
+      kb:boundKey "PERIOD" ;
+      cc:command ccrti:cmd_BiggerProjectile ;
+      cc:featureCategory "GAME" .
+
+ccrti:binding_projectileSmaller
+      rdf:type ccrt:CommandKeybinding ;
+      kb:boundAction "SMALLER_PROJECTILE" ;
+      kb:boundKey "COMMA" ;
+      cc:command ccrti:cmd_SmallerProjectile ;
+      cc:featureCategory "GAME" .
+
+ccrti:binding_reloadBehavior
+      rdf:type ccrt:CommandKeybinding ;
+      kb:boundAction "RELOAD_BEHAVIOR" ;
+      kb:boundKey "F8" ;
+      cc:command ccrti:cmd_ReloadBehavior ;
+      cc:featureCategory "RELOAD" .
+
+ccrti:binding_reloadBony
+      rdf:type ccrt:CommandKeybinding ;
+      kb:boundAction "UPDATE_BONY_CONFIG" ;
+      kb:boundKey "F12" ;
+      cc:command ccrti:cmd_updateBonyConfig ;
+      cc:featureCategory "RELOAD" .
+
+ccrti:binding_reloadHumanoids
+      rdf:type ccrt:CommandKeybinding ;
+      kb:boundAction "UPDATE_HUMANOIDS" ;
+      kb:boundKey "U" ;
+      cc:command ccrti:cmd_updateHumanoids ;
+      cc:featureCategory "RELOAD" .
+
+ccrti:binding_reloadWorld
+      rdf:type ccrt:CommandKeybinding ;
+      kb:boundAction "UPDATE_WORLD_CONFIG" ;
+      kb:boundKey "F11" ;
+      cc:command ccrti:cmd_updateWorldConfig ;
+      cc:featureCategory "RELOAD" .
+
+ccrti:binding_resetCamera
+      rdf:type ccrt:CommandKeybinding ;
+      kb:boundAction "RESET_CAMERA" ;
+      kb:boundKey "F1" ;
+      cc:command ccrti:cmd_ResetMainCamera ;
+      cc:featureCategory "RESET" .
+
+ccrti:binding_sayTime
+      rdf:type ccrt:CommandKeybinding ;
+      kb:boundAction "SAY_THE_TIME" ;
+      kb:boundKey "F3" ;
+      cc:command ccrti:cmd_sayTheTime ;
+      cc:featureCategory "BEHAVIOR" .
+
+ccrti:binding_scene0
+      rdf:type ccrt:scene_keybinding ;
+      kb:boundAction "sceneTrig_00" ;
+      kb:boundKey "NUMPAD0" .
+
+ccrti:binding_scene1
+      rdf:type ccrt:scene_keybinding ;
+      kb:boundAction "sceneTrig_01" ;
+      kb:boundKey "NUMPAD1" .
+
+ccrti:binding_scene2
+      rdf:type ccrt:scene_keybinding ;
+      kb:boundAction "sceneTrig_02" ;
+      kb:boundKey "NUMPAD2" .
+
+ccrti:binding_scene3
+      rdf:type ccrt:scene_keybinding ;
+      kb:boundAction "sceneTrig_03" ;
+      kb:boundKey "NUMPAD3" .
+
+ccrti:binding_scene4
+      rdf:type ccrt:scene_keybinding ;
+      kb:boundAction "sceneTrig_04" ;
+      kb:boundKey "NUMPAD4" .
+
+ccrti:binding_scene5
+      rdf:type ccrt:scene_keybinding ;
+      kb:boundAction "sceneTrig_05" ;
+      kb:boundKey "NUMPAD5" .
+
+ccrti:binding_scene6
+      rdf:type ccrt:scene_keybinding ;
+      kb:boundAction "sceneTrig_06" ;
+      kb:boundKey "NUMPAD6" .
+
+ccrti:binding_scene7
+      rdf:type ccrt:scene_keybinding ;
+      kb:boundAction "sceneTrig_07" ;
+      kb:boundKey "NUMPAD7" .
+
+ccrti:binding_scene8
+      rdf:type ccrt:scene_keybinding ;
+      kb:boundAction "sceneTrig_08" ;
+      kb:boundKey "NUMPAD8" .
+
+ccrti:binding_scene9
+      rdf:type ccrt:scene_keybinding ;
+      kb:boundAction "sceneTrig_09" ;
+      kb:boundKey "NUMPAD9" .
+
+ccrti:binding_scene10
+      rdf:type ccrt:scene_keybinding ;
+      kb:boundAction "sceneTrig_10" ;
+      kb:boundKey "0" .
+
+ccrti:binding_scene11
+      rdf:type ccrt:scene_keybinding ;
+      kb:boundAction "sceneTrig_11" ;
+      kb:boundKey "1" .
+
+ccrti:binding_scene12
+      rdf:type ccrt:scene_keybinding ;
+      kb:boundAction "sceneTrig_12" ;
+      kb:boundKey "2" .
+
+ccrti:binding_scene13
+      rdf:type ccrt:scene_keybinding ;
+      kb:boundAction "sceneTrig_13" ;
+      kb:boundKey "3" .
+
+ccrti:binding_scene14
+      rdf:type ccrt:scene_keybinding ;
+      kb:boundAction "sceneTrig_14" ;
+      kb:boundKey "4" .
+
+ccrti:binding_scene15
+      rdf:type ccrt:scene_keybinding ;
+      kb:boundAction "sceneTrig_15" ;
+      kb:boundKey "5" .
+
+ccrti:binding_scene16
+      rdf:type ccrt:scene_keybinding ;
+      kb:boundAction "sceneTrig_16" ;
+      kb:boundKey "6" .
+
+ccrti:binding_scene17
+      rdf:type ccrt:scene_keybinding ;
+      kb:boundAction "sceneTrig_17" ;
+      kb:boundKey "7" .
+
+ccrti:binding_scene18
+      rdf:type ccrt:scene_keybinding ;
+      kb:boundAction "sceneTrig_18" ;
+      kb:boundKey "8" .
+
+ccrti:binding_scene19
+      rdf:type ccrt:scene_keybinding ;
+      kb:boundAction "sceneTrig_19" ;
+      kb:boundKey "9" .
+
+ccrti:binding_shoot
+      rdf:type ccrt:CommandKeybinding ;
+      kb:boundAction "SHOOT" ;
+      kb:boundKey "BUTTON_LEFT" ;
+      cc:command ccrti:cmd_Shoot ;
+      cc:featureCategory "GAME" .
+
+ccrti:binding_skelHilite
+      rdf:type ccrt:CommandKeybinding ;
+      kb:boundAction "TOGGLE_SKEL_HILITE" ;
+      kb:boundKey "F2" ;
+      cc:command ccrti:cmd_ToggleSkeletonHilite ;
+      cc:featureCategory "RESET" .
+
+ccrti:binding_stand
+      rdf:type ccrt:CommandKeybinding ;
+      kb:boundAction "STAND_UP" ;
+      kb:boundKey "SPACE" ;
+      cc:command ccrti:cmd_StandUp ;
+      cc:featureCategory "SINBAD" .
+
+ccrti:binding_stopReset
+      rdf:type ccrt:CommandKeybinding ;
+      kb:boundAction "STOP_AND_RESET_CHAR" ;
+      kb:boundKey "F4" ;
+      cc:command ccrti:cmd_StopAndReset ;
+      cc:featureCategory "RESET" .
+
+ccrti:binding_stopResetRecenter
+      rdf:type ccrt:CommandKeybinding ;
+      kb:boundAction "STOP_RESET_AND_RECENTER_CHAR" ;
+      kb:boundKey "F5" ;
+      cc:command ccrti:cmd_StopResetAndRecenter ;
+      cc:featureCategory "RESET" .
+
+ccrti:binding_tempAnims
+      rdf:type ccrt:CommandKeybinding ;
+      kb:boundAction "USE_TEMP_ANIMS" ;
+      kb:boundKey "F7" ;
+      cc:command ccrti:cmd_UseTempAnims ;
+      cc:featureCategory "RELOAD" .
+
+

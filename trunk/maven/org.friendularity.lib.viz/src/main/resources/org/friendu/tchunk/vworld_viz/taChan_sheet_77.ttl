@@ -1,0 +1,303 @@
+# modelName=urn:ftd:cogchar.org:2012:runtime#taChan_sheet_77
+# modelSize=173
+
+
+
+
+@prefix apsb:    <http://www.appdapter.org/schema/box#> .
+@prefix ccrt:    <urn:ftd:cogchar.org:2012:runtime#> .
+@prefix csi:     <http://www.cogchar.org/schema/scene/instance#> .
+@prefix ja:      <http://jena.hpl.hp.com/2005/11/Assembler#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+
+ccrt:BuildableTAChanSpec
+      rdfs:subClassOf ja:Object ;
+      ja:assembler "org.cogchar.impl.channel.ThingActionChanSpecBuilder" .
+
+csi:M1L2-S1B3-TAChan-C1
+      rdf:type ccrt:BuildableTAChanSpec ;
+      apsb:javaFQCN "org.cogchar.impl.channel.ThingActionChanSpec" ;
+      ccrt:sourceModel ccrt:thing_sheet_22 .
+
+csi:M1L2-S1B4-TAChan-C1
+      rdf:type ccrt:BuildableTAChanSpec ;
+      apsb:javaFQCN "org.cogchar.impl.channel.ThingActionChanSpec" ;
+      ccrt:sourceModel ccrt:thing_sheet_22 .
+
+csi:M1L2-S1B5-TAChan-C1
+      rdf:type ccrt:BuildableTAChanSpec ;
+      apsb:javaFQCN "org.cogchar.impl.channel.ThingActionChanSpec" ;
+      ccrt:sourceModel ccrt:thing_sheet_22 .
+
+csi:M1L2-S1B6-TAChan-C1
+      rdf:type ccrt:BuildableTAChanSpec ;
+      apsb:javaFQCN "org.cogchar.impl.channel.ThingActionChanSpec" ;
+      ccrt:sourceModel ccrt:thing_sheet_22 .
+
+csi:M1L5-S1B9-TAChan-C1
+      rdf:type ccrt:BuildableTAChanSpec ;
+      apsb:javaFQCN "org.cogchar.impl.channel.ThingActionChanSpec" ;
+      ccrt:sourceModel ccrt:thing_sheet_22 .
+
+csi:M1L5-S1B12-TAChan-C1
+      rdf:type ccrt:BuildableTAChanSpec ;
+      apsb:javaFQCN "org.cogchar.impl.channel.ThingActionChanSpec" ;
+      ccrt:sourceModel ccrt:thing_sheet_22 .
+
+csi:M1L5-S1B15-TAChan-C1
+      rdf:type ccrt:BuildableTAChanSpec ;
+      apsb:javaFQCN "org.cogchar.impl.channel.ThingActionChanSpec" ;
+      ccrt:sourceModel ccrt:thing_sheet_22 .
+
+csi:M1L5-S1B20-TAChan-C1
+      rdf:type ccrt:BuildableTAChanSpec ;
+      apsb:javaFQCN "org.cogchar.impl.channel.ThingActionChanSpec" ;
+      ccrt:sourceModel ccrt:thing_sheet_22 .
+
+csi:M1L5-S1B23-TAChan-C1
+      rdf:type ccrt:BuildableTAChanSpec ;
+      apsb:javaFQCN "org.cogchar.impl.channel.ThingActionChanSpec" ;
+      ccrt:sourceModel ccrt:thing_sheet_22 .
+
+csi:M1L5-S1B24-TAChan-C1
+      rdf:type ccrt:BuildableTAChanSpec ;
+      apsb:javaFQCN "org.cogchar.impl.channel.ThingActionChanSpec" ;
+      ccrt:sourceModel ccrt:thing_sheet_22 .
+
+csi:M1L5-S1B25-TAChan-C1
+      rdf:type ccrt:BuildableTAChanSpec ;
+      apsb:javaFQCN "org.cogchar.impl.channel.ThingActionChanSpec" ;
+      ccrt:sourceModel ccrt:thing_sheet_22 .
+
+csi:M1L5-S1B33-TAChan-C1
+      rdf:type ccrt:BuildableTAChanSpec ;
+      apsb:javaFQCN "org.cogchar.impl.channel.ThingActionChanSpec" ;
+      ccrt:sourceModel ccrt:thing_sheet_22 .
+
+csi:M1L5-S1B40-TAChan-C1
+      rdf:type ccrt:BuildableTAChanSpec ;
+      apsb:javaFQCN "org.cogchar.impl.channel.ThingActionChanSpec" ;
+      ccrt:sourceModel ccrt:thing_sheet_22 .
+
+csi:M1L5-S1B43-TAChan-C1
+      rdf:type ccrt:BuildableTAChanSpec ;
+      apsb:javaFQCN "org.cogchar.impl.channel.ThingActionChanSpec" ;
+      ccrt:sourceModel ccrt:thing_sheet_22 .
+
+csi:M1L5-S1B43-TAChan-C2
+      rdf:type ccrt:BuildableTAChanSpec ;
+      apsb:javaFQCN "org.cogchar.impl.channel.ThingActionChanSpec" ;
+      ccrt:sourceModel ccrt:thing_sheet_22 .
+
+csi:M1L5-S1B43-TAChan-Merge
+      rdf:type ccrt:BuildableTAChanSpec ;
+      apsb:javaFQCN "org.cogchar.impl.channel.ThingActionChanSpec" ;
+      ccrt:sourceModel ccrt:thing_sheet_22 .
+
+csi:M1L5-S1B44-TAChan-C1
+      rdf:type ccrt:BuildableTAChanSpec ;
+      apsb:javaFQCN "org.cogchar.impl.channel.ThingActionChanSpec" ;
+      ccrt:sourceModel ccrt:thing_sheet_22 .
+
+csi:M1L5-S1B44-TAChan-C2
+      rdf:type ccrt:BuildableTAChanSpec ;
+      apsb:javaFQCN "org.cogchar.impl.channel.ThingActionChanSpec" ;
+      ccrt:sourceModel ccrt:thing_sheet_22 .
+
+csi:M1L5-S1B44-TAChan-Merge
+      rdf:type ccrt:BuildableTAChanSpec ;
+      apsb:javaFQCN "org.cogchar.impl.channel.ThingActionChanSpec" ;
+      ccrt:sourceModel ccrt:thing_sheet_22 .
+
+csi:M1L5-S1B45-TAChan-C1
+      rdf:type ccrt:BuildableTAChanSpec ;
+      apsb:javaFQCN "org.cogchar.impl.channel.ThingActionChanSpec" ;
+      ccrt:sourceModel ccrt:thing_sheet_22 .
+
+csi:M1L5-S1B45-TAChan-C2
+      rdf:type ccrt:BuildableTAChanSpec ;
+      apsb:javaFQCN "org.cogchar.impl.channel.ThingActionChanSpec" ;
+      ccrt:sourceModel ccrt:thing_sheet_22 .
+
+csi:M1L5-S1B45-TAChan-Merge
+      rdf:type ccrt:BuildableTAChanSpec ;
+      apsb:javaFQCN "org.cogchar.impl.channel.ThingActionChanSpec" ;
+      ccrt:sourceModel ccrt:thing_sheet_22 .
+
+csi:M1L5-S1B51-TAChan-C3
+      rdf:type ccrt:BuildableTAChanSpec ;
+      apsb:javaFQCN "org.cogchar.impl.channel.ThingActionChanSpec" ;
+      ccrt:sourceModel ccrt:thing_sheet_22 .
+
+csi:M1L5-S1B51-TAChan-C4
+      rdf:type ccrt:BuildableTAChanSpec ;
+      apsb:javaFQCN "org.cogchar.impl.channel.ThingActionChanSpec" ;
+      ccrt:sourceModel ccrt:thing_sheet_22 .
+
+csi:M1L5-S1B51-TAChan-Merge
+      rdf:type ccrt:BuildableTAChanSpec ;
+      apsb:javaFQCN "org.cogchar.impl.channel.ThingActionChanSpec" ;
+      ccrt:sourceModel ccrt:thing_sheet_22 .
+
+csi:M1L5-S1B56-TAChan-C1
+      rdf:type ccrt:BuildableTAChanSpec ;
+      apsb:javaFQCN "org.cogchar.impl.channel.ThingActionChanSpec" ;
+      ccrt:sourceModel ccrt:thing_sheet_22 .
+
+csi:M1L5-S1B59-TAChan-C1
+      rdf:type ccrt:BuildableTAChanSpec ;
+      apsb:javaFQCN "org.cogchar.impl.channel.ThingActionChanSpec" ;
+      ccrt:sourceModel ccrt:thing_sheet_22 .
+
+csi:M1L5-S1B60-TAChan-C1
+      rdf:type ccrt:BuildableTAChanSpec ;
+      apsb:javaFQCN "org.cogchar.impl.channel.ThingActionChanSpec" ;
+      ccrt:sourceModel ccrt:thing_sheet_22 .
+
+csi:M1L5-S1B61-TAChan-C1
+      rdf:type ccrt:BuildableTAChanSpec ;
+      apsb:javaFQCN "org.cogchar.impl.channel.ThingActionChanSpec" ;
+      ccrt:sourceModel ccrt:thing_sheet_22 .
+
+csi:M1L5-S1B70-TAChan-C1
+      rdf:type ccrt:BuildableTAChanSpec ;
+      apsb:javaFQCN "org.cogchar.impl.channel.ThingActionChanSpec" ;
+      ccrt:sourceModel ccrt:thing_sheet_22 .
+
+csi:M1L5-S1B71-TAChan-C1
+      rdf:type ccrt:BuildableTAChanSpec ;
+      apsb:javaFQCN "org.cogchar.impl.channel.ThingActionChanSpec" ;
+      ccrt:sourceModel ccrt:thing_sheet_22 .
+
+csi:M1L5-S1B76-TAChan-C1
+      rdf:type ccrt:BuildableTAChanSpec ;
+      apsb:javaFQCN "org.cogchar.impl.channel.ThingActionChanSpec" ;
+      ccrt:sourceModel ccrt:thing_sheet_22 .
+
+csi:M1L5-S1B76-TAChan-C2
+      rdf:type ccrt:BuildableTAChanSpec ;
+      apsb:javaFQCN "org.cogchar.impl.channel.ThingActionChanSpec" ;
+      ccrt:sourceModel ccrt:thing_sheet_22 .
+
+csi:M1L5-S1B76-TAChan-Merge
+      rdf:type ccrt:BuildableTAChanSpec ;
+      apsb:javaFQCN "org.cogchar.impl.channel.ThingActionChanSpec" ;
+      ccrt:sourceModel ccrt:thing_sheet_22 .
+
+csi:M1L5-S1B77-TAChan-C1
+      rdf:type ccrt:BuildableTAChanSpec ;
+      apsb:javaFQCN "org.cogchar.impl.channel.ThingActionChanSpec" ;
+      ccrt:sourceModel ccrt:thing_sheet_22 .
+
+csi:M1L5-S1B77-TAChan-C2
+      rdf:type ccrt:BuildableTAChanSpec ;
+      apsb:javaFQCN "org.cogchar.impl.channel.ThingActionChanSpec" ;
+      ccrt:sourceModel ccrt:thing_sheet_22 .
+
+csi:M1L5-S1B77-TAChan-Merge
+      rdf:type ccrt:BuildableTAChanSpec ;
+      apsb:javaFQCN "org.cogchar.impl.channel.ThingActionChanSpec" ;
+      ccrt:sourceModel ccrt:thing_sheet_22 .
+
+csi:M1L5-S1B78-TAChan-C1
+      rdf:type ccrt:BuildableTAChanSpec ;
+      apsb:javaFQCN "org.cogchar.impl.channel.ThingActionChanSpec" ;
+      ccrt:sourceModel ccrt:thing_sheet_22 .
+
+csi:M1L5-S1B78-TAChan-C2
+      rdf:type ccrt:BuildableTAChanSpec ;
+      apsb:javaFQCN "org.cogchar.impl.channel.ThingActionChanSpec" ;
+      ccrt:sourceModel ccrt:thing_sheet_22 .
+
+csi:M1L5-S1B78-TAChan-Merge
+      rdf:type ccrt:BuildableTAChanSpec ;
+      apsb:javaFQCN "org.cogchar.impl.channel.ThingActionChanSpec" ;
+      ccrt:sourceModel ccrt:thing_sheet_22 .
+
+csi:M1L5-S1B81-TAChan-Merge
+      rdf:type ccrt:BuildableTAChanSpec ;
+      apsb:javaFQCN "org.cogchar.impl.channel.ThingActionChanSpec" ;
+      ccrt:sourceModel ccrt:thing_sheet_22 .
+
+csi:M1L5-S1B86-TAChan-C1
+      rdf:type ccrt:BuildableTAChanSpec ;
+      apsb:javaFQCN "org.cogchar.impl.channel.ThingActionChanSpec" ;
+      ccrt:sourceModel ccrt:thing_sheet_22 .
+
+csi:M1L5-S1B89-TAChan-C1
+      rdf:type ccrt:BuildableTAChanSpec ;
+      apsb:javaFQCN "org.cogchar.impl.channel.ThingActionChanSpec" ;
+      ccrt:sourceModel ccrt:thing_sheet_22 .
+
+csi:M1L5-S1B90-TAChan-C1
+      rdf:type ccrt:BuildableTAChanSpec ;
+      apsb:javaFQCN "org.cogchar.impl.channel.ThingActionChanSpec" ;
+      ccrt:sourceModel ccrt:thing_sheet_22 .
+
+csi:M1L5-S1B91-TAChan-C1
+      rdf:type ccrt:BuildableTAChanSpec ;
+      apsb:javaFQCN "org.cogchar.impl.channel.ThingActionChanSpec" ;
+      ccrt:sourceModel ccrt:thing_sheet_22 .
+
+csi:M1L5-S1B100-TAChan-C1
+      rdf:type ccrt:BuildableTAChanSpec ;
+      apsb:javaFQCN "org.cogchar.impl.channel.ThingActionChanSpec" ;
+      ccrt:sourceModel ccrt:thing_sheet_22 .
+
+csi:M1L5-S1B101-TAChan-C1
+      rdf:type ccrt:BuildableTAChanSpec ;
+      apsb:javaFQCN "org.cogchar.impl.channel.ThingActionChanSpec" ;
+      ccrt:sourceModel ccrt:thing_sheet_22 .
+
+csi:M1L5-S1B106-TAChan-C1
+      rdf:type ccrt:BuildableTAChanSpec ;
+      apsb:javaFQCN "org.cogchar.impl.channel.ThingActionChanSpec" ;
+      ccrt:sourceModel ccrt:thing_sheet_22 .
+
+csi:M1L5-S1B107-TAChan-C1
+      rdf:type ccrt:BuildableTAChanSpec ;
+      apsb:javaFQCN "org.cogchar.impl.channel.ThingActionChanSpec" ;
+      ccrt:sourceModel ccrt:thing_sheet_22 .
+
+csi:M1L5-S1B107-TAChan-C2
+      rdf:type ccrt:BuildableTAChanSpec ;
+      apsb:javaFQCN "org.cogchar.impl.channel.ThingActionChanSpec" ;
+      ccrt:sourceModel ccrt:thing_sheet_22 .
+
+csi:M1L5-S1B107-TAChan-Merge
+      rdf:type ccrt:BuildableTAChanSpec ;
+      apsb:javaFQCN "org.cogchar.impl.channel.ThingActionChanSpec" ;
+      ccrt:sourceModel ccrt:thing_sheet_22 .
+
+csi:M1L5-S1B108-TAChan-C1
+      rdf:type ccrt:BuildableTAChanSpec ;
+      apsb:javaFQCN "org.cogchar.impl.channel.ThingActionChanSpec" ;
+      ccrt:sourceModel ccrt:thing_sheet_22 .
+
+csi:M1L5-S1B108-TAChan-C2
+      rdf:type ccrt:BuildableTAChanSpec ;
+      apsb:javaFQCN "org.cogchar.impl.channel.ThingActionChanSpec" ;
+      ccrt:sourceModel ccrt:thing_sheet_22 .
+
+csi:M1L5-S1B108-TAChan-Merge
+      rdf:type ccrt:BuildableTAChanSpec ;
+      apsb:javaFQCN "org.cogchar.impl.channel.ThingActionChanSpec" ;
+      ccrt:sourceModel ccrt:thing_sheet_22 .
+
+csi:M1L5-S1B110-TAChan-C1
+      rdf:type ccrt:BuildableTAChanSpec ;
+      apsb:javaFQCN "org.cogchar.impl.channel.ThingActionChanSpec" ;
+      ccrt:sourceModel ccrt:thing_sheet_22 .
+
+csi:M1L5-S1B110-TAChan-Merge
+      rdf:type ccrt:BuildableTAChanSpec ;
+      apsb:javaFQCN "org.cogchar.impl.channel.ThingActionChanSpec" ;
+      ccrt:sourceModel ccrt:thing_sheet_22 .
+
+csi:M1L5-S1B111-TAChan-Merge
+      rdf:type ccrt:BuildableTAChanSpec ;
+      apsb:javaFQCN "org.cogchar.impl.channel.ThingActionChanSpec" ;
+      ccrt:sourceModel ccrt:thing_sheet_22 .
+
+

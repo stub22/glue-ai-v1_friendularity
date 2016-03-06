@@ -1,0 +1,445 @@
+# modelName=urn:ftd:cogchar.org:2012:runtime#bony_sheet_sinbad
+# modelSize=340
+
+
+
+
+@prefix bc:      <http://www.cogchar.org/bony/config#> .
+@prefix bci:     <http://www.cogchar.org/bony/config/instance#> .
+@prefix ccrt:    <urn:ftd:cogchar.org:2012:runtime#> .
+@prefix hrk:     <http://www.hrkind.com/model#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+
+hrk:bc_Sinbad
+      rdf:type ccrt:BoneRobotConfig ;
+      bc:char ccrt:char_sinbad_88 ;
+      bc:robotName "Sinbad" .
+
+bci:joint_Blink_Open_Sinbad
+      rdf:type ccrt:BoneJointConfig ;
+      bc:boneName "rig_m_blink_JN301" ;
+      bc:boneRobotConf hrk:bc_Sinbad ;
+      bc:defaultPosNorm "0.95"^^xsd:double ;
+      bc:jointName "Blink_Open" ;
+      bc:jointNum 301 ;
+      bc:maxAngleDeg "0"^^xsd:double ;
+      bc:minAngleDeg "45"^^xsd:double ;
+      bc:rotationAxis "X_ROT" .
+
+bci:joint_Brows_Up_Sinbad
+      rdf:type ccrt:BoneJointConfig ;
+      bc:boneName "Brow.C" ;
+      bc:boneRobotConf hrk:bc_Sinbad ;
+      bc:defaultPosNorm "0.252307692307692"^^xsd:double ;
+      bc:jointName "Brows_Up" ;
+      bc:jointNum 300 ;
+      bc:maxAngleDeg "72.9"^^xsd:double ;
+      bc:minAngleDeg "-24.6"^^xsd:double ;
+      bc:rotationAxis "X_ROT" .
+
+bci:joint_Eyes_Pitch_Sinbad
+      rdf:type ccrt:BoneJointConfig ;
+      bc:boneName "Eye.L" ;
+      bc:boneRobotConf hrk:bc_Sinbad ;
+      bc:defaultPosNorm "0.67"^^xsd:double ;
+      bc:invertForSymmetry
+              "true"^^xsd:boolean ;
+      bc:jointName "Eyes_Vert" ;
+      bc:jointNum 310 ;
+      bc:maxAngleDeg "-28"^^xsd:double ;
+      bc:minAngleDeg "24"^^xsd:double ;
+      bc:rotationAxis "Y_ROT" .
+
+bci:joint_Eyes_Pitch_Sinbad_additionalBone
+      rdf:type ccrt:AdditionalBone ;
+      bc:boneName "Eye.R" ;
+      bc:boneRobotConf hrk:bc_Sinbad ;
+      bc:maxAngleDeg "-28"^^xsd:double ;
+      bc:minAngleDeg "24"^^xsd:double ;
+      bc:rotationAxis "Y_ROT" .
+
+bci:joint_Lower_Jaw_Sinbad
+      rdf:type ccrt:BoneJointConfig ;
+      bc:boneName "Jaw" ;
+      bc:boneRobotConf hrk:bc_Sinbad ;
+      bc:defaultPosNorm "0.872340425531915"^^xsd:double ;
+      bc:jointName "Jaw" ;
+      bc:jointNum 322 ;
+      bc:maxAngleDeg "3.6"^^xsd:double ;
+      bc:minAngleDeg "-24.6"^^xsd:double ;
+      bc:rotationAxis "X_ROT" .
+
+bci:joint_LtAnkle_Pitch_Sinbad
+      rdf:type ccrt:BoneJointConfig ;
+      bc:boneName "Foot.L" ;
+      bc:boneRobotConf hrk:bc_Sinbad ;
+      bc:defaultPosNorm "0.7"^^xsd:double ;
+      bc:invertForSymmetry
+              "true"^^xsd:boolean ;
+      bc:jointName "LtAnkle_Pitch" ;
+      bc:jointNum 620 ;
+      bc:maxAngleDeg "-30"^^xsd:double ;
+      bc:minAngleDeg "70"^^xsd:double ;
+      bc:rotationAxis "X_ROT" .
+
+bci:joint_LtAnkle_Roll_Sinbad
+      rdf:type ccrt:BoneJointConfig ;
+      bc:boneName "Foot.L" ;
+      bc:boneRobotConf hrk:bc_Sinbad ;
+      bc:defaultPosNorm "0.5"^^xsd:double ;
+      bc:jointName "LtAnkle_Roll" ;
+      bc:jointNum 621 ;
+      bc:maxAngleDeg "30"^^xsd:double ;
+      bc:minAngleDeg "-30"^^xsd:double ;
+      bc:rotationAxis "Z_ROT" .
+
+bci:joint_LtElbow_Pitch_Sinbad
+      rdf:type ccrt:BoneJointConfig ;
+      bc:boneName "rig_l_elbow_JN411" ;
+      bc:boneRobotConf hrk:bc_Sinbad ;
+      bc:defaultPosNorm "0.111111111111111"^^xsd:double ;
+      bc:invertForSymmetry
+              "true"^^xsd:boolean ;
+      bc:jointName "LtElbow_Pitch" ;
+      bc:jointNum 411 ;
+      bc:maxAngleDeg "-80"^^xsd:double ;
+      bc:minAngleDeg "10"^^xsd:double ;
+      bc:rotationAxis "X_ROT" .
+
+bci:joint_LtElbow_Yaw_Sinbad
+      rdf:type ccrt:BoneJointConfig ;
+      bc:boneName "rig_l_elbow_JN410" ;
+      bc:boneRobotConf hrk:bc_Sinbad ;
+      bc:defaultPosNorm "0.5"^^xsd:double ;
+      bc:jointName "LtElbow_Yaw" ;
+      bc:jointNum 410 ;
+      bc:maxAngleDeg "90"^^xsd:double ;
+      bc:minAngleDeg "-90"^^xsd:double ;
+      bc:rotationAxis "Y_ROT" .
+
+bci:joint_LtEye_Yaw_Sinbad
+      rdf:type ccrt:BoneJointConfig ;
+      bc:boneName "Eye.L" ;
+      bc:boneRobotConf hrk:bc_Sinbad ;
+      bc:defaultPosNorm "0.5"^^xsd:double ;
+      bc:jointName "LtEye_Yaw" ;
+      bc:jointNum 311 ;
+      bc:maxAngleDeg "35"^^xsd:double ;
+      bc:minAngleDeg "-35"^^xsd:double ;
+      bc:rotationAxis "X_ROT" .
+
+bci:joint_LtHip_Pitch_Sinbad
+      rdf:type ccrt:BoneJointConfig ;
+      bc:boneName "Thigh.L" ;
+      bc:boneRobotConf hrk:bc_Sinbad ;
+      bc:defaultPosNorm "0.1"^^xsd:double ;
+      bc:invertForSymmetry
+              "true"^^xsd:boolean ;
+      bc:jointName "LtHip_Pitch" ;
+      bc:jointNum 602 ;
+      bc:maxAngleDeg "-90"^^xsd:double ;
+      bc:minAngleDeg "10"^^xsd:double ;
+      bc:rotationAxis "X_ROT" .
+
+bci:joint_LtHip_Roll_Sinbad
+      rdf:type ccrt:BoneJointConfig ;
+      bc:boneName "Thigh.L" ;
+      bc:boneRobotConf hrk:bc_Sinbad ;
+      bc:defaultPosNorm "0.2"^^xsd:double ;
+      bc:jointName "LtHip_Roll" ;
+      bc:jointNum 600 ;
+      bc:maxAngleDeg "80"^^xsd:double ;
+      bc:minAngleDeg "-20"^^xsd:double ;
+      bc:rotationAxis "Z_ROT" .
+
+bci:joint_LtHip_Yaw_Sinbad
+      rdf:type ccrt:BoneJointConfig ;
+      bc:boneName "Thigh.L" ;
+      bc:boneRobotConf hrk:bc_Sinbad ;
+      bc:defaultPosNorm "0.181818181818182"^^xsd:double ;
+      bc:jointName "LtHip_Yaw" ;
+      bc:jointNum 601 ;
+      bc:maxAngleDeg "135"^^xsd:double ;
+      bc:minAngleDeg "-30"^^xsd:double ;
+      bc:rotationAxis "Y_ROT" .
+
+bci:joint_LtKnee_Pitch_Sinbad
+      rdf:type ccrt:BoneJointConfig ;
+      bc:boneName "Calf.L" ;
+      bc:boneRobotConf hrk:bc_Sinbad ;
+      bc:defaultPosNorm "0.909090909090909"^^xsd:double ;
+      bc:invertForSymmetry
+              "true"^^xsd:boolean ;
+      bc:jointName "LtKnee_Pitch" ;
+      bc:jointNum 610 ;
+      bc:maxAngleDeg "-10"^^xsd:double ;
+      bc:minAngleDeg "100"^^xsd:double ;
+      bc:rotationAxis "X_ROT" .
+
+bci:joint_LtShoulder_Pitch_Sinbad
+      rdf:type ccrt:BoneJointConfig ;
+      bc:boneName "Ulna.R" ;
+      bc:boneRobotConf hrk:bc_Sinbad ;
+      bc:defaultPosNorm "0.185185185185185"^^xsd:double ;
+      bc:invertForSymmetry
+              "true"^^xsd:boolean ;
+      bc:jointName "LtShoulder_Pitch" ;
+      bc:jointNum 400 ;
+      bc:maxAngleDeg "-220"^^xsd:double ;
+      bc:minAngleDeg "50"^^xsd:double ;
+      bc:rotationAxis "Y_ROT" .
+
+bci:joint_LtShoulder_Roll_Sinbad
+      rdf:type ccrt:BoneJointConfig ;
+      bc:boneName "Humerus.L" ;
+      bc:boneRobotConf hrk:bc_Sinbad ;
+      bc:defaultPosNorm "0.055555555555556"^^xsd:double ;
+      bc:jointName "LtShoulder_Roll" ;
+      bc:jointNum 401 ;
+      bc:maxAngleDeg "90"^^xsd:double ;
+      bc:minAngleDeg "0"^^xsd:double ;
+      bc:rotationAxis "Y_ROT" .
+
+bci:joint_LtSmile_Sinbad
+      rdf:type ccrt:BoneJointConfig ;
+      bc:boneName "UpperLip" ;
+      bc:boneRobotConf hrk:bc_Sinbad ;
+      bc:defaultPosNorm "0.25"^^xsd:double ;
+      bc:jointName "LtSmile" ;
+      bc:jointNum 320 ;
+      bc:maxAngleDeg "7.2"^^xsd:double ;
+      bc:minAngleDeg "-2.4"^^xsd:double ;
+      bc:rotationAxis "X_ROT" .
+
+bci:joint_LtWrist_Yaw_Sinbad
+      rdf:type ccrt:BoneJointConfig ;
+      bc:boneName "Handle.L" ;
+      bc:boneRobotConf hrk:bc_Sinbad ;
+      bc:defaultPosNorm "0.5"^^xsd:double ;
+      bc:jointName "LtWrist_Yaw" ;
+      bc:jointNum 420 ;
+      bc:maxAngleDeg "-180"^^xsd:double ;
+      bc:minAngleDeg "180"^^xsd:double ;
+      bc:rotationAxis "Y_ROT" .
+
+bci:joint_Neck_Pitch_Sinbad
+      rdf:type ccrt:BoneJointConfig ;
+      bc:boneName "Neck" ;
+      bc:boneRobotConf hrk:bc_Sinbad ;
+      bc:defaultPosNorm "0.5"^^xsd:double ;
+      bc:invertForSymmetry
+              "true"^^xsd:boolean ;
+      bc:jointName "Neck_Pitch" ;
+      bc:jointNum 202 ;
+      bc:maxAngleDeg "-25"^^xsd:double ;
+      bc:minAngleDeg "25"^^xsd:double ;
+      bc:rotationAxis "X_ROT" .
+
+bci:joint_Neck_Roll_Sinbad
+      rdf:type ccrt:BoneJointConfig ;
+      bc:boneName "Neck" ;
+      bc:boneRobotConf hrk:bc_Sinbad ;
+      bc:defaultPosNorm "0.5"^^xsd:double ;
+      bc:jointName "Neck_Roll" ;
+      bc:jointNum 201 ;
+      bc:maxAngleDeg "-25"^^xsd:double ;
+      bc:minAngleDeg "25"^^xsd:double ;
+      bc:rotationAxis "Y_ROT" .
+
+bci:joint_Neck_Yaw_Sinbad
+      rdf:type ccrt:BoneJointConfig ;
+      bc:boneName "Neck" ;
+      bc:boneRobotConf hrk:bc_Sinbad ;
+      bc:defaultPosNorm "0.5"^^xsd:double ;
+      bc:jointName "Neck_Yaw" ;
+      bc:jointNum 200 ;
+      bc:maxAngleDeg "45"^^xsd:double ;
+      bc:minAngleDeg "-45"^^xsd:double ;
+      bc:rotationAxis "Z_ROT" .
+
+bci:joint_Root_Spin_Sinbad
+      rdf:type ccrt:BoneJointConfig ;
+      bc:boneName "Root" ;
+      bc:boneRobotConf hrk:bc_Sinbad ;
+      bc:defaultPosNorm "0.5"^^xsd:double ;
+      bc:jointName "Root_Spin" ;
+      bc:jointNum 42 ;
+      bc:maxAngleDeg "180"^^xsd:double ;
+      bc:minAngleDeg "-180"^^xsd:double ;
+      bc:rotationAxis "Y_ROT" .
+
+bci:joint_RtAnkle_Pitch_Sinbad
+      rdf:type ccrt:BoneJointConfig ;
+      bc:boneName "Foot.R" ;
+      bc:boneRobotConf hrk:bc_Sinbad ;
+      bc:defaultPosNorm "0.7"^^xsd:double ;
+      bc:invertForSymmetry
+              "true"^^xsd:boolean ;
+      bc:jointName "RtAnkle_Pitch" ;
+      bc:jointNum 720 ;
+      bc:maxAngleDeg "-30"^^xsd:double ;
+      bc:minAngleDeg "70"^^xsd:double ;
+      bc:rotationAxis "X_ROT" .
+
+bci:joint_RtAnkle_Roll_Sinbad
+      rdf:type ccrt:BoneJointConfig ;
+      bc:boneName "Foot.R" ;
+      bc:boneRobotConf hrk:bc_Sinbad ;
+      bc:defaultPosNorm "0.5"^^xsd:double ;
+      bc:invertForSymmetry
+              "true"^^xsd:boolean ;
+      bc:jointName "RtAnkle_Roll" ;
+      bc:jointNum 721 ;
+      bc:maxAngleDeg "30"^^xsd:double ;
+      bc:minAngleDeg "-30"^^xsd:double ;
+      bc:rotationAxis "Z_ROT" .
+
+bci:joint_RtElbow_Pitch_Sinbad
+      rdf:type ccrt:BoneJointConfig ;
+      bc:boneName "rig_r_elbow_JN511" ;
+      bc:boneRobotConf hrk:bc_Sinbad ;
+      bc:defaultPosNorm "0.111111111111111"^^xsd:double ;
+      bc:invertForSymmetry
+              "true"^^xsd:boolean ;
+      bc:jointName "RtElbow_Pitch" ;
+      bc:jointNum 511 ;
+      bc:maxAngleDeg "-80"^^xsd:double ;
+      bc:minAngleDeg "10"^^xsd:double ;
+      bc:rotationAxis "X_ROT" .
+
+bci:joint_RtElbow_Yaw_Sinbad
+      rdf:type ccrt:BoneJointConfig ;
+      bc:boneName "rig_r_elbow_JN510" ;
+      bc:boneRobotConf hrk:bc_Sinbad ;
+      bc:defaultPosNorm "0.5"^^xsd:double ;
+      bc:invertForSymmetry
+              "true"^^xsd:boolean ;
+      bc:jointName "RtElbow_Yaw" ;
+      bc:jointNum 510 ;
+      bc:maxAngleDeg "-90"^^xsd:double ;
+      bc:minAngleDeg "90"^^xsd:double ;
+      bc:rotationAxis "Y_ROT" .
+
+bci:joint_RtEye_Yaw_Sinbad
+      rdf:type ccrt:BoneJointConfig ;
+      bc:boneName "Eye.R" ;
+      bc:boneRobotConf hrk:bc_Sinbad ;
+      bc:defaultPosNorm "0.5"^^xsd:double ;
+      bc:jointName "RtEye_Yaw" ;
+      bc:jointNum 312 ;
+      bc:maxAngleDeg "35"^^xsd:double ;
+      bc:minAngleDeg "-35"^^xsd:double ;
+      bc:rotationAxis "X_ROT" .
+
+bci:joint_RtHip_Pitch_Sinbad
+      rdf:type ccrt:BoneJointConfig ;
+      bc:boneName "Thigh.R" ;
+      bc:boneRobotConf hrk:bc_Sinbad ;
+      bc:defaultPosNorm "0.1"^^xsd:double ;
+      bc:invertForSymmetry
+              "true"^^xsd:boolean ;
+      bc:jointName "RtHip_Pitch" ;
+      bc:jointNum 702 ;
+      bc:maxAngleDeg "-90"^^xsd:double ;
+      bc:minAngleDeg "10"^^xsd:double ;
+      bc:rotationAxis "X_ROT" .
+
+bci:joint_RtHip_Roll_Sinbad
+      rdf:type ccrt:BoneJointConfig ;
+      bc:boneName "Thigh.R" ;
+      bc:boneRobotConf hrk:bc_Sinbad ;
+      bc:defaultPosNorm "0.2"^^xsd:double ;
+      bc:invertForSymmetry
+              "true"^^xsd:boolean ;
+      bc:jointName "RtHip_Roll" ;
+      bc:jointNum 700 ;
+      bc:maxAngleDeg "-80"^^xsd:double ;
+      bc:minAngleDeg "20"^^xsd:double ;
+      bc:rotationAxis "Z_ROT" .
+
+bci:joint_RtHip_Yaw_Sinbad
+      rdf:type ccrt:BoneJointConfig ;
+      bc:boneName "Thigh.R" ;
+      bc:boneRobotConf hrk:bc_Sinbad ;
+      bc:defaultPosNorm "0.818181818181818"^^xsd:double ;
+      bc:invertForSymmetry
+              "true"^^xsd:boolean ;
+      bc:jointName "RtHip_Yaw" ;
+      bc:jointNum 701 ;
+      bc:maxAngleDeg "30"^^xsd:double ;
+      bc:minAngleDeg "-135"^^xsd:double ;
+      bc:rotationAxis "Y_ROT" .
+
+bci:joint_RtKnee_Pitch_Sinbad
+      rdf:type ccrt:BoneJointConfig ;
+      bc:boneName "Calf.R" ;
+      bc:boneRobotConf hrk:bc_Sinbad ;
+      bc:defaultPosNorm "0.909090909090909"^^xsd:double ;
+      bc:invertForSymmetry
+              "true"^^xsd:boolean ;
+      bc:jointName "RtKnee_Pitch" ;
+      bc:jointNum 710 ;
+      bc:maxAngleDeg "-10"^^xsd:double ;
+      bc:minAngleDeg "100"^^xsd:double ;
+      bc:rotationAxis "X_ROT" .
+
+bci:joint_RtShoulder_Pitch_Sinbad
+      rdf:type ccrt:BoneJointConfig ;
+      bc:boneName "Ulna.R" ;
+      bc:boneRobotConf hrk:bc_Sinbad ;
+      bc:defaultPosNorm "0.185185185185185"^^xsd:double ;
+      bc:invertForSymmetry
+              "true"^^xsd:boolean ;
+      bc:jointName "RtShoulder_Pitch" ;
+      bc:jointNum 500 ;
+      bc:maxAngleDeg "-220"^^xsd:double ;
+      bc:minAngleDeg "50"^^xsd:double ;
+      bc:rotationAxis "Y_ROT" .
+
+bci:joint_RtShoulder_Roll_Sinbad
+      rdf:type ccrt:BoneJointConfig ;
+      bc:boneName "Humerus.R" ;
+      bc:boneRobotConf hrk:bc_Sinbad ;
+      bc:defaultPosNorm "0.055555555555556"^^xsd:double ;
+      bc:jointName "RtShoulder_Roll" ;
+      bc:jointNum 501 ;
+      bc:maxAngleDeg "-90"^^xsd:double ;
+      bc:minAngleDeg "0"^^xsd:double ;
+      bc:rotationAxis "Y_ROT" .
+
+bci:joint_RtSmile_Sinbad
+      rdf:type ccrt:BoneJointConfig ;
+      bc:boneRobotConf hrk:bc_Sinbad ;
+      bc:defaultPosNorm "0.5"^^xsd:double ;
+      bc:jointName "RtSmile" ;
+      bc:jointNum 321 ;
+      bc:maxAngleDeg "-20"^^xsd:double ;
+      bc:minAngleDeg "20"^^xsd:double ;
+      bc:rotationAxis "X_ROT" .
+
+bci:joint_RtWrist_Yaw_Sinbad
+      rdf:type ccrt:BoneJointConfig ;
+      bc:boneName "Hand.R" ;
+      bc:boneRobotConf hrk:bc_Sinbad ;
+      bc:defaultPosNorm "0.5"^^xsd:double ;
+      bc:invertForSymmetry
+              "true"^^xsd:boolean ;
+      bc:jointName "RtWrist_Yaw" ;
+      bc:jointNum 520 ;
+      bc:maxAngleDeg "180"^^xsd:double ;
+      bc:minAngleDeg "-180"^^xsd:double ;
+      bc:rotationAxis "Y_ROT" .
+
+bci:joint_Spine_Yaw_Sinbad
+      rdf:type ccrt:BoneJointConfig ;
+      bc:boneName "Waist" ;
+      bc:boneRobotConf hrk:bc_Sinbad ;
+      bc:defaultPosNorm "0.5"^^xsd:double ;
+      bc:jointName "Waist_Yaw" ;
+      bc:jointNum 100 ;
+      bc:maxAngleDeg "30"^^xsd:double ;
+      bc:minAngleDeg "-30"^^xsd:double ;
+      bc:rotationAxis "X_ROT" .
+
+

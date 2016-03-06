@@ -1,0 +1,141 @@
+# modelName=urn:ftd:cogchar.org:2012:runtime#modes_sheet_22
+# modelSize=86
+
+@prefix bc:      <http://www.cogchar.org/bony/config#> .
+@prefix ccrt:    <urn:ftd:cogchar.org:2012:runtime#> .
+@prefix gr:      <http://www.cogchar.org/general/config#> .
+@prefix vizapp:     <http://org.friendularity.org/vizapp#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix miort:    <urn:ftd:mechio.org:2016:runtime#> .
+
+vizapp:aZR50
+      rdf:type gr:CharEntity ;
+      bc:globalMode miort:test_spread_reload .
+
+miort:bind_tsm_01
+      rdf:type gr:Binding ;
+      bc:entity vizapp:char_cajunsinbad_77 ;
+      bc:globalMode miort:test_special_mode ;
+      bc:graph ccrt:graph_0709 ;
+      bc:role miort:bonyAvatarConf .
+
+miort:bind_tsm_02
+      rdf:type gr:Binding ;
+      bc:entity vizapp:char_cajunsinbad_77 ;
+      bc:globalMode miort:test_special_mode ;
+      bc:graph ccrt:hmd_sheet_22 ;
+      bc:role miort:humanoidConf .
+
+miort:bind_tsr_03
+      rdf:type gr:Binding ;
+      bc:entity ccrt:char_sinbad_88 ;
+      bc:globalMode miort:test_spread_reload ;
+      bc:graph ccrt:bony_sheet_sinbad ;
+      bc:role miort:bonyAvatarConf .
+
+miort:bind_tsr_04
+      rdf:type gr:Binding ;
+      bc:entity vizapp:webapp_pushy_sinbad ;
+      bc:globalMode miort:test_spread_reload ;
+      bc:graph ccrt:lifter_sheet_22 ;
+      bc:role miort:lifterConf .
+
+miort:bind_tsr_05
+      rdf:type gr:Binding ;
+      bc:entity ccrt:fun_world ;
+      bc:globalMode miort:test_spread_reload ;
+      bc:graph ccrt:lights_camera_sheet_22 ;
+      bc:role miort:camLightsConf .
+
+miort:bind_tsr_06
+      rdf:type gr:Binding ;
+      bc:entity vizapp:aZR50 ;
+      bc:globalMode miort:test_spread_reload ;
+      bc:graph ccrt:bony_sheet_22 ;
+      bc:role miort:bonyAvatarConf .
+
+miort:bind_tsr_07
+      rdf:type gr:Binding ;
+      bc:entity vizapp:aZR50 ;
+      bc:globalMode miort:test_spread_reload ;
+      bc:graph ccrt:hmd_sheet_22 ;
+      bc:role miort:humanoidConf .
+
+miort:bind_tsr_08
+      rdf:type gr:Binding ;
+      bc:entity ccrt:char_sinbad_88 ;
+      bc:globalMode miort:test_spread_reload ;
+      bc:graph ccrt:hmd_sheet_22 ;
+      bc:role miort:humanoidConf .
+
+miort:bind_tsr_09
+      rdf:type gr:Binding ;
+      bc:entity ccrt:fun_world ;
+      bc:globalMode miort:test_spread_reload ;
+      bc:graph ccrt:path_sheet_22 ;
+      bc:role miort:pathConf .
+
+miort:bind_tsr_10
+      rdf:type gr:Binding ;
+      bc:entity vizapp:webapp_pushy_sinbad ;
+      bc:globalMode miort:test_spread_reload ;
+      bc:graph ccrt:general_sheet_22 ;
+      bc:role miort:generalConf .
+
+miort:bind_tsr_11
+      rdf:type gr:Binding ;
+      bc:entity ccrt:fun_world ;
+      bc:globalMode miort:test_spread_reload ;
+      bc:graph ccrt:bindings_sheet_22 ;
+      bc:role miort:inputBindings .
+
+miort:bind_tsr_12
+      rdf:type gr:Binding ;
+      bc:entity vizapp:webapp_pushy_sinbad ;
+      bc:globalMode miort:test_spread_reload ;
+      bc:graph ccrt:user_access_sheet_22 ;
+      bc:role miort:userConf .
+
+miort:bind_tsr_13
+      rdf:type gr:Binding ;
+      bc:entity ccrt:fun_world ;
+      bc:globalMode miort:test_spread_reload ;
+      bc:graph ccrt:thing_sheet_22 ;
+      bc:role miort:thingActions .
+
+miort:bind_tsr_14
+      rdf:type gr:Binding ;
+      bc:entity ccrt:fun_world ;
+      bc:globalMode miort:test_spread_reload ;
+      bc:graph ccrt:thing_anim_sheet_22 ;
+      bc:role miort:thingAnims .
+
+miort:bind_tsr_15
+      rdf:type gr:Binding ;
+      bc:entity ccrt:fun_world ;
+      bc:globalMode miort:test_spread_reload ;
+      bc:graph ccrt:waypoint_sheet_22 ;
+      bc:role miort:thingWaypoints .
+
+vizapp:char_cajunsinbad_77
+      bc:globalMode miort:test_spread_reload .
+
+ccrt:char_sinbad_88
+      rdf:type gr:CharEntity ;
+      bc:globalMode miort:test_spread_reload .
+
+ccrt:fun_world
+      rdf:type gr:VirtualWorldEntity ;
+      bc:globalMode miort:test_spread_reload .
+
+miort:test_special_mode
+      rdf:type gr:GlobalMode .
+
+miort:test_spread_reload
+      rdf:type gr:GlobalMode .
+
+vizapp:webapp_pushy_sinbad
+      rdf:type gr:WebappEntity ;
+      bc:globalMode miort:test_spread_reload .
+
+

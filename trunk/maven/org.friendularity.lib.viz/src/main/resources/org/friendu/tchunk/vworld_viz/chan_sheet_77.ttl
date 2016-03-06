@@ -1,0 +1,74 @@
+# modelName=http://www.cogchar.org/schema/scene/instance#chan_sheet_77
+# modelSize=45
+
+
+
+
+@prefix apsb:    <http://www.appdapter.org/schema/box#> .
+@prefix ccrt:    <urn:ftd:cogchar.org:2012:runtime#> .
+@prefix cs:      <http://www.cogchar.org/schema/scene#> .
+@prefix csi:     <http://www.cogchar.org/schema/scene/instance#> .
+@prefix ja:      <http://jena.hpl.hp.com/2005/11/Assembler#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+
+csi:avatar_01_anim_out
+      rdfs:description "Sends control signals and monitors status of Mechio animations - for first char found" ;
+      rdf:type cs:BuildableChannelSpec ;
+      ccrt:chanType csi:animOut_200 ;
+      cs:details "extra deets 230" ;
+      apsb:javaFQCN "org.cogchar.impl.perform.FancyPerfChanSpec" ;
+      apsb:label "AnimOut-VirtualBest for first character found" ;
+      ccrt:OSGiFilter "(animationPlayerId=avatar01/AnimPlayer)" .
+
+csi:avatar_01_speech_out
+      rdfs:description "Speech out channel for first character found" ;
+      rdf:type cs:BuildableChannelSpec ;
+      ccrt:chanType csi:speechOut_100 ;
+      cs:details "extra deets 130" ;
+      apsb:javaFQCN "org.cogchar.impl.perform.FancyPerfChanSpec" ;
+      apsb:label "SpeechOutMain for Avatar_ZenoR50" ;
+      ccrt:OSGiFilter "(speechServiceId=avatar01/SpeechService)" .
+
+cs:BuildableChannelSpec
+      rdfs:subClassOf ja:Object ;
+      rdf:type rdfs:Class ;
+      ja:assembler "org.cogchar.impl.perform.ChannelSpecBuilder" .
+
+csi:robot_01_anim_out
+      rdfs:description "Sends control signals and monitors status of Robokind animations" ;
+      rdf:type cs:BuildableChannelSpec ;
+      ccrt:chanType csi:animOut_200 ;
+      cs:details "extra deets 240" ;
+      apsb:javaFQCN "org.cogchar.impl.perform.FancyPerfChanSpec" ;
+      apsb:label "AnimOut-VirtualBest for Robot_ZenoR50" ;
+      ccrt:OSGiFilter "(animationPlayerId=robot01/AnimPlayer)" .
+
+csi:robot_01_speech_out
+      rdfs:description "Acapela 'Kenny' timed for Linux" ;
+      rdf:type cs:BuildableChannelSpec ;
+      ccrt:chanType csi:speechOut_100 ;
+      cs:details "extra deets 140" ;
+      apsb:javaFQCN "org.cogchar.impl.perform.FancyPerfChanSpec" ;
+      apsb:label "SpeechOutMain for Robot_ZenoR50" ;
+      ccrt:OSGiFilter "(speechServiceId=robot01/SpeechService)" .
+
+csi:robot_02_anim_out
+      rdfs:description "Sends control signals and monitors status of Robokind animations" ;
+      rdf:type cs:BuildableChannelSpec ;
+      ccrt:chanType csi:animOut_200 ;
+      cs:details "extra deets 240" ;
+      apsb:javaFQCN "org.cogchar.impl.perform.FancyPerfChanSpec" ;
+      apsb:label "AnimOut-VirtualBest for Robot_AliceR50" ;
+      ccrt:OSGiFilter "(animationPlayerId=robot02/AnimPlayer)" .
+
+csi:robot_02_speech_out
+      rdfs:description "Acapela 'Tracy' timed for Linux" ;
+      rdf:type cs:BuildableChannelSpec ;
+      ccrt:chanType csi:speechOut_100 ;
+      cs:details "extra deets 140" ;
+      apsb:javaFQCN "org.cogchar.impl.perform.FancyPerfChanSpec" ;
+      apsb:label "SpeechOutMain for Robot_AliceR50" ;
+      ccrt:OSGiFilter "(speechServiceId=robot02/SpeechService)" .
+
+

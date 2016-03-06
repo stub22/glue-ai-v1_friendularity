@@ -1,0 +1,225 @@
+# modelName=http://www.cogchar.org/schema/scene/instance#service_manager_1
+# modelSize=138
+
+
+
+
+@prefix cs:      <http://www.cogchar.org/schema/scene#> .
+@prefix ja:      <http://jena.hpl.hp.com/2005/11/Assembler#> .
+@prefix jfrt:    <urn:ftd:jflux.org:2012:runtime#> .
+@prefix jfs:     <http://www.jflux.org/service#> .
+@prefix jfsi:    <http://www.jflux.org/service/instance#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+
+jfrt:basicRegistration
+      rdfs:subClassOf ja:Object ;
+      rdf:type rdfs:Class ;
+      ja:assembler "org.friendularity.spec.connection.DefaultRegistrationStrategySpecBuilder" .
+
+jfrt:dependency
+      rdfs:subClassOf ja:Object ;
+      rdf:type rdfs:Class ;
+      ja:assembler "org.friendularity.spec.connection.ServiceDependencySpecBuilder" .
+
+jfrt:lifecycle
+      rdfs:subClassOf ja:Object ;
+      rdf:type rdfs:Class ;
+      ja:assembler "org.friendularity.spec.connection.ServiceLifecycleSpecBuilder" .
+
+jfrt:property
+      rdfs:subClassOf ja:Object ;
+      rdf:type rdfs:Class ;
+      ja:assembler "org.friendularity.spec.connection.PropertySpecBuilder" .
+
+jfrt:serviceBinding
+      rdfs:subClassOf ja:Object ;
+      rdf:type rdfs:Class ;
+      ja:assembler "org.friendularity.spec.connection.ServiceBindingSpecBuilder" .
+
+jfsi:serviceCommandType
+      cs:propKey "messageType" ;
+      cs:propValue "org.robokind.api.messaging.ServiceCommand" .
+
+jfsi:serviceErrorType
+      cs:propKey "messageType" ;
+      cs:propValue "org.robokind.api.messaging.ServiceError" .
+
+jfrt:serviceManager
+      rdfs:subClassOf ja:Object ;
+      rdf:type rdfs:Class ;
+      ja:assembler "org.friendularity.spec.connection.ServiceManagerSpecBuilder" .
+
+jfsi:sp01_cmdSender_bind
+      rdf:type jfrt:serviceBinding ;
+      cs:Binding jfsi:lazy ;
+      cs:dependencyURI jfsi:svc_cmd_sender_dep .
+
+jfsi:sp01_configSender_bind
+      rdf:type jfrt:serviceBinding ;
+      cs:Binding jfsi:lazy ;
+      cs:dependencyURI jfsi:sp_config_sender_dep .
+
+jfsi:sp01_errRecv_bind
+      rdf:type jfrt:serviceBinding ;
+      cs:Binding jfsi:lazy ;
+      cs:dependencyURI jfsi:svc_err_receiver_dep .
+
+jfsi:sp01_evntRecv_bind
+      rdf:type jfrt:serviceBinding ;
+      cs:Binding jfsi:lazy ;
+      cs:dependencyURI jfsi:sp_event_receiver_dep .
+
+jfsi:sp01_reg_prop_01
+      cs:propKey "speechServiceId" ;
+      cs:propValue "jfsi:speech01" .
+
+jfsi:sp01_registration
+      rdf:type jfrt:basicRegistration ;
+      cs:hasProperty jfsi:speech_out_01_groupid , jfsi:sp01_reg_prop_01 ;
+      jfs:serviceJavaFQCN "org.robokind.api.speech.SpeechService" , "org.robokind.api.messaging.RemoteServiceClient" .
+
+jfsi:sp01_reqSender_bind
+      rdf:type jfrt:serviceBinding ;
+      cs:Binding jfsi:lazy ;
+      cs:dependencyURI jfsi:request_sender_dep ;
+      cs:hasProperty jfsi:sp01reqSender_reg_prop_01 .
+
+jfsi:sp01reqCon_reg_prop_1
+      rdf:type jfrt:property ;
+      cs:propKey "connectionId" ;
+      cs:propValue "jfsi:speech01_requestConnection" .
+
+jfsi:sp01reqCon_registration
+      rdf:type jfrt:basicRegistration ;
+      cs:hasProperty jfsi:speech_out_01_groupid , jfsi:sp01reqCon_reg_prop_1 ;
+      jfs:serviceJavaFQCN "javax.jms.Connection" .
+
+jfsi:sp01reqCon_spec_bind
+      rdf:type jfrt:serviceBinding ;
+      cs:Binding jfsi:lazy ;
+      cs:dependencyURI jfsi:connection_spec_dep ;
+      cs:hasProperty jfsi:sp01reqCon_spec_prop_1 ;
+      jfs:serviceJavaFQCN "org.friendularity.spec.connection.ConnectionSpec" .
+
+jfsi:sp01reqCon_spec_prop_1
+      rdf:type jfrt:property ;
+      cs:propKey "specLocalName" ;
+      cs:propValue "robot01/ConnectionSpec" .
+
+jfsi:sp01reqDest_reg_prop_01
+      rdf:type jfrt:property ;
+      cs:propKey "destinationId" ;
+      cs:propValue "jfsi:speech01_requestDest" .
+
+jfsi:sp01reqDest_registration
+      rdf:type jfrt:basicRegistration ;
+      cs:hasProperty jfsi:speech_out_01_groupid , jfsi:sp01reqDest_reg_prop_01 ;
+      jfs:serviceJavaFQCN "javax.jms.Destination" .
+
+jfsi:sp01reqDest_spec_bind
+      rdf:type jfrt:serviceBinding ;
+      cs:Binding jfsi:lazy ;
+      cs:dependencyURI jfsi:destination_spec_dep ;
+      cs:hasProperty jfsi:sp01reqDest_spec_prop_01 .
+
+jfsi:sp01reqDest_spec_prop_01
+      cs:propKey "destinationSpecId" ;
+      cs:propValue "robot01/speech37/speechRequestDes" .
+
+jfsi:sp01reqSender_dest_bind
+      rdf:type jfrt:serviceBinding ;
+      cs:Binding jfsi:lazy ;
+      cs:dependencyURI jfsi:destination_dep ;
+      cs:hasProperty jfsi:sp01reqDest_reg_prop_01 .
+
+jfsi:sp01reqSender_msg_bind
+      rdf:type jfrt:serviceBinding ;
+      cs:Binding jfsi:lazy ;
+      cs:dependencyURI jfsi:msg_config_dep ;
+      cs:hasProperty jfsi:speechRequestType .
+
+jfsi:sp01reqSender_reg_prop_01
+      rdf:type jfrt:property ;
+      cs:propKey "msgSenderId" ;
+      cs:propValue "jfsi:speech01_requestSender" .
+
+jfsi:sp01reqSender_registration
+      rdf:type jfrt:basicRegistration ;
+      cs:hasProperty jfsi:speech_out_01_groupid , jfsi:speechRequestType , jfsi:sp01reqSender_reg_prop_01 ;
+      jfs:serviceJavaFQCN "org.robokind.api.messaging.MessageSender" .
+
+jfsi:sp01reqSender_sess_bind
+      rdf:type jfrt:serviceBinding ;
+      cs:Binding jfsi:lazy ;
+      cs:dependencyURI jfsi:session_dep ;
+      cs:hasProperty jfsi:sp01reqSess_reg_prop_01 .
+
+jfsi:sp01reqSess_con_bind
+      rdf:type jfrt:serviceBinding ;
+      cs:Binding jfsi:lazy ;
+      cs:dependencyURI jfsi:connection_dep ;
+      cs:hasProperty jfsi:sp01reqCon_reg_prop_1 .
+
+jfsi:sp01reqSess_reg_prop_01
+      rdf:type jfrt:property ;
+      cs:propKey "sessionId" ;
+      cs:propValue "jfsi:speech01_requestSession" .
+
+jfsi:sp01reqSess_registration
+      rdf:type jfrt:basicRegistration ;
+      cs:hasProperty jfsi:speech_out_01_groupid , jfsi:sp01reqSess_reg_prop_01 ;
+      jfs:serviceJavaFQCN "javax.jms.Session" .
+
+jfsi:speech01
+      rdf:type jfrt:serviceManager ;
+      cs:lifecycleType jfsi:remote_speech_service_lifecycle ;
+      cs:registrationStrategy
+              jfsi:sp01_registration ;
+      cs:serviceBinding jfsi:sp01_errRecv_bind , jfsi:sp01_configSender_bind , jfsi:sp01_cmdSender_bind , jfsi:sp01_evntRecv_bind , jfsi:sp01_reqSender_bind .
+
+jfsi:speech01_requestConnection
+      rdf:type jfrt:serviceManager ;
+      cs:lifecycleType jfsi:connection_lifecycle ;
+      cs:registrationStrategy
+              jfsi:sp01reqCon_registration ;
+      cs:serviceBinding jfsi:sp01reqCon_spec_bind .
+
+jfsi:speech01_requestDest
+      rdf:type jfrt:serviceManager ;
+      cs:lifecycleType jfsi:destination_lifecycle ;
+      cs:registrationStrategy
+              jfsi:sp01reqDest_registration ;
+      cs:serviceBinding jfsi:sp01reqDest_spec_bind .
+
+jfsi:speech01_requestSender
+      rdf:type jfrt:serviceManager ;
+      cs:lifecycleType jfsi:msg_sender_lifecycle ;
+      cs:registrationStrategy
+              jfsi:sp01reqSender_registration ;
+      cs:serviceBinding jfsi:sp01reqSender_msg_bind , jfsi:sp01reqSender_sesn_bind , jfsi:sp01reqSender_dest_bind .
+
+jfsi:speech01_requestSession
+      rdf:type jfrt:serviceManager ;
+      cs:lifecycleType jfsi:session_lifecycle ;
+      cs:registrationStrategy
+              jfsi:sp01reqSess_registration ;
+      cs:serviceBinding jfsi:sp01reqSess_con_bind .
+
+jfsi:speech_out_01_groupid
+      cs:propKey "groupId" ;
+      cs:propValue "robot01/SpeechService" .
+
+jfsi:speechConfigType
+      cs:propKey "messageType" ;
+      cs:propValue "org.mechio.api.speech.SpeechConfig" .
+
+jfsi:speechEventType
+      cs:propKey "messageType" ;
+      cs:propValue "org.mechio.api.speech.SpeechEvent" .
+
+jfsi:speechRequestType
+      cs:propKey "messageType" ;
+      cs:propValue "org.mechio.api.speech.SpeechRequest" .
+
+

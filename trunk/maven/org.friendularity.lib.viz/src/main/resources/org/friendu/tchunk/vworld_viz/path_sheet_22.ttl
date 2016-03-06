@@ -1,0 +1,51 @@
+# modelName=urn:ftd:cogchar.org:2012:runtime#path_sheet_22
+# modelSize=27
+
+
+
+
+@prefix ccrt:    <urn:ftd:cogchar.org:2012:runtime#> .
+@prefix cpi:     <http://www.cogchar.org/schema/path/instance#> .
+@prefix path:    <http://www.cogchar.org/schema/path/definition#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix ta:      <http://www.cogchar.org/thing/action#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+
+path:movingCameraDemo
+      rdf:type ccrt:motionpath ;
+      ta:attachedItem ccrt:camera_aTestCamera ;
+      ta:attachedItemType ccrt:camera ;
+      ta:cycle "true"^^xsd:boolean ;
+      ta:directionType cpi:LookAt ;
+      ta:duration "30"^^xsd:float ;
+      ta:loop cpi:DontLoop ;
+      ta:tension "0.83"^^xsd:float ;
+      ta:xDir "0"^^xsd:float ;
+      ta:yDir "18"^^xsd:float ;
+      ta:zDir "0"^^xsd:float .
+
+ccrt:movingCameraDemo_wp1
+      rdf:type ccrt:includedWaypoint ;
+      ta:attachedPath path:movingCameraDemo ;
+      ta:sequenceOrder "1"^^xsd:float ;
+      ta:waypointRef ccrt:waypoint_DemoWpt1 .
+
+ccrt:movingCameraDemo_wp2
+      rdf:type ccrt:includedWaypoint ;
+      ta:attachedPath path:movingCameraDemo ;
+      ta:sequenceOrder "2"^^xsd:float ;
+      ta:waypointRef ccrt:waypoint_DemoWpt2 .
+
+ccrt:movingCameraDemo_wp3
+      rdf:type ccrt:includedWaypoint ;
+      ta:attachedPath path:movingCameraDemo ;
+      ta:sequenceOrder "3"^^xsd:float ;
+      ta:waypointRef ccrt:waypoint_DemoWpt3 .
+
+ccrt:movingCameraDemo_wp4
+      rdf:type ccrt:includedWaypoint ;
+      ta:attachedPath path:movingCameraDemo ;
+      ta:sequenceOrder "4"^^xsd:float ;
+      ta:waypointRef ccrt:waypoint_DemoWpt4 .
+
+

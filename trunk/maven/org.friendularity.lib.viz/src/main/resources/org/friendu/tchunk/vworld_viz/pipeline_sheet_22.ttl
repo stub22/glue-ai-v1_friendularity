@@ -1,0 +1,21 @@
+# modelName=http://www.cogchar.org/schema/scene/instance#pipeline_sheet_22
+# modelSize=9
+
+
+
+
+@prefix cc:      <http://www.cogchar.org/schema/crazyRandom#> .
+@prefix ccrt:    <urn:ftd:cogchar.org:2012:runtime#> .
+@prefix csi:     <http://www.cogchar.org/schema/scene/instance#> .
+@prefix hrk:     <http://www.hrkind.com/model#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+csi:merged_booted_5007
+      rdf:type ccrt:UnionModel , ccrt:BehaviorModel ;
+      ccrt:sourceModel csi:booted_scenes_28 , csi:booted_steps_29 , hrk:behav_file_44 .
+
+csi:merged_manager_1001
+      rdf:type ccrt:UnionModel , cc:SvcMngrModel ;
+      ccrt:sourceModel csi:lifecycle_1 , csi:service_manager_1 .
+
+

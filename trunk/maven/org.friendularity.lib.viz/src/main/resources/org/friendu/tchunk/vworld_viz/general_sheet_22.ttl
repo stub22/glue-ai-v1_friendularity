@@ -1,0 +1,27 @@
+# modelName=urn:ftd:cogchar.org:2012:runtime#general_sheet_22
+# modelSize=9
+
+
+
+
+@prefix ccrt:    <urn:ftd:cogchar.org:2012:runtime#> .
+@prefix gr:      <http://www.cogchar.org/general/config#> .
+@prefix gri:     <http://www.cogchar.org/general/config/instance#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+gri:sendHeardAndGetSaid
+      rdf:type ccrt:generalresource ;
+      gr:category gri:chatconfig ;
+      gr:hasURL <"http://184.73.60.23"> .
+
+gri:setQuizModeOff
+      rdf:type ccrt:generalresource ;
+      gr:category gri:chatconfig ;
+      gr:hasURL <http://184.73.60.23:8123/scheduler/quiz_off.btx?a=activate> .
+
+gri:setQuizModeOn
+      rdf:type ccrt:generalresource ;
+      gr:category gri:chatconfig ;
+      gr:hasURL <"http://184.73.60.23:8123/scheduler/quiz_on.btx?a=activate"> .
+
+
