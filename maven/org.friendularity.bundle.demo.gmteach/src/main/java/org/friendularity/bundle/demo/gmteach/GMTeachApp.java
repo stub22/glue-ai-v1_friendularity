@@ -765,7 +765,7 @@ public class GMTeachApp extends CommonActivator implements BundleListener, Servi
 			}
 		});
 
-		addMacroServiceButton("CogcharMidiOutputTestMain", new Runnable() {
+		addMacroServiceButton("DupMidiOutputTestMain", new Runnable() {
 			@Override public void run() {
 				CogcharMidiOutputTestMain.main(new String[0]);
 			}

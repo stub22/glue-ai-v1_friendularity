@@ -15,30 +15,19 @@
  */
 
 package org.friendularity.appro
-import org.ontoware.rdf2go
-import org.ontoware.rdfreactor
-
-import rdf2go.model.{Model => R2GoModel}
-import rdf2go.model.node.{URI => R2GoURI}
-
-
 import com.hp.hpl.jena
-import org.apache.jena.riot.RDFDataMgr
-
-import jena.rdf.model.{ Model => JenaModel, ModelFactory => JenaModelFactory }
-
+import com.hp.hpl.jena.rdf.model.{Model => JenaModel, ModelFactory => JenaModelFactory}
 import org.appdapter.fancy.log.VarargsLogging
-import org.appdapter.core.name.{ FreeIdent, Ident }
-
+import org.cogchar.api.owrap.appro.{AGPProfileFragment, ASBRProfile}
 import org.cogchar.api.owrap.crcp
-import crcp.{GhRRefer}
-import org.cogchar.blob.circus.{ BrokerRecipeUtil, BrokerRecipeWrap}
-import org.cogchar.api.owrap.mdir.{GH4SFolder, GraphHost3Serial, GraphHost3Triples}
-import org.cogchar.api.owrap.mdir.{GraphPointer => MdirGraphPointer, GraphHost => MdirGraphHost}
-import org.cogchar.api.owrap.appro.{ApproGraphPointer, AGPProfileFragment, ASBRProfile }
-import org.cogchar.blob.chunk.{LGSChunkHandle, TypedItemHandle, LoadableGraphState, LoadableGraphHandleFuncs, RootChunkHandle, HasR2GoURI}
-import org.cogchar.blob.ghost.{RdfNodeUtils, RRUtil, GraphScanTest}
-import org.cogchar.blob.entry.{EntryHost}
+import org.cogchar.api.owrap.crcp.GhRRefer
+import org.cogchar.api.owrap.mdir.{GH4SFolder, GraphHost => MdirGraphHost, GraphPointer => MdirGraphPointer}
+import org.cogchar.blob.chunk.{LGSChunkHandle, LoadableGraphState, TypedItemHandle}
+import org.cogchar.blob.entry.EntryHost
+import org.cogchar.blob.ghost.{GraphScanTest, RRUtil}
+import org.ontoware.rdf2go
+import org.ontoware.rdf2go.model.node.{URI => R2GoURI}
+import org.ontoware.rdf2go.model.{Model => R2GoModel}
 
 
 class ApproProfileGraphMaker(myPathEntryHost : EntryHost,	// Searchable folder host

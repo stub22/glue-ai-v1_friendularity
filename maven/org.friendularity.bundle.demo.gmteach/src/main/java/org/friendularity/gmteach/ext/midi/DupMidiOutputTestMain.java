@@ -45,7 +45,7 @@ import org.cogchar.bind.midi.seq.DemoMidiSeq;
  * 
  *         Some of the code and comments in this file are copied/adapted from the JSResources.org code + docs.
  */
-public class CogcharMidiOutputTestMain extends BasicDebugger {
+public class DupMidiOutputTestMain extends BasicDebugger {
 
 	public static void main(String[] args) {
 		// Because there is a log4j.properties file in this project, we do not need to do this Log4J config from code.

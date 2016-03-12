@@ -27,6 +27,7 @@ import org.apache.jena.riot.RDFDataMgr
 
 import jena.rdf.model.{ Model => JenaModel, ModelFactory => JenaModelFactory }
 import jena.ontology.Individual
+import org.friendularity.appro.{ApproRaizCtx, ApproRaizRecipeNames}
 import org.ontoware.rdf2go
 import org.ontoware.rdfreactor
 
@@ -43,17 +44,21 @@ import org.cogchar.blob.entry.EntryHost;
 import org.cogchar.blob.entry.BundleEntryHost;
 
 trait AvatarSetupFuncs extends VarargsLogging { 
-	private def maybeRegisterLegacyConf() : Unit = {
+	def loadVizappFromChunkFolders(profilePath : String, vwrldConfPath: String): Unit = {
+
+	}
+
+	private def maybeRegisterLegacyConf(arzCtx : ApproRaizCtx) : Unit = {
 		val bun = org.osgi.framework.FrameworkUtil.getBundle(getClass)
 		if (bun != null) {
 			val bunCtx = bun.getBundleContext
-			
-			// val lsysRecipeNames : LessonSysRecipeNames = myLSysCtx.getMainRecipeNames
 
-			val legConfBRURI = "confBrokerRecipeURI" //  lsysRecipeNames.getLegacyConfBrokerRecipeURI
-			val legConfEHost = null //  myLSysCtx.getInLegConfEntHost
+			val arzRecipeNames : ApproRaizRecipeNames = arzCtx.getMainRecipeNames
+
+			val legConfBRURI = arzRecipeNames.getLegacyConfBrokerRecipeURI
+			val legConfEHost = arzCtx.getInLegConfEntHost
 			if ((legConfBRURI != null) && (legConfEHost != null)) {
-				val recipeModel = null //  myLSysCtx.getInRootRecipeModel
+				val recipeModel = arzCtx.getInRootRecipeModel
 				val rcpmR2Go = open4R2go(recipeModel)
 				makeAndRegisterAvatarConfigRepo(bunCtx, rcpmR2Go, legConfBRURI, legConfEHost)
 			} else {
@@ -83,6 +88,7 @@ trait AvatarSetupFuncs extends VarargsLogging {
 				BehavMasterConfigTest.TGT_GRAPH_SPARQL_VAR, BehavMasterConfigTest.QUERY_SOURCE_GRAPH_QN);
 		registerAvatarConfigRepoClient(bunCtx, erc);
 	}
+
 
 	private def registerAvatarConfigRepoClient(bunCtx : BundleContext, avatarConfigERC : EnhancedRepoClient)  : Unit = {
 		info1("Registering legacy config EnhancedRepoClient: {}", avatarConfigERC);
