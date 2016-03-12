@@ -24,7 +24,26 @@
 		<dependency>
             <groupId>org.jflux</groupId>
             <artifactId>org.jflux.impl.transport.qpid</artifactId>
-        </dependency>		
+        </dependency>
+        <dependency>
+            <groupId>org.jflux</groupId>
+            <artifactId>org.jflux.impl.registry.osgi</artifactId>
+        </dependency>
+        <!-- Issue with type parameters in OSGi classes, compiled under java 7, v 4.3.0 and 4.3.1
+        http://blog.osgi.org/2012/10/43-companion-code-for-java-7.html
+        -->
+        <dependency>
+            <groupId>org.appdapter</groupId>
+            <artifactId>ext.bundle.osgi.common</artifactId>
+            <version>${appdapter.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+            <!--
+            <scope>provided</scope>
+            -->
+        </dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
