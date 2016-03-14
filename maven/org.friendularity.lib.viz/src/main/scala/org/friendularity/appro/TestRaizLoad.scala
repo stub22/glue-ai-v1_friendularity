@@ -18,6 +18,24 @@ package org.friendularity.appro
 
 import org.appdapter.fancy.log.VarargsLogging;
 
+import com.hp.hpl.jena
+import jena.rdf.model.{ Model => JenaModel, ModelFactory => JenaModelFactory }
+
+
+import org.ontoware.rdf2go
+import org.ontoware.rdfreactor
+
+import rdf2go.model.{Model => R2GoModel}
+import rdf2go.model.node.{URI => R2GoURI}
+
+
+import org.appdapter.fancy.log.VarargsLogging
+import org.appdapter.core.name.{ FreeIdent, Ident }
+
+import org.cogchar.blob.ghost.{GraphScanTest, IndexResult,  RRUtil, GHostUtil, GHostRecipeWrap}
+import org.cogchar.blob.entry.{EntryHost, PlainEntry, FolderEntry, DiskEntryHost, ResourceEntryHost}
+
+
 object TestRaizLoad extends VarargsLogging {
 	def main(args: Array[String]) : Unit = {
 
@@ -29,5 +47,39 @@ object TestRaizLoad extends VarargsLogging {
 		//	Appears that currently Akka is automatically initing logging with our log4j.properties.
 
 		info0("^^^^^^^^^^^^^^^^^^^^^^^^  TestRaizLoad main().START");
+
+		// http://onto.friendularity.org/indiv/vizappRecipes_reg_desk_2016Q1#vizapp_legConf_brokerRecipe
+
+		GraphScanTest.setupScanTestLogging
+		info0("Starting TestProfileLoad")
+
+		val mergedProfileGraph = getMergedProfileGraph_RegularDesktop
+		info1("Fetched mergedProfileGraph of size {}", mergedProfileGraph.size : java.lang.Long)
+		debug1("mergedProfileGraph dump:\n{}", mergedProfileGraph)
 	}
+	def getMergedProfileGraph_RegularDesktop : JenaModel = {
+		val activeTokens = Array[String]("all", "regular", "desktop")
+		getMergedProfileGraph(activeTokens)
+	}
+	def getMergedProfileGraph(activeTokens : Array[String]) : JenaModel = {
+		val profDataEntryHost : EntryHost = getProfileTestEntryHost
+
+		// These two values are described in https://robokind.atlassian.net/browse/RFA-302
+		// as MILO_PROFILE_FOLDER_PATH  and MILO_PROFILE_ACTIVE_TOKENS
+
+		val pathToProfileFolder = "org/friendu/tchunk/vizapp_profile"
+
+		val pgm = new ApproProfileGraphMaker(profDataEntryHost, pathToProfileFolder,  activeTokens)
+
+		val mergedProfileGraph : JenaModel = pgm.makeMergedProfileGraph
+		mergedProfileGraph
+	}
+
+
+	def  getProfileTestEntryHost : EntryHost = {
+		val dataMarkerClazz : java.lang.Class[_] = classOf[ApproRaizCtxImpl]
+		val dataEntryHost : EntryHost = new ResourceEntryHost(dataMarkerClazz)
+		dataEntryHost
+	}
+
 }
