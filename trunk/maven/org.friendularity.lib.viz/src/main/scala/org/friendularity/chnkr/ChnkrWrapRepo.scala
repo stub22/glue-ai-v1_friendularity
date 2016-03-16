@@ -15,28 +15,16 @@
  */
 
 package org.friendularity.chnkr
-import org.appdapter.fancy.log.VarargsLogging
-import org.appdapter.core.log.{ BasicDebugger, Loggable }
+import com.hp.hpl.jena.query.Dataset
+import com.hp.hpl.jena.rdf.model.{Model => JenaModel, ModelFactory => JenaModelFactory}
+import org.appdapter.core.store.BasicRepoImpl
+import org.appdapter.fancy.repo.FancyRepo
 import org.appdapter.fancy.rspec.RepoSpec
-import org.appdapter.core.store.{ Repo, BasicRepoImpl }
-import org.appdapter.fancy.repo.{FancyRepo}
-import com.hp.hpl.jena
-import jena.rdf.model.{ Model => JenaModel, ModelFactory => JenaModelFactory, StmtIterator, Property, Statement, Resource }
-import jena.query.{Dataset}
-import org.cogchar.blob.entry.{EntryHost, PlainEntry, FolderEntry}
-
-import org.cogchar.blob.chunk.{LGSChunkHandle, TypedItemHandle, LoadableGraphState, LoadableGraphHandleFuncs, RootChunkHandle, HasR2GoURI}
-import org.cogchar.blob.circus.{ FeatureBrokerRecipeWrap, BrokerRecipeWrap, BrokerRecipeUtil}
-import org.cogchar.api.owrap.mdir.{GH4SFolder, GraphHost3Serial, GraphHost3Triples}
-
-import org.cogchar.api.owrap.mdir.{GraphPointer => MdirGraphPointer, GraphHost => MdirGraphHost}
-
-import org.ontoware.rdf2go
-import org.ontoware.rdfreactor
-
-import rdf2go.model.{Model => R2GoModel}
-import rdf2go.model.node.{URI => R2GoURI}
-import rdf2go.model.node.impl.URIImpl
+import org.cogchar.api.owrap.mdir.{GraphHost => MdirGraphHost, GraphPointer => MdirGraphPointer}
+import org.cogchar.blob.chunk.LGSChunkHandle
+import org.cogchar.blob.entry.EntryHost
+import org.ontoware.rdf2go.model.node.{URI => R2GoURI}
+import org.ontoware.rdf2go.model.{Model => R2GoModel}
 
 
 class ChnkrWrapRepo(chunkDirMapper : ChnkrDirMapper)  extends BasicRepoImpl with FancyRepo   {

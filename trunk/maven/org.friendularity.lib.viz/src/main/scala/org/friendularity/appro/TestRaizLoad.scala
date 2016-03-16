@@ -56,23 +56,24 @@ object TestRaizLoad extends AvatarSetupFuncs with  VarargsLogging {
 
 		info0("^^^^^^^^^^^^^^^^^^^^^^^^  TestRaizLoad main().START");
 
-		//
-
 		// GraphScanTest.setupScanTestLogging
 		info0("Starting TestProfileLoad")
 
-		val mergedProfileGraph = getMergedProfileGraph_RegularDesktop
+		val profDataEntryHost : EntryHost = getUnitTestResourceEntryHost
+
+		val mergedProfileGraph = getMergedProfileGraph_RegularDesktop(profDataEntryHost)
 		info1("Fetched mergedProfileGraph of size {}", mergedProfileGraph.size : java.lang.Long)
 		debug1("mergedProfileGraph dump:\n{}", mergedProfileGraph)
 
-		wow(mergedProfileGraph)
+		val cdatEntryHost = profDataEntryHost
+		testLegConfLoad(mergedProfileGraph, cdatEntryHost)
 	}
-	def getMergedProfileGraph_RegularDesktop : JenaModel = {
+	def getMergedProfileGraph_RegularDesktop (profDataEntryHost : EntryHost) : JenaModel = {
+
 		val activeTokens = Array[String]("all", "regular", "desktop")
-		getMergedProfileGraph(activeTokens)
+		getMergedProfileGraph(activeTokens, profDataEntryHost)
 	}
-	def getMergedProfileGraph(activeTokens : Array[String]) : JenaModel = {
-		val profDataEntryHost : EntryHost = getUnitTestResourceEntryHost
+	def getMergedProfileGraph(activeTokens : Array[String], profDataEntryHost : EntryHost) : JenaModel = {
 
 		val pgm = new ApproProfileGraphMaker(profDataEntryHost, pathToProfileFolder,  activeTokens)
 
@@ -80,29 +81,21 @@ object TestRaizLoad extends AvatarSetupFuncs with  VarargsLogging {
 		mergedProfileGraph
 	}
 
-
 	def  getUnitTestResourceEntryHost : EntryHost = {
 		val dataMarkerClazz : java.lang.Class[_] = classOf[ApproRaizCtxImpl]
 		val dataEntryHost : EntryHost = new ResourceEntryHost(dataMarkerClazz)
 		dataEntryHost
 	}
 
-	def wow(profileJM : JenaModel) : Unit = {
+	def testLegConfLoad(profileJM : JenaModel, cdatEH : EntryHost) : Unit = {
 
-		val bootRecipesR2Go = open4R2go(profileJM)
+		val cwRepoSpec = makeVWConfRepoSpec(profileJM, vizappBrokerRecipeUriTxt, cdatEH)
 
-		val legConfigBR = new CC_BRFeature(bootRecipesR2Go, vizappBrokerRecipeUriTxt, false)
-					// new AFBRLegacyConfig(bootRecipesR2Go, vizappBrokerRecipeUriTxt, false)
-
-
-		val cpathEntryHost: EntryHost = getUnitTestResourceEntryHost
-
-		val cwRepoSpec = makeVWConfRepoSpec(legConfigBR, cpathEntryHost)
 		val cwRepo = cwRepoSpec.getOrMakeRepo.asInstanceOf[ChnkrWrapRepo]
 
 		val dirModel = cwRepo.getDirectoryModel()
 
-		info1("Fetched repo dir model: {}", dirModel)
+		info1("testLegConfLoad: Fetched repo dir model: {}", dirModel)
 
 		java.lang.Thread.sleep(3000)
 		info0("That was a good test!")
