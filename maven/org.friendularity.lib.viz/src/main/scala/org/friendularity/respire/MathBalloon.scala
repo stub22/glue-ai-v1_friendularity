@@ -28,7 +28,7 @@ object MathBalloon extends BasicDebugger {
 		org.apache.log4j.BasicConfigurator.configure();
 		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.ALL);
 		
-		val extraDemos = true
+		val extraDemos = false
 		val demoBrowser = false
 		if (demoBrowser) {
 
@@ -45,16 +45,15 @@ object MathBalloon extends BasicDebugger {
 			getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^  main() starting GridSpaceTest.go");
 			// GridSpaceTest 
 			org.cogchar.api.space.GridSpaceTest.goGoGo;
-		
-			getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^  main() testing math-repo+goody load (respiration)");	
-			// This reads in a config model and begins seting up the space, but the individual goodies
-			// are not created until render update() callbacks start.
+
 		}
 		val sweetDS : Option[SweetDynaSpace] = if (extraDemos) {
-			val sds =RespirationTest.initReposLoadMathEval : SweetDynaSpace 
+			getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^  main() testing math-repo+goody load (respiration)");
+			// This reads in a config model and begins seting up the space, but the individual goodies
+			// are not created until render update() callbacks start.
+			val sds = RespirationTest.initReposLoadMathEval : SweetDynaSpace
 			if (demoBrowser) {
-				DemoBrowser.showObject("mathBalloon-sweetDS", sds, true, true); 
-				
+				DemoBrowser.showObject("mathBalloon-sweetDS", sds, true, true);
 			}
 			Option(sds)
 		} else None

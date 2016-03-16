@@ -1,33 +1,26 @@
 package org.friendularity.bundle.demo.ccmio;
 
-import static ext.osgi.common.MacroBundleActivatorBase.macroStartupSettings;
-import java.util.List;
+import org.appdapter.fancy.rspec.RepoSpec;
 import org.appdapter.osgi.core.BundleActivatorBase;
-
+import org.appdapter.xload.rspec.OnlineSheetRepoSpec;
+import org.cogchar.app.puma.boot.PumaAppContext;
 import org.cogchar.app.puma.boot.PumaBooter;
 import org.cogchar.app.puma.config.PumaContextMediator;
 import org.cogchar.app.puma.registry.PumaGlobalPrebootInjector;
-import org.osgi.framework.BundleContext;
-
-import org.appdapter.fancy.rspec.RepoSpec;
-import org.appdapter.xload.rspec.OnlineSheetRepoSpec;
-import org.appdapter.core.name.FreeIdent;
-import org.appdapter.core.name.Ident;
-import org.appdapter.gui.demo.DemoBrowser;
-import org.cogchar.app.puma.boot.PumaAppContext;
-import org.cogchar.bind.mio.robot.motion.CogcharMotionSource;
-import org.cogchar.bundle.app.puma.PumaAppUtils;
-import org.cogchar.bind.symja.MathSpaceFactory;
 import org.cogchar.bind.symja.MathGate;
+import org.cogchar.blob.entry.EntryHost;
 import org.friendularity.api.west.WorldEstimate;
-
-import org.friendularity.impl.visual.EstimateVisualizer;
-// import org.cogchar.test.symcalc.ScriptEngineExperiment;
 import org.friendularity.vworld.UnusedNetworkVisionDataFeed;
-import org.mechio.api.motion.Robot;
-
-// import org.mechio.ui.swing.common.lifecycle.ServicesFrame;
+import org.osgi.framework.BundleContext;
 import org.rwshop.swing.common.lifecycle.ServicesFrame;
+
+import org.friendularity.appro.TestRaizLoad;
+import org.friendularity.chnkr.ChnkrWrapRepoSpec;
+
+import com.hp.hpl.jena.rdf.model.Model;
+
+// import org.cogchar.test.symcalc.ScriptEngineExperiment;
+// import org.mechio.ui.swing.common.lifecycle.ServicesFrame;
 /**
  * This class is a bundle activator demonstrating how to start the Cogchar PUMA system, in an
  * OSGi environment.  We call such a bundle a "top" bundle, which is essentially a launchable
@@ -103,6 +96,7 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 		org.friendularity.bundle.jvision.JVisionBundleActivator.setLaunchFlag(myFlag_connectJVision);
 
 	}
+
 	protected void startLifecycleMonitorGuiWindow(final BundleContext context) {
       
 		ServicesFrame frame = new ServicesFrame();
@@ -125,7 +119,8 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 	*/
 	@Override protected void handleFrameworkStartedEvent(BundleContext bundleCtx) {
 		getLogger().info("Calling startPumaDemo()");
-		
+
+		attachVizTChunkLegConfRepo(bundleCtx);
 		launchPumaRobotsAndChars(bundleCtx);
 		launchVWorldLifecycles(bundleCtx);
 		launchOtherStuffLate();	
@@ -133,7 +128,18 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 		// PUMA  behavior system.  However, the Cogchar config system is intended to be sufficiently general to
 		// handle most initialization cases without help from bundle activators.		
 	}
-    @Override public void stop(BundleContext context) throws Exception {
+
+	private void attachVizTChunkLegConfRepo(final BundleContext bunCtx) {
+		EntryHost	 tchunkEHost = TestRaizLoad.makeBundleEntryHost(TestRaizLoad.class);
+		Model mergedProfileGraph = TestRaizLoad.getMergedProfileGraph_RegularDesktop(tchunkEHost);
+		String vzBrkRcpUriTxt = TestRaizLoad.vizappBrokerRecipeUriTxt();
+		ChnkrWrapRepoSpec	legConfRepoSpec = TestRaizLoad.makeVWConfRepoSpec(mergedProfileGraph, vzBrkRcpUriTxt, tchunkEHost);
+		getLogger().info("legConfRepoSpec={}", legConfRepoSpec);
+		TestRaizLoad.makeAndRegisterAvatarConfigRC(bunCtx, legConfRepoSpec);
+	}
+
+
+	@Override public void stop(BundleContext context) throws Exception {
 		super.stop(context);
     }
 

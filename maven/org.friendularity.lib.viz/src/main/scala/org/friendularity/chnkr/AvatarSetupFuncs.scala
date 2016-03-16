@@ -68,7 +68,8 @@ trait AvatarSetupFuncs extends VarargsLogging {
 			warn0("OSGi bundle lookup failed (we are probably in a main() test), so no legacy config will be processed.")
 		}
 	}
-	
+
+
 	def makeAndRegisterAvatarConfigRepo( bunCtx : BundleContext, recipesR2Go : R2GoModel, cbrUri : String, cdatEH : EntryHost) : Unit = {
 		val configBR = new CC_BRFeature(recipesR2Go, cbrUri,  false)
 		makeAndRegisterAvatarConfigRepo(bunCtx, configBR, cdatEH)
@@ -77,12 +78,20 @@ trait AvatarSetupFuncs extends VarargsLogging {
 		val cwRepoSpec = makeVWConfRepoSpec(configBR, cdatEH)
 		makeAndRegisterAvatarConfigRC(bunCtx, cwRepoSpec)
 	}
+	def makeVWConfRepoSpec(profileJM : JenaModel, vizappBrokerRecipeUriTxt : String, cdatEH : EntryHost) :  ChnkrWrapRepoSpec = {
+
+		val bootRecipesR2Go = open4R2go(profileJM)
+
+		val legConfigBR = new CC_BRFeature(bootRecipesR2Go, vizappBrokerRecipeUriTxt, false)
+
+		makeVWConfRepoSpec(legConfigBR, cdatEH)
+	}
 	def makeVWConfRepoSpec(configBR : CC_BRFeature, cdatEH : EntryHost) : ChnkrWrapRepoSpec = {
 		val brokerRecipeWrap: VWConfBrokerRecipeWrap = new VWConfBrokerRecipeWrap(configBR)
 		val cwRepoSpec = new ChnkrWrapRepoSpec(brokerRecipeWrap, cdatEH)
 		cwRepoSpec
 	}
-	private def makeAndRegisterAvatarConfigRC( bunCtx : BundleContext, repoSpec : RepoSpec ) {
+	def makeAndRegisterAvatarConfigRC( bunCtx : BundleContext, repoSpec : RepoSpec ) {
 		val repoHandle : Repo.WithDirectory = repoSpec.getOrMakeRepo();
 		val erc = new EnhancedLocalRepoClient(repoSpec, repoHandle, 
 				BehavMasterConfigTest.TGT_GRAPH_SPARQL_VAR, BehavMasterConfigTest.QUERY_SOURCE_GRAPH_QN);
@@ -99,5 +108,9 @@ trait AvatarSetupFuncs extends VarargsLogging {
 		val r2goModel : R2GoModel = new rdf2go.impl.jena.ModelImplJena(jmodel)
 		r2goModel.open
 		r2goModel
+	}
+	def makeBundleEntryHost (markerClz : Class[_]) : EntryHost = {
+		val bun : Bundle = FrameworkUtil.getBundle(markerClz);
+		new BundleEntryHost(bun) ;
 	}
 }

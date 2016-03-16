@@ -95,7 +95,11 @@
 										org.friendularity.vworld,
 										org.friendularity.respire,
 										org.friendularity.struct,
-										org.friendularity.bundle.demo.ccmio
+										org.friendularity.bundle.demo.ccmio,
+                                        org.friendu.tchunk.*,
+                                        org.friendularity.appro,
+                                        org.friendularity.chnkr,
+                                        org.friendularity.cpump
 						</Export-Package>
 					</instructions>
 				</configuration>
