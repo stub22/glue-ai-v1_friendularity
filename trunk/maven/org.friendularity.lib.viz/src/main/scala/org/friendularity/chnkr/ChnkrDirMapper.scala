@@ -44,6 +44,8 @@ import rdf2go.model.node.impl.URIImpl
 
 import org.cogchar.api.owrap.crcp
 
+import org.cogchar.api.owrap.appro.{AFBRLegacyConfig, AGPVirtualWorldConfig}
+
 // trait CWrapFeatureConfig 
 // trait CWrapVirtualWorldConfig
 // trait CWrapGraphPointer
@@ -56,16 +58,21 @@ class ChnkrDirMapper(chunkHandle : LGSChunkHandle) extends VarargsLogging {
 	lazy val myInputDirModel_opt : Option[JenaModel] = getInputDirModelFromChunk
 	
 	private def getInputDirModelFromChunk : Option[JenaModel] = {
-		val gpIdxModel : R2GoModel = getChunkHandle.myGPIndexModel 
-		
+		val gpIdxModel : R2GoModel = getChunkHandle.myGPIndexModel
 
-		val dirGP_opt : Option[rdf2go.model.node.URI] = None
+		val allGPs : Array[_ <: MdirGraphPointer] = MdirGraphPointer.getAllInstances_as(gpIdxModel).asArray
+
+		val dirGP_opt : Option[MdirGraphPointer] = allGPs.find(gp => {
+			val innerGP = new MdirGraphPointer(gpIdxModel, gp, false)
+			val url : String = getSourcePathForGP(innerGP)
+			info1("Checking url for dir-nature: {}", url)
+			url.endsWith("dir.ttl")
+		})
+
 		if (dirGP_opt.isDefined) {
 			val gpURI  = dirGP_opt.get.asURI
-			// val llgsHandle : TypedItemHandle[LoadableGraphState] = chunkHandle.getOrMakeLGStateHandle(gpURI)
-			// val lgs : LoadableGraphState = llgsHandle.unwrap
-			// val payModelR2Go  : Option[R2GoModel] = lgs.getOpenPayloadModel
-			val payModelJena : JenaModel = getJenaModelAtPointerURI(gpURI) // payModelR2Go.get.getUnderlyingModelImplementation.asInstanceOf[JenaModel]
+			val payModelJena : JenaModel = getJenaModelAtPointerURI(gpURI)
+
 			getLogger.info("At gpURI {} found 'dir.ttl' payload model of size {}", Seq(gpURI, payModelJena.size : java.lang.Long) : _*)
 			Some(payModelJena)
 		} else {
@@ -73,8 +80,6 @@ class ChnkrDirMapper(chunkHandle : LGSChunkHandle) extends VarargsLogging {
 			None
 		}
 			
-		// val innerGP = new MdirGraphPointer(modelForPointerRec, vwconfPtrGP, false) // we are not writing this more general type, since it could be inferred.
-		// innerGP.setPointsToGraphHost(hostToPointAt) 
 	}
 	private def getJenaModelAtPointerURI(gpURI : R2GoURI) : JenaModel = {
 		val llgsHandle : TypedItemHandle[LoadableGraphState] = chunkHandle.getOrMakeLGStateHandle(gpURI)
@@ -103,8 +108,8 @@ class ChnkrDirMapper(chunkHandle : LGSChunkHandle) extends VarargsLogging {
 	}
 	def getMappedDirModel(): JenaModel = myMappedDirModel
 // TODO:  Reconcile GraphPointer.hasGraphNameURI with dir.ttl entries like:
-// rktsr:SpeechRecConfig
- //     rdf:type ccrt:FileModel , ccrt:SpeechRec ;
+// some:SpeechRecConfig
+ //     rdf:type struct:FileModel , func:SpeechRec ;
  //     ccrt:repo csi:filerepo_2014071107_5721_917 ;
  //     ccrt:sourcePath "SpeechRecConfig.ttl" .		
 		

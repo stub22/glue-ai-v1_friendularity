@@ -20,7 +20,7 @@ import org.appdapter.fancy.rspec.RepoSpec;
 import org.appdapter.core.store.Repo;
 import org.cogchar.impl.scene.read.BehavMasterConfigTest;
 
-import org.cogchar.api.owrap.crcp.{BRFeature}
+import org.cogchar.api.owrap.crcp.{BRFeature => CC_BRFeature}
 
 import com.hp.hpl.jena
 import org.apache.jena.riot.RDFDataMgr
@@ -70,14 +70,14 @@ trait AvatarSetupFuncs extends VarargsLogging {
 	}
 	
 	def makeAndRegisterAvatarConfigRepo( bunCtx : BundleContext, recipesR2Go : R2GoModel, cbrUri : String, cdatEH : EntryHost) : Unit = {
-		val configBR : BRFeature = new BRFeature(recipesR2Go, cbrUri,  false)
+		val configBR = new CC_BRFeature(recipesR2Go, cbrUri,  false)
 		makeAndRegisterAvatarConfigRepo(bunCtx, configBR, cdatEH)
 	}
-	def makeAndRegisterAvatarConfigRepo( bunCtx : BundleContext, configBR : BRFeature, cdatEH : EntryHost) : Unit = {
+	def makeAndRegisterAvatarConfigRepo( bunCtx : BundleContext, configBR : CC_BRFeature, cdatEH : EntryHost) : Unit = {
 		val cwRepoSpec = makeVWConfRepoSpec(configBR, cdatEH)
 		makeAndRegisterAvatarConfigRC(bunCtx, cwRepoSpec)
 	}
-	def makeVWConfRepoSpec(configBR : BRFeature, cdatEH : EntryHost) : ChnkrWrapRepoSpec = {
+	def makeVWConfRepoSpec(configBR : CC_BRFeature, cdatEH : EntryHost) : ChnkrWrapRepoSpec = {
 		val brokerRecipeWrap: VWConfBrokerRecipeWrap = new VWConfBrokerRecipeWrap(configBR)
 		val cwRepoSpec = new ChnkrWrapRepoSpec(brokerRecipeWrap, cdatEH)
 		cwRepoSpec
@@ -101,21 +101,3 @@ trait AvatarSetupFuncs extends VarargsLogging {
 		r2goModel
 	}
 }
-/*
-
-:tdatabun_vworld_config_broker rdf:type mrcp:MFBR_Config ,
-                                        owl:NamedIndividual ;
-                               
-	   <http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#hasInGhostRecipe> :tdatabun_vworld_config_folderRecipe .
-
-:tdatabun_vworld_config_folderRecipe rdf:type <http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#GhR_Refer> ,
-                                              owl:NamedIndividual ;
-                                     
-     <http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#hasGraphHost> :tdatabun_vworld_config_folderGHost4 .
-
-:tdatabun_vworld_config_folderGHost4 rdf:type <http://onto.cogchar.org/onto/201407/MetaDir_OWL2#GH4S_Folder> ,
-                                              owl:NamedIndividual ;
-                                     
-     <http://onto.cogchar.org/onto/201407/MetaDir_OWL2#hasUrlText> "vwtest/data/config/grumpyvw" .
-
- */

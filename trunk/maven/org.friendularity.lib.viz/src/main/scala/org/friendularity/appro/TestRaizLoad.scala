@@ -20,6 +20,7 @@ import org.appdapter.fancy.log.VarargsLogging;
 
 import com.hp.hpl.jena
 import jena.rdf.model.{ Model => JenaModel, ModelFactory => JenaModelFactory }
+import org.friendularity.chnkr.{ChnkrWrapRepo, AvatarSetupFuncs}
 
 
 import org.ontoware.rdf2go
@@ -36,7 +37,14 @@ import org.cogchar.blob.ghost.{GraphScanTest, IndexResult,  RRUtil, GHostUtil, G
 import org.cogchar.blob.entry.{EntryHost, PlainEntry, FolderEntry, DiskEntryHost, ResourceEntryHost}
 
 
-object TestRaizLoad extends VarargsLogging {
+import org.cogchar.api.owrap.crcp.{BRFeature => CC_BRFeature}
+import org.cogchar.api.owrap.appro.AFBRLegacyConfig
+
+object TestRaizLoad extends AvatarSetupFuncs with  VarargsLogging {
+	val vizappRecipeNS = "http://onto.friendularity.org/indiv/vizappRecipes_reg_desk_2016Q1#"
+	val vizappBrokerRecipeUriTxt = vizappRecipeNS + "vizapp_legConf_brokerRecipe"
+	val pathToProfileFolder = "org/friendu/tchunk/vizapp_profile"
+
 	def main(args: Array[String]) : Unit = {
 
 		// These two lines activate Log4J (at max verbosity!) without requiring a log4j.properties file.
@@ -48,26 +56,23 @@ object TestRaizLoad extends VarargsLogging {
 
 		info0("^^^^^^^^^^^^^^^^^^^^^^^^  TestRaizLoad main().START");
 
-		// http://onto.friendularity.org/indiv/vizappRecipes_reg_desk_2016Q1#vizapp_legConf_brokerRecipe
+		//
 
-		GraphScanTest.setupScanTestLogging
+		// GraphScanTest.setupScanTestLogging
 		info0("Starting TestProfileLoad")
 
 		val mergedProfileGraph = getMergedProfileGraph_RegularDesktop
 		info1("Fetched mergedProfileGraph of size {}", mergedProfileGraph.size : java.lang.Long)
 		debug1("mergedProfileGraph dump:\n{}", mergedProfileGraph)
+
+		wow(mergedProfileGraph)
 	}
 	def getMergedProfileGraph_RegularDesktop : JenaModel = {
 		val activeTokens = Array[String]("all", "regular", "desktop")
 		getMergedProfileGraph(activeTokens)
 	}
 	def getMergedProfileGraph(activeTokens : Array[String]) : JenaModel = {
-		val profDataEntryHost : EntryHost = getProfileTestEntryHost
-
-		// These two values are described in https://robokind.atlassian.net/browse/RFA-302
-		// as MILO_PROFILE_FOLDER_PATH  and MILO_PROFILE_ACTIVE_TOKENS
-
-		val pathToProfileFolder = "org/friendu/tchunk/vizapp_profile"
+		val profDataEntryHost : EntryHost = getUnitTestResourceEntryHost
 
 		val pgm = new ApproProfileGraphMaker(profDataEntryHost, pathToProfileFolder,  activeTokens)
 
@@ -76,10 +81,35 @@ object TestRaizLoad extends VarargsLogging {
 	}
 
 
-	def  getProfileTestEntryHost : EntryHost = {
+	def  getUnitTestResourceEntryHost : EntryHost = {
 		val dataMarkerClazz : java.lang.Class[_] = classOf[ApproRaizCtxImpl]
 		val dataEntryHost : EntryHost = new ResourceEntryHost(dataMarkerClazz)
 		dataEntryHost
 	}
 
+	def wow(profileJM : JenaModel) : Unit = {
+
+		val bootRecipesR2Go = open4R2go(profileJM)
+
+		val legConfigBR = new CC_BRFeature(bootRecipesR2Go, vizappBrokerRecipeUriTxt, false)
+					// new AFBRLegacyConfig(bootRecipesR2Go, vizappBrokerRecipeUriTxt, false)
+
+
+		val cpathEntryHost: EntryHost = getUnitTestResourceEntryHost
+
+		val cwRepoSpec = makeVWConfRepoSpec(legConfigBR, cpathEntryHost)
+		val cwRepo = cwRepoSpec.getOrMakeRepo.asInstanceOf[ChnkrWrapRepo]
+
+		val dirModel = cwRepo.getDirectoryModel()
+
+		info1("Fetched repo dir model: {}", dirModel)
+
+		java.lang.Thread.sleep(3000)
+		info0("That was a good test!")
+	}
+	private def open4R2go(jmodel : JenaModel) : R2GoModel = {
+		val r2goModel : R2GoModel = new rdf2go.impl.jena.ModelImplJena(jmodel)
+		r2goModel.open
+		r2goModel
+	}
 }
