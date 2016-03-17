@@ -56,7 +56,8 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 	 * Part of this is the byte arrays alloced for each vision frame - but also the raw images, 
 	 * and perhaps also the textures/materials on the V-World side? 
 	 */
-	
+
+	public static	boolean		myFlag_attachVizappTChunkRepo = true;  // false => uses old vanilla mediator backup
 	public static	boolean		myFlag_connectJVision = true;  
 	private	boolean		myFlag_connectObsoleteNetworkVision = false;  
 	
@@ -119,15 +120,21 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 	*/
 	@Override protected void handleFrameworkStartedEvent(BundleContext bundleCtx) {
 		getLogger().info("Calling startPumaDemo()");
-
-		attachVizTChunkLegConfRepo(bundleCtx);
+		if (myFlag_attachVizappTChunkRepo) {
+			attachVizTChunkLegConfRepo(bundleCtx);
+		}
 		launchPumaRobotsAndChars(bundleCtx);
 		launchVWorldLifecycles(bundleCtx);
-		launchOtherStuffLate();	
+		launchOtherStuffLate();
 		// Here we *could start some extra app-specific (e.g. Cogbot binding) goodies, and tell them to attach to 
 		// PUMA  behavior system.  However, the Cogchar config system is intended to be sufficiently general to
 		// handle most initialization cases without help from bundle activators.		
 	}
+
+
+	@Override public void stop(BundleContext context) throws Exception {
+		super.stop(context);
+    }
 
 	private void attachVizTChunkLegConfRepo(final BundleContext bunCtx) {
 		EntryHost	 tchunkEHost = TestRaizLoad.makeBundleEntryHost(TestRaizLoad.class);
@@ -138,24 +145,22 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 		TestRaizLoad.makeAndRegisterAvatarConfigRC(bunCtx, legConfRepoSpec);
 	}
 
-
-	@Override public void stop(BundleContext context) throws Exception {
-		super.stop(context);
-    }
-
 	private void launchPumaRobotsAndChars(BundleContext bundleCtx) {
 		PumaBooter pumaBooter = new PumaBooter();
+		// Older config mechanism is used only if attachVizTChunk repo is *not* used.
 		PumaContextMediator mediator = PumaGlobalPrebootInjector.getTheInjector().getMediator();
 
-		// This part no longer includes the V-World.
-		// N
+		// PumaBooter no longer includes the V-World.
+		// Sets up character config mappings in a way we are now ready to fixup (Stu - 2016-03-16)
 		PumaBooter.BootResult bootResult = pumaBooter.bootUnderOSGi(bundleCtx, mediator);
 		getLogger().info("Got PUMA BootResult: " + bootResult);
 	}
+
 	private void launchVWorldLifecycles(BundleContext bundleCtx) {
 		CCMIO_VWorldHelper.launchVWorldLifecycles(bundleCtx);	
 		CCMIO_VWorldHelperLifecycle.startHelperLifecycle(bundleCtx);
-		// This seems to actually launch the VWorld inline, on this thread.
+		// Last checked (2014) this start appears to actually launch the VWorld inline,
+		// on this thread, as shown by stack trace below.
 /*
  *   [java] 	at org.cogchar.bundle.app.vworld.startup.PumaVirtualWorldMapper.initCinematicStuff(PumaVirtualWorldMapper.java:165)
      [java] 	at org.cogchar.bundle.app.vworld.startup.PumaVirtualWorldMapper.initVirtualWorlds(PumaVirtualWorldMapper.java:115)
@@ -175,7 +180,7 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 	private void launchOtherStuffLate()  {
 	
 		if (myFlag_connectObsoleteNetworkVision) {
-			//	Startup the obsolete netrowk vision connection
+			//	Startup alternate QPid network vision connection (separate from JVision)
 			startObsoleteNetworkVisionMonitors();
 		}
 		if (myFlag_connectSwingDebugGUI) {
@@ -194,7 +199,7 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 	}
 
 	/**
-	 * 		For each joint robot, mechio.org blends all joint inputs received from RobotMoverFrameSources.
+	 *  For each joint robot, mechio.org blends all joint inputs received from RobotMoverFrameSources.
 	 *	Cogchar.org defines the CogcharMotionSource subclass.
 	 *	A cogcharMotionSource has an ordered list of CogcharMotionComputers.
 	 * @param bundleCtx
