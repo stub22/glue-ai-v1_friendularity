@@ -34,14 +34,17 @@ import com.hp.hpl.jena.rdf.model.Model;
  * using forceLog4jConfig(), which assumes a "log4j.properties" file-resource is
  * available on the classpath.
  *
- * In principle, this bundle should start any desired subset of Cogchar functionality, for *any* environment, including
+ * In principle, this bundle can start any desired subset of Cogchar functionality,
+ * for any combination of chars and deployment environment.  Avail features include:
  *		<ul><li>Cogchar behavior
  *		</li><li>MechIO animation and speech
  *		</li><li>Optional Cogchar OpenGL rendering</li></ul>
 
-*  The actual subset is determined through the mediation of a customizable PumaContextMediator object.
+*  The actual subset is determined through
+ *  1) RDF Config
+ *  2) Optional mediation of a customizable PumaContextMediator object.
 
-* L1) This bundle does not try to start a lifter webapp, which is currently initialized
+* L1) This bundle does not try to start a liftweb webapp, which is currently initialized
  * orthogonally to the PUMA system.  See the o.f.b.demo.liftoff project.
  * 		
  * To exit, a user may X-closes our "main" simulator window, which calls stop on bundle 0.
@@ -57,17 +60,15 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 	 * and perhaps also the textures/materials on the V-World side? 
 	 */
 
+	// These flags control feature activation.
+	// TODO: Replace with values sourced from profile.
 	public static	boolean		myFlag_attachVizappTChunkRepo = true;  // false => uses old vanilla mediator backup
 	public static	boolean		myFlag_connectJVision = true;  
 	private	boolean		myFlag_connectObsoleteNetworkVision = false;  
-	
 
 	private	boolean		myFlag_connectSwingDebugGUI = true;
 	private boolean		myFlag_monitorLifecycles = true;
-	
-	// private	CCMIO_VWorldHelper					myVWorldHelper;
 
-	
 	@Override public void start(final BundleContext context) throws Exception {
 		// Need to tell the MacroBundle system that we are the main launcher, so that forceLog4JConfig will work.
 		macroStartupSettings.firstBundleActivatorBase = this;
@@ -82,61 +83,46 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 		DemoMediator mediator = new DemoMediator();
 		PumaGlobalPrebootInjector injector = PumaGlobalPrebootInjector.getTheInjector();
 		// False => Do not overwrite, so any other customer mediator will get preference.
-		// Our DemoMediator coded below is only used as a backup/default.
+		// (Crude DemoMediator coded at bottom of file is only used as a backup/default).
 		injector.setMediator(mediator, false);
 		// Schedule our callback to the handle method below.
 		scheduleFrameworkStartEventHandler(context);
 		if (myFlag_monitorLifecycles) {
 			startLifecycleMonitorGuiWindow(context);
 		}
-		// New bugs in ScreenBoxImpl are preventing this window from launching.
-		// startWhackamoleGuiWindow(context);
-		
-		// ScriptEngineExperiment.main(null);
 		getLogger().info("Setting JVision.LAUNCH_MYSELF to {}", myFlag_connectJVision);
 		org.friendularity.bundle.jvision.JVisionBundleActivator.setLaunchFlag(myFlag_connectJVision);
-
 	}
-
-	protected void startLifecycleMonitorGuiWindow(final BundleContext context) {
-      
-		ServicesFrame frame = new ServicesFrame();
-		frame.setBundleContext(context);
-		frame.setVisible(true);
-  
-       // SceneLifecycleDemo.test(context);		
-/*  [java] java.lang.RuntimeException: Uri does not contain text after hash '#' [fakeURI]
-     [java] 	at org.appdapter.core.name.FreeIdent.<init>(FreeIdent.java:40)
-     [java] 	at org.cogchar.bind.rk.behavior.ChannelBindingConfig.initExplicitly(ChannelBindingConfig.java:41)
-     [java] 	at org.cogchar.bind.rk.behavior.SceneLifecycleDemo.test(SceneLifecycleDemo.java:66)
-     [java] 	at org.friendularity.bundle.demo.ccrk.CCRK_DemoActivator.startLifecycleMonitorGuiWindow(CCRK_DemoActivator.java:73)
-     [java] 	at org.friendularity.bundle.demo.ccrk.CCRK_DemoActivator.start(CCRK_DemoActivator.java:63)
-**/
-	}
-	/** Not currently needed
-	protected void startWhackamoleGuiWindow(final BundleContext context) {
-		org.cogchar.impl.trigger.Whackamole.launchWhackamoleGui(null);
-	}
-	*/
+	// This callback after OSGi bundles loaded handles the main init process
 	@Override protected void handleFrameworkStartedEvent(BundleContext bundleCtx) {
-		getLogger().info("Calling startPumaDemo()");
+		launchCcmioDemo(bundleCtx);
+	}
+
+	private void launchCcmioDemo(BundleContext bundleCtx) {
+		getLogger().info("============ launchCcmioDemo BEGIN  ==========");
 		if (myFlag_attachVizappTChunkRepo) {
+			getLogger().info("============= Calling attachVizTChunkLegConfRepo() ======");
 			attachVizTChunkLegConfRepo(bundleCtx);
 		}
+		getLogger().info("============ Calling launchPumaRobotsAndChars()  ==========");
 		launchPumaRobotsAndChars(bundleCtx);
+		getLogger().info("============ Calling launchVWorldLifecycles() ========");
 		launchVWorldLifecycles(bundleCtx);
+		getLogger().info("============ Calling launchOtherStuffLate() ==========");
 		launchOtherStuffLate();
-		// Here we *could start some extra app-specific (e.g. Cogbot binding) goodies, and tell them to attach to 
+		getLogger().info("============ launchCcmioDemo END  ==========");
+		// Here we *could start some extra app-specific (e.g. Cogbot binding) goodies, and tell them to attach to
 		// PUMA  behavior system.  However, the Cogchar config system is intended to be sufficiently general to
-		// handle most initialization cases without help from bundle activators.		
+		// handle most initialization cases without help from bundle activators.
 	}
-
 
 	@Override public void stop(BundleContext context) throws Exception {
 		super.stop(context);
     }
 
+	// When active this VizTChunk removes the need for DemoMediator setup at bottom of this file.
 	private void attachVizTChunkLegConfRepo(final BundleContext bunCtx) {
+		// Same eHost is used for profile and config data, but separate is also supported.
 		EntryHost	 tchunkEHost = TestRaizLoad.makeBundleEntryHost(TestRaizLoad.class);
 		Model mergedProfileGraph = TestRaizLoad.getMergedProfileGraph_RegularDesktop(tchunkEHost);
 		String vzBrkRcpUriTxt = TestRaizLoad.vizappBrokerRecipeUriTxt();
@@ -159,8 +145,8 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 	private void launchVWorldLifecycles(BundleContext bundleCtx) {
 		CCMIO_VWorldHelper.launchVWorldLifecycles(bundleCtx);	
 		CCMIO_VWorldHelperLifecycle.startHelperLifecycle(bundleCtx);
-		// Last checked (2014) this start appears to actually launch the VWorld inline,
-		// on this thread, as shown by stack trace below.
+		// Last checked (2014) this lifecycle-start appears to actually launch the VWorld inline,
+		// on this same thread, as shown by stack trace below.
 /*
  *   [java] 	at org.cogchar.bundle.app.vworld.startup.PumaVirtualWorldMapper.initCinematicStuff(PumaVirtualWorldMapper.java:165)
      [java] 	at org.cogchar.bundle.app.vworld.startup.PumaVirtualWorldMapper.initVirtualWorlds(PumaVirtualWorldMapper.java:115)
@@ -215,8 +201,34 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 			vdf.startServices();
 		}
 	}
+	protected void startLifecycleMonitorGuiWindow(final BundleContext context) {
+
+		ServicesFrame frame = new ServicesFrame();
+		frame.setBundleContext(context);
+		frame.setVisible(true);
+
+		// SceneLifecycleDemo.test(context);
+/*  [java] java.lang.RuntimeException: Uri does not contain text after hash '#' [fakeURI]
+     [java] 	at org.appdapter.core.name.FreeIdent.<init>(FreeIdent.java:40)
+     [java] 	at org.cogchar.bind.rk.behavior.ChannelBindingConfig.initExplicitly(ChannelBindingConfig.java:41)
+     [java] 	at org.cogchar.bind.rk.behavior.SceneLifecycleDemo.test(SceneLifecycleDemo.java:66)
+     [java] 	at org.friendularity.bundle.demo.ccrk.CCRK_DemoActivator.startLifecycleMonitorGuiWindow(CCRK_DemoActivator.java:73)
+     [java] 	at org.friendularity.bundle.demo.ccrk.CCRK_DemoActivator.start(CCRK_DemoActivator.java:63)
+**/
+	}
+	/** Not currently needed
+	 protected void startWhackamoleGuiWindow(final BundleContext context) {
+	 org.cogchar.impl.trigger.Whackamole.launchWhackamoleGui(null);
+	 }
+	 // New bugs in ScreenBoxImpl are preventing this window from launching.
+	 // startWhackamoleGuiWindow(context)
+	 // ScriptEngineExperiment.main(null);
+	 */
+
 
 	// These mediators decorate the application lifecycle as needed.
+	// This early example shows a hardcoded reference to a particular online spreadsheet config.
+	// It only has effect if there is no other config source set above (e.g. see VizTChunk)
 	static class DemoMediator extends PumaContextMediator {
 		// Override base class methods to customize the way that PUMA boots + runs, and
 		// to receive notifications of progress during the boot / re-boot process.
@@ -236,7 +248,5 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 			// We could do some additional init here, if desired.
 			// We are on the frameworkStartedCallback() thread.  
 		}
-	}	
-
-
+	}
 }
