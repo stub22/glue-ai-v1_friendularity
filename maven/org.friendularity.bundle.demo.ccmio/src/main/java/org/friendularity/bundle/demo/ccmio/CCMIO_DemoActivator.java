@@ -61,13 +61,13 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 	 */
 
 	// These flags control feature activation.
-	// TODO: Replace with values sourced from profile.
-	public static	boolean		myFlag_attachVizappTChunkRepo = true;  // false => uses old vanilla mediator backup
-	public static	boolean		myFlag_connectJVision = true;  
-	private	boolean		myFlag_connectObsoleteNetworkVision = false;  
+	// TODO: Replace with flag values sourced from profile.
+	public static	boolean		myFlag_attachVizappTChunkRepo = true; // false => uses old vanilla mediator backup
+	public static	boolean		myFlag_connectJVision = true;  	      // Read JNI vision stream
+	private	boolean		myFlag_connectObsoleteNetworkVision = false;  // Read QPid vision streams
 
-	private	boolean		myFlag_connectSwingDebugGUI = true;
-	private boolean		myFlag_monitorLifecycles = true;
+	private	boolean		myFlag_connectSwingDebugGUI = false;  // Swing debug code disabled, anyway
+	private boolean		myFlag_monitorLifecycles = true;  // LifeMon window is launched by .start()
 
 	@Override public void start(final BundleContext context) throws Exception {
 		// Need to tell the MacroBundle system that we are the main launcher, so that forceLog4JConfig will work.
@@ -79,8 +79,9 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 		forceLog4jConfig();
 		// Print some howdys
 		super.start(context);
-		// Register our default mediator
-		DemoMediator mediator = new DemoMediator();
+		// Register a dummySheet default mediator, which only acts if there is no vizapp-tchunk repo.
+		// (Reads from online sheet and functions well as of 2016-03-19, with vizapp-tchunk-flag == false)
+		DummySheetMediator mediator = new DummySheetMediator();
 		PumaGlobalPrebootInjector injector = PumaGlobalPrebootInjector.getTheInjector();
 		// False => Do not overwrite, so any other customer mediator will get preference.
 		// (Crude DemoMediator coded at bottom of file is only used as a backup/default).
@@ -169,7 +170,9 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 			//	Startup alternate QPid network vision connection (separate from JVision)
 			startObsoleteNetworkVisionMonitors();
 		}
+		// 2016 - current thinking
 		if (myFlag_connectSwingDebugGUI) {
+			throw new RuntimeException("SwingDebugGUI is disabled, so flag should be false.");
 			// setupDebuggingScaffold(mg, we);
 		}			
 	}
@@ -229,7 +232,7 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 	// These mediators decorate the application lifecycle as needed.
 	// This early example shows a hardcoded reference to a particular online spreadsheet config.
 	// It only has effect if there is no other config source set above (e.g. see VizTChunk)
-	static class DemoMediator extends PumaContextMediator {
+	private static class DummySheetMediator extends PumaContextMediator {
 		// Override base class methods to customize the way that PUMA boots + runs, and
 		// to receive notifications of progress during the boot / re-boot process.
 		String TEST_REPO_SHEET_KEY = "0ArBjkBoH40tndDdsVEVHZXhVRHFETTB5MGhGcWFmeGc";
