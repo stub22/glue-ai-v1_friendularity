@@ -9,6 +9,21 @@
 @prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
 
+
+
+ccrt:char_sinbad_88
+      rdf:type ccrt:Humanoid ;
+      ccrt:initX "30"^^xsd:float ;
+      ccrt:initY "20"^^xsd:float ;
+      ccrt:initZ "-30"^^xsd:float ;
+      ccrt:jointConfigPath
+              "rk_bind_config/motion/jointGroup_Sinbad.xml" ;
+      ccrt:meshPath "jme3dat/models_20110917/sinbad/Sinbad.mesh.xml";
+      ccrt:physics "true"^^xsd:boolean ;
+      ccrt:rkRobotID "rk-sinbad" ;
+      ccrt:scale "5"^^xsd:float .
+
+
 hrk:aZR50
       rdf:type ccrt:Humanoid ;
       ccrt:initX "-30"^^xsd:float ;
@@ -20,5 +35,3 @@ hrk:aZR50
       ccrt:physics "false"^^xsd:boolean ;
       ccrt:rkRobotID "rk-aZR50" ;
       ccrt:scale "1"^^xsd:float .
-
-
