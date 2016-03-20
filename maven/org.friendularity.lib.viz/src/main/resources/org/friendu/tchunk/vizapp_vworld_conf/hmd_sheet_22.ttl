@@ -24,14 +24,14 @@ ccrt:char_sinbad_88
       ccrt:scale "5"^^xsd:float .
 
 
-hrk:aZR50
-      rdf:type ccrt:Humanoid ;
-      ccrt:initX "-30"^^xsd:float ;
-      ccrt:initY "0"^^xsd:float ;
-      ccrt:initZ "0"^^xsd:float ;
-      ccrt:jointConfigPath
-              "rk_bind_config/motion/jointGroup_ZenoR25.xml" ;
-      ccrt:meshPath "model3D/char/zeno/zeno_R25_A14_20131012/AZR25_A14_20131012.mesh.xml" ;
-      ccrt:physics "false"^^xsd:boolean ;
-      ccrt:rkRobotID "rk-aZR50" ;
-      ccrt:scale "1"^^xsd:float .
+# hrk:aZR50
+#      rdf:type ccrt:Humanoid ;
+#      ccrt:initX "-30"^^xsd:float ;
+#      ccrt:initY "0"^^xsd:float ;
+#      ccrt:initZ "0"^^xsd:float ;
+#      ccrt:jointConfigPath
+#              "rk_bind_config/motion/jointGroup_ZenoR25.xml" ;
+#      ccrt:meshPath "model3D/char/zeno/zeno_R25_A14_20131012/AZR25_A14_20131012.mesh.xml" ;
+#      ccrt:physics "false"^^xsd:boolean ;
+#      ccrt:rkRobotID "rk-aZR50" ;
+#      ccrt:scale "1"^^xsd:float .
