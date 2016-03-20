@@ -11,23 +11,23 @@
 @prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rkrt:    <urn:ftd:robokind.org:2012:runtime#> .
 
-hrk:aZR50
-      rdf:type gr:CharEntity ;
-      bc:globalMode rkrt:test_spread_reload .
+#hrk:aZR50
+#      rdf:type gr:CharEntity ;
+#      bc:globalMode rkrt:test_spread_reload .
 
-rkrt:bind_tsm_01
-      rdf:type gr:Binding ;
-      bc:entity hrk:char_cajunZeno_77 ;
-      bc:globalMode rkrt:test_special_mode ;
-      bc:graph ccrt:graph_0709 ;
-      bc:role rkrt:bonyAvatarConf .
+#rkrt:bind_tsm_01
+#      rdf:type gr:Binding ;
+#      bc:entity hrk:char_cajunZeno_77 ;
+#      bc:globalMode rkrt:test_special_mode ;
+#      bc:graph ccrt:graph_0709 ;
+#      bc:role rkrt:bonyAvatarConf .
 
-rkrt:bind_tsm_02
-      rdf:type gr:Binding ;
-      bc:entity hrk:char_cajunZeno_77 ;
-      bc:globalMode rkrt:test_special_mode ;
-      bc:graph ccrt:hmd_sheet_22 ;
-      bc:role rkrt:humanoidConf .
+#rkrt:bind_tsm_02
+#      rdf:type gr:Binding ;
+#      bc:entity hrk:char_cajunZeno_77 ;
+#      bc:globalMode rkrt:test_special_mode ;
+#      bc:graph ccrt:hmd_sheet_22 ;
+#      bc:role rkrt:humanoidConf .
 
 rkrt:bind_tsr_03
       rdf:type gr:Binding ;
@@ -50,19 +50,19 @@ rkrt:bind_tsr_05
       bc:graph ccrt:lights_camera_sheet_22 ;
       bc:role rkrt:camLightsConf .
 
-rkrt:bind_tsr_06
-      rdf:type gr:Binding ;
-      bc:entity hrk:aZR50 ;
-      bc:globalMode rkrt:test_spread_reload ;
-      bc:graph ccrt:bony_sheet_22 ;
-      bc:role rkrt:bonyAvatarConf .
+#rkrt:bind_tsr_06
+#      rdf:type gr:Binding ;
+#      bc:entity hrk:aZR50 ;
+#      bc:globalMode rkrt:test_spread_reload ;
+#      bc:graph ccrt:bony_sheet_22 ;
+#      bc:role rkrt:bonyAvatarConf .
 
-rkrt:bind_tsr_07
-      rdf:type gr:Binding ;
-      bc:entity hrk:aZR50 ;
-      bc:globalMode rkrt:test_spread_reload ;
-      bc:graph ccrt:hmd_sheet_22 ;
-      bc:role rkrt:humanoidConf .
+#rkrt:bind_tsr_07
+#      rdf:type gr:Binding ;
+#      bc:entity hrk:aZR50 ;
+#      bc:globalMode rkrt:test_spread_reload ;
+#      bc:graph ccrt:hmd_sheet_22 ;
+#      bc:role rkrt:humanoidConf .
 
 rkrt:bind_tsr_08
       rdf:type gr:Binding ;
@@ -120,8 +120,8 @@ rkrt:bind_tsr_15
       bc:graph ccrt:waypoint_sheet_22 ;
       bc:role rkrt:thingWaypoints .
 
-hrk:char_cajunZeno_77
-      bc:globalMode rkrt:test_spread_reload .
+#hrk:char_cajunZeno_77
+#      bc:globalMode rkrt:test_spread_reload .
 
 ccrt:char_sinbad_88
       rdf:type gr:CharEntity ;

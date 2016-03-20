@@ -37,7 +37,7 @@ class ChnkrWrapRepo(chunkDirMapper : ChnkrDirMapper)  extends BasicRepoImpl with
 		dset
 	}
 	override def getDirectoryModel() : JenaModel = {
-		getLogger.info("mappedDset is {}", myMappedDSet)
+		getLogger.debug("mappedDset is {}", myMappedDSet)
 		myCachedMappedDirModel
 	}
 	

@@ -107,10 +107,10 @@ csi:chan_sheet_77
       ccrt:repo csi:filerepo_2014071107_5721_917 ;
       ccrt:sourcePath "chan_sheet_77.ttl" .
 
-ccrt:cmd_sheet_AZR50
+ccrt:cmd_sheet_sin23
       rdf:type ccrt:FileModel , cc:CommandsModel ;
       ccrt:repo csi:filerepo_2014071107_5721_917 ;
-      ccrt:sourcePath "cmd_sheet_AZR50.ttl" .
+      ccrt:sourcePath "cmd_sheet_sin23.ttl" .
 
 fc:connection_sheet_1
       rdf:type f:Connection , ccrt:FileModel ;
