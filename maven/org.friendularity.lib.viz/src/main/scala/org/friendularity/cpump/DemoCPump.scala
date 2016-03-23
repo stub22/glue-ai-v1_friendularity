@@ -27,10 +27,11 @@ import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.fancy.log.VarargsLogging;
 import org.appdapter.core.name.{FreeIdent, Ident}
 
+
 case class DummyMsg(msg : String) extends CPumpMsg {
 	
 } 
-object DemoCPump extends BasicDebugger {
+object DemoCPump extends VarargsLogging {
 	def main(args: Array[String]) : Unit = {
 
 		// These two lines activate Log4J (at max verbosity!) without requiring a log4j.properties file.  
@@ -40,21 +41,24 @@ object DemoCPump extends BasicDebugger {
 	//	
 	//	Appears that currently Akka is automatically initing logging with our log4j.properties.
 		
-		getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^  DemoCPump main().START");
+		info0("^^^^^^^^^^^^^^^^^^^^^^^^  DemoCPump main().START");
 		val myDCPM = new DemoCPumpMgr
-		val cpumpActorRef : ActorRef = myDCPM.initSystemPumpAndTerm
+		val akkaSys = myDCPM.getActorSys
+		info2("ActorSystem {}\nSettings dump: {}", akkaSys, akkaSys.settings)
+		val cpumpActorRef : ActorRef = myDCPM.getCPumpActRef
+		myDCPM.connectCPumpActorSystemTerminator
 		// Typical result dumps as   Actor[akka://demoCPAS/user/demoCPump01#618243248]
-		getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^  DemoCPump main() - got initial cpumpActorRef: {}", cpumpActorRef);
+		info1("^^^^^^^^^^^^^^^^^^^^^^^^  DemoCPump main() - got initial cpumpActorRef: {}", cpumpActorRef);
 		val adm = new DummyMsg("First contents")
 		
 		cpumpActorRef ! adm
-		
-		val pp = akka.actor.PoisonPill
-		
-		cpumpActorRef ! pp
-		
-		getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^  DemoCPump main().END");	
+
+		myDCPM.terminateCPumpActor
+
+		info0("^^^^^^^^^^^^^^^^^^^^^^^^  DemoCPump main().END");
 	}
+
+
 }
 // This Actor watches the ref, and when it terminates, this actor sends .shutdown to the context actorSystem.
 class AkkaSysTerminator(ref: ActorRef) extends Actor with ActorLogging {
@@ -71,22 +75,31 @@ class AkkaSysTerminator(ref: ActorRef) extends Actor with ActorLogging {
 
 
 class DemoCPumpMgr {
+	// typical cpumpActorRef: Actor[akka://demoCPAS/user/demoCPump01#-1369953355]
 	val akkaSysName = "demoCPAS"
 	val testCPumpName = "demoCPump01"
 	val cpumpEndListenerName = "demoCPASTerm"
-	def initSystemPumpAndTerm : ActorRef = {
-		val akkaSys01 = ActorSystem(akkaSysName)  // Using case-class cons
-	    val cpumpActorRef  : ActorRef = akkaSys01.actorOf(Props[DemoCPumpActor], testCPumpName)
-		val cpumpEndListener : ActorRef = akkaSys01.actorOf(Props(classOf[AkkaSysTerminator], cpumpActorRef), cpumpEndListenerName)
-		cpumpActorRef 
+
+	lazy private val myAkkaSys = ActorSystem(akkaSysName)  // Using case-class cons
+	def getActorSys : ActorSystem = myAkkaSys
+
+	lazy private val myCPumpActRef : ActorRef = getActorSys.actorOf(Props[DemoCPumpActor], testCPumpName)
+	def getCPumpActRef : ActorRef = myCPumpActRef
+
+	def connectCPumpActorSystemTerminator : Unit = {
+		val cpumpActorRef = getCPumpActRef
+		val cpumpEndListener : ActorRef = getActorSys.actorOf(Props(classOf[AkkaSysTerminator], cpumpActorRef), cpumpEndListenerName)
 	}
-	def startMsgPump : Unit = {
-		
+
+	def terminateCPumpActor : Unit = {
+		val pp = akka.actor.PoisonPill
+		getCPumpActRef ! pp
 	}
+
 }
 case class WhoToGreet(who: String)
 case class Greeting(message: String)
-case class CheckGreeting // This is an object called "Greeting" in akka-HelloWorld
+case class CheckGreeting // Corresponds to an object called "Greeting" in akka-HelloWorld
 
 
 class DemoCPumpActor extends Actor with ActorLogging {
@@ -100,12 +113,12 @@ class DemoCPumpActor extends Actor with ActorLogging {
 	val adptrs = List[CPumpAdptr[DummyMsg, DullPumpCtx, CPumpMsg]](adp1, adp2)
 	val inMsgClz = classOf[DummyMsg]
 	val listenChan = myCPumpCtx.makeOnewayListenChan(listenChanID, inMsgClz, adptrs)
-  var greeting = ""
+  	var myMutableGreetTxt = "Heyo - initial contents of myMutableGreetTxt"
 
   def receive = {
 	  // s"   syntax added in Scala 2.10.    http://docs.scala-lang.org/overviews/core/string-interpolation.html
-    case WhoToGreet(who) => greeting = s"hello, $who"
-    case CheckGreeting   => sender ! Greeting(greeting) // Send the current greeting back to the sender
+    case WhoToGreet(who) => myMutableGreetTxt = s"hello, $who"
+    case CheckGreeting   => sender ! Greeting(myMutableGreetTxt) // Send the current greeting back to the sender
 	case dmsg: DummyMsg => myCPumpCtx.postAndForget(postChan, dmsg)
   }
 }
@@ -166,4 +179,48 @@ Finally, Scala programs are terminating when all the non-daemon threads and acto
 With Akka the program ends when all the non-daemon threads finish and all actor systems are shut down. 
 Actor systems need to be explicitly terminated before the program can exit. 
 This is achieved by invoking the shutdown method on an Actor system. 
+
+
+http://doc.akka.io/docs/akka/2.3.14/AkkaScala.pdf  - pg 22
+
+  actorOf only ever creates a new actor, and it creates it as a direct child of the context
+  on which this methodis invoked (which may be any actor or actor system).
+
+  actorSelection only ever looks up existing actors when messages are delivered, i.e. does
+  not create actors, or verify existence of actors when the selection is created.
+
+  actorFor (deprecated in favor of actorSelection) only ever looks up an existing actor, i.e.
+  does not create one
+
+What is the Difference Between Actor Reference and Path?
+
+An actor reference designates a single actor and the life-cycle of the reference matches that actor’s life-cycle; an
+actor path represents a name which may or may not be inhabited by an actor and the path itself does not have a
+life-cycle, it never becomes invalid. You can create an actor path without creating an actor, but you cannot create
+an actor reference without creating corresponding actor.
+Note: That definition does not hold for actorFor, which is one of the reasons why actorFor is deprecated
+in favor of actorSelection.
+
+...
+
+You can create an actor, terminate it, and then create a new actor with the same actor path. The newly created
+actor is a new incarnation of the actor. It is not the same actor. An actor reference to the old incarnation is not
+valid for the new incarnation. Messages sent to the old actor reference will not be delivered to the new incarnation
+even though they have the same path.
+
+Equality of ActorRef match the intention that an ActorRef corresponds to the target actor incarnation. Two
+actor references are compared equal when they have the same path and point to the same actor incarnation. A
+reference pointing to a terminated actor does not compare equal to a reference pointing to another (re-created)
+actor with the same path. Note that a restart of an actor caused by a failure still means that it is the same actor
+incarnation, i.e. a restart is not visible for the consumer of the ActorRef.
+
+If you need to keep track of actor references in a collection and do not care about the exact actor incarnation you
+can use the ActorPath as key, because the identifier of the target actor is not taken into account when comparing
+actor paths.
+
+2.5.3 How are Actor References obtained?
+There are two general categories to how actor references may be obtained: by creating actors or by looking them
+up, where the latter functionality comes in the two flavours of creating actor references from concrete actor paths
+and querying the logical actor hierarchy.
+
  */
