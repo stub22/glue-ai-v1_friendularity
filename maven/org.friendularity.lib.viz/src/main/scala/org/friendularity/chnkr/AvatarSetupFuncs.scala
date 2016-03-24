@@ -43,32 +43,7 @@ import org.osgi.framework.FrameworkUtil;
 import org.cogchar.blob.entry.EntryHost;
 import org.cogchar.blob.entry.BundleEntryHost;
 
-trait AvatarSetupFuncs extends VarargsLogging { 
-	def loadVizappFromChunkFolders(profilePath : String, vwrldConfPath: String): Unit = {
-
-	}
-
-	private def maybeRegisterLegacyConf(arzCtx : ApproRaizCtx) : Unit = {
-		val bun = org.osgi.framework.FrameworkUtil.getBundle(getClass)
-		if (bun != null) {
-			val bunCtx = bun.getBundleContext
-
-			val arzRecipeNames : ApproRaizRecipeNames = arzCtx.getMainRecipeNames
-
-			val legConfBRURI = arzRecipeNames.getLegacyConfBrokerRecipeURI
-			val legConfEHost = arzCtx.getInLegConfEntHost
-			if ((legConfBRURI != null) && (legConfEHost != null)) {
-				val recipeModel = arzCtx.getInRootRecipeModel
-				val rcpmR2Go = open4R2go(recipeModel)
-				makeAndRegisterAvatarConfigRepo(bunCtx, rcpmR2Go, legConfBRURI, legConfEHost)
-			} else {
-				warn2("Not loading legacy config for brokerRecipeURI={}, eHost={}", legConfBRURI, legConfEHost)
-			}
-		} else {
-			warn0("OSGi bundle lookup failed (we are probably in a main() test), so no legacy config will be processed.")
-		}
-	}
-
+trait AvatarSetupFuncs extends VarargsLogging {
 
 	def makeAndRegisterAvatarConfigRepo( bunCtx : BundleContext, recipesR2Go : R2GoModel, cbrUri : String, cdatEH : EntryHost) : Unit = {
 		val configBR = new CC_BRFeature(recipesR2Go, cbrUri,  false)
@@ -93,11 +68,11 @@ trait AvatarSetupFuncs extends VarargsLogging {
 	}
 	def makeAndRegisterAvatarConfigRC( bunCtx : BundleContext, repoSpec : RepoSpec ) {
 		val repoHandle : Repo.WithDirectory = repoSpec.getOrMakeRepo();
+		// TODO: Get these SPARQL keys from profile, instead
 		val erc = new EnhancedLocalRepoClient(repoSpec, repoHandle, 
 				BehavMasterConfigTest.TGT_GRAPH_SPARQL_VAR, BehavMasterConfigTest.QUERY_SOURCE_GRAPH_QN);
 		registerAvatarConfigRepoClient(bunCtx, erc);
 	}
-
 
 	private def registerAvatarConfigRepoClient(bunCtx : BundleContext, avatarConfigERC : EnhancedRepoClient)  : Unit = {
 		info1("Registering legacy config EnhancedRepoClient: {}", avatarConfigERC);
@@ -114,3 +89,29 @@ trait AvatarSetupFuncs extends VarargsLogging {
 		new BundleEntryHost(bun) ;
 	}
 }
+/*
+	def loadVizappFromChunkFolders(profilePath : String, vwrldConfPath: String): Unit = {
+
+	}
+
+	private def maybeRegisterLegacyConf(arzCtx : ApproRaizCtx) : Unit = {
+		val bun = org.osgi.framework.FrameworkUtil.getBundle(getClass)
+		if (bun != null) {
+			val bunCtx = bun.getBundleContext
+
+			val arzRecipeNames : ApproRaizRecipeNames = arzCtx.getMainRecipeNames
+
+			val legConfBRURI = arzRecipeNames.getLegacyConfBrokerRecipeURI
+			val legConfEHost = arzCtx.getInLegConfEntHost
+			if ((legConfBRURI != null) && (legConfEHost != null)) {
+				val recipeModel = arzCtx.getInRootRecipeModel
+				val rcpmR2Go = open4R2go(recipeModel)
+				makeAndRegisterAvatarConfigRepo(bunCtx, rcpmR2Go, legConfBRURI, legConfEHost)
+			} else {
+				warn2("Not loading legacy config for brokerRecipeURI={}, eHost={}", legConfBRURI, legConfEHost)
+			}
+		} else {
+			warn0("OSGi bundle lookup failed (we are probably in a main() test), so no legacy config will be processed.")
+		}
+	}
+ */

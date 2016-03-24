@@ -28,19 +28,17 @@ import org.appdapter.fancy.log.VarargsLogging;
 import org.appdapter.core.name.{FreeIdent, Ident}
 
 
-case class DummyMsg(msg : String) extends CPumpMsg {
-	
-} 
+
 object DemoCPump extends VarargsLogging {
 	def main(args: Array[String]) : Unit = {
 
-		// These two lines activate Log4J (at max verbosity!) without requiring a log4j.properties file.  
+		// These two lines activate Log4J (at max verbosity!) without requiring a log4j.properties file.
 		// However, when a log4j.properties file is present, these commands should not be used.
 	//	org.apache.log4j.BasicConfigurator.configure();
 	//	org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.ALL);
-	//	
+	//
 	//	Appears that currently Akka is automatically initing logging with our log4j.properties.
-		
+
 		info0("^^^^^^^^^^^^^^^^^^^^^^^^  DemoCPump main().START");
 		val myDCPM = new DemoCPumpMgr
 		val akkaSys = myDCPM.getActorSys
@@ -49,9 +47,13 @@ object DemoCPump extends VarargsLogging {
 		myDCPM.connectCPumpActorSystemTerminator
 		// Typical result dumps as   Actor[akka://demoCPAS/user/demoCPump01#618243248]
 		info1("^^^^^^^^^^^^^^^^^^^^^^^^  DemoCPump main() - got initial cpumpActorRef: {}", cpumpActorRef);
-		val adm = new DummyMsg("First contents")
-		
-		cpumpActorRef ! adm
+		val tsm01 = new TxtSymMsg("First contents")
+
+		cpumpActorRef ! tsm01
+
+		val tsm02 = new TxtSymMsg("Second  contents")
+
+		myDCPM.tellCPMsg(tsm02)
 
 		myDCPM.terminateCPumpActor
 
@@ -62,7 +64,7 @@ object DemoCPump extends VarargsLogging {
 }
 // This Actor watches the ref, and when it terminates, this actor sends .shutdown to the context actorSystem.
 class AkkaSysTerminator(ref: ActorRef) extends Actor with ActorLogging {
-	
+
 	// "watch" registers us for lifecycle events on ref
     context watch ref
     def receive = {
@@ -73,18 +75,21 @@ class AkkaSysTerminator(ref: ActorRef) extends Actor with ActorLogging {
     }
 }
 
-
-class DemoCPumpMgr {
+trait CPMsgTeller {
+	def tellCPMsg(msg: CPumpMsg)
+}
+// Wrapper for both an ActorSystem and a cpump-factory actor
+class DemoCPumpMgr extends CPMsgTeller {
 	// typical cpumpActorRef: Actor[akka://demoCPAS/user/demoCPump01#-1369953355]
 	val akkaSysName = "demoCPAS"
 	val testCPumpName = "demoCPump01"
 	val cpumpEndListenerName = "demoCPASTerm"
 
 	lazy private val myAkkaSys = ActorSystem(akkaSysName)  // Using case-class cons
-	def getActorSys : ActorSystem = myAkkaSys
+	private[cpump] def getActorSys : ActorSystem = myAkkaSys
 
 	lazy private val myCPumpActRef : ActorRef = getActorSys.actorOf(Props[DemoCPumpActor], testCPumpName)
-	def getCPumpActRef : ActorRef = myCPumpActRef
+	private[cpump] def getCPumpActRef : ActorRef = myCPumpActRef
 
 	def connectCPumpActorSystemTerminator : Unit = {
 		val cpumpActorRef = getCPumpActRef
@@ -95,6 +100,9 @@ class DemoCPumpMgr {
 		val pp = akka.actor.PoisonPill
 		getCPumpActRef ! pp
 	}
+	override def tellCPMsg(msg: CPumpMsg) : Unit = {
+		getCPumpActRef ! msg
+	}
 
 }
 case class WhoToGreet(who: String)
@@ -102,42 +110,46 @@ case class Greeting(message: String)
 case class CheckGreeting // Corresponds to an object called "Greeting" in akka-HelloWorld
 
 
+// This actor is used as a local factory for message-pumping actors.
+// It responds to async requests
 class DemoCPumpActor extends Actor with ActorLogging {
-	
-	lazy val myCPumpCtx = new DullPumpCtx () 
+
+	lazy val myCPumpCtx = new DullPumpCtx ()
 	val postChanID : Ident = null
 	val listenChanID : Ident = null
-	val postChan = myCPumpCtx.makeOnewayPostChan(postChanID, classOf[DummyMsg])
-	val adp1 = new DMAdptrBase
-	val adp2 = new DMAdptrBase
-	val adptrs = List[CPumpAdptr[DummyMsg, DullPumpCtx, CPumpMsg]](adp1, adp2)
-	val inMsgClz = classOf[DummyMsg]
+	val myPostChan01 = myCPumpCtx.makeOnewayDispatchPostChan(postChanID, classOf[TxtSymMsg])
+	val adp1 = new TxtDullFilterAdptr
+	val adp2 = new TxtDullFilterAdptr
+	val adptrs = List[TxtDullFilterAdptr](adp1, adp2)
+	val inMsgClz = classOf[TxtSymMsg]
 	val listenChan = myCPumpCtx.makeOnewayListenChan(listenChanID, inMsgClz, adptrs)
   	var myMutableGreetTxt = "Heyo - initial contents of myMutableGreetTxt"
 
   def receive = {
-	  // s"   syntax added in Scala 2.10.    http://docs.scala-lang.org/overviews/core/string-interpolation.html
+	  // s"txtPat"  syntax added in Scala 2.10.    http://docs.scala-lang.org/overviews/core/string-interpolation.html
     case WhoToGreet(who) => myMutableGreetTxt = s"hello, $who"
     case CheckGreeting   => sender ! Greeting(myMutableGreetTxt) // Send the current greeting back to the sender
-	case dmsg: DummyMsg => myCPumpCtx.postAndForget(postChan, dmsg)
+	case dmsg: TxtSymMsg => myPostChan01.postAndForget(dmsg)
   }
 }
-
-class DMAdptrBase extends CPumpAdptr[DummyMsg, DullPumpCtx, DummyMsg] with VarargsLogging {
+// "Filter" indicates same formal input and output type.
+trait DullFilterAdptr[FMsgType <: CPumpMsg] extends CPumpAdptr[FMsgType, DullPumpCtx, FMsgType] with VarargsLogging {
 	override def getLegalCtxType: Class[DullPumpCtx] = classOf[DullPumpCtx]
-	override def getLegalInMsgType: Class[DummyMsg] = classOf[DummyMsg]
-	override def getLegalOutMsgType: Class[DummyMsg] = classOf[DummyMsg]
-	override def getUsualInMsgType : Class[DummyMsg] = classOf[DummyMsg]
-	override protected def attemptShortcut(inMsg: DummyMsg, pumpCtx: DullPumpCtx): Traversable[DummyMsg] = Nil	
-	override protected def mapIn(inMsg: DummyMsg,ctx: DullPumpCtx): Traversable[WritableRecord] = Nil
-	override protected def mapOut(inMsg: DummyMsg,wresults : Traversable[WrittenResult],pumpCtx: DullPumpCtx): Traversable[DummyMsg] = Nil
-	override protected def write(rec: WritableRecord, wc: WritingCtx): WrittenResult = null	
-	override def processMsg(inMsg : DummyMsg, pumpCtx : DullPumpCtx) : Traversable[DummyMsg] = {
+
+	override protected def attemptShortcut(inMsg: FMsgType, pumpCtx: DullPumpCtx): Traversable[FMsgType] = Nil
+	override protected def mapIn(inMsg: FMsgType, ctx: DullPumpCtx): Traversable[WritableRecord] = Nil
+	override protected def mapOut(inMsg: FMsgType, wresults : Traversable[WrittenResult], pumpCtx: DullPumpCtx): Traversable[FMsgType] = Nil
+	override protected def write(rec: WritableRecord, wc: WritingCtx): WrittenResult = null
+	override def processMsg(inMsg : FMsgType, pumpCtx : DullPumpCtx) : Traversable[FMsgType] = {
 		info2("DMAdptrBase.processMsg msg={} adptr={}", inMsg, this)
 		super.processMsg(inMsg, pumpCtx)
 	}
 }
-
+class TxtDullFilterAdptr extends DullFilterAdptr[TxtSymMsg]  {
+	override def getLegalInMsgType = classOf[TxtSymMsg]
+	override def getLegalOutMsgType = classOf[TxtSymMsg]
+	override def getUsualInMsgType  = classOf[TxtSymMsg]
+}
 /*
  * Last version of akka to support Java6-7 (+ Scala 2.10) was Akka 2.3.14, released Sep 2015.
  * Latest 2.4.1 now requires Java8 + Scala 11.
