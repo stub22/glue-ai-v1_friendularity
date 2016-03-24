@@ -43,13 +43,14 @@ object DemoCPump extends VarargsLogging {
 		val myDCPM = new DemoCPumpMgr
 		val akkaSys = myDCPM.getActorSys
 		info2("ActorSystem {}\nSettings dump: {}", akkaSys, akkaSys.settings)
-		val cpumpActorRef : ActorRef = myDCPM.getCPumpActRef
+		// val cpumpActorRef : ActorRef = myDCPM.getCPumpActRef
+		// info1("^^^^^^^^^^^^^^^^^^^^^^^^  DemoCPump main() - got initial cpumpActorRef: {}", cpumpActorRef);
 		myDCPM.connectCPumpActorSystemTerminator
 		// Typical result dumps as   Actor[akka://demoCPAS/user/demoCPump01#618243248]
-		info1("^^^^^^^^^^^^^^^^^^^^^^^^  DemoCPump main() - got initial cpumpActorRef: {}", cpumpActorRef);
+
 		val tsm01 = new TxtSymMsg("First contents")
 
-		cpumpActorRef ! tsm01
+		myDCPM.tellCPMsg(tsm01)
 
 		val tsm02 = new TxtSymMsg("Second  contents")
 
@@ -62,26 +63,14 @@ object DemoCPump extends VarargsLogging {
 
 
 }
-// This Actor watches the ref, and when it terminates, this actor sends .shutdown to the context actorSystem.
-class AkkaSysTerminator(ref: ActorRef) extends Actor with ActorLogging {
-
-	// "watch" registers us for lifecycle events on ref
-    context watch ref
-    def receive = {
-      case Terminated(_) => {
-        log.info("{} has terminated, so now we will down actor system", ref.path)
-        context.system.shutdown()
-	  }
-    }
-}
 
 trait CPMsgTeller {
 	def tellCPMsg(msg: CPumpMsg)
 }
 // Wrapper for both an ActorSystem and a cpump-factory actor
-class DemoCPumpMgr extends CPMsgTeller {
+class DemoCPumpMgr extends CPMsgTeller with VarargsLogging {
 	// typical cpumpActorRef: Actor[akka://demoCPAS/user/demoCPump01#-1369953355]
-	val akkaSysName = "demoCPAS"
+	val akkaSysName = "demoCPASys01"
 	val testCPumpName = "demoCPump01"
 	val cpumpEndListenerName = "demoCPASTerm"
 
@@ -89,7 +78,7 @@ class DemoCPumpMgr extends CPMsgTeller {
 	private[cpump] def getActorSys : ActorSystem = myAkkaSys
 
 	lazy private val myCPumpActRef : ActorRef = getActorSys.actorOf(Props[DemoCPumpActor], testCPumpName)
-	private[cpump] def getCPumpActRef : ActorRef = myCPumpActRef
+	private def getCPumpActRef : ActorRef = myCPumpActRef
 
 	def connectCPumpActorSystemTerminator : Unit = {
 		val cpumpActorRef = getCPumpActRef
@@ -101,7 +90,9 @@ class DemoCPumpMgr extends CPMsgTeller {
 		getCPumpActRef ! pp
 	}
 	override def tellCPMsg(msg: CPumpMsg) : Unit = {
-		getCPumpActRef ! msg
+		val pumpRootActor = getCPumpActRef
+		info2("Telling pump root actor {} about msg {}", pumpRootActor, msg)
+		pumpRootActor ! msg
 	}
 
 }
@@ -118,8 +109,8 @@ class DemoCPumpActor extends Actor with ActorLogging {
 	val postChanID : Ident = null
 	val listenChanID : Ident = null
 	val myPostChan01 = myCPumpCtx.makeOnewayDispatchPostChan(postChanID, classOf[TxtSymMsg])
-	val adp1 = new TxtDullFilterAdptr
-	val adp2 = new TxtDullFilterAdptr
+	val adp1 = new TxtDullFilterAdptr("filter_expr_AA")
+	val adp2 = new TxtDullFilterAdptr("filter_expr_BB")
 	val adptrs = List[TxtDullFilterAdptr](adp1, adp2)
 	val inMsgClz = classOf[TxtSymMsg]
 	val listenChan = myCPumpCtx.makeOnewayListenChan(listenChanID, inMsgClz, adptrs)
@@ -132,24 +123,7 @@ class DemoCPumpActor extends Actor with ActorLogging {
 	case dmsg: TxtSymMsg => myPostChan01.postAndForget(dmsg)
   }
 }
-// "Filter" indicates same formal input and output type.
-trait DullFilterAdptr[FMsgType <: CPumpMsg] extends CPumpAdptr[FMsgType, DullPumpCtx, FMsgType] with VarargsLogging {
-	override def getLegalCtxType: Class[DullPumpCtx] = classOf[DullPumpCtx]
 
-	override protected def attemptShortcut(inMsg: FMsgType, pumpCtx: DullPumpCtx): Traversable[FMsgType] = Nil
-	override protected def mapIn(inMsg: FMsgType, ctx: DullPumpCtx): Traversable[WritableRecord] = Nil
-	override protected def mapOut(inMsg: FMsgType, wresults : Traversable[WrittenResult], pumpCtx: DullPumpCtx): Traversable[FMsgType] = Nil
-	override protected def write(rec: WritableRecord, wc: WritingCtx): WrittenResult = null
-	override def processMsg(inMsg : FMsgType, pumpCtx : DullPumpCtx) : Traversable[FMsgType] = {
-		info2("DMAdptrBase.processMsg msg={} adptr={}", inMsg, this)
-		super.processMsg(inMsg, pumpCtx)
-	}
-}
-class TxtDullFilterAdptr extends DullFilterAdptr[TxtSymMsg]  {
-	override def getLegalInMsgType = classOf[TxtSymMsg]
-	override def getLegalOutMsgType = classOf[TxtSymMsg]
-	override def getUsualInMsgType  = classOf[TxtSymMsg]
-}
 /*
  * Last version of akka to support Java6-7 (+ Scala 2.10) was Akka 2.3.14, released Sep 2015.
  * Latest 2.4.1 now requires Java8 + Scala 11.
