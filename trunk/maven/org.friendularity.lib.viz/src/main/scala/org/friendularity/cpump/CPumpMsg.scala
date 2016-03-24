@@ -16,11 +16,15 @@
 
 package org.friendularity.cpump
 
+import akka.actor.ActorRef
 import org.appdapter.core.name.Ident
 
 // Empty (so far) marker trait for all msgs.
 trait CPumpMsg extends java.io.Serializable {
 
+}
+trait CPMsgTeller extends java.io.Serializable {
+	def tellCPMsg(msg: CPumpMsg)
 }
 
 // Contains regular-shaped buffer streams of data as opaque binary or text
@@ -28,18 +32,34 @@ trait CPSignalMsg extends CPumpMsg {
 	
 }
 
-// Contains graph metadata, as text or tuples
+// Contains graph metadata, as text or tuples, and possibly system wiring info.
 trait CPSymbolMsg extends CPumpMsg {
 	
 }
+trait CPReceiptMsg extends CPSymbolMsg {
+	def getConfirmedTeller : CPMsgTeller
+}
+// Wrapper for sender who wants an answer
+trait CPReceiptTeller extends CPMsgTeller {
+	// TODO:  Refine this impl
+	def tellCPReceipt(msg: CPReceiptMsg) = tellCPMsg(msg)
+}
+// Q:  How well does logging play with serializable?
+
+case class ActorRefCPMsgTeller(actRef : ActorRef) extends CPMsgTeller {
+	override def tellCPMsg(cpMsg: CPumpMsg): Unit = {
+		actRef ! cpMsg
+	}
+}
+
 case class TxtSymMsg(mySymTxt : String) extends CPSymbolMsg {
 
 }
 
-trait CPAdminRequestMsg[CtxBound <: CPumpCtx] extends CPumpMsg {
+trait CPAdminRequestMsg[CtxBound <: CPumpCtx] extends CPSymbolMsg {
 	def processInCtx(ctx : CtxBound)
 }
-case class CPARM_RegDullListenChan[LMK <: CPumpMsg](chanID : Ident, listenedMsgClz : Class[LMK],
+case class CPARM_MakeDullListenChan[LMK <: CPumpMsg](chanID : Ident, listenedMsgClz : Class[LMK],
 					  adoptrs : Traversable[CPumpAdptr[LMK, DullPumpCtx, CPumpMsg]])
 					extends CPAdminRequestMsg[DullPumpCtx] {
 	override def processInCtx(ctx : DullPumpCtx): Unit = {
@@ -48,3 +68,21 @@ case class CPARM_RegDullListenChan[LMK <: CPumpMsg](chanID : Ident, listenedMsgC
 }
 
 
+case class CPARM_MakeDullPostDispatchChan[PMK <: CPumpMsg](chanID : Ident, postedMsgClz : Class[PMK])
+			extends CPAdminRequestMsg[DullPumpCtx] {
+	override def processInCtx(ctx : DullPumpCtx): Unit = {
+		val postChan = ctx.makeOnewayDispatchPostChan(chanID, postedMsgClz)
+
+	}
+}
+
+case class CPARM_MakeDullPostForwardChan[PMK <: CPumpMsg](chanID : Ident, postedMsgClz : Class[PMK],
+							forwardTeller: CPMsgTeller, receiptTeller: CPReceiptTeller)
+			extends CPAdminRequestMsg[DullPumpCtx] {
+
+	override def processInCtx(ctx : DullPumpCtx): Unit = {
+		val postChan = ctx.makeOnewayForwardPostChan(chanID, postedMsgClz, forwardTeller)
+	// 	val forwardingTeller : CPMsgTeller = postChan.getForwardingTeller
+	//	val receiptMsg = new
+	}
+}
