@@ -19,29 +19,28 @@ package org.friendularity.cpump
 import org.appdapter.core.name.{FreeIdent, Ident}
 import org.appdapter.fancy.log.VarargsLogging;
 
-trait CPumpCtx {
-	// PostChans are mainly just for bookeeping and reply/receipt routing, but a pumpCtx can also append 
-	// other tracking state as needed.
+trait CPumpListChanFinder {
 	// The PumpCtx is responsible for mapping any input msg to a set of possible listeners.
 	// Many/all of the listers may actually choose to ignore the message, and it is acceptable
 	// (if not always efficient) for Ctx to return all channels, if it has no heuristic filter.
-	protected def findMsgListenChans[MK <: CPumpMsg](postChan : CPChanPost[MK], postedMsg : MK) : Traversable[CPChanListen[MK]]
-	
+	def findMsgListenChans[MK <: CPumpMsg](postChan : CPChanPost[MK], postedMsg : MK) : Traversable[CPChanListen[MK]]
 
-	def postAndForget[MK <: CPumpMsg](postChan : CPChanPost[MK], postedMsg : MK) : Unit = {
+}
+trait CPumpCtx extends CPumpListChanFinder {
+	// PostChans are mainly just for bookeeping and reply/receipt routing, but a pumpCtx can also append 
+	// other tracking state as needed.
+
+
+// 	def postAndForget[MK <: CPumpMsg](postChan : CPChanPost[MK], postedMsg : MK) : Unit = {
 		// enq for mapping, or map then enq for each listener
 		// forget=> we don't care about receiving or tracking any of the results (immediate or eventual).
-	}
+	// }
 
 }
 
 trait EZCPumpCtx extends CPumpCtx with VarargsLogging {
-	override def postAndForget[MK <: CPumpMsg](postChan : CPChanPost[MK], postedMsg : MK) : Unit = {
-		val listenChans = findMsgListenChans(postChan, postedMsg)  // These chans have already indicated "interest"
-		for (lc <- listenChans) {
-			lc.enqueueAndForget(postedMsg)
-		}
-	}
+	//override def postAndForget[MK <: CPumpMsg](postChan : CPChanPost[MK], postedMsg : MK) : Unit = {
+	//}
 }
 
 class DullPumpCtx extends EZCPumpCtx {
@@ -53,7 +52,7 @@ class DullPumpCtx extends EZCPumpCtx {
 			case _ => false
 		}}).map(_.asInstanceOf[CPChanListen[_ <: CPumpMsg]]).toList
 	}
-	override protected def findMsgListenChans[MK <: CPumpMsg](postChan : CPChanPost[MK], postedMsg : MK) : Traversable[CPChanListen[MK]] = {
+	override def findMsgListenChans[MK <: CPumpMsg](postChan : CPChanPost[MK], postedMsg : MK) : Traversable[CPChanListen[MK]] = {
 		val allLCs = allListenChans
 		allLCs.filter(_.interestedIn(postChan, postedMsg))
 		allLCs.map(_.asInstanceOf[CPChanListen[MK]])
@@ -61,7 +60,6 @@ class DullPumpCtx extends EZCPumpCtx {
 	// 
 	def makeOnewayListenChan[MK <: CPumpMsg](chanID : Ident, msgClz : Class[MK], 
 				adoptrs : Traversable[CPumpAdptr[MK, DullPumpCtx, CPumpMsg]]) : CPChanListen[MK] = { 
-				// 		adoptrs : Traversable[CPumpAdptr[MK, _ >: DullPumpCtx,  _]]) : CPChanListen[MK] = { 
 
 		val listenChan = new EZListenChan[MK, DullPumpCtx, CPumpMsg](chanID, this, adoptrs)
 		myChans.put(chanID, listenChan)
@@ -70,8 +68,8 @@ class DullPumpCtx extends EZCPumpCtx {
 		// myAdoptrs : Traversable[CPumpAdptr[InMsgKind, _, CtxType]]
 		listenChan
 	}
-	def makeOnewayPostChan[MK <: CPumpMsg](chanID : Ident, msgClz : Class[MK]) : CPChanPost[MK] = {
-		val postChan = new EZPostChan[MK, DullPumpCtx](chanID, this)
+	def makeOnewayDispatchPostChan[MK <: CPumpMsg](chanID : Ident, msgClz : Class[MK]) : CPChanPost[MK] = {
+		val postChan = new EZDispatchPostChan[MK, DullPumpCtx](chanID, this)
 		myChans.put(chanID, postChan)
 		postChan
 	}

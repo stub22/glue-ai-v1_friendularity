@@ -17,11 +17,11 @@
 package org.friendularity.cpump
 
 // Empty (so far) marker trait for all msgs.
-trait CPumpMsg {
+trait CPumpMsg extends java.io.Serializable {
 
 }
 
-// Contains regular blocks of data, either binary or text
+// Contains regular-shaped buffer streams of data as opaque binary or text
 trait CPSignalMsg extends CPumpMsg {
 	
 }
@@ -30,4 +30,12 @@ trait CPSignalMsg extends CPumpMsg {
 trait CPSymbolMsg extends CPumpMsg {
 	
 }
+case class TxtSymMsg(mySymTxt : String) extends CPSymbolMsg {
+
+}
+
+trait CPAdminRequestMsg extends CPumpMsg {
+
+}
+case class CPARM_RegisterListenChan() extends CPAdminRequestMsg
 

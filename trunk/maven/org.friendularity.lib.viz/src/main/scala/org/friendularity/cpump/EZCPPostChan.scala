@@ -19,10 +19,29 @@ import org.appdapter.core.name.{FreeIdent, Ident}
 import org.appdapter.fancy.log.VarargsLogging;
 
 // class EZCPPostChan extends {}
-class EZPostChan[MsgKind <: CPumpMsg, CtxType <: CPumpCtx](chanID : Ident, ctx : CtxType) extends EZCPumpChan[CtxType](chanID, ctx) with CPChanPost[MsgKind] 
-{
-	def postAndForget(inMsg : MsgKind) : Unit = {
-		val ctx = getCtx
-		ctx.postAndForget(this, inMsg)
+
+trait DispatchPostChan[MsgKind <: CPumpMsg]  extends CPChanPost[MsgKind] {
+
+	def getListChanFinder : CPumpListChanFinder
+
+	override def postAndForget(inMsg : MsgKind) : Unit = {
+		val listChanFinder = getListChanFinder
+		val listenChans = listChanFinder.findMsgListenChans(this, inMsg)  // These chans have now indicated "interest"
+		for (lc <- listenChans) {
+			lc.enqueueAndForget(inMsg)
+		}
 	}
+}
+
+trait ForwardingPostChan[MsgKind <: CPumpMsg]  extends CPChanPost[MsgKind] {
+	def getForwardingActor : CPumpListChanFinder
+}
+
+class EZDispatchPostChan[MsgKind <: CPumpMsg, CtxType <: CPumpCtx](chanID : Ident, ctx : CtxType)
+			extends EZCPumpChan[CtxType](chanID, ctx)
+			with DispatchPostChan[MsgKind]
+{
+
+	override def getListChanFinder : CPumpListChanFinder = getCtx
+
 }
