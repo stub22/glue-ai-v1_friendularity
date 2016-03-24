@@ -30,14 +30,15 @@ trait CPChanListen[InMsgKind <: CPumpMsg] {
 	// Magic challenge is to find/select/make the correct CPumpAdptr to route each msg.
 	// But a simple listen chan could be simply a list of adptrs to try.
 
+	// Chan must override this to indicate which messages should be enqueued.
+	def interestedIn(postChan : CPChanPost[_], postedMsg : CPumpMsg) : Boolean = false
+
 	// Use enqueueAndForget in cases where no result tracking needed - may shortcut past result-gathering setup.
 	def enqueueAndForget(inMsg : InMsgKind) : Unit 	
 	
 	// TODO:  Add methods/subtraits allowing for explicit results propagation back to message sender, 
 	// or to third party downstream.
-	
-	// Chan can override this to help routing flow:
-	def interestedIn(postChan : CPChanPost[_], postedMsg : CPumpMsg) : Boolean = false
+
 }
 
 // This is the kind of aggregated result we expect processMsg to yield upon return (i.e. "immediately" in CS parlance).

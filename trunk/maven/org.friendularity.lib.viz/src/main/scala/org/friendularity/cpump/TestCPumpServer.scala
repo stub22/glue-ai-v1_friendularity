@@ -13,9 +13,9 @@ object TestCPumpServer extends VarargsLogging {
 
 		info0("^^^^^^^^^^^^^^^^^^^^^^^^  TestCPumpServer.main()-START");
 		val myDCPM = new DemoCPumpMgr
-		val cpumpActorRef : ActorRef = myDCPM.getCPumpActRef
+		// val cpumpActorRef : ActorRef = myDCPM.getCPumpActRef
 		// Typical result dumps as   Actor[akka://demoCPAS/user/demoCPump01#618243248]
-		info1("^^^^^^^^^^^^^^^^^^^^^^^^  DemoCPump main() - got initial cpumpActorRef: {}", cpumpActorRef);
+		// info1("^^^^^^^^^^^^^^^^^^^^^^^^  TestCPumpServer. main() - got initial cpumpActorRef: {}", cpumpActorRef);
 		// Establish handler so that death of cpumpActor triggers end of the ActorSystem, which
 		// closes up threads and possibly allows java process to exit.
 		myDCPM.connectCPumpActorSystemTerminator
@@ -25,7 +25,7 @@ object TestCPumpServer extends VarargsLogging {
 		val txtMsg01 = new TxtSymMsg("Pretend input message")
 
 		// Send using tell to this known-local actor
-		cpumpActorRef ! txtMsg01
+		myDCPM.tellCPMsg(txtMsg01)
 
 		myDCPM.terminateCPumpActor
 

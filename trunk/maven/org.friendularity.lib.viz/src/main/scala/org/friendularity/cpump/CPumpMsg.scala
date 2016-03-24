@@ -16,6 +16,8 @@
 
 package org.friendularity.cpump
 
+import org.appdapter.core.name.Ident
+
 // Empty (so far) marker trait for all msgs.
 trait CPumpMsg extends java.io.Serializable {
 
@@ -34,8 +36,15 @@ case class TxtSymMsg(mySymTxt : String) extends CPSymbolMsg {
 
 }
 
-trait CPAdminRequestMsg extends CPumpMsg {
-
+trait CPAdminRequestMsg[CtxBound <: CPumpCtx] extends CPumpMsg {
+	def processInCtx(ctx : CtxBound)
 }
-case class CPARM_RegisterListenChan() extends CPAdminRequestMsg
+case class CPARM_RegDullListenChan[LMK <: CPumpMsg](chanID : Ident, listenedMsgClz : Class[LMK],
+					  adoptrs : Traversable[CPumpAdptr[LMK, DullPumpCtx, CPumpMsg]])
+					extends CPAdminRequestMsg[DullPumpCtx] {
+	override def processInCtx(ctx : DullPumpCtx): Unit = {
+		val listenChan = ctx.makeOnewayListenChan(chanID, listenedMsgClz, adoptrs)
+	}
+}
+
 

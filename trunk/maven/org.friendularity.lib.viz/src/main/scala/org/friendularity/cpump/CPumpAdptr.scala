@@ -24,35 +24,43 @@ trait WrittenResult {
 	
 }
 // Note that an Adptr knows how to use a supplied ctx method arg, but it may not keep its own ctx ref.
-// Adptrs should be stateless and threadsafe, except for the effects of the write method, but even those
-// effects should all be routed through the wc WritingCtx.
+// Adptrs should be stateless (immutable) and threadsafe, except for the effects of the write method, but those
+// write effects should all be routed through supplied argument wc : WritingCtx.
+//
+// With these constraints, we can rely on CPumpAdptr to be java-Serializable, and thus usable
+// as arguments to construct a remote chan (listener).
 // 
-// Adptr design is somewhat monadic:  See the flow in processMsg.
+// Adptr design is akin to monad pipeline:  See the flow in processMsg.
+// More refined impls can use actor msgs to enqueue each step.
+// Alternatively, those steps can be map-reduced by a fabric such as hadoop, spark, etc.
 // 
 // To process a specific kind of input message, one should extend this trait directly.
 // Note that we do allow for a further amount of data-switched type narrowing via the 
 // getUsualInMsgType method.
-// Because InMsgType is a contravariant parameter.
-trait CPumpAdptr[-InMsgType <: CPumpMsg, -CtxType <: CPumpCtx, +OutMsgType <: CPumpMsg] {
-	
+//
+trait CPumpAdptr[-InMsgType <: CPumpMsg, -CtxType <: CPumpCtx, +OutMsgType <: CPumpMsg] extends java.io.Serializable {
+
 	// Nonempty result collection => shortcut succeeded
+	// Argument (or precursor of) inMsg is known to have passed the maybeInterested test, before this is called.
 	protected def	attemptShortcut(inMsg : InMsgType, pumpCtx : CtxType) : Traversable[OutMsgType]
 	
-	
+	// Shortcut must have failed, so full input decoding step is next.
 	protected def mapIn(inMsg : InMsgType, ctx : CtxType) : Traversable[WritableRecord]
 	
 	// There could be a delay between call to mapIn and call to write, and that could cause problems.
-	// TODO:  Define further restriction to make that possibility go away.
-	
+	// TODO:  Remove the problems, the delay should be tolerated (from robustness perspective).
+
+	// WritingCtx provides required destination handle.
 	// WrittenResult supplies everything the downstream explicitly knows about the operation.
+	// Future steps after this cannot inspect rec.
 	protected def write(rec : WritableRecord, wc : WritingCtx) : WrittenResult // Stateful activity limited to here
 	
 	// There may be a delay between the call to write and the call to mapOut.
-	// 
-	// mapOut does not get to see the WritableRecord; to find state it must sepatately use 
+	// mapOut does not get to see the WritableRecord, only the input and the WrittenResult.
 	protected def mapOut(inMsg : InMsgType, wresults : Traversable[WrittenResult], pumpCtx : CtxType) : Traversable[OutMsgType]
-	
+
 	// Deeper impls of processMsg should be elaborations of this same workflow, but use more queueing.
+	// There, each of the steps below will be taken in response to a separate actor message.
 	def processMsg(inMsg : InMsgType, pumpCtx : CtxType) : Traversable[OutMsgType] = {
 		
 		val shortcutResults = attemptShortcut(inMsg, pumpCtx)
@@ -77,7 +85,7 @@ trait CPumpAdptr[-InMsgType <: CPumpMsg, -CtxType <: CPumpCtx, +OutMsgType <: CP
 	// That means 1) We can cleanly inheritance-type-specialize our adopters on one 
 	// important axis: by output msg type.
 	 
-	def getLegalOutMsgType : Class[_ <: OutMsgType]
+	def getLegalOutMsgClz : Class[_ <: OutMsgType]
 	
 	// 2) But We cannot really inheritance-type-specialize over InMsgType or CtxType, except
 	// by binding the trait type parameters on each subtype binding.
@@ -85,9 +93,9 @@ trait CPumpAdptr[-InMsgType <: CPumpMsg, -CtxType <: CPumpCtx, +OutMsgType <: CP
 	// Thus these next two methodsare not highly expressive, but can be crudely useful, occasionally.
 	// Somewhat useful to verify context assumptions from outside; could support some auto re-writing.
 	
-	def getLegalInMsgType : Class[_ >: InMsgType] // Usually just returns InMsgType.  
+	def getLegalInMsgClz : Class[_ >: InMsgType] // Usually just returns InMsgType.
 	
-	def getLegalCtxType : Class[_ >: CtxType] // Usually just returns CtxType.
+	def getLegalCtxClz : Class[_ >: CtxType] // Usually just returns CtxType.
 	
 	// Finally, we have this extra accessor to support user narrowing of input semantic-type through simple inheritance.
 	// For clz.data-matching, not java type-matching.  Typebound is in covariant dir.
@@ -98,13 +106,19 @@ trait CPumpAdptr[-InMsgType <: CPumpMsg, -CtxType <: CPumpCtx, +OutMsgType <: CP
 	// All the working methods of ApplePump must still accept input messages of any kind of fruit, type-wise, 
 	// but semantically they can auto-exclude non-apples, possibly helped by this method.
 	
-	def getUsualInMsgType : Class[_ >: InMsgType]  // Could return any subtype or supertype of InMsgType
-	
+	def getUsualInMsgClz : Class[_ >: InMsgType]  // Could return any subtype or supertype of InMsgType
+
 	// Can be used internally in subtypes, or from listenChan.interested
-	def matchesUsualInType (msg : InMsgType) : Boolean = {
-		val usualInType = getUsualInMsgType
+	def matchesUsualInClz (msg : AnyRef) : Boolean = {
+		val usualInType = getUsualInMsgClz
 		usualInType.isInstance(msg)
 	}
+	// First line of defense, weakest condition.  Used for channel routing.
+	// Subclasses may override if they think they maybeInterested in input outside their usual type.
+	// Subclasses in principle could also supply a narrower type as a logical partition, but that would be a bad idea,
+	// since this method is just the *first* check of interest for the adopter.
+	def maybeInterested(inMsg : AnyRef) : Boolean = matchesUsualInClz(inMsg)
+
 }
 // Destinations are 
 // 
