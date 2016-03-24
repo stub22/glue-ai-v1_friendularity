@@ -24,10 +24,17 @@ object TestCPumpServer extends VarargsLogging {
 		// using any glue.ai message pathway:  local akka, remote akka, spray HTTP, Camel QPid
 		val txtMsg01 = new TxtSymMsg("Pretend input message")
 
-		// Send using tell to this known-local actor
-		myDCPM.tellCPMsg(txtMsg01)
+		val tsm01 = new TxtSymMsg("First contents")
 
-		myDCPM.terminateCPumpActor
+		val rootTeller = myDCPM.getRootTeller
+		rootTeller.tellCPMsg(tsm01)
+
+		val tsm02 = new TxtSymMsg("Second  contents")
+
+		rootTeller.tellCPMsg(tsm02)
+
+
+		myDCPM.terminateCPumpActors
 
 		info0("^^^^^^^^^^^^^^^^^^^^^^^^  TestCPumpServer.main()-END");
 	}

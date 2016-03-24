@@ -31,17 +31,33 @@ trait DispatchPostChan[MsgKind <: CPumpMsg]  extends CPChanPost[MsgKind] {
 			lc.enqueueAndForget(inMsg)
 		}
 	}
+
+	// When a remote client wants a handle to post to, it can use this (wrapped in ForwardPostChan).
+	// lazy val myTeller
 }
 
-trait ForwardingPostChan[MsgKind <: CPumpMsg]  extends CPChanPost[MsgKind] {
-	def getForwardingActor : CPumpListChanFinder
+trait ForwardPostChan[MsgKind <: CPumpMsg]  extends CPChanPost[MsgKind] {
+	def getTargetTeller : CPMsgTeller
+
+	override def postAndForget(inMsg : MsgKind) : Unit = {
+		val teller = getTargetTeller
+		teller.tellCPMsg(inMsg)
+	}
 }
 
-class EZDispatchPostChan[MsgKind <: CPumpMsg, CtxType <: CPumpCtx](chanID : Ident, ctx : CtxType)
+case class EZDispatchPostChan[MsgKind <: CPumpMsg, CtxType <: CPumpCtx](chanID : Ident, ctx : CtxType)
 			extends EZCPumpChan[CtxType](chanID, ctx)
 			with DispatchPostChan[MsgKind]
 {
 
 	override def getListChanFinder : CPumpListChanFinder = getCtx
+
+}
+
+case class EZForwardPostChan[MsgKind <: CPumpMsg, CtxType <: CPumpCtx](chanID : Ident, ctx : CtxType, teller: CPMsgTeller)
+			extends EZCPumpChan[CtxType](chanID, ctx)
+						with ForwardPostChan[MsgKind] {
+
+	override def getTargetTeller : CPMsgTeller = teller
 
 }

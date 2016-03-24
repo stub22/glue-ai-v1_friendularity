@@ -50,13 +50,14 @@ object DemoCPump extends VarargsLogging {
 
 		val tsm01 = new TxtSymMsg("First contents")
 
-		myDCPM.tellCPMsg(tsm01)
+		val rootTeller = myDCPM.getRootTeller
+		rootTeller.tellCPMsg(tsm01)
 
 		val tsm02 = new TxtSymMsg("Second  contents")
 
-		myDCPM.tellCPMsg(tsm02)
+		rootTeller.tellCPMsg(tsm02)
 
-		myDCPM.terminateCPumpActor
+		myDCPM.terminateCPumpActors
 
 		info0("^^^^^^^^^^^^^^^^^^^^^^^^  DemoCPump main().END");
 	}
@@ -64,11 +65,9 @@ object DemoCPump extends VarargsLogging {
 
 }
 
-trait CPMsgTeller {
-	def tellCPMsg(msg: CPumpMsg)
-}
+
 // Wrapper for both an ActorSystem and a cpump-factory actor
-class DemoCPumpMgr extends CPMsgTeller with VarargsLogging {
+class DemoCPumpMgr extends VarargsLogging {
 	// typical cpumpActorRef: Actor[akka://demoCPAS/user/demoCPump01#-1369953355]
 	val akkaSysName = "demoCPASys01"
 	val testCPumpName = "demoCPump01"
@@ -80,19 +79,17 @@ class DemoCPumpMgr extends CPMsgTeller with VarargsLogging {
 	lazy private val myCPumpActRef : ActorRef = getActorSys.actorOf(Props[DemoCPumpActor], testCPumpName)
 	private def getCPumpActRef : ActorRef = myCPumpActRef
 
+	lazy private val myRootTeller = new ActorRefCPMsgTeller(myCPumpActRef)
+	def getRootTeller = myRootTeller
+
 	def connectCPumpActorSystemTerminator : Unit = {
 		val cpumpActorRef = getCPumpActRef
 		val cpumpEndListener : ActorRef = getActorSys.actorOf(Props(classOf[AkkaSysTerminator], cpumpActorRef), cpumpEndListenerName)
 	}
 
-	def terminateCPumpActor : Unit = {
+	def terminateCPumpActors : Unit = {
 		val pp = akka.actor.PoisonPill
 		getCPumpActRef ! pp
-	}
-	override def tellCPMsg(msg: CPumpMsg) : Unit = {
-		val pumpRootActor = getCPumpActRef
-		info2("Telling pump root actor {} about msg {}", pumpRootActor, msg)
-		pumpRootActor ! msg
 	}
 
 }
@@ -106,8 +103,8 @@ case class CheckGreeting // Corresponds to an object called "Greeting" in akka-H
 class DemoCPumpActor extends Actor with ActorLogging {
 
 	lazy val myCPumpCtx = new DullPumpCtx ()
-	val postChanID : Ident = null
-	val listenChanID : Ident = null
+	val postChanID : Ident = new FreeIdent("http://onto.friendularity.org/testchans#postChan017");
+	val listenChanID : Ident = new FreeIdent("http://onto.friendularity.org/testchans#listenChanDD");
 	val myPostChan01 = myCPumpCtx.makeOnewayDispatchPostChan(postChanID, classOf[TxtSymMsg])
 	val adp1 = new TxtDullFilterAdptr("filter_expr_AA")
 	val adp2 = new TxtDullFilterAdptr("filter_expr_BB")
