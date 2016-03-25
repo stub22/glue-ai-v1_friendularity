@@ -11,13 +11,13 @@ import org.appdapter.fancy.log.VarargsLogging
 trait DullFilterAdptr[FMsgType <: CPumpMsg] extends CPumpAdptr[FMsgType, DullPumpCtx, FMsgType] with VarargsLogging {
 
 
-	override protected def attemptShortcut(inMsg: FMsgType, pumpCtx: DullPumpCtx): Traversable[FMsgType] = Nil
-	override protected def mapIn(inMsg: FMsgType, ctx: DullPumpCtx): Traversable[WritableRecord] = Nil
-	override protected def mapOut(inMsg: FMsgType, wresults : Traversable[WrittenResult], pumpCtx: DullPumpCtx): Traversable[FMsgType] = Nil
+	override protected def attemptShortcut(inMsg: FMsgType, pumpCtx_opt: Option[DullPumpCtx]): Traversable[FMsgType] = Nil
+	override protected def mapIn(inMsg: FMsgType, pumpCtx_opt: Option[DullPumpCtx]): Traversable[WritableRecord] = Nil
+	override protected def mapOut(inMsg: FMsgType, wresults : Traversable[WrittenResult], pumpCtx_opt: Option[DullPumpCtx]): Traversable[FMsgType] = Nil
 	override protected def write(rec: WritableRecord, wc: WritingCtx): WrittenResult = null
-	override def processMsg(inMsg : FMsgType, pumpCtx : DullPumpCtx) : Traversable[FMsgType] = {
+	override def processMsg(inMsg : FMsgType, pumpCtx_opt : Option[DullPumpCtx]) : Traversable[FMsgType] = {
 		info2("DMAdptrBase.processMsg msg={} adptr={}", inMsg, this)
-		super.processMsg(inMsg, pumpCtx)
+		super.processMsg(inMsg, pumpCtx_opt)
 	}
 
 	override def getLegalCtxClz: Class[DullPumpCtx] = classOf[DullPumpCtx]

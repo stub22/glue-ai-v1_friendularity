@@ -23,6 +23,7 @@ import org.appdapter.core.name.Ident
 trait CPumpMsg extends java.io.Serializable {
 
 }
+// Tellers may be included in messages.
 trait CPMsgTeller extends java.io.Serializable {
 	def tellCPMsg(msg: CPumpMsg)
 }
@@ -37,7 +38,7 @@ trait CPSymbolMsg extends CPumpMsg {
 	
 }
 trait CPReceiptMsg extends CPSymbolMsg {
-	def getConfirmedTeller : CPMsgTeller
+	// def getConfirmedTeller : CPMsgTeller
 }
 // Wrapper for sender who wants an answer
 trait CPReceiptTeller extends CPMsgTeller {
@@ -55,7 +56,11 @@ case class ActorRefCPMsgTeller(actRef : ActorRef) extends CPMsgTeller {
 case class TxtSymMsg(mySymTxt : String) extends CPSymbolMsg {
 
 }
+case class FoundOuterTellerMsg(chanID : Ident, outerTeller : CPMsgTeller) extends CPReceiptMsg
 
+case class CreatedChanTellerMsg(chanID : Ident, createdTeller : CPMsgTeller) extends CPReceiptMsg {
+	def getConfirmedTeller : CPMsgTeller = createdTeller
+}
 trait CPAdminRequestMsg[CtxBound <: CPumpCtx] extends CPSymbolMsg {
 	def processInCtx(ctx : CtxBound)
 }
@@ -68,21 +73,33 @@ case class CPARM_MakeDullListenChan[LMK <: CPumpMsg](chanID : Ident, listenedMsg
 }
 
 
-case class CPARM_MakeDullPostDispatchChan[PMK <: CPumpMsg](chanID : Ident, postedMsgClz : Class[PMK])
-			extends CPAdminRequestMsg[DullPumpCtx] {
+case class CPARM_MakeDullPostDispatchChan[PMK <: CPumpMsg](chanID : Ident, postedMsgClz : Class[PMK],
+			receiptTeller: CPReceiptTeller)	extends CPAdminRequestMsg[DullPumpCtx] {
 	override def processInCtx(ctx : DullPumpCtx): Unit = {
 		val postChan = ctx.makeOnewayDispatchPostChan(chanID, postedMsgClz)
+		val receiptMsg = CreatedChanTellerMsg(chanID, postChan.getOuterTeller())
+		receiptTeller.tellCPReceipt(receiptMsg)
 
 	}
 }
 
 case class CPARM_MakeDullPostForwardChan[PMK <: CPumpMsg](chanID : Ident, postedMsgClz : Class[PMK],
-							forwardTeller: CPMsgTeller, receiptTeller: CPReceiptTeller)
+							forwardTeller: CPMsgTeller)
 			extends CPAdminRequestMsg[DullPumpCtx] {
 
 	override def processInCtx(ctx : DullPumpCtx): Unit = {
 		val postChan = ctx.makeOnewayForwardPostChan(chanID, postedMsgClz, forwardTeller)
 	// 	val forwardingTeller : CPMsgTeller = postChan.getForwardingTeller
 	//	val receiptMsg = new
+	}
+}
+case class CPARM_LookupChanTeller(chanID : Ident, answerTeller: CPMsgTeller) extends CPAdminRequestMsg[DullPumpCtx] {
+	override def processInCtx(ctx : DullPumpCtx): Unit = {
+		val chanOpt = ctx.getChan(chanID)
+		if (chanOpt.isDefined) {
+			val outerTeller = chanOpt.get.getOuterTeller()
+			val fotm = new FoundOuterTellerMsg(chanID, outerTeller)
+			answerTeller.tellCPMsg(fotm)
+		}
 	}
 }

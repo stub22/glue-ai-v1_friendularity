@@ -20,9 +20,20 @@ import org.appdapter.fancy.log.VarargsLogging;
 
 // class EZCPPostChan extends {}
 
-trait DispatchPostChan[MsgKind <: CPumpMsg]  extends CPChanPost[MsgKind] {
 
-	def getListChanFinder : CPumpListChanFinder
+trait ActorWrappedPostChan[MsgKind <: CPumpMsg, CtxType <: CPumpCtx]  extends CPChanPost[MsgKind, CtxType] {
+	lazy val myOuterTeller: CPMsgTeller = {
+		// val ctx = getCtx
+		null
+	}
+
+	override def getOuterTeller(): CPMsgTeller = myOuterTeller
+
+}
+
+trait DispatchPostChan[MsgKind <: CPumpMsg, CtxType <: CPumpCtx]  extends ActorWrappedPostChan[MsgKind, CtxType] {
+
+	def getListChanFinder : CPumpListChanFinder[CtxType]
 
 	override def postAndForget(inMsg : MsgKind) : Unit = {
 		val listChanFinder = getListChanFinder
@@ -36,7 +47,7 @@ trait DispatchPostChan[MsgKind <: CPumpMsg]  extends CPChanPost[MsgKind] {
 	// lazy val myTeller
 }
 
-trait ForwardPostChan[MsgKind <: CPumpMsg]  extends CPChanPost[MsgKind] {
+trait ForwardPostChan[MsgKind <: CPumpMsg, CtxType <: CPumpCtx]  extends ActorWrappedPostChan[MsgKind, CtxType] {
 	def getTargetTeller : CPMsgTeller
 
 	override def postAndForget(inMsg : MsgKind) : Unit = {
@@ -45,18 +56,19 @@ trait ForwardPostChan[MsgKind <: CPumpMsg]  extends CPChanPost[MsgKind] {
 	}
 }
 
-case class EZDispatchPostChan[MsgKind <: CPumpMsg, CtxType <: CPumpCtx](chanID : Ident, ctx : CtxType)
+
+case class EZDispatchPostChan[MsgKind <: CPumpMsg, CtxType <: CPumpCtx](chanID : Ident, ctx : CtxType, listChanFinder : CPumpListChanFinder[CtxType])
 			extends EZCPumpChan[CtxType](chanID, ctx)
-			with DispatchPostChan[MsgKind]
+			with DispatchPostChan[MsgKind, CtxType]
 {
 
-	override def getListChanFinder : CPumpListChanFinder = getCtx
+	override def getListChanFinder : CPumpListChanFinder[CtxType] = listChanFinder
 
 }
 
 case class EZForwardPostChan[MsgKind <: CPumpMsg, CtxType <: CPumpCtx](chanID : Ident, ctx : CtxType, teller: CPMsgTeller)
 			extends EZCPumpChan[CtxType](chanID, ctx)
-						with ForwardPostChan[MsgKind] {
+						with ForwardPostChan[MsgKind, CtxType] {
 
 	override def getTargetTeller : CPMsgTeller = teller
 
