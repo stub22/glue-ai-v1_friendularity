@@ -31,8 +31,6 @@ trait CPumpCtx {
 	// PostChans are mainly just for bookeeping and reply/receipt routing, but a pumpCtx can also append 
 	// other tracking state as needed.
 
-
-
 // 	def postAndForget[MK <: CPumpMsg](postChan : CPChanPost[MK], postedMsg : MK) : Unit = {
 		// enq for mapping, or map then enq for each listener
 		// forget=> we don't care about receiving or tracking any of the results (immediate or eventual).
@@ -57,7 +55,6 @@ class DullPumpTopActor(myCPumpCtx : DullPumpCtx) extends Actor with ActorLogging
 }
 
 class DullPumpCtx extends EZCPumpCtx with CPumpListChanFinder[DullPumpCtx] {
-
 
 	private val myChans = new scala.collection.mutable.HashMap[Ident, CPumpChan[DullPumpCtx]] // note outer-variance
 
