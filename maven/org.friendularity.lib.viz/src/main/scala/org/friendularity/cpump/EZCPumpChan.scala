@@ -23,7 +23,7 @@ class EZCPumpChan[CtxType <: CPumpCtx](myChanID : Ident, myCtx : CtxType) extend
 	
 	override def getChanIdent : Ident = myChanID
 	
-	override protected def getCtx : CtxType = myCtx
+	// override protected def getCtx : CtxType = myCtx
 	
 	protected def getUsualChanMsgType : Class[_ <: CPumpMsg] = classOf[CPumpMsg]
 	
@@ -38,24 +38,25 @@ class EZCPumpChan[CtxType <: CPumpCtx](myChanID : Ident, myCtx : CtxType) extend
 // which is where we embed all receipt+debug info.  It must also itself be a CPumpMsg!
 class EZListenChan[InMsgKind <: CPumpMsg, CtxType <: CPumpCtx, OutBound <: CPumpMsg](chanID : Ident, ctx : CtxType, 
 			myAdoptrs : Traversable[CPumpAdptr[InMsgKind, CtxType, _]]) 
-		extends  EZCPumpChan[CtxType](chanID, ctx) with CPChanListen[InMsgKind]  {
+		extends  EZCPumpChan[CtxType](chanID, ctx) with CPChanListen[InMsgKind, CtxType]  {
 	
 	// Ignores output type
 	protected def findAdptrs(mk: InMsgKind) : Traversable[CPumpAdptr[InMsgKind, CtxType, _ ]] = myAdoptrs
 	// , outMsgClz : classOf[OutMsgType]
 	// This form of processMsg allows for further narrowing of expected output type, by explicit signal class.
- 	protected def processRcvdMsg[OMK <: OutBound](inMsg : InMsgKind, outMsgClz:Class[OMK]) : Traversable[OMK] = {
+ 	protected def processRcvdMsg[OMK <: OutBound](inMsg : InMsgKind, outMsgClz:Class[OMK], pumpCtx_opt : Option[CtxType]) : Traversable[OMK] = {
 		info2("processRcvdMsg inMsg={} outMsgClz=", inMsg, outMsgClz)
-		val ctx : CtxType = getCtx
+		// val ctx : CtxType = null : CtxType // getCtx
 		val adptrs = findAdptrs(inMsg)
-		val allOutputs : Traversable[_] = adptrs.flatMap(_.processMsg(inMsg, ctx))
+		val allOutputs : Traversable[_] = adptrs.flatMap(_.processMsg(inMsg, pumpCtx_opt))
 		allOutputs.map(_.asInstanceOf[OMK])
 		//  	processMsg(inMsg : InMsgType, pumpCtx : CtxType) : Traversable[OutMsgType]
 	}
+	private def getDeliveryCtx_opt : Option[CtxType] = None
 	override def enqueueAndForget(inMsg : InMsgKind) : Unit = {
-		processRcvdMsg(inMsg, null) // classOf[OutBound])
+		processRcvdMsg(inMsg, null, getDeliveryCtx_opt) // classOf[OutBound])
 	}
-	override def interestedIn(postChan : CPChanPost[_], postedMsg : CPumpMsg) : Boolean = {
+	override def interestedIn(postChan : CPChanPost[_, CtxType], postedMsg : CPumpMsg) : Boolean = {
 		isUsualMsgType(postedMsg)
 	}
 }

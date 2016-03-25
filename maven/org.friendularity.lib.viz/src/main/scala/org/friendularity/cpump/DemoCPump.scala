@@ -63,6 +63,14 @@ object DemoCPump extends VarargsLogging {
 	}
 
 
+	def makeDullSetup: Unit = {
+		val akkaSysName = "dullActorSys01"
+		val testCPumpName = "dullCPump01"
+		val cpumpEndListenerName = "demoCPASTerm"
+
+		val dullAkkaSys = ActorSystem(akkaSysName)  // Using case-class cons
+		val dullPumpActor = dullAkkaSys.actorOf(Props[DullPumpTopActor], testCPumpName)
+	}
 }
 
 

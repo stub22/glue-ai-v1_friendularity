@@ -42,10 +42,10 @@ trait CPumpAdptr[-InMsgType <: CPumpMsg, -CtxType <: CPumpCtx, +OutMsgType <: CP
 
 	// Nonempty result collection => shortcut succeeded
 	// Argument (or precursor of) inMsg is known to have passed the maybeInterested test, before this is called.
-	protected def	attemptShortcut(inMsg : InMsgType, pumpCtx : CtxType) : Traversable[OutMsgType]
+	protected def	attemptShortcut(inMsg : InMsgType, pumpCtx_opt : Option[CtxType]) : Traversable[OutMsgType]
 	
 	// Shortcut must have failed, so full input decoding step is next.
-	protected def mapIn(inMsg : InMsgType, ctx : CtxType) : Traversable[WritableRecord]
+	protected def mapIn(inMsg : InMsgType, pumpCtx_opt : Option[CtxType]) : Traversable[WritableRecord]
 	
 	// There could be a delay between call to mapIn and call to write, and that could cause problems.
 	// TODO:  Remove the problems, the delay should be tolerated (from robustness perspective).
@@ -57,17 +57,17 @@ trait CPumpAdptr[-InMsgType <: CPumpMsg, -CtxType <: CPumpCtx, +OutMsgType <: CP
 	
 	// There may be a delay between the call to write and the call to mapOut.
 	// mapOut does not get to see the WritableRecord, only the input and the WrittenResult.
-	protected def mapOut(inMsg : InMsgType, wresults : Traversable[WrittenResult], pumpCtx : CtxType) : Traversable[OutMsgType]
+	protected def mapOut(inMsg : InMsgType, wresults : Traversable[WrittenResult], pumpCtx_opt : Option[CtxType]) : Traversable[OutMsgType]
 
 	// Deeper impls of processMsg should be elaborations of this same workflow, but use more queueing.
 	// There, each of the steps below will be taken in response to a separate actor message.
-	def processMsg(inMsg : InMsgType, pumpCtx : CtxType) : Traversable[OutMsgType] = {
+	def processMsg(inMsg : InMsgType, pumpCtx_opt : Option[CtxType]) : Traversable[OutMsgType] = {
 		
-		val shortcutResults = attemptShortcut(inMsg, pumpCtx)
+		val shortcutResults = attemptShortcut(inMsg, pumpCtx_opt)
 		if (shortcutResults.nonEmpty) {
 			shortcutResults
 		} else {
-			val writableRecs = mapIn(inMsg, pumpCtx)
+			val writableRecs = mapIn(inMsg, pumpCtx_opt)
 			val writtenResults : Traversable[WrittenResult] = if (writableRecs.nonEmpty) {
 				val wc : WritingCtx = null
 				val wresColl = for (wrec <- writableRecs) yield  {
@@ -76,7 +76,7 @@ trait CPumpAdptr[-InMsgType <: CPumpMsg, -CtxType <: CPumpCtx, +OutMsgType <: CP
 				}
 				wresColl
 			} else Nil
-			mapOut(inMsg, writtenResults, pumpCtx)
+			mapOut(inMsg, writtenResults, pumpCtx_opt)
 		}
 	}
 	

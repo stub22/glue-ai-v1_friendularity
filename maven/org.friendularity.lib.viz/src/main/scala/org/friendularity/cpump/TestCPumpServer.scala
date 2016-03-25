@@ -33,8 +33,9 @@ object TestCPumpServer extends VarargsLogging {
 
 		rootTeller.tellCPMsg(tsm02)
 
-
 		myDCPM.terminateCPumpActors
+
+		// makeDullTopActor
 
 		info0("^^^^^^^^^^^^^^^^^^^^^^^^  TestCPumpServer.main()-END");
 	}
