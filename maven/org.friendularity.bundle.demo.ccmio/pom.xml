@@ -99,8 +99,12 @@
                                         org.friendu.tchunk.*,
                                         org.friendularity.appro,
                                         org.friendularity.chnkr,
-                                        org.friendularity.cpump
+                                        org.friendularity.cpump,
+                                        org.friendularity.ignore.*,
+                                        org.parboiled.*
+
 						</Export-Package>
+                        <!-- org.parboiled is used by spray-http -->
 					</instructions>
 				</configuration>
 			</plugin>
