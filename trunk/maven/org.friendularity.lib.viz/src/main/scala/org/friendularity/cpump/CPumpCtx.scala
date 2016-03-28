@@ -38,6 +38,7 @@ trait CPumpCtx {
 
 }
 
+
 trait EZCPumpCtx extends CPumpCtx with VarargsLogging {
 	//override def postAndForget[MK <: CPumpMsg](postChan : CPChanPost[MK], postedMsg : MK) : Unit = {
 	//}

@@ -174,6 +174,7 @@ import org.osgi.framework.ServiceRegistration
 
 import scala.collection.JavaConversions._
 object ApproRaizDepHelper extends VarargsLogging  {
+/*
 	// These static methods can be used to register services directly, with the property-tags that our ApproRaizLifecycle is waiting for.
 	def regModelSvc_Recipes(ctx : BundleContext, model : JenaModel) = regModelService(ctx, model, ApproRaizLifeLauncher.TAGVAL_MODEL_ROLE_RECIPES)
 	def regModelSvc_Settings(ctx : BundleContext, model : JenaModel) = regModelService(ctx, model, ApproRaizLifeLauncher.TAGVAL_MODEL_ROLE_SETTINGS)
@@ -185,7 +186,7 @@ object ApproRaizDepHelper extends VarargsLogging  {
         http://blog.osgi.org/2012/10/43-companion-code-for-java-7.html
     -->
 
-	private def regModelService(ctx : BundleContext, model : JenaModel, modelRole : String) : ServiceRegistration = { // [JenaModel] = {
+	private def regModelService(ctx : BundleContext, model : JenaModel, modelRole : String)  : ServiceRegistration = { // [JenaModel] = {
 		regServiceWithOneProp(ctx, classOf[JenaModel], model, ApproRaizLifeLauncher.TAGKEY_MODEL_ROLE, modelRole)
 	}
 	private def regEHostService(ctx : BundleContext, eHost : EntryHost, eHostRole : String) : ServiceRegistration = { // [EntryHost] =  {
@@ -201,4 +202,5 @@ object ApproRaizDepHelper extends VarargsLogging  {
 		// ctx.registerService(clz, svc, propDict)
 		ctx.registerService(clz.getName, svc, propDict)
 	}
+*/
 }
