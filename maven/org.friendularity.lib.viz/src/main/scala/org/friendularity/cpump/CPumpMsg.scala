@@ -16,7 +16,7 @@
 
 package org.friendularity.cpump
 
-import akka.actor.ActorRef
+import akka.actor.{ActorSelection, ActorRef}
 import org.appdapter.core.name.Ident
 
 // Empty (so far) marker trait for all msgs.
@@ -28,14 +28,18 @@ trait CPMsgTeller extends java.io.Serializable {
 	def tellCPMsg(msg: CPumpMsg)
 }
 
+trait CPRepliableMsg extends CPumpMsg {
+	def getReplyTeller_opt : Option[CPMsgTeller] = None
+}
+
 // Contains regular-shaped buffer streams of data as opaque binary or text
 trait CPSignalMsg extends CPumpMsg {
-	
+
 }
 
 // Contains graph metadata, as text or tuples, and possibly system wiring info.
 trait CPSymbolMsg extends CPumpMsg {
-	
+
 }
 trait CPReceiptMsg extends CPSymbolMsg {
 	// def getConfirmedTeller : CPMsgTeller
@@ -47,15 +51,40 @@ trait CPReceiptTeller extends CPMsgTeller {
 }
 // Q:  How well does logging play with serializable?
 
+import org.cogchar.api.thing.ThingActionSpec
+
+trait CPThingActionMsg extends CPSymbolMsg {
+	def getThingAction : ThingActionSpec
+}
+
+trait  CPReliableThingActionMsg extends CPThingActionMsg with CPRepliableMsg
+
 case class ActorRefCPMsgTeller(actRef : ActorRef) extends CPMsgTeller {
 	override def tellCPMsg(cpMsg: CPumpMsg): Unit = {
 		actRef ! cpMsg
+	}
+}
+case class ActorSelCPMsgTeller(actSel : ActorSelection) extends CPMsgTeller {
+	override def tellCPMsg(cpMsg: CPumpMsg): Unit = {
+		actSel ! cpMsg
 	}
 }
 
 case class TxtSymMsg(mySymTxt : String) extends CPSymbolMsg {
 
 }
+case class RepliableTxtSymMsg(mySymTxt : String, myReplyTeller_opt : Option[CPMsgTeller])
+			extends CPSymbolMsg with CPRepliableMsg {
+	override def getReplyTeller_opt : Option[CPMsgTeller] = myReplyTeller_opt
+
+}
+// TODO:  Formally mark this spec as serializable
+case class CPTAWrapMsg(mySerialTASpec : ThingActionSpec, myReplyTeller_opt : Option[CPMsgTeller])
+			extends CPReliableThingActionMsg {
+	override def getThingAction : ThingActionSpec = mySerialTASpec
+	override def getReplyTeller_opt : Option[CPMsgTeller] = myReplyTeller_opt
+}
+
 case class FoundOuterTellerMsg(chanID : Ident, outerTeller : CPMsgTeller) extends CPReceiptMsg
 
 case class CreatedChanTellerMsg(chanID : Ident, createdTeller : CPMsgTeller) extends CPReceiptMsg {

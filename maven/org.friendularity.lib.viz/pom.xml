@@ -21,10 +21,15 @@
             <groupId>org.appdapter</groupId>
             <artifactId>org.appdapter.bundle.gui</artifactId>
         </dependency>
+        <!-- JFlux QPid -> JFlux Avro -> org.jboss.netty 3.2.4,
+             which conflicts with the Avro 3.8.0 that akka-remote wants,
+             leading to a VerifyError during startup of DemoCPump when we run with akka-remoting activated -->
+        <!--
 		<dependency>
             <groupId>org.jflux</groupId>
             <artifactId>org.jflux.impl.transport.qpid</artifactId>
         </dependency>
+        -->
         <dependency>
             <groupId>org.jflux</groupId>
             <artifactId>org.jflux.impl.registry.osgi</artifactId>
@@ -50,10 +55,14 @@
 		</dependency>
 		<dependency>
 			<groupId>com.typesafe.akka</groupId>
-			<artifactId>akka-osgi_2.10</artifactId>	
-			<!-- For OSGi use above, non-OSGi use below.   Last version of akka to support java 6-7 is 2.3.14.
+            <!-- ignore -->
+			<artifactId>akka-osgi_2.10</artifactId>
+
+			<!-- For OSGi use above, non-OSGi use below.   Last version of akka to support java 6-7 is 2.3.14.-->
+            <!-- ignore
 			<artifactId>akka-actor_2.10</artifactId>
-			--> 
+            -->
+
 			<version>2.3.14</version>
 		</dependency>
         <!-- For network integration we use Spray and/or Camel (which has a QPid component) -->

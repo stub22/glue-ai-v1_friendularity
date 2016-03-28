@@ -18,6 +18,8 @@ package org.friendularity.ignore.nexjen
 
 import org.appdapter.fancy.log.VarargsLogging
 
+trait Dummy66
+
 /**
  * @author Stu B. <www.texpedient.com>
  * 
@@ -33,7 +35,7 @@ import org.appdapter.fancy.log.VarargsLogging
  *	
  *	agent-A1 says to quadStore-Q1 { operation-UI-Action {subtype KeyPress (or webPush, or 
  */
-
+/*
 object TopicalRouterTest extends VarargsLogging {
 	def main(args: Array[String]) : Unit = {
 		// Backup - if logging is not working, try enabling these two lines.
@@ -70,6 +72,9 @@ object QPid_010_Names {
 	val topicExchangeDestName_value = "amq.topic";		
 			//// Changing the above from amq.topic yields, with QPid client 0.10 running against broker 0.12
 			//	The name 'niceTopic001' supplied in the address doesn't resolve to an exchange or a queue	
+
+*/
+
 			/*
 			 * 
 	Caused by: org.apache.qpid.AMQException: The name 'niceTopic001' supplied in the address doesn't resolve to an exchange or a queue
@@ -77,6 +82,8 @@ object QPid_010_Names {
 	at org.apache.qpid.client.BasicMessageProducer_0_10.declareDestination(BasicMessageProducer_0_10.java:86)
 			 */
 
+
+/*
 }
 
 
@@ -252,7 +259,7 @@ class QpidHelloWorld extends VarargsLogging {
 		info3("Received text message, ID={}, Timestamp={}, text={}", rcvdMsgID, rcvdMsgTstamp : java.lang.Long, rcvdText);		
 	}
 }	
-
+*/
 
 /*
  *  public String getJMSMessageID() throws JMSException

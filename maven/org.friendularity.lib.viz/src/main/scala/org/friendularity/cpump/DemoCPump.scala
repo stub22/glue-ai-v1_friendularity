@@ -76,7 +76,7 @@ object DemoCPump extends VarargsLogging {
 
 // Wrapper for both an ActorSystem and a cpump-factory actor
 class DemoCPumpMgr extends VarargsLogging {
-	// typical cpumpActorRef: Actor[akka://demoCPAS/user/demoCPump01#-1369953355]
+	// When local, a typical cpumpActorRef: Actor[akka://demoCPAS/user/demoCPump01#-1369953355]
 	val akkaSysName = "demoCPASys01"
 	val testCPumpName = "demoCPump01"
 	val cpumpEndListenerName = "demoCPASTerm"
@@ -92,6 +92,7 @@ class DemoCPumpMgr extends VarargsLogging {
 
 	def connectCPumpActorSystemTerminator : Unit = {
 		val cpumpActorRef = getCPumpActRef
+		info1("Watching termination for topCPumpActor={}", cpumpActorRef)
 		val cpumpEndListener : ActorRef = getActorSys.actorOf(Props(classOf[AkkaSysTerminator], cpumpActorRef), cpumpEndListenerName)
 	}
 
@@ -126,6 +127,23 @@ class DemoCPumpActor extends Actor with ActorLogging {
     case WhoToGreet(who) => myMutableGreetTxt = s"hello, $who"
     case CheckGreeting   => sender ! Greeting(myMutableGreetTxt) // Send the current greeting back to the sender
 	case dmsg: TxtSymMsg => myPostChan01.postAndForget(dmsg)
+	case rq: RepliableTxtSymMsg => {
+		val respTeller_opt = rq.getReplyTeller_opt
+		log.info("Got rq {}", rq)
+		if (respTeller_opt.isDefined) {
+			val respMsg = new TxtSymMsg("A note from CPump server, thanking for the request")
+			respTeller_opt.get.tellCPMsg(respMsg)
+		}
+	}
+	case tamsg : CPReliableThingActionMsg => {
+		val ta = tamsg.getThingAction
+		log.info("Received possibly-repliable ThingAction: {}", ta)
+		val replyTeller_opt = tamsg.getReplyTeller_opt
+		if (replyTeller_opt.isDefined) {
+			val rplyMsg = new TxtSymMsg("Here is a response to your lovely TA request, t=" + System.currentTimeMillis())
+			replyTeller_opt.get.tellCPMsg(rplyMsg)
+		}
+	}
   }
 }
 
