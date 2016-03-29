@@ -24,12 +24,12 @@
         <!-- JFlux QPid -> JFlux Avro -> org.jboss.netty 3.2.4,
              which conflicts with the Avro 3.8.0 that akka-remote wants,
              leading to a VerifyError during startup of DemoCPump when we run with akka-remoting activated -->
-        <!--
+
 		<dependency>
             <groupId>org.jflux</groupId>
             <artifactId>org.jflux.impl.transport.qpid</artifactId>
         </dependency>
-        -->
+
         <dependency>
             <groupId>org.jflux</groupId>
             <artifactId>org.jflux.impl.registry.osgi</artifactId>
