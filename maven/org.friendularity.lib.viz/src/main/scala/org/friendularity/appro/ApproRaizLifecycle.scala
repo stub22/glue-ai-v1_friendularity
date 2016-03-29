@@ -174,7 +174,7 @@ import org.osgi.framework.ServiceRegistration
 
 import scala.collection.JavaConversions._
 object ApproRaizDepHelper extends VarargsLogging  {
-/*
+/*  Temp commented out on 2016-03-28, because we need ServiceReg deps picked up via JFlux-QPid
 	// These static methods can be used to register services directly, with the property-tags that our ApproRaizLifecycle is waiting for.
 	def regModelSvc_Recipes(ctx : BundleContext, model : JenaModel) = regModelService(ctx, model, ApproRaizLifeLauncher.TAGVAL_MODEL_ROLE_RECIPES)
 	def regModelSvc_Settings(ctx : BundleContext, model : JenaModel) = regModelService(ctx, model, ApproRaizLifeLauncher.TAGVAL_MODEL_ROLE_SETTINGS)

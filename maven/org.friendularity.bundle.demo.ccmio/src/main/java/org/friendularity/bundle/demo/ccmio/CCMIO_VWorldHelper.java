@@ -71,14 +71,11 @@ public class CCMIO_VWorldHelper extends BasicDebugger {
 
 		getLogger().info("$$$$$$$$$$$$$$$    $$$$$$$$$$$$$$$$$   disabled PumaAppUtils.attachVWorldRenderModule");
 	}
-	// 2014-02-20      PumaAppUtils.attachVWorldRenderModule(bundleCtx, werm, null);
 
 	public void attachVWorldRenderModule(// BundleContext bundleCtx, 
 			RenderModule rMod, Ident optVWorldSpecID) {
 		// srec-access not currently used *directly*, but we will probly want it again.
 		GreedyHandleSet srec = PumaAppUtils.obtainGreedyHandleSet();
-		// Old way:
-		// PumaVirtualWorldMapper pvwm = srec.pumaRegClient.getVWorldMapper(optVWorldSpecID);
 		PumaVirtualWorldMapper pvwm = getVWorldMapper(optVWorldSpecID);
 		if (pvwm != null) {
 			theLogger.info("Attaching RenderModule {} to VWorldMapper {}", rMod, pvwm);
