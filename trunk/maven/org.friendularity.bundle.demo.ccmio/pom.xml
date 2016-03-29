@@ -101,10 +101,12 @@
                                         org.friendularity.chnkr,
                                         org.friendularity.cpump,
                                         org.friendularity.ignore.*,
-                                        org.parboiled.*
+                                        org.parboiled.*,
+                                        shapeless.*,
+                                        org.uncommons.maths.*
 
 						</Export-Package>
-                        <!-- org.parboiled is used by spray-http -->
+                        <!-- org.parboiled,  shapeless,  org.uncommons.maths  are used by spray-http -->
 					</instructions>
 				</configuration>
 			</plugin>
