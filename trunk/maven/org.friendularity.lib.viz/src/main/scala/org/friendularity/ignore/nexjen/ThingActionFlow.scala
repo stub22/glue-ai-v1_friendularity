@@ -85,7 +85,7 @@ import java.util.Random;
 	
 	}
 }
-/*
+
 import javax.jms.{ConnectionFactory, Session, Destination}
 import javax.jms.{MessageConsumer, MessageProducer}
 import javax.jms.{Message, BytesMessage, TextMessage, MapMessage, ObjectMessage}
@@ -95,7 +95,7 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import java.util.Properties;
 
-class TAFlow_QPid {
+class TAFlow_QPid extends ThingActionFlow {
 	def sendAndConsumeTAMsg(jmsSession : Session, jmsMsgProducer : MessageProducer, jmsMsgConsumer : MessageConsumer ) {
 		info0("================= Creating ObjectMessage to hold TA")
 
@@ -147,4 +147,3 @@ class TAFlow_QPid {
 	}
 
 }
-*/
