@@ -57,7 +57,7 @@ public class CCMIO_VWorldHelperLifecycle extends BasicDebugger implements Servic
 		getLogger().info("Creating CCMIO_VWorldHelper service");
 		CCMIO_VWorldHelper helper = new CCMIO_VWorldHelper();
         VWorldRegistry vwReg = (VWorldRegistry) dependencyMap.get(DEPKEY_VWorldReg);
-		PumaVirtualWorldMapper pvwm = vwReg.getVW();
+		PumaVirtualWorldMapper pvwm = vwReg.getVWM();
 		// Tell the helper about the VWorld.
 		helper.setVWorldMapper(pvwm, null);
 		// Do some loosely defined VWorld visualization setup.
