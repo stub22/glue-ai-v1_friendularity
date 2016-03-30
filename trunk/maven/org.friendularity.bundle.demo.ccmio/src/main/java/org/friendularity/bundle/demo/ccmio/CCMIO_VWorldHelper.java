@@ -48,12 +48,14 @@ import org.slf4j.LoggerFactory;
 public class CCMIO_VWorldHelper extends BasicDebugger {
 
 	static Logger theLogger = LoggerFactory.getLogger(CCMIO_VWorldHelper.class);
-	private CCMIO_WorldEstimateRenderModule myWERM;
-	private CCMIO_DemoMidiCommandMapper myMidiMapper;
-	private PumaVirtualWorldMapper myVWorldMapper;
-	private boolean myFlag_connectMidiIn = true;
-	private boolean myFlag_connectMidiOut = true;
-	private boolean myFlag_connectMidiSwitcheroo = true;
+
+	private CCMIO_WorldEstimateRenderModule 	myWERM;
+	private CCMIO_DemoMidiCommandMapper 		myMidiMapper;
+	private PumaVirtualWorldMapper 				myVWorldMapper;
+
+	private boolean 							myFlag_connectMidiIn = true;
+	private boolean 							myFlag_connectMidiOut = true;
+	private boolean 							myFlag_connectMidiSwitcheroo = true;
 
 	public void doWermStuff() {
 		// Hey, let's get some fused-sensor-data visualization going too, while we're at it!
@@ -161,7 +163,7 @@ public class CCMIO_VWorldHelper extends BasicDebugger {
 	}
 
 	private PumaVirtualWorldMapper lookupVWorldMapperDirectly(Ident optSpecID) {
-		PumaVirtualWorldMapper pvwm = null;
+		// PumaVirtualWorldMapper pvwm = null;
 
 		BundleContext bc = VirtualWorldFactory.getBundleContext();
 		Properties props = new Properties();
@@ -169,11 +171,11 @@ public class CCMIO_VWorldHelper extends BasicDebugger {
 		VWorldRegistry vwr = VirtualWorldFactory.getOSGiVWorldMapper(bc, props);
 		theLogger.info("VWorldRegistry = {}", vwr);
 		if (vwr != null) {
-			myVWorldMapper = vwr.getVW();
+			myVWorldMapper = vwr.getVWM();
 			theLogger.info("VWorldMapper = {}", myVWorldMapper);
 		} else {
 			theLogger.warn("Cannot resolve VWorldRegistry");
 		}
-		return pvwm;
+		return myVWorldMapper;
 	}
 }

@@ -109,6 +109,8 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 		launchPumaRobotsAndChars(bundleCtx);
 		getLogger().info("============ Calling launchVWorldLifecycles() ========");
 		launchVWorldLifecycles(bundleCtx);
+		getLogger().info("============ Calling launchCPumpService() ==========");
+		launchCPumpService(bundleCtx);
 		getLogger().info("============ Calling launchOtherStuffLate() ==========");
 		launchOtherStuffLate();
 		getLogger().info("============ launchCcmioDemo END  ==========");
@@ -143,6 +145,10 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 		getLogger().info("Got PUMA BootResult: " + bootResult);
 	}
 
+	private void launchCPumpService(BundleContext bundleCtx) {
+		CCMIO_CPumpHelper cpumpHelper = new CCMIO_CPumpHelper();
+		cpumpHelper.launchCPump(bundleCtx);
+	}
 	private void launchVWorldLifecycles(BundleContext bundleCtx) {
 		CCMIO_VWorldHelper.launchVWorldLifecycles(bundleCtx);	
 		CCMIO_VWorldHelperLifecycle.startHelperLifecycle(bundleCtx);
