@@ -40,7 +40,7 @@ object DemoCPump extends VarargsLogging {
 	//	Appears that currently Akka is automatically initing logging with our log4j.properties.
 
 		info0("^^^^^^^^^^^^^^^^^^^^^^^^  DemoCPump main().START");
-		val myDCPM = new DemoCPumpMgr
+		val myDCPM = new StandaloneDemoCPumpMgr
 		val akkaSys = myDCPM.getActorSys
 		info2("ActorSystem {}\nSettings dump: {}", akkaSys, akkaSys.settings)
 		// val cpumpActorRef : ActorRef = myDCPM.getCPumpActRef
@@ -75,14 +75,12 @@ object DemoCPump extends VarargsLogging {
 
 
 // Wrapper for both an ActorSystem and a cpump-factory actor
-class DemoCPumpMgr extends VarargsLogging {
+abstract class DemoCPumpMgr extends VarargsLogging {
 	// When local, a typical cpumpActorRef: Actor[akka://demoCPAS/user/demoCPump01#-1369953355]
-	val akkaSysName = "demoCPASys01"
 	val testCPumpName = "demoCPump01"
 	val cpumpEndListenerName = "demoCPASTerm"
 
-	lazy private val myAkkaSys = ActorSystem(akkaSysName)  // Using case-class cons
-	private[cpump] def getActorSys : ActorSystem = myAkkaSys
+	protected[cpump] def getActorSys : ActorSystem
 
 	lazy private val myCPumpActRef : ActorRef = getActorSys.actorOf(Props[DemoCPumpActor], testCPumpName)
 	private def getCPumpActRef : ActorRef = myCPumpActRef
@@ -100,8 +98,18 @@ class DemoCPumpMgr extends VarargsLogging {
 		val pp = akka.actor.PoisonPill
 		getCPumpActRef ! pp
 	}
-
 }
+
+class StandaloneDemoCPumpMgr extends  DemoCPumpMgr {
+	val akkaSysName = "demoCPASys01"
+	lazy private val myAkkaSys = ActorSystem(akkaSysName)  // Using case-class cons
+	override protected[cpump] def getActorSys : ActorSystem = myAkkaSys
+}
+
+class PluginDemoCPumpMgr(myAkkaSys: ActorSystem) extends  DemoCPumpMgr {
+	override protected[cpump] def getActorSys : ActorSystem = myAkkaSys
+}
+
 case class WhoToGreet(who: String)
 case class Greeting(message: String)
 case class CheckGreeting // Corresponds to an object called "Greeting" in akka-HelloWorld

@@ -79,6 +79,9 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 		forceLog4jConfig();
 		// Print some howdys
 		super.start(context);
+
+		startAkkaOSGi(context);
+
 		// Register a dummySheet default mediator, which only acts if there is no vizapp-tchunk repo.
 		// (Reads from online sheet and functions well as of 2016-03-19, with vizapp-tchunk-flag == false)
 		DummySheetMediator mediator = new DummySheetMediator();
@@ -144,11 +147,16 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 		PumaBooter.BootResult bootResult = pumaBooter.bootUnderOSGi(bundleCtx, mediator);
 		getLogger().info("Got PUMA BootResult: " + bootResult);
 	}
+	private CCMIO_CPumpHelper myCPumpHelper = new CCMIO_CPumpHelper();
 
-	private void launchCPumpService(BundleContext bundleCtx) {
-		CCMIO_CPumpHelper cpumpHelper = new CCMIO_CPumpHelper();
-		cpumpHelper.launchCPump(bundleCtx);
+	private void startAkkaOSGi(BundleContext bundleCtx) {
+		myCPumpHelper.startAkkaOSGi(bundleCtx);
 	}
+	private void launchCPumpService(BundleContext bundleCtx) {
+
+		myCPumpHelper.launchCPump(bundleCtx);
+	}
+
 	private void launchVWorldLifecycles(BundleContext bundleCtx) {
 		CCMIO_VWorldHelper.launchVWorldLifecycles(bundleCtx);	
 		CCMIO_VWorldHelperLifecycle.startHelperLifecycle(bundleCtx);
