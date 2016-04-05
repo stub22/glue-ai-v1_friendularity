@@ -16,7 +16,9 @@ object TestCPumpClientAkka extends VarargsLogging {
 		// Need to override the netty port used here, yes?
 		// (since we presume TestCPumpServer is using the one from o.f.lib.viz / application.conf)
 
-		val serverPumpPath = "akka.tcp://demoCPASys01@127.0.0.1:4719/user/demoCPump01"
+		val unitTestServPath = "akka.tcp://demoCPASys01@127.0.0.1:4719/user/demoCPump01"
+		val ccmioOSGiServPath = "akka.tcp://bundle-135-ActorSystem@127.0.0.1:4777/user/demoCPump01"
+		val serverPumpPath = ccmioOSGiServPath
 
 		val akkaSysName = "clientCPASys44"
 
@@ -25,6 +27,7 @@ object TestCPumpClientAkka extends VarargsLogging {
 		System.setProperty(serverPortProp, ourServerPort_asTxt)
 		val clientAkkaSys = ActorSystem(akkaSysName)
 		val remotePumpSel = clientAkkaSys.actorSelection(serverPumpPath)
+		info1("Made remotePumpSel: {}", remotePumpSel)
 
 		val selTeller = new ActorSelCPMsgTeller(remotePumpSel)
 

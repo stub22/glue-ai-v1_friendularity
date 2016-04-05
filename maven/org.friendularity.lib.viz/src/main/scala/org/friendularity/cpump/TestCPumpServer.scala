@@ -12,7 +12,7 @@ object TestCPumpServer extends VarargsLogging {
 	def main(args: Array[String]): Unit = {
 
 		info0("^^^^^^^^^^^^^^^^^^^^^^^^  TestCPumpServer.main()-START");
-		val myDCPM = new DemoCPumpMgr
+		val myDCPM = new StandaloneDemoCPumpMgr
 		// val cpumpActorRef : ActorRef = myDCPM.getCPumpActRef
 		// Typical result dumps as   Actor[akka://demoCPAS/user/demoCPump01#618243248]
 		// info1("^^^^^^^^^^^^^^^^^^^^^^^^  TestCPumpServer. main() - got initial cpumpActorRef: {}", cpumpActorRef);
