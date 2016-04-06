@@ -20,6 +20,7 @@ import java.util.Properties;
 import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
+import org.cogchar.api.thing.WantsThingAction;
 import org.cogchar.bind.mio.robot.motion.CogcharMotionSource;
 
 import org.cogchar.render.sys.module.RenderModule;
@@ -35,7 +36,9 @@ import org.cogchar.bind.symja.MathGate;
 import org.friendularity.api.west.WorldEstimate;
 import org.friendularity.impl.visual.EstimateVisualizer;
 import org.mechio.api.motion.Robot;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,6 +55,7 @@ public class CCMIO_VWorldHelper extends BasicDebugger {
 	private CCMIO_WorldEstimateRenderModule 	myWERM;
 	private CCMIO_DemoMidiCommandMapper 		myMidiMapper;
 	private PumaVirtualWorldMapper 				myVWorldMapper;
+	private WantsThingAction					myTARouter;
 
 	private boolean 							myFlag_connectMidiIn = true;
 	private boolean 							myFlag_connectMidiOut = true;
@@ -96,17 +100,32 @@ public class CCMIO_VWorldHelper extends BasicDebugger {
 		return myVWorldMapper;
 	}
 
-	public void setVWorldMapper(PumaVirtualWorldMapper vwm, Ident optSpecID) {
+	private void setVWorldMapper(PumaVirtualWorldMapper vwm, Ident optSpecID) {
 		myVWorldMapper = vwm;
 	}
 
-	public static void launchVWorldLifecycles(BundleContext bundleCtx) {
-		// The startVWorldLifecycle call is only necessary under new-PUMA regime.
-		theLogger.info("StartingVWorldLifecycle using bundleContext {}", bundleCtx);
-		VirtualWorldFactory.startVWorldLifecycle(bundleCtx);
+	private void setTARouter(WantsThingAction taRouter) {
+		myTARouter = taRouter;
 	}
 
-	public void finishDemoSetup(BundleContext bundleCtx) {
+	public void completeSetup(VWorldRegistry vwReg) {
+		WantsThingAction taRouter = vwReg.getRouter();
+		setTARouter(taRouter);
+		PumaVirtualWorldMapper pvwm = vwReg.getVWM();
+		// Tell the helper about the VWorld.
+		setVWorldMapper(pvwm, null);
+		// Do some loosely defined VWorld visualization setup.
+		doWermStuff();
+		Bundle b = FrameworkUtil.getBundle(CCMIO_VWorldHelper.class);
+		if (b != null) {
+			BundleContext bundleCtx = b.getBundleContext();
+			//
+			finishDemoSetup(bundleCtx);
+		}
+
+	}
+
+	private void finishDemoSetup(BundleContext bundleCtx) {
 		// Under what conditions should this call succeed?
 		attachVWorldRenderModule(myWERM, null);
 

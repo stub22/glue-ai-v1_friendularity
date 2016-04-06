@@ -9,6 +9,7 @@ import org.cogchar.app.puma.config.PumaContextMediator;
 import org.cogchar.app.puma.registry.PumaGlobalPrebootInjector;
 import org.cogchar.bind.symja.MathGate;
 import org.cogchar.blob.entry.EntryHost;
+import org.cogchar.bundle.app.vworld.central.VirtualWorldFactory;
 import org.friendularity.api.west.WorldEstimate;
 import org.friendularity.vworld.UnusedNetworkVisionDataFeed;
 import org.osgi.framework.BundleContext;
@@ -110,7 +111,7 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 		}
 		getLogger().info("============ Calling launchPumaRobotsAndChars()  ==========");
 		launchPumaRobotsAndChars(bundleCtx);
-		getLogger().info("============ Calling launchVWorldLifecycles() ========");
+		getLogger().info("============ Calling launchCogcharVWorldLifecycles() ========");
 		launchVWorldLifecycles(bundleCtx);
 		getLogger().info("============ Calling launchCPumpService() ==========");
 		launchCPumpService(bundleCtx);
@@ -158,7 +159,7 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 	}
 
 	private void launchVWorldLifecycles(BundleContext bundleCtx) {
-		CCMIO_VWorldHelper.launchVWorldLifecycles(bundleCtx);	
+		launchCogcharVWorldLifecycles(bundleCtx);
 		CCMIO_VWorldHelperLifecycle.startHelperLifecycle(bundleCtx);
 		// Last checked (2014) this lifecycle-start appears to actually launch the VWorld inline,
 		// on this same thread, as shown by stack trace below.
@@ -172,12 +173,19 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
      [java] 	at org.jflux.api.service.ServiceManager.bindDependencies(ServiceManager.java:162)
      [java] 	at org.jflux.api.service.ServiceManager.start(ServiceManager.java:128)
      [java] 	at org.cogchar.bundle.app.vworld.central.VirtualWorldFactory.startVWorldLifecycle(VirtualWorldFactory.java:73)
-     [java] 	at org.friendularity.bundle.demo.ccmio.CCMIO_VWorldHelper.launchVWorldLifecycles(CCMIO_VWorldHelper.java:118)
+     [java] 	at org.friendularity.bundle.demo.ccmio.CCMIO_VWorldHelper.launchCogcharVWorldLifecycles(CCMIO_VWorldHelper.java:118)
     ...
      [java] 	at org.friendularity.bundle.demo.ccmio.CCMIO_DemoActivator.handleFrameworkStartedEvent(CCMIO_DemoActivator.java:129)
 
  */
 	}
+	private void launchCogcharVWorldLifecycles(BundleContext bundleCtx) {
+		// The startVWorldLifecycle call is only necessary under new-PUMA regime.
+		// Starts the lifecycle for Cogchar VWorldRegistry, which has 5 input dependencies.
+		getLogger().info("Starting Cogchar VWorldLifecycle using bundleContext {}", bundleCtx);
+		VirtualWorldFactory.startVWorldLifecycle(bundleCtx);
+	}
+
 	private void launchOtherStuffLate()  {
 	
 		if (myFlag_connectObsoleteNetworkVision) {
