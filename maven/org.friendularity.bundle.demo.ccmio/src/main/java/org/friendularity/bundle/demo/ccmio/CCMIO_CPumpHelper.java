@@ -22,9 +22,13 @@ public class CCMIO_CPumpHelper extends BasicDebugger {
 	// Instantiating this triggers Akka bundle scan setup ... right?
 	private static OurAkkaOSGiActivator ourAkkaActivator = null;
 
+	public static String ourAkkaSysName = "ccmioBundle";
+
 	private static OurAkkaOSGiActivator getAkkaActivSingle() {
 		if (ourAkkaActivator == null) {
-			ourAkkaActivator = new OurAkkaOSGiActivator(getLoggerForClass(OurAkkaOSGiActivator.class));
+
+			Logger ourActivLogger = getLoggerForClass(OurAkkaOSGiActivator.class);
+			ourAkkaActivator = new OurAkkaOSGiActivator(ourAkkaSysName, ourActivLogger);
 		}
 		return ourAkkaActivator;
 	}
@@ -73,10 +77,16 @@ public class CCMIO_CPumpHelper extends BasicDebugger {
 	// TODO:  Implement an interface used by CPump to access OSGi-akka hooks as needed.
 	private static class OurAkkaOSGiActivator extends ActorSystemActivator {
 		private Logger myLogger;
+		private String myAkkaSysName = null;
 		private ActorSystem myActorSys = null;
-		public OurAkkaOSGiActivator(Logger log) {
+		public OurAkkaOSGiActivator(String akkaSysName, Logger log) {
+			myAkkaSysName = akkaSysName;
 			myLogger = log;
-			log.info("CPump.OurAkkaOSGiActivator Constructor yay!");
+			log.info("CPump.OurAkkaOSGiActivator constructor for akkaSysName={}", akkaSysName);
+		}
+		@Override public String getActorSystemName(BundleContext bctx) {
+			myLogger.info("Supplying actorSysName={}", myAkkaSysName);
+			return myAkkaSysName;
 		}
 		@Override public void  configure(BundleContext bctx, ActorSystem asys)  {
 			myLogger.info("configure bctx={}, asys={}", bctx, asys);

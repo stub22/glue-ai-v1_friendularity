@@ -13,19 +13,28 @@ object TestCPumpClientAkka extends VarargsLogging {
 
 		info0 ("^^^^^^^^^^^^^^^^^^^^^^^^  TestCPumpClientAkka main().START");
 
-		// Need to override the netty port used here, yes?
-		// (since we presume TestCPumpServer is using the one from o.f.lib.viz / application.conf)
 
 		val unitTestServPath = "akka.tcp://demoCPASys01@127.0.0.1:4719/user/demoCPump01"
-		val ccmioOSGiServPath = "akka.tcp://bundle-135-ActorSystem@127.0.0.1:4777/user/demoCPump01"
-		val serverPumpPath = ccmioOSGiServPath
+		val ccmioServName = "ccmioBundle" // Matches what is in the bundle code
+		val ccmioServHost = "127.0.0.1" // Local machine
+		val ccmioServPort = 4777 // matches ccmio's  application.conf
+		val ccmioCpumpActPath = "/user/demoCPump01"
+		val ccmioOSGiServCPumpPath = "akka.tcp://" + ccmioServName + "@" + ccmioServHost + ":" + ccmioServPort + ccmioCpumpActPath;
+		val betterPathAddr = new Address("akka.tcp", ccmioServName, ccmioServHost, ccmioServPort);
+		val bpout = betterPathAddr.toString
 
-		val akkaSysName = "clientCPASys44"
+		info2("homey={}     while      BetterPathOut={}", ccmioOSGiServCPumpPath, bpout);
+		val serverPumpPath = ccmioOSGiServCPumpPath
 
-		val ourServerPort_asTxt = "4924"
-		val serverPortProp = "akka.remote.netty.tcp.port"
-		System.setProperty(serverPortProp, ourServerPort_asTxt)
-		val clientAkkaSys = ActorSystem(akkaSysName)
+		val clientAkkaSysName = "clientCPASys44"
+
+		// Client needs to override the netty port used in the default config, since we don't want to collide
+		// with any running TestCPumpServer, which is using the port set in o.f.lib.viz application.conf.
+
+		val clientPort_asTxt = "4924"
+		val clientPortProp = "akka.remote.netty.tcp.port"
+		System.setProperty(clientPortProp, clientPort_asTxt)
+		val clientAkkaSys = ActorSystem(clientAkkaSysName)
 		val remotePumpSel = clientAkkaSys.actorSelection(serverPumpPath)
 		info1("Made remotePumpSel: {}", remotePumpSel)
 

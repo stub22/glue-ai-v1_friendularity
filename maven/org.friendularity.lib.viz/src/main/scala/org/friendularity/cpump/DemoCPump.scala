@@ -75,10 +75,10 @@ object DemoCPump extends VarargsLogging {
 
 
 // Wrapper for both an ActorSystem and a cpump-factory actor
-abstract class DemoCPumpMgr extends VarargsLogging {
+trait DemoCPumpMgr extends VarargsLogging {
 	// When local, a typical cpumpActorRef: Actor[akka://demoCPAS/user/demoCPump01#-1369953355]
-	val testCPumpName = "demoCPump01"
-	val cpumpEndListenerName = "demoCPASTerm"
+	private val testCPumpName = "demoCPump01"
+	private val cpumpEndListenerName = "demoCPASTerm"
 
 	protected[cpump] def getActorSys : ActorSystem
 
@@ -101,7 +101,7 @@ abstract class DemoCPumpMgr extends VarargsLogging {
 }
 
 class StandaloneDemoCPumpMgr extends  DemoCPumpMgr {
-	val akkaSysName = "demoCPASys01"
+	private val akkaSysName = "standyCPASys4719"
 	lazy private val myAkkaSys = ActorSystem(akkaSysName)  // Using case-class cons
 	override protected[cpump] def getActorSys : ActorSystem = myAkkaSys
 }
