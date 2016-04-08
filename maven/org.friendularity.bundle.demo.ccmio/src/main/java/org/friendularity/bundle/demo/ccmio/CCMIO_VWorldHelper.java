@@ -16,6 +16,7 @@
 package org.friendularity.bundle.demo.ccmio;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.core.name.FreeIdent;
@@ -23,6 +24,7 @@ import org.appdapter.core.name.Ident;
 import org.cogchar.api.thing.WantsThingAction;
 import org.cogchar.bind.mio.robot.motion.CogcharMotionSource;
 
+import org.cogchar.impl.thing.route.BasicThingActionRouter;
 import org.cogchar.render.sys.module.RenderModule;
 import org.cogchar.bundle.app.puma.PumaAppUtils;
 import org.cogchar.bundle.app.puma.PumaAppUtils.GreedyHandleSet;
@@ -110,6 +112,18 @@ public class CCMIO_VWorldHelper extends BasicDebugger {
 
 	public void completeSetup(VWorldRegistry vwReg) {
 		WantsThingAction taRouter = vwReg.getRouter();
+
+		Map<Ident, List<WantsThingAction>> routerInternalMap
+				= ((BasicThingActionRouter)taRouter).hackExposeConsumerMap();
+		getLogger().info("routerInternalMap={}", routerInternalMap);
+		for (Ident k : routerInternalMap.keySet()) {
+			getLogger().info("graphID={}", k);
+			List<WantsThingAction> wanters = routerInternalMap.get(k);
+			for (WantsThingAction wta : wanters) {
+				getLogger().info("wanter={}", wta);
+			}
+		}
+
 		setTARouter(taRouter);
 		PumaVirtualWorldMapper pvwm = vwReg.getVWM();
 		// Tell the helper about the VWorld.

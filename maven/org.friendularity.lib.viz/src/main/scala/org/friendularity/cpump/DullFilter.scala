@@ -1,6 +1,7 @@
 package org.friendularity.cpump
 
 import org.appdapter.fancy.log.VarargsLogging
+import org.cogchar.api.thing.WantsThingAction
 
 /**
   * Created by Owner on 3/24/2016.
@@ -29,8 +30,8 @@ trait DullFilterAdptr[FMsgType <: CPumpMsg] extends CPumpAdptr[FMsgType, DullPum
 	override def getUsualInMsgClz  = getFilterMsgClz  // Subtype may override to any subclass of commonMsgClz
 
 }
+
 case class TxtDullFilterAdptr(filterExpr : String) extends DullFilterAdptr[TxtSymMsg]  {
 
 	override def getFilterMsgClz = classOf[TxtSymMsg]
-
 }

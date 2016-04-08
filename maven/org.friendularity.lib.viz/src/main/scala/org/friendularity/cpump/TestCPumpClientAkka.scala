@@ -13,8 +13,8 @@ object TestCPumpClientAkka extends VarargsLogging {
 
 		info0 ("^^^^^^^^^^^^^^^^^^^^^^^^  TestCPumpClientAkka main().START");
 
-
-		val unitTestServPath = "akka.tcp://demoCPASys01@127.0.0.1:4719/user/demoCPump01"
+		val unitTestWithoutOSGi : Boolean = true
+		val unitTestServPath = "akka.tcp://standyCPASys4719@127.0.0.1:4719/user/demoCPump01"
 		val ccmioServName = "ccmioBundle" // Matches what is in the bundle code
 		val ccmioServHost = "127.0.0.1" // Local machine
 		val ccmioServPort = 4777 // matches ccmio's  application.conf
@@ -24,7 +24,7 @@ object TestCPumpClientAkka extends VarargsLogging {
 		val bpout = betterPathAddr.toString
 
 		info2("homey={}     while      BetterPathOut={}", ccmioOSGiServCPumpPath, bpout);
-		val serverPumpPath = ccmioOSGiServCPumpPath
+		val serverPumpPath = if(unitTestWithoutOSGi) unitTestServPath else ccmioOSGiServCPumpPath
 
 		val clientAkkaSysName = "clientCPASys44"
 
