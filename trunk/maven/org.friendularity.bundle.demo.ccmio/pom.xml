@@ -33,8 +33,14 @@
 			<groupId>org.appdapter</groupId>
 			<artifactId>org.appdapter.bundle.xload</artifactId>
 			<version>${appdapter.version}</version>
-		</dependency>		
-		<dependency>
+		</dependency>
+        <dependency>
+            <groupId>org.appdapter</groupId>
+            <artifactId>ext.bundle.akka.remote_v2315_s210</artifactId>
+            <version>${appdapter.version}</version>
+        </dependency>
+
+        <dependency>
 			<groupId>org.cogchar</groupId>
 			<artifactId>org.cogchar.bundle.app.vworld.startup</artifactId>
 		</dependency>
@@ -70,16 +76,6 @@
 			<artifactId>org.friendularity.lib.viz</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-        <dependency>
-            <groupId>com.typesafe.akka</groupId>
-            <artifactId>akka-osgi_2.10</artifactId>
-            <version>2.3.14</version>
-        </dependency>
-        <dependency>
-            <groupId>com.typesafe.akka</groupId>
-            <artifactId>akka-remote_2.10</artifactId>
-            <version>2.3.14</version>
-        </dependency>
 
 	</dependencies>
 
@@ -111,11 +107,7 @@
                                         org.friendularity.appro,
                                         org.friendularity.chnkr,
                                         org.friendularity.cpump,
-                                        org.friendularity.ignore.*,
-                                        org.parboiled.*,
-                                        shapeless.*,
-                                        org.uncommons.maths.*
-
+                                        org.friendularity.ignore.*
 						</Export-Package>
                         <!-- org.parboiled,  shapeless,  org.uncommons.maths  are used by spray-http -->
 					</instructions>
