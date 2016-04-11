@@ -222,6 +222,7 @@ object MathyGoodyTest extends VarargsLogging {
 		// This sets the desired size of the space, but does not actually cause the goodies to be created.
 		// That happens during update() on the render thread.
 		dgs.refreshFromModelClient(mathModelClient)
+		info1("Loaded MathyGoodySpc: {}", dgs)
 		dgs
 	}	
 }
