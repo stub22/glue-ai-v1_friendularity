@@ -18,14 +18,11 @@ package org.friendularity.cpump
 
 import akka.actor.{ActorSelection, ActorRef}
 import org.appdapter.core.name.Ident
+import java.io.{Serializable => JSerializable}
 
 // Empty (so far) marker trait for all msgs.
-trait CPumpMsg extends java.io.Serializable {
+trait CPumpMsg extends JSerializable {
 
-}
-// Tellers may be included in messages.
-trait CPMsgTeller extends java.io.Serializable {
-	def tellCPMsg(msg: CPumpMsg)
 }
 
 trait CPRepliableMsg extends CPumpMsg {
@@ -44,11 +41,6 @@ trait CPSymbolMsg extends CPumpMsg {
 trait CPReceiptMsg extends CPSymbolMsg {
 	// def getConfirmedTeller : CPMsgTeller
 }
-// Wrapper for sender who wants an answer
-trait CPReceiptTeller extends CPMsgTeller {
-	// TODO:  Refine this impl
-	def tellCPReceipt(msg: CPReceiptMsg) = tellCPMsg(msg)
-}
 // Q:  How well does logging play with serializable?
 
 import org.cogchar.api.thing.ThingActionSpec
@@ -59,16 +51,6 @@ trait CPThingActionMsg extends CPSymbolMsg {
 
 trait  CPReliableThingActionMsg extends CPThingActionMsg with CPRepliableMsg
 
-case class ActorRefCPMsgTeller(actRef : ActorRef) extends CPMsgTeller {
-	override def tellCPMsg(cpMsg: CPumpMsg): Unit = {
-		actRef ! cpMsg
-	}
-}
-case class ActorSelCPMsgTeller(actSel : ActorSelection) extends CPMsgTeller {
-	override def tellCPMsg(cpMsg: CPumpMsg): Unit = {
-		actSel ! cpMsg
-	}
-}
 
 case class TxtSymMsg(mySymTxt : String) extends CPSymbolMsg {
 
@@ -78,7 +60,7 @@ case class RepliableTxtSymMsg(mySymTxt : String, myReplyTeller_opt : Option[CPMs
 	override def getReplyTeller_opt : Option[CPMsgTeller] = myReplyTeller_opt
 
 }
-// TODO:  Formally mark this spec as serializable
+
 case class CPTAWrapMsg(mySerialTASpec : ThingActionSpec, myReplyTeller_opt : Option[CPMsgTeller])
 			extends CPReliableThingActionMsg {
 	override def getThingAction : ThingActionSpec = mySerialTASpec
@@ -92,43 +74,4 @@ case class CreatedChanTellerMsg(chanID : Ident, createdTeller : CPMsgTeller) ext
 }
 trait CPAdminRequestMsg[CtxBound <: CPumpCtx] extends CPSymbolMsg {
 	def processInCtx(ctx : CtxBound)
-}
-case class CPARM_MakeDullListenChan[LMK <: CPumpMsg](chanID : Ident, listenedMsgClz : Class[LMK],
-					  adoptrs : Traversable[CPumpAdptr[LMK, DullPumpCtx, CPumpMsg]])
-					extends CPAdminRequestMsg[DullPumpCtx] {
-	override def processInCtx(ctx : DullPumpCtx): Unit = {
-		val listenChan = ctx.makeOnewayListenChan(chanID, listenedMsgClz, adoptrs)
-	}
-}
-
-
-case class CPARM_MakeDullPostDispatchChan[PMK <: CPumpMsg](chanID : Ident, postedMsgClz : Class[PMK],
-			receiptTeller: CPReceiptTeller)	extends CPAdminRequestMsg[DullPumpCtx] {
-	override def processInCtx(ctx : DullPumpCtx): Unit = {
-		val postChan = ctx.makeOnewayDispatchPostChan(chanID, postedMsgClz)
-		val receiptMsg = CreatedChanTellerMsg(chanID, postChan.getOuterTeller())
-		receiptTeller.tellCPReceipt(receiptMsg)
-
-	}
-}
-
-case class CPARM_MakeDullPostForwardChan[PMK <: CPumpMsg](chanID : Ident, postedMsgClz : Class[PMK],
-							forwardTeller: CPMsgTeller)
-			extends CPAdminRequestMsg[DullPumpCtx] {
-
-	override def processInCtx(ctx : DullPumpCtx): Unit = {
-		val postChan = ctx.makeOnewayForwardPostChan(chanID, postedMsgClz, forwardTeller)
-	// 	val forwardingTeller : CPMsgTeller = postChan.getForwardingTeller
-	//	val receiptMsg = new
-	}
-}
-case class CPARM_LookupChanTeller(chanID : Ident, answerTeller: CPMsgTeller) extends CPAdminRequestMsg[DullPumpCtx] {
-	override def processInCtx(ctx : DullPumpCtx): Unit = {
-		val chanOpt = ctx.getChan(chanID)
-		if (chanOpt.isDefined) {
-			val outerTeller = chanOpt.get.getOuterTeller()
-			val fotm = new FoundOuterTellerMsg(chanID, outerTeller)
-			answerTeller.tellCPMsg(fotm)
-		}
-	}
 }

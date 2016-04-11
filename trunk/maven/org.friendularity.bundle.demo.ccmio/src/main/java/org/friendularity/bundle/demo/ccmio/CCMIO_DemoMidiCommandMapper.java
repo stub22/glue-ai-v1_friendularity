@@ -78,7 +78,8 @@ public class CCMIO_DemoMidiCommandMapper extends BasicDebugger implements MidiEv
 	}
 	protected void startMidiOutputDemo() { 
 		int previewMsec = 2000;
-		myDMOP.playAllDemoSeqsBriefly_Blocking(previewMsec);  // Currently leaves the last one still playing
+		getLogger().info("Temporarily skipping MIDI output demo, which needs to be started asynchronously instead!");
+		// myDMOP.playAllDemoSeqsBriefly_Blocking(previewMsec);  // Currently leaves the last one still playing
 	}
 	protected void startMidiSwitcherooDemo() { 
 		mySwitcheroo = new Switcheroo();

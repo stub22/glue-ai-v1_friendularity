@@ -64,20 +64,26 @@ public class CCMIO_VWorldHelper extends BasicDebugger {
 	private boolean 							myFlag_connectMidiSwitcheroo = true;
 
 	public void doWermStuff() {
+		getLogger().info("doWermStuff - BEGIN");
 		// Hey, let's get some fused-sensor-data visualization going too, while we're at it!
 		myWERM = new CCMIO_WorldEstimateRenderModule();
+		getLogger().info("doWermStuff - starting initOptionalMidiStuff");
 		initOptionalMidiStuff();
+		getLogger().info("doWermStuff - finished initOptionalMidiStuff()");
 		if (myMidiMapper != null) {
 			// TODO:  Can probably remove this link
 			myMidiMapper.setWERM(myWERM);
+			getLogger().info("doWermStuff - setting JVisionTexture flag");
 			myWERM.setMidiMapper(myMidiMapper);
 		}
 		// Enable/Disable this texture flow based on whether we are launching JVision or not.
 		// Should be a dont-care whether this happens before/after   startVisionMonitors() below.
 		// TODO:  Re-verify in detail.
+		getLogger().info("doWermStuff - setting JVisionTexture flag");
 		myWERM.setFlag_JVisionTextureRoutingEnabled(CCMIO_DemoActivator.myFlag_connectJVision);
 
 		getLogger().info("$$$$$$$$$$$$$$$    $$$$$$$$$$$$$$$$$   disabled PumaAppUtils.attachVWorldRenderModule");
+		getLogger().info("doWermStuff - END");
 	}
 
 	public void attachVWorldRenderModule(// BundleContext bundleCtx, 

@@ -43,7 +43,7 @@ abstract class SweetDynaGoody(goodyIdxWithinSpace : Int) extends DynaShapeGoody(
 		// Nickname is short and usually unchanging.
 	//
 	
-	// This method cannot assume it is executed on the renderThread.
+
 	override def doFastVWorldUpdate_onRendThrd(rrc : RenderRegistryClient) : Unit = { 
 		// getLogger().info("FastUpdate to dynaGoody {} at index {}", Seq(getUniqueName, getIndex) :_*);
 	}
@@ -96,7 +96,9 @@ abstract class SweetDynaSpace(parentDGS : DynamicGoodySpace[_], idxIntoParent : 
 	}
 	override def doFastVWorldUpdate_onRendThrd(rrc : RenderRegistryClient) {
 		super.doFastVWorldUpdate_onRendThrd(rrc)
-		// We currently *happen* to be doing this slow update on the rendThrd, but there is no requirement that we do so.
+		// We currently *happen* to be doing this slow update on the rendThrd,
+		// but there is no requirement that we do so.
+		// System throughput would gen be better if this were done in separate actor handler.
 		applyPendingSpecItems()
 	}
 }
