@@ -34,6 +34,9 @@ trait DispatchPostChan[MsgKind <: CPumpMsg, CtxType <: CPumpCtx]  extends CPChan
 	// When a remote client wants a handle to post to, it can use this (wrapped in ForwardPostChan).
 	// lazy val myTeller
 }
+trait BoundedDispatchPostChan [MsgKind <: CPumpMsg, CtxType <: CPumpCtx]
+			extends DispatchPostChan[MsgKind, CtxType] with BoundedCPChanPost[MsgKind, CtxType]
+
 
 trait ForwardPostChan[MsgKind <: CPumpMsg, CtxType <: CPumpCtx]  extends CPChanPost[MsgKind, CtxType] {
 	def getTargetTeller : CPMsgTeller
@@ -44,11 +47,13 @@ trait ForwardPostChan[MsgKind <: CPumpMsg, CtxType <: CPumpCtx]  extends CPChanP
 	}
 }
 
+trait BoundedForwardPostChan[MsgKind <: CPumpMsg, CtxType <: CPumpCtx]
+		extends ForwardPostChan[MsgKind, CtxType] with BoundedCPChanPost[MsgKind, CtxType]
 
 case class EZDispatchPostChan[MsgKind <: CPumpMsg, CtxType <: CPumpCtx](chanID : Ident, ctx : CtxType,
 					listChanFinder : CPumpListChanFinder[CtxType], btf_opt : Option[BoundaryTellerFinder])
 			extends EZCPumpChan[CtxType](chanID, ctx, btf_opt)
-			with DispatchPostChan[MsgKind, CtxType]
+			with BoundedDispatchPostChan[MsgKind, CtxType]
 {
 
 	override def getListChanFinder : CPumpListChanFinder[CtxType] = listChanFinder
@@ -58,7 +63,7 @@ case class EZDispatchPostChan[MsgKind <: CPumpMsg, CtxType <: CPumpCtx](chanID :
 case class EZForwardPostChan[MsgKind <: CPumpMsg, CtxType <: CPumpCtx](chanID : Ident, ctx : CtxType,
 					   myTgtTeller: CPMsgTeller, btf_opt : Option[BoundaryTellerFinder])
 			extends EZCPumpChan[CtxType](chanID, ctx, btf_opt)
-						with ForwardPostChan[MsgKind, CtxType] {
+						with BoundedForwardPostChan[MsgKind, CtxType] {
 
 	override def getTargetTeller : CPMsgTeller = myTgtTeller
 
