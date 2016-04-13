@@ -20,6 +20,9 @@ import akka.actor._
 import org.appdapter.core.name.{FreeIdent, Ident}
 import org.appdapter.fancy.log.VarargsLogging
 import java.io.{Serializable => JSerializable}
+
+import scala.collection.mutable
+
 case class SetChanMsg()
 
 trait AdminMsg
@@ -38,24 +41,22 @@ trait CPumpChan[CtxType <: CPumpCtx] {
 	protected def deliver(cpmsg : CPumpMsg): Unit = ???
 
 }
-object DullCPumpActorFactory extends VarargsLogging {
-
-	val dullAkkaSysName = "dullActorSys01"
-	val topDullActorName = "dullCPump01"
-	val cpumpEndListenerName = "termDullCPumpSys"
-
-	lazy val dullAkkaSys = ActorSystem(dullAkkaSysName)  // Using case-class cons
-
-	// To review Props for construction of ActorRefs, see pp. 70-71 of the Akka Scala PDF Doc, v2.3.14
-
-	def makeDullTopActor = dullAkkaSys.actorOf(Props[DullPumpTopActor], topDullActorName)
-
-	def makeDullOuterPostActor[MsgKind <: CPumpMsg](parentActCtx: ActorContext, dullCtx : DullPumpCtx,
-													postChan : CPChanPost[MsgKind, DullPumpCtx]) = {
-		val props = Props(classOf[OuterPostActor[MsgKind, DullPumpCtx]])
-		val actRef : ActorRef = parentActCtx.actorOf(props)
-	}
+trait TopActorFinder {
+	def getTopActorRef(actorName : String) : ActorRef
 }
+trait CachingMakingTopActorFinder extends TopActorFinder {
+	lazy val myTopActorRefsByName = new mutable.HashMap[String, ActorRef]()
+	override def getTopActorRef(topActorName : String) : ActorRef = {
+		myTopActorRefsByName.getOrElseUpdate(topActorName, makeTopActor(topActorName))
+	}
+	protected def makeTopActor(topActorName : String) : ActorRef
+}
+trait KnowsActorSystem {
+	protected def getActorSys : ActorSystem
+}
+
+// Nonserializable constructor param for an Actor is passed in thru Props.
+//
 class OuterPostActor[MsgKind <: CPumpMsg, CtxType <: CPumpCtx](postChan : CPChanPost[MsgKind,CtxType]) extends Actor with ActorLogging {
 	val myPostChan_opt : Option[CPChanPost[MsgKind, CtxType]] = Some(postChan)
 //	var myPostChan_opt : Option[CPChanPost[MsgKind, CtxType]] = None

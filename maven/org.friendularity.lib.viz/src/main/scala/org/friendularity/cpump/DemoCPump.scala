@@ -63,14 +63,7 @@ object DemoCPump extends VarargsLogging {
 	}
 
 
-	def makeDullSetup: Unit = {
-		val akkaSysName = "dullActorSys01"
-		val testCPumpName = "dullCPump01"
-		val cpumpEndListenerName = "demoCPASTerm"
 
-		val dullAkkaSys = ActorSystem(akkaSysName)  // Using case-class cons
-		val dullPumpActor = dullAkkaSys.actorOf(Props[DullPumpTopActor], testCPumpName)
-	}
 }
 
 
@@ -119,22 +112,13 @@ case class CheckGreeting // Corresponds to an object called "Greeting" in akka-H
 // It responds to async requests
 class DemoCPumpActor extends Actor with ActorLogging {
 
-	lazy val myCPumpCtx = new DullPumpCtx ()
-	val postChanID : Ident = new FreeIdent("http://onto.friendularity.org/testchans#postChan017");
-	val listenChanID : Ident = new FreeIdent("http://onto.friendularity.org/testchans#listenChanDD");
-	val myPostChan01 = myCPumpCtx.makeOnewayDispatchPostChan(postChanID, classOf[TxtSymMsg])
-	val adp1 = new TxtDullFilterAdptr("filter_expr_AA")
-	val adp2 = new TxtDullFilterAdptr("filter_expr_BB")
-	val adptrs = List[TxtDullFilterAdptr](adp1, adp2)
-	val inMsgClz = classOf[TxtSymMsg]
-	val listenChan = myCPumpCtx.makeOnewayListenChan(listenChanID, inMsgClz, adptrs)
   	var myMutableGreetTxt = "Heyo - initial contents of myMutableGreetTxt"
 
   def receive = {
 	  // s"txtPat"  syntax added in Scala 2.10.    http://docs.scala-lang.org/overviews/core/string-interpolation.html
     case WhoToGreet(who) => myMutableGreetTxt = s"hello, $who"
     case CheckGreeting   => sender ! Greeting(myMutableGreetTxt) // Send the current greeting back to the sender
-	case dmsg: TxtSymMsg => myPostChan01.postAndForget(dmsg)
+
 	case rq: RepliableTxtSymMsg => {
 		val respTeller_opt = rq.getReplyTeller_opt
 		log.info("Got rq {}", rq)
