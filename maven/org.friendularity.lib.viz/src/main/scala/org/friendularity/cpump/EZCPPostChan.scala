@@ -45,8 +45,9 @@ trait ForwardPostChan[MsgKind <: CPumpMsg, CtxType <: CPumpCtx]  extends CPChanP
 }
 
 
-case class EZDispatchPostChan[MsgKind <: CPumpMsg, CtxType <: CPumpCtx](chanID : Ident, ctx : CtxType, listChanFinder : CPumpListChanFinder[CtxType])
-			extends EZCPumpChan[CtxType](chanID, ctx)
+case class EZDispatchPostChan[MsgKind <: CPumpMsg, CtxType <: CPumpCtx](chanID : Ident, ctx : CtxType,
+					listChanFinder : CPumpListChanFinder[CtxType], btf_opt : Option[BoundaryTellerFinder])
+			extends EZCPumpChan[CtxType](chanID, ctx, btf_opt)
 			with DispatchPostChan[MsgKind, CtxType]
 {
 
@@ -54,10 +55,11 @@ case class EZDispatchPostChan[MsgKind <: CPumpMsg, CtxType <: CPumpCtx](chanID :
 
 }
 
-case class EZForwardPostChan[MsgKind <: CPumpMsg, CtxType <: CPumpCtx](chanID : Ident, ctx : CtxType, teller: CPMsgTeller)
-			extends EZCPumpChan[CtxType](chanID, ctx)
+case class EZForwardPostChan[MsgKind <: CPumpMsg, CtxType <: CPumpCtx](chanID : Ident, ctx : CtxType,
+					   myTgtTeller: CPMsgTeller, btf_opt : Option[BoundaryTellerFinder])
+			extends EZCPumpChan[CtxType](chanID, ctx, btf_opt)
 						with ForwardPostChan[MsgKind, CtxType] {
 
-	override def getTargetTeller : CPMsgTeller = teller
+	override def getTargetTeller : CPMsgTeller = myTgtTeller
 
 }

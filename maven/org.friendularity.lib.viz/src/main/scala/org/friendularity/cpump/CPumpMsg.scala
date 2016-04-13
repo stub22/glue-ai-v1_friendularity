@@ -16,7 +16,7 @@
 
 package org.friendularity.cpump
 
-import akka.actor.{ActorSelection, ActorRef}
+import akka.actor.{ActorContext, ActorSelection, ActorRef}
 import org.appdapter.core.name.Ident
 import java.io.{Serializable => JSerializable}
 
@@ -75,5 +75,5 @@ case class CreatedChanTellerMsg(chanID : Ident, createdTeller_opt : Option[CPMsg
 	def getConfirmedTeller : Option[CPMsgTeller] = createdTeller_opt
 }
 trait CPAdminRequestMsg[CtxBound <: CPumpCtx] extends CPSymbolMsg {
-	def processInCtx(ctx : CtxBound)
+	def processInCtx(ctx : CtxBound, actCtx : ActorContext)
 }

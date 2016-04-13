@@ -19,8 +19,9 @@ package org.friendularity.cpump
 import org.appdapter.core.name.{FreeIdent, Ident}
 import org.appdapter.fancy.log.VarargsLogging;
 
-class EZCPumpChan[CtxType <: CPumpCtx](myChanID : Ident, myCtx : CtxType) extends CPumpChan[CtxType] with VarargsLogging {
-	
+class EZCPumpChan[CtxType <: CPumpCtx](myChanID : Ident, myCtx : CtxType, myBTF_opt : Option[BoundaryTellerFinder])
+			extends  CPumpChan[CtxType] with BoundedCPumpChan[CtxType] with VarargsLogging {
+
 	override def getChanIdent : Ident = myChanID
 	
 	// override protected def getCtx : CtxType = myCtx
@@ -31,14 +32,16 @@ class EZCPumpChan[CtxType <: CPumpCtx](myChanID : Ident, myCtx : CtxType) extend
 		val usualMT = getUsualChanMsgType
 		usualMT.isInstance(msg)
 	}
+
+	override protected def getBoundaryTellerFinder : Option[BoundaryTellerFinder] = myBTF_opt
 }
 
 // These three bounds types may be broad or narrow.
 // OutBound must be sufficient to contain the aggregated/condensed immediate result of all adoptrs on the chan,
 // which is where we embed all receipt+debug info.  It must also itself be a CPumpMsg!
 class EZListenChan[InMsgKind <: CPumpMsg, CtxType <: CPumpCtx, OutBound <: CPumpMsg](chanID : Ident, ctx : CtxType, 
-			myAdoptrs : Traversable[CPumpAdptr[InMsgKind, CtxType, _]]) 
-		extends  EZCPumpChan[CtxType](chanID, ctx) with CPChanListen[InMsgKind, CtxType]  {
+			myAdoptrs : Traversable[CPumpAdptr[InMsgKind, CtxType, _]], btf_opt : Option[BoundaryTellerFinder])
+		extends  EZCPumpChan[CtxType](chanID, ctx, btf_opt) with BoundedCPChanListen[InMsgKind, CtxType]  {
 	
 	// Ignores output type
 	protected def findAdptrs(mk: InMsgKind) : Traversable[CPumpAdptr[InMsgKind, CtxType, _ ]] = myAdoptrs

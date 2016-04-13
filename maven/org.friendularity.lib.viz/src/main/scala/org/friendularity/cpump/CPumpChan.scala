@@ -51,13 +51,22 @@ trait BoundaryTellerFinder {
 }
 
 trait BoundedCPumpChan[CtxType <: CPumpCtx] extends CPumpChan[CtxType] {
-	protected def getBoundaryTellerFinder : Option[BoundaryTellerFinder] = None // Override to suppy boundaryFinder
+	protected def getBoundaryTellerFinder : Option[BoundaryTellerFinder] // = None // Override to suppy boundaryFinder
 
-	override def getOuterTeller_opt() : Option[CPMsgTeller] = {
-		getBoundaryTellerFinder.flatMap(_.findOuterTellerForChan(this))
-	}
 	override protected def getCtxTeller_opt : Option[CPMsgTeller] = {
 		getBoundaryTellerFinder.flatMap(_.findCtxTellerForChan(this))
+	}
+
+	// lazy val myOuterTeller_opt
+	override def getOuterTeller_opt() : Option[CPMsgTeller] = {
+		myCachedOuterActorRef_opt.map(new ActorRefCPMsgTeller(_))
+		// getBoundaryTellerFinder.flatMap(_.findOuterTellerForChan(this))
+	}
+
+	var myCachedOuterActorRef_opt : Option[ActorRef] = None
+
+	def notifyOuterActorRef(aref : ActorRef) : Unit = {
+		myCachedOuterActorRef_opt = Option(aref)
 	}
 
 }
@@ -78,6 +87,19 @@ trait CPChanListen[InMsgKind <: CPumpMsg, CtxType <: CPumpCtx] extends CPumpChan
 	// TODO:  Add methods/subtraits allowing for explicit results propagation back to message sender, 
 	// or to third party downstream.
 
+}
+
+trait BoundedCPChanListen[InMsgKind <: CPumpMsg, CtxType <: CPumpCtx] extends CPChanListen[InMsgKind, CtxType] with BoundedCPumpChan[CtxType]
+
+class ListenChanDirectActor[InMsgKind <: CPumpMsg](chan : BoundedCPChanListen[InMsgKind ,_]) extends Actor with ActorLogging {
+	def receive = {
+		case cpmsg : InMsgKind => {
+			chan.enqueueAndForget(cpmsg)
+		}
+		case omsg => {
+			log.warning("Received non-cpump msg: {}", omsg)
+		}
+	}
 }
 
 // This is the kind of aggregated result we expect processMsg to yield upon return (i.e. "immediately" in CS parlance).
@@ -103,4 +125,14 @@ trait CPChanPost[MsgKind <: CPumpMsg, CtxType <: CPumpCtx] extends CPumpChan[Ctx
 
 
 }
-
+trait BoundedCPChanPost[InMsgKind <: CPumpMsg, CtxType <: CPumpCtx] extends CPChanPost[InMsgKind, CtxType] with BoundedCPumpChan[CtxType]
+class PostChanDirectActor[InMsgKind <: CPumpMsg](chan : BoundedCPChanPost[InMsgKind,_]) extends Actor with ActorLogging {
+	def receive = {
+		case cpmsg : InMsgKind => {
+			chan.postAndForget(cpmsg)
+		}
+		case omsg => {
+			log.warning("Received non-cpump msg: {}", omsg)
+		}
+	}
+}
