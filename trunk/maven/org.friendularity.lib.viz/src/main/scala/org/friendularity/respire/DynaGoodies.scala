@@ -54,7 +54,7 @@ abstract class SweetDynaSpace(parentDGS : DynamicGoodySpace[_], idxIntoParent : 
 	var		myPendingSpecItems : Set[Item] = Set()
 	var		mySpecModelClient : RdfNodeTranslator = null
 	
-	// Occurs on slowUpdate-thread, off the renderThread
+	// Occurs on slowUpdate-thread, off the renderThread, usually in actor.receive.
 	def    refreshFromModelClient(mc : RdfNodeTranslator) : Unit = {
 		mySpecModelClient = mc;
 		val spaceSpecItem : Item = mc.makeItemForIdent(mySpecID);
@@ -73,7 +73,7 @@ abstract class SweetDynaSpace(parentDGS : DynamicGoodySpace[_], idxIntoParent : 
 		import scala.collection.JavaConverters._
 		myPendingSpecItems = linkedGSItems.asScala.toSet
 	}	
-	// Not guaranteed to be on the renderThread
+	// Usually done in actor.receive, could possibly be done on renderThread when prudent.
 	def applyPendingSpecItems() : Unit = {
 		if (mySpecModelClient != null) {
 			val goodyIndex_PropQN = "hev:goodyIndex";
@@ -94,6 +94,7 @@ abstract class SweetDynaSpace(parentDGS : DynamicGoodySpace[_], idxIntoParent : 
 			}
 		}
 	}
+	// Done on rendThread, and not in an actor.receive.
 	override def doFastVWorldUpdate_onRendThrd(rrc : RenderRegistryClient) {
 		super.doFastVWorldUpdate_onRendThrd(rrc)
 		// We currently *happen* to be doing this slow update on the rendThrd,

@@ -1,7 +1,7 @@
-package org.friendularity.cpump
+package org.friendularity.dull
 
 import org.appdapter.fancy.log.VarargsLogging
-import org.cogchar.api.thing.WantsThingAction
+import org.friendularity.cpump._
 
 /**
   * Created by Owner on 3/24/2016.

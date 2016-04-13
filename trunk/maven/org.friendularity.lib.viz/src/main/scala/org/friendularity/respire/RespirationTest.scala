@@ -71,14 +71,14 @@ object RespirationTest extends VarargsLogging {
 	
 	def testMathAndDynaGoodies (dfltTestRepo: Repo,  dfltTestRC : RepoClient) : SweetDynaSpace = {
 
-		// This does not diretly create any V-World goodies, just tests the config mechanism
+		// This does not directly create any V-World goodies, just tests the config mechanism
 		MathyGoodyTest.testDynaGoodyItemLoad(dfltTestRepo, dfltTestRC)		
 	}
 
 	def powerLoad() { 
 		// We want to iterate over the subcategories of exprs to load them up.
 		// Order within a subcat generally should not matter.  
-		// These things all constitute
+		// Pieces and kinds of exprs:
 		//   1) Optional Symbols - Any globals or builtins - not for state
 		//   2) Optional Types - including state vector names/patterns.  
 		//   These usually come from RDF-based schemas: RDFS, OWL.

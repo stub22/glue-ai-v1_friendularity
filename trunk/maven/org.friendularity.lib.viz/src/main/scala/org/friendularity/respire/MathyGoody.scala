@@ -188,7 +188,8 @@ import org.cogchar.render.sys.registry.RenderRegistryClient;
 		spat.setCullHint(spatCullHint);	
 	}	
 }
-class MathyGoodySpace (parentDGS : DynamicGoodySpace[_], idxIntoParent : Int, specGraphID : Ident, specID : Ident)
+class MathyGoodySpace (parentDGS : DynamicGoodySpace[_], idxIntoParent : Int,
+					   specGraphID : Ident, specID : Ident)
 		extends SweetDynaSpace(parentDGS, idxIntoParent, specGraphID, specID)  {
 			
 	val myMathSpaceFactory = new MathSpaceFactory();
@@ -216,7 +217,7 @@ object MathyGoodyTest extends VarargsLogging {
 		val mathModel = repo.getNamedModel(graphID)
 		val mathModelClient = new ModelClientImpl(mathModel)
 		val spaceSpecItem = mathModelClient.makeItemForQName(spaceSpecQN);
-		info1("Got Goody-Space-Spec Item: {}", spaceSpecItem)
+		info1("Making MathyGoodySpace for space-spec-item: {}", spaceSpecItem)
 		val parentDGS = null;
 		val dgs = new MathyGoodySpace(parentDGS, -999, graphID, spaceSpecItem.getIdent);
 		// This sets the desired size of the space, but does not actually cause the goodies to be created.

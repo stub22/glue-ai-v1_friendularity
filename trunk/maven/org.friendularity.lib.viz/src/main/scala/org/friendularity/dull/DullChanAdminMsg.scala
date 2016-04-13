@@ -1,6 +1,7 @@
-package org.friendularity.cpump
+package org.friendularity.dull
 
 import org.appdapter.core.name.Ident
+import org.friendularity.cpump._
 
 /**
   * Created by Owner on 4/10/2016.
