@@ -15,8 +15,8 @@ import scala.collection.mutable
 class DullPumpTopActor(myCPumpCtx : DullPumpCtx) extends Actor with ActorLogging {
 
 	def receive = {
-		// Construction of any other actors used with the ctx must happen within this handler
-
+		// Construction of any other actors used with the ctx must happen within this handler.
+		// Those actors may be sent back in receiptMsgs to answerTellers embeed in the input msg.
 		case adminMsg : CPAdminRequestMsg[DullPumpCtx] => adminMsg.processInCtx(myCPumpCtx) // , self, context)
 	}
 
@@ -41,6 +41,7 @@ trait DullPumpCtx extends CPumpCtx with CPumpListChanFinder[DullPumpCtx] with Va
 		allLCs.map(_.asInstanceOf[CPChanListen[MK, DullPumpCtx]])
 	}
 
+	// The following "makeXyzChan" methods are specifically *not* actor aware.
 	def makeOnewayListenChan[MK <: CPumpMsg](chanID : Ident, msgClz : Class[MK],
 											 adoptrs : Traversable[CPumpAdptr[MK, DullPumpCtx, CPumpMsg]]) : CPChanListen[MK, DullPumpCtx] = {
 
@@ -87,12 +88,14 @@ trait DullPumpCtx extends CPumpCtx with CPumpListChanFinder[DullPumpCtx] with Va
 	}
 }
 
-
 trait KnowsDullPumpCtx {
-	// This method may decide which DullPumpCtx goes with each name, but it may not
+	// This method may decide which DullPumpCtx goes with each name, but it does not make assumptions
+	// about any actors those ctxs may be associated with.
 	protected def findDullPumpCtx(topActorName : String) : DullPumpCtx
 }
+
 trait DullTopActorFinder extends CachingMakingTopActorFinder with KnowsActorSystem with KnowsDullPumpCtx {
+
 	override protected def makeTopActor(topActorName : String) : ActorRef = {
 		val ctx = findDullPumpCtx(topActorName)
 		val actorSys = getActorSys
@@ -100,7 +103,9 @@ trait DullTopActorFinder extends CachingMakingTopActorFinder with KnowsActorSyst
 	}
 
 	// dullCtx must encapsulate everything this actor needs to know about outside itself.
-	// Conversely, the top actor constructed will be the "boundary" actor for the dullCtx.
+	// Conversely, the top actor constructed will *usually* be the "boundary" actor for the dullCtx.
+	// However if there were more than one topActor constructed for same ctx, they would be competing
+	// for that "boundary" role.  Further below, in the case of SegregatedCtx, we assume the relation is one to one.
 	protected def makeDullTopActor(actorSys : ActorSystem, dullCtx : DullPumpCtx, topActorName : String) : ActorRef = {
 		// How to use Props for construction of ActorRefs, see pp. 70-71 of the Akka Scala PDF Doc, v2.3.14
 		/*
@@ -115,8 +120,10 @@ trait DullTopActorFinder extends CachingMakingTopActorFinder with KnowsActorSyst
 
 		val props = Props(classOf[DullPumpTopActor], dullCtx)
 		val aref : ActorRef = actorSys.actorOf(props, topActorName)
-		if (dullCtx.isInstanceOf[MutaBoundedCPumpCtx]) {
-			dullCtx.asInstanceOf[MutaBoundedCPumpCtx].setBoundaryActorRef(aref)
+		if (dullCtx.isInstanceOf[MutaBoundedCPumpCtxImpl]) {
+			// Only concern is that if the Ctx is *not* segregated, then perhaps multiple actors could try
+			// to share a DullPumpCtx, but then the concept of "boundary" for the Ctx becomes ill defined.
+			dullCtx.asInstanceOf[MutaBoundedCPumpCtxImpl].notifyBoundaryActorRefMade(aref)
 		}
 		aref
 	}
@@ -124,32 +131,40 @@ trait DullTopActorFinder extends CachingMakingTopActorFinder with KnowsActorSyst
 
 // Segregated => Each DullPumpCtx corresponds to exactly one topActor, which is the boundary for that Ctx.
 
-class SegregatedBoundedDullPumpCtx extends DullPumpCtx with MutaBoundedCPumpCtx {
+class SegregatedBoundedDullPumpCtx extends DullPumpCtx with MutaBoundedCPumpCtxImpl {
 
 }
 
-trait SegregatedDullCtxMgr extends KnowsDullPumpCtx {
+// Keeps an explicit map so we can re-find a context in case of actor replacement.
+class SegregatedDullCtxMgr extends KnowsDullPumpCtx {
 	lazy val myDullPumpCtxsByTopActorName = new mutable.HashMap[String, DullPumpCtx]
 	override protected def findDullPumpCtx(topActorName : String) : DullPumpCtx = {
 
 		myDullPumpCtxsByTopActorName.getOrElseUpdate(topActorName, makeDullPumpCtx(topActorName))
 	}
+	// Override this to make app-specific DullPumpCtx.
 	protected def makeDullPumpCtx(topActorName : String) : DullPumpCtx = {
 		new SegregatedBoundedDullPumpCtx()
 	}
 }
 
+class SegregatedDullPumpSpace(private val myAkkaSys : ActorSystem) extends SegregatedDullCtxMgr with  DullTopActorFinder {
+
+	protected def getActorSys : ActorSystem = myAkkaSys
+
+}
 
 
+/*
 class DullCPumpActorFactory(myActSys : ActorSystem) extends  VarargsLogging {
 
 	private val cpumpEndListenerName = "termDullCPumpSys"
-/*
+
 	override protected def makeDullTopActor(dullCtx : DullPumpCtx, topActorName : String) : ActorRef = {
 		val props = Props(classOf[DullPumpTopActor], dullCtx)
 		myDullAkkaSys.actorOf(props, topActorName)
 	}
-*/
+
 	def makeDullOuterPostActor[MsgKind <: CPumpMsg](parentActCtx: ActorContext,
 													postChan : CPChanPost[MsgKind, DullPumpCtx]) : ActorRef = {
 		val props = Props(classOf[OuterPostActor[MsgKind, DullPumpCtx]], postChan)
@@ -157,14 +172,14 @@ class DullCPumpActorFactory(myActSys : ActorSystem) extends  VarargsLogging {
 		actRef
 	}
 }
-
+*/
 object DullUnitTestFactoryFactory {
 	private val dullAkkaSysName = "dullActorSys_UnitTest01"
 	// val topDullActorName = "dullCPump01"
 	private lazy val myDullAkkaSys = ActorSystem(dullAkkaSysName)  // Using case-class cons
 
-	private lazy val myUnitTestFactory = new DullCPumpActorFactory(myDullAkkaSys)
-	def getUnitTestFactory = myUnitTestFactory
+//	private lazy val myUnitTestFactory = new DullCPumpActorFactory(myDullAkkaSys)
+//	def getUnitTestFactory = myUnitTestFactory
 }
 
 object OtherCrazyThing {

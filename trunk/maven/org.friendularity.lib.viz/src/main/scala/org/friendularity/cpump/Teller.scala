@@ -21,20 +21,6 @@ trait Teller[TargetKind, MsgKind <: AnyRef] extends JSerializable {
 	}
 	def checkAndReport(callback : Function0[Boolean]) = ???
 }
-case class CachedActorRefTeller[TargetKind, MsgKind <: AnyRef ](myActorRef : ActorRef) extends Teller[TargetKind, MsgKind] {
-	val myRefOpt = Option(myActorRef)
-	override def getKnownActRef_opt = myRefOpt
-}
-case class SelectionTeller(myActorSelection : ActorSelection) {
-
-}
-
-trait TellerFactory[TargetKind, MsgKind <: AnyRef] {
-	def makeTellerAndActor(actrCtx : ActorContext, props : Props, rcvr : Receiver[MsgKind], reportTo: Teller[_, AdminMsg]): CachedActorRefTeller[TargetKind, MsgKind] = {
-
-		null
-	}
-}
 
 trait Receiver[MsgKind <: AnyRef] extends JSerializable {
 	def doRecieve(msg: MsgKind)

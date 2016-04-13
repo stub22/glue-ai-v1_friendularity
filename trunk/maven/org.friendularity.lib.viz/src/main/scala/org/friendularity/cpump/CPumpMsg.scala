@@ -67,10 +67,12 @@ case class CPTAWrapMsg(mySerialTASpec : ThingActionSpec, myReplyTeller_opt : Opt
 	override def getReplyTeller_opt : Option[CPMsgTeller] = myReplyTeller_opt
 }
 
-case class FoundOuterTellerMsg(chanID : Ident, outerTeller : CPMsgTeller) extends CPReceiptMsg
+// teller_opt eq None => "The channel was found, but we cannot give you a direct teller to it"
+case class FoundOuterTellerMsg(chanID : Ident, outerTeller_opt : Option[CPMsgTeller]) extends CPReceiptMsg
 
-case class CreatedChanTellerMsg(chanID : Ident, createdTeller : CPMsgTeller) extends CPReceiptMsg {
-	def getConfirmedTeller : CPMsgTeller = createdTeller
+// teller_opt eq None => "The channel was created, but we cannot give you a direct teller to it"
+case class CreatedChanTellerMsg(chanID : Ident, createdTeller_opt : Option[CPMsgTeller]) extends CPReceiptMsg {
+	def getConfirmedTeller : Option[CPMsgTeller] = createdTeller_opt
 }
 trait CPAdminRequestMsg[CtxBound <: CPumpCtx] extends CPSymbolMsg {
 	def processInCtx(ctx : CtxBound)

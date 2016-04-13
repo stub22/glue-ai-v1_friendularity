@@ -6,13 +6,21 @@ import org.friendularity.cpump._
 /**
   * Created by Owner on 4/10/2016.
   */
-trait DullChanAdminRqMsg  extends CPAdminRequestMsg[DullPumpCtx]
+trait DullChanAdminRqMsg  extends CPAdminRequestMsg[DullPumpCtx] {
+	protected def sendReceiptForCreatedChan(chanID : Ident, chan : CPumpChan[DullPumpCtx], receiptTeller: CPReceiptTeller): Unit = {
+		val crtdOuterTeller_opt = chan.getOuterTeller_opt()
+		val receiptMsg = CreatedChanTellerMsg(chanID, crtdOuterTeller_opt)
+		receiptTeller.tellCPReceipt(receiptMsg)
+	}
+}
 
 case class CPARM_MakeDullListenChan[LMK <: CPumpMsg](chanID : Ident, listenedMsgClz : Class[LMK],
-													 adoptrs : Traversable[CPumpAdptr[LMK, DullPumpCtx, CPumpMsg]])
+													 adoptrs : Traversable[CPumpAdptr[LMK, DullPumpCtx, CPumpMsg]],
+													 receiptTeller: CPReceiptTeller)
 			extends DullChanAdminRqMsg {
 	override def processInCtx(ctx : DullPumpCtx): Unit = {
 		val listenChan = ctx.makeOnewayListenChan(chanID, listenedMsgClz, adoptrs)
+		sendReceiptForCreatedChan(chanID, listenChan, receiptTeller)
 	}
 }
 
@@ -22,20 +30,17 @@ case class CPARM_MakeDullPostDispatchChan[PMK <: CPumpMsg](chanID : Ident, poste
 			extends DullChanAdminRqMsg {
 	override def processInCtx(ctx : DullPumpCtx): Unit = {
 		val postChan = ctx.makeOnewayDispatchPostChan(chanID, postedMsgClz)
-		val receiptMsg = CreatedChanTellerMsg(chanID, postChan.getOuterTeller())
-		receiptTeller.tellCPReceipt(receiptMsg)
-
+		sendReceiptForCreatedChan(chanID, postChan, receiptTeller)
 	}
 }
 
 case class CPARM_MakeDullPostForwardChan[PMK <: CPumpMsg](chanID : Ident, postedMsgClz : Class[PMK],
-														  forwardTeller: CPMsgTeller)
+														  forwardTeller: CPMsgTeller, receiptTeller: CPReceiptTeller)
 			extends DullChanAdminRqMsg {
 
 	override def processInCtx(ctx : DullPumpCtx): Unit = {
 		val postChan = ctx.makeOnewayForwardPostChan(chanID, postedMsgClz, forwardTeller)
-		// 	val forwardingTeller : CPMsgTeller = postChan.getForwardingTeller
-		//	val receiptMsg = new
+		sendReceiptForCreatedChan(chanID, postChan, receiptTeller)
 	}
 }
 case class CPARM_LookupChanTeller(chanID : Ident, answerTeller: CPMsgTeller)
@@ -43,8 +48,8 @@ case class CPARM_LookupChanTeller(chanID : Ident, answerTeller: CPMsgTeller)
 	override def processInCtx(ctx : DullPumpCtx): Unit = {
 		val chanOpt = ctx.getChan(chanID)
 		if (chanOpt.isDefined) {
-			val outerTeller = chanOpt.get.getOuterTeller()
-			val fotm = new FoundOuterTellerMsg(chanID, outerTeller)
+			val outerTeller_opt = chanOpt.get.getOuterTeller_opt()
+			val fotm = new FoundOuterTellerMsg(chanID, outerTeller_opt)
 			answerTeller.tellCPMsg(fotm)
 		}
 	}

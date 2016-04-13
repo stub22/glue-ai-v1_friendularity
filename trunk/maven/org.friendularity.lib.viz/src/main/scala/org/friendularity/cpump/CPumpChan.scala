@@ -31,58 +31,48 @@ trait AdminMsg
 trait CPumpChan[CtxType <: CPumpCtx] {
 	def getChanIdent : Ident
 
-	// Handle anyone can use to async-send messages to me
-	def getOuterTeller() : CPMsgTeller = ???
+	// Handle anyone can use to async-send messages to me, is not always defined.
+	def getOuterTeller_opt() : Option[CPMsgTeller] = None
 
-	// Handle I can use to send messages to context
-	protected def getCtxTeller : CtxType = ???
+	// Handle I can use to send messages to my owning context, is not always defined.
+	protected def getCtxTeller_opt : Option[CPMsgTeller] = None
 
 	// Delivery for internal
-	protected def deliver(cpmsg : CPumpMsg): Unit = ???
+	// protected def deliver(cpmsg : CPumpMsg): Unit = ???
 
 }
-trait TopActorFinder {
-	def getTopActorRef(actorName : String) : ActorRef
-}
-trait CachingMakingTopActorFinder extends TopActorFinder {
-	lazy val myTopActorRefsByName = new mutable.HashMap[String, ActorRef]()
-	override def getTopActorRef(topActorName : String) : ActorRef = {
-		myTopActorRefsByName.getOrElseUpdate(topActorName, makeTopActor(topActorName))
-	}
-	protected def makeTopActor(topActorName : String) : ActorRef
-}
-trait KnowsActorSystem {
-	protected def getActorSys : ActorSystem
+trait BoundaryTellerFinder {
+	//  CtxTeller = managing teller for the chan, with power to administer it, delete it, etc,
+	// can only be seen from inside the ctx.
+	def findCtxTellerForChan(chan : CPumpChan[_]) : Option[CPMsgTeller]
+
+	// OuterTeller = used from outside the Ctx to send app messages directly to this chan.
+	def findOuterTellerForChan(chan : CPumpChan[_]) : Option[CPMsgTeller]
 }
 
-// Nonserializable constructor param for an Actor is passed in thru Props.
-//
-class OuterPostActor[MsgKind <: CPumpMsg, CtxType <: CPumpCtx](postChan : CPChanPost[MsgKind,CtxType]) extends Actor with ActorLogging {
-	val myPostChan_opt : Option[CPChanPost[MsgKind, CtxType]] = Some(postChan)
-//	var myPostChan_opt : Option[CPChanPost[MsgKind, CtxType]] = None
-//	def setPostChan(pc : CPChanPost[MsgKind, CtxType]) : Unit = {
-//		myPostChan_opt = Option(pc)
-//	}
-	protected def deliver(cpmsg : MsgKind): Unit = {
-		if (myPostChan_opt.isDefined) {
-			myPostChan_opt.get.postAndForget(cpmsg)
-		}
-	}
-	def receive = {
-		case cpmsg: MsgKind => deliver(cpmsg)
-	}
-	def getTeller = new ActorRefCPMsgTeller(self)
-}
-// chanListen instances are supplied fr om user code, to handle received msgs.
+trait BoundedCPumpChan[CtxType <: CPumpCtx] extends CPumpChan[CtxType] {
+	protected def getBoundaryTellerFinder : Option[BoundaryTellerFinder] = None // Override to suppy boundaryFinder
 
+	override def getOuterTeller_opt() : Option[CPMsgTeller] = {
+		getBoundaryTellerFinder.flatMap(_.findOuterTellerForChan(this))
+	}
+	override protected def getCtxTeller_opt : Option[CPMsgTeller] = {
+		getBoundaryTellerFinder.flatMap(_.findCtxTellerForChan(this))
+	}
+
+}
+
+// chanListen instances are supplied from user code, to handle received msgs.
 trait CPChanListen[InMsgKind <: CPumpMsg, CtxType <: CPumpCtx] extends CPumpChan[CtxType] {
 	// Magic challenge is to find/select/make the correct CPumpAdptr to route each msg.
 	// But a simple listen chan could be simply a list of adptrs to try.
 
+	// Pre-taste method
 	// Chan must override this to indicate which messages should be enqueued.
+	// Framework is responsible for setting
 	def interestedIn(postChan : CPChanPost[_, CtxType], postedMsg : CPumpMsg) : Boolean = false
 
-	// Use enqueueAndForget in cases where no result tracking needed - may shortcut past result-gathering setup.
+	// Use enqueueAndForget in cases where no (overt) result tracking needed - may shortcut past result-gathering setup.
 	def enqueueAndForget(inMsg : InMsgKind) : Unit 	
 	
 	// TODO:  Add methods/subtraits allowing for explicit results propagation back to message sender, 
