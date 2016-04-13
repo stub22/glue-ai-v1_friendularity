@@ -18,20 +18,8 @@ package org.friendularity.cpump
 import org.appdapter.core.name.{FreeIdent, Ident}
 import org.appdapter.fancy.log.VarargsLogging;
 
-// class EZCPPostChan extends {}
 
-
-trait ActorWrappedPostChan[MsgKind <: CPumpMsg, CtxType <: CPumpCtx]  extends CPChanPost[MsgKind, CtxType] {
-	lazy val myOuterTeller: CPMsgTeller = {
-		// val ctx = getCtx
-		null
-	}
-
-	override def getOuterTeller(): CPMsgTeller = myOuterTeller
-
-}
-
-trait DispatchPostChan[MsgKind <: CPumpMsg, CtxType <: CPumpCtx]  extends ActorWrappedPostChan[MsgKind, CtxType] {
+trait DispatchPostChan[MsgKind <: CPumpMsg, CtxType <: CPumpCtx]  extends CPChanPost[MsgKind, CtxType] {
 
 	def getListChanFinder : CPumpListChanFinder[CtxType]
 
@@ -47,7 +35,7 @@ trait DispatchPostChan[MsgKind <: CPumpMsg, CtxType <: CPumpCtx]  extends ActorW
 	// lazy val myTeller
 }
 
-trait ForwardPostChan[MsgKind <: CPumpMsg, CtxType <: CPumpCtx]  extends ActorWrappedPostChan[MsgKind, CtxType] {
+trait ForwardPostChan[MsgKind <: CPumpMsg, CtxType <: CPumpCtx]  extends CPChanPost[MsgKind, CtxType] {
 	def getTargetTeller : CPMsgTeller
 
 	override def postAndForget(inMsg : MsgKind) : Unit = {
