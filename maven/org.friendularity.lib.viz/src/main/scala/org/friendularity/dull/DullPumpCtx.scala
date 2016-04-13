@@ -49,25 +49,21 @@ trait DullPumpCtx extends CPumpCtx with CPumpListChanFinder[DullPumpCtx] with Va
 		allLCs.map(_.asInstanceOf[CPChanListen[MK, DullPumpCtx]])
 	}
 
-	// The following "makeXyzChan" methods are specifically *not* actor aware.
+	// The following "makeXyzChan" methods are specifically *not* actor aware, by design.
 	def makeOnewayListenChan[MK <: CPumpMsg](chanID : Ident, msgClz : Class[MK],
 											 adoptrs : Traversable[CPumpAdptr[MK, DullPumpCtx, CPumpMsg]]) : BoundedCPChanListen[MK, DullPumpCtx] = {
 
 		val listenChan = new EZListenChan[MK, DullPumpCtx, CPumpMsg](chanID, this, adoptrs, getBoundaryTellerFinder_opt)
 		myChans.put(chanID, listenChan)
-		// new EZListenChan[MK, _ >: DullPumpCtx, _ <: CPumpMsg](chanID, this, adoptrs)
-		// EZListenChan[InMsgKind <: CPumpMsg, CtxType <: CPumpCtx, OutBound <: CPumpMsg](chanID : Ident, ctx : CtxType,
-		// myAdoptrs : Traversable[CPumpAdptr[InMsgKind, _, CtxType]]
 		listenChan
 	}
-	def makeOnewayDispatchPostChan[MK <: CPumpMsg](chanID : Ident, msgClz : Class[MK]) : DispatchPostChan[MK, DullPumpCtx] = {
+	def makeOnewayDispatchPostChan[MK <: CPumpMsg](chanID : Ident, msgClz : Class[MK]) : BoundedDispatchPostChan[MK, DullPumpCtx] = {
 
 		val postChan = new EZDispatchPostChan[MK, DullPumpCtx](chanID, this, getDullListenChanFinder, getBoundaryTellerFinder_opt)
-		// val subOuterActor = DullCPumpActorFactory.makeDullOuterPostActor(parentAct, this, postChan)
 		myChans.put(chanID, postChan)
 		postChan
 	}
-	def makeOnewayForwardPostChan[MK <: CPumpMsg](chanID : Ident, msgClz : Class[MK], tgtTeller: CPMsgTeller) : ForwardPostChan[MK, DullPumpCtx] = {
+	def makeOnewayForwardPostChan[MK <: CPumpMsg](chanID : Ident, msgClz : Class[MK], tgtTeller: CPMsgTeller) : BoundedForwardPostChan[MK, DullPumpCtx] = {
 		val postChan = new EZForwardPostChan[MK, DullPumpCtx](chanID, this, tgtTeller, getBoundaryTellerFinder_opt)
 		myChans.put(chanID, postChan)
 		postChan

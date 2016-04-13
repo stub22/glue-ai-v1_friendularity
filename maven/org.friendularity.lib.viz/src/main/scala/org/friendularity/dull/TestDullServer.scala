@@ -22,14 +22,18 @@ object TestDullServer extends VarargsLogging {
 		val listenChanID : Ident = new FreeIdent("http://onto.friendularity.org/testchans#listenChanDD");
 		val listenedMsgClz = classOf[CPumpMsg]
 		val adoptrs = Nil
-		val rqMakeListChan = new CPARM_MakeDullListenChan(listenChanID, listenedMsgClz, adoptrs, answerTeller)
+		val rqMakeListChan = new CPARM_MakeDullListenChan[CPumpMsg](listenChanID, listenedMsgClz, adoptrs, answerTeller)
 
 		standPumpCtxActorRef ! rqMakeListChan
 
 		info1("Request SENT to make listenChan for ID={}", listenChanID)
 //			adoptrs : Traversable[CPumpAdptr[LMK, DullPumpCtx, CPumpMsg]],
 //			receiptTeller: CPReceiptTeller)
-lazy val dispPostChanID : Ident = new FreeIdent("http://onto.friendularity.org/testchans#postChan017");
+		lazy val dispPostChanID : Ident = new FreeIdent("http://onto.friendularity.org/testchans#postChan017");
+		val postedMsgClz = classOf[CPumpMsg]
+		val rqMakePostChan = new CPARM_MakeDullPostDispatchChan[CPumpMsg](dispPostChanID, postedMsgClz, answerTeller)
+		standPumpCtxActorRef ! rqMakePostChan
+		info1("Request SENT to make dispatch-post chan for ID={}", dispPostChanID)
 	}
 	private val akkaSysName = "DullStandSys_4719"
 	lazy private val myAkkaSys = ActorSystem(akkaSysName)
