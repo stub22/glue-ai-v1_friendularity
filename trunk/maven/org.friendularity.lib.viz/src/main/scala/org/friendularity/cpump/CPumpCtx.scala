@@ -38,7 +38,7 @@ trait CPumpCtx {
 
 }
 // Use of this trait implies actor awareness
-trait BoundedCPumpCtx {
+trait BoundedCPumpCtx extends CPumpCtx {
 	protected def getBoundaryActorRef_opt : Option[ActorRef] = None
 }
 
@@ -46,13 +46,16 @@ trait BoundaryTellerFinderImpl extends BoundedCPumpCtx with BoundaryTellerFinder
 	override def findCtxTellerForChan(chan : CPumpChan[_]) : Option[CPMsgTeller] = {
 		getBoundaryActorRef_opt.map(new ActorRefCPMsgTeller(_))
 	}
-	def findOuterTellerForChan(chan : CPumpChan[_]) : Option[CPMsgTeller] = {
+	// Are we willing for this to be an
+	override def findOuterTellerForChan(chan : CPumpChan[_]) : Option[CPMsgTeller] = {
+		val boundaryActorRef_opt = getBoundaryActorRef_opt
 		None
 	}
+
 }
 
 // Use of this trait means the Ctx expects to get its boundary actor injected sometime *after* Ctx construction.
-trait MutaBoundedCPumpCtxImpl extends BoundedCPumpCtx with VarargsLogging {
+trait MutaBoundedCPumpCtxImpl extends BoundaryTellerFinderImpl with VarargsLogging {
 
 	private var myBoundaryAR_opt : Option[ActorRef] = None
 	override protected def getBoundaryActorRef_opt : Option[ActorRef] = myBoundaryAR_opt
@@ -62,5 +65,6 @@ trait MutaBoundedCPumpCtxImpl extends BoundedCPumpCtx with VarargsLogging {
 			warn3("Boundary ref for {} changing from {} to {}", this, myBoundaryAR_opt.get, aref)
 		}
 		myBoundaryAR_opt = Option(aref)
+		info1("Received notice, now my boundaryActorRef to {}", myBoundaryAR_opt)
 	}
 }

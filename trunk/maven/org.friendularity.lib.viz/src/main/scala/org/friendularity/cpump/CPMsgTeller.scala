@@ -18,7 +18,7 @@ trait CPReceiptTeller extends CPMsgTeller {
 	def tellCPReceipt(msg: CPReceiptMsg) = tellCPMsg(msg)
 }
 
-case class ActorRefCPMsgTeller(actRef : ActorRef) extends CPMsgTeller {
+case class ActorRefCPMsgTeller(actRef : ActorRef) extends CPMsgTeller with CPReceiptTeller {
 	override def tellCPMsg(cpMsg: CPumpMsg): Unit = {
 		actRef ! cpMsg
 	}
@@ -29,7 +29,7 @@ case class ActorSelCPMsgTeller(actSel : ActorSelection) extends CPMsgTeller {
 	}
 }
 // Nonserializable constructor param for an Actor is passed in thru Props.
-class OuterPostActor[MsgKind <: CPumpMsg, CtxType <: CPumpCtx](postChan : CPChanPost[MsgKind,CtxType]) extends Actor with ActorLogging {
+class UNUSED_OuterPostActor[MsgKind <: CPumpMsg, CtxType <: CPumpCtx](postChan : CPChanPost[MsgKind,CtxType]) extends Actor with ActorLogging {
 	val myPostChan_opt : Option[CPChanPost[MsgKind, CtxType]] = Some(postChan)
 	//	var myPostChan_opt : Option[CPChanPost[MsgKind, CtxType]] = None
 	//	def setPostChan(pc : CPChanPost[MsgKind, CtxType]) : Unit = {

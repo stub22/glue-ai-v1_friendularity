@@ -11,13 +11,16 @@ import scala.collection.mutable
   * Created by Owner on 4/13/2016.
   */
 
+// This Actor serves as the subsystem "boundary" for this DullPumpCtx and its enclosed chans.
+// For simplest case, see "Segregated" types below.
 // Nonserializable constructor arg needs to come in through special props.
 class DullPumpTopActor(myCPumpCtx : DullPumpCtx) extends Actor with ActorLogging {
 
+
 	def receive = {
 		// Construction of any other actors used with the ctx must happen within this handler.
-		// Those actors may be sent back in receiptMsgs to answerTellers embeed in the input msg.
-		case adminMsg : CPAdminRequestMsg[DullPumpCtx] => adminMsg.processInCtx(myCPumpCtx) // , self, context)
+		// Those actors may be sent back in receiptMsgs to answerTellers embedded in the input msg.
+		case adminMsg : CPAdminRequestMsg[DullPumpCtx] => adminMsg.processInCtx(myCPumpCtx, context) // , self, context)
 	}
 
 }
@@ -29,6 +32,11 @@ trait DullPumpCtx extends CPumpCtx with CPumpListChanFinder[DullPumpCtx] with Va
 	private[dull] def getChan(chanID : Ident) : Option[CPumpChan[DullPumpCtx]] = myChans.get(chanID)
 
 	def getDullListenChanFinder : CPumpListChanFinder[DullPumpCtx] = this
+
+	// By default the channels have no direct akka powers.
+	// Override in cases where we want to allow channels to connect directly to actors.
+	def getBoundaryTellerFinder_opt : Option[BoundaryTellerFinder] = None
+
 	protected def allListenChans : Traversable[CPChanListen[_ <: CPumpMsg, DullPumpCtx]] = {
 		myChans.values.filter(c =>{ c match {
 			case listenChan : CPChanListen [_, DullPumpCtx] => true // [_ <: CPumpMsg]
@@ -43,9 +51,9 @@ trait DullPumpCtx extends CPumpCtx with CPumpListChanFinder[DullPumpCtx] with Va
 
 	// The following "makeXyzChan" methods are specifically *not* actor aware.
 	def makeOnewayListenChan[MK <: CPumpMsg](chanID : Ident, msgClz : Class[MK],
-											 adoptrs : Traversable[CPumpAdptr[MK, DullPumpCtx, CPumpMsg]]) : CPChanListen[MK, DullPumpCtx] = {
+											 adoptrs : Traversable[CPumpAdptr[MK, DullPumpCtx, CPumpMsg]]) : BoundedCPChanListen[MK, DullPumpCtx] = {
 
-		val listenChan = new EZListenChan[MK, DullPumpCtx, CPumpMsg](chanID, this, adoptrs)
+		val listenChan = new EZListenChan[MK, DullPumpCtx, CPumpMsg](chanID, this, adoptrs, getBoundaryTellerFinder_opt)
 		myChans.put(chanID, listenChan)
 		// new EZListenChan[MK, _ >: DullPumpCtx, _ <: CPumpMsg](chanID, this, adoptrs)
 		// EZListenChan[InMsgKind <: CPumpMsg, CtxType <: CPumpCtx, OutBound <: CPumpMsg](chanID : Ident, ctx : CtxType,
@@ -54,13 +62,13 @@ trait DullPumpCtx extends CPumpCtx with CPumpListChanFinder[DullPumpCtx] with Va
 	}
 	def makeOnewayDispatchPostChan[MK <: CPumpMsg](chanID : Ident, msgClz : Class[MK]) : DispatchPostChan[MK, DullPumpCtx] = {
 
-		val postChan = new EZDispatchPostChan[MK, DullPumpCtx](chanID, this, this)
+		val postChan = new EZDispatchPostChan[MK, DullPumpCtx](chanID, this, getDullListenChanFinder, getBoundaryTellerFinder_opt)
 		// val subOuterActor = DullCPumpActorFactory.makeDullOuterPostActor(parentAct, this, postChan)
 		myChans.put(chanID, postChan)
 		postChan
 	}
-	def makeOnewayForwardPostChan[MK <: CPumpMsg](chanID : Ident, msgClz : Class[MK], teller: CPMsgTeller) : ForwardPostChan[MK, DullPumpCtx] = {
-		val postChan = new EZForwardPostChan[MK, DullPumpCtx](chanID, this, teller)
+	def makeOnewayForwardPostChan[MK <: CPumpMsg](chanID : Ident, msgClz : Class[MK], tgtTeller: CPMsgTeller) : ForwardPostChan[MK, DullPumpCtx] = {
+		val postChan = new EZForwardPostChan[MK, DullPumpCtx](chanID, this, tgtTeller, getBoundaryTellerFinder_opt)
 		myChans.put(chanID, postChan)
 		postChan
 	}
@@ -129,50 +137,7 @@ trait DullTopActorFinder extends CachingMakingTopActorFinder with KnowsActorSyst
 	}
 }
 
-// Segregated => Each DullPumpCtx corresponds to exactly one topActor, which is the boundary for that Ctx.
 
-class SegregatedBoundedDullPumpCtx extends DullPumpCtx with MutaBoundedCPumpCtxImpl {
-
-}
-
-// Keeps an explicit map so we can re-find a context in case of actor replacement.
-class SegregatedDullCtxMgr extends KnowsDullPumpCtx {
-	lazy val myDullPumpCtxsByTopActorName = new mutable.HashMap[String, DullPumpCtx]
-	override protected def findDullPumpCtx(topActorName : String) : DullPumpCtx = {
-
-		myDullPumpCtxsByTopActorName.getOrElseUpdate(topActorName, makeDullPumpCtx(topActorName))
-	}
-	// Override this to make app-specific DullPumpCtx.
-	protected def makeDullPumpCtx(topActorName : String) : DullPumpCtx = {
-		new SegregatedBoundedDullPumpCtx()
-	}
-}
-
-class SegregatedDullPumpSpace(private val myAkkaSys : ActorSystem) extends SegregatedDullCtxMgr with  DullTopActorFinder {
-
-	protected def getActorSys : ActorSystem = myAkkaSys
-
-}
-
-
-/*
-class DullCPumpActorFactory(myActSys : ActorSystem) extends  VarargsLogging {
-
-	private val cpumpEndListenerName = "termDullCPumpSys"
-
-	override protected def makeDullTopActor(dullCtx : DullPumpCtx, topActorName : String) : ActorRef = {
-		val props = Props(classOf[DullPumpTopActor], dullCtx)
-		myDullAkkaSys.actorOf(props, topActorName)
-	}
-
-	def makeDullOuterPostActor[MsgKind <: CPumpMsg](parentActCtx: ActorContext,
-													postChan : CPChanPost[MsgKind, DullPumpCtx]) : ActorRef = {
-		val props = Props(classOf[OuterPostActor[MsgKind, DullPumpCtx]], postChan)
-		val actRef : ActorRef = parentActCtx.actorOf(props)
-		actRef
-	}
-}
-*/
 object DullUnitTestFactoryFactory {
 	private val dullAkkaSysName = "dullActorSys_UnitTest01"
 	// val topDullActorName = "dullCPump01"
