@@ -28,6 +28,7 @@ case class ActorSelCPMsgTeller(actSel : ActorSelection) extends CPMsgTeller {
 		actSel ! cpMsg
 	}
 }
+/*
 // Nonserializable constructor param for an Actor is passed in thru Props.
 class UNUSED_OuterPostActor[MsgKind <: CPumpMsg, CtxType <: CPumpCtx](postChan : CPChanPost[MsgKind,CtxType]) extends Actor with ActorLogging {
 	val myPostChan_opt : Option[CPChanPost[MsgKind, CtxType]] = Some(postChan)
@@ -45,3 +46,5 @@ class UNUSED_OuterPostActor[MsgKind <: CPumpMsg, CtxType <: CPumpCtx](postChan :
 	}
 	def getTeller = new ActorRefCPMsgTeller(self)
 }
+
+*/

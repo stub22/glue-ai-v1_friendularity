@@ -47,10 +47,10 @@ object StructTest  extends VarargsLogging {
 		val aodf1 = new	AODFactory(1)
 		
 		// Here, all fields are of value type: double[1], because that is what the factory knows how to work with.
-		val bs1 = new BasicStruct[String, ArrayOfDoubles](aodf1)
+		val bs1 = new DirectlyFactoriedStruct[String, ArrayOfDoubles](aodf1)
 		
 		// Here, all fields are instead of value type: double[2]
-		val bs2 = new BasicStruct[String, ArrayOfDoubles](aodf2)
+		val bs2 = new DirectlyFactoriedStruct[String, ArrayOfDoubles](aodf2)
 		
 		val inDat1 = aodf1.make()
 		inDat1.myVals(0) = -2.8
@@ -84,7 +84,7 @@ object StructTest  extends VarargsLogging {
 		val mgds = new MathGateDoublesSource(mg)
 		val testExprDim = 2
 		val aodf2 = new	AODFactory(2)
-		val bs2 = new BasicStruct[String, ArrayOfDoubles](aodf2)
+		val bs2 = new DirectlyFactoriedStruct[String, ArrayOfDoubles](aodf2)
 		
 		val smp = new StructMapper[String, ArrayOfDoubles, MathGateExpr[ArrayOfDoubles]]
 		val expr11 = new MathGateExpr[ArrayOfDoubles]("{-44.0,33.3}", testExprDim, None, None)

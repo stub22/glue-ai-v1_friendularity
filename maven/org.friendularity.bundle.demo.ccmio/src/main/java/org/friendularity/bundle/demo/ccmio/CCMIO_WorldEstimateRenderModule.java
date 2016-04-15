@@ -42,7 +42,8 @@ public class CCMIO_WorldEstimateRenderModule extends RenderModule implements Wor
 	// calc engine holds a set of variables defining our state.
 	// we treat these variables as RDF:Nodes.  Our dog's position, in some environment coord frame, rep in turtle as:
 	// dog_pos inFrame env_frame_18; hasX 22.2 ; hasY 0.3; hasZ  -14.0.
-	// Tricky part:  How do we maintain symbol table correspondence?
+	// Tricky question:  At a higher logical level, how do we maintain symbol table correspondence?
+	// (Answer:  ontologized canonical axes)
 	// Symja is function-oriented, and does not obviously/trivially supply an associate-array or record construct.
 	private MathGate myMathGate;
 	private WorldEstimate myCachedWorldEstim;
@@ -51,7 +52,7 @@ public class CCMIO_WorldEstimateRenderModule extends RenderModule implements Wor
 	private boolean myFlag_JVisionTextureRoutingEnabled = false;
 
 	private MagicVisionBoxScene		myMVBS;
-	private SnapshotMonitor			mySnapMon;
+	private SnapshotMonitor			mySnapMon;  // extends TrialContent, includes 3D gridspace of numbers+colors
 	private CCMIO_DemoMidiCommandMapper		myMidiMapper;
 	
 	public CCMIO_WorldEstimateRenderModule() {
@@ -99,10 +100,7 @@ public class CCMIO_WorldEstimateRenderModule extends RenderModule implements Wor
 		if (myMathGate != null) {
 			// optionally do some updates+ refinements to the cached estimate, either in-place or replacing completely.
 			if (myCachedWorldEstim != null) {
-				// 2013-08-01:  Doing just this step alone (with rendering disabled below) 
-				// is enough to leak 2+G of RAM in 15 min [projectile shooting was also enabled in that trial,
-				// but it doesn't leak this fast on its own]
-
+				// Using *unscripted* MathGate avoids serious memory leak in Symja's script-wrapper.
 				myCachedWorldEstim.updateFromMathSpace(myMathGate);
 			}
 		}
@@ -125,7 +123,7 @@ public class CCMIO_WorldEstimateRenderModule extends RenderModule implements Wor
 				
 				if (mySnapMon == null) { 
 					Node rootDeepNode = rrc.getJme3RootDeepNode(null);
-					mySnapMon = new SnapshotMonitor();
+					mySnapMon = new SnapshotMonitor(); // extends TrialContent, shows big matrix of numbers+colors
 					mySnapMon.setup_onRendThrd(rrc, rootDeepNode);
 					mySnapMon.setJVisionTextureMapper(optJVTM);  // OK to set it to null
 					if ((myMidiMapper != null) && (myMidiMapper.myCCPR != null)) {

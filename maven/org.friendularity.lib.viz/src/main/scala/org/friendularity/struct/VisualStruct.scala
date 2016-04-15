@@ -31,7 +31,7 @@ object JME3Factorys {
 	val vec3fFactory = new Vec3fFactory()
 }
 
-class Vec3fBasicStruct[FK] extends BasicStruct[FK, Vector3f](JME3Factorys.vec3fFactory) 
+class Vec3fBasicStruct[FK] extends DirectlyFactoriedStruct[FK, Vector3f](JME3Factorys.vec3fFactory)
 {
 	// Represents any number of Vector3fs, keyed by any FK (String, Ident, Enum, ...)
 	// Does not provide *direct* access to the underlying .x,.y,.z  fields of each vector.

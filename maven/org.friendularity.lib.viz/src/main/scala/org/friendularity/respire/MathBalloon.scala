@@ -28,7 +28,7 @@ object MathBalloon extends BasicDebugger {
 		org.apache.log4j.BasicConfigurator.configure();
 		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.ALL);
 		
-		val extraDemos = false
+		val extraDemos = false // Visually this just gets us the 3 large orange rectangles and...
 		val demoBrowser = false
 		if (demoBrowser) {
 
@@ -36,6 +36,7 @@ object MathBalloon extends BasicDebugger {
 			DemoBrowser.show();
 		}
 		if (extraDemos) {
+			// These are code-execution tests, not visual demos.
 			getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^  main() starting StructTest.testStructs()");		
 			org.friendularity.struct.StructTest.testStructs;
 
@@ -46,8 +47,11 @@ object MathBalloon extends BasicDebugger {
 			// GridSpaceTest 
 			org.cogchar.api.space.GridSpaceTest.goGoGo;
 
+		} else {
+			getLogger.info("main() skipping extra demos");
 		}
 		val sweetDS : Option[SweetDynaSpace] = if (extraDemos) {
+
 			getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^  main() testing math-repo+goody load (respiration)");
 			// This reads in a config model and begins seting up the space, but the individual goodies
 			// are not created until render update() callbacks start.

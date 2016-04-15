@@ -193,7 +193,7 @@ class MathyGoodySpace (parentDGS : DynamicGoodySpace[_], idxIntoParent : Int,
 		extends SweetDynaSpace(parentDGS, idxIntoParent, specGraphID, specID)  {
 			
 	val myMathSpaceFactory = new MathSpaceFactory();
-	val myMathGate : MathGate = myMathSpaceFactory.makeUnscriptedMathGate();
+	val myMathGate : MathGate = myMathSpaceFactory.makeUnscriptedMathGate();  // Unscripted => avoids memory leak
 	
 	override def makeGoody(oneBasedIdx : Integer) : SweetDynaGoody = {
 		new MathyGoody(oneBasedIdx, myMathGate)
