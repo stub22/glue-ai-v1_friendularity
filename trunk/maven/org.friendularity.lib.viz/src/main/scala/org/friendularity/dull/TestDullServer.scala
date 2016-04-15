@@ -4,6 +4,7 @@ import akka.actor._
 import org.appdapter.core.name.{FreeIdent, Ident}
 import org.appdapter.fancy.log.VarargsLogging
 import org.friendularity.cpump._
+import org.friendularity.respire.{HelloPumpAdminTeller, VWorldBossFactory}
 
 /**
   * Created by Owner on 4/13/2016.
@@ -13,6 +14,7 @@ object TestDullServer extends VarargsLogging {
 
 		val standPumpTestCtxName = "standPumpCtx_333"
 		val standPumpCtxActorRef : ActorRef = findStandAppPumpTopActor(standPumpTestCtxName)
+		val standPumpAdminTeller = new ActorRefCPMsgTeller(standPumpCtxActorRef)
 
 		info1("Found standalone dull-pump topActor: {}", standPumpCtxActorRef)
 		val respConsumerActor : ActorRef = 	myAkkaSys.actorOf(Props[DullTestResponseConsumer], "ingrownDullRespCons")
@@ -24,7 +26,7 @@ object TestDullServer extends VarargsLogging {
 		val adoptrs = Nil
 		val rqMakeListChan = new CPARM_MakeDullListenChan[CPumpMsg](listenChanID, listenedMsgClz, adoptrs, answerTeller)
 
-		standPumpCtxActorRef ! rqMakeListChan
+		standPumpAdminTeller.tellCPMsg(rqMakeListChan)
 
 		info1("Request SENT to make listenChan for ID={}", listenChanID)
 //			adoptrs : Traversable[CPumpAdptr[LMK, DullPumpCtx, CPumpMsg]],
@@ -32,8 +34,14 @@ object TestDullServer extends VarargsLogging {
 		lazy val dispPostChanID : Ident = new FreeIdent("http://onto.friendularity.org/testchans#postChan017");
 		val postedMsgClz = classOf[CPumpMsg]
 		val rqMakePostChan = new CPARM_MakeDullPostDispatchChan[CPumpMsg](dispPostChanID, postedMsgClz, answerTeller)
-		standPumpCtxActorRef ! rqMakePostChan
+		standPumpAdminTeller.tellCPMsg(rqMakePostChan)
 		info1("Request SENT to make dispatch-post chan for ID={}", dispPostChanID)
+
+		val vwBossAR : ActorRef = VWorldBossFactory.makeVWorldBoss(myAkkaSys, "vworldBoss_888")
+		val vwBossTeller = new ActorRefCPMsgTeller(vwBossAR)
+		val hpatMsg = new HelloPumpAdminTeller(standPumpAdminTeller)
+		vwBossTeller.tellCPMsg(hpatMsg)
+		info1("HelloPumpAdminTeller SENT to VWBossTeller : {}", vwBossTeller)
 	}
 	private val akkaSysName = "DullStandSys_4719"
 	lazy private val myAkkaSys = ActorSystem(akkaSysName)

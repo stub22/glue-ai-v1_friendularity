@@ -15,14 +15,23 @@ trait DullChanAdminRqMsg  extends CPAdminRequestMsg[DullPumpCtx] with VarargsLog
 		receiptTeller.tellCPReceipt(receiptMsg)
 	}
 
-	protected def makePostActor[PMK <: CPumpMsg](postChan : BoundedCPChanPost[PMK, DullPumpCtx], actCtx : ActorContext): Unit = {
+	protected def makePostActor[PMK <: CPumpMsg](postChan : BoundedCPChanPost[PMK, DullPumpCtx], actCtx : ActorContext): ActorRef = {
 		val chanID = postChan.getChanIdent
 		val localChanName = chanID.getLocalName
 		info1("Local listen-chan name to be used for actor={}", localChanName)
 		val chanActorProps = Props(classOf[PostChanDirectActor[PMK]], postChan)
 		val chanActor : ActorRef = actCtx.actorOf(chanActorProps, localChanName)
 		postChan.notifyOuterActorRef(chanActor)
-
+		chanActor
+	}
+	protected def makeListenActor[LMK <: CPumpMsg](lstnChan : BoundedCPChanListen[LMK, DullPumpCtx], actCtx : ActorContext): ActorRef = {
+		val chanID = lstnChan.getChanIdent
+		val localChanName = chanID.getLocalName
+		info1("Local listen-chan name to be used for actor={}", localChanName)
+		val chanActorProps = Props(classOf[ListenChanDirectActor[LMK]], lstnChan)
+		val chanActor : ActorRef = actCtx.actorOf(chanActorProps, localChanName)
+		lstnChan.notifyOuterActorRef(chanActor)
+		chanActor
 	}
 }
 
@@ -34,12 +43,7 @@ case class CPARM_MakeDullListenChan[LMK <: CPumpMsg](chanID : Ident, listenedMsg
 		// NOTE:  This transmission of adoptrs is powerful, but treading on thin ice regarding the instance closure.
 		// In theory such a msg can be serialized over network, but if any adoptrs make assumptions about exec env...
 		val listenChan = ctx.makeOnewayListenChan(chanID, listenedMsgClz, adoptrs)
-
-		val localChanName = chanID.getLocalName
-		info1("Local listen-chan name to be used for actor={}", localChanName)
-		val chanActorProps = Props(classOf[ListenChanDirectActor[LMK]], listenChan)
-		val chanActor : ActorRef = actCtx.actorOf(chanActorProps, localChanName)
-		listenChan.notifyOuterActorRef(chanActor)
+		val lstnActor = makeListenActor(listenChan, actCtx)
 		sendReceiptForCreatedChan(chanID, listenChan, receiptTeller)
 	}
 }
@@ -50,7 +54,7 @@ case class CPARM_MakeDullPostDispatchChan[PMK <: CPumpMsg](chanID : Ident, poste
 			extends DullChanAdminRqMsg {
 	override def processInCtx(ctx : DullPumpCtx, actCtx : ActorContext): Unit = {
 		val postChan = ctx.makeOnewayDispatchPostChan(chanID, postedMsgClz)
-		makePostActor(postChan, actCtx)
+		val postActor = makePostActor(postChan, actCtx)
 		sendReceiptForCreatedChan(chanID, postChan, receiptTeller)
 	}
 }

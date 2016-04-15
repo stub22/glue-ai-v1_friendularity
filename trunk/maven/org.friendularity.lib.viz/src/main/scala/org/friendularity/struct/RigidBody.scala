@@ -22,7 +22,7 @@ object RigidBodyFieldNames {
 	val pos3Factory = new AODFactory(3)
 	val dir4Factory = new AODFactory(4)
 }
-class RigidBodyStruct extends BasicStruct[String, ArrayOfDoubles](RigidBodyFieldNames.aodf) {
+class RigidBodyStruct extends DirectlyFactoriedStruct[String, ArrayOfDoubles](RigidBodyFieldNames.aodf) {
 	override protected def makeFieldVal(fk : String) : ArrayOfDoubles = {
 		fk match {
 			case RigidBodyFieldNames.pos => RigidBodyFieldNames.pos3Factory.make()
@@ -32,5 +32,5 @@ class RigidBodyStruct extends BasicStruct[String, ArrayOfDoubles](RigidBodyField
 }
 // class SnapTimes extends Struct[FK, FV] {	
 // }
-class SnapStruct extends BasicStruct[String, ArrayOfDoubles](RigidBodyFieldNames.aodf) {
+class SnapStruct extends DirectlyFactoriedStruct[String, ArrayOfDoubles](RigidBodyFieldNames.aodf) {
 }

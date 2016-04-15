@@ -35,7 +35,7 @@ trait WrittenResult {
 // Alternatively, those steps can be map-reduced by a fabric such as hadoop, spark, etc.
 // 
 // To process a specific kind of input message, one should extend this trait directly.
-// Note that we do allow for a further amount of data-switched type narrowing via the 
+// Note that we also  allow for a further amount of data-switched type narrowing via the
 // getUsualInMsgType method.
 //
 trait CPumpAdptr[-InMsgType <: CPumpMsg, -CtxType <: CPumpCtx, +OutMsgType <: CPumpMsg] extends java.io.Serializable {

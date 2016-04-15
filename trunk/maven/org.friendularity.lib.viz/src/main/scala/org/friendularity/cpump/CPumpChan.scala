@@ -23,9 +23,9 @@ import java.io.{Serializable => JSerializable}
 
 import scala.collection.mutable
 
-case class SetChanMsg()
+// case class SetChanMsg()
 
-trait AdminMsg
+// trait AdminMsg
 
 // All pump chans have a context and (one or more) URI=Ident
 trait CPumpChan[CtxType <: CPumpCtx] {
@@ -57,7 +57,7 @@ trait BoundedCPumpChan[CtxType <: CPumpCtx] extends CPumpChan[CtxType] {
 		getBoundaryTellerFinder.flatMap(_.findCtxTellerForChan(this))
 	}
 
-	// lazy val myOuterTeller_opt
+	// TODO:  Cache the teller, also allow it to be found through BoundaryTellerFinder
 	override def getOuterTeller_opt() : Option[CPMsgTeller] = {
 		myCachedOuterActorRef_opt.map(new ActorRefCPMsgTeller(_))
 		// getBoundaryTellerFinder.flatMap(_.findOuterTellerForChan(this))
@@ -126,6 +126,7 @@ trait CPChanPost[MsgKind <: CPumpMsg, CtxType <: CPumpCtx] extends CPumpChan[Ctx
 
 }
 trait BoundedCPChanPost[InMsgKind <: CPumpMsg, CtxType <: CPumpCtx] extends CPChanPost[InMsgKind, CtxType] with BoundedCPumpChan[CtxType]
+
 class PostChanDirectActor[InMsgKind <: CPumpMsg](chan : BoundedCPChanPost[InMsgKind,_]) extends Actor with ActorLogging {
 	def receive = {
 		case cpmsg : InMsgKind => {
