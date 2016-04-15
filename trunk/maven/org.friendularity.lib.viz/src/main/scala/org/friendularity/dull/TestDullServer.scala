@@ -4,7 +4,7 @@ import akka.actor._
 import org.appdapter.core.name.{FreeIdent, Ident}
 import org.appdapter.fancy.log.VarargsLogging
 import org.friendularity.cpump._
-import org.friendularity.respire.{HelloPumpAdminTeller, VWorldBossFactory}
+import org.friendularity.respire.{VWARM_FindPublicTellers, VWARM_GreetFromPumpAdmin, VWorldBossFactory}
 
 /**
   * Created by Owner on 4/13/2016.
@@ -39,9 +39,12 @@ object TestDullServer extends VarargsLogging {
 
 		val vwBossAR : ActorRef = VWorldBossFactory.makeVWorldBoss(myAkkaSys, "vworldBoss_888")
 		val vwBossTeller = new ActorRefCPMsgTeller(vwBossAR)
-		val hpatMsg = new HelloPumpAdminTeller(standPumpAdminTeller)
+		val hpatMsg = new VWARM_GreetFromPumpAdmin(standPumpAdminTeller)
 		vwBossTeller.tellCPMsg(hpatMsg)
 		info1("HelloPumpAdminTeller SENT to VWBossTeller : {}", vwBossTeller)
+		val fptMsg = new VWARM_FindPublicTellers(answerTeller)
+		vwBossTeller.tellCPMsg(fptMsg)
+		info1("VWARM_FindPublicTellers SENT to VWBossTeller : {}", vwBossTeller)
 	}
 	private val akkaSysName = "DullStandSys_4719"
 	lazy private val myAkkaSys = ActorSystem(akkaSysName)
