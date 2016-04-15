@@ -11,7 +11,7 @@ import org.friendularity.dull.DullPumpCtx
 
 // Legit state of a running VWorld system is managed by an instance of VWorldSysMgr.
 trait VWorldSysMgr {
-
+	def findPublicTellers : VWorldPublicTellers
 }
 // (hack)Strap holds any icky extra shared state that we temporarily want to pass to VWorldBossActor.
 trait VWorldStrap {
@@ -28,10 +28,23 @@ trait VWorldNotice extends CPumpMsg with VarargsLogging {
 trait VWAdminRqMsg extends VWorldRequest {
 	def processInSys(sysMgr : VWorldSysMgr, actCtx : ActorContext): Unit
 }
-case class HelloPumpAdminTeller(pumpAdminTeller : CPMsgTeller) extends VWAdminRqMsg {
+case class VWARM_GreetFromPumpAdmin(pumpAdminTeller : CPMsgTeller) extends VWAdminRqMsg {
 	override def processInSys(sysMgr : VWorldSysMgr, actCtx : ActorContext) : Unit = {
 		info3("Processing {} message with sysMgr={} and actCtx={}", this, sysMgr, actCtx)
 	}
+}
+case class VWARM_FindGoodyTeller(answerTeller: CPMsgTeller) extends VWAdminRqMsg {
+	override def processInSys(sysMgr : VWorldSysMgr, actCtx : ActorContext) : Unit = {
+		info3("Processing {} message with sysMgr={} and actCtx={}", this, sysMgr, actCtx)
+	}
+}
+case class VWARM_FindPublicTellers(answerTeller: CPMsgTeller) extends VWAdminRqMsg {
+	override def processInSys(sysMgr : VWorldSysMgr, actCtx : ActorContext) : Unit = {
+		info3("Processing {} message with sysMgr={} and actCtx={}", this, sysMgr, actCtx)
+		val pubTellers : VWorldPublicTellers = sysMgr.findPublicTellers
+		answerTeller.tellCPMsg(pubTellers)
+	}
+
 }
 trait VWContentRq extends VWorldRequest {
 }
@@ -46,10 +59,12 @@ trait VWGoodyRqRdf extends VWContentRq  with RdfMsg{
 }
 // The vworldBoss supplies this serializable directory of its actors to any client who asks.
 // From here clients can navigate to all published vworld service actors.
-trait VWorldPublicSummary extends VWorldNotice {
-	def getFirstBigTeller : CPMsgTeller
-	def getSecondCoolTeller : CPMsgTeller
-
+// Client may also know+find these same actors and other actors by other means.
+// This trait is made available as a helpful starting point, not as the definitive or exhaustive API.
+trait VWorldPublicTellers extends VWorldNotice {
+	def getFirstBigTeller : Option[CPMsgTeller] = None
+	def getSecondCoolTeller : Option[CPMsgTeller] = None
+	def getGoodyTeller : Option[CPMsgTeller] = None
 }
 trait VWorldBossLogic [VWSM <: VWorldSysMgr] {
 	protected def getSysMgr : VWSM
@@ -73,13 +88,14 @@ class VWorldBossActor[VWSM <: VWorldSysMgr](sysMgr : VWSM, hackStrap : VWorldStr
 	def receive = {
 		// Construction of any other actors used with the ctx must happen within this handler.
 		// Those actors may be sent back in receiptMsgs to answerTellers embedded in the input msg.
-		case vwmsg : VWorldRequest =>
+		// Note that "context" here is a pseudo-field of the actor.
+		case vwmsg : VWorldRequest => processVWorldMsg(vwmsg, context)
 	}
 
 	override protected def getSysMgr : VWSM = sysMgr
 }
 class VWSysMgrImpl extends VWorldSysMgr {
-
+	override def findPublicTellers : VWorldPublicTellers = new VWorldPublicTellers{}
 }
 class VWStrapImpl extends VWorldStrap {
 
