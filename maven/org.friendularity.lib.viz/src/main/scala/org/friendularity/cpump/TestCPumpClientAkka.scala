@@ -13,7 +13,7 @@ object TestCPumpClientAkka extends VarargsLogging {
 
 		info0 ("^^^^^^^^^^^^^^^^^^^^^^^^  TestCPumpClientAkka main().START");
 
-		val unitTestWithoutOSGi : Boolean = true
+		val unitTestWithoutOSGi : Boolean = false
 		val unitTestServPath = "akka.tcp://standyCPASys4719@127.0.0.1:4719/user/demoCPump01"
 		val ccmioServName = "ccmioBundle" // Matches what is in the bundle code
 		val ccmioServHost = "127.0.0.1" // Local machine

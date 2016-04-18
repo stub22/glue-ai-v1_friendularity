@@ -42,21 +42,20 @@ import org.osgi.framework.FrameworkUtil;
 	
 import org.cogchar.blob.entry.EntryHost;
 import org.cogchar.blob.entry.BundleEntryHost;
-
+// registerAvatarConfigRepoClient(bunCtx, erc)
 trait AvatarLegacySetupFuncs extends VarargsLogging {
 
-	def makeAndRegisterAvatarConfigRepo( bunCtx : BundleContext, recipesJM : JenaModel,
-										 cbrUri : String, cdatEH : EntryHost) : Unit = {
+	def makeAvatarLegacyConfigRepo(recipesJM : JenaModel, cbrUri : String, cdatEH : EntryHost) : EnhancedLocalRepoClient = {
 		val recipesR2Go = open4R2go(recipesJM)
-		makeAndRegisterAvatarConfigRepo(bunCtx, recipesR2Go, cbrUri, cdatEH)
+		makeAvatarLegacyConfigRepo(recipesR2Go, cbrUri, cdatEH)
 	}
-	def makeAndRegisterAvatarConfigRepo( bunCtx : BundleContext, recipesR2Go : R2GoModel,
-										 cbrUri : String, cdatEH : EntryHost) : Unit = {
+	def makeAvatarLegacyConfigRepo(recipesR2Go : R2GoModel, cbrUri : String, cdatEH : EntryHost) : EnhancedLocalRepoClient = {
 		val configBR = new AFBRLegacyConfig(recipesR2Go, cbrUri,  false)
-		makeAndRegisterAvatarConfigRepo(bunCtx, configBR, cdatEH)
+		makeAvatarLegacyConfigRepo(configBR, cdatEH)
+
 	}
-	def makeAndRegisterAvatarConfigRepo(bunCtx : BundleContext, legCnfBR : AFBRLegacyConfig, // CC_BRFeature,
-										cdatEH : EntryHost) : Unit = {
+	def makeAvatarLegacyConfigRepo(legCnfBR : AFBRLegacyConfig, // CC_BRFeature,
+										cdatEH : EntryHost) : EnhancedLocalRepoClient = {
 		val cwRepoSpec = makeVWConfRepoSpec(legCnfBR, cdatEH)
 		// Old way was:  hardcoded query setup param Strings
 		// CCMIO: 2016-04-17   tgtGraphVarName=qGraph  qrySrcGraphQName=ccrt:qry_sheet_77
@@ -74,7 +73,10 @@ trait AvatarLegacySetupFuncs extends VarargsLogging {
 		info3("Found legacy avatar query names in recipe={}  tgtGraphVarName={}  qrySrcGraphQName={}",
 					legCnfBR, recipeSparqlTgtVarName, recipeSparqlQrySrcQN)
 
-		makeAndRegisterAvatarConfigRC(bunCtx, cwRepoSpec, recipeSparqlTgtVarName, recipeSparqlQrySrcQN)
+		val erc = makeAvatarLegacyConfigERC(cwRepoSpec, recipeSparqlTgtVarName, recipeSparqlQrySrcQN)
+		erc
+
+
 	}
 	def makeVWConfRepoSpec(profileJM : JenaModel, vizappBrokerRecipeUriTxt : String,
 						   cdatEH : EntryHost) :  ChnkrWrapRepoSpec = {
@@ -90,16 +92,16 @@ trait AvatarLegacySetupFuncs extends VarargsLogging {
 		val cwRepoSpec = new ChnkrWrapRepoSpec(brokerRecipeWrap, cdatEH)
 		cwRepoSpec
 	}
-	def makeAndRegisterAvatarConfigRC( bunCtx : BundleContext, repoSpec : RepoSpec,
-							tgtGraphSparqlVarName : String, qrySrcGraphQName : String) {
+	def makeAvatarLegacyConfigERC( repoSpec : RepoSpec,
+					tgtGraphSparqlVarName : String, qrySrcGraphQName : String): EnhancedLocalRepoClient = {
+
 		val repoHandle : Repo.WithDirectory = repoSpec.getOrMakeRepo();
 
 		val erc = new EnhancedLocalRepoClient(repoSpec, repoHandle, tgtGraphSparqlVarName, qrySrcGraphQName)
-
-		registerAvatarConfigRepoClient(bunCtx, erc);
+		erc
 	}
 
-	private def registerAvatarConfigRepoClient(bunCtx : BundleContext,
+	def registerAvatarConfigRepoClient(bunCtx : BundleContext,
 							avatarConfigERC : EnhancedRepoClient)  : Unit = {
 		info1("Registering legacy config EnhancedRepoClient: {}", avatarConfigERC);
 		

@@ -1,5 +1,22 @@
+/*
+ *  Copyright 2016 by The Friendularity Project (www.friendularity.org).
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
 package org.friendularity.navui
 
+import akka.actor.{ActorSystem, ActorRef}
 import com.hp.hpl.jena.rdf.model.Model
 import org.appdapter.core.store.Repo
 import org.appdapter.fancy.log.VarargsLogging
@@ -8,11 +25,16 @@ import org.cogchar.blob.entry.EntryHost
 import org.cogchar.impl.scene.read.BehavMasterConfigTest
 import org.friendularity.appro.TestRaizLoad
 import org.friendularity.chnkr.ChnkrWrapRepoSpec
+import org.friendularity.cpump.ActorRefCPMsgTeller
+import org.friendularity.dull.SpecialAppPumpSpace
+
+
+import org.friendularity.respire.{VWARM_FindPublicTellers, VWARM_GreetFromPumpAdmin, VWorldBossFactory}
 
 /**
   * Created by Owner on 4/1/2016.
   */
-class TestNavUI extends VarargsLogging {
+object TestNavUI extends VarargsLogging {
 
 	// Goal - load vworld *incrementally* using messages found in "modern" config chunk(s),
 	// mediated by higher-level instructions from profile recipes.  Most of these messages
@@ -28,21 +50,61 @@ class TestNavUI extends VarargsLogging {
 	// cogchar+app ontologies, app profile data, app config chunks, or app java/scala code.
 
 
+	def main(args: Array[String]): Unit = {
 
-	// Legacy config load section, gradually becoming obsolete:
-	// From:  private void attachVizTChunkLegConfRepo(final BundleContext bunCtx) {
+		val nuii = new NavUiAppImpl()
+ 		info1("^^^^^^^^^^^^^^^^^^^^^^^^  TestNavUI.main() creted nuii={}", nuii)
+		nuii.runSetupMsgs
+	}
 
-	val tchunkEHost: EntryHost = TestRaizLoad.makeBundleEntryHost(TestRaizLoad.getClass)
-	val mergedProfileGraph: Model = TestRaizLoad.getMergedProfileGraph_RegularDesktop(tchunkEHost)
-	val vzBrkRcpUriTxt: String = TestRaizLoad.vizappBrokerRecipeUriTxt
-	val legConfRepoSpec: ChnkrWrapRepoSpec = TestRaizLoad.makeVWConfRepoSpec(mergedProfileGraph, vzBrkRcpUriTxt, tchunkEHost)
-	getLogger.info("legConfRepoSpec={}", legConfRepoSpec)
+}
 
-	// TestRaizLoad.makeAndRegisterAvatarConfigRC(bunCtx, legConfRepoSpec) =
-	val legConfRepoHandle : Repo.WithDirectory = legConfRepoSpec.getOrMakeRepo();
-	// TODO: Get these SPARQL keys from profile, instead
-	val erc = new EnhancedLocalRepoClient(legConfRepoSpec, legConfRepoHandle,
-	BehavMasterConfigTest.TGT_GRAPH_SPARQL_VAR, BehavMasterConfigTest.QUERY_SOURCE_GRAPH_QN);
+
+class NavUiAppImpl extends VarargsLogging {
+	private val akkaSysName = "NavUiStandApp_4719"
+	lazy private val myAkkaSys = ActorSystem(akkaSysName)
+	lazy private val myStandalonePumpSpace = new SpecialAppPumpSpace(myAkkaSys)
+	private val loadLegacyConf = true
+
+	lazy private val legConfERC_opt: Option[EnhancedLocalRepoClient] = if (loadLegacyConf) Option(buildLegacyConfERC) else None
+
+	lazy private val vwBossAR: ActorRef = VWorldBossFactory.makeVWorldBoss(myAkkaSys, "vworldBoss_818")
+	lazy private val vwBossTeller = new ActorRefCPMsgTeller(vwBossAR)
+
+	lazy private val standPumpTestCtxName = "standPumpCtx_181"
+	lazy private val standPumpCtxActorRef : ActorRef = myStandalonePumpSpace.findTopActorRef(standPumpTestCtxName)
+	lazy private val standPumpAdminTeller = new ActorRefCPMsgTeller(standPumpCtxActorRef)
+
+	def runSetupMsgs {
+		val hpatMsg = new VWARM_GreetFromPumpAdmin(standPumpAdminTeller)
+		vwBossTeller.tellCPMsg(hpatMsg)
+		info1("HelloPumpAdminTeller SENT to VWBossTeller : {}", vwBossTeller)
+		val fptMsg = new VWARM_FindPublicTellers(standPumpAdminTeller)
+		vwBossTeller.tellCPMsg(fptMsg)
+		info1("VWARM_FindPublicTellers SENT to VWBossTeller : {}", vwBossTeller)
+	}
+
+	def buildLegacyConfERC : EnhancedLocalRepoClient = {
+		// Legacy config load section, gradually becoming obsolete:
+		// Under OSGi (e.g. CCMIO), old PumaBoot process is set up by attachVizTChunkLegConfRepo(BundleContext bunCtx).
+		// But here, we only need the actor boundary between the client file data config side, and the server VWorld.
+
+		val tchunkEHost: EntryHost = TestRaizLoad.makeBundleEntryHost(TestRaizLoad.getClass)
+		val mergedProfileGraph: Model = TestRaizLoad.getMergedProfileGraph_RegularDesktop(tchunkEHost)
+		val vzBrkRcpUriTxt: String = TestRaizLoad.vizappBrokerRecipeUriTxt
+
+		val legConfERC = TestRaizLoad.makeAvatarLegacyConfigRepo(mergedProfileGraph, vzBrkRcpUriTxt, tchunkEHost)
+		getLogger.info("legConfERC={}", legConfERC)
+		legConfERC
+	}
+
+
 	// registerAvatarConfigRepoClient(bunCtx, erc);
 
 }
+
+
+
+
+
+

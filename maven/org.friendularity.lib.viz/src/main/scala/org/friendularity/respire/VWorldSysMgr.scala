@@ -1,3 +1,19 @@
+/*
+ *  Copyright 2016 by The Friendularity Project (www.friendularity.org).
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
 package org.friendularity.respire
 
 import akka.actor._
@@ -17,14 +33,16 @@ trait VWorldSysMgr {
 trait VWorldStrap {
 //	def	getPumpCtx : DullPumpCtx
 }
-
-
-trait VWorldRequest extends CPumpMsg with VarargsLogging {
+trait VWorldJobLogic[Msg <: VWorldMsg] {
+	def processMsg(msg : Msg, slf : ActorRef, sndr : ActorRef, actx : ActorContext) : Unit
 }
 
-trait VWorldNotice extends CPumpMsg with VarargsLogging {
+trait VWorldMsg extends CPumpMsg with VarargsLogging
+trait VWorldRequest  extends VWorldMsg
+trait VWorldNotice extends VWorldMsg
 
-}
+
+
 trait VWAdminRqMsg extends VWorldRequest {
 	def processInSys(sysMgr : VWorldSysMgr, actCtx : ActorContext): Unit
 }
@@ -97,7 +115,9 @@ class VWorldBossActor[VWSM <: VWorldSysMgr](sysMgr : VWSM, hackStrap : VWorldStr
 		// Construction of any other actors used with the ctx must happen within this handler.
 		// Those actors may be sent back in receiptMsgs to answerTellers embedded in the input msg.
 		// Note that "context" here is a pseudo-field of the actor.
-		case vwmsg : VWorldRequest => processVWorldMsg(vwmsg, context)
+		case vwmsg : VWorldRequest => {
+			processVWorldMsg(vwmsg, context)
+		}
 	}
 
 	override protected def getSysMgr : VWSM = sysMgr
@@ -115,5 +135,12 @@ object VWorldBossFactory {
 		val vwbossActorProps = Props(classOf[VWorldBossActor[VWorldSysMgr]], vwsys, vwstrap)
 		val vwbActorRef : ActorRef = akkaSys.actorOf(vwbossActorProps, bossActorName)
 		vwbActorRef
+	}
+}
+
+class VWorldJobActor[VWMsg <: VWorldMsg](jobLogic : VWorldJobLogic[VWMsg]) extends Actor with ActorLogging {
+	def receive = {
+		case vwmsg : VWMsg => jobLogic.processMsg(vwmsg, self, sender, context)
+		case oth : Any => log.warning("Job.receive for logic={} ignoring non-VWMsg {}", jobLogic, oth)
 	}
 }
