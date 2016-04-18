@@ -21,6 +21,7 @@ class DullPumpTopActor(myCPumpCtx : DullPumpCtx) extends Actor with ActorLogging
 		// Construction of any other actors used with the ctx must happen within this handler.
 		// Those actors may be sent back in receiptMsgs to answerTellers embedded in the input msg.
 		case adminMsg : CPAdminRequestMsg[DullPumpCtx] => adminMsg.processInCtx(myCPumpCtx, context) // , self, context)
+		case otherMsg : Any => log.warning("Ignoring unexpected message: {}", otherMsg)
 	}
 
 }
