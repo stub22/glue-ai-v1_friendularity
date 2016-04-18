@@ -23,6 +23,7 @@ public class CCMIO_CPumpHelper extends BasicDebugger {
 	private static OurAkkaOSGiActivator ourAkkaActivator = null;
 
 	public static String ourAkkaSysName = "ccmioBundle";
+	public static String ourPumpName = "ccmioPump";
 
 	private static OurAkkaOSGiActivator getAkkaActivSingle() {
 		if (ourAkkaActivator == null) {
@@ -52,7 +53,7 @@ public class CCMIO_CPumpHelper extends BasicDebugger {
 			getLogger().info("No akka sys found, aborting CPump launch");
 			return false;
 		}
-		myDCPM = new PluginDemoCPumpMgr(myAkkaSys);
+		myDCPM = new PluginDemoCPumpMgr(myAkkaSys, ourPumpName);
 		// val cpumpActorRef : ActorRef = myDCPM.getCPumpActRef
 		// Typical result dumps as   Actor[akka://demoCPAS/user/demoCPump01#618243248]
 		// info1("^^^^^^^^^^^^^^^^^^^^^^^^  TestCPumpServer. main() - got initial cpumpActorRef: {}", cpumpActorRef);

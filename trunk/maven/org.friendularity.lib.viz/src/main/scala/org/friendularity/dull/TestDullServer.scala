@@ -10,9 +10,11 @@ import org.friendularity.respire.{VWARM_FindPublicTellers, VWARM_GreetFromPumpAd
   * Created by Owner on 4/13/2016.
   */
 object TestDullServer extends VarargsLogging {
+	val akkaSysName = "DullStandSys_4719"
+	val standPumpTestCtxName = "standPumpCtx_333"
+
 	def main(args: Array[String]): Unit = {
 
-		val standPumpTestCtxName = "standPumpCtx_333"
 		val standPumpCtxActorRef : ActorRef = findStandAppPumpTopActor(standPumpTestCtxName)
 		val standPumpAdminTeller = new ActorRefCPMsgTeller(standPumpCtxActorRef)
 
@@ -46,7 +48,7 @@ object TestDullServer extends VarargsLogging {
 		vwBossTeller.tellCPMsg(fptMsg)
 		info1("VWARM_FindPublicTellers SENT to VWBossTeller : {}", vwBossTeller)
 	}
-	private val akkaSysName = "DullStandSys_4719"
+
 	lazy private val myAkkaSys = ActorSystem(akkaSysName)
 	lazy private val myStandalonePumpSpace = new SpecialAppPumpSpace(myAkkaSys)
 	def findStandAppPumpTopActor(topActrName : String) : ActorRef = {

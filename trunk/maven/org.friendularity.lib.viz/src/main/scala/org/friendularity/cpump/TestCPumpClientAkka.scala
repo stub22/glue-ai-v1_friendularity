@@ -2,6 +2,8 @@ package org.friendularity.cpump
 
 import akka.actor._
 import org.appdapter.fancy.log.VarargsLogging
+import org.friendularity.dull.TestDullServer
+import org.friendularity.navui.NavUiTestPublicNames
 
 /**
   * Goal here is to post ThingActions over akka-remote so they are seen in TestCPumpServer process,
@@ -13,12 +15,17 @@ object TestCPumpClientAkka extends VarargsLogging {
 
 		info0 ("^^^^^^^^^^^^^^^^^^^^^^^^  TestCPumpClientAkka main().START");
 
-		val unitTestWithoutOSGi : Boolean = false
-		val unitTestServPath = "akka.tcp://standyCPASys4719@127.0.0.1:4719/user/demoCPump01"
+		val unitTestWithoutOSGi : Boolean = true
+		val serverIsNavUI : Boolean = false
+		val unitSysName = if (serverIsNavUI) NavUiTestPublicNames.akkaSysName else TestDullServer.akkaSysName
+		val unitPumpName = if (serverIsNavUI) NavUiTestPublicNames.cpumpName else TestDullServer.standPumpTestCtxName
+		val unitSrvPort = 4719
+		val unitTestServPath = "akka.tcp://" + unitSysName + "@127.0.0.1:" + unitSrvPort + "/user/" + unitPumpName
 		val ccmioServName = "ccmioBundle" // Matches what is in the bundle code
+		val ccmioPumpName = "ccmioPump"
 		val ccmioServHost = "127.0.0.1" // Local machine
 		val ccmioServPort = 4777 // matches ccmio's  application.conf
-		val ccmioCpumpActPath = "/user/demoCPump01"
+		val ccmioCpumpActPath = "/user/" + ccmioPumpName
 		val ccmioOSGiServCPumpPath = "akka.tcp://" + ccmioServName + "@" + ccmioServHost + ":" + ccmioServPort + ccmioCpumpActPath;
 		val betterPathAddr = new Address("akka.tcp", ccmioServName, ccmioServHost, ccmioServPort);
 		val bpout = betterPathAddr.toString
@@ -47,7 +54,7 @@ object TestCPumpClientAkka extends VarargsLogging {
 		val respConsActorRef = clientAkkaSys.actorOf(Props[ResponseConsumer], "cliRespCons")
 		val respConsTeller = new ActorRefCPMsgTeller(respConsActorRef)
 		val requestForResponseMsg = new RepliableTxtSymMsg ("Please call me back", Some(respConsTeller))
-
+		info2("Sending rq4RespMsg={} to tellser={}", requestForResponseMsg, selTeller)
 		selTeller.tellCPMsg(requestForResponseMsg)
 
 		import org.friendularity.ignore.nexjen.ThingActionFlow
@@ -55,6 +62,7 @@ object TestCPumpClientAkka extends VarargsLogging {
 		val ta = taflow.makeThingActionSpec()
 		val tamsg = new CPTAWrapMsg(ta, Some(respConsTeller))
 
+		info2("Sending tamsg={} to tellser={}", tamsg, selTeller)
 		selTeller.tellCPMsg(tamsg)
 
 		val one = AddressFromURIString("akka.tcp://sys@host:1234")

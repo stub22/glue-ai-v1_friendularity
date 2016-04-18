@@ -40,7 +40,7 @@ object DemoCPump extends VarargsLogging {
 	//	Appears that currently Akka is automatically initing logging with our log4j.properties.
 
 		info0("^^^^^^^^^^^^^^^^^^^^^^^^  DemoCPump main().START");
-		val myDCPM = new StandaloneDemoCPumpMgr
+		val myDCPM = new StandaloneDemoCPumpMgr(TestCPumpServer.akkaSysName, TestCPumpServer.testCPumpName)
 		val akkaSys = myDCPM.getActorSys
 		info2("ActorSystem {}\nSettings dump: {}", akkaSys, akkaSys.settings)
 		// val cpumpActorRef : ActorRef = myDCPM.getCPumpActRef
@@ -70,12 +70,13 @@ object DemoCPump extends VarargsLogging {
 // Wrapper for both an ActorSystem and a cpump-factory actor
 trait DemoCPumpMgr extends VarargsLogging {
 	// When local, a typical cpumpActorRef: Actor[akka://demoCPAS/user/demoCPump01#-1369953355]
-	private val testCPumpName = "demoCPump01"
+
 	private val cpumpEndListenerName = "demoCPASTerm"
 
+	protected def getTestCPumpName : String
 	protected[cpump] def getActorSys : ActorSystem
 
-	lazy private val myCPumpActRef : ActorRef = getActorSys.actorOf(Props[DemoCPumpActor], testCPumpName)
+	lazy private val myCPumpActRef : ActorRef = getActorSys.actorOf(Props[DemoCPumpActor], getTestCPumpName)
 	private def getCPumpActRef : ActorRef = myCPumpActRef
 
 	lazy private val myRootTeller = new ActorRefCPMsgTeller(myCPumpActRef)
@@ -93,14 +94,16 @@ trait DemoCPumpMgr extends VarargsLogging {
 	}
 }
 
-class StandaloneDemoCPumpMgr extends  DemoCPumpMgr {
-	private val akkaSysName = "standyCPASys4719"
+class StandaloneDemoCPumpMgr(akkaSysName : String, testCPumpName: String) extends  DemoCPumpMgr {
+
+	override protected def getTestCPumpName : String = testCPumpName
 	lazy private val myAkkaSys = ActorSystem(akkaSysName)  // Using case-class cons
 	override protected[cpump] def getActorSys : ActorSystem = myAkkaSys
 }
 
-class PluginDemoCPumpMgr(myAkkaSys: ActorSystem) extends  DemoCPumpMgr {
+class PluginDemoCPumpMgr(myAkkaSys: ActorSystem, testCPumpName: String) extends  DemoCPumpMgr {
 	override protected[cpump] def getActorSys : ActorSystem = myAkkaSys
+	override protected def getTestCPumpName : String = testCPumpName
 }
 
 case class WhoToGreet(who: String)

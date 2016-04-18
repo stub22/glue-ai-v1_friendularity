@@ -9,10 +9,13 @@ import org.appdapter.fancy.log.VarargsLogging
   */
 
 object TestCPumpServer extends VarargsLogging {
+	val akkaSysName = "standyCPASys4719"
+	val testCPumpName = "demoCPump01"
+
 	def main(args: Array[String]): Unit = {
 
 		info0("^^^^^^^^^^^^^^^^^^^^^^^^  TestCPumpServer.main()-START");
-		val myDCPM = new StandaloneDemoCPumpMgr
+		val myDCPM = new StandaloneDemoCPumpMgr(akkaSysName, testCPumpName)
 		// val cpumpActorRef : ActorRef = myDCPM.getCPumpActRef
 		// Typical result dumps as   Actor[akka://demoCPAS/user/demoCPump01#618243248]
 		// info1("^^^^^^^^^^^^^^^^^^^^^^^^  TestCPumpServer. main() - got initial cpumpActorRef: {}", cpumpActorRef);

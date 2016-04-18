@@ -55,13 +55,18 @@ object TestNavUI extends VarargsLogging {
 		val nuii = new NavUiAppImpl()
  		info1("^^^^^^^^^^^^^^^^^^^^^^^^  TestNavUI.main() creted nuii={}", nuii)
 		nuii.runSetupMsgs
+		info0("^^^^^^^^^^^^^^^^^^^^^^^^  TestNavUI.main() finished running setup msgs")
 	}
 
 }
-
+object NavUiTestPublicNames {
+	val akkaSysName : String = "NavUiStandApp_4719"
+	val akkaRemotePort : Integer = 4719
+	val cpumpName = "standPumpCtx_181"
+}
 
 class NavUiAppImpl extends VarargsLogging {
-	private val akkaSysName = "NavUiStandApp_4719"
+	private val akkaSysName : String = NavUiTestPublicNames.akkaSysName
 	lazy private val myAkkaSys = ActorSystem(akkaSysName)
 	lazy private val myStandalonePumpSpace = new SpecialAppPumpSpace(myAkkaSys)
 	private val loadLegacyConf = true
@@ -71,17 +76,20 @@ class NavUiAppImpl extends VarargsLogging {
 	lazy private val vwBossAR: ActorRef = VWorldBossFactory.makeVWorldBoss(myAkkaSys, "vworldBoss_818")
 	lazy private val vwBossTeller = new ActorRefCPMsgTeller(vwBossAR)
 
-	lazy private val standPumpTestCtxName = "standPumpCtx_181"
+	lazy private val standPumpTestCtxName = NavUiTestPublicNames.cpumpName
 	lazy private val standPumpCtxActorRef : ActorRef = myStandalonePumpSpace.findTopActorRef(standPumpTestCtxName)
 	lazy private val standPumpAdminTeller = new ActorRefCPMsgTeller(standPumpCtxActorRef)
 
 	def runSetupMsgs {
 		val hpatMsg = new VWARM_GreetFromPumpAdmin(standPumpAdminTeller)
+		info2("Sending msg={} to VWBossTeller : {}", hpatMsg, vwBossTeller)
 		vwBossTeller.tellCPMsg(hpatMsg)
-		info1("HelloPumpAdminTeller SENT to VWBossTeller : {}", vwBossTeller)
-		val fptMsg = new VWARM_FindPublicTellers(standPumpAdminTeller)
+
+		// This discovery message is usually sent from a remote client, with a more specific answerTeller
+		val answerReceiver = standPumpAdminTeller
+		val fptMsg = new VWARM_FindPublicTellers(answerReceiver)
+		info2("Sending msg={} to VWBossTeller : {}", fptMsg, vwBossTeller)
 		vwBossTeller.tellCPMsg(fptMsg)
-		info1("VWARM_FindPublicTellers SENT to VWBossTeller : {}", vwBossTeller)
 	}
 
 	def buildLegacyConfERC : EnhancedLocalRepoClient = {
