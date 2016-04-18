@@ -125,7 +125,7 @@ class ChnkrDirMapper(chunkHandle : LGSChunkHandle) extends VarargsLogging {
 		val propUri_srcPath = nsCCRT + "sourcePath"
 		val dirModelIn = myInputDirModel_opt.get
 		val srcPathProp = dirModelIn.createProperty(propUri_srcPath)
-		val srcPathStmts : StmtIterator = dirModelIn.listStatements(null, srcPathProp, null)
+ 		val srcPathStmts : StmtIterator = dirModelIn.listStatements(null, srcPathProp, null)
 		while (srcPathStmts.hasNext) {
 			val stmt = srcPathStmts.nextStatement
 			val subj = stmt.getSubject

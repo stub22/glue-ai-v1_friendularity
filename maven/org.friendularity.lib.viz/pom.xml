@@ -59,6 +59,7 @@
 			<artifactId>junit</artifactId>
 		</dependency>
         <!-- For network integration we use Spray and/or Camel (which has a QPid component) -->
+        <!--
         <dependency>
             <groupId>io.spray</groupId>
             <artifactId>spray-routing_2.10</artifactId>
@@ -80,7 +81,7 @@
             <artifactId>akka-camel_2.10</artifactId>
             <version>2.3.14</version>
         </dependency>
-
+        -->
 	</dependencies>
 	<build>	
 		<plugins>

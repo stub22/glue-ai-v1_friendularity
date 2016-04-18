@@ -82,7 +82,15 @@ trait VWorldBossLogic [VWSM <: VWorldSysMgr] {
 
 	}
 }
-// Top level actor for handling only the grossest VWorld system start/restart/shutdown kinds of messages.
+// Top level actor, directly handles only the grossest VWorld system start/restart/shutdown
+// kinds of messages.  More importantly, boss serves as top actor supervisor for all internal
+// vworld actors.   Conceptually it also marks the inside and the outside of the vworld.
+// The sysMgr and hackStrap are the *only* places that any complex state higgledy-piggledy
+// may take place, and it is our goal to minimize that state and code.  (That's why we give
+// these things names.  Shared state is bad, so we won't let it be vague or implicit!).
+
+// Child actors of this boss should not accept unserializable constructor args (or messages).
+
 class VWorldBossActor[VWSM <: VWorldSysMgr](sysMgr : VWSM, hackStrap : VWorldStrap)
 			extends Actor with ActorLogging with VWorldBossLogic[VWSM]{
 	def receive = {
