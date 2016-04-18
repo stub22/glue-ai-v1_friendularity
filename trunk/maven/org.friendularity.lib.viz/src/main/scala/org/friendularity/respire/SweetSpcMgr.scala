@@ -2,10 +2,11 @@ package org.friendularity.respire
 
 import akka.actor.{ActorLogging, Actor}
 import org.appdapter.core.store.Repo
+import org.appdapter.fancy.log.VarargsLogging
 import org.appdapter.fancy.model.ModelClientImpl
 import org.appdapter.fancy.rclient.RepoClient
 import org.friendularity.cpump.{Greeting, WhoToGreet}
-import org.friendularity.respire.MathyGoodyTest._
+
 
 /**
   * Created by Owner on 4/13/2016.
@@ -54,7 +55,7 @@ abstract class SweetSpcActor extends Actor with ActorLogging {
 class SweetSpcFactory {
 
 }
-class Hmm {
+class Hmm extends VarargsLogging {
 	// From MathyGoodyTest
 	def testDynaGoodyItemLoad(repo: Repo, repoClient: RepoClient): SweetDynaSpace = {
 		val graphQN = "ccrti:math_sheet_60";

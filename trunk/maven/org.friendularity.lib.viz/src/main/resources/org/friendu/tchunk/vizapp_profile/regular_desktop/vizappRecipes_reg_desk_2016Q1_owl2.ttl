@@ -22,10 +22,86 @@
 #################################################################
 
 
+###  http://onto.friendularity.org/indiv/vizappRecipes_reg_desk_2016Q1#nexus_grump_ee
+
+:nexus_grump_ee rdf:type appro:ASBRN_Character ,
+                         owl:NamedIndividual ;
+                
+                appro:usesFeature :vizapp_grump_cnfBrkRcp .
+
+
+
+###  http://onto.friendularity.org/indiv/vizappRecipes_reg_desk_2016Q1#nexus_vwon_too
+
+:nexus_vwon_too rdf:type appro:ASBRN_VWorldSimRuntime ,
+                         owl:NamedIndividual ;
+                
+                appro:usesFeature :vizapp_vwon_cnfBrkRcp .
+
+
+
+###  http://onto.friendularity.org/indiv/vizappRecipes_reg_desk_2016Q1#vizapp_funpak_cnfBrkRcp
+
+:vizapp_funpak_cnfBrkRcp rdf:type appro:AFBRM_ConfigGame ,
+                                  owl:NamedIndividual ;
+                         
+                         <http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#hasInGhostRecipe> :vizapp_funpak_folderRecipe .
+
+
+
+###  http://onto.friendularity.org/indiv/vizappRecipes_reg_desk_2016Q1#vizapp_funpak_folderGHost4
+
+:vizapp_funpak_folderGHost4 rdf:type mdir:GH4S_Folder ,
+                                     owl:NamedIndividual ;
+                            
+                            mdir:hasUrlText "org/friendu/tchunk/vizapp_cnf_funpak" .
+
+
+
+###  http://onto.friendularity.org/indiv/vizappRecipes_reg_desk_2016Q1#vizapp_funpak_folderRecipe
+
+:vizapp_funpak_folderRecipe rdf:type <http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#GhR_Refer> ,
+                                     owl:NamedIndividual ;
+                            
+                            <http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#hasGraphHost> :vizapp_funpak_folderGHost4 .
+
+
+
+###  http://onto.friendularity.org/indiv/vizappRecipes_reg_desk_2016Q1#vizapp_grump_cnfBrkRcp
+
+:vizapp_grump_cnfBrkRcp rdf:type appro:AFBRM_ConfigChar ,
+                                 owl:NamedIndividual ;
+                        
+                        <http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#hasInGhostRecipe> :vizapp_grump_folderRecipe .
+
+
+
+###  http://onto.friendularity.org/indiv/vizappRecipes_reg_desk_2016Q1#vizapp_grump_folderGHost4
+
+:vizapp_grump_folderGHost4 rdf:type mdir:GH4S_Folder ,
+                                    owl:NamedIndividual ;
+                           
+                           mdir:hasUrlText "org/friendu/tchunk/vizapp_cnf_grump" .
+
+
+
+###  http://onto.friendularity.org/indiv/vizappRecipes_reg_desk_2016Q1#vizapp_grump_folderRecipe
+
+:vizapp_grump_folderRecipe rdf:type <http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#GhR_Refer> ,
+                                    owl:NamedIndividual ;
+                           
+                           <http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#hasGraphHost> :vizapp_grump_folderGHost4 .
+
+
+
 ###  http://onto.friendularity.org/indiv/vizappRecipes_reg_desk_2016Q1#vizapp_legConf_brokerRecipe
 
 :vizapp_legConf_brokerRecipe rdf:type appro:AFBR_LegacyConfig ,
                                       owl:NamedIndividual ;
+                             
+                             appro:hasLegacyQuerySourceQName "ccrt:qry_sheet_77" ;
+                             
+                             appro:hasLegacyDefaultSparqlVarName "qGraph" ;
                              
                              <http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#hasInGhostRecipe> :vizapp_legConf_folderRecipe .
 
@@ -46,6 +122,33 @@
                                       owl:NamedIndividual ;
                              
                              <http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#hasGraphHost> :vizapp_legConf_folderGHost4 .
+
+
+
+###  http://onto.friendularity.org/indiv/vizappRecipes_reg_desk_2016Q1#vizapp_vwon_cnfBrkRcp
+
+:vizapp_vwon_cnfBrkRcp rdf:type appro:AFBRM_ConfigVWorld ,
+                                owl:NamedIndividual ;
+                       
+                       <http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#hasInGhostRecipe> :vizapp_vwon_folderRecipe .
+
+
+
+###  http://onto.friendularity.org/indiv/vizappRecipes_reg_desk_2016Q1#vizapp_vwon_folderGHost4
+
+:vizapp_vwon_folderGHost4 rdf:type mdir:GH4S_Folder ,
+                                   owl:NamedIndividual ;
+                          
+                          mdir:hasUrlText "org/friendu/tchunk/vizapp_cnf_vwon" .
+
+
+
+###  http://onto.friendularity.org/indiv/vizappRecipes_reg_desk_2016Q1#vizapp_vwon_folderRecipe
+
+:vizapp_vwon_folderRecipe rdf:type <http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#GhR_Refer> ,
+                                   owl:NamedIndividual ;
+                          
+                          <http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#hasGraphHost> :vizapp_vwon_folderGHost4 .
 
 
 

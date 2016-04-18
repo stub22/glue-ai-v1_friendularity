@@ -20,7 +20,7 @@ import org.appdapter.fancy.log.VarargsLogging;
 
 import com.hp.hpl.jena
 import jena.rdf.model.{ Model => JenaModel, ModelFactory => JenaModelFactory }
-import org.friendularity.chnkr.{ChnkrWrapRepo, AvatarSetupFuncs}
+import org.friendularity.chnkr.{ChnkrWrapRepo, AvatarLegacySetupFuncs}
 
 
 import org.ontoware.rdf2go
@@ -40,7 +40,7 @@ import org.cogchar.blob.entry.{EntryHost, PlainEntry, FolderEntry, DiskEntryHost
 import org.cogchar.api.owrap.crcp.{BRFeature => CC_BRFeature}
 import org.cogchar.api.owrap.appro.AFBRLegacyConfig
 
-object TestRaizLoad extends AvatarSetupFuncs with  VarargsLogging {
+object TestRaizLoad extends AvatarLegacySetupFuncs with  VarargsLogging {
 	val vizappRecipeNS = "http://onto.friendularity.org/indiv/vizappRecipes_reg_desk_2016Q1#"
 	val vizappBrokerRecipeUriTxt = vizappRecipeNS + "vizapp_legConf_brokerRecipe"
 	val pathToProfileFolder = "org/friendu/tchunk/vizapp_profile"

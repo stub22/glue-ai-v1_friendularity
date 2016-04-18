@@ -16,6 +16,7 @@
 
 package org.friendularity.chnkr
 import com.hp.hpl.jena.rdf.model.{Model => JenaModel, ModelFactory => JenaModelFactory}
+import org.cogchar.api.owrap.appro.AFBRLegacyConfig
 import org.cogchar.api.owrap.crcp.{BRFeature => CC_BRFeature}
 import org.cogchar.api.owrap.mdir.{GraphHost => MdirGraphHost, GraphHost3Triples, GraphPointer => MdirGraphPointer}
 import org.cogchar.blob.circus.{BrokerRecipeUtil, BrokerRecipeWrap, FeatureBrokerRecipeWrap}
@@ -24,12 +25,12 @@ import org.ontoware.rdf2go.model.node.{URI => R2GoURI}
 import org.ontoware.rdf2go.model.{Model => R2GoModel}
 
 // Accepts a general "Config" Broker recipe, which we presume leads to a ghostRecipe for config data for vworld.
-class VWConfBrokerRecipeWrap(val configBR : CC_BRFeature) extends
+class LegacyConfBrokerRecipeWrap(val configBR : AFBRLegacyConfig) extends
 		FeatureBrokerRecipeWrap(BrokerRecipeUtil.toFeatureBrokerRecipe(configBR)) {
 }
 
 
-class VWConfContentChnkr(private val myBRW : VWConfBrokerRecipeWrap)  extends SerialGraphChnkr { 
+class LegacyConfContentChnkr(private val myBRW : LegacyConfBrokerRecipeWrap)  extends SerialGraphChnkr {
 
 	override def getBrokerRecipeWrap : BrokerRecipeWrap = myBRW
    

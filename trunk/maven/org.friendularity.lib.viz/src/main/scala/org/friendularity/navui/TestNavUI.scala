@@ -13,8 +13,24 @@ import org.friendularity.chnkr.ChnkrWrapRepoSpec
   * Created by Owner on 4/1/2016.
   */
 class TestNavUI extends VarargsLogging {
-	// From:  private void attachVizTChunkLegConfRepo(final BundleContext bunCtx) {
 
+	// Goal - load vworld *incrementally* using messages found in "modern" config chunk(s),
+	// mediated by higher-level instructions from profile recipes.  Most of these messages
+	// (other than gross system-startup and system-shutdown) should be conveyable over
+	// network, so the load ordering logic is independent from the instruction execution.
+
+	// From the outside, the VWorld entities are all identified *only* by URI (optionally
+	// extended by offset params).  Anything not identified by URI(+offset) must be private
+	// to the VWorld.
+
+	// Currently URIs for all entities are assigned from *outside* the V-World (VWorldBossActor),
+	// and then passed in to it via entity creation messages.   All such URIs come from one of:
+	// cogchar+app ontologies, app profile data, app config chunks, or app java/scala code.
+
+
+
+	// Legacy config load section, gradually becoming obsolete:
+	// From:  private void attachVizTChunkLegConfRepo(final BundleContext bunCtx) {
 
 	val tchunkEHost: EntryHost = TestRaizLoad.makeBundleEntryHost(TestRaizLoad.getClass)
 	val mergedProfileGraph: Model = TestRaizLoad.getMergedProfileGraph_RegularDesktop(tchunkEHost)

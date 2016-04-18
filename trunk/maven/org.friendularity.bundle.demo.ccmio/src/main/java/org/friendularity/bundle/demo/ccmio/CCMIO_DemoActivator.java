@@ -10,6 +10,7 @@ import org.cogchar.app.puma.registry.PumaGlobalPrebootInjector;
 import org.cogchar.bind.symja.MathGate;
 import org.cogchar.blob.entry.EntryHost;
 import org.cogchar.bundle.app.vworld.central.VirtualWorldFactory;
+import org.cogchar.impl.scene.read.BehavMasterConfigTest;
 import org.friendularity.api.west.WorldEstimate;
 import org.friendularity.vworld.UnusedNetworkVisionDataFeed;
 import org.osgi.framework.BundleContext;
@@ -64,7 +65,7 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 	// These flags control feature activation.
 	// TODO: Replace with flag values sourced from profile.
 	public static	boolean		myFlag_attachVizappTChunkRepo = true; // false => uses old vanilla mediator backup
-	public static	boolean		myFlag_connectJVision = true;  	      // Read JNI vision stream
+	public static	boolean		myFlag_connectJVision = true;  	      // Read JNI (JNA?) vision stream
 	private	boolean		myFlag_connectObsoleteNetworkVision = false;  // Read QPid vision streams
 
 	private	boolean		myFlag_connectSwingDebugGUI = false;  // Swing debug code disabled, anyway
@@ -129,13 +130,15 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 
 	// When active this VizTChunk removes the need for DemoMediator setup at bottom of this file.
 	private void attachVizTChunkLegConfRepo(final BundleContext bunCtx) {
-		// Same eHost is used for profile and config data, but separate is also supported.
+		// Same eHost is used here for profile and config data, but separate eHosts is also OK.
+		// Easiest way to identify an bundleEHost is to specify a class from same bundle.
 		EntryHost	 tchunkEHost = TestRaizLoad.makeBundleEntryHost(TestRaizLoad.class);
 		Model mergedProfileGraph = TestRaizLoad.getMergedProfileGraph_RegularDesktop(tchunkEHost);
 		String vzBrkRcpUriTxt = TestRaizLoad.vizappBrokerRecipeUriTxt();
-		ChnkrWrapRepoSpec	legConfRepoSpec = TestRaizLoad.makeVWConfRepoSpec(mergedProfileGraph, vzBrkRcpUriTxt, tchunkEHost);
-		getLogger().info("legConfRepoSpec={}", legConfRepoSpec);
-		TestRaizLoad.makeAndRegisterAvatarConfigRC(bunCtx, legConfRepoSpec);
+		TestRaizLoad.makeAndRegisterAvatarConfigRepo(bunCtx, mergedProfileGraph, vzBrkRcpUriTxt, tchunkEHost);
+	//	ChnkrWrapRepoSpec	legConfRepoSpec = TestRaizLoad.makeVWConfRepoSpec(mergedProfileGraph, vzBrkRcpUriTxt, tchunkEHost);
+	//	getLogger().info("legConfRepoSpec={}", legConfRepoSpec);
+	//	TestRaizLoad.makeAndRegisterAvatarConfigRC(bunCtx, legConfRepoSpec);
 	}
 
 	private void launchPumaRobotsAndChars(BundleContext bundleCtx) {
@@ -192,7 +195,6 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 			//	Startup alternate QPid network vision connection (separate from JVision)
 			startObsoleteNetworkVisionMonitors();
 		}
-		// 2016 - current thinking
 		if (myFlag_connectSwingDebugGUI) {
 			throw new RuntimeException("SwingDebugGUI is disabled, so flag should be false.");
 			// setupDebuggingScaffold(mg, we);

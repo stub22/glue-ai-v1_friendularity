@@ -47,12 +47,12 @@ class ChnkrWrapRepo(chunkDirMapper : ChnkrDirMapper)  extends BasicRepoImpl with
 	
 	
 }
-class ChnkrWrapRepoSpec(brokerRecipeWrap: VWConfBrokerRecipeWrap, pathEntryHost : EntryHost) extends  RepoSpec { 
+class ChnkrWrapRepoSpec(brokerRecipeWrap: LegacyConfBrokerRecipeWrap, pathEntryHost : EntryHost) extends  RepoSpec {
 
 	// protected def makeChnker
 	
 	private lazy val myChunkHandle : LGSChunkHandle = {
-		val chnkr = new VWConfContentChnkr(brokerRecipeWrap)
+		val chnkr = new LegacyConfContentChnkr(brokerRecipeWrap)
 		val maxEntries = 100
 		chnkr.buildChunkUsingSingleHost(pathEntryHost, maxEntries)			
 	}
