@@ -15,7 +15,7 @@ object TestCPumpClientAkka extends VarargsLogging {
 
 		info0 ("^^^^^^^^^^^^^^^^^^^^^^^^  TestCPumpClientAkka main().START");
 
-		val unitTestWithoutOSGi : Boolean = true
+		val unitTestWithoutOSGi : Boolean = false
 		val serverIsNavUI : Boolean = false
 		val unitSysName = if (serverIsNavUI) NavUiTestPublicNames.akkaSysName else TestDullServer.akkaSysName
 		val unitPumpName = if (serverIsNavUI) NavUiTestPublicNames.cpumpName else TestDullServer.standPumpTestCtxName

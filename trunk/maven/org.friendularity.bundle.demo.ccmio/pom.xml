@@ -107,6 +107,8 @@
                                         org.friendularity.appro,
                                         org.friendularity.chnkr,
                                         org.friendularity.cpump,
+                                        org.friendularity.dull,
+                                        org.friendularity.navui,
                                         org.friendularity.ignore.*
 						</Export-Package>
                         <!-- org.parboiled,  shapeless,  org.uncommons.maths  are used by spray-http -->
