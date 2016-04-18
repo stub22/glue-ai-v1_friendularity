@@ -48,6 +48,11 @@
             <version>${appdapter.version}</version>
         </dependency>
         <dependency>
+            <groupId>com.typesafe.akka</groupId>
+            <artifactId>akka-slf4j_2.10</artifactId>
+            <version>2.3.15</version>
+        </dependency>
+        <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.core</artifactId>
             <!--
@@ -58,6 +63,7 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 		</dependency>
+
         <!-- For network integration we use Spray and/or Camel (which has a QPid component) -->
         <!--
         <dependency>

@@ -1,5 +1,6 @@
 package org.friendularity.bundle.demo.ccmio;
 
+import org.appdapter.fancy.rclient.EnhancedLocalRepoClient;
 import org.appdapter.fancy.rspec.RepoSpec;
 import org.appdapter.osgi.core.BundleActivatorBase;
 import org.appdapter.xload.rspec.OnlineSheetRepoSpec;
@@ -71,6 +72,9 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 	private	boolean		myFlag_connectSwingDebugGUI = false;  // Swing debug code disabled, anyway
 	private boolean		myFlag_monitorLifecycles = true;  // LifeMon window is launched by .start()
 
+	private Class 		myProfileMarkerClz = TestRaizLoad.class;
+	private Class 		myLegConfMarkerClz = TestRaizLoad.class;
+
 	@Override public void start(final BundleContext context) throws Exception {
 		// Need to tell the MacroBundle system that we are the main launcher, so that forceLog4JConfig will work.
 		macroStartupSettings.firstBundleActivatorBase = this;
@@ -106,9 +110,15 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 
 	private void launchCcmioDemo(BundleContext bundleCtx) {
 		getLogger().info("============ launchCcmioDemo BEGIN  ==========");
+		EntryHost	profileEHost = TestRaizLoad.makeBundleEntryHost(myProfileMarkerClz);
+		Model mergedProfileJM = loadMergedProfileGraph(profileEHost);
+		if (mergedProfileJM == null) {
+			throw new RuntimeException("launchCcmioDemo cannot read profile from classpath containing " + myProfileMarkerClz);
+		}
 		if (myFlag_attachVizappTChunkRepo) {
+			EntryHost	legConfEHost = TestRaizLoad.makeBundleEntryHost(myLegConfMarkerClz);
 			getLogger().info("============= Calling attachVizTChunkLegConfRepo() ======");
-			attachVizTChunkLegConfRepo(bundleCtx);
+			attachVizTChunkLegConfRepo(bundleCtx, mergedProfileJM, legConfEHost);
 		}
 		getLogger().info("============ Calling launchPumaRobotsAndChars()  ==========");
 		launchPumaRobotsAndChars(bundleCtx);
@@ -128,17 +138,20 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 		super.stop(context);
     }
 
+
+	// profileDataMarkerClz should have same classpath (i.e. same OSGi bundle) as the profile data.
+	private Model loadMergedProfileGraph(EntryHost	 profileEHost) {
+		Model mergedProfileGraph = TestRaizLoad.getMergedProfileGraph_RegularDesktop(profileEHost);
+		return mergedProfileGraph;
+	}
 	// When active this VizTChunk removes the need for DemoMediator setup at bottom of this file.
-	private void attachVizTChunkLegConfRepo(final BundleContext bunCtx) {
+	private void attachVizTChunkLegConfRepo(final BundleContext bunCtx, Model mergedProfileGraph, EntryHost legConfEHost) {
 		// Same eHost is used here for profile and config data, but separate eHosts is also OK.
 		// Easiest way to identify an bundleEHost is to specify a class from same bundle.
-		EntryHost	 tchunkEHost = TestRaizLoad.makeBundleEntryHost(TestRaizLoad.class);
-		Model mergedProfileGraph = TestRaizLoad.getMergedProfileGraph_RegularDesktop(tchunkEHost);
 		String vzBrkRcpUriTxt = TestRaizLoad.vizappBrokerRecipeUriTxt();
-		TestRaizLoad.makeAndRegisterAvatarConfigRepo(bunCtx, mergedProfileGraph, vzBrkRcpUriTxt, tchunkEHost);
-	//	ChnkrWrapRepoSpec	legConfRepoSpec = TestRaizLoad.makeVWConfRepoSpec(mergedProfileGraph, vzBrkRcpUriTxt, tchunkEHost);
-	//	getLogger().info("legConfRepoSpec={}", legConfRepoSpec);
-	//	TestRaizLoad.makeAndRegisterAvatarConfigRC(bunCtx, legConfRepoSpec);
+		EnhancedLocalRepoClient legacyConfERC = TestRaizLoad.makeAvatarLegacyConfigRepo(mergedProfileGraph, vzBrkRcpUriTxt, legConfEHost);
+		getLogger().info("legConfEnhRepoCli={}", legacyConfERC);
+		TestRaizLoad.registerAvatarConfigRepoClient(bunCtx, legacyConfERC);
 	}
 
 	private void launchPumaRobotsAndChars(BundleContext bundleCtx) {
