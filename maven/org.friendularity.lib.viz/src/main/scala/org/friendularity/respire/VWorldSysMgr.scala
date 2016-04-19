@@ -19,7 +19,7 @@ package org.friendularity.respire
 import akka.actor._
 import org.appdapter.fancy.log.VarargsLogging
 import org.friendularity.cpump.{ListenChanDirectActor, CPumpMsg, CPMsgTeller, CPAdminRequestMsg}
-import org.friendularity.dull.DullPumpCtx
+
 
 /**
   * Created by Owner on 4/14/2016.
@@ -33,48 +33,7 @@ trait VWorldSysMgr {
 trait VWorldStrap {
 //	def	getPumpCtx : DullPumpCtx
 }
-trait VWorldJobLogic[Msg <: VWorldMsg] {
-	def processMsg(msg : Msg, slf : ActorRef, sndr : ActorRef, actx : ActorContext) : Unit
-}
 
-trait VWorldMsg extends CPumpMsg with VarargsLogging
-trait VWorldRequest  extends VWorldMsg
-trait VWorldNotice extends VWorldMsg
-
-
-
-trait VWAdminRqMsg extends VWorldRequest {
-	def processInSys(sysMgr : VWorldSysMgr, actCtx : ActorContext): Unit
-}
-case class VWARM_GreetFromPumpAdmin(pumpAdminTeller : CPMsgTeller) extends VWAdminRqMsg {
-	override def processInSys(sysMgr : VWorldSysMgr, actCtx : ActorContext) : Unit = {
-		info3("Processing {} message with sysMgr={} and actCtx={}", this, sysMgr, actCtx)
-	}
-}
-case class VWARM_FindGoodyTeller(answerTeller: CPMsgTeller) extends VWAdminRqMsg {
-	override def processInSys(sysMgr : VWorldSysMgr, actCtx : ActorContext) : Unit = {
-		info3("Processing {} message with sysMgr={} and actCtx={}", this, sysMgr, actCtx)
-	}
-}
-case class VWARM_FindPublicTellers(answerTeller: CPMsgTeller) extends VWAdminRqMsg {
-	override def processInSys(sysMgr : VWorldSysMgr, actCtx : ActorContext) : Unit = {
-		info3("Processing {} message with sysMgr={} and actCtx={}", this, sysMgr, actCtx)
-		val pubTellers : VWorldPublicTellers = sysMgr.findPublicTellers
-		answerTeller.tellCPMsg(pubTellers)
-	}
-
-}
-trait VWContentRq extends VWorldRequest {
-}
-trait RdfMsg {
-	def asTurtleString : String
-
-	def asJenaModel(flags_opt: Option[AnyRef]) : AnyRef
-	// def asR2goModel : AnyRef
-}
-trait VWGoodyRqRdf extends VWContentRq  with RdfMsg{
-
-}
 // The vworldBoss supplies this serializable directory of its actors to any client who asks.
 // From here clients can navigate to all published vworld service actors.
 // Client may also know+find these same actors and other actors by other means.
@@ -121,6 +80,10 @@ class VWorldBossActor[VWSM <: VWorldSysMgr](sysMgr : VWSM, hackStrap : VWorldStr
 	}
 
 	override protected def getSysMgr : VWSM = sysMgr
+
+
+
+
 }
 class VWSysMgrImpl extends VWorldSysMgr {
 	override def findPublicTellers : VWorldPublicTellers = new VWorldPublicTellers{}
@@ -138,9 +101,10 @@ object VWorldBossFactory {
 	}
 }
 
+// Consider:  Pass in a msgClz instance for stronger type filtering?
 class VWorldJobActor[VWMsg <: VWorldMsg](jobLogic : VWorldJobLogic[VWMsg]) extends Actor with ActorLogging {
 	def receive = {
-		case vwmsg : VWMsg => jobLogic.processMsg(vwmsg, self, sender, context)
+		case vwmsg : VWMsg => jobLogic.processMsgSafe(vwmsg, self, sender, context)
 		case oth : Any => log.warning("Job.receive for logic={} ignoring non-VWMsg {}", jobLogic, oth)
 	}
 }
