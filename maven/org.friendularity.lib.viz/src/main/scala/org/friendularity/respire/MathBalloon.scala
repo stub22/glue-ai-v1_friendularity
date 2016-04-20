@@ -110,7 +110,7 @@ import com.jme3.scene.{Node}
 
 import org.cogchar.render.goody.dynamic.{DynamicGoodyParent}
 
-// Binds us in to attach a 
+// Binds sweetDynaSpace to vworld
 class BigBalloon extends TrialBalloon with DynamicGoodyParent {
 	
 	def attachDeepDynaSpace(sweetDS: SweetDynaSpace) { 

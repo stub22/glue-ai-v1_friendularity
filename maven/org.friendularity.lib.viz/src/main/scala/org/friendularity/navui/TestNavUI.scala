@@ -29,7 +29,7 @@ import org.friendularity.cpump.ActorRefCPMsgTeller
 import org.friendularity.dull.SpecialAppPumpSpace
 
 
-import org.friendularity.respire.{VWARM_FindPublicTellers, VWARM_GreetFromPumpAdmin, VWorldBossFactory}
+import org.friendularity.respire.{BalloonSim, VWARM_FindPublicTellers, VWARM_GreetFromPumpAdmin, VWorldBossFactory}
 
 /**
   * Created by Owner on 4/1/2016.
@@ -55,7 +55,9 @@ object TestNavUI extends VarargsLogging {
 		val nuii = new NavUiAppImpl()
  		info1("^^^^^^^^^^^^^^^^^^^^^^^^  TestNavUI.main() creted nuii={}", nuii)
 		nuii.runSetupMsgs
-		info0("^^^^^^^^^^^^^^^^^^^^^^^^  TestNavUI.main() finished running setup msgs")
+		info0("^^^^^^^^^^^^^^^^^^^^^^^^  TestNavUI.main() finished running setup msgs, now making SimSpace VWCanv")
+		nuii.makeSimSpace()
+		info0("^^^^^^^^^^^^^^^^^^^^^^^^  TestNavUI.main() finished makeSimSpace()")
 	}
 
 }
@@ -106,7 +108,15 @@ class NavUiAppImpl extends VarargsLogging {
 		legConfERC
 	}
 
+	def makeSimSpace(): Unit = {
 
+		val bsim = new BalloonSim {}
+		info0("makeSimSpace Calling bsim.setup")
+		bsim.setup
+		info0("makeSimSpace Calling bsim.gridSpaceTest")
+		bsim.gridSpaceTest
+		info0("makeSimSpace end")
+	}
 	// registerAvatarConfigRepoClient(bunCtx, erc);
 
 }
