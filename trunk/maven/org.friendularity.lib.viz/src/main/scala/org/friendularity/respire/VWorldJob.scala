@@ -111,7 +111,7 @@ class MsgJobFactoryPairImpl[Msg <: CPumpMsg](upperFilterClz : Class[Msg], jobLog
 
 trait VWorldJobLogic[-Msg <: VWorldMsg] extends MsgJobLogic[Msg] {
 	// This method has a lot of authority, exercisable through the main actor-receive context args.
-	// Overriding this method is the main extension point for VWorld messaging features.
+	// Overriding processMsgUnsafe is the main extension point for VWorld messaging features.
 	// Impl may cause messages to other actors, creation of other actors, mutation of internal state.
 	// May throw exceptions.
 }

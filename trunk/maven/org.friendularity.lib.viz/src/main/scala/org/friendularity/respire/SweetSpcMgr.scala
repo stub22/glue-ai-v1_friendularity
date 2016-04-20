@@ -108,7 +108,7 @@ From BigBalloon... with DynamicGoodyParent {
 		...which is shown above in Hmmm
 
 		The data-grid attached in	CCMIO_WorldEstimateRenderModule
-		comes from SnapshotMonitor; // extends TrialContent, shows big matrix of numbers+colors
+		comes from SnapshotMonitor (also in CCMIO); extends TrialContent, shows big matrix of numbers+colors
 
 		In MathBalloon that same grid is being inherited from TrialBalloon, shown as TrialContent.
 
