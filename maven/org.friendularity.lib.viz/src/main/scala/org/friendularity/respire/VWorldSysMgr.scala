@@ -28,6 +28,8 @@ import org.friendularity.cpump.{ListenChanDirectActor, CPumpMsg, CPMsgTeller, CP
 // Legit state of a running VWorld system is managed by an instance of VWorldSysMgr.
 trait VWorldSysMgr {
 	def findPublicTellers : VWorldPublicTellers
+
+
 }
 // (hack)Strap holds any icky extra shared state that we temporarily want to pass to VWorldBossActor.
 trait VWorldStrap {
@@ -69,7 +71,7 @@ trait VWorldBossLogic [VWSM <: VWorldSysMgr] {
 // Child actors of this boss should not accept unserializable constructor args (or messages).
 
 class VWorldBossActor[VWSM <: VWorldSysMgr](sysMgr : VWSM, hackStrap : VWorldStrap)
-			extends Actor with ActorLogging with VWorldBossLogic[VWSM]{
+			extends Actor with ActorLogging with VWorldBossLogic[VWSM]  {
 	def receive = {
 		// Construction of any other actors used with the ctx must happen within this handler.
 		// Those actors may be sent back in receiptMsgs to answerTellers embedded in the input msg.
@@ -80,9 +82,6 @@ class VWorldBossActor[VWSM <: VWorldSysMgr](sysMgr : VWSM, hackStrap : VWorldStr
 	}
 
 	override protected def getSysMgr : VWSM = sysMgr
-
-
-
 
 }
 class VWSysMgrImpl extends VWorldSysMgr {
@@ -101,10 +100,3 @@ object VWorldBossFactory {
 	}
 }
 
-// Consider:  Pass in a msgClz instance for stronger type filtering?
-class VWorldJobActor[VWMsg <: VWorldMsg](jobLogic : VWorldJobLogic[VWMsg]) extends Actor with ActorLogging {
-	def receive = {
-		case vwmsg : VWMsg => jobLogic.processMsgSafe(vwmsg, self, sender, context)
-		case oth : Any => log.warning("Job.receive for logic={} ignoring non-VWMsg {}", jobLogic, oth)
-	}
-}
