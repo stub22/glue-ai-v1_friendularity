@@ -22,58 +22,61 @@ trait VWSceneGraphMgr extends VWorldJobLogic[VWSceneRq] {
 	}
 
 }
-trait BalloonSim extends VarargsLogging {
+trait SimBalloonLauncher extends VarargsLogging {
 	lazy val myTBApp: TrialBalloon = new SimBalloon
+	// Generally called on main() thread to do initial app setup.
 	def setup: Unit = {
 		// Code copied from TrialBalloon.main
-		info0("^^^^^^^^^^^^^^^^^^^^^^^^  BSgo() calling initMidi()")
+		info0("^^^^^^^^^^^^^^^^^^^^^^^^  SimBalloonLauncher.setup() calling initMidi()")
 		// Initialize any MIDI stuff.
 		myTBApp.initMidi
-		info0("^^^^^^^^^^^^^^^^^^^^^^^^  BSgo() calling JME3 start(), which will in turn call TrialBalloon.simpleInitApp()")
+		info0("^^^^^^^^^^^^^^^^^^^^^^^^  SimBalloonLauncher.setup() calling JME3 start(), which will in turn call TrialBalloon.simpleInitApp()")
 		// Start the JME3 Virtual world.
+		// We may be blocked in this method until the user confirms Canvas startup.
 		myTBApp.start
 
 		// org.cogchar.api.space.GridSpaceTest.goGoGo
-		// info0("^^^^^^^^^^^^^^^^^^^^^^^^  BSgo() starting config-load test")
+		// info0("^^^^^^^^^^^^^^^^^^^^^^^^  SimBalloonLauncher.setup() starting config-load test")
 		// app.optLoadConfig();
-	//	info0("^^^^^^^^^^^^^^^^^^^^^^^^ BSgo() calling playMidiOutput()")
+	//	info0("^^^^^^^^^^^^^^^^^^^^^^^^ SimBalloonLauncher.setup() calling playMidiOutput()")
 	//	tbApp.playMidiOutput
 
-		info0("^^^^^^^^^^^^^^^^^^^^^^^^ End of BSgo()")
+		info0("^^^^^^^^^^^^^^^^^^^^^^^^ End of SimBalloonLauncher.setup()")
 	}
 	// Copied from org.cogchar.api.space.GridSpaceTest
 	def gridSpaceTest : Unit = {
-		info0("^^^^^^^^^^^^^^^^^^^^^^^^  BalloonSim starting GridSpace test")
-		getLogger().info("BS-GST sez: Hello Dear User!  We will now go()")
+		info0("^^^^^^^^^^^^^^^^^^^^^^^^  SimBalloonLauncher starting GridSpace test")
+
 
 		// This block from x=3,y=-1 to x=5,y=6 extends "beyond" its implied containing cell space, which starts at x=1,y=1
 		val cellBlock = CellRangeFactory.makeBlock2D(3, 5, -1, 6)
-		getLogger().info("BS-GST sez:  CellBlock description={}", cellBlock.describe(1)) // cellFrom == 1 -> base-1 labelling
+		info1("BS-GST sez:  CellBlock description={}", cellBlock.describe(1)) // cellFrom == 1 -> base-1 labelling
 
 		val space2D : MultiDimGridSpace = GridSpaceFactory.makeSpace2D(5, 80.0f, 120.0f, 7, -20.0f, 15.0f)
-		getLogger().info("BS-GST sez:  2D Space description={}", space2D.describe()) // cellFrom == 1 -> base-1 labelling
+		info1("BS-GST sez:  2D Space description={}", space2D.describe()) // cellFrom == 1 -> base-1 labelling
 
 		val posBlock = space2D.computePosBlockForCellBlock(cellBlock);
-		getLogger().info("BS-GST sez:  Computed result PosBlock description={}", posBlock.describe)
+		info1("BS-GST sez:  Computed result PosBlock description={}", posBlock.describe)
 		val vecOnDiag = posBlock.getVecFromMainDiagonal(2.0f)
-		getLogger().info("BS-GST sez:  Vec on pos-block diag at 2.0f * MAX ={}", vecOnDiag)
+		info1("BS-GST sez:  Vec on pos-block diag at 2.0f * MAX ={}", vecOnDiag)
 
 		val vecAtMin = posBlock.getVecFromMainDiagonal(0.0f)
-		getLogger().info("BS-GST sez:  Vec on pos-block diag at 0.0f * MAX ={}", vecAtMin)
+		info1("BS-GST sez:  Vec on pos-block diag at 0.0f * MAX ={}", vecAtMin)
 
 		val blockAt729 = CellRangeFactory.makeUnitBlock3D(7, 2, 9)
-		getLogger().info("BS-GST sez:  3D unit block at 7,2,9 description={}", blockAt729.describe(1))
+		info1("BS-GST sez:  3D unit block at 7,2,9 description={}", blockAt729.describe(1))
 
 		val space3D : MultiDimGridSpace = GridSpaceFactory.makeSpace3D(7, -40.0f, 40.0f, 5, -20.0f, 20.0f, 9, -50.0f, 20.0f);
-		getLogger().info("BS-GST sez:  3D Space description={}", space2D.describe()) // cellFrom == 1 -> base-1 labelling
+		info1("BS-GST sez:  3D Space description={}", space2D.describe()) // cellFrom == 1 -> base-1 labelling
 
-		getLogger().info("BS-GST sez:  We are now done go()ne.  Goodbye Dear User!")
+		info0("BS-GST sez:  We are now done go()ne.  Goodbye Dear User!")
 
 	}
 }
 //
 class SimBalloon extends BigBalloon {
-	//val myMidiBrdg = new TempMidiBridge
+
+	// Invoked on JME3 app-init thread, as part of simpleAppInit
 	override protected def doMoreSimpleInit: Unit = {
 		shving
 	}
@@ -108,6 +111,6 @@ class SimBalloon extends BigBalloon {
 		tcam.setupCamerasAndViews(rrc, crc, myContent)
 		// Hand the MIDI bindings to the camera-aware app.
 		// (Disabled until rebuild with this method public)
-		// tcam.attachMidiCCs(ccpr)
+		tcam.attachMidiCCs(ccpr)
 	}
 }

@@ -29,7 +29,7 @@ import org.friendularity.cpump.ActorRefCPMsgTeller
 import org.friendularity.dull.SpecialAppPumpSpace
 
 
-import org.friendularity.respire.{BalloonSim, VWARM_FindPublicTellers, VWARM_GreetFromPumpAdmin, VWorldBossFactory}
+import org.friendularity.respire.{SimBalloonLauncher, VWARM_FindPublicTellers, VWARM_GreetFromPumpAdmin, VWorldBossFactory}
 
 /**
   * Created by Owner on 4/1/2016.
@@ -51,9 +51,14 @@ object TestNavUI extends VarargsLogging {
 
 
 	def main(args: Array[String]): Unit = {
-
+		// These two lines activate Log4J (at max verbosity!) without requiring a log4j.properties file.
+		// However, when a log4j.properties file is present, these commands should not be used.
+		org.apache.log4j.BasicConfigurator.configure();
+		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.ALL);
 		val nuii = new NavUiAppImpl()
  		info1("^^^^^^^^^^^^^^^^^^^^^^^^  TestNavUI.main() creted nuii={}", nuii)
+		val legConfERC_opt = nuii.getLegConfERC_opt
+		info1("^^^^^^^^^^^^^^^^^^^^^^^^  TestNavUI.main() got legConfERC_opt={}", legConfERC_opt)
 		nuii.runSetupMsgs
 		info0("^^^^^^^^^^^^^^^^^^^^^^^^  TestNavUI.main() finished running setup msgs, now making SimSpace VWCanv")
 		nuii.makeSimSpace()
@@ -82,6 +87,7 @@ class NavUiAppImpl extends VarargsLogging {
 	lazy private val standPumpCtxActorRef : ActorRef = myStandalonePumpSpace.findTopActorRef(standPumpTestCtxName)
 	lazy private val standPumpAdminTeller = new ActorRefCPMsgTeller(standPumpCtxActorRef)
 
+	def getLegConfERC_opt = legConfERC_opt
 	def runSetupMsgs {
 		val hpatMsg = new VWARM_GreetFromPumpAdmin(standPumpAdminTeller)
 		info2("Sending msg={} to VWBossTeller : {}", hpatMsg, vwBossTeller)
@@ -97,9 +103,10 @@ class NavUiAppImpl extends VarargsLogging {
 	def buildLegacyConfERC : EnhancedLocalRepoClient = {
 		// Legacy config load section, gradually becoming obsolete:
 		// Under OSGi (e.g. CCMIO), old PumaBoot process is set up by attachVizTChunkLegConfRepo(BundleContext bunCtx).
-		// But here, we only need the actor boundary between the client file data config side, and the server VWorld.
+		//val tchunkEHost: EntryHost = TestRaizLoad.makeBundleEntryHost(TestRaizLoad.getClass)
 
-		val tchunkEHost: EntryHost = TestRaizLoad.makeBundleEntryHost(TestRaizLoad.getClass)
+		val tchunkEHost: EntryHost = TestRaizLoad.getUnitTestResourceEntryHost
+
 		val mergedProfileGraph: Model = TestRaizLoad.getMergedProfileGraph_RegularDesktop(tchunkEHost)
 		val vzBrkRcpUriTxt: String = TestRaizLoad.vizappBrokerRecipeUriTxt
 
@@ -110,7 +117,7 @@ class NavUiAppImpl extends VarargsLogging {
 
 	def makeSimSpace(): Unit = {
 
-		val bsim = new BalloonSim {}
+		val bsim = new SimBalloonLauncher {}
 		info0("makeSimSpace Calling bsim.setup")
 		bsim.setup
 		info0("makeSimSpace Calling bsim.gridSpaceTest")

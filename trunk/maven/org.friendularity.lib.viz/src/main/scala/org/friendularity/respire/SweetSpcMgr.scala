@@ -17,10 +17,28 @@
 package org.friendularity.respire
 
 import akka.actor.{ActorLogging, Actor}
+import com.jme3.font.BitmapText
+import com.jme3.material.Material
+import com.jme3.math.{Vector3f, FastMath, Quaternion, ColorRGBA}
+import com.jme3.renderer.Camera
+import com.jme3.renderer.queue.RenderQueue
+import com.jme3.scene.shape.Quad
+import com.jme3.scene.{Geometry, Mesh, Node}
+import org.appdapter.core.name.Ident
 import org.appdapter.core.store.Repo
 import org.appdapter.fancy.log.VarargsLogging
 import org.appdapter.fancy.model.ModelClientImpl
 import org.appdapter.fancy.rclient.RepoClient
+import org.cogchar.api.space._
+import org.cogchar.name.goody.GoodyNames
+import org.cogchar.render.app.entity.{GoodySpace, CameraBinding, GoodyActionExtractor, VWorldEntity}
+import org.cogchar.render.goody.basic.{GoodyBox, VirtualFloor}
+import org.cogchar.render.goody.bit.{TicTacGrid, TicTacMark, BitCube, BitBox}
+import org.cogchar.render.goody.flat.{ParagraphGoody, ScoreBoardGoody, CrossHairGoody}
+import org.cogchar.render.optic.goody.VWorldCameraEntity
+import org.cogchar.render.sys.goody.GoodyRenderRegistryClient
+import org.cogchar.render.sys.registry.RenderRegistryClient
+import org.cogchar.render.trial.{TrialNexus, TextSpatialFactory}
 import org.friendularity.cpump.{Greeting, WhoToGreet}
 
 
@@ -113,3 +131,168 @@ From BigBalloon... with DynamicGoodyParent {
 		In MathBalloon that same grid is being inherited from TrialBalloon, shown as TrialContent.
 
 */
+
+import TrialNexus.BlendedShapeContext
+
+trait Srtw extends VarargsLogging {
+	def getRRC : RenderRegistryClient
+	lazy val rrcli = getRRC
+	lazy val tsf: TextSpatialFactory = new TextSpatialFactory(rrcli)
+
+	// From org.cogchar.render.trial.TrialNexus
+	def makeSheetspace(parentNode: Node, baseMat: Material) {
+		val xCount: Int = 7
+		val yCount: Int = 5
+		val zCount: Int = 9
+		val deepSpace: MultiDimGridSpace = GridSpaceFactory.makeSpace3D(xCount, -40.0f, 40.0f, yCount, -20.0f, 20.0f, zCount, -50.0f, 20.0f)
+		getLogger.info("Space description={}", deepSpace.describe)
+		// Make integer index space range, where 6 args are 3 pairs for x,y,z: (firstX, lastX), (firstY...
+		val extrudedCellBlock: CellBlock = CellRangeFactory.makeBlock3D(3, 5, -1, 6, 2, 7)
+		val extrudedPosBlock: PosBlock = deepSpace.computePosBlockForCellBlock(extrudedCellBlock)
+		getLogger.info("Computed result PosBlock description={}", extrudedPosBlock.describe)
+		val vizNode: Node = new Node("sspace_viz_node")
+		parentNode.attachChild(vizNode)
+		val localMat1: Material = baseMat.clone
+		localMat1.setColor("Color", new ColorRGBA(0.5f, 0.1f, 0.9f, 0.5f))
+		val localMat2: Material = baseMat.clone
+		localMat2.setColor("Color", new ColorRGBA(0.9f, 0.8f, 0.1f, 0.5f))
+		val bscBase: BlendedShapeContext = new BlendedShapeContext(baseMat)
+		bscBase.setRenderStateVals(baseMat)
+		val bsc1: BlendedShapeContext = new BlendedShapeContext(bscBase, localMat1)
+		val bsc2: BlendedShapeContext = new BlendedShapeContext(bscBase, localMat2)
+
+		val cellCount: Int = xCount * yCount * zCount
+		var seq: Int = 0
+		val quadMeshFiveByFive: Mesh = new Quad(5,5)
+
+		// Original does loops over x, y, z, attaching instances.  Here so far
+		// we show just the creation + attachment of one group of instances, for
+		// a single cell.
+		makeBoxWig(deepSpace, vizNode, bsc1,  quadMeshFiveByFive, 283, 4, -3, 1)
+	}
+
+	def makeBoxWig(deepSpace: MultiDimGridSpace, vizNode : Node, bsc : BlendedShapeContext,  qMesh : Mesh, seq : Int, xi : Int, yi: Int, zi: Int) : Int = {
+		// Make integer index space range, where 6 args are 3 pairs for x,y,z: (firstX, lastX), (firstY...
+		val unitCB: CellBlock = CellRangeFactory.makeUnitBlock3D(xi, yi, zi)
+		val unitPB: PosBlock = deepSpace.computePosBlockForCellBlock(unitCB)
+		debug3("Unit cell with seq#={} has cellBlock={} and posBlock.description={}", seq : Integer, unitCB, unitPB.describe)
+		val xpr: PosRange = unitPB.myPRs(0)
+		val ypr: PosRange = unitPB.myPRs(1)
+		val zpr: PosRange = unitPB.myPRs(2)
+		val qlabTxt01: String = "bq_" + seq + "_1"
+		val qg1: Geometry = new Geometry(qlabTxt01, qMesh)
+		bsc.setupGeom(qg1)  // TrialNexus uses bsc1 here
+		qg1.setLocalTranslation(xpr.getMin, ypr.getMin, zpr.getMin)
+		vizNode.attachChild(qg1)
+		val qlabBT_01: BitmapText = tsf.makeTextSpatial(qlabTxt01, 0.2f, RenderQueue.Bucket.Transparent, 6)
+		qlabBT_01.setLocalTranslation(xpr.getCenter, ypr.getCenter, zpr.getMin)
+		vizNode.attachChild(qlabBT_01)
+
+		val dmaker = new DoodleMaker(bsc, qMesh) // TrialNexus uses bsc2 here
+		val doodle = dmaker.makeDoodle(seq, xpr.getMax, xpr.getCenter, xpr.getCenter)
+		vizNode.attachChild(doodle)
+		-1
+	}
+	def translateToMins (g : Geometry)
+}
+class DoodleMaker(bsc : BlendedShapeContext, qMesh : Mesh) {
+	lazy val myRot = new Quaternion().fromAngleAxis(FastMath.HALF_PI, Vector3f.UNIT_Y)
+	def getRot : Quaternion = myRot
+	def makeDoodle(seq: Int, xf : Float, yf : Float, zf : Float) : Geometry = {
+		val qlabTxt02: String = "bq_" + seq + "_2"
+		val qg2: Geometry = new Geometry(qlabTxt02, qMesh)
+		bsc.setupGeom(qg2)
+		// qg2.setLocalTranslation(xpr.getMin, ypr.getMin, zpr.getMin)
+		qg2.setLocalTranslation(xf, yf, zf)
+		val rotAboutY_90: Quaternion = getRot
+		qg2.setLocalRotation(rotAboutY_90)
+		qg2
+	}
+}
+import java.lang.{Float => JFloat, Integer => JInt }
+class GoodyMakerYes(myGoodySpace : GoodySpace, myRRC: GoodyRenderRegistryClient) extends VarargsLogging {
+	// Copied from org.cogchar.render.app.entity.GoodyFactory
+	def createByAction(ga: GoodyActionExtractor): VWorldEntity = {
+		var novGoody: VWorldEntity = null
+		if (ga.getKind eq GoodyActionExtractor.Kind.CREATE) {
+			try {
+				var scaleVec: Vector3f = ga.getScaleVec3f
+				val scaleUniform: JFloat = ga.getScaleUniform
+				if ((scaleVec == null) && (scaleUniform != null)) {
+					scaleVec = new Vector3f(scaleUniform, scaleUniform, scaleUniform)
+				}
+				val locVec: Vector3f = ga.getLocationVec3f
+				val rotQuat: Quaternion = ga.getRotationQuaternion
+				val goodyID: Ident = ga.getGoodyID
+				val goodyType: Ident = ga.getType
+				val gcolor: ColorRGBA = ga.getColor
+				val goodyText: String = ga.getText
+				val bitBoxState: Boolean = ga.getSpecialBoolean(GoodyNames.BOOLEAN_STATE)
+				val isAnO: Boolean = ga.getSpecialBoolean(GoodyNames.USE_O)
+				val rowCount: JInt = ga.getSpecialInteger(GoodyNames.ROWS)
+				if (GoodyNames.TYPE_BIT_BOX == goodyType) {
+					novGoody = new BitBox(myRRC, goodyID, locVec, rotQuat, scaleVec, bitBoxState)
+				}
+				else if (GoodyNames.TYPE_BIT_CUBE == goodyType) {
+					novGoody = new BitCube(myRRC, goodyID, locVec, rotQuat, scaleVec, bitBoxState)
+				}
+				else if (GoodyNames.TYPE_FLOOR == goodyType) {
+					novGoody = new VirtualFloor(myRRC, ga.getGoodyID, locVec, gcolor, true)
+				}
+				else if (GoodyNames.TYPE_TICTAC_MARK == goodyType) {
+					novGoody = new TicTacMark(myRRC, goodyID, locVec, rotQuat, scaleVec, isAnO)
+				}
+				else if (GoodyNames.TYPE_TICTAC_GRID == goodyType) {
+					novGoody = new TicTacGrid(myRRC, goodyID, locVec, rotQuat, gcolor, scaleVec)
+				}
+				else if (GoodyNames.TYPE_CROSSHAIR == goodyType) {
+					novGoody = new CrossHairGoody(myRRC, goodyID, locVec, scaleUniform)
+				}
+				else if (GoodyNames.TYPE_SCOREBOARD == goodyType) {
+					val sizeX: JFloat = ga.getSizeVec3D()(0)
+					val rowHeight: JFloat = sizeX
+					val textSize: JFloat = scaleUniform
+					info4("Scoreboard row count={}, rowHeight={}, textSize={}, locVec={}", rowCount : JInt, rowHeight : JFloat, textSize : JFloat, locVec)
+					novGoody = new ScoreBoardGoody(myRRC, goodyID, locVec, rowHeight, rowCount, textSize)
+				}
+				else if (GoodyNames.TYPE_TEXT == goodyType) {
+					novGoody = new ParagraphGoody(myRRC, goodyID, locVec, scaleVec.getX, gcolor, goodyText)
+				}
+				else if (GoodyNames.TYPE_BOX == goodyType) {
+					novGoody = new GoodyBox(myRRC, goodyID, locVec, rotQuat, gcolor, scaleVec)
+				}
+				else if (GoodyNames.TYPE_CAMERA == goodyType) {
+					val cameraUri: Ident = goodyID
+					if (myGoodySpace.getGoody(cameraUri) == null) {
+						info1("Adding a VWorldCameraEntity for {}", cameraUri)
+						val camBinding: CameraBinding = myRRC.getOpticCameraFacade(null).getCameraBinding(cameraUri)
+						if (camBinding != null) {
+							val cam: Camera = camBinding.getCamera
+							if (cam != null) {
+								novGoody = (new VWorldCameraEntity(myRRC, cameraUri, cam))
+							}
+							else {
+								throw new RuntimeException("No actual camera found in binding at " + cameraUri)
+							}
+						}
+						else {
+							warn1("Couldn't find camera with URI {} for goody", cameraUri)
+						}
+					}
+				}
+				else {
+					warn1("Did not recognize requested goody type for creation: {}", ga.getType)
+				}
+			}
+			catch {
+				case e: Exception => {
+					error2("Error attempting to create goody {}, exc={}", ga.getGoodyID, e : Object)
+				}
+			}
+		}
+		else {
+			warn1("GoodyFactory received request to add a goody, but the GoodyAction kind was not CREATE! Goody URI: {}", ga.getGoodyID)
+		}
+		return novGoody
+	}
+}

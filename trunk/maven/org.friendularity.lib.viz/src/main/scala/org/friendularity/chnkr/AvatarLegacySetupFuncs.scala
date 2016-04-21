@@ -114,6 +114,9 @@ trait AvatarLegacySetupFuncs extends VarargsLogging {
 	}
 	def makeBundleEntryHost (markerClz : Class[_]) : EntryHost = {
 		val bun : Bundle = FrameworkUtil.getBundle(markerClz);
+		if (bun == null) {
+			throw new RuntimeException("Cannot locate bundle for markerClz=" + markerClz)
+		}
 		new BundleEntryHost(bun) ;
 	}
 }
