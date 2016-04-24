@@ -60,30 +60,25 @@ class SimBalloonJmeApp extends BigBalloon with UpdateAttacher {
 	}
 	// Invoked on JME3 app-init thread, as part of simpleAppInit, initiated by mySBApp.start above.
 	override protected def doMoreSimpleInit: Unit = {
+		val initTask = makeInitTask
 		// Defer all the interesting work onto a future callback from render-thread
-		val shvingClbl = new java.util.concurrent.Callable[Unit] {
+		val initTskCallable = new java.util.concurrent.Callable[Unit] {
 			@throws(classOf[Exception])
 			override def call : Unit = {
-				shving
+				initTask.doItMostEasily
 			}
 		}
-		val futureWhichWeIgnore = enqueue(shvingClbl)
+		val futureWhichWeIgnore = enqueue(initTskCallable)
 		// shving
 	}
-	// Here is our delayed init callback.
-	def shving: Unit = {
-		// Code for this method originally copied from cogchar.TrialBalloon.doMoreSimpleInit
+	def makeInitTask : MoreIsolatedInitTask = {
 		val crc: CogcharRenderContext = getRenderContext
-		val isoDI = new IsolatedInitTask(crc, this, myTMB)
 		val fc : FlyByCamera = flyCam
 		val vp : ViewPort = viewPort
-		isoDI.doItEvenMoreEasily(fc, vp)
-		// val rn : JmeNode = rootNode
-		// val gn : JmeNode = guiNode
-		// val am : AssetManager = assetManager
-		// isoDI.doIt(fc, rn, vp, gn, am, this, myTMB)
-
+		val miit = new MoreIsolatedInitTask(crc, this, myTMB, fc, vp)
+		miit
 	}
+
 	override def destroy : Unit = {
 		getLogger.warn("SimBalloonJmeApp.destroy() called, indicating JME app exit.")
 		getLogger.error("TODO:  Send PoisonPill to actorSystem, so rest of application can exit.")
@@ -95,6 +90,7 @@ trait IsolatedInitLogic extends VarargsLogging {
 	protected def doItUsingArgs(crc : CogcharRenderContext, flyCam : FlyByCamera, rootNode : JmeNode,
 								viewPort : ViewPort, guiNode : JmeNode, assetManager: AssetManager,
 								updAtchr : UpdateAttacher, tmb : TempMidiBridge) : Unit = {
+		// Code for this method originally copied from cogchar.TrialBalloon.doMoreSimpleInit
 		val rrc: RenderRegistryClient = crc.getRenderRegistryClient
 		getLogger.info("shving: setting flyCam speed.")
 		// Sets the speed of our POV camera movement.  The default is pretty slow.
@@ -146,11 +142,22 @@ trait IsolatedInitLogic extends VarargsLogging {
 
 // Shopping list of 7 appy things we need, besides CRC:
 // flyCam, rootNode, viewPort, guiNode, assetManager, attachVWorldUpdater(=myUpdaters), myTMB
-class IsolatedInitTask(myCRC: CogcharRenderContext, myUpAtchr : UpdateAttacher, myTMB : TempMidiBridge) extends IsolatedInitLogic {
+class IsolatedInitTask(myCRC: CogcharRenderContext, myUpAtchr : UpdateAttacher, myTMB : TempMidiBridge)
+			extends IsolatedInitLogic {
+
 	def doItEvenMoreEasily(flyCam : FlyByCamera, viewPort : ViewPort) : Unit = {
 
-		// Can get flyCam from opticFacade?
+		// Can get flyCam from opticFacade?  Appears it currently only keeps track of "default" camera,
+		// which is different how?
 		// What about viewPort?
 		doItEasier(myCRC, flyCam, viewPort, myUpAtchr, myTMB)
+	}
+}
+class MoreIsolatedInitTask(crc: CogcharRenderContext, upAtchr : UpdateAttacher, tmb : TempMidiBridge,
+						   myFlyCam : FlyByCamera, myMainViewPort : ViewPort)
+			extends IsolatedInitTask(crc, upAtchr, tmb) {
+
+	def doItMostEasily : Unit = {
+		doItEvenMoreEasily(myFlyCam, myMainViewPort)
 	}
 }
