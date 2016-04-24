@@ -74,13 +74,15 @@ class SimBalloonJmeApp extends BigBalloon with UpdateAttacher {
 	def shving: Unit = {
 		// Code for this method originally copied from cogchar.TrialBalloon.doMoreSimpleInit
 		val crc: CogcharRenderContext = getRenderContext
-		val isoDI = new IsolatedDelayedInitTask(crc)
+		val isoDI = new IsolatedInitTask(crc, this, myTMB)
 		val fc : FlyByCamera = flyCam
-		val rn : JmeNode = rootNode
 		val vp : ViewPort = viewPort
-		val gn : JmeNode = guiNode
-		val am : AssetManager = assetManager
-		isoDI.doIt(fc, rn, vp, gn, am, this, myTMB)
+		isoDI.doItEvenMoreEasily(fc, vp)
+		// val rn : JmeNode = rootNode
+		// val gn : JmeNode = guiNode
+		// val am : AssetManager = assetManager
+		// isoDI.doIt(fc, rn, vp, gn, am, this, myTMB)
+
 	}
 	override def destroy : Unit = {
 		getLogger.warn("SimBalloonJmeApp.destroy() called, indicating JME app exit.")
@@ -89,12 +91,11 @@ class SimBalloonJmeApp extends BigBalloon with UpdateAttacher {
 		super.destroy
 	}
 }
-// Shopping list of 7 appy things we need, besides CRC:
-// flyCam, rootNode, viewPort, guiNode, assetManager, attachVWorldUpdater(=myUpdaters), myTMB
-class IsolatedDelayedInitTask(myCRC: CogcharRenderContext) extends VarargsLogging {
-	def doIt(flyCam : FlyByCamera, rootNode : JmeNode, viewPort : ViewPort, guiNode : JmeNode,
-			 		assetManager: AssetManager, updAtchr : UpdateAttacher, tmb : TempMidiBridge) : Unit = {
-		val rrc: RenderRegistryClient = myCRC.getRenderRegistryClient
+trait IsolatedInitLogic extends VarargsLogging {
+	protected def doItUsingArgs(crc : CogcharRenderContext, flyCam : FlyByCamera, rootNode : JmeNode,
+								viewPort : ViewPort, guiNode : JmeNode, assetManager: AssetManager,
+								updAtchr : UpdateAttacher, tmb : TempMidiBridge) : Unit = {
+		val rrc: RenderRegistryClient = crc.getRenderRegistryClient
 		getLogger.info("shving: setting flyCam speed.")
 		// Sets the speed of our POV camera movement.  The default is pretty slow.
 		// TODO:  Get this flyCam, viewPort, etc. from render context/registry
@@ -103,7 +104,7 @@ class IsolatedDelayedInitTask(myCRC: CogcharRenderContext) extends VarargsLoggin
 
 		getLogger.info("shving: will now init, in order: lights, 3D content, 2D content, MIDI controllers, extra cameras")
 
-		myContent.shedLight_onRendThread(myCRC)
+		myContent.shedLight_onRendThread(crc)
 		// The other args besides rrc are superfluous, since they are indirectly accessible through rrc.
 		// Note that these other args are all instance variables of this TrialBalloon app, inherited from JME3 SimpleApp.
 		myContent.initContent3D_onRendThread(rrc, rootNode)
@@ -127,10 +128,29 @@ class IsolatedDelayedInitTask(myCRC: CogcharRenderContext) extends VarargsLoggin
 		*/
 
 		val tcam: TrialCameras = new TrialCameras
-		tcam.setupCamerasAndViews(rrc, myCRC, myContent)
+		tcam.setupCamerasAndViews(rrc, crc, myContent)
 		// Hand the MIDI bindings to the camera-aware app.
 		// (Disabled until rebuild with this method public)
 		tcam.attachMidiCCs(ccpr)
 
+	}
+	protected def doItEasier(crc : CogcharRenderContext, flyCam : FlyByCamera, viewPort : ViewPort, updAtchr : UpdateAttacher, tmb : TempMidiBridge) : Unit = {
+		val rrc: RenderRegistryClient = crc.getRenderRegistryClient
+		val rootDeepNode = rrc.getJme3RootDeepNode(null)
+		val rootFlatNode = rrc.getJme3RootOverlayNode(null)
+		val assetMgr = rrc.getJme3AssetManager(null)
+
+		doItUsingArgs(crc, flyCam, rootDeepNode, viewPort, rootFlatNode, assetMgr, updAtchr, tmb)
+	}
+}
+
+// Shopping list of 7 appy things we need, besides CRC:
+// flyCam, rootNode, viewPort, guiNode, assetManager, attachVWorldUpdater(=myUpdaters), myTMB
+class IsolatedInitTask(myCRC: CogcharRenderContext, myUpAtchr : UpdateAttacher, myTMB : TempMidiBridge) extends IsolatedInitLogic {
+	def doItEvenMoreEasily(flyCam : FlyByCamera, viewPort : ViewPort) : Unit = {
+
+		// Can get flyCam from opticFacade?
+		// What about viewPort?
+		doItEasier(myCRC, flyCam, viewPort, myUpAtchr, myTMB)
 	}
 }
