@@ -19,7 +19,7 @@ public class CCMIO_CPumpHelper extends BasicDebugger {
 	private DemoCPumpMgr myDCPM;
 
 	// http://doc.akka.io/docs/akka/2.3.14/additional/osgi.html
-	// Instantiating this triggers Akka bundle scan setup ... right?
+	// Instantiating this (or invoking start()?)  triggers Akka bundle scan setup ... right?
 	private static OurAkkaOSGiActivator ourAkkaActivator = null;
 
 	public static String ourAkkaSysName = "ccmioBundle";

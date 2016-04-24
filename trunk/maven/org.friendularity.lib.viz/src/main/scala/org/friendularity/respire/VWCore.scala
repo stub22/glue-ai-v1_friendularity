@@ -1,14 +1,18 @@
 package org.friendularity.respire
 
 import akka.actor.{ActorContext, ActorRef}
+import com.jme3.asset.AssetManager
+import com.jme3.input.FlyByCamera
 import com.jme3.math.ColorRGBA
+import com.jme3.renderer.ViewPort
+import com.jme3.scene.{Node => JmeNode}
 import org.appdapter.fancy.log.VarargsLogging
 import org.cogchar.api.space.{GridSpaceFactory, MultiDimGridSpace, CellRangeFactory}
 import org.cogchar.api.space.GridSpaceTest._
 import org.cogchar.bind.midi.in.{CCParamRouter, TempMidiBridge}
 import org.cogchar.render.sys.context.CogcharRenderContext
 import org.cogchar.render.sys.registry.RenderRegistryClient
-import org.cogchar.render.trial.{TrialCameras, TrialContent, TrialBalloon}
+import org.cogchar.render.trial.{TrialUpdater, TrialCameras, TrialContent, TrialBalloon}
 
 
 trait VWCore {
@@ -22,18 +26,18 @@ trait VWSceneGraphMgr extends VWorldJobLogic[VWSceneRq] {
 	}
 
 }
-trait SimBalloonLauncher extends VarargsLogging {
-	lazy val myTBApp: TrialBalloon = new SimBalloon
+trait SimBalloonAppLauncher extends VarargsLogging {
+	lazy val mySBApp: SimBalloonJmeApp = new SimBalloonJmeApp
 	// Generally called on main() thread to do initial app setup.
 	def setup: Unit = {
 		// Code copied from TrialBalloon.main
-		info0("^^^^^^^^^^^^^^^^^^^^^^^^  SimBalloonLauncher.setup() calling initMidi()")
-		// Initialize any MIDI stuff.
-		myTBApp.initMidi
-		info0("^^^^^^^^^^^^^^^^^^^^^^^^  SimBalloonLauncher.setup() calling JME3 start(), which will in turn call TrialBalloon.simpleInitApp()")
+		info0("^^^^^^^^^^^^^^^^^^^^^^^^  SimBalloonAppLauncher.setup() calling initMidi()")
+		// Initialize any MIDI stuff, so it is available during app wiring, if desired.
+		mySBApp.initMidi
+		info0("^^^^^^^^^^^^^^^^^^^^^^^^  SimBalloonAppLauncher.setup() calling JME3 start(), which will in turn call TrialBalloon.simpleInitApp()")
 		// Start the JME3 Virtual world.
-		// We may be blocked in this method until the user confirms Canvas startup.
-		myTBApp.start
+		// We may be blocked in this method, showing splash screen, until the user confirms Canvas startup.
+		mySBApp.start  // Eventually calls SimBalloonJmeApp.doMoreSimpleInit, below.
 
 		// org.cogchar.api.space.GridSpaceTest.goGoGo
 		// info0("^^^^^^^^^^^^^^^^^^^^^^^^  SimBalloonLauncher.setup() starting config-load test")
@@ -41,56 +45,65 @@ trait SimBalloonLauncher extends VarargsLogging {
 	//	info0("^^^^^^^^^^^^^^^^^^^^^^^^ SimBalloonLauncher.setup() calling playMidiOutput()")
 	//	tbApp.playMidiOutput
 
-		info0("^^^^^^^^^^^^^^^^^^^^^^^^ End of SimBalloonLauncher.setup()")
+		info0("^^^^^^^^^^^^^^^^^^^^^^^^ End of SimBalloonAppLauncher.setup()")
 	}
-	// Copied from org.cogchar.api.space.GridSpaceTest
-	def gridSpaceTest : Unit = {
-		info0("^^^^^^^^^^^^^^^^^^^^^^^^  SimBalloonLauncher starting GridSpace test")
 
+}
+trait UpdateAttacher {
+	def attachUpdater(tu : TrialUpdater) : Unit
+}
+// This is our "app" class in the JME taxonomy.
+class SimBalloonJmeApp extends BigBalloon with UpdateAttacher {
 
-		// This block from x=3,y=-1 to x=5,y=6 extends "beyond" its implied containing cell space, which starts at x=1,y=1
-		val cellBlock = CellRangeFactory.makeBlock2D(3, 5, -1, 6)
-		info1("BS-GST sez:  CellBlock description={}", cellBlock.describe(1)) // cellFrom == 1 -> base-1 labelling
-
-		val space2D : MultiDimGridSpace = GridSpaceFactory.makeSpace2D(5, 80.0f, 120.0f, 7, -20.0f, 15.0f)
-		info1("BS-GST sez:  2D Space description={}", space2D.describe()) // cellFrom == 1 -> base-1 labelling
-
-		val posBlock = space2D.computePosBlockForCellBlock(cellBlock);
-		info1("BS-GST sez:  Computed result PosBlock description={}", posBlock.describe)
-		val vecOnDiag = posBlock.getVecFromMainDiagonal(2.0f)
-		info1("BS-GST sez:  Vec on pos-block diag at 2.0f * MAX ={}", vecOnDiag)
-
-		val vecAtMin = posBlock.getVecFromMainDiagonal(0.0f)
-		info1("BS-GST sez:  Vec on pos-block diag at 0.0f * MAX ={}", vecAtMin)
-
-		val blockAt729 = CellRangeFactory.makeUnitBlock3D(7, 2, 9)
-		info1("BS-GST sez:  3D unit block at 7,2,9 description={}", blockAt729.describe(1))
-
-		val space3D : MultiDimGridSpace = GridSpaceFactory.makeSpace3D(7, -40.0f, 40.0f, 5, -20.0f, 20.0f, 9, -50.0f, 20.0f);
-		info1("BS-GST sez:  3D Space description={}", space2D.describe()) // cellFrom == 1 -> base-1 labelling
-
-		info0("BS-GST sez:  We are now done go()ne.  Goodbye Dear User!")
-
+	override def attachUpdater(tu : TrialUpdater) : Unit = {
+		attachVWorldUpdater(tu)
+	}
+	// Invoked on JME3 app-init thread, as part of simpleAppInit, initiated by mySBApp.start above.
+	override protected def doMoreSimpleInit: Unit = {
+		// Defer all the interesting work onto a future callback from render-thread
+		val shvingClbl = new java.util.concurrent.Callable[Unit] {
+			@throws(classOf[Exception])
+			override def call : Unit = {
+				shving
+			}
+		}
+		val futureWhichWeIgnore = enqueue(shvingClbl)
+		// shving
+	}
+	// Here is our delayed init callback.
+	def shving: Unit = {
+		// Code for this method originally copied from cogchar.TrialBalloon.doMoreSimpleInit
+		val crc: CogcharRenderContext = getRenderContext
+		val isoDI = new IsolatedDelayedInitTask(crc)
+		val fc : FlyByCamera = flyCam
+		val rn : JmeNode = rootNode
+		val vp : ViewPort = viewPort
+		val gn : JmeNode = guiNode
+		val am : AssetManager = assetManager
+		isoDI.doIt(fc, rn, vp, gn, am, this, myTMB)
+	}
+	override def destroy : Unit = {
+		getLogger.warn("SimBalloonJmeApp.destroy() called, indicating JME app exit.")
+		getLogger.error("TODO:  Send PoisonPill to actorSystem, so rest of application can exit.")
+		getLogger.info("Now calling super.destroy().")
+		super.destroy
 	}
 }
-//
-class SimBalloon extends BigBalloon {
-
-	// Invoked on JME3 app-init thread, as part of simpleAppInit
-	override protected def doMoreSimpleInit: Unit = {
-		shving
-	}
-	def shving: Unit = {
-		// Code copied from TrialBalloon.doMoreSimpleInit
+// Shopping list of 7 appy things we need, besides CRC:
+// flyCam, rootNode, viewPort, guiNode, assetManager, attachVWorldUpdater(=myUpdaters), myTMB
+class IsolatedDelayedInitTask(myCRC: CogcharRenderContext) extends VarargsLogging {
+	def doIt(flyCam : FlyByCamera, rootNode : JmeNode, viewPort : ViewPort, guiNode : JmeNode,
+			 		assetManager: AssetManager, updAtchr : UpdateAttacher, tmb : TempMidiBridge) : Unit = {
+		val rrc: RenderRegistryClient = myCRC.getRenderRegistryClient
 		getLogger.info("shving: setting flyCam speed.")
 		// Sets the speed of our POV camera movement.  The default is pretty slow.
+		// TODO:  Get this flyCam, viewPort, etc. from render context/registry
 		flyCam.setMoveSpeed(20)
 		val myContent = new TrialContent
-		val crc: CogcharRenderContext = getRenderContext
-		val rrc: RenderRegistryClient = crc.getRenderRegistryClient
+
 		getLogger.info("shving: will now init, in order: lights, 3D content, 2D content, MIDI controllers, extra cameras")
 
-		myContent.shedLight_onRendThread(crc)
+		myContent.shedLight_onRendThread(myCRC)
 		// The other args besides rrc are superfluous, since they are indirectly accessible through rrc.
 		// Note that these other args are all instance variables of this TrialBalloon app, inherited from JME3 SimpleApp.
 		myContent.initContent3D_onRendThread(rrc, rootNode)
@@ -101,16 +114,23 @@ class SimBalloon extends BigBalloon {
 		// of 2-D content.  They are part of that layout, anyhoo.
 		myContent.initContent2D_onRendThread(rrc, guiNode, assetManager)
 
-		attachVWorldUpdater(myContent)
+		updAtchr.attachUpdater(myContent) // Adds myContent to list of updaters
 
-		val ccpr: CCParamRouter = myTMB.getCCParamRouter
-		// Hand the MIDI
+		val ccpr: CCParamRouter = tmb.getCCParamRouter
+
 		myContent.attachMidiCCs(ccpr)
 
+		/* If we disable the 3D content, then we get an error in TrialCameras.
+		at org.cogchar.render.app.entity.CameraBinding.attachSceneNodeToCamera(CameraBinding.java:229)
+		at org.cogchar.render.trial.TrialCameras.setupCamerasAndViews(TrialCameras.java:79)
+		at org.friendularity.respire.SimBalloonJmeApp.shving(VWCore.scala:109)
+		*/
+
 		val tcam: TrialCameras = new TrialCameras
-		tcam.setupCamerasAndViews(rrc, crc, myContent)
+		tcam.setupCamerasAndViews(rrc, myCRC, myContent)
 		// Hand the MIDI bindings to the camera-aware app.
 		// (Disabled until rebuild with this method public)
 		tcam.attachMidiCCs(ccpr)
+
 	}
 }
