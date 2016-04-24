@@ -29,7 +29,7 @@ import org.friendularity.cpump.ActorRefCPMsgTeller
 import org.friendularity.dull.SpecialAppPumpSpace
 
 
-import org.friendularity.respire.{SimBalloonLauncher, VWARM_FindPublicTellers, VWARM_GreetFromPumpAdmin, VWorldBossFactory}
+import org.friendularity.respire._
 
 /**
   * Created by Owner on 4/1/2016.
@@ -53,16 +53,22 @@ object TestNavUI extends VarargsLogging {
 	def main(args: Array[String]): Unit = {
 		// These two lines activate Log4J (at max verbosity!) without requiring a log4j.properties file.
 		// However, when a log4j.properties file is present, these commands should not be used.
-		org.apache.log4j.BasicConfigurator.configure();
-		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.ALL);
+//		org.apache.log4j.BasicConfigurator.configure();
+//		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.ALL);
 		val nuii = new NavUiAppImpl()
  		info1("^^^^^^^^^^^^^^^^^^^^^^^^  TestNavUI.main() creted nuii={}", nuii)
+
+		warn0("^^^^^^^^^^^^^^^^^^^^^^^^  TestNavUI.main() running detached GridSpace tst - MOVE me to a msgHandler!")
+		nuii.testDetachedGS
+		info0("^^^^^^^^^^^^^^^^^^^^^^^^  TestNavUI.main() - fetching legacy config graphs")
 		val legConfERC_opt = nuii.getLegConfERC_opt
 		info1("^^^^^^^^^^^^^^^^^^^^^^^^  TestNavUI.main() got legConfERC_opt={}", legConfERC_opt)
 		nuii.runSetupMsgs
 		info0("^^^^^^^^^^^^^^^^^^^^^^^^  TestNavUI.main() finished running setup msgs, now making SimSpace VWCanv")
-		nuii.makeSimSpace()
-		info0("^^^^^^^^^^^^^^^^^^^^^^^^  TestNavUI.main() finished makeSimSpace()")
+		nuii.launchSimRenderSpace()
+		info0("^^^^^^^^^^^^^^^^^^^^^^^^  TestNavUI.main() finished launchSimRenderSpace()")
+		warn0("^^^^^^^^^^^^^^^^^^^^^^^^  TestNavUI.main() When user presses 'cancel' on JME splash, how can " +
+					"we find that out here and exit accordingly?")
 	}
 
 }
@@ -71,7 +77,7 @@ object NavUiTestPublicNames {
 	val akkaRemotePort : Integer = 4719
 	val cpumpName = "standPumpCtx_181"
 }
-
+// "App" here means FriendU app, not a JME3 "app".  The latter is made during launchSimRenderSpace at bottom.
 class NavUiAppImpl extends VarargsLogging {
 	private val akkaSysName : String = NavUiTestPublicNames.akkaSysName
 	lazy private val myAkkaSys = ActorSystem(akkaSysName)
@@ -115,21 +121,17 @@ class NavUiAppImpl extends VarargsLogging {
 		legConfERC
 	}
 
-	def makeSimSpace(): Unit = {
+	def launchSimRenderSpace(): Unit = {
 
-		val bsim = new SimBalloonLauncher {}
+		val bsim = new SimBalloonAppLauncher {}
 		info0("makeSimSpace Calling bsim.setup")
 		bsim.setup
-		info0("makeSimSpace Calling bsim.gridSpaceTest")
-		bsim.gridSpaceTest
-		info0("makeSimSpace end")
+		info0("makeSimSpace END - vworld is now running, but delayed setup jobs may still be running/pending")
 	}
 	// registerAvatarConfigRepoClient(bunCtx, erc);
+	def testDetachedGS : Unit = {
+		val dgst = new DetachedGST{}
+		dgst.gridSpaceTest
+	}
 
 }
-
-
-
-
-
-

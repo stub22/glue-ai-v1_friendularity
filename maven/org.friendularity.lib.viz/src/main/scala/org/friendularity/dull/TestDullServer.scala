@@ -78,3 +78,28 @@ class DullTestResponseConsumer  extends Actor with ActorLogging {
 }
 
 
+/*
+My unconventional tip for today is that content designers and programmers all benefit from
+continuing growth in thinking about data schemas, and how to combine and apply them cleanly.
+Data  schemas  are used heavily and necessarily in both messaging and databases.   Absence of
+schemas in these areas is a clear sign of incomplete work.    At a higher level, when we look
+at any proposed feature,  we need to think about the data relationships it implies or requires,
+and what other features might have to be added or changed to support that data.
+
+[12:44]
+As software projects mature, change, and are eventually retired or replaced, it is often the data
+schemas that retain the most lasting value for the org.
+
+stub22 [12:53 PM]
+While at the beginning of the lifecycle, when defining a new product-oriented project,
+3 main areas need the most clarity and explicit attention up front, in almost all modern systems:
+
+a) User functional requirements
+b) Authorability requirements, if any (can be thought of as meta-functional requirements)
+c) Data requirements
+
+[12:58]
+As much as we know and can decide about all three of those is distilled into our data schemas,
+which are the logical foundation of messaging and storage.  That is why I go on about data so
+much.   Thank you America, and yes you are welcome, for me, that guy who talks about data.
+ */

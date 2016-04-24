@@ -7,9 +7,10 @@ import org.friendularity.cpump.CPumpMsg
 /**
   * Created by Owner on 4/19/2016.
   */
-// Instance of MsgJobLogic may be stateful or stateless/immutable, as defined by subtypes.
-// By putting logic in here instead of directly in actor classes, we reduce the amount of
-// boilerplate and actor-specific syntax used in our business logic.
+// Instance of MsgJobLogic may be stateful *or* stateless/immutable, as defined by subtypes.
+// By putting logic in these subtypes, instead of directly in actor classes, we reduce the amount of
+// boilerplate and actor-specific syntax used in our business logic.   We use just a few actual
+// Actor types, and a lot more Logic types.
 trait MsgJobLogic[-Msg <: CPumpMsg] extends VarargsLogging {
 	// This method has a lot of authority.
 	// May cause messages to other actors, creation of other actors, mutation of internal state.
@@ -109,8 +110,15 @@ class MsgJobFactoryPairImpl[Msg <: CPumpMsg](upperFilterClz : Class[Msg], jobLog
 }
 
 
+// This trait exists as a point of human recognition and doc for VWorld job logic.
+// So far it has no specific features beyond what MsgJobLogic does, other than the type constraint on Msg.
+// Contravariant type marker "-" shows that this type receives/uses Msg, and does not return it as value.
+// This means that supertyps of VWShow (e.g. "CPumpMsg") yield subtypes of VWJL:  VWorldJobLogic[CPumpMsg] <: VWJL[VWShowMsg]
+// So if we made a really useful piece of logic that worked for all msgs, we could pass that into
+// a place (method arg or collection) expecting a specific piece of logic that works only for VWShowMsgs.
 trait VWorldJobLogic[-Msg <: VWorldMsg] extends MsgJobLogic[Msg] {
-	// This method has a lot of authority, exercisable through the main actor-receive context args.
+	// Our subtypes implementing processMsgUnsafe have a lot of authority, exercisable through the main
+	// actor-receive context args.
 	// Overriding processMsgUnsafe is the main extension point for VWorld messaging features.
 	// Impl may cause messages to other actors, creation of other actors, mutation of internal state.
 	// May throw exceptions.
@@ -161,11 +169,13 @@ trait VWorldMasterFactory {
 	}
 }
 // In general these logic-handler types are superior to delegation to "heavy" code-bearing messages.
-// However, in this approach , besides the processMsgUnsafe impl, we must somewhere define a mapping saying
-// MakeItDoOne   getsProcessedBy  SomethingDoerOne
+// However, in this approach , besides the processMsgUnsafe impl, we must also somewhere define a mapping saying
+// "MakeItDoOne   getsProcessedBy  SomethingDoerOne".   OR, we must assume that client of an actor
+// wrapper knows which actor to send to (so then that client knowledge is effectively the "mapping").
 class SomethingDoerOne extends VWorldJobLogic[MakeItDoOne] {
 	override def processMsgUnsafe(msg : MakeItDoOne, slf : ActorRef, sndr : ActorRef, actx : ActorContext) : Unit = ???
 }
+// Here we show how that even a "heavy" (code-bearing) input can be sent to an explicit handler
 class SomethingDoerTwo extends VWorldJobLogic[MakeItDoTwoHeavy] {
 	override def processMsgUnsafe(msg : MakeItDoTwoHeavy, slf : ActorRef, sndr : ActorRef, actx : ActorContext) : Unit = ???
 }
