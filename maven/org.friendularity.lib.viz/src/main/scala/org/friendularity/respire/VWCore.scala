@@ -53,7 +53,7 @@ trait UpdateAttacher {
 	def attachUpdater(tu : TrialUpdater) : Unit
 }
 // This is our "app" class in the JME taxonomy.
-class SimBalloonJmeApp extends BigBalloon with UpdateAttacher {
+class SimBalloonJmeApp extends BigBalloonJmeApp with UpdateAttacher {
 
 	override def attachUpdater(tu : TrialUpdater) : Unit = {
 		attachVWorldUpdater(tu)
@@ -73,6 +73,7 @@ class SimBalloonJmeApp extends BigBalloon with UpdateAttacher {
 	}
 	def makeInitTask : MoreIsolatedInitTask = {
 		val crc: CogcharRenderContext = getRenderContext
+		// TODO:  Get the flyCam and viewPort from render context/registry stuff, instead of here in the "app".
 		val fc : FlyByCamera = flyCam
 		val vp : ViewPort = viewPort
 		val miit = new MoreIsolatedInitTask(crc, this, myTMB, fc, vp)
@@ -87,44 +88,44 @@ class SimBalloonJmeApp extends BigBalloon with UpdateAttacher {
 	}
 }
 trait IsolatedInitLogic extends VarargsLogging {
-	protected def doItUsingArgs(crc : CogcharRenderContext, flyCam : FlyByCamera, rootNode : JmeNode,
-								viewPort : ViewPort, guiNode : JmeNode, assetManager: AssetManager,
+	protected def doItUsingArgs(crc : CogcharRenderContext, flyCam : FlyByCamera, rootDeepNode : JmeNode,
+								mainViewPort : ViewPort, guiNode : JmeNode, assetManager: AssetManager,
 								updAtchr : UpdateAttacher, tmb : TempMidiBridge) : Unit = {
 		// Code for this method originally copied from cogchar.TrialBalloon.doMoreSimpleInit
 		val rrc: RenderRegistryClient = crc.getRenderRegistryClient
 		getLogger.info("shving: setting flyCam speed.")
 		// Sets the speed of our POV camera movement.  The default is pretty slow.
-		// TODO:  Get this flyCam, viewPort, etc. from render context/registry
+
 		flyCam.setMoveSpeed(20)
-		val myContent = new TrialContent
+		val someContent = new TrialContent
 
-		getLogger.info("shving: will now init, in order: lights, 3D content, 2D content, MIDI controllers, extra cameras")
+		getLogger.info("shving: will now init, in order: lights, 3D content, bgcolor, 2D content, contentUpdater, MIDI controllers, extra cameras+views")
 
-		myContent.shedLight_onRendThread(crc)
+		someContent.shedLight_onRendThread(crc)
 		// The other args besides rrc are superfluous, since they are indirectly accessible through rrc.
 		// Note that these other args are all instance variables of this TrialBalloon app, inherited from JME3 SimpleApp.
-		myContent.initContent3D_onRendThread(rrc, rootNode)
+		someContent.initContent3D_onRendThread(rrc, rootDeepNode)
 
-		viewPort.setBackgroundColor(ColorRGBA.Green)
+		mainViewPort.setBackgroundColor(ColorRGBA.Green)
 
 		// Camera-viewports are placed in the screen coordinate system, so we might consider them to be a kind
 		// of 2-D content.  They are part of that layout, anyhoo.
-		myContent.initContent2D_onRendThread(rrc, guiNode, assetManager)
+		someContent.initContent2D_onRendThread(rrc, guiNode, assetManager)
 
-		updAtchr.attachUpdater(myContent) // Adds myContent to list of updaters
+		updAtchr.attachUpdater(someContent) // Adds someContent to list of updaters
 
 		val ccpr: CCParamRouter = tmb.getCCParamRouter
 
-		myContent.attachMidiCCs(ccpr)
+		someContent.attachMidiCCs(ccpr)
 
-		/* If we disable the 3D content, then we get an error in TrialCameras.
+		/* If we disable the 3D content, then we get an error in TrialCameras, as it seeks to attach to nodes.
 		at org.cogchar.render.app.entity.CameraBinding.attachSceneNodeToCamera(CameraBinding.java:229)
 		at org.cogchar.render.trial.TrialCameras.setupCamerasAndViews(TrialCameras.java:79)
 		at org.friendularity.respire.SimBalloonJmeApp.shving(VWCore.scala:109)
 		*/
 
 		val tcam: TrialCameras = new TrialCameras
-		tcam.setupCamerasAndViews(rrc, crc, myContent)
+		tcam.setupCamerasAndViews(rrc, crc, someContent)
 		// Hand the MIDI bindings to the camera-aware app.
 		// (Disabled until rebuild with this method public)
 		tcam.attachMidiCCs(ccpr)

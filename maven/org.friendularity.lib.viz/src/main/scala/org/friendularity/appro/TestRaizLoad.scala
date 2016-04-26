@@ -41,9 +41,9 @@ import org.cogchar.api.owrap.crcp.{BRFeature => CC_BRFeature}
 import org.cogchar.api.owrap.appro.AFBRLegacyConfig
 
 object TestRaizLoad extends AvatarLegacySetupFuncs with  VarargsLogging {
-	val vizappRecipeNS = "http://onto.friendularity.org/indiv/vizappRecipes_reg_desk_2016Q1#"
-	val vizappBrokerRecipeUriTxt = vizappRecipeNS + "vizapp_legConf_brokerRecipe"
-	val pathToProfileFolder = "org/friendu/tchunk/vizapp_profile"
+	val vizappRecipeNS : String = "http://onto.friendularity.org/indiv/vizappRecipes_reg_desk_2016Q1#"
+	val vzpLegCnfBrkrRcpUriTxt : String = vizappRecipeNS + "vizapp_legConf_brokerRecipe"
+	val pathToProfileFolder : String = "org/friendu/tchunk/vizapp_profile"
 
 	def main(args: Array[String]) : Unit = {
 
@@ -89,7 +89,7 @@ object TestRaizLoad extends AvatarLegacySetupFuncs with  VarargsLogging {
 
 	def testLegConfLoad(profileJM : JenaModel, cdatEH : EntryHost) : Unit = {
 
-		val cwRepoSpec = makeVWConfRepoSpec(profileJM, vizappBrokerRecipeUriTxt, cdatEH)
+		val cwRepoSpec = makeVWConfRepoSpec(profileJM, vzpLegCnfBrkrRcpUriTxt, cdatEH)
 
 		val cwRepo = cwRepoSpec.getOrMakeRepo.asInstanceOf[ChnkrWrapRepo]
 

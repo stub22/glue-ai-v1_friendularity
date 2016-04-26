@@ -17,7 +17,7 @@
 package org.friendularity.navui
 
 import akka.actor.{ActorSystem, ActorRef}
-import com.hp.hpl.jena.rdf.model.Model
+import com.hp.hpl.jena.rdf.model.{Model => JenaModel}
 import org.appdapter.core.store.Repo
 import org.appdapter.fancy.log.VarargsLogging
 import org.appdapter.fancy.rclient.EnhancedLocalRepoClient
@@ -79,12 +79,18 @@ object NavUiTestPublicNames {
 }
 // "App" here means FriendU app, not a JME3 "app".  The latter is made during launchSimRenderSpace at bottom.
 class NavUiAppImpl extends VarargsLogging {
+
+	lazy private val myMergedProfileJM : JenaModel = makeMergedProfileGraph("Unused selector args")
+
+	// TODO:  Take akka setup params from profile recipes
 	private val akkaSysName : String = NavUiTestPublicNames.akkaSysName
 	lazy private val myAkkaSys = ActorSystem(akkaSysName)
 	lazy private val myStandalonePumpSpace = new SpecialAppPumpSpace(myAkkaSys)
-	private val loadLegacyConf = true
 
-	lazy private val legConfERC_opt: Option[EnhancedLocalRepoClient] = if (loadLegacyConf) Option(buildLegacyConfERC) else None
+	private val loadLegacyConf = true
+	lazy private val legConfERC_opt: Option[EnhancedLocalRepoClient] = {
+		if (loadLegacyConf) Option(buildLegacyConfERC(myMergedProfileJM)) else None
+	}
 
 	lazy private val vwBossAR: ActorRef = VWorldBossFactory.makeVWorldBoss(myAkkaSys, "vworldBoss_818")
 	lazy private val vwBossTeller = new ActorRefCPMsgTeller(vwBossAR)
@@ -105,18 +111,23 @@ class NavUiAppImpl extends VarargsLogging {
 		info2("Sending msg={} to VWBossTeller : {}", fptMsg, vwBossTeller)
 		vwBossTeller.tellCPMsg(fptMsg)
 	}
-
-	def buildLegacyConfERC : EnhancedLocalRepoClient = {
+	def makeMergedProfileGraph(profileSelectorArgs : String) : JenaModel = {
+		val tchunkEHost: EntryHost = TestRaizLoad.getUnitTestResourceEntryHost
+		// TODO - Process the profileSelectorArgs
+		val mergedProfileGraph: JenaModel = TestRaizLoad.getMergedProfileGraph_RegularDesktop(tchunkEHost)
+		mergedProfileGraph
+	}
+	def buildLegacyConfERC(mergedProfGraph : JenaModel) : EnhancedLocalRepoClient = {
 		// Legacy config load section, gradually becoming obsolete:
 		// Under OSGi (e.g. CCMIO), old PumaBoot process is set up by attachVizTChunkLegConfRepo(BundleContext bunCtx).
 		//val tchunkEHost: EntryHost = TestRaizLoad.makeBundleEntryHost(TestRaizLoad.getClass)
 
 		val tchunkEHost: EntryHost = TestRaizLoad.getUnitTestResourceEntryHost
 
-		val mergedProfileGraph: Model = TestRaizLoad.getMergedProfileGraph_RegularDesktop(tchunkEHost)
-		val vzBrkRcpUriTxt: String = TestRaizLoad.vizappBrokerRecipeUriTxt
+		// TODO: Find this URI from either a query or an onto-constant
+		val vzBrkRcpUriTxt: String = TestRaizLoad.vzpLegCnfBrkrRcpUriTxt
 
-		val legConfERC = TestRaizLoad.makeAvatarLegacyConfigRepo(mergedProfileGraph, vzBrkRcpUriTxt, tchunkEHost)
+		val legConfERC = TestRaizLoad.makeAvatarLegacyConfigRepo(mergedProfGraph, vzBrkRcpUriTxt, tchunkEHost)
 		getLogger.info("legConfERC={}", legConfERC)
 		legConfERC
 	}
@@ -135,3 +146,4 @@ class NavUiAppImpl extends VarargsLogging {
 	}
 
 }
+

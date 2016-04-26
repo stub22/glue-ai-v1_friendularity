@@ -34,7 +34,8 @@ trait VWCoreRq extends VWorldRequest {
 	// Used to talk to internal "VWCore" actor
 }
 trait VWSceneRq extends VWCoreRq {
-	// Describes a change to managed VW scene graph
+	// Describes a change to managed VW scene graph, to be translated (usually by VWCore actor)
+	// into calls on JME render thread.
 }
 trait RdfMsg {
 	def asTurtleString : String

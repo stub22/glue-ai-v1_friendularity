@@ -63,45 +63,45 @@ object MathBalloon extends BasicDebugger {
 		} else None
 		
 		getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^  main() constructing a TrialBalloon OpenGL+MIDI app");
-		val bbApp : BigBalloon = new BigBalloon();
-		
+		val bbApp : BigBalloonJmeApp = new BigBalloonJmeApp();
+
 		if (demoBrowser) {
 			DemoBrowser.showObject("mathBalloon-bbApp", bbApp, false, false); // true, true);
 		}
-		
+
 		getLogger().info("calling tbApp.initMidi()");
 		// Initialize available MIDI devices and sequence library.
 		bbApp.initMidi();
 		getLogger().info("main() calling tbApp (JME3) start(), which will block this thread until done, and will call TrialBalloon.simpleInitApp()");
 		// Start the JME3 Virtual world, running all init (i.e. simpleInitApp()) on *this* thread,
-		// including blocking waiting for user to say OK to jME launch box.  
+		// including blocking waiting for user to say OK to jME launch box.
 		bbApp.start();
 		getLogger().info("main() - returned from blocking V-World launch (+ on-thread initApp); we now expect OpenGL VWorld to be running.");
 		// Now render thread has started
 		if (extraDemos) {
-			bbApp.attachDeepDynaSpace(sweetDS.get)		
+			bbApp.attachDeepDynaSpace(sweetDS.get)
 			//  ...and now sweetDS is getting render-thread callbacks.
 			// Thus goodies are being created and displayed on that thread.
 		}
 		getLogger().info("main() calling tbApp.playMidiOutput()");
 		bbApp.playMidiOutput();
-		
+
 		// If user escapes out of OpenGL Canvas window while MIDI output still playing in this playMidiOutput method, we get:
 		/*
-		 * 
+		 *
 124462 [LWJGL Renderer Thread] INFO org.cogchar.render.trial.TrialBalloon  - JME3 destroy() called
 124464 [LWJGL Renderer Thread] INFO org.cogchar.render.trial.TrialBalloon  - Cleaning up MIDI bridge
 124466 [LWJGL Renderer Thread] INFO org.cogchar.render.trial.TrialBalloon  - MIDI cleanup finished
 
 		 but MIDI thread does not quit. We do eventually get:
-		 
+
 143006 [main] INFO org.cogchar.bind.midi.out.CogcharMidiOutputTestMain  - Playing sequence of chords on com.sun.media.sound.RealTimeSequencer@4df93ace
 148231 [main] INFO org.friendularity.respire.MathBalloon$  - ^^^^^^^^^^^^^^^^^^^^^^^^ End of main()
 
 		 */
 		getLogger().info("^^^^^^^^^^ End of MathBalloon.main()");
-		
-		
+
+
 	}
 }
 import org.cogchar.render.sys.context.CogcharRenderContext;
@@ -111,7 +111,7 @@ import com.jme3.scene.{Node}
 import org.cogchar.render.goody.dynamic.{DynamicGoodyParent}
 
 // Binds sweetDynaSpace to vworld
-class BigBalloon extends TrialBalloon with DynamicGoodyParent {
+class BigBalloonJmeApp extends TrialBalloon with DynamicGoodyParent {
 	
 	def attachDeepDynaSpace(sweetDS: SweetDynaSpace) { 
 		sweetDS.setParent(this)
