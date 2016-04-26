@@ -148,7 +148,7 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 	private void attachVizTChunkLegConfRepo(final BundleContext bunCtx, Model mergedProfileGraph, EntryHost legConfEHost) {
 		// Same eHost is used here for profile and config data, but separate eHosts is also OK.
 		// Easiest way to identify an bundleEHost is to specify a class from same bundle.
-		String vzBrkRcpUriTxt = TestRaizLoad.vizappBrokerRecipeUriTxt();
+		String vzBrkRcpUriTxt = TestRaizLoad.vzpLegCnfBrkrRcpUriTxt();
 		EnhancedLocalRepoClient legacyConfERC = TestRaizLoad.makeAvatarLegacyConfigRepo(mergedProfileGraph, vzBrkRcpUriTxt, legConfEHost);
 		getLogger().info("legConfEnhRepoCli={}", legacyConfERC);
 		TestRaizLoad.registerAvatarConfigRepoClient(bunCtx, legacyConfERC);

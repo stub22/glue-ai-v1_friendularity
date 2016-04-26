@@ -17,6 +17,10 @@
 			<groupId>org.cogchar</groupId>
 			<artifactId>org.cogchar.bundle.render.opengl</artifactId>
 		</dependency>
+        <dependency>
+            <groupId>org.cogchar</groupId>
+            <artifactId>org.cogchar.bundle.app.vworld.startup</artifactId>
+        </dependency>
 		<dependency>
             <groupId>org.appdapter</groupId>
             <artifactId>org.appdapter.bundle.gui</artifactId>
