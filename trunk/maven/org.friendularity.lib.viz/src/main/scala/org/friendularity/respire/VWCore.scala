@@ -8,20 +8,22 @@ import com.jme3.renderer.ViewPort
 import com.jme3.scene.{Node => JmeNode}
 import org.appdapter.fancy.log.VarargsLogging
 import org.cogchar.api.space.{GridSpaceFactory, MultiDimGridSpace, CellRangeFactory}
-import org.cogchar.api.space.GridSpaceTest._
+// import org.cogchar.api.space.GridSpaceTest._
 import org.cogchar.bind.midi.in.{CCParamRouter, TempMidiBridge}
 import org.cogchar.render.sys.context.CogcharRenderContext
 import org.cogchar.render.sys.registry.RenderRegistryClient
 import org.cogchar.render.trial.{TrialUpdater, TrialCameras, TrialContent, TrialBalloon}
 
-
+// Marker trait for a vw sys kernel.   Usually only one exists per java runtime, but should be safe in plural, too.
 trait VWCore {
 
 }
-trait VWSceneGraphMgr extends VWorldJobLogic[VWSceneRq] {
+trait VWSceneGraphMgr extends VWorldJobLogic[VWSceneCoreRq] {
 	protected def getRootNode
-	override def processMsgUnsafe(msg : VWSceneRq, slf : ActorRef, sndr : ActorRef, actx : ActorContext) : Unit = {
+	// "Unsafe" means we are allowed to throw any exceptions, whee!
+	override def processMsgUnsafe(msg : VWSceneCoreRq, slf : ActorRef, sndr : ActorRef, actx : ActorContext) : Unit = {
 		// msg.processInsideUnsafe(this, slf, sndr, actx)
+		info1("Processing scene core rq: {}", msg)
 
 	}
 
@@ -53,7 +55,7 @@ trait UpdateAttacher {
 	def attachUpdater(tu : TrialUpdater) : Unit
 }
 // This is our "app" class in the JME taxonomy.
-class SimBalloonJmeApp extends BigBalloonJmeApp with UpdateAttacher {
+class SimBalloonJmeApp extends BigBalloonJmeApp with UpdateAttacher with VWCore {
 
 	override def attachUpdater(tu : TrialUpdater) : Unit = {
 		attachVWorldUpdater(tu)
@@ -61,15 +63,18 @@ class SimBalloonJmeApp extends BigBalloonJmeApp with UpdateAttacher {
 	// Invoked on JME3 app-init thread, as part of simpleAppInit, initiated by mySBApp.start above.
 	override protected def doMoreSimpleInit: Unit = {
 		val initTask = makeInitTask
-		// Defer all the interesting work onto a future callback from render-thread
+		// Make and launch a task for builtin setup of this app.
+		// Best to make it a smaller amount of stuff, and do more population later.
+
 		val initTskCallable = new java.util.concurrent.Callable[Unit] {
 			@throws(classOf[Exception])
 			override def call : Unit = {
 				initTask.doItMostEasily
 			}
 		}
+		// Now the work is made
+		// Defer the callable work onto a future callback from render-thread.
 		val futureWhichWeIgnore = enqueue(initTskCallable)
-		// shving
 	}
 	def makeInitTask : MoreIsolatedInitTask = {
 		val crc: CogcharRenderContext = getRenderContext
