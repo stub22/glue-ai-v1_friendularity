@@ -63,7 +63,7 @@ object TestNavUI extends VarargsLogging {
 		info0("^^^^^^^^^^^^^^^^^^^^^^^^  TestNavUI.main() - fetching legacy config graphs")
 		val legConfERC_opt = nuii.getLegConfERC_opt
 		info1("^^^^^^^^^^^^^^^^^^^^^^^^  TestNavUI.main() got legConfERC_opt={}", legConfERC_opt)
-		nuii.runSetupMsgs
+		nuii.sendSetupMsgs_Async
 		info0("^^^^^^^^^^^^^^^^^^^^^^^^  TestNavUI.main() finished running setup msgs, now making SimSpace VWCanv")
 		nuii.launchSimRenderSpace()
 		info0("^^^^^^^^^^^^^^^^^^^^^^^^  TestNavUI.main() finished launchSimRenderSpace()")
@@ -100,7 +100,7 @@ class NavUiAppImpl extends VarargsLogging {
 	lazy private val standPumpAdminTeller = new ActorRefCPMsgTeller(standPumpCtxActorRef)
 
 	def getLegConfERC_opt = legConfERC_opt
-	def runSetupMsgs {
+	def sendSetupMsgs_Async {
 		val hpatMsg = new VWARM_GreetFromPumpAdmin(standPumpAdminTeller)
 		info2("Sending msg={} to VWBossTeller : {}", hpatMsg, vwBossTeller)
 		vwBossTeller.tellCPMsg(hpatMsg)
