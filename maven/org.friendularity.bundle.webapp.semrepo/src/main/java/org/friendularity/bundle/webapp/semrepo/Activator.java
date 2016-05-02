@@ -5,7 +5,8 @@ import org.appdapter.core.name.Ident;
 import org.appdapter.osgi.core.BundleActivatorBase;
 import org.appdapter.xload.rspec.OnlineSheetRepoSpec;
 import org.appdapter.fancy.rspec.RepoSpec;
-import org.cogchar.app.puma.boot.PumaAppContext;
+import org.cogchar.app.puma.boot.PumaSysCtx;
+import org.cogchar.app.puma.boot.PumaSysCtxImplBootable;
 import org.cogchar.app.puma.web.PumaWebMapper;
 import org.cogchar.app.puma.config.PumaContextMediator;
 import org.osgi.framework.BundleContext;
@@ -35,15 +36,17 @@ public class Activator extends BundleActivatorBase {
 		// Since we are not running PumaBooter, we must at least start the query service to get sheet-based config going
 		PumaContextMediator mediator = new RepoPumaMediator();
 		String roleShortName = "pumaCtx_FrienduRepo";
-		Ident ctxID = new FreeIdent(NamespaceDir.RKRT_NS_PREFIX + roleShortName, roleShortName);		
-		PumaAppContext pac = new PumaAppContext(context, mediator, ctxID);
+		Ident ctxID = new FreeIdent(NamespaceDir.RKRT_NS_PREFIX + roleShortName, roleShortName);
+		PumaSysCtx.BootSupport pac = new PumaSysCtxImplBootable(context, mediator, ctxID);
 		pac.startRepositoryConfigServices();
 		// ... and set our app context with PumaWebMapper, so lift can issue repo update requests
+		/* Disabled 2016-05-01
 		PumaWebMapper pwm = pac.getOrMakeWebMapper();	
 		pwm.connectAvailableCommands(context);
 		// Tell the lifter lifecycle to start, once its OSGi dependencies are satisfied
 		pwm.startLifterLifecycle(context);
 		setupJosekiSparqlAccess(pwm);
+		*/
 	}
 	protected void setupJosekiSparqlAccess(PumaWebMapper pwm) { 
 		/* 

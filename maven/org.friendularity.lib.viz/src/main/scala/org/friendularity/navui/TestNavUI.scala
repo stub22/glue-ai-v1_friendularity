@@ -80,7 +80,7 @@ object NavUiTestPublicNames {
 // "App" here means FriendU app, not a JME3 "app".  The latter is made during launchSimRenderSpace at bottom.
 class NavUiAppImpl extends VarargsLogging {
 
-	lazy private val myMergedProfileJM : JenaModel = makeMergedProfileGraph("Unused selector args")
+	lazy private val myMergedProfileJM : JenaModel = makeMergedProfileGraph("Temporarily unused selector args")
 
 	// TODO:  Take akka setup params from profile recipes
 	private val akkaSysName : String = NavUiTestPublicNames.akkaSysName

@@ -4,7 +4,7 @@ import org.appdapter.fancy.rclient.EnhancedLocalRepoClient;
 import org.appdapter.fancy.rspec.RepoSpec;
 import org.appdapter.osgi.core.BundleActivatorBase;
 import org.appdapter.xload.rspec.OnlineSheetRepoSpec;
-import org.cogchar.app.puma.boot.PumaAppContext;
+import org.cogchar.app.puma.boot.PumaSysCtx;
 import org.cogchar.app.puma.boot.PumaBooter;
 import org.cogchar.app.puma.config.PumaContextMediator;
 import org.cogchar.app.puma.registry.PumaGlobalPrebootInjector;
@@ -276,14 +276,14 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 		int  DFLT_NAMESPACE_SHEET_NUM = 9;
 		int   DFLT_DIRECTORY_SHEET_NUM = 8;
 		
-		public	PumaAppContext	myDemoPACtx;
+		public	PumaSysCtx	myDemoPACtx;
 		
 		@Override public RepoSpec getMainConfigRepoSpec() {
 			java.util.List<ClassLoader> fileResModelCLs = new java.util.ArrayList<ClassLoader>();
 			return new OnlineSheetRepoSpec(TEST_REPO_SHEET_KEY, DFLT_NAMESPACE_SHEET_NUM, DFLT_DIRECTORY_SHEET_NUM,
 							fileResModelCLs);
 		}
-		@Override public void notifyBeforeBootComplete(PumaAppContext ctx) throws Throwable {
+		@Override public void notifyBeforeBootComplete(PumaSysCtx ctx) throws Throwable {
 			myDemoPACtx = ctx;
 			// We could do some additional init here, if desired.
 			// We are on the frameworkStartedCallback() thread.  
