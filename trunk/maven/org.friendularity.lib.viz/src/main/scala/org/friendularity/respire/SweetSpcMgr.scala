@@ -51,7 +51,7 @@ import org.friendularity.cpump.{Greeting, WhoToGreet}
 // imply sub-targeting.
 
 // We want the SweetSpc to start off as empty as possible, then by populated by a sequence
-// of messages, starting with
+// of async messages.
 
 trait SweetSpcMgr {
 	//

@@ -21,7 +21,7 @@ import org.appdapter.fancy.rclient.RepoClient;
 import org.cogchar.app.puma.registry.PumaRegistryClient;
 import org.cogchar.app.puma.event.CommandEvent;
 import org.cogchar.app.puma.event.Updater;
-import org.cogchar.app.puma.boot.PumaAppContext;
+import org.cogchar.app.puma.boot.PumaSysCtx;
 import org.cogchar.app.puma.boot.PumaContextCommandBox;
 import org.cogchar.bundle.app.vworld.central.VWorldMapperLifecycle;
 import org.cogchar.bundle.app.vworld.central.VWorldRegistry;

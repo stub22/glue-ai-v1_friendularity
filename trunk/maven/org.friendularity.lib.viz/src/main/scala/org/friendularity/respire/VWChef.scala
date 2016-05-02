@@ -9,7 +9,7 @@ import org.cogchar.api.owrap.appro.{ASBRNCharacter, ASBRNVWorldSimRuntime, ASBRN
 import org.cogchar.api.thing.WantsThingAction
 import org.cogchar.app.puma.behavior.PumaBehaviorManager
 import org.cogchar.app.puma.body.PumaDualBodyManager
-import org.cogchar.app.puma.boot.{PumaContextCommandBox, PumaAppContext}
+import org.cogchar.app.puma.boot.{PumaContextCommandBox, PumaSysCtx}
 import org.cogchar.app.puma.config.{BodyHandleRecord, PumaContextMediator}
 import org.cogchar.app.puma.event.{Updater, CommandEvent}
 import org.cogchar.app.puma.registry.PumaRegistryClient
@@ -74,7 +74,7 @@ trait VintageBodyIngred {
 	// Legacy pre-lifecycle config injection point, still "works" but mostly unused.
 	def getPumaCtxMediator: PumaContextMediator
 
-	def getPumaAppCtx: PumaAppContext
+	def getPumaAppCtx: PumaSysCtx
 
 	// Legacy high level app-system msg, forwards to Updater in same pkg,
 	// one of         START_ANIMATION,	STOP_ANIMATION,	DATABALL_GOODY,	UPDATE;
@@ -83,7 +83,7 @@ trait VintageBodyIngred {
 	def getBodyHandleRecList: JArrayList[BodyHandleRecord]
 }
 // Concrete record with the same pointers, init this from lifecycle event map or similar.
-case class VintageBodyIngredImpl(pcMediator: PumaContextMediator, pactx: PumaAppContext, ce: CommandEvent,
+case class VintageBodyIngredImpl(pcMediator: PumaContextMediator, pactx: PumaSysCtx, ce: CommandEvent,
 								 pumaRegCli: PumaRegistryClient, bodyHandleRecList: JArrayList[BodyHandleRecord])
 		extends VintageBodyIngred {
 
@@ -92,7 +92,7 @@ case class VintageBodyIngredImpl(pcMediator: PumaContextMediator, pactx: PumaApp
 	// Legacy pre-lifecycle config injection point, still "works" but mostly unused.
 	override def getPumaCtxMediator: PumaContextMediator = pcMediator
 
-	override def getPumaAppCtx: PumaAppContext = pactx
+	override def getPumaAppCtx: PumaSysCtx = pactx
 
 	// Legacy high level app-system msg, forwards to Updater in same pkg,
 	// one of         START_ANIMATION,	STOP_ANIMATION,	DATABALL_GOODY,	UPDATE;
@@ -119,7 +119,7 @@ trait EmulateVintageLaunch extends VarargsLogging {
 		val pumaRegCli: PumaRegistryClient = dependencyMap.get(DEPKEY_PumaRegCli).asInstanceOf[PumaRegistryClient]
 		val bodyHandleRecList: JArrayList[BodyHandleRecord] = dependencyMap.get(DEPKEY_BodyHandleRec).asInstanceOf[JArrayList[BodyHandleRecord]]
 
-		val pactx: PumaAppContext = dependencyMap.get(DEPKEY_AppContext).asInstanceOf[PumaAppContext]
+		val pactx: PumaSysCtx = dependencyMap.get(DEPKEY_AppContext).asInstanceOf[PumaSysCtx]
 
 		val vbi = new VintageBodyIngredImpl(pcMediator, pactx, ce, pumaRegCli, bodyHandleRecList)
 
@@ -164,12 +164,12 @@ class CookVWReg() extends StatefulVWorldRegistry () {
 		val pcMediator: PumaContextMediator = vbi.getPumaCtxMediator // Used in legacy-launch and for CTX-URI
 		val ctxURI: String = pcMediator.getSysContextRootURI
 		val ctxID: Ident = new FreeIdent(ctxURI)
-		val pactx: PumaAppContext = vbi.getPumaAppCtx // Used in vwreg.setupCmdBox
+		val pactx: PumaSysCtx = vbi.getPumaAppCtx // Used in vwreg.setupCmdBox
 		val ce: CommandEvent = vbi.getCmdEvt // also in setupCmdBox
 		val ccb = setupCmdBox(ctxID, pactx, ce)
 		ccb
 	}
-	def setupCmdBox(ctxID : Ident, pactx : PumaAppContext, ce : CommandEvent) : CookCmdBox = {
+	def setupCmdBox(ctxID : Ident, pactx : PumaSysCtx, ce : CommandEvent) : CookCmdBox = {
 		val prc = getRegClient
 		val ccb = new CookCmdBox(this, prc, ctxID, pactx)
 		ce.setUpdater(ccb.asInstanceOf[Updater])
@@ -191,7 +191,7 @@ class CookVWReg() extends StatefulVWorldRegistry () {
 	}
 }
 
-class CookCmdBox(myVWReg : VWorldRegistry, prc : PumaRegistryClient, ctxID : Ident, pactxWhy : PumaAppContext)
+class CookCmdBox(myVWReg : VWorldRegistry, prc : PumaRegistryClient, ctxID : Ident, pactxWhy : PumaSysCtx)
 			extends VWCtxCmdBox(myVWReg, prc, ctxID) {
 
 	setAppContext(pactxWhy) // This gets used in base classes, for what exactly?

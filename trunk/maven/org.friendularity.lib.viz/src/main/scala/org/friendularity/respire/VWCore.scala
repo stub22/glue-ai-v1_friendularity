@@ -62,10 +62,11 @@ class SimBalloonJmeApp extends BigBalloonJmeApp with UpdateAttacher with VWCore 
 	}
 	// Invoked on JME3 app-init thread, as part of simpleAppInit, initiated by mySBApp.start above.
 	override protected def doMoreSimpleInit: Unit = {
-		val initTask = makeInitTask
-		// Make and launch a task for builtin setup of this app.
-		// Best to make it a smaller amount of stuff, and do more population later.
+		// Make and launch a task for builtin (hardcoded) setup of this app, to be run on render
+		// thread. Best to make it a smaller amount of stuff, and do more population later, based on
+		// config and/or client requests.
 
+		val initTask = makeInitTask
 		val initTskCallable = new java.util.concurrent.Callable[Unit] {
 			@throws(classOf[Exception])
 			override def call : Unit = {
@@ -73,7 +74,7 @@ class SimBalloonJmeApp extends BigBalloonJmeApp with UpdateAttacher with VWCore 
 			}
 		}
 		// Now the work is made
-		// Defer the callable work onto a future callback from render-thread.
+		// Defer the callable work onto a future callback on render-thread.
 		val futureWhichWeIgnore = enqueue(initTskCallable)
 	}
 	def makeInitTask : MoreIsolatedInitTask = {
