@@ -145,5 +145,8 @@ class NavUiAppImpl extends VarargsLogging {
 		dgst.gridSpaceTest
 	}
 
+	def middleRoad : Unit = {
+
+	}
 }
 
