@@ -21,8 +21,10 @@ import com.hp.hpl.jena.rdf.model.{Model => JenaModel}
 import org.appdapter.core.store.Repo
 import org.appdapter.fancy.log.VarargsLogging
 import org.appdapter.fancy.rclient.EnhancedLocalRepoClient
+import org.cogchar.blob.emit.RenderConfigEmitter
 import org.cogchar.blob.entry.EntryHost
 import org.cogchar.impl.scene.read.BehavMasterConfigTest
+import org.cogchar.render.rendtest.GoodyRenderTestApp
 import org.friendularity.appro.TestRaizLoad
 import org.friendularity.chnkr.ChnkrWrapRepoSpec
 import org.friendularity.cpump.ActorRefCPMsgTeller
@@ -53,11 +55,17 @@ object TestNavUI extends VarargsLogging {
 	def main(args: Array[String]): Unit = {
 		// These two lines activate Log4J (at max verbosity!) without requiring a log4j.properties file.
 		// However, when a log4j.properties file is present, these commands should not be used.
-//		org.apache.log4j.BasicConfigurator.configure();
-//		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.ALL);
+		//		org.apache.log4j.BasicConfigurator.configure();
+		//		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.ALL);
+		val useOldTestApp = true
+		if (useOldTestApp)
+			launchGoodyRenderTestApp
+		else
+			launchNuiiTest
+	}
+	def launchNuiiTest : Unit = {
 		val nuii = new NavUiAppImpl()
- 		info1("^^^^^^^^^^^^^^^^^^^^^^^^  TestNavUI.main() creted nuii={}", nuii)
-
+ 		info1("^^^^^^^^^^^^^^^^^^^^^^^^  TestNavUI.main() created nuii={}", nuii)
 		warn0("^^^^^^^^^^^^^^^^^^^^^^^^  TestNavUI.main() running detached GridSpace tst - MOVE me to a msgHandler!")
 		nuii.testDetachedGS
 		info0("^^^^^^^^^^^^^^^^^^^^^^^^  TestNavUI.main() - fetching legacy config graphs")
@@ -70,7 +78,12 @@ object TestNavUI extends VarargsLogging {
 		warn0("^^^^^^^^^^^^^^^^^^^^^^^^  TestNavUI.main() When user presses 'cancel' on JME splash, how can " +
 					"we find that out here and exit accordingly?")
 	}
-
+	def launchGoodyRenderTestApp : Unit = {
+		val rce: RenderConfigEmitter = new RenderConfigEmitter
+		val app: GoodyRenderTestApp = new GoodyRenderTestApp(rce)
+		// This will trigger the makeCogcharRenderContext() and then the simpleInitApp() below.
+		app.start
+	}
 }
 object NavUiTestPublicNames {
 	val akkaSysName : String = "NavUiStandApp_4719"
@@ -148,5 +161,7 @@ class NavUiAppImpl extends VarargsLogging {
 	def middleRoad : Unit = {
 
 	}
+
+
 }
 

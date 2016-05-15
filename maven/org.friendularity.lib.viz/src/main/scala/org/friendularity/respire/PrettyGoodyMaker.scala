@@ -15,7 +15,7 @@ import java.lang.{Float => JFloat, Integer => JInt }
 /**
   * Created by Owner on 4/29/2016.
   */
-class PrettyGoodyMaker 	(myGoodySpace : GoodySpace, myRRC: GoodyRenderRegistryClient) extends VarargsLogging {
+class PrettyGoodyMaker 	(goodySpace : GoodySpace, myRRC: GoodyRenderRegistryClient) extends VarargsLogging {
 		// Copied from org.cogchar.render.app.entity.GoodyFactory
 		def createByAction(ga: GoodyActionExtractor): VWorldEntity = {
 			var novGoody: VWorldEntity = null
@@ -68,7 +68,7 @@ class PrettyGoodyMaker 	(myGoodySpace : GoodySpace, myRRC: GoodyRenderRegistryCl
 					}
 					else if (GoodyNames.TYPE_CAMERA == goodyType) {
 						val cameraUri: Ident = goodyID
-						if (myGoodySpace.getGoody(cameraUri) == null) {
+						if (goodySpace.getGoody(cameraUri) == null) {
 							info1("Adding a VWorldCameraEntity for {}", cameraUri)
 							val camBinding: CameraBinding = myRRC.getOpticCameraFacade(null).getCameraBinding(cameraUri)
 							if (camBinding != null) {
@@ -101,3 +101,90 @@ class PrettyGoodyMaker 	(myGoodySpace : GoodySpace, myRRC: GoodyRenderRegistryCl
 			return novGoody
 		}
 	}
+/*
+	 VWorldEntity createAndAttachByAction(ga : GoodyActionExtractor, qStyle : Queuer.QueueingStyle) {
+  val newGoody : VWorldEntity = createByAction(ga)
+if (newGoody != null) {
+newGoody.attachToVirtualWorldNode(myRootNode, qStyle)
+}
+return newGoody
+}
+
+
+	@Override public ConsumpStatus consumeAction(ThingActionSpec actionSpec, Ident srcGraphID_isUnused) {
+		theLogger.info("The targetThingType is {}", actionSpec.getTargetThingTypeID()); // TEST ONLY
+
+		// How do we decide whether it's really a VWorld / Goody action?
+		// Below, the targetThing is presumed to be a "goody", either existing or new.
+		GoodyActionExtractor ga = new GoodyActionExtractor(actionSpec);
+		Ident gid = ga.getGoodyID();
+		VWorldEntity goodyOne = myGoodiesByID.get(gid);
+
+		GoodyActionExtractor.Kind kind = ga.getKind();
+		theLogger.info("The kind of Goody inspected is {}", kind); // TEST ONLY
+		if (kind != null) {
+			switch (ga.getKind()) {
+				case CREATE: { // If it's a CREATE action, we will do some different stuff
+					if (myGoodiesByID.containsKey(gid)) {
+						theLogger.warn("Goody already created! Ignoring additional creation request for goody: {}", gid);
+					} else {
+						goodyOne = GoodyFactory.getTheFactory().createAndAttachByAction(ga, VWorldEntity.QueueingStyle.QUEUE_AND_RETURN);
+						if (goodyOne != null) {
+							addGoody(goodyOne);
+							return ConsumpStatus.USED;
+						}
+					}
+					break;
+				}
+				case DELETE: {
+					if (!myGoodiesByID.containsKey(gid)) {
+						theLogger.warn("Could not delete goody because it does not exist: {}", gid);
+					} else {
+						removeGoody(goodyOne);
+						return ConsumpStatus.USED;
+					}
+					break;
+				}
+				default: {
+					// For the moment, let's focus on "update"
+					try {
+						// Now - apply the action to goodyOne
+						goodyOne.applyAction(ga, VWorldEntity.QueueingStyle.QUEUE_AND_RETURN);
+						return ConsumpStatus.USED;
+					} catch (Exception e) {
+						theLogger.warn("Problem attempting to update goody with URI: {}", gid, e);
+					}
+				}
+			}
+		}
+		return ConsumpStatus.IGNORED;
+	}
+
+	  def removeGoody(departingGoody : VWorldEntity){
+departingGoody.detachFromVirtualWorldNode(VWorldEntity.QueueingStyle.QUEUE_AND_RETURN)
+myGoodiesByID.remove(departingGoody.getUri)
+}
+
+	  def addGoody(newGoody : VWorldEntity){
+if (newGoody != null) {
+  val goodyUri : Ident = newGoody.getUri
+theLogger.info("Adding Goody with URI: {}", goodyUri)
+myGoodiesByID.put(goodyUri, newGoody)
+}
+else {
+theLogger.warn("Something is attempting to add a null goody to the GoodySpace, ignoring")
+}
+}
+
+	  def attachGoodyNode{
+  val dsm : DeepSceneMgr = myRRC.getSceneDeepFacade(null)
+myRRC.getWorkaroundAppStub.enqueue(new Callable[Void]() {
+@throws(classOf[Exception])
+  def call : Void = {
+dsm.attachTopSpatial(myRootNode)
+return null
+}
+})
+}
+
+ */

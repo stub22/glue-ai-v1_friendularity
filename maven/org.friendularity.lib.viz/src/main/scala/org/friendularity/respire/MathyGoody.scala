@@ -86,7 +86,8 @@ class MathyGoody (goodyIdx : Int, val myMathGate : MathGate) extends SweetDynaGo
 
 	val		myMathyHandleGroup = new MathyMappedHandleGroup(myMathGate)
 	
-	// The goody can make as many different instances of this complete "state" struct as it wants to, 
+	// The goody can make as many different instances of this complete "state" struct as it wants to,
+	// (using additional calls to makeHande)
 	// including representing a time sequence of past (or future!) states.  These objects may be
 	// manipulated in code as needed,  while simultaneously allowing the state to interact with
 	// our mathGate calculation space as needed.
@@ -104,7 +105,7 @@ class MathyGoody (goodyIdx : Int, val myMathGate : MathGate) extends SweetDynaGo
 		}
 	}
 	// This reconfigure action is our "slow" update path, which we expect to be called only when the specItem
-	// has changed.  It is also called to initizlize this goody the first time.
+	// has changed.  It is also called to initialize this goody the first time.
 	// Generally *not* assumed to be on the render thread.
 	// Collision with render thread should not be catastrophic, so we hope to avoid needing synchronized(this)
 	// (which carries a performance penalty).  

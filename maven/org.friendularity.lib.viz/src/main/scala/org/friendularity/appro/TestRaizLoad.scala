@@ -43,7 +43,7 @@ import org.cogchar.api.owrap.appro.AFBRLegacyConfig
 object TestRaizLoad extends AvatarLegacySetupFuncs with  VarargsLogging {
 	val vizappRecipeNS : String = "http://onto.friendularity.org/indiv/vizappRecipes_reg_desk_2016Q1#"
 	val vzpLegCnfBrkrRcpUriTxt : String = vizappRecipeNS + "vizapp_legConf_brokerRecipe"
-	val pathToProfileFolder : String = "org/friendu/tchunk/vizapp_profile"
+	val pathToProfileFolder : String = "org/friendu/tchunk/vizapp_profile" // relative to profile eHost
 
 	def main(args: Array[String]) : Unit = {
 
@@ -65,7 +65,7 @@ object TestRaizLoad extends AvatarLegacySetupFuncs with  VarargsLogging {
 		info1("Fetched mergedProfileGraph of size {}", mergedProfileGraph.size : java.lang.Long)
 		debug1("mergedProfileGraph dump:\n{}", mergedProfileGraph)
 
-		val cdatEntryHost = profDataEntryHost
+		val cdatEntryHost = profDataEntryHost // This could easily be a *different* eHost, instead!
 		testLegConfLoad(mergedProfileGraph, cdatEntryHost)
 	}
 	def getMergedProfileGraph_RegularDesktop (profDataEntryHost : EntryHost) : JenaModel = {

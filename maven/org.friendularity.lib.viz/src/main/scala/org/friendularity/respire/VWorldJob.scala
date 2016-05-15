@@ -169,8 +169,9 @@ trait VWorldMasterFactory {
 	}
 }
 // In general these logic-handler types are superior to delegation to "heavy" code-bearing messages.
-// However, in this approach , besides the processMsgUnsafe impl, we must also somewhere define a mapping saying
-// "MakeItDoOne   getsProcessedBy  SomethingDoerOne".   OR, we must assume that client of an actor
+// However, in this approach , besides the processMsgUnsafe impl, we must also somewhere define a mapping
+// or match-case block saying, in some fashion: "MakeItDoOne   getsProcessedBy  SomethingDoerOne".
+// OR, we must assume that client of an actor
 // wrapper knows which actor to send to (so then that client knowledge is effectively the "mapping").
 class SomethingDoerOne extends VWorldJobLogic[MakeItDoOne] {
 	override def processMsgUnsafe(msg : MakeItDoOne, slf : ActorRef, sndr : ActorRef, actx : ActorContext) : Unit = ???

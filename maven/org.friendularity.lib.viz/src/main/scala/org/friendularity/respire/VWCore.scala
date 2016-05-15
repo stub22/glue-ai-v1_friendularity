@@ -118,7 +118,7 @@ trait IsolatedInitLogic extends VarargsLogging {
 		// of 2-D content.  They are part of that layout, anyhoo.
 		someContent.initContent2D_onRendThread(rrc, guiNode, assetManager)
 
-		updAtchr.attachUpdater(someContent) // Adds someContent to list of updaters
+		updAtchr.attachUpdater(someContent) // Adds someContent to list of V-world updaters that get regular ticks
 
 		val ccpr: CCParamRouter = tmb.getCCParamRouter
 
