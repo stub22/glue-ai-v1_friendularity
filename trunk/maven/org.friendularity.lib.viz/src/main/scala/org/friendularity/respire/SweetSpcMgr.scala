@@ -91,7 +91,7 @@ class SweetSpcFactory {
 }
 class Hmm extends VarargsLogging {
 	// From MathyGoodyTest
-	def testDynaGoodyItemLoad(repo: Repo, repoClient: RepoClient): SweetDynaSpace = {
+	def testLoadMathyGoodySpace(repo: Repo, repoClient: RepoClient): SweetDynaSpace = {
 		val graphQN = "ccrti:math_sheet_60";
 		val spaceSpecQN = "hevi:space_01";
 		val graphID = repoClient.getDefaultRdfNodeTranslator.makeIdentForQName(graphQN);

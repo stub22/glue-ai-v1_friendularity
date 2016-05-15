@@ -41,8 +41,6 @@ abstract class SweetDynaGoody(goodyIdxWithinSpace : Int) extends DynaShapeGoody(
 		// Label is always displayed (when practical), may be updating frequently.  Description is extra detail,
 		// not evaluated unless this object is in focus by user.
 		// Nickname is short and usually unchanging.
-	//
-	
 
 	override def doFastVWorldUpdate_onRendThrd(rrc : RenderRegistryClient) : Unit = { 
 		// getLogger().info("FastUpdate to dynaGoody {} at index {}", Seq(getUniqueName, getIndex) :_*);
@@ -51,8 +49,8 @@ abstract class SweetDynaGoody(goodyIdxWithinSpace : Int) extends DynaShapeGoody(
 abstract class SweetDynaSpace(parentDGS : DynamicGoodySpace[_], idxIntoParent : Int, val mySpecGraphID : Ident, val mySpecID : Ident) 
 		extends DynamicGoodySpace[SweetDynaGoody](parentDGS, idxIntoParent) {
 			
-	var		myPendingSpecItems : Set[Item] = Set()
-	var		mySpecModelClient : RdfNodeTranslator = null
+	private var		myPendingSpecItems : Set[Item] = Set()
+	private var		mySpecModelClient : RdfNodeTranslator = null
 	
 	// Occurs on slowUpdate-thread, off the renderThread, usually in actor.receive.
 	def    refreshFromModelClient(mc : RdfNodeTranslator) : Unit = {
@@ -73,8 +71,8 @@ abstract class SweetDynaSpace(parentDGS : DynamicGoodySpace[_], idxIntoParent : 
 		import scala.collection.JavaConverters._
 		myPendingSpecItems = linkedGSItems.asScala.toSet
 	}	
-	// Usually done in actor.receive, could possibly be done on renderThread when prudent.
-	def applyPendingSpecItems() : Unit = {
+	// Should usually done in an actor.receive, could possibly be done on renderThread when prudent.
+	protected def applyPendingSpecItems() : Unit = {
 		if (mySpecModelClient != null) {
 			val goodyIndex_PropQN = "hev:goodyIndex";
 			val goodyIndex_Prop = mySpecModelClient.makeIdentForQName(goodyIndex_PropQN);
@@ -99,7 +97,7 @@ abstract class SweetDynaSpace(parentDGS : DynamicGoodySpace[_], idxIntoParent : 
 		super.doFastVWorldUpdate_onRendThrd(rrc)
 		// We currently *happen* to be doing this slow update on the rendThrd,
 		// but there is no requirement that we do so.
-		// System throughput would gen be better if this were done in separate actor handler.
+		// TODO:  System throughput would gen be better if this were done in separate actor handler.
 		applyPendingSpecItems()
 	}
 }
