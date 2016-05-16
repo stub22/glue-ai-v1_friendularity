@@ -5,7 +5,7 @@ import com.jme3.renderer.Camera
 import org.appdapter.core.name.Ident
 import org.appdapter.fancy.log.VarargsLogging
 import org.cogchar.name.goody.GoodyNames
-import org.cogchar.render.app.entity.{CameraBinding, VWorldEntity, GoodyActionExtractor, GoodySpace}
+import org.cogchar.render.app.entity.{CameraBinding, VWorldEntity, GoodyActionExtractor}
 import org.cogchar.render.goody.basic.{GoodyBox, VirtualFloor}
 import org.cogchar.render.goody.bit.{TicTacGrid, TicTacMark, BitCube, BitBox}
 import org.cogchar.render.goody.flat.{ParagraphGoody, ScoreBoardGoody, CrossHairGoody}
@@ -15,6 +15,8 @@ import java.lang.{Float => JFloat, Integer => JInt }
 /**
   * Created by Owner on 4/29/2016.
   */
+trait IgnorePrematureCopy
+/*
 class PrettyGoodyMaker 	(goodySpace : GoodySpace, myRRC: GoodyRenderRegistryClient) extends VarargsLogging {
 		// Copied from org.cogchar.render.app.entity.GoodyFactory
 		def createByAction(ga: GoodyActionExtractor): VWorldEntity = {
@@ -101,6 +103,7 @@ class PrettyGoodyMaker 	(goodySpace : GoodySpace, myRRC: GoodyRenderRegistryClie
 			return novGoody
 		}
 	}
+*/
 /*
 	 VWorldEntity createAndAttachByAction(ga : GoodyActionExtractor, qStyle : Queuer.QueueingStyle) {
   val newGoody : VWorldEntity = createByAction(ga)

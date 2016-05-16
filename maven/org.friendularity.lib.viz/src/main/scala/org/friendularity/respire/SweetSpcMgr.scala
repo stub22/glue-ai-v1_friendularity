@@ -31,7 +31,7 @@ import org.appdapter.fancy.model.ModelClientImpl
 import org.appdapter.fancy.rclient.RepoClient
 import org.cogchar.api.space._
 import org.cogchar.name.goody.GoodyNames
-import org.cogchar.render.app.entity.{GoodySpace, CameraBinding, GoodyActionExtractor, VWorldEntity}
+import org.cogchar.render.app.entity.{CameraBinding, GoodyActionExtractor, VWorldEntity}
 import org.cogchar.render.goody.basic.{GoodyBox, VirtualFloor}
 import org.cogchar.render.goody.bit.{TicTacGrid, TicTacMark, BitCube, BitBox}
 import org.cogchar.render.goody.flat.{ParagraphGoody, ScoreBoardGoody, CrossHairGoody}
