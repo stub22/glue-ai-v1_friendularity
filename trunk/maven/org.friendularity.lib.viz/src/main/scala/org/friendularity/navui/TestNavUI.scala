@@ -57,7 +57,7 @@ object TestNavUI extends VarargsLogging {
 		// However, when a log4j.properties file is present, these commands should not be used.
 		//		org.apache.log4j.BasicConfigurator.configure();
 		//		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.ALL);
-		val useOldTestApp = true
+		val useOldTestApp = false
 		if (useOldTestApp)
 			launchGoodyRenderTestApp
 		else
