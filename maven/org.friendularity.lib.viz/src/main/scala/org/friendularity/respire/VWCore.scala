@@ -8,6 +8,8 @@ import com.jme3.renderer.ViewPort
 import com.jme3.scene.{Node => JmeNode}
 import org.appdapter.fancy.log.VarargsLogging
 import org.cogchar.api.space.{GridSpaceFactory, MultiDimGridSpace, CellRangeFactory}
+import org.friendularity.cpump.CPMsgTeller
+
 // import org.cogchar.api.space.GridSpaceTest._
 import org.cogchar.bind.midi.in.{CCParamRouter, TempMidiBridge}
 import org.cogchar.render.sys.context.CogcharRenderContext
@@ -31,7 +33,8 @@ trait VWSceneGraphMgr extends VWorldJobLogic[VWSceneCoreRq] {
 trait SimBalloonAppLauncher extends VarargsLogging {
 	lazy val mySBApp: SimBalloonJmeApp = new SimBalloonJmeApp
 	// Generally called on main() thread to do initial app setup.
-	def setup: Unit = {
+	def setup(resultsTeller : CPMsgTeller) : Unit = {
+		mySBApp.wireSetupResultsTeller(resultsTeller)
 		// Code copied from TrialBalloon.main
 		info0("^^^^^^^^^^^^^^^^^^^^^^^^  SimBalloonAppLauncher.setup() calling initMidi()")
 		// Initialize any MIDI stuff, so it is available during app wiring, if desired.
@@ -55,26 +58,46 @@ trait UpdateAttacher {
 	def attachUpdater(tu : TrialUpdater) : Unit
 }
 // This is our "app" class in the JME taxonomy.
+// It *inherits* a .start() method, and init callback, which eventually calls doMoreSimpleInit.
+// It also inherits an enqueue() method that can be used to postpone work into a later task on render thread.
+// We use that capability to schedule our real init work.
 class SimBalloonJmeApp extends BigBalloonJmeApp with UpdateAttacher with VWCore {
-
+	var myResultsTeller_opt : Option[CPMsgTeller] = None
+	def wireSetupResultsTeller(resultsTeller : CPMsgTeller): Unit = {
+		myResultsTeller_opt = Some(resultsTeller)
+	}
 	override def attachUpdater(tu : TrialUpdater) : Unit = {
 		attachVWorldUpdater(tu)
 	}
 	// Invoked on JME3 app-init thread, as part of simpleAppInit, initiated by mySBApp.start above.
 	override protected def doMoreSimpleInit: Unit = {
-		// Make and launch a task for builtin (hardcoded) setup of this app, to be run on render
+		// Make and launch a task for later builtin (hardcoded) setup of this app, to be run directly on render
 		// thread. Best to make it a smaller amount of stuff, and do more population later, based on
-		// config and/or client requests.
+		// a series of smaller client requests, which may be read by an outer config mechanism when desired.
+		// In that case the render-threading is in smaller batches.
 
-		val initTask = makeInitTask
+		val initTask = makeInitTask // Make description of work to be done later.
+
+		// Define and instantiate framework object.
 		val initTskCallable = new java.util.concurrent.Callable[Unit] {
 			@throws(classOf[Exception])
 			override def call : Unit = {
+				// One big chunk of work, done on the render thread.
 				initTask.doItMostEasily
+				if (myResultsTeller_opt.isDefined) {
+					// TODO:  Pack with yummy ingred, which are generally not serializable.
+					val lessIng = new LesserIngred {}
+					val notice = new VWSetupResultsNotice(lessIng)
+					getLogger.info("Sending setupResults notice: {}", notice)
+					myResultsTeller_opt.get.tellCPMsg(notice)
+				} else {
+					getLogger().warn("No results teller found, so no setup results are passed back.")
+				}
 			}
 		}
-		// Now the work is made
-		// Defer the callable work onto a future callback on render-thread.
+		// Now the work is made.
+		// Defer the callable work onto a future callback on render-thread, which occurs after JME.start is complete.
+		getLogger().info("Deferring additional VWorld setup to future rend-thread task: {}", initTskCallable)
 		val futureWhichWeIgnore = enqueue(initTskCallable)
 	}
 	def makeInitTask : MoreIsolatedInitTask = {
@@ -99,13 +122,13 @@ trait IsolatedInitLogic extends VarargsLogging {
 								updAtchr : UpdateAttacher, tmb : TempMidiBridge) : Unit = {
 		// Code for this method originally copied from cogchar.TrialBalloon.doMoreSimpleInit
 		val rrc: RenderRegistryClient = crc.getRenderRegistryClient
-		getLogger.info("shving: setting flyCam speed.")
+		getLogger.info("IsolatedInitLogic: setting flyCam speed.")
 		// Sets the speed of our POV camera movement.  The default is pretty slow.
 
 		flyCam.setMoveSpeed(20)
 		val someContent = new TrialContent
 
-		getLogger.info("shving: will now init, in order: lights, 3D content, bgcolor, 2D content, contentUpdater, MIDI controllers, extra cameras+views")
+		getLogger.info("IsolatedInitLogic: will now init, in order: lights, 3D content, bgcolor, 2D content, contentUpdater, MIDI controllers, extra cameras+views")
 
 		someContent.shedLight_onRendThread(crc)
 		// The other args besides rrc are superfluous, since they are indirectly accessible through rrc.
@@ -135,7 +158,7 @@ trait IsolatedInitLogic extends VarargsLogging {
 		// Hand the MIDI bindings to the camera-aware app.
 		// (Disabled until rebuild with this method public)
 		tcam.attachMidiCCs(ccpr)
-
+		getLogger.info("IsolatedInitLogic is done!");
 	}
 	protected def doItEasier(crc : CogcharRenderContext, flyCam : FlyByCamera, viewPort : ViewPort, updAtchr : UpdateAttacher, tmb : TempMidiBridge) : Unit = {
 		val rrc: RenderRegistryClient = crc.getRenderRegistryClient

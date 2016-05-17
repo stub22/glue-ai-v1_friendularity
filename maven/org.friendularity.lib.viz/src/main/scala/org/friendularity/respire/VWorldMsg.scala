@@ -95,12 +95,13 @@ class MakeItDoOne() extends VWorldRequest {
 class MakeItDoOneAy() extends MakeItDoOne
 class MakeItDoOneBee() extends MakeItDoOne
 
-class VWSetupRq_Conf extends VWorldRequest {
+case class VWSetupRq_Conf extends VWorldRequest {
 
 }
-class VWSetupRq_Lnch extends VWorldRequest {
-
+case class VWSetupRq_Lnch extends VWorldRequest {
+	// Includes callback-teller hook for result pointers after successful launch
 }
+case class VWSetupResultsNotice(lesserIngred: LesserIngred) extends VWorldNotice
 
 abstract class HeavyRequestTwo() extends VWRequestHeavy
 
