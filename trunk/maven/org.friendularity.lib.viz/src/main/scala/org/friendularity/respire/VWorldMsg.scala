@@ -9,13 +9,13 @@ import java.lang.{Long => JLong}
 /**
   * Created by Owner on 4/19/2016.
   */
-trait VWorldMsg extends CPumpMsg with VarargsLogging
+trait VWorldMsg extends CPumpMsg
 trait VWorldRequest  extends VWorldMsg {
 
 
 }
 // "Heavy" delegate approach is not recommended, but illustrates an interesting sub-case.
-trait VWRequestHeavy extends VWorldRequest {
+trait VWRequestHeavy extends VWorldRequest with VarargsLogging {
 	// This kind of request includes its own impl method.  This code-shipping is quite flexible and
 	// can be efficient in terms of total code-cost for features.   However, it carries several negative
 	// design implications.  It is recommended against in akka prog guide.
@@ -65,7 +65,7 @@ case class VWGoodyRqBTAS(myBTAS : BasicThingActionSpec) extends  VWGoodyRqAction
 }
 
 // FIXME:  These admin RQs are in fact "heavy" requests.
-trait VWAdminRqMsg extends VWorldRequest {
+trait VWAdminRqMsg extends VWorldRequest with VarargsLogging {
 	def processInSys(sysMgr : VWorldSysMgr, actCtx : ActorContext): Unit
 }
 case class VWARM_GreetFromPumpAdmin(pumpAdminTeller : CPMsgTeller) extends VWAdminRqMsg {
@@ -95,7 +95,10 @@ class MakeItDoOne() extends VWorldRequest {
 class MakeItDoOneAy() extends MakeItDoOne
 class MakeItDoOneBee() extends MakeItDoOne
 
-class VWSetupRq extends VWorldRequest {
+class VWSetupRq_Conf extends VWorldRequest {
+
+}
+class VWSetupRq_Lnch extends VWorldRequest {
 
 }
 

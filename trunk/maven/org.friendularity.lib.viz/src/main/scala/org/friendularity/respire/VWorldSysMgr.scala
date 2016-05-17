@@ -17,10 +17,14 @@
 package org.friendularity.respire
 
 import akka.actor._
-import org.appdapter.fancy.log.VarargsLogging
-import org.cogchar.render.goody.basic.BasicGoodyCtx
-import org.friendularity.cpump.{ListenChanDirectActor, CPumpMsg, CPMsgTeller, CPAdminRequestMsg}
 
+import org.appdapter.fancy.log.VarargsLogging
+import org.appdapter.fancy.rclient.EnhancedLocalRepoClient
+import org.cogchar.blob.entry.EntryHost
+import org.cogchar.render.goody.basic.BasicGoodyCtx
+import org.friendularity.appro.TestRaizLoad
+import org.friendularity.cpump.{ListenChanDirectActor, CPumpMsg, CPMsgTeller, CPAdminRequestMsg}
+import com.hp.hpl.jena.rdf.model.{Model => JenaModel}
 
 /**
   * Created by Owner on 4/14/2016.
@@ -46,12 +50,51 @@ trait VWorldPublicTellers extends VWorldNotice {
 	def getSecondCoolTeller : Option[CPMsgTeller] = None
 	def getGoodyTeller : Option[CPMsgTeller] = None
 }
+trait VWCnfMgr extends VarargsLogging {
+	lazy private val myMergedProfileJM : JenaModel = makeMergedProfileGraph("Temporarily unused selector args")
+	private val loadLegacyConf = true
+	lazy private val legConfERC_opt: Option[EnhancedLocalRepoClient] = {
+		if (loadLegacyConf) Option(buildLegacyConfERC(myMergedProfileJM)) else None
+	}
+	def getProfileGraph = myMergedProfileJM
+	def getLegConfERC_opt = legConfERC_opt
+	protected def makeMergedProfileGraph(profileSelectorArgs : String) : JenaModel = {
+		val tchunkEHost: EntryHost = TestRaizLoad.getUnitTestResourceEntryHost
+		// TODO - Process the profileSelectorArgs
+		val mergedProfileGraph: JenaModel = TestRaizLoad.getMergedProfileGraph_RegularDesktop(tchunkEHost)
+		mergedProfileGraph
+	}
+	protected def buildLegacyConfERC(mergedProfGraph : JenaModel) : EnhancedLocalRepoClient = {
+		// Legacy config load section, gradually becoming obsolete:
+		// Under OSGi (e.g. CCMIO), old PumaBoot process is set up by attachVizTChunkLegConfRepo(BundleContext bunCtx).
+		//val tchunkEHost: EntryHost = TestRaizLoad.makeBundleEntryHost(TestRaizLoad.getClass)
+
+		val tchunkEHost: EntryHost = TestRaizLoad.getUnitTestResourceEntryHost
+
+		// TODO: Find this URI from either a query or an onto-constant
+		val vzBrkRcpUriTxt: String = TestRaizLoad.vzpLegCnfBrkrRcpUriTxt
+
+		val legConfERC = TestRaizLoad.makeAvatarLegacyConfigRepo(mergedProfGraph, vzBrkRcpUriTxt, tchunkEHost)
+		getLogger.info("legConfERC={}", legConfERC)
+		legConfERC
+	}
+
+}
 trait VWorldBossLogic [VWSM <: VWorldSysMgr] extends VarargsLogging {
 	protected def getSysMgr : VWSM
 
 	protected def processVWorldMsg (vwmsg : VWorldRequest, localActorCtx : ActorContext): Unit = {
 		val sysMgr = getSysMgr
 		vwmsg match {
+
+			case vwSetupCnfMsg : VWSetupRq_Conf => loadConf(vwSetupCnfMsg, localActorCtx)
+
+			case vwSetupLnchMsg : VWSetupRq_Lnch => launchSimRenderSpace(vwSetupLnchMsg, localActorCtx)
+
+			case goodyActSpecMsg : VWGoodyRqActionSpec => processVWGoodyActSpec(goodyActSpecMsg, localActorCtx)
+
+			case goodyRdfMsg : VWGoodyRqRdf => processVWGoodyRdfMsg(goodyRdfMsg, localActorCtx)
+
 			case adminMsg : VWAdminRqMsg => {
 				// Example using the questionable "heavy" message pattern, where msg itself implements logic.
 				// Using this pattern for an *admin* msg seems doubly dopey (because an inbound message from
@@ -59,11 +102,8 @@ trait VWorldBossLogic [VWSM <: VWorldSysMgr] extends VarargsLogging {
 				// whereas if the actionSpec goody handlers worked this way, there would be some advantages.
 				adminMsg.processInSys(getSysMgr, localActorCtx)
 			}
-			case goodyRdfMsg : VWGoodyRqRdf => processVWGoodyRdfMsg(goodyRdfMsg, localActorCtx)
 
-			case goodyActSpecMsg : VWGoodyRqActionSpec => processVWGoodyActSpec(goodyActSpecMsg, localActorCtx)
 
-			case vwSetupMsg : VWSetupRq => launchSimRenderSpace(vwSetupMsg, localActorCtx)
 		}
 	}
 	protected def processVWGoodyRdfMsg (goodyMsg : VWGoodyRqRdf, localActorCtx : ActorContext) : Unit = {
@@ -76,11 +116,19 @@ trait VWorldBossLogic [VWSM <: VWorldSysMgr] extends VarargsLogging {
 		bgc.consumeAction(actSpec)
 	}
 
-	protected def launchSimRenderSpace(vwSetupMsg : VWSetupRq, localActorCtx : ActorContext): Unit = {
+	protected def launchSimRenderSpace(vwLnchMsg : VWSetupRq_Lnch, localActorCtx : ActorContext): Unit = {
+		// TODO:  We want this launch process to call us back with the ingredients chef needs to proceed.
 		val bsim = new SimBalloonAppLauncher {}
 		info0("makeSimSpace Calling bsim.setup")
 		bsim.setup
 		info0("makeSimSpace END - vworld is now running, but delayed setup jobs may still be running/pending")
+	}
+
+	protected def loadConf(vwConfMsg : VWSetupRq_Conf, localActorCtx : ActorContext): Unit = {
+		val cnfMgr = new VWCnfMgr {}
+		val profileGraph = cnfMgr.getProfileGraph
+		info1("Got profileGraph: {}", profileGraph)
+		val legConf_opt = cnfMgr.getLegConfERC_opt
 	}
 
 

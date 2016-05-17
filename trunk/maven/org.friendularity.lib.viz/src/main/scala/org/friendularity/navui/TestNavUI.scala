@@ -69,9 +69,9 @@ object TestNavUI extends VarargsLogging {
  		info1("^^^^^^^^^^^^^^^^^^^^^^^^  TestNavUI.main() created nuii={}", nuii)
 		warn0("^^^^^^^^^^^^^^^^^^^^^^^^  TestNavUI.main() running detached GridSpace tst - MOVE me to a msgHandler!")
 		nuii.testDetachedGS
-		info0("^^^^^^^^^^^^^^^^^^^^^^^^  TestNavUI.main() - fetching legacy config graphs")
-		val legConfERC_opt = nuii.getLegConfERC_opt
-		info1("^^^^^^^^^^^^^^^^^^^^^^^^  TestNavUI.main() got legConfERC_opt={}", legConfERC_opt)
+		// info0("^^^^^^^^^^^^^^^^^^^^^^^^  TestNavUI.main() - fetching legacy config graphs")
+		// val legConfERC_opt = nuii.getLegConfERC_opt
+		// info1("^^^^^^^^^^^^^^^^^^^^^^^^  TestNavUI.main() got legConfERC_opt={}", legConfERC_opt)
 		nuii.sendSetupMsgs_Async
 		// info0("^^^^^^^^^^^^^^^^^^^^^^^^  TestNavUI.main() finished running setup msgs, now making SimSpace VWCanv")
 		// nuii.launchSimRenderSpace()
@@ -88,6 +88,7 @@ object TestNavUI extends VarargsLogging {
 	}
 }
 object NavUiTestPublicNames {
+	// TODO:  Push as many setup params as possible downward, feed them from profile recipes
 	val akkaSysName : String = "NavUiStandApp_4719"
 	val akkaRemotePort : Integer = 4719
 	val cpumpName = "standPumpCtx_181"
@@ -95,17 +96,9 @@ object NavUiTestPublicNames {
 // "App" here means FriendU app, not a JME3 "app".  The latter is made during launchSimRenderSpace at bottom.
 class NavUiAppImpl extends VarargsLogging {
 
-	lazy private val myMergedProfileJM : JenaModel = makeMergedProfileGraph("Temporarily unused selector args")
-
-	// TODO:  Take akka setup params from profile recipes
 	private val akkaSysName : String = NavUiTestPublicNames.akkaSysName
 	lazy private val myAkkaSys = ActorSystem(akkaSysName)
 	lazy private val myStandalonePumpSpace = new SpecialAppPumpSpace(myAkkaSys)
-
-	private val loadLegacyConf = true
-	lazy private val legConfERC_opt: Option[EnhancedLocalRepoClient] = {
-		if (loadLegacyConf) Option(buildLegacyConfERC(myMergedProfileJM)) else None
-	}
 
 	lazy private val vwBossAR: ActorRef = VWorldBossFactory.makeVWorldBoss(myAkkaSys, "vworldBoss_818")
 	lazy private val vwBossTeller = new ActorRefCPMsgTeller(vwBossAR)
@@ -114,13 +107,14 @@ class NavUiAppImpl extends VarargsLogging {
 	lazy private val standPumpCtxActorRef : ActorRef = myStandalonePumpSpace.findTopActorRef(standPumpTestCtxName)
 	lazy private val standPumpAdminTeller = new ActorRefCPMsgTeller(standPumpCtxActorRef)
 
-	def getLegConfERC_opt = legConfERC_opt
 	def sendSetupMsgs_Async {
 		val hpatMsg = new VWARM_GreetFromPumpAdmin(standPumpAdminTeller)
 		info2("Sending msg={} to VWBossTeller : {}", hpatMsg, vwBossTeller)
 		vwBossTeller.tellCPMsg(hpatMsg)
 
-		sendVWSetup
+		sendVWSetup_Conf()
+
+		sendVWSetup_Lnch()
 
 		// This discovery message is usually sent from a remote client, with a more useful answerTeller-handler
 		val answerReceiver = standPumpAdminTeller
@@ -130,56 +124,35 @@ class NavUiAppImpl extends VarargsLogging {
 
 		sndGoodyTstMsgs
 	}
-	def makeMergedProfileGraph(profileSelectorArgs : String) : JenaModel = {
-		val tchunkEHost: EntryHost = TestRaizLoad.getUnitTestResourceEntryHost
-		// TODO - Process the profileSelectorArgs
-		val mergedProfileGraph: JenaModel = TestRaizLoad.getMergedProfileGraph_RegularDesktop(tchunkEHost)
-		mergedProfileGraph
-	}
-	def buildLegacyConfERC(mergedProfGraph : JenaModel) : EnhancedLocalRepoClient = {
-		// Legacy config load section, gradually becoming obsolete:
-		// Under OSGi (e.g. CCMIO), old PumaBoot process is set up by attachVizTChunkLegConfRepo(BundleContext bunCtx).
-		//val tchunkEHost: EntryHost = TestRaizLoad.makeBundleEntryHost(TestRaizLoad.getClass)
-
-		val tchunkEHost: EntryHost = TestRaizLoad.getUnitTestResourceEntryHost
-
-		// TODO: Find this URI from either a query or an onto-constant
-		val vzBrkRcpUriTxt: String = TestRaizLoad.vzpLegCnfBrkrRcpUriTxt
-
-		val legConfERC = TestRaizLoad.makeAvatarLegacyConfigRepo(mergedProfGraph, vzBrkRcpUriTxt, tchunkEHost)
-		getLogger.info("legConfERC={}", legConfERC)
-		legConfERC
-	}
-	def sendVWSetup() : Unit = {
-		val msg = new VWSetupRq
+	def sendVWSetup_Conf() : Unit = {
+		val msg = new VWSetupRq_Conf
 		vwBossTeller.tellCPMsg(msg)
 	}
-	// registerAvatarConfigRepoClient(bunCtx, erc);
-	def testDetachedGS : Unit = {
-		val dgst = new DetachedGST{}
-		dgst.gridSpaceTest
-	}
 
-	def middleRoad : Unit = {
-
+	def sendVWSetup_Lnch() : Unit = {
+		val msg = new VWSetupRq_Lnch
+		vwBossTeller.tellCPMsg(msg)
 	}
 
 	import scala.collection.JavaConverters._
 	def sndGoodyTstMsgs: Unit = {
-/*		  val renderCtx : GoodyModularRenderContext = getBonyRenderContext
-		  val grrc : GoodyRenderRegistryClient = renderCtx.getGoodyRenderRegistryClient
-		  val bgc : BasicGoodyCtx = new BasicGoodyCtxImpl(grrc, renderCtx)
-		 */
 
 		val gtmm: GoodyTestMsgMaker = new GoodyTestMsgMaker
 		val msgsJList = gtmm.makeGoodyCreationMsgs
-		val msgsScbuf = msgsJList.asScala  // toArray.asInstanceOf[Array[BasicThingActionSpec]]
+		val msgsScbuf = msgsJList.asScala
 		for (actSpec <- msgsScbuf) {
 			getLogger.info("Wrapping and sending: {}", actSpec)
 			val vwMsgWrap = new VWGoodyRqBTAS(actSpec)
 			vwBossTeller.tellCPMsg(vwMsgWrap)
-			// val consumpStatus = bgc.consumeAction(actionSpec)
 		}
 	}
+	def middleRoad : Unit = {
+
+	}
+	def testDetachedGS : Unit = {
+		val dgst = new DetachedGST{}
+		dgst.gridSpaceTest
+	}
+	// registerAvatarConfigRepoClient(bunCtx, erc);
 }
 
