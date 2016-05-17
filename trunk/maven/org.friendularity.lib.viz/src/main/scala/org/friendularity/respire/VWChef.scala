@@ -55,18 +55,19 @@ class VWChef {
 
 		// Do:
 		// 1) Find recipes for nexuses and circuses (nexi y circi = crosses and circles).
-		// Each of these corresponds to a channel-actor that we must find or create,
-		// then pump up with initial population in step 4.
+		// Each of these corresponds to a channel-actor that we must find or create
+		// (steps 2 + 3), then pump up with initial population in step 4.
 
-		// 2) Get all the connected feature-broker config recipes
+		// 2) Get all the connected feature-broker config recipes.
 
 		// 3) Load/find the corresponding chunks, from appropriate eHosts.  (See #0B above).
 
 		// 4) Send appropriate population messages to appropriate channel-actors, creating those
 		// actors when needed.
 
-		// 5) Mark actors with appropriate recipe URIs so they can be found by clients.
-
+		// 5) Mark actors with appropriate recipe URIs (or related value-data) so they can be found by clients,
+		// either/both implicitly using  lower level Actor paths, or more explicitly as tellers known to CPump sys.
+		// The latter is preferred.
 	}
 }
 // Supplies pointers sufficient to launch bodies in VWorld in 2012-2014 style.

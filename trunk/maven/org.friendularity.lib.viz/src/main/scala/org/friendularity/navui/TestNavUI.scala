@@ -24,7 +24,8 @@ import org.appdapter.fancy.rclient.EnhancedLocalRepoClient
 import org.cogchar.blob.emit.RenderConfigEmitter
 import org.cogchar.blob.entry.EntryHost
 import org.cogchar.impl.scene.read.BehavMasterConfigTest
-import org.cogchar.render.rendtest.GoodyRenderTestApp
+import org.cogchar.impl.thing.basic.BasicThingActionSpec
+import org.cogchar.render.rendtest.{GoodyTestMsgMaker, GoodyRenderTestApp}
 import org.friendularity.appro.TestRaizLoad
 import org.friendularity.chnkr.ChnkrWrapRepoSpec
 import org.friendularity.cpump.ActorRefCPMsgTeller
@@ -72,11 +73,12 @@ object TestNavUI extends VarargsLogging {
 		val legConfERC_opt = nuii.getLegConfERC_opt
 		info1("^^^^^^^^^^^^^^^^^^^^^^^^  TestNavUI.main() got legConfERC_opt={}", legConfERC_opt)
 		nuii.sendSetupMsgs_Async
-		info0("^^^^^^^^^^^^^^^^^^^^^^^^  TestNavUI.main() finished running setup msgs, now making SimSpace VWCanv")
-		nuii.launchSimRenderSpace()
-		info0("^^^^^^^^^^^^^^^^^^^^^^^^  TestNavUI.main() finished launchSimRenderSpace()")
+		// info0("^^^^^^^^^^^^^^^^^^^^^^^^  TestNavUI.main() finished running setup msgs, now making SimSpace VWCanv")
+		// nuii.launchSimRenderSpace()
+		//info0("^^^^^^^^^^^^^^^^^^^^^^^^  TestNavUI.main() finished launchSimRenderSpace()")
 		warn0("^^^^^^^^^^^^^^^^^^^^^^^^  TestNavUI.main() When user presses 'cancel' on JME splash, how can " +
 					"we find that out here and exit accordingly?")
+
 	}
 	def launchGoodyRenderTestApp : Unit = {
 		val rce: RenderConfigEmitter = new RenderConfigEmitter
@@ -118,11 +120,15 @@ class NavUiAppImpl extends VarargsLogging {
 		info2("Sending msg={} to VWBossTeller : {}", hpatMsg, vwBossTeller)
 		vwBossTeller.tellCPMsg(hpatMsg)
 
-		// This discovery message is usually sent from a remote client, with a more specific answerTeller
+		sendVWSetup
+
+		// This discovery message is usually sent from a remote client, with a more useful answerTeller-handler
 		val answerReceiver = standPumpAdminTeller
 		val fptMsg = new VWARM_FindPublicTellers(answerReceiver)
 		info2("Sending msg={} to VWBossTeller : {}", fptMsg, vwBossTeller)
 		vwBossTeller.tellCPMsg(fptMsg)
+
+		sndGoodyTstMsgs
 	}
 	def makeMergedProfileGraph(profileSelectorArgs : String) : JenaModel = {
 		val tchunkEHost: EntryHost = TestRaizLoad.getUnitTestResourceEntryHost
@@ -144,13 +150,9 @@ class NavUiAppImpl extends VarargsLogging {
 		getLogger.info("legConfERC={}", legConfERC)
 		legConfERC
 	}
-
-	def launchSimRenderSpace(): Unit = {
-
-		val bsim = new SimBalloonAppLauncher {}
-		info0("makeSimSpace Calling bsim.setup")
-		bsim.setup
-		info0("makeSimSpace END - vworld is now running, but delayed setup jobs may still be running/pending")
+	def sendVWSetup() : Unit = {
+		val msg = new VWSetupRq
+		vwBossTeller.tellCPMsg(msg)
 	}
 	// registerAvatarConfigRepoClient(bunCtx, erc);
 	def testDetachedGS : Unit = {
@@ -162,6 +164,22 @@ class NavUiAppImpl extends VarargsLogging {
 
 	}
 
+	import scala.collection.JavaConverters._
+	def sndGoodyTstMsgs: Unit = {
+/*		  val renderCtx : GoodyModularRenderContext = getBonyRenderContext
+		  val grrc : GoodyRenderRegistryClient = renderCtx.getGoodyRenderRegistryClient
+		  val bgc : BasicGoodyCtx = new BasicGoodyCtxImpl(grrc, renderCtx)
+		 */
 
+		val gtmm: GoodyTestMsgMaker = new GoodyTestMsgMaker
+		val msgsJList = gtmm.makeGoodyCreationMsgs
+		val msgsScbuf = msgsJList.asScala  // toArray.asInstanceOf[Array[BasicThingActionSpec]]
+		for (actSpec <- msgsScbuf) {
+			getLogger.info("Wrapping and sending: {}", actSpec)
+			val vwMsgWrap = new VWGoodyRqBTAS(actSpec)
+			vwBossTeller.tellCPMsg(vwMsgWrap)
+			// val consumpStatus = bgc.consumeAction(actionSpec)
+		}
+	}
 }
 
