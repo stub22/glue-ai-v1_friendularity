@@ -70,6 +70,13 @@ class VWChef {
 		// The latter is preferred.
 	}
 }
+trait LesserIngred {
+	// Things needed to make goody space
+	/*		  val renderCtx : GoodyModularRenderContext = getBonyRenderContext
+			  val grrc : GoodyRenderRegistryClient = renderCtx.getGoodyRenderRegistryClient
+			  val bgc : BasicGoodyCtx = new BasicGoodyCtxImpl(grrc, renderCtx)
+			 */
+}
 // Supplies pointers sufficient to launch bodies in VWorld in 2012-2014 style.
 trait VintageBodyIngred {
 
