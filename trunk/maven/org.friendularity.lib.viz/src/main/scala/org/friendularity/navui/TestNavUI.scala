@@ -28,7 +28,7 @@ import org.cogchar.impl.thing.basic.BasicThingActionSpec
 import org.cogchar.render.rendtest.{GoodyTestMsgMaker, GoodyRenderTestApp}
 import org.friendularity.appro.TestRaizLoad
 import org.friendularity.chnkr.ChnkrWrapRepoSpec
-import org.friendularity.cpump.ActorRefCPMsgTeller
+import org.friendularity.cpump.{CPumpMsg, CPMsgTeller, ActorRefCPMsgTeller}
 import org.friendularity.dull.SpecialAppPumpSpace
 
 
@@ -155,4 +155,10 @@ class NavUiAppImpl extends VarargsLogging {
 	}
 	// registerAvatarConfigRepoClient(bunCtx, erc);
 }
-
+/*
+class SetupResultsRcvr extends  CPMsgTeller with VarargsLogging {
+	override def tellCPMsg(msg: CPumpMsg): Unit = {
+		info1("Got setup results: {}", msg)
+	}
+}
+*/

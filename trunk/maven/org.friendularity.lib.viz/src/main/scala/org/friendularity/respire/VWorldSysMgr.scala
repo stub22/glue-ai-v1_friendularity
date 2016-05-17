@@ -23,7 +23,7 @@ import org.appdapter.fancy.rclient.EnhancedLocalRepoClient
 import org.cogchar.blob.entry.EntryHost
 import org.cogchar.render.goody.basic.BasicGoodyCtx
 import org.friendularity.appro.TestRaizLoad
-import org.friendularity.cpump.{ListenChanDirectActor, CPumpMsg, CPMsgTeller, CPAdminRequestMsg}
+import org.friendularity.cpump._
 import com.hp.hpl.jena.rdf.model.{Model => JenaModel}
 
 /**
@@ -83,13 +83,13 @@ trait VWCnfMgr extends VarargsLogging {
 trait VWorldBossLogic [VWSM <: VWorldSysMgr] extends VarargsLogging {
 	protected def getSysMgr : VWSM
 
-	protected def processVWorldMsg (vwmsg : VWorldRequest, localActorCtx : ActorContext): Unit = {
+	protected def processVWorldRequest(vwmsg : VWorldRequest, slfActr : ActorRef, localActorCtx : ActorContext): Unit = {
 		val sysMgr = getSysMgr
 		vwmsg match {
 
 			case vwSetupCnfMsg : VWSetupRq_Conf => loadConf(vwSetupCnfMsg, localActorCtx)
 
-			case vwSetupLnchMsg : VWSetupRq_Lnch => launchSimRenderSpace(vwSetupLnchMsg, localActorCtx)
+			case vwSetupLnchMsg : VWSetupRq_Lnch => launchSimRenderSpace(vwSetupLnchMsg, slfActr, localActorCtx)
 
 			case goodyActSpecMsg : VWGoodyRqActionSpec => processVWGoodyActSpec(goodyActSpecMsg, localActorCtx)
 
@@ -106,6 +106,15 @@ trait VWorldBossLogic [VWSM <: VWorldSysMgr] extends VarargsLogging {
 
 		}
 	}
+	protected def processVWorldNotice(vwmsg : VWorldNotice, slfActr : ActorRef, localActorCtx : ActorContext): Unit = {
+		vwmsg match {
+			case setupResults: VWSetupResultsNotice => {
+				val lesserIng = setupResults.lesserIngred
+				notifySetupResults(lesserIng)
+			}
+		}
+	}
+
 	protected def processVWGoodyRdfMsg (goodyMsg : VWGoodyRqRdf, localActorCtx : ActorContext) : Unit = {
 
 	}
@@ -116,11 +125,14 @@ trait VWorldBossLogic [VWSM <: VWorldSysMgr] extends VarargsLogging {
 		bgc.consumeAction(actSpec)
 	}
 
-	protected def launchSimRenderSpace(vwLnchMsg : VWSetupRq_Lnch, localActorCtx : ActorContext): Unit = {
+	protected def launchSimRenderSpace(vwLnchMsg : VWSetupRq_Lnch, slfActr : ActorRef,  localActorCtx : ActorContext): Unit = {
 		// TODO:  We want this launch process to call us back with the ingredients chef needs to proceed.
+		// The soonest that *could* happen is *during* JME3.start(), but we would actually prefer it be later,
+		// during isolatedInitTask.
 		val bsim = new SimBalloonAppLauncher {}
+		val resultsTeller = new ActorRefCPMsgTeller(slfActr) // vwLnchMsg.resultsTeller
 		info0("makeSimSpace Calling bsim.setup")
-		bsim.setup
+		bsim.setup(resultsTeller)
 		info0("makeSimSpace END - vworld is now running, but delayed setup jobs may still be running/pending")
 	}
 
@@ -131,6 +143,9 @@ trait VWorldBossLogic [VWSM <: VWorldSysMgr] extends VarargsLogging {
 		val legConf_opt = cnfMgr.getLegConfERC_opt
 	}
 
+	def notifySetupResults(lesserIngred: LesserIngred): Unit = {
+		info1("Got setup result (lesser) ingredients: {}", lesserIngred)
+	}
 
 }
 // Top level actor, directly handles only the grossest VWorld system start/restart/shutdown
@@ -148,8 +163,11 @@ class VWorldBossActor[VWSM <: VWorldSysMgr](sysMgr : VWSM, hackStrap : VWorldStr
 		// Construction of any other actors used with the ctx must happen within this handler.
 		// Those actors may be sent back in receiptMsgs to answerTellers embedded in the input msg.
 		// Note that "context" here is a pseudo-field of the actor.
-		case vwmsg : VWorldRequest => {
-			processVWorldMsg(vwmsg, context)
+		case vwrq : VWorldRequest => {
+			processVWorldRequest(vwrq, self, context)
+		}
+		case vwnot : VWorldNotice => {
+			processVWorldNotice(vwnot, self, context)
 		}
 	}
 
