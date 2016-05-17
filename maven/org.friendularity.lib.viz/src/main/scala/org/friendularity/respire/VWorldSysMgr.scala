@@ -18,6 +18,7 @@ package org.friendularity.respire
 
 import akka.actor._
 import org.appdapter.fancy.log.VarargsLogging
+import org.cogchar.render.goody.basic.BasicGoodyCtx
 import org.friendularity.cpump.{ListenChanDirectActor, CPumpMsg, CPMsgTeller, CPAdminRequestMsg}
 
 
@@ -29,7 +30,7 @@ import org.friendularity.cpump.{ListenChanDirectActor, CPumpMsg, CPMsgTeller, CP
 trait VWorldSysMgr {
 	def findPublicTellers : VWorldPublicTellers
 
-
+	def findGoodyCtx : BasicGoodyCtx
 }
 // (hack)Strap holds any icky extra shared state that we temporarily want to pass to VWorldBossActor.
 trait VWorldStrap {
@@ -45,25 +46,48 @@ trait VWorldPublicTellers extends VWorldNotice {
 	def getSecondCoolTeller : Option[CPMsgTeller] = None
 	def getGoodyTeller : Option[CPMsgTeller] = None
 }
-trait VWorldBossLogic [VWSM <: VWorldSysMgr] {
+trait VWorldBossLogic [VWSM <: VWorldSysMgr] extends VarargsLogging {
 	protected def getSysMgr : VWSM
 
 	protected def processVWorldMsg (vwmsg : VWorldRequest, localActorCtx : ActorContext): Unit = {
 		val sysMgr = getSysMgr
 		vwmsg match {
 			case adminMsg : VWAdminRqMsg => {
+				// Example using the questionable "heavy" message pattern, where msg itself implements logic.
+				// Using this pattern for an *admin* msg seems doubly dopey (because an inbound message from
+				// client is supposed to know how to admin=rewire/reconf this server-side system - how and why?),
+				// whereas if the actionSpec goody handlers worked this way, there would be some advantages.
 				adminMsg.processInSys(getSysMgr, localActorCtx)
 			}
-			case goodyMsg : VWGoodyRqRdf => processVWGoodyRdfMsg(goodyMsg, localActorCtx)
+			case goodyRdfMsg : VWGoodyRqRdf => processVWGoodyRdfMsg(goodyRdfMsg, localActorCtx)
+
+			case goodyActSpecMsg : VWGoodyRqActionSpec => processVWGoodyActSpec(goodyActSpecMsg, localActorCtx)
+
+			case vwSetupMsg : VWSetupRq => launchSimRenderSpace(vwSetupMsg, localActorCtx)
 		}
 	}
 	protected def processVWGoodyRdfMsg (goodyMsg : VWGoodyRqRdf, localActorCtx : ActorContext) : Unit = {
 
 	}
+	protected def processVWGoodyActSpec (goodyActSpecMsg : VWGoodyRqActionSpec, localActorCtx : ActorContext) : Unit = {
+		val actSpec = goodyActSpecMsg.getActionSpec
+		info1("VWBossLogic is processing received actSpec: {}", actSpec)
+		val bgc : BasicGoodyCtx = getSysMgr.findGoodyCtx
+		bgc.consumeAction(actSpec)
+	}
+
+	protected def launchSimRenderSpace(vwSetupMsg : VWSetupRq, localActorCtx : ActorContext): Unit = {
+		val bsim = new SimBalloonAppLauncher {}
+		info0("makeSimSpace Calling bsim.setup")
+		bsim.setup
+		info0("makeSimSpace END - vworld is now running, but delayed setup jobs may still be running/pending")
+	}
+
+
 }
 // Top level actor, directly handles only the grossest VWorld system start/restart/shutdown
 // kinds of messages.  More importantly, boss serves as top actor supervisor for all internal
-// vworld actors.   Conceptually it also marks the inside and the outside of the vworld.
+// vworld actors.   Conceptually it also marks the boundary between inside and the outside of the vworld.
 // The sysMgr and hackStrap are the *only* places that any complex state higgledy-piggledy
 // may take place, and it is our goal to minimize that state and code.  (That's why we give
 // these things names.  Shared state is bad, so we won't let it be vague or implicit!).
@@ -86,6 +110,8 @@ class VWorldBossActor[VWSM <: VWorldSysMgr](sysMgr : VWSM, hackStrap : VWorldStr
 }
 class VWSysMgrImpl extends VWorldSysMgr {
 	override def findPublicTellers : VWorldPublicTellers = new VWorldPublicTellers{}
+	// TODO:  Need access to someone who knows a BasicGoodyCtx
+	override def findGoodyCtx : BasicGoodyCtx = ???
 }
 class VWStrapImpl extends VWorldStrap {
 

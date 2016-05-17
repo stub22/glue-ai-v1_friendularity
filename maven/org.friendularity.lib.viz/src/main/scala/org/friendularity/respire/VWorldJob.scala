@@ -123,11 +123,12 @@ trait VWorldJobLogic[-Msg <: VWorldMsg] extends MsgJobLogic[Msg] {
 	// Impl may cause messages to other actors, creation of other actors, mutation of internal state.
 	// May throw exceptions.
 }
+// Using the "delegating" approach pushes logic into the received message object itself.
+// This approach probably has more drawbacks than advantages.
+// However, typing it out as a skeleton, and seeing that compile, helps clarify our type algebra.
 trait VWDelegatingJobLogic[-Msg <: VWRequestHeavy] extends VWorldJobLogic[Msg] {
 	def getVWorldSysMgr : VWorldSysMgr
 }
-// Using the "delegating" approach pushes logic into the received message object itself.
-// This approach probably has more drawbacks than advantages..
 
 class VWJobLogicDelegatingImpl[-Msg <: VWRequestHeavy](msgFilterClz : Class[Msg], sysMgr : VWorldSysMgr) extends VWDelegatingJobLogic[Msg] {
 	override def processMsgUnsafe(msg : Msg, slf : ActorRef, sndr : ActorRef, actx : ActorContext) : Unit = {

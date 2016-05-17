@@ -2,6 +2,7 @@ package org.friendularity.respire
 
 import akka.actor.{ActorRef, ActorContext}
 import org.appdapter.fancy.log.VarargsLogging
+import org.cogchar.impl.thing.basic.BasicThingActionSpec
 import org.friendularity.cpump.{CPMsgTeller, CPumpMsg}
 import com.hp.hpl.jena.rdf.model.{Model => JenaModel}
 import java.lang.{Long => JLong}
@@ -56,7 +57,14 @@ trait RdfMsgIntrp extends VarargsLogging {
 }
 trait VWGoodyRqRdf extends VWContentRq  with RdfMsg {
 }
+trait VWGoodyRqActionSpec extends VWContentRq {
+	def getActionSpec : BasicThingActionSpec
+}
+case class VWGoodyRqBTAS(myBTAS : BasicThingActionSpec) extends  VWGoodyRqActionSpec {
+	override def getActionSpec : BasicThingActionSpec = myBTAS
+}
 
+// FIXME:  These admin RQs are in fact "heavy" requests.
 trait VWAdminRqMsg extends VWorldRequest {
 	def processInSys(sysMgr : VWorldSysMgr, actCtx : ActorContext): Unit
 }
@@ -83,8 +91,13 @@ class MakeItDoOne() extends VWorldRequest {
 	// side to have sufficient logic to interpret it.  Generally that server logic will need to know
 	// the type name MakeItDoOne, and pass it to some kind of handler.
 }
+
 class MakeItDoOneAy() extends MakeItDoOne
 class MakeItDoOneBee() extends MakeItDoOne
+
+class VWSetupRq extends VWorldRequest {
+
+}
 
 abstract class HeavyRequestTwo() extends VWRequestHeavy
 
