@@ -8,11 +8,13 @@ import com.jme3.renderer.ViewPort
 import com.jme3.scene.{Node => JmeNode}
 import org.appdapter.fancy.log.VarargsLogging
 import org.cogchar.api.space.{GridSpaceFactory, MultiDimGridSpace, CellRangeFactory}
+import org.cogchar.render.sys.goody.{GoodyRenderRegistryClient, GoodyModularRenderContext}
+import org.cogchar.render.sys.window.WindowStatusMonitor
 import org.friendularity.cpump.CPMsgTeller
 
 // import org.cogchar.api.space.GridSpaceTest._
 import org.cogchar.bind.midi.in.{CCParamRouter, TempMidiBridge}
-import org.cogchar.render.sys.context.CogcharRenderContext
+import org.cogchar.render.sys.context.{FramedRenderContext, CogcharRenderContext}
 import org.cogchar.render.sys.registry.RenderRegistryClient
 import org.cogchar.render.trial.{TrialUpdater, TrialCameras, TrialContent, TrialBalloon}
 
@@ -85,8 +87,12 @@ class SimBalloonJmeApp extends BigBalloonJmeApp with UpdateAttacher with VWCore 
 				// One big chunk of work, done on the render thread.
 				initTask.doItMostEasily
 				if (myResultsTeller_opt.isDefined) {
-					// TODO:  Pack with yummy ingred, which are generally not serializable.
-					val lessIng = new LesserIngred {}
+					// Limitation:  These yummy ingred are usually not serializable.
+					val crc = getRenderContext
+					val framedRendCtx : FramedRenderContext = crc.asInstanceOf[FramedRenderContext]
+					val winStatMon : WindowStatusMonitor = framedRendCtx
+					val rrc : RenderRegistryClient = crc.getRenderRegistryClient
+					val lessIng = new LesserIngredImpl(rrc, winStatMon)
 					val notice = new VWSetupResultsNotice(lessIng)
 					getLogger.info("Sending setupResults notice: {}", notice)
 					myResultsTeller_opt.get.tellCPMsg(notice)
@@ -103,8 +109,8 @@ class SimBalloonJmeApp extends BigBalloonJmeApp with UpdateAttacher with VWCore 
 	def makeInitTask : MoreIsolatedInitTask = {
 		val crc: CogcharRenderContext = getRenderContext
 		// TODO:  Get the flyCam and viewPort from render context/registry stuff, instead of here in the "app".
-		val fc : FlyByCamera = flyCam
-		val vp : ViewPort = viewPort
+		val fc : FlyByCamera = getFlyByCamera(); // Defined in CogcharPresumedApp
+		val vp : ViewPort = getPrimaryAppViewPort(); // Defined in CogcharPresumedApp
 		val miit = new MoreIsolatedInitTask(crc, this, myTMB, fc, vp)
 		miit
 	}
