@@ -21,7 +21,10 @@ import akka.actor._
 import org.appdapter.fancy.log.VarargsLogging
 import org.appdapter.fancy.rclient.EnhancedLocalRepoClient
 import org.cogchar.blob.entry.EntryHost
-import org.cogchar.render.goody.basic.BasicGoodyCtx
+import org.cogchar.render.goody.basic.{BasicGoodyCtxImpl, BasicGoodyCtx}
+import org.cogchar.render.sys.goody.{GoodyModularRenderContext, GoodyRenderRegistryClient}
+import org.cogchar.render.sys.registry.RenderRegistryClient
+import org.cogchar.render.sys.window.WindowStatusMonitor
 import org.friendularity.appro.TestRaizLoad
 import org.friendularity.cpump._
 import com.hp.hpl.jena.rdf.model.{Model => JenaModel}
@@ -34,7 +37,7 @@ import com.hp.hpl.jena.rdf.model.{Model => JenaModel}
 trait VWorldSysMgr {
 	def findPublicTellers : VWorldPublicTellers
 
-	def findGoodyCtx : BasicGoodyCtx
+	def findGoodyCtx_opt : Option[BasicGoodyCtx] = None
 }
 // (hack)Strap holds any icky extra shared state that we temporarily want to pass to VWorldBossActor.
 trait VWorldStrap {
@@ -106,7 +109,7 @@ trait VWorldBossLogic [VWSM <: VWorldSysMgr] extends VarargsLogging {
 
 		}
 	}
-	protected def processVWorldNotice(vwmsg : VWorldNotice, slfActr : ActorRef, localActorCtx : ActorContext): Unit = {
+	protected def processVWorldInternalNotice(vwmsg : VWorldNotice, slfActr : ActorRef, localActorCtx : ActorContext): Unit = {
 		vwmsg match {
 			case setupResults: VWSetupResultsNotice => {
 				val lesserIng = setupResults.lesserIngred
@@ -121,8 +124,8 @@ trait VWorldBossLogic [VWSM <: VWorldSysMgr] extends VarargsLogging {
 	protected def processVWGoodyActSpec (goodyActSpecMsg : VWGoodyRqActionSpec, localActorCtx : ActorContext) : Unit = {
 		val actSpec = goodyActSpecMsg.getActionSpec
 		info1("VWBossLogic is processing received actSpec: {}", actSpec)
-		val bgc : BasicGoodyCtx = getSysMgr.findGoodyCtx
-		bgc.consumeAction(actSpec)
+		val bgc : Option[BasicGoodyCtx] = getSysMgr.findGoodyCtx_opt
+		bgc.get.consumeAction(actSpec)
 	}
 
 	protected def launchSimRenderSpace(vwLnchMsg : VWSetupRq_Lnch, slfActr : ActorRef,  localActorCtx : ActorContext): Unit = {
@@ -144,7 +147,14 @@ trait VWorldBossLogic [VWSM <: VWorldSysMgr] extends VarargsLogging {
 	}
 
 	def notifySetupResults(lesserIngred: LesserIngred): Unit = {
+		//
 		info1("Got setup result (lesser) ingredients: {}", lesserIngred)
+		val rrc : RenderRegistryClient = lesserIngred.getRendRegClient
+		val winStatMon : WindowStatusMonitor = lesserIngred.getWindowStatusMonitor
+		val bgc : BasicGoodyCtx = new BasicGoodyCtxImpl(rrc, winStatMon)
+		val sysMgr = getSysMgr
+		info2("Storing goody ctx {} in sysMgr {}", bgc, sysMgr)
+		sysMgr.asInstanceOf[VWSysMgrImpl].setGoodyCtx(bgc)
 	}
 
 }
@@ -166,8 +176,8 @@ class VWorldBossActor[VWSM <: VWorldSysMgr](sysMgr : VWSM, hackStrap : VWorldStr
 		case vwrq : VWorldRequest => {
 			processVWorldRequest(vwrq, self, context)
 		}
-		case vwnot : VWorldNotice => {
-			processVWorldNotice(vwnot, self, context)
+		case vwnot : VWorldInternalNotice => {
+			processVWorldInternalNotice(vwnot, self, context)
 		}
 	}
 
@@ -176,8 +186,13 @@ class VWorldBossActor[VWSM <: VWorldSysMgr](sysMgr : VWSM, hackStrap : VWorldStr
 }
 class VWSysMgrImpl extends VWorldSysMgr {
 	override def findPublicTellers : VWorldPublicTellers = new VWorldPublicTellers{}
+
+	private var myGoodyCtx_opt : Option[BasicGoodyCtx] = None
 	// TODO:  Need access to someone who knows a BasicGoodyCtx
-	override def findGoodyCtx : BasicGoodyCtx = ???
+	override def findGoodyCtx_opt : Option[BasicGoodyCtx] = myGoodyCtx_opt
+	def setGoodyCtx(bgc : BasicGoodyCtx): Unit = {
+		myGoodyCtx_opt = Option(bgc)
+	}
 }
 class VWStrapImpl extends VWorldStrap {
 

@@ -29,6 +29,8 @@ trait VWRequestHeavy extends VWorldRequest with VarargsLogging {
 }
 trait VWorldNotice extends VWorldMsg
 
+trait VWorldInternalNotice extends  VWorldNotice
+
 trait VWContentRq extends VWorldRequest {
 }
 
@@ -101,7 +103,7 @@ case class VWSetupRq_Conf extends VWorldRequest {
 case class VWSetupRq_Lnch extends VWorldRequest {
 	// Includes callback-teller hook for result pointers after successful launch
 }
-case class VWSetupResultsNotice(lesserIngred: LesserIngred) extends VWorldNotice
+case class VWSetupResultsNotice(lesserIngred: LesserIngred) extends VWorldInternalNotice
 
 abstract class HeavyRequestTwo() extends VWRequestHeavy
 

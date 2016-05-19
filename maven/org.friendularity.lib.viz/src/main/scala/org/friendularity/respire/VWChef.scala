@@ -17,6 +17,9 @@ import org.cogchar.bundle.app.vworld.busker.TriggerItems
 import org.cogchar.bundle.app.vworld.central.{VWCtxCmdBox, StatefulVWorldRegistry, VWorldRegistry}
 import org.cogchar.platform.trigger.BoxSpace;
 import org.cogchar.platform.trigger.CommandSpace
+import org.cogchar.render.sys.goody.{GoodyModularRenderContext, GoodyRenderRegistryClient}
+import org.cogchar.render.sys.registry.RenderRegistryClient
+import org.cogchar.render.sys.window.WindowStatusMonitor
 
 // import org.cogchar.bundle.app.vworld.central._
 import org.jflux.impl.services.rk.osgi.lifecycle.OSGiComponent
@@ -71,12 +74,18 @@ class VWChef {
 	}
 }
 trait LesserIngred {
-	// Things needed to make goody space
-	/*		  val renderCtx : GoodyModularRenderContext = getBonyRenderContext
-			  val grrc : GoodyRenderRegistryClient = renderCtx.getGoodyRenderRegistryClient
-			  val bgc : BasicGoodyCtx = new BasicGoodyCtxImpl(grrc, renderCtx)
-			 */
+	// Includes pointers from our JME app that are needed to make a goody space
+	def getRendRegClient : RenderRegistryClient
+	def getWindowStatusMonitor : WindowStatusMonitor
+	// def getGMRendCtx : GoodyModularRenderContext
 }
+case class LesserIngredImpl(rendRegCli : RenderRegistryClient, winStatMon : WindowStatusMonitor) // gmRendCtx : GoodyModularRenderContext)
+		extends LesserIngred {
+	override def getRendRegClient : RenderRegistryClient = rendRegCli
+	override def getWindowStatusMonitor : WindowStatusMonitor = winStatMon
+	// override def getGMRendCtx : GoodyModularRenderContext = gmRendCtx
+}
+
 // Supplies pointers sufficient to launch bodies in VWorld in 2012-2014 style.
 trait VintageBodyIngred {
 
