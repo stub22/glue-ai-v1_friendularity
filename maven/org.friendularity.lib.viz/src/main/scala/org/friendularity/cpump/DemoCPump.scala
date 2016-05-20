@@ -130,7 +130,7 @@ class DemoCPumpActor extends Actor with ActorLogging {
 			respTeller_opt.get.tellCPMsg(respMsg)
 		}
 	}
-	case tamsg : CPReliableThingActionMsg => {
+	case tamsg : CPRepliableThingActionMsg => {
 		val ta = tamsg.getThingAction
 		log.info("Received possibly-repliable ThingAction: {}", ta)
 		val replyTeller_opt = tamsg.getReplyTeller_opt
