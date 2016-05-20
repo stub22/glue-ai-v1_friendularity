@@ -96,17 +96,28 @@ trait VWorldBossLogic [VWSM <: VWorldSysMgr] extends VarargsLogging {
 
 			case goodyActSpecMsg : VWGoodyRqActionSpec => processVWGoodyActSpec(goodyActSpecMsg, localActorCtx)
 
+
 			case goodyRdfMsg : VWGoodyRqRdf => processVWGoodyRdfMsg(goodyRdfMsg, localActorCtx)
 
-			case adminMsg : VWAdminRqMsg => {
-				// Example using the questionable "heavy" message pattern, where msg itself implements logic.
-				// Using this pattern for an *admin* msg seems doubly dopey (because an inbound message from
-				// client is supposed to know how to admin=rewire/reconf this server-side system - how and why?),
-				// whereas if the actionSpec goody handlers worked this way, there would be some advantages.
-				adminMsg.processInSys(getSysMgr, localActorCtx)
+			case adminMsg : VWAdminRqMsg => processVWAdminMsg(adminMsg, localActorCtx)
+
+		}
+	}
+	protected def processVWAdminMsg(vwmsg : VWAdminRqMsg, localActorCtx : ActorContext): Unit = {
+		val sysMgr = getSysMgr
+		info3("Processing  msg={} with sysMgr={} and actCtx={}", vwmsg, sysMgr, localActorCtx)
+		vwmsg match {
+			case gfpa : VWARM_GreetFromPumpAdmin => {
+
 			}
+			case fgt : VWARM_FindGoodyTeller => {
 
+			}
+			case fpt : VWARM_FindPublicTellers => {
+				val pubTellers : VWorldPublicTellers = sysMgr.findPublicTellers
+				fpt.answerTeller.tellCPMsg(pubTellers)
 
+			}
 		}
 	}
 	protected def processVWorldInternalNotice(vwmsg : VWorldNotice, slfActr : ActorRef, localActorCtx : ActorContext): Unit = {

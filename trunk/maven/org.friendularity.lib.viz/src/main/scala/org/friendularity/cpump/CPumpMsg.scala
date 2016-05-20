@@ -49,7 +49,7 @@ trait CPThingActionMsg extends CPSymbolMsg {
 	def getThingAction : ThingActionSpec
 }
 
-trait  CPReliableThingActionMsg extends CPThingActionMsg with CPRepliableMsg
+trait  CPRepliableThingActionMsg extends CPThingActionMsg with CPRepliableMsg
 
 
 case class TxtSymMsg(mySymTxt : String) extends CPSymbolMsg {
@@ -62,7 +62,7 @@ case class RepliableTxtSymMsg(mySymTxt : String, myReplyTeller_opt : Option[CPMs
 }
 
 case class CPTAWrapMsg(mySerialTASpec : ThingActionSpec, myReplyTeller_opt : Option[CPMsgTeller])
-			extends CPReliableThingActionMsg {
+			extends CPRepliableThingActionMsg {
 	override def getThingAction : ThingActionSpec = mySerialTASpec
 	override def getReplyTeller_opt : Option[CPMsgTeller] = myReplyTeller_opt
 }

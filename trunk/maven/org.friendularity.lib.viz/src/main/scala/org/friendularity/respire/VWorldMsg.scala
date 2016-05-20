@@ -31,6 +31,7 @@ trait VWorldNotice extends VWorldMsg
 
 trait VWorldInternalNotice extends  VWorldNotice
 
+
 trait VWContentRq extends VWorldRequest {
 }
 
@@ -66,27 +67,14 @@ case class VWGoodyRqBTAS(myBTAS : BasicThingActionSpec) extends  VWGoodyRqAction
 	override def getActionSpec : BasicThingActionSpec = myBTAS
 }
 
-// FIXME:  These admin RQs are in fact "heavy" requests.
+
 trait VWAdminRqMsg extends VWorldRequest with VarargsLogging {
-	def processInSys(sysMgr : VWorldSysMgr, actCtx : ActorContext): Unit
+
 }
-case class VWARM_GreetFromPumpAdmin(pumpAdminTeller : CPMsgTeller) extends VWAdminRqMsg {
-	override def processInSys(sysMgr : VWorldSysMgr, actCtx : ActorContext) : Unit = {
-		info3("Processing {} message with sysMgr={} and actCtx={}", this, sysMgr, actCtx)
-	}
-}
-case class VWARM_FindGoodyTeller(answerTeller: CPMsgTeller) extends VWAdminRqMsg {
-	override def processInSys(sysMgr : VWorldSysMgr, actCtx : ActorContext) : Unit = {
-		info3("Processing {} message with sysMgr={} and actCtx={}", this, sysMgr, actCtx)
-	}
-}
-case class VWARM_FindPublicTellers(answerTeller: CPMsgTeller) extends VWAdminRqMsg {
-	override def processInSys(sysMgr : VWorldSysMgr, actCtx : ActorContext) : Unit = {
-		info3("Processing {} message with sysMgr={} and actCtx={}", this, sysMgr, actCtx)
-		val pubTellers : VWorldPublicTellers = sysMgr.findPublicTellers
-		answerTeller.tellCPMsg(pubTellers)
-	}
-}
+case class VWARM_GreetFromPumpAdmin(pumpAdminTeller : CPMsgTeller) extends VWAdminRqMsg
+case class VWARM_FindGoodyTeller(answerTeller: CPMsgTeller) extends VWAdminRqMsg
+case class VWARM_FindPublicTellers(answerTeller: CPMsgTeller) extends VWAdminRqMsg
+
 // Concept:  Type filtering hooha uses concrete classes.  We expect there will be a case class Msg.
 class MakeItDoOne() extends VWorldRequest {
 	// No contract methods are required for this relatively *light* request, but it expects server

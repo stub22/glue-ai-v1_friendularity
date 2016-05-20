@@ -3,7 +3,7 @@ package org.friendularity.dull
 import org.appdapter.core.name.Ident
 import org.cogchar.api.thing.WantsThingAction
 import org.cogchar.impl.thing.route.BasicThingActionRouter
-import org.friendularity.cpump.{TACPFilterAdptr, CPMsgTeller, CPReliableThingActionMsg, CPThingActionMsg}
+import org.friendularity.cpump.{TACPFilterAdptr, CPMsgTeller, CPRepliableThingActionMsg, CPThingActionMsg}
 
 /**
   * Created by Owner on 4/13/2016.
@@ -16,7 +16,7 @@ case class DullTACPFilterAdptrOne(taRouter : WantsThingAction)
 										   pumpCtx_opt: Option[DullPumpCtx]): Traversable[CPThingActionMsg] = {
 		val singleOutMsg_Opt : Option[CPThingActionMsg] = inMsg match {
 			// Replying here is a sloppy concept, not really implemented, more of a type-note
-			case rplbl : CPReliableThingActionMsg => {
+			case rplbl : CPRepliableThingActionMsg => {
 				val rplyTeller_opt : Option[CPMsgTeller] = rplbl.getReplyTeller_opt
 				routeOnewayInbound(rplbl)
 				None
