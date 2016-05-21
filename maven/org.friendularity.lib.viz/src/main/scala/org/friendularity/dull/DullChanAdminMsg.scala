@@ -9,10 +9,11 @@ import org.friendularity.cpump._
   * Created by Owner on 4/10/2016.
   */
 trait DullChanAdminRqMsg  extends CPAdminRequestMsg[DullPumpCtx] with VarargsLogging {
-	protected def sendReceiptForCreatedChan(chanID : Ident, chan : CPumpChan[DullPumpCtx], receiptTeller: CPReceiptTeller): Unit = {
+	protected def sendReceiptForCreatedChan(chanID : Ident, chan : CPumpChan[DullPumpCtx],
+											receiptTeller: CPStrongTeller[CreatedChanTellerMsg]): Unit = {
 		val crtdOuterTeller_opt = chan.getOuterTeller_opt()
 		val receiptMsg = CreatedChanTellerMsg(chanID, crtdOuterTeller_opt)
-		receiptTeller.tellCPReceipt(receiptMsg)
+		receiptTeller.tellStrongCPMsg(receiptMsg)
 	}
 
 	protected def makePostActor[PMK <: CPumpMsg](postChan : BoundedCPChanPost[PMK, DullPumpCtx], actCtx : ActorContext): ActorRef = {
@@ -37,7 +38,7 @@ trait DullChanAdminRqMsg  extends CPAdminRequestMsg[DullPumpCtx] with VarargsLog
 
 case class CPARM_MakeDullListenChan[LMK <: CPumpMsg](chanID : Ident, listenedMsgClz : Class[LMK],
 													 adoptrs : Traversable[CPumpAdptr[LMK, DullPumpCtx, CPumpMsg]],
-													 receiptTeller: CPReceiptTeller)
+													 receiptTeller: CPStrongTeller[CreatedChanTellerMsg])
 			extends DullChanAdminRqMsg {
 	override def processInCtx(ctx : DullPumpCtx, actCtx : ActorContext): Unit = {
 		// NOTE:  This transmission of adoptrs is powerful, but treading on thin ice regarding the instance closure.
@@ -50,7 +51,7 @@ case class CPARM_MakeDullListenChan[LMK <: CPumpMsg](chanID : Ident, listenedMsg
 
 
 case class CPARM_MakeDullPostDispatchChan[PMK <: CPumpMsg](chanID : Ident, postedMsgClz : Class[PMK],
-														   receiptTeller: CPReceiptTeller)
+														   receiptTeller: CPStrongTeller[CreatedChanTellerMsg])
 			extends DullChanAdminRqMsg {
 	override def processInCtx(ctx : DullPumpCtx, actCtx : ActorContext): Unit = {
 		val postChan = ctx.makeOnewayDispatchPostChan(chanID, postedMsgClz)
@@ -60,7 +61,8 @@ case class CPARM_MakeDullPostDispatchChan[PMK <: CPumpMsg](chanID : Ident, poste
 }
 
 case class CPARM_MakeDullPostForwardChan[PMK <: CPumpMsg](chanID : Ident, postedMsgClz : Class[PMK],
-														  forwardTeller: CPMsgTeller, receiptTeller: CPReceiptTeller)
+														  forwardTeller: CPMsgTeller,
+														  receiptTeller: CPStrongTeller[CreatedChanTellerMsg])
 			extends DullChanAdminRqMsg {
 
 	override def processInCtx(ctx : DullPumpCtx, actCtx : ActorContext): Unit = {
@@ -69,7 +71,7 @@ case class CPARM_MakeDullPostForwardChan[PMK <: CPumpMsg](chanID : Ident, posted
 		sendReceiptForCreatedChan(chanID, postChan, receiptTeller)
 	}
 }
-case class CPARM_LookupChanTeller(chanID : Ident, answerTeller: CPMsgTeller)
+case class CPARM_LookupChanTeller(chanID : Ident, answerTeller: CPStrongTeller[FoundOuterTellerMsg])
 			extends DullChanAdminRqMsg {
 	override def processInCtx(ctx : DullPumpCtx, actCtx : ActorContext): Unit = {
 		val chanOpt = ctx.getChan(chanID)

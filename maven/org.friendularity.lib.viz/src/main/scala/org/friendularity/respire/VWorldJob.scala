@@ -32,6 +32,8 @@ trait MsgJobLogic[-Msg <: CPumpMsg] extends VarargsLogging {
 	}
 
 }
+// Here is a concrete ActorImpl class that can be instantiated using Akka props magic, as is done
+// in MsgJobActorMaker.makeFilteredMsgJobActor.
 // All the type-matching stuff here is not strictly necessary, but we are just working to define a consistent
 // pattern that gives a decent amount of type safety for both programmers and the runtime.
 class FilteredMsgJobActorImpl[-Msg <: CPumpMsg](jobLogic : MsgJobLogic[Msg], msgFilterClz : Class[Msg]) extends Actor with ActorLogging {
@@ -56,13 +58,14 @@ class FilteredMsgJobActorImpl[-Msg <: CPumpMsg](jobLogic : MsgJobLogic[Msg], msg
 }
 // Note that type param is passed to the method, rather than affecting the trait, in this case.
 // We choose this approach because the akka API itself is not really rigorously typesafe, so
-// we don't get much by propagating out the message type.  In contrast the jobLogic types
-// are meant to be stricter.
+// we wouldn't add much clarity propagating out the message type.  In contrast the jobLogic types
+// (and outer-wrapper Teller types) are meant to be stricter.
+// In summary, Teller-strong  talks to actor-weak which talks to jobLogic-strong.
 trait MsgJobActorMaker {
-	def makeFilteredMsgJobActor[Msg <: CPumpMsg](actx : ActorContext, jobActName : String,
+	def makeFilteredMsgJobActor[Msg <: CPumpMsg](arf : ActorRefFactory, jobActName : String,
 												   jobLogic : MsgJobLogic[Msg], msgFilterClz : Class[Msg]) : ActorRef = {
 		val vwjActorProps = Props(classOf[FilteredMsgJobActorImpl[Msg]], jobLogic, msgFilterClz)
-		val vwjActorRef : ActorRef = actx.actorOf(vwjActorProps, jobActName)
+		val vwjActorRef : ActorRef = arf.actorOf(vwjActorProps, jobActName)
 		vwjActorRef
 	}
 }
@@ -82,14 +85,21 @@ trait MsgFactoryPair[Msg <: CPumpMsg]  {
 	def getMsgJobLogicFactory : MsgJobLogicFactory[Msg]
 	def getMsgJobActorMaker : MsgJobActorMaker
 
-	def makeLogicAndActor (actx : ActorContext, jobActName : String, subFilterClz : Class[Msg]) : ActorRef = {
-		validateSubFilterClz(subFilterClz)
+	def makeLogicAndActor (actx : ActorRefFactory, jobActName : String, subFilterClz_opt : Option[Class[Msg]]) : ActorRef = {
+		val actualFilterClz : Class[Msg] = if (subFilterClz_opt.isDefined) {
+			val subClz = subFilterClz_opt.get
+			validateSubFilterClz(subClz)
+			subClz
+		} else {
+			getUpperFilterClz
+		}
+
 		val jlf = getMsgJobLogicFactory
 		// All business logic used to handle messages to the actor is encapsulated in the MsgJogLogic.
-		val mjl : MsgJobLogic[Msg] = jlf.makeJobLogic(subFilterClz)
+		val mjl : MsgJobLogic[Msg] = jlf.makeJobLogic(actualFilterClz)
 		val jam = getMsgJobActorMaker
 		// Next step handles the creation of Props and then Actor.
-		val jobActRef = jam.makeFilteredMsgJobActor(actx, jobActName, mjl, subFilterClz)
+		val jobActRef = jam.makeFilteredMsgJobActor(actx, jobActName, mjl, actualFilterClz)
 		jobActRef
 	}
 	def validateSubFilterClz(subFilterClz : Class[Msg]): Unit = {
@@ -109,13 +119,19 @@ class MsgJobFactoryPairImpl[Msg <: CPumpMsg](upperFilterClz : Class[Msg], jobLog
 	override def getMsgJobActorMaker : MsgJobActorMaker = jobActorMaker
 }
 
+trait MasterFactory extends VarargsLogging {
+	def makeFactoryPair[Msg <: CPumpMsg](msgFilterClz : Class[Msg], jlFact : MsgJobLogicFactory[Msg]): MsgFactoryPair[Msg] = {
+		val actMak = new GeneralMsgActorMakerImpl
+		new MsgJobFactoryPairImpl(msgFilterClz, jlFact, actMak)
+	}
+}
 
 // This trait exists as a point of human recognition and doc for VWorld job logic.
 // So far it has no specific features beyond what MsgJobLogic does, other than the type constraint on Msg.
 // Contravariant type marker "-" shows that this type receives/uses Msg, and does not return it as value.
 // This means that supertyps of VWShow (e.g. "CPumpMsg") yield subtypes of VWJL:  VWorldJobLogic[CPumpMsg] <: VWJL[VWShowMsg]
 // So if we made a really useful piece of logic that worked for all msgs, we could pass that into
-// a place (method arg or collection) expecting a specific piece of logic that works only for VWShowMsgs.
+// a place (method arg or collection) expecting a specific piece of logic that needs to work only for VWShowMsgs.
 trait VWorldJobLogic[-Msg <: VWorldMsg] extends MsgJobLogic[Msg] {
 	// Our subtypes implementing processMsgUnsafe have a lot of authority, exercisable through the main
 	// actor-receive context args.
@@ -123,29 +139,8 @@ trait VWorldJobLogic[-Msg <: VWorldMsg] extends MsgJobLogic[Msg] {
 	// Impl may cause messages to other actors, creation of other actors, mutation of internal state.
 	// May throw exceptions.
 }
-// Using the "delegating" approach pushes logic into the received message object itself.
-// This approach probably has more drawbacks than advantages.
-// However, typing it out as a skeleton, and seeing that compile, helps clarify our type algebra.
-trait VWDelegatingJobLogic[-Msg <: VWRequestHeavy] extends VWorldJobLogic[Msg] {
-	def getVWorldSysMgr : VWorldSysMgr
-}
 
-class VWJobLogicDelegatingImpl[-Msg <: VWRequestHeavy](msgFilterClz : Class[Msg], sysMgr : VWorldSysMgr) extends VWDelegatingJobLogic[Msg] {
-	override def processMsgUnsafe(msg : Msg, slf : ActorRef, sndr : ActorRef, actx : ActorContext) : Unit = {
-		msg.processInsideUnsafe(this, slf, sndr, actx)
-	}
-	override def getVWorldSysMgr : VWorldSysMgr = sysMgr
-}
-
-// trait VWorldJobLogicFactory extends MsgJobLogicFactory {
-	// override def makeJobLogic[Msg <: VWorldMsg](msgFilterClz : Class[Msg]) : MsgJobLogic[Msg] = ???
-// }
-class VWJLDImplFactory(sysMgr : VWorldSysMgr) extends MsgJobLogicFactory[VWRequestHeavy] {
-	override def makeJobLogic(msgFilterClz : Class[VWRequestHeavy]) : MsgJobLogic[VWRequestHeavy] = {
-		new VWJobLogicDelegatingImpl[VWRequestHeavy](msgFilterClz, sysMgr)
-	}
-}
-trait VWorldMasterFactory {
+trait VWorldMasterFactory extends MasterFactory {
 
 	// Meaning of list ordering not yet specified.
 	def makeBaselineMsgJobPairFactories: List[MsgFactoryPair[_ <: VWorldMsg]] = {
@@ -164,10 +159,7 @@ trait VWorldMasterFactory {
 			*/
 		)
 	}
-	def makeFactoryPair[Msg <: VWorldMsg](msgFilterClz : Class[Msg], jlFact : MsgJobLogicFactory[Msg]): MsgFactoryPair[Msg] = {
-		val actMak = new GeneralMsgActorMakerImpl
-		new MsgJobFactoryPairImpl(msgFilterClz, jlFact, actMak)
-	}
+
 }
 // In general these logic-handler types are superior to delegation to "heavy" code-bearing messages.
 // However, in this approach , besides the processMsgUnsafe impl, we must also somewhere define a mapping
