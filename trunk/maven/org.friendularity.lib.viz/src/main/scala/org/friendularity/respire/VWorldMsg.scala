@@ -14,19 +14,7 @@ trait VWorldRequest  extends VWorldMsg {
 
 
 }
-// "Heavy" delegate approach is not recommended, but illustrates an interesting sub-case.
-trait VWRequestHeavy extends VWorldRequest with VarargsLogging {
-	// This kind of request includes its own impl method.  This code-shipping is quite flexible and
-	// can be efficient in terms of total code-cost for features.   However, it carries several negative
-	// design implications.  It is recommended against in akka prog guide.
-	//
-	// We demonstrate it here as just one possible semi-compliant way to map msg to behavior.
-	// It is crucial that this method not attempt to mutate any shared state, or state from client.
-	// If we (reasonably) assume that jobLogic is protected by same invoking actor that calls us,
-	// then it is safe for this message to cause private state mutation within jobLogic.
 
-	def processInsideUnsafe(jobLogic : VWDelegatingJobLogic[_ <: VWRequestHeavy], slf : ActorRef, sndr : ActorRef, actx : ActorContext): Unit
-}
 trait VWorldNotice extends VWorldMsg
 
 trait VWorldInternalNotice extends  VWorldNotice
@@ -73,6 +61,9 @@ trait VWAdminRqMsg extends VWorldRequest with VarargsLogging {
 }
 case class VWARM_GreetFromPumpAdmin(pumpAdminTeller : CPMsgTeller) extends VWAdminRqMsg
 case class VWARM_FindGoodyTeller(answerTeller: CPMsgTeller) extends VWAdminRqMsg
+
+// Receiver can wait to answer until the system is sufficiently ready, e.g. until the VWorld is up.
+// However, Sndr may inquire well after the VWorld is up, and then Rcvr should answer right away.
 case class VWARM_FindPublicTellers(answerTeller: CPMsgTeller) extends VWAdminRqMsg
 
 // Concept:  Type filtering hooha uses concrete classes.  We expect there will be a case class Msg.
@@ -93,19 +84,5 @@ case class VWSetupRq_Lnch extends VWorldRequest {
 }
 case class VWSetupResultsNotice(lesserIngred: LesserIngred) extends VWorldInternalNotice
 
-abstract class HeavyRequestTwo() extends VWRequestHeavy
-
-case class MakeItDoTwoHeavy() extends HeavyRequestTwo() {
-	override def processInsideUnsafe(jobLogic : VWDelegatingJobLogic[_ <: VWRequestHeavy], slf : ActorRef, sndr : ActorRef, actx : ActorContext): Unit = {
-		// In principle the jobLogic can contain state that we know how to access.
-		// It also allows us to get at the sysMgr.
-		val sysMgr = jobLogic.getVWorldSysMgr
-		// So, basically anything can be done from inside this method, which is both good and bad.
-		// Good:  It gets a new feature implemented in just one class, with no extra factory types.
-		// Bad:   It has access to basically any kind of VWorld state, without any enforced narrowing,
-		// although we can try to tack some on in the jobLogic and also here in the message-class hierarchy.
-	}
-
-}
 
 

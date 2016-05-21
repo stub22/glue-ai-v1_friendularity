@@ -38,9 +38,7 @@ trait CPSignalMsg extends CPumpMsg {
 trait CPSymbolMsg extends CPumpMsg {
 
 }
-trait CPReceiptMsg extends CPSymbolMsg {
-	// def getConfirmedTeller : CPMsgTeller
-}
+
 // Q:  How well does logging play with serializable?
 
 import org.cogchar.api.thing.ThingActionSpec
@@ -68,10 +66,10 @@ case class CPTAWrapMsg(mySerialTASpec : ThingActionSpec, myReplyTeller_opt : Opt
 }
 
 // teller_opt eq None => "The channel was found, but we cannot give you a direct teller to it"
-case class FoundOuterTellerMsg(chanID : Ident, outerTeller_opt : Option[CPMsgTeller]) extends CPReceiptMsg
+case class FoundOuterTellerMsg(chanID : Ident, outerTeller_opt : Option[CPMsgTeller]) extends CPumpMsg
 
 // teller_opt eq None => "The channel was created, but we cannot give you a direct teller to it"
-case class CreatedChanTellerMsg(chanID : Ident, createdTeller_opt : Option[CPMsgTeller]) extends CPReceiptMsg {
+case class CreatedChanTellerMsg(chanID : Ident, createdTeller_opt : Option[CPMsgTeller]) extends CPumpMsg {
 	def getConfirmedTeller : Option[CPMsgTeller] = createdTeller_opt
 }
 trait CPAdminRequestMsg[CtxBound <: CPumpCtx] extends CPSymbolMsg {

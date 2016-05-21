@@ -13,16 +13,17 @@ trait CPMsgTeller extends JSerializable {
 }
 
 // Wrapper for sender who wants an answer
-trait CPReceiptTeller extends CPMsgTeller {
-	// TODO:  Refine this impl
-	def tellCPReceipt(msg: CPReceiptMsg) = tellCPMsg(msg)
+trait CPStrongTeller[MsgType <: CPumpMsg] extends CPMsgTeller {
+	// Strongly typed wrapper for the weakly-typed inner tell.
+	def tellStrongCPMsg(msg: MsgType) = tellCPMsg(msg)
 }
 
-case class ActorRefCPMsgTeller(actRef : ActorRef) extends CPMsgTeller with CPReceiptTeller {
+case class ActorRefCPMsgTeller[MsgType <: CPumpMsg](actRef : ActorRef) extends CPStrongTeller[MsgType] {
 	override def tellCPMsg(cpMsg: CPumpMsg): Unit = {
 		actRef ! cpMsg
 	}
 }
+
 case class ActorSelCPMsgTeller(actSel : ActorSelection) extends CPMsgTeller {
 	override def tellCPMsg(cpMsg: CPumpMsg): Unit = {
 		actSel ! cpMsg

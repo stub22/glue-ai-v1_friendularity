@@ -16,7 +16,7 @@
 
 package org.friendularity.navui
 
-import akka.actor.{ActorSystem, ActorRef}
+import akka.actor._
 import com.hp.hpl.jena.rdf.model.{Model => JenaModel}
 import org.appdapter.core.store.Repo
 import org.appdapter.fancy.log.VarargsLogging
@@ -28,7 +28,7 @@ import org.cogchar.impl.thing.basic.BasicThingActionSpec
 import org.cogchar.render.rendtest.{GoodyTestMsgMaker, GoodyRenderTestApp}
 import org.friendularity.appro.TestRaizLoad
 import org.friendularity.chnkr.ChnkrWrapRepoSpec
-import org.friendularity.cpump.{CPumpMsg, CPMsgTeller, ActorRefCPMsgTeller}
+import org.friendularity.cpump.{CPStrongTeller, CPumpMsg, CPMsgTeller, ActorRefCPMsgTeller}
 import org.friendularity.dull.SpecialAppPumpSpace
 
 
@@ -60,7 +60,7 @@ object TestNavUI extends VarargsLogging {
 		//		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.ALL);
 		val useOldTestApp = false
 		if (useOldTestApp)
-			launchGoodyRenderTestApp
+			launchOldGoodyRenderTestApp
 		else
 			launchNuiiTest
 	}
@@ -80,10 +80,13 @@ object TestNavUI extends VarargsLogging {
 					"we find that out here and exit accordingly?")
 
 	}
-	def launchGoodyRenderTestApp : Unit = {
+	private def launchOldGoodyRenderTestApp : Unit = {
+		// Just a wrapper for the same test we can run inside Cogchar o.c.lib.render.goody.
+		// Does not use any FriendU code.
+		// This is just a classpath sanity test.
+		// Normally we run the Nuii test above, instead, and this code is unused.
 		val rce: RenderConfigEmitter = new RenderConfigEmitter
 		val app: GoodyRenderTestApp = new GoodyRenderTestApp(rce)
-		// This will trigger the makeCogcharRenderContext() and then the simpleInitApp() below.
 		app.start
 	}
 }
@@ -107,6 +110,20 @@ class NavUiAppImpl extends VarargsLogging {
 	lazy private val standPumpCtxActorRef : ActorRef = myStandalonePumpSpace.findTopActorRef(standPumpTestCtxName)
 	lazy private val standPumpAdminTeller = new ActorRefCPMsgTeller(standPumpCtxActorRef)
 
+	// Direct approach
+	lazy private val outerCtxName = "nav_ui_outer"
+	lazy private val outerCtxActorRef : ActorRef = makeCustomOuterActor(myAkkaSys)
+	lazy private val outerTellerDirect = new ActorRefCPMsgTeller(outerCtxActorRef)
+
+	// Jobby approach
+	lazy private val jobbyOuterTeller = OuterJobbyLogic_MasterFactory.makeOoLogicAndTeller(myAkkaSys)
+
+	private def makeCustomOuterActor(akkaSys: ActorSystem) : ActorRef = {
+		val vwbossActorProps = Props(classOf[OuterDirectActor])
+		val vwbActorRef : ActorRef = akkaSys.actorOf(vwbossActorProps, outerCtxName)
+		vwbActorRef
+	}
+
 	def sendSetupMsgs_Async {
 		val hpatMsg = new VWARM_GreetFromPumpAdmin(standPumpAdminTeller)
 		info2("Sending msg={} to VWBossTeller : {}", hpatMsg, vwBossTeller)
@@ -116,13 +133,11 @@ class NavUiAppImpl extends VarargsLogging {
 
 		sendVWSetup_Lnch()
 
-		// This discovery message is usually sent from a remote client, with a more useful answerTeller-handler
-		val answerReceiver = standPumpAdminTeller
-		val fptMsg = new VWARM_FindPublicTellers(answerReceiver)
+		// Request the results of happy startup, to trigger further ops
+		val fptMsg = new VWARM_FindPublicTellers(jobbyOuterTeller)
 		info2("Sending msg={} to VWBossTeller : {}", fptMsg, vwBossTeller)
 		vwBossTeller.tellCPMsg(fptMsg)
 
-		sndGoodyTstMsgs
 	}
 	def sendVWSetup_Conf() : Unit = {
 		val msg = new VWSetupRq_Conf
@@ -134,18 +149,6 @@ class NavUiAppImpl extends VarargsLogging {
 		vwBossTeller.tellCPMsg(msg)
 	}
 
-	import scala.collection.JavaConverters._
-	def sndGoodyTstMsgs: Unit = {
-
-		val gtmm: GoodyTestMsgMaker = new GoodyTestMsgMaker
-		val msgsJList = gtmm.makeGoodyCreationMsgs
-		val msgsScbuf = msgsJList.asScala
-		for (actSpec <- msgsScbuf) {
-			getLogger.info("Wrapping and sending: {}", actSpec)
-			val vwMsgWrap = new VWGoodyRqBTAS(actSpec)
-			vwBossTeller.tellCPMsg(vwMsgWrap)
-		}
-	}
 	def middleRoad : Unit = {
 
 	}
@@ -155,10 +158,70 @@ class NavUiAppImpl extends VarargsLogging {
 	}
 	// registerAvatarConfigRepoClient(bunCtx, erc);
 }
-/*
-class SetupResultsRcvr extends  CPMsgTeller with VarargsLogging {
-	override def tellCPMsg(msg: CPumpMsg): Unit = {
-		info1("Got setup results: {}", msg)
+
+trait NavUiOuterLogic extends VarargsLogging {
+	def rcvPubTellers (vwpt : VWorldPublicTellers): Unit = {
+		// This is the notice we get back from boss, confirming system has started and these tellers are ready for biz.
+		info1("Outer logic got public tellers: {}", vwpt)
+		val goodyTeller = vwpt.getGoodyTeller
+		if (goodyTeller.isDefined) {
+			info1("Sending goody tst msgs to: {}", goodyTeller.get)
+			sndGoodyTstMsgs(goodyTeller.get)
+		} else {
+			warn0("GoodyTeller is not available, cannot send goody tst msgs.")
+		}
+
+	}
+	import scala.collection.JavaConverters._
+	def sndGoodyTstMsgs(goodyTeller : CPMsgTeller): Unit = {
+
+		val gtmm: GoodyTestMsgMaker = new GoodyTestMsgMaker
+		val msgsJList = gtmm.makeGoodyCreationMsgs
+		val msgsScbuf = msgsJList.asScala
+		for (actSpec <- msgsScbuf) {
+			getLogger.info("Wrapping and sending: {}", actSpec)
+			val vwMsgWrap = new VWGoodyRqBTAS(actSpec)
+			goodyTeller.tellCPMsg(vwMsgWrap)
+		}
+	}
+
+}
+//
+// If this class were going to take constructor params, we would have to pass those through the Props mechanism.
+class OuterDirectActor	extends Actor with ActorLogging with NavUiOuterLogic {
+	def receive = {
+		case vwpt : VWorldPublicTellers => rcvPubTellers(vwpt)
 	}
 }
-*/
+
+// Unnecessary to use the Jobby approach here, but working through it anyway as an excercise.
+// First we must make the actual job-handler classes.
+class OuterJobbyLogic extends MsgJobLogic[VWorldPublicTellers] with NavUiOuterLogic {
+	// Differences here is that we get exception handling+logging, runtime type verification,
+	// and actor wrapping for free, but we must also create the factory stuff below.
+	// Note that we could also pass constructor parameters in via the factory, without Props hassles.
+	override def processMsgUnsafe(msg : VWorldPublicTellers, slf : ActorRef, sndr : ActorRef,
+								  actx : ActorContext) : Unit = {
+		info0("Processing jobby version of public tellers handler")
+		rcvPubTellers(msg)
+	}
+}
+// Now we would make the factories needed to construct our logic + actor instances.
+// Question is:  When is this less bother than making an actor wrapper by hand, as in NavUiOuterActor above?
+
+object OuterJobbyLogic_MasterFactory extends VWorldMasterFactory {
+	val oolFactory = new MsgJobLogicFactory[VWorldPublicTellers]() {
+		override def makeJobLogic(msgFilterClz: Class[VWorldPublicTellers]): MsgJobLogic[VWorldPublicTellers] = {
+			info1("Making outer jobby logic for specific runtime filter clz: {}", msgFilterClz)
+			new OuterJobbyLogic
+		}
+	}
+	val oolFactPair = makeFactoryPair[VWorldPublicTellers](classOf[VWorldPublicTellers], oolFactory)
+
+	val oolJobbyActorName = "outer_jobby"
+
+	def makeOoLogicAndTeller(arf : ActorRefFactory) : CPStrongTeller[VWorldPublicTellers] = {
+		val aref = oolFactPair.makeLogicAndActor(arf, oolJobbyActorName, None)
+		new ActorRefCPMsgTeller[VWorldPublicTellers](aref)
+	}
+}

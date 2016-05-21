@@ -20,7 +20,7 @@ object TestDullServer extends VarargsLogging {
 
 		info1("Found standalone dull-pump topActor: {}", standPumpCtxActorRef)
 		val respConsumerActor : ActorRef = 	myAkkaSys.actorOf(Props[DullTestResponseConsumer], "ingrownDullRespCons")
-		val answerTeller = new ActorRefCPMsgTeller(respConsumerActor)
+		val answerTeller = new ActorRefCPMsgTeller[CreatedChanTellerMsg](respConsumerActor)
 
 
 		val listenChanID : Ident = new FreeIdent("http://onto.friendularity.org/testchans#listenChanDD");
