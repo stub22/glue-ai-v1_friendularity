@@ -37,7 +37,7 @@ import com.hp.hpl.jena.rdf.model.{Model => JenaModel}
 trait VWorldSysMgr {
 	def findPublicTellers : VWorldPublicTellers
 
-	def findGoodyCtx_opt : Option[BasicGoodyCtx] = None
+//	def findGoodyCtx_opt : Option[BasicGoodyCtx] = None
 }
 // (hack)Strap holds any icky extra shared state that we temporarily want to pass to VWorldBossActor.
 trait VWorldStrap {
@@ -51,7 +51,10 @@ trait VWorldStrap {
 trait VWorldPublicTellers extends VWorldNotice {
 	def getFirstBigTeller : Option[CPMsgTeller] = None
 	def getSecondCoolTeller : Option[CPMsgTeller] = None
-	def getGoodyTeller : Option[CPMsgTeller] = None
+	def getGoodyTeller : Option[CPStrongTeller[VWGoodyRqActionSpec]] = None
+}
+case class VWPubTellersImpl(goodyTeller : CPStrongTeller[VWGoodyRqActionSpec]) extends VWorldPublicTellers {
+	override def getGoodyTeller : Option[CPStrongTeller[VWGoodyRqActionSpec]] = Option(goodyTeller)
 }
 trait VWCnfMgr extends VarargsLogging {
 	lazy private val myMergedProfileJM : JenaModel = makeMergedProfileGraph("Temporarily unused selector args")
@@ -83,7 +86,25 @@ trait VWCnfMgr extends VarargsLogging {
 	}
 
 }
-trait VWorldBossLogic [VWSM <: VWorldSysMgr] extends VarargsLogging {
+trait VWPTRendezvous {
+	private var myListeners : List[CPStrongTeller[VWorldPublicTellers]] = Nil
+	private var myVWPT_opt : Option[VWorldPublicTellers] = None
+
+	def addVWPTListener (teller: CPStrongTeller[VWorldPublicTellers]) : Unit = {
+		myListeners = teller :: myListeners
+		if (myVWPT_opt.isDefined) {
+			teller.tellStrongCPMsg(myVWPT_opt.get)
+		}
+	}
+	protected def notifyVWPTListeners(vwpt : VWorldPublicTellers) : Unit = {
+		myListeners.foreach (_.tellStrongCPMsg(vwpt))
+	}
+	def setVWPT(vwpt : VWorldPublicTellers): Unit = {
+		myVWPT_opt = Option(vwpt)
+		notifyVWPTListeners(vwpt)
+	}
+}
+trait VWorldBossLogic [VWSM <: VWorldSysMgr] extends VarargsLogging with VWPTRendezvous {
 	protected def getSysMgr : VWSM
 
 	protected def processVWorldRequest(vwmsg : VWorldRequest, slfActr : ActorRef, localActorCtx : ActorContext): Unit = {
@@ -94,15 +115,12 @@ trait VWorldBossLogic [VWSM <: VWorldSysMgr] extends VarargsLogging {
 
 			case vwSetupLnchMsg : VWSetupRq_Lnch => launchSimRenderSpace(vwSetupLnchMsg, slfActr, localActorCtx)
 
-			case goodyActSpecMsg : VWGoodyRqActionSpec => processVWGoodyActSpec(goodyActSpecMsg, localActorCtx)
-
-
-			case goodyRdfMsg : VWGoodyRqRdf => processVWGoodyRdfMsg(goodyRdfMsg, localActorCtx)
-
 			case adminMsg : VWAdminRqMsg => processVWAdminMsg(adminMsg, localActorCtx)
 
 		}
 	}
+
+
 	protected def processVWAdminMsg(vwmsg : VWAdminRqMsg, localActorCtx : ActorContext): Unit = {
 		val sysMgr = getSysMgr
 		info3("Processing  msg={} with sysMgr={} and actCtx={}", vwmsg, sysMgr, localActorCtx)
@@ -114,9 +132,7 @@ trait VWorldBossLogic [VWSM <: VWorldSysMgr] extends VarargsLogging {
 
 			}
 			case fpt : VWARM_FindPublicTellers => {
-				val pubTellers : VWorldPublicTellers = sysMgr.findPublicTellers
-				fpt.answerTeller.tellCPMsg(pubTellers)
-
+				addVWPTListener(fpt.answerTeller)
 			}
 		}
 	}
@@ -124,19 +140,9 @@ trait VWorldBossLogic [VWSM <: VWorldSysMgr] extends VarargsLogging {
 		vwmsg match {
 			case setupResults: VWSetupResultsNotice => {
 				val lesserIng = setupResults.lesserIngred
-				notifySetupResults(lesserIng)
+				notifySetupResults(lesserIng, localActorCtx)
 			}
 		}
-	}
-
-	protected def processVWGoodyRdfMsg (goodyMsg : VWGoodyRqRdf, localActorCtx : ActorContext) : Unit = {
-
-	}
-	protected def processVWGoodyActSpec (goodyActSpecMsg : VWGoodyRqActionSpec, localActorCtx : ActorContext) : Unit = {
-		val actSpec = goodyActSpecMsg.getActionSpec
-		info1("VWBossLogic is processing received actSpec: {}", actSpec)
-		val bgc : Option[BasicGoodyCtx] = getSysMgr.findGoodyCtx_opt
-		bgc.get.consumeAction(actSpec)
 	}
 
 	protected def launchSimRenderSpace(vwLnchMsg : VWSetupRq_Lnch, slfActr : ActorRef,  localActorCtx : ActorContext): Unit = {
@@ -157,15 +163,20 @@ trait VWorldBossLogic [VWSM <: VWorldSysMgr] extends VarargsLogging {
 		val legConf_opt = cnfMgr.getLegConfERC_opt
 	}
 
-	def notifySetupResults(lesserIngred: LesserIngred): Unit = {
+	def notifySetupResults(lesserIngred: LesserIngred, localActorCtx : ActorContext): Unit = {
 		//
 		info1("Got setup result (lesser) ingredients: {}", lesserIngred)
 		val rrc : RenderRegistryClient = lesserIngred.getRendRegClient
 		val winStatMon : WindowStatusMonitor = lesserIngred.getWindowStatusMonitor
 		val bgc : BasicGoodyCtx = new BasicGoodyCtxImpl(rrc, winStatMon)
 		val sysMgr = getSysMgr
-		info2("Storing goody ctx {} in sysMgr {}", bgc, sysMgr)
-		sysMgr.asInstanceOf[VWSysMgrImpl].setGoodyCtx(bgc)
+//		info2("Storing goody ctx {} in sysMgr {}", bgc, sysMgr)
+//		sysMgr.asInstanceOf[VWSysMgrImpl].setGoodyCtx(bgc)
+//
+		val goodyActorRef = VWorldActorFactoryFuncs.makeVWGoodyActor(localActorCtx, "googoo", bgc)
+		val goodyTeller = new ActorRefCPMsgTeller[VWGoodyRqActionSpec](goodyActorRef)
+		val vwpt = new VWPubTellersImpl(goodyTeller)
+		setVWPT(vwpt)
 	}
 
 }
@@ -198,23 +209,52 @@ class VWorldBossActor[VWSM <: VWorldSysMgr](sysMgr : VWSM, hackStrap : VWorldStr
 class VWSysMgrImpl extends VWorldSysMgr {
 	override def findPublicTellers : VWorldPublicTellers = new VWorldPublicTellers{}
 
-	private var myGoodyCtx_opt : Option[BasicGoodyCtx] = None
-	// TODO:  Need access to someone who knows a BasicGoodyCtx
-	override def findGoodyCtx_opt : Option[BasicGoodyCtx] = myGoodyCtx_opt
-	def setGoodyCtx(bgc : BasicGoodyCtx): Unit = {
-		myGoodyCtx_opt = Option(bgc)
+
+}
+
+trait VWGoodyJobLogic extends VarargsLogging {
+	protected def getGoodyCtx : BasicGoodyCtx
+	protected def processVWGoodyRequest(vwmsg : VWorldRequest, slfActr : ActorRef, localActorCtx : ActorContext): Unit = {
+		vwmsg match {
+
+			case goodyActSpecMsg: VWGoodyRqActionSpec => processVWGoodyActSpec(goodyActSpecMsg, localActorCtx)
+
+			case goodyRdfMsg: VWGoodyRqRdf => processVWGoodyRdfMsg(goodyRdfMsg, localActorCtx)
+		}
+	}
+	protected def processVWGoodyActSpec (goodyActSpecMsg : VWGoodyRqActionSpec, localActorCtx : ActorContext) : Unit = {
+		val actSpec = goodyActSpecMsg.getActionSpec
+		info1("VWBossLogic is processing received actSpec: {}", actSpec)
+		val goodyCtx = getGoodyCtx
+		goodyCtx.consumeAction(actSpec)
+	}
+
+	protected def processVWGoodyRdfMsg (goodyMsg : VWGoodyRqRdf, localActorCtx : ActorContext) : Unit = ???
+}
+class VWGoodyActor(myGoodyCtx : BasicGoodyCtx) extends Actor with VWGoodyJobLogic {
+	override protected def getGoodyCtx : BasicGoodyCtx = myGoodyCtx
+	def receive = {
+		case vwrq: VWorldRequest => {
+			processVWGoodyRequest(vwrq, self, context)
+		}
 	}
 }
 class VWStrapImpl extends VWorldStrap {
-
+	// Good news - the hackStrap is still empty!  Let's hope it stays that way.
 }
-object VWorldBossFactory {
-	def makeVWorldBoss(akkaSys: ActorSystem, bossActorName : String) : ActorRef = {
+object VWorldActorFactoryFuncs {
+	// Following akka pattern, parentARF is either an ActorSystem (root) OR ActorContext (not-root)
+	def makeVWorldBoss(parentARF : ActorRefFactory, bossActorName : String) : ActorRef = {
 		val vwstrap = new VWStrapImpl
 		val vwsys = new VWSysMgrImpl
 		val vwbossActorProps = Props(classOf[VWorldBossActor[VWorldSysMgr]], vwsys, vwstrap)
-		val vwbActorRef : ActorRef = akkaSys.actorOf(vwbossActorProps, bossActorName)
+		val vwbActorRef : ActorRef = parentARF.actorOf(vwbossActorProps, bossActorName)
 		vwbActorRef
+	}
+	def makeVWGoodyActor(parentARF : ActorRefFactory, goodyActorName : String, goodyCtx : BasicGoodyCtx) : ActorRef = {
+		val goodyActorProps = Props(classOf[VWGoodyActor], goodyCtx)
+		val goodyActorRef : ActorRef = parentARF.actorOf(goodyActorProps, goodyActorName)
+		goodyActorRef
 	}
 }
 

@@ -16,7 +16,8 @@
 
 package org.friendularity.navui
 
-import akka.actor._
+// import akka.actor._
+import akka.actor.{Actor, ActorRef, ActorContext, ActorSystem, ActorRefFactory, Props, ActorLogging}
 import com.hp.hpl.jena.rdf.model.{Model => JenaModel}
 import org.appdapter.core.store.Repo
 import org.appdapter.fancy.log.VarargsLogging
@@ -30,7 +31,6 @@ import org.friendularity.appro.TestRaizLoad
 import org.friendularity.chnkr.ChnkrWrapRepoSpec
 import org.friendularity.cpump.{CPStrongTeller, CPumpMsg, CPMsgTeller, ActorRefCPMsgTeller}
 import org.friendularity.dull.SpecialAppPumpSpace
-
 
 import org.friendularity.respire._
 
@@ -48,9 +48,10 @@ object TestNavUI extends VarargsLogging {
 	// extended by offset params).  Anything not identified by URI(+offset) must be private
 	// to the VWorld.
 
-	// Currently URIs for all entities are assigned from *outside* the V-World (VWorldBossActor),
-	// and then passed in to it via entity creation messages.   All such URIs come from one of:
-	// cogchar+app ontologies, app profile data, app config chunks, or app java/scala code.
+	// Currently URIs for all entities are assigned from *outside* the V-World (boundary defined by VWorldBossActor),
+	// and then passed in to it via entity creation messages (sent to VWBossActor and its descendants).   All such
+	// URIs come from one of these places:
+	//  cogchar+app ontologies, app profile data, app config chunks, or app java/scala code.
 
 
 	def main(args: Array[String]): Unit = {
@@ -103,7 +104,7 @@ class NavUiAppImpl extends VarargsLogging {
 	lazy private val myAkkaSys = ActorSystem(akkaSysName)
 	lazy private val myStandalonePumpSpace = new SpecialAppPumpSpace(myAkkaSys)
 
-	lazy private val vwBossAR: ActorRef = VWorldBossFactory.makeVWorldBoss(myAkkaSys, "vworldBoss_818")
+	lazy private val vwBossAR: ActorRef = VWorldActorFactoryFuncs.makeVWorldBoss(myAkkaSys, "vworldBoss_818")
 	lazy private val vwBossTeller = new ActorRefCPMsgTeller(vwBossAR)
 
 	lazy private val standPumpTestCtxName = NavUiTestPublicNames.cpumpName
@@ -115,9 +116,11 @@ class NavUiAppImpl extends VarargsLogging {
 	lazy private val outerCtxActorRef : ActorRef = makeCustomOuterActor(myAkkaSys)
 	lazy private val outerTellerDirect = new ActorRefCPMsgTeller(outerCtxActorRef)
 
+
 	// Jobby approach
 	lazy private val jobbyOuterTeller = OuterJobbyLogic_MasterFactory.makeOoLogicAndTeller(myAkkaSys)
 
+	// Custom-outer approach
 	private def makeCustomOuterActor(akkaSys: ActorSystem) : ActorRef = {
 		val vwbossActorProps = Props(classOf[OuterDirectActor])
 		val vwbActorRef : ActorRef = akkaSys.actorOf(vwbossActorProps, outerCtxName)
@@ -149,9 +152,6 @@ class NavUiAppImpl extends VarargsLogging {
 		vwBossTeller.tellCPMsg(msg)
 	}
 
-	def middleRoad : Unit = {
-
-	}
 	def testDetachedGS : Unit = {
 		val dgst = new DetachedGST{}
 		dgst.gridSpaceTest
@@ -196,24 +196,25 @@ class OuterDirectActor	extends Actor with ActorLogging with NavUiOuterLogic {
 
 // Unnecessary to use the Jobby approach here, but working through it anyway as an excercise.
 // First we must make the actual job-handler classes.
-class OuterJobbyLogic extends MsgJobLogic[VWorldPublicTellers] with NavUiOuterLogic {
+class OuterJobbyLogic(unusedParam : Int) extends MsgJobLogic[VWorldPublicTellers] with NavUiOuterLogic {
 	// Differences here is that we get exception handling+logging, runtime type verification,
 	// and actor wrapping for free, but we must also create the factory stuff below.
 	// Note that we could also pass constructor parameters in via the factory, without Props hassles.
 	override def processMsgUnsafe(msg : VWorldPublicTellers, slf : ActorRef, sndr : ActorRef,
 								  actx : ActorContext) : Unit = {
-		info0("Processing jobby version of public tellers handler")
+		info1("Processing jobby version of public tellers handler, unusedParam={}", unusedParam : Integer)
 		rcvPubTellers(msg)
 	}
 }
 // Now we would make the factories needed to construct our logic + actor instances.
-// Question is:  When is this less bother than making an actor wrapper by hand, as in NavUiOuterActor above?
+// Question is:  When is this less bother than making an actor wrapper by hand, as in OuterDirectActor above?
 
 object OuterJobbyLogic_MasterFactory extends VWorldMasterFactory {
+	val thatOtherParam : Int = 22
 	val oolFactory = new MsgJobLogicFactory[VWorldPublicTellers]() {
 		override def makeJobLogic(msgFilterClz: Class[VWorldPublicTellers]): MsgJobLogic[VWorldPublicTellers] = {
 			info1("Making outer jobby logic for specific runtime filter clz: {}", msgFilterClz)
-			new OuterJobbyLogic
+			new OuterJobbyLogic(thatOtherParam)
 		}
 	}
 	val oolFactPair = makeFactoryPair[VWorldPublicTellers](classOf[VWorldPublicTellers], oolFactory)

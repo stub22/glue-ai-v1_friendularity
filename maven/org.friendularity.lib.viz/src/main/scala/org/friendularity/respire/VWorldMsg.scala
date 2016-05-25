@@ -3,7 +3,7 @@ package org.friendularity.respire
 import akka.actor.{ActorRef, ActorContext}
 import org.appdapter.fancy.log.VarargsLogging
 import org.cogchar.impl.thing.basic.BasicThingActionSpec
-import org.friendularity.cpump.{CPMsgTeller, CPumpMsg}
+import org.friendularity.cpump.{CPStrongTeller, CPMsgTeller, CPumpMsg}
 import com.hp.hpl.jena.rdf.model.{Model => JenaModel}
 import java.lang.{Long => JLong}
 /**
@@ -64,7 +64,7 @@ case class VWARM_FindGoodyTeller(answerTeller: CPMsgTeller) extends VWAdminRqMsg
 
 // Receiver can wait to answer until the system is sufficiently ready, e.g. until the VWorld is up.
 // However, Sndr may inquire well after the VWorld is up, and then Rcvr should answer right away.
-case class VWARM_FindPublicTellers(answerTeller: CPMsgTeller) extends VWAdminRqMsg
+case class VWARM_FindPublicTellers(answerTeller: CPStrongTeller[VWorldPublicTellers]) extends VWAdminRqMsg
 
 // Concept:  Type filtering hooha uses concrete classes.  We expect there will be a case class Msg.
 class MakeItDoOne() extends VWorldRequest {
