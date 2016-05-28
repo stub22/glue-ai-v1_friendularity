@@ -35,7 +35,8 @@ import com.hp.hpl.jena.rdf.model.{Model => JenaModel}
 
 // Legit state of a running VWorld system is managed by an instance of VWorldSysMgr.
 trait VWorldSysMgr {
-	def findPublicTellers : VWorldPublicTellers
+	// See VWPTRendezvous
+	// def findPublicTellers : VWorldPublicTellers
 
 //	def findGoodyCtx_opt : Option[BasicGoodyCtx] = None
 }
@@ -170,9 +171,7 @@ trait VWorldBossLogic [VWSM <: VWorldSysMgr] extends VarargsLogging with VWPTRen
 		val winStatMon : WindowStatusMonitor = lesserIngred.getWindowStatusMonitor
 		val bgc : BasicGoodyCtx = new BasicGoodyCtxImpl(rrc, winStatMon)
 		val sysMgr = getSysMgr
-//		info2("Storing goody ctx {} in sysMgr {}", bgc, sysMgr)
-//		sysMgr.asInstanceOf[VWSysMgrImpl].setGoodyCtx(bgc)
-//
+
 		val goodyActorRef = VWorldActorFactoryFuncs.makeVWGoodyActor(localActorCtx, "googoo", bgc)
 		val goodyTeller = new ActorRefCPMsgTeller[VWGoodyRqActionSpec](goodyActorRef)
 		val vwpt = new VWPubTellersImpl(goodyTeller)
@@ -207,38 +206,12 @@ class VWorldBossActor[VWSM <: VWorldSysMgr](sysMgr : VWSM, hackStrap : VWorldStr
 
 }
 class VWSysMgrImpl extends VWorldSysMgr {
-	override def findPublicTellers : VWorldPublicTellers = new VWorldPublicTellers{}
 
+	// override def findPublicTellers : VWorldPublicTellers = new VWorldPublicTellers{}
 
 }
 
-trait VWGoodyJobLogic extends VarargsLogging {
-	protected def getGoodyCtx : BasicGoodyCtx
-	protected def processVWGoodyRequest(vwmsg : VWorldRequest, slfActr : ActorRef, localActorCtx : ActorContext): Unit = {
-		vwmsg match {
 
-			case goodyActSpecMsg: VWGoodyRqActionSpec => processVWGoodyActSpec(goodyActSpecMsg, localActorCtx)
-
-			case goodyRdfMsg: VWGoodyRqRdf => processVWGoodyRdfMsg(goodyRdfMsg, localActorCtx)
-		}
-	}
-	protected def processVWGoodyActSpec (goodyActSpecMsg : VWGoodyRqActionSpec, localActorCtx : ActorContext) : Unit = {
-		val actSpec = goodyActSpecMsg.getActionSpec
-		info1("VWBossLogic is processing received actSpec: {}", actSpec)
-		val goodyCtx = getGoodyCtx
-		goodyCtx.consumeAction(actSpec)
-	}
-
-	protected def processVWGoodyRdfMsg (goodyMsg : VWGoodyRqRdf, localActorCtx : ActorContext) : Unit = ???
-}
-class VWGoodyActor(myGoodyCtx : BasicGoodyCtx) extends Actor with VWGoodyJobLogic {
-	override protected def getGoodyCtx : BasicGoodyCtx = myGoodyCtx
-	def receive = {
-		case vwrq: VWorldRequest => {
-			processVWGoodyRequest(vwrq, self, context)
-		}
-	}
-}
 class VWStrapImpl extends VWorldStrap {
 	// Good news - the hackStrap is still empty!  Let's hope it stays that way.
 }
