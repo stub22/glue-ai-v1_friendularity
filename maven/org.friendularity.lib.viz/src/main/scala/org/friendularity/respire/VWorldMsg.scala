@@ -46,14 +46,7 @@ trait RdfMsgIntrp extends VarargsLogging {
 
 	}
 }
-trait VWGoodyRqRdf extends VWContentRq  with RdfMsg {
-}
-trait VWGoodyRqActionSpec extends VWContentRq {
-	def getActionSpec : BasicThingActionSpec
-}
-case class VWGoodyRqBTAS(myBTAS : BasicThingActionSpec) extends  VWGoodyRqActionSpec {
-	override def getActionSpec : BasicThingActionSpec = myBTAS
-}
+
 
 
 trait VWAdminRqMsg extends VWorldRequest with VarargsLogging {
