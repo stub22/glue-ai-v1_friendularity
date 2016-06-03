@@ -195,7 +195,8 @@ class OuterDirectActor	extends Actor with ActorLogging with NavUiOuterLogic {
 }
 
 // Unnecessary to use the Jobby approach here, but working through it anyway as an excercise.
-// First we must make the actual job-handler classes.
+// First we must define the actual job-handler classes.
+// Give the logic a dummy constructor param just to show how they flow in.
 class OuterJobbyLogic(unusedParam : Int) extends MsgJobLogic[VWorldPublicTellers] with NavUiOuterLogic {
 	// Differences here is that we get exception handling+logging, runtime type verification,
 	// and actor wrapping for free, but we must also create the factory stuff below.
