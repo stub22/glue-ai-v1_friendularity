@@ -13,34 +13,81 @@ import org.cogchar.app.puma.registry.ResourceFileCategory
 import org.cogchar.bind.mio.robot.client.RobotVisemeClient
 import org.cogchar.bind.mio.robot.model.ModelRobot
 import org.cogchar.bind.mio.robot.svc.ModelBlendingRobotServiceContext
+import org.cogchar.blob.emit.RenderConfigEmitter
 import org.cogchar.bundle.app.vworld.central.VWorldRoboPump
 import org.cogchar.platform.util.ClassLoaderUtils
 import org.cogchar.render.app.humanoid.HumanoidRenderContext
 import org.cogchar.render.model.humanoid.HumanoidFigure
 import org.osgi.framework.BundleContext
 import org.mechio.api.motion.Robot
-import org.cogchar.api.humanoid.FigureConfig
+import org.cogchar.api.humanoid.{HumanoidFigureConfig, FigureConfig}
 import org.cogchar.api.skeleton.config.BoneRobotConfig
 import org.cogchar.name.skeleton.BoneCN
 
 import java.util.{List => JList, ArrayList => JArrayList}
 
-trait BodyLogic extends VarargsLogging {
-	// Stateless methods
-	def setupRoboPump(pumpID: Ident, mr: ModelRobot, hf: HumanoidFigure): VWorldRoboPump = {
-		val pump: VWorldRoboPump = new VWorldRoboPump(pumpID, mr, hf)
-		pump.completeSetup
-		return pump
-	}
+trait BonyRobotInitFuncs extends VarargsLogging {
 	protected def startVisemePump(bonyRobot : ModelRobot, bunCtx: BundleContext, clsForRKConf: JList[ClassLoader]) : Unit = {
 		val robotId: Robot.Id = bonyRobot.getRobotId
 		val robotVisCli: RobotVisemeClient = new RobotVisemeClient
 		robotVisCli.startPumpingZenoAvatarVisemes(bunCtx, clsForRKConf, robotId)
 	}
+	protected def startJointGroup(mbrsc : ModelBlendingRobotServiceContext, partialFigConf: FigureConfig, possibleCLs: JList[ClassLoader]) : Unit = {
+		val jgFullPath: String = partialFigConf.getJointGroupConfigPath
+		if (jgFullPath != null) {
+			val cl: ClassLoader = ClassLoaderUtils.findResourceClassLoader(jgFullPath, possibleCLs)
+			if (cl != null) {
+				val stream: InputStream = cl.getResourceAsStream(jgFullPath)
+				if (stream != null) {
+					mbrsc.startJointGroup(stream)
+				}
+			}
+		}
+	}
+	def connectBonyRobotToMio(bundleCtx: BundleContext, mbsrc : ModelBlendingRobotServiceContext,
+							  partialFigConf: FigureConfig, boneRobotConf: BoneRobotConfig,
+							  clsForRKConf: JList[ClassLoader]) : Boolean = {
 
+		// Use this handle to call  .unregister() later, as needed.
+		val brcServiceReg = bundleCtx.registerService(classOf[BoneRobotConfig].getName, boneRobotConf, null)
+		mbsrc.makeModelRobotWithBlenderAndFrameSource(boneRobotConf)
+		val bonyRobot : ModelRobot = mbsrc.getRobot
+		startVisemePump(bonyRobot, bundleCtx, clsForRKConf)
+		startJointGroup(mbsrc, partialFigConf, clsForRKConf)
+		true
+	}
+}
+trait HumaFigureInitFuncs extends VarargsLogging {
+	def makeHumaFigCfg(partialFigCfg : FigureConfig, rce : RenderConfigEmitter, repoCli : RepoClient,
+					   bonyGraphID : Ident) : HumanoidFigureConfig = {
+		val matPath = rce.getMaterialPath
+		val hfc = new HumanoidFigureConfig(repoCli, partialFigCfg, matPath, bonyGraphID);
+		hfc
+	}
+	def makeAndAttachHumaFigure(hrc: HumanoidRenderContext, humaFigCfg : HumanoidFigureConfig) : HumanoidFigure = {
+		val hfm = hrc.getHumanoidFigureManager
+		val hf : HumanoidFigure = hfm.addHumanoidFigure(humaFigCfg)
+		hfm.attachFigure(hrc, hf)  // Blocks until attachment complete on VW render thread
+		hf
+	}
+}
+trait DualBodyInitFuncs extends VarargsLogging {
+	// Methods which appear to be stateless, although they may cause some s ide effects.
+	def setupRoboPump(dualBodyID: Ident, mr: ModelRobot, hf: HumanoidFigure): VWorldRoboPump = {
+		val pump: VWorldRoboPump = new VWorldRoboPump(dualBodyID, mr, hf)
+		pump.completeSetup
+		return pump
+	}
+
+	def attachBonyRobotToFigure(mbsrc : ModelBlendingRobotServiceContext, figID : Ident, hf : HumanoidFigure): Unit = {
+		val bonyRobot : ModelRobot = mbsrc.getRobot
+		info1("Calling connnectBonyRobotToHumanoidFigure for charID={}", figID)
+
+		val pump: VWorldRoboPump = setupRoboPump(figID, bonyRobot, hf)
+	}
 }
 
-trait BodyConn extends BodyLogic {
+trait BodyConn extends VarargsLogging {
 	// Connection info for a *single* character body.
 
 	// These RobotServiceContext types are confusing, because the instance represents a single robot conn
@@ -58,6 +105,12 @@ trait BodyConn extends BodyLogic {
 
 	protected def getBundleCtx : BundleContext
 
+	protected def getDualBodyID : Ident
+
+	def doTheBusiness : Unit = {
+
+	}
+
 }
 
 
@@ -68,17 +121,19 @@ trait BodyConn extends BodyLogic {
   */
 
 
+class BodyConnImpl(myBunCtx : BundleContext, myDualBodyID : Ident) extends BodyConn
+		with BonyRobotInitFuncs {
 
-class BodyConnImpl(myBunCtx : BundleContext) extends BodyConn  {
-	private var myDualBodyID: Ident = null
 	private var myNickName: String = null
 	// private var bodyConfig: BodyHandleRecord = null
 
 	override protected def getBundleCtx : BundleContext = myBunCtx
 
-	def yuh(bundleCtx: BundleContext, humCfg : FigureConfig, bonyGraphID : Ident, rc : RepoClient) : Unit = {
-		// PumaRegistryClient prc
+	override protected def getDualBodyID : Ident = myDualBodyID
 
+	// The Graph and RepoClient are needed to allow completion of the BoneRobotConfig
+	def connectBonyRobot(bunCtx : BundleContext, partialFigCfg : FigureConfig, bonyGraphID : Ident, rc : RepoClient) : Unit = {
+		// PumaRegistryClient prc
 
 		val mioConfCLs: JList[ClassLoader] = new JArrayList[ClassLoader]()
 /*
@@ -88,76 +143,14 @@ class BodyConnImpl(myBunCtx : BundleContext) extends BodyConn  {
 		return totalCLs
  */
 		val boneCN = new BoneCN
-		val charID = myDualBodyID
 
-		connectBonyRobotToMioAndVWorld(bundleCtx, humCfg, bonyGraphID, rc, boneCN, mioConfCLs)
-		/*
-		if (bodyConfig != null) {
-			val bonyRobot : ModelRobot = myMBRSC.getRobot
-			bodyConfig.setModelRobot(bonyRobot);
-		}
-		*/
-	}
+		val bodyID = getDualBodyID
+		val boneRobotConf: BoneRobotConfig = new BoneRobotConfig(rc, bodyID, bonyGraphID, boneCN)
 
-	def connectBonyRobotToMioAndVWorld(bundleCtx: BundleContext, hc: FigureConfig, qGraph: Ident,
-									   qi: RepoClient, bqn: BoneCN, clsForRKConf: JList[ClassLoader]) : Boolean = {
-		val boneRobotConf: BoneRobotConfig = new BoneRobotConfig(qi, myDualBodyID, qGraph, bqn)
-		// Use this handle to call  .unregister() later, as needed.
-		val brcServiceReg = bundleCtx.registerService(classOf[BoneRobotConfig].getName, boneRobotConf, null)
 		val mbsrc = getMBRSvcCtx
-		mbsrc.makeModelRobotWithBlenderAndFrameSource(boneRobotConf)
-		val bonyRobot : ModelRobot = mbsrc.getRobot
-		startVisemePump(bonyRobot, bundleCtx, clsForRKConf)
-		startJointGroup(mbsrc, hc, clsForRKConf)
-		true
+		connectBonyRobotToMio(bunCtx, mbsrc, partialFigCfg, boneRobotConf, mioConfCLs)
+
 	}
-
-
-	protected def startJointGroup(mbrsc : ModelBlendingRobotServiceContext, hc: FigureConfig, possibleCLs: JList[ClassLoader]) : Unit = {
-		val jgFullPath: String = hc.getJointGroupConfigPath
-		if (jgFullPath != null) {
-			val cl: ClassLoader = ClassLoaderUtils.findResourceClassLoader(jgFullPath, possibleCLs)
-			if (cl != null) {
-				val stream: InputStream = cl.getResourceAsStream(jgFullPath)
-				if (stream != null) {
-					mbrsc.startJointGroup(stream)
-				}
-			}
-		}
-	}
-	def ok(hrc: HumanoidRenderContext, bodyHandleRecList : List[BodyHandleRecord]) : Unit = {
-		import scala.collection.JavaConversions._
-		for (body <- bodyHandleRecList) {
-			try {
-				val boneSrcGraphID: Ident = body.getBoneSrcGraphID
-				val repoCli: RepoClient = body.getRepoClient
-				if (boneSrcGraphID != null) {
-					debug1("boneSrcGraphID is non-null {}", boneSrcGraphID)
-				}
-				if (repoCli != null) {
-					debug1("REPOCLIENT FOUND: {}", repoCli)
-				}
-				val humaFigCfg: FigureConfig = body.getHumaFigureConfig
-				val figureID: Ident = humaFigCfg.getFigureID
-				info2("Calling initVworldHumanoid for charID={} and boneSrcGraphID={}", figureID, boneSrcGraphID)
-				// vworldreg.initVWorldHumanoid(body.getRepoClient, boneSrcGraphID, humaFigCfg)
-				// which just does...
-				// val hrc: HumanoidRenderContext = getVWM.getHumanoidRenderContext
-				val hf: HumanoidFigure = hrc.getHumanoidFigureManager.setupHumanoidFigure(hrc, repoCli, figureID, boneSrcGraphID, humaFigCfg)
-				val mbsrc = getMBRSvcCtx
-				val bonyRobot : ModelRobot = mbsrc.getRobot
-				info1("Calling connnectBonyRobotToHumanoidFigure for charID={}", figureID)
-
-				val pump: VWorldRoboPump = setupRoboPump(figureID, bonyRobot, hf)
-			}
-			catch {
-				case t: Throwable => {
-					getLogger.error("InitVWorldHumanoid failure")
-				}
-			}
-		}
-	}
-
 
 }
 /*
@@ -190,4 +183,38 @@ class BodyConnImpl(myBunCtx : BundleContext) extends BodyConn  {
         myBodyMgr.addBody(pdb);
 		return pdb;
 	}
- */
+
+	def ok(hrc: HumanoidRenderContext, bodyHandleRecList : List[BodyHandleRecord]) : Unit = {
+		import scala.collection.JavaConversions._
+		for (body <- bodyHandleRecList) {
+			try {
+				val boneSrcGraphID: Ident = body.getBoneSrcGraphID
+				val repoCli: RepoClient = body.getRepoClient
+				if (boneSrcGraphID != null) {
+					debug1("boneSrcGraphID is non-null {}", boneSrcGraphID)
+				}
+				if (repoCli != null) {
+					debug1("REPOCLIENT FOUND: {}", repoCli)
+				}
+				val humaFigCfg: FigureConfig = body.getHumaFigureConfig
+				val figureID: Ident = humaFigCfg.getFigureID
+				info2("Calling initVworldHumanoid for charID={} and boneSrcGraphID={}", figureID, boneSrcGraphID)
+
+				// The repoCli is needed because hfm.setupHumanoidFigure calls hfm.getOrMakeHumanoidFigure,
+				// which makes an expanded HumanoidFigureConfig based on the supplied FigureConfig and the
+				// contents of the config graph.
+				val hf: HumanoidFigure = hrc.getHumanoidFigureManager.setupHumanoidFigure(hrc, repoCli, figureID, boneSrcGraphID, humaFigCfg)
+				val mbsrc = getMBRSvcCtx
+				val bonyRobot : ModelRobot = mbsrc.getRobot
+				info1("Calling connnectBonyRobotToHumanoidFigure for charID={}", figureID)
+
+				val pump: VWorldRoboPump = setupRoboPump(figureID, bonyRobot, hf)
+			}
+			catch {
+				case t: Throwable => {
+					getLogger.error("InitVWorldHumanoid failure")
+				}
+			}
+		}
+	}
+*/
