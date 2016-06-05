@@ -75,6 +75,9 @@ public class CCMIO_CPumpHelper extends BasicDebugger {
 		getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^  CCMIO_CPumpHelper.launchCPump()-END");
 		return true;
 	}
+	public ActorSystem dangerActorSysExposed() {
+		return myAkkaSys;
+	}
 	// TODO:  Implement an interface used by CPump to access OSGi-akka hooks as needed.
 	private static class OurAkkaOSGiActivator extends ActorSystemActivator {
 		private Logger myLogger;

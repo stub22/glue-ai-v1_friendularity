@@ -66,7 +66,8 @@ object TestNavUI extends VarargsLogging {
 			launchNuiiTest
 	}
 	def launchNuiiTest : Unit = {
-		val nuii = new NavUiAppImpl()
+		val appSysStandalone = new StandaloneNavAppSys();
+		val nuii = appSysStandalone.findOrMakeNavUiApp
  		info1("^^^^^^^^^^^^^^^^^^^^^^^^  TestNavUI.main() created nuii={}", nuii)
 		warn0("^^^^^^^^^^^^^^^^^^^^^^^^  TestNavUI.main() running detached GridSpace tst - MOVE me to a msgHandler!")
 		nuii.testDetachedGS
@@ -97,11 +98,17 @@ object NavUiTestPublicNames {
 	val akkaRemotePort : Integer = 4719
 	val cpumpName = "standPumpCtx_181"
 }
-// "App" here means FriendU app, not a JME3 "app".  The latter is made during launchSimRenderSpace at bottom.
-class NavUiAppImpl extends VarargsLogging {
-
+// Use to run from main().
+class StandaloneNavAppSys() {
 	private val akkaSysName : String = NavUiTestPublicNames.akkaSysName
 	lazy private val myAkkaSys = ActorSystem(akkaSysName)
+	lazy private val myNavUiApp = new NavUiAppImpl(myAkkaSys)
+
+	def findOrMakeNavUiApp : NavUiAppImpl = myNavUiApp
+}
+// "App" here means FriendU app, not a JME3 "app".  The latter is made during launchSimRenderSpace at bottom.
+class NavUiAppImpl(myAkkaSys : ActorSystem) extends VarargsLogging {
+
 	lazy private val myStandalonePumpSpace = new SpecialAppPumpSpace(myAkkaSys)
 
 	lazy private val vwBossAR: ActorRef = VWorldActorFactoryFuncs.makeVWorldBoss(myAkkaSys, "vworldBoss_818")
