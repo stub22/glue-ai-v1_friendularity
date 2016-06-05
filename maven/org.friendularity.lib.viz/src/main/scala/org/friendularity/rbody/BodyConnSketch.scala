@@ -52,8 +52,8 @@ trait BonyRobotInitFuncs extends VarargsLogging {
 		val brcServiceReg = bundleCtx.registerService(classOf[BoneRobotConfig].getName, boneRobotConf, null)
 		mbsrc.makeModelRobotWithBlenderAndFrameSource(boneRobotConf)
 		val bonyRobot : ModelRobot = mbsrc.getRobot
-		startVisemePump(bonyRobot, bundleCtx, clsForRKConf)
-		startJointGroup(mbsrc, partialFigConf, clsForRKConf)
+	//	startVisemePump(bonyRobot, bundleCtx, clsForRKConf)
+	//	startJointGroup(mbsrc, partialFigConf, clsForRKConf)
 		true
 	}
 }
@@ -72,7 +72,7 @@ trait HumaFigureInitFuncs extends VarargsLogging {
 	}
 }
 trait DualBodyInitFuncs extends VarargsLogging {
-	// Methods which appear to be stateless, although they may cause some s ide effects.
+	// Methods which appear to be stateless, although they may cause some side effects.
 	def setupRoboPump(dualBodyID: Ident, mr: ModelRobot, hf: HumanoidFigure): VWorldRoboPump = {
 		val pump: VWorldRoboPump = new VWorldRoboPump(dualBodyID, mr, hf)
 		pump.completeSetup
@@ -121,8 +121,7 @@ trait BodyConn extends VarargsLogging {
   */
 
 
-class BodyConnImpl(myBunCtx : BundleContext, myDualBodyID : Ident) extends BodyConn
-		with BonyRobotInitFuncs {
+class BodyConnImpl(myBunCtx : BundleContext, myDualBodyID : Ident) extends BodyConn	with BonyRobotInitFuncs {
 
 	private var myNickName: String = null
 	// private var bodyConfig: BodyHandleRecord = null
