@@ -1,10 +1,14 @@
 package org.friendularity.bundle.demo.ccmio;
 
 import akka.actor.ActorSystem;
+import org.appdapter.core.name.FreeIdent;
+import org.appdapter.core.name.Ident;
 import org.appdapter.fancy.rclient.EnhancedLocalRepoClient;
+import org.appdapter.fancy.rclient.RepoClient;
 import org.appdapter.fancy.rspec.RepoSpec;
 import org.appdapter.osgi.core.BundleActivatorBase;
 import org.appdapter.xload.rspec.OnlineSheetRepoSpec;
+import org.cogchar.api.humanoid.FigureConfig;
 import org.cogchar.app.puma.boot.PumaSysCtx;
 import org.cogchar.app.puma.boot.PumaBooter;
 import org.cogchar.app.puma.config.PumaContextMediator;
@@ -14,6 +18,7 @@ import org.cogchar.blob.entry.EntryHost;
 import org.cogchar.bundle.app.vworld.central.VirtualWorldFactory;
 import org.friendularity.api.west.WorldEstimate;
 import org.friendularity.navui.NavUiAppImpl;
+import org.friendularity.rbody.BodyConnImpl;
 import org.friendularity.vworld.UnusedNetworkVisionDataFeed;
 import org.osgi.framework.BundleContext;
 import org.rwshop.swing.common.lifecycle.ServicesFrame;
@@ -65,14 +70,15 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 
 	// These flags control feature activation.
 	// TODO: Replace with flag values sourced from profile.
-	public static	boolean		myFlag_attachVizappTChunkRepo = true; // false => uses old vanilla mediator backup
 	public static	boolean		myFlag_connectJVision = true;  	      // Read JNI (JNA?) vision stream
 	private	boolean		myFlag_connectObsoleteNetworkVision = false;  // Read QPid vision streams
 
 	private	boolean		myFlag_connectSwingDebugGUI = false;  // Swing debug code disabled, anyway
 	private boolean		myFlag_monitorLifecycles = true;  // LifeMon window is launched by .start()
 
-	private boolean 	myFlag_useOldLaunchStyle2014 = true;
+	private boolean 	myFlag_useOldLaunchStyle2014 = false;
+	// attach... flag now used only during old launch style 2014
+	public static	boolean		myFlag_attachVizappTChunkRepo = true; // false => uses old vanilla mediator backup
 
 	private Class 		myProfileMarkerClz = TestRaizLoad.class;
 	private Class 		myLegConfMarkerClz = TestRaizLoad.class;
@@ -115,17 +121,27 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 		if (mergedProfileJM == null) {
 			throw new RuntimeException("launchCcmioDemo cannot read profile from classpath containing " + myProfileMarkerClz);
 		}
-		if (myFlag_attachVizappTChunkRepo) {
-			EntryHost	legConfEHost = TestRaizLoad.makeBundleEntryHost(myLegConfMarkerClz);
-			getLogger().info("============= Calling attachVizTChunkLegConfRepo() ======");
-			attachVizTChunkLegConfRepo(bundleCtx, mergedProfileJM, legConfEHost);
-		}
+		EntryHost	legConfEHost = TestRaizLoad.makeBundleEntryHost(myLegConfMarkerClz);
 		if (myFlag_useOldLaunchStyle2014) {
+			if (myFlag_attachVizappTChunkRepo) {
+
+				getLogger().info("============= Calling attachVizTChunkLegConfRepo() ======");
+				attachVizTChunkLegConfRepo(bundleCtx, mergedProfileJM, legConfEHost);
+			} // else we would be seeing fallback injected mediator in control
+
 			startOldPumaThenVWorld(bundleCtx);
 		} else {
 			// 2016 way:
-			ActorSystem akkaSys = myCPumpHelper.dangerActorSysExposed();
+			ActorSystem akkaSys = myCPumpHelper.dangerActorSysExposed();  // Should be avail because startAkkaOSGi was called during .start().
 			startNewNavUI(bundleCtx, akkaSys);
+			// Now the VWorld is up and accepting messages, but there is no char in it yet.
+			// Still a throwback here, just keeping the boat steady while we turn
+			getLogger().info("============= calling makeLegacyELRC() ======");
+
+			EnhancedLocalRepoClient elrc = makeLegacyELRC(mergedProfileJM, legConfEHost);
+			// Temporary revised compromise here - keep using the old data known to work until we can prove that
+			// newer data is workin.
+			startUpgradedYetLegacyBodyConn(bundleCtx, akkaSys, elrc);
 		}
 
 		getLogger().info("============ Calling launchCPumpService() ==========");
@@ -145,6 +161,23 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 		// info1("^^^^^^^^^^^^^^^^^^^^^^^^  TestNavUI.main() got legConfERC_opt={}", legConfERC_opt)
 		nuiApp.sendSetupMsgs_Async();
 		return nuiApp;
+	}
+	// Yet STILL a semi-old way of producing body conf (from legacy-style repo), but no longer buried under the PUMA.
+	// It is now better, when possible, to instead pull the body conf from recipes and our finer, newer chunks,
+	// and also to do that asynchronously upon request, compliant with lifecycles of model-blending-ctx guys.
+	// We keep both alternatives alive to help during debugging.
+	public void startUpgradedYetLegacyBodyConn(BundleContext bundleCtx, ActorSystem akkaSys, EnhancedLocalRepoClient legacyELRC) {
+		Ident dualBodyID = new FreeIdent("urn:ftd:cogchar.org:2012:runtime#char_sinbad_88");
+		Ident hmdGraphID = new FreeIdent("urn:ftd:cogchar.org:2012:runtime#hmd_sheet_22");
+		Ident bonyGraphID = new FreeIdent("urn:ftd:cogchar.org:2012:runtime#bony_sheet_sinbad");
+
+		FigureConfig partialFigCfg = new FigureConfig(legacyELRC, dualBodyID, hmdGraphID);
+
+		BodyConnImpl bci = new BodyConnImpl(bundleCtx, dualBodyID);
+
+		RepoClient legacyRC_hooboy = legacyELRC;
+
+		bci.connectBonyRobot(bundleCtx, partialFigCfg, bonyGraphID, legacyRC_hooboy);
 	}
 	public void startOldPumaThenVWorld(BundleContext bundleCtx) {
 		getLogger().info("============ Calling launchPumaRobotsAndChars()  ==========");
@@ -167,11 +200,11 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 	private void attachVizTChunkLegConfRepo(final BundleContext bunCtx, Model mergedProfileGraph, EntryHost legConfEHost) {
 		// Same eHost is used here for profile and config data, but separate eHosts is also OK.
 		// Easiest way to identify an bundleEHost is to specify a class from same bundle.
-		EnhancedLocalRepoClient legacyConfERC = makeLegacyConfRepo(mergedProfileGraph, legConfEHost);
+		EnhancedLocalRepoClient legacyConfERC = makeLegacyELRC(mergedProfileGraph, legConfEHost);
 
 		TestRaizLoad.registerAvatarConfigRepoClient(bunCtx, legacyConfERC);
 	}
-	private EnhancedLocalRepoClient makeLegacyConfRepo(Model mergedProfileGraph, EntryHost legConfEHost) {
+	private EnhancedLocalRepoClient makeLegacyELRC(Model mergedProfileGraph, EntryHost legConfEHost) {
 		String vzBrkRcpUriTxt = TestRaizLoad.vzpLegCnfBrkrRcpUriTxt();
 		EnhancedLocalRepoClient legacyConfERC = TestRaizLoad.makeAvatarLegacyConfigRepo(mergedProfileGraph,
 					vzBrkRcpUriTxt, legConfEHost);
