@@ -54,8 +54,8 @@ class VWJobLogicDelegatingImpl[-Msg <: VWRequestHeavy](msgFilterClz : Class[Msg]
 // trait VWorldJobLogicFactory extends MsgJobLogicFactory {
 // override def makeJobLogic[Msg <: VWorldMsg](msgFilterClz : Class[Msg]) : MsgJobLogic[Msg] = ???
 // }
-class VWJLDImplFactory(sysMgr : VWorldSysMgr) extends MsgJobLogicFactory[VWRequestHeavy] {
-	override def makeJobLogic(msgFilterClz : Class[VWRequestHeavy]) : MsgJobLogic[VWRequestHeavy] = {
+class VWJLDImplFactory(sysMgr : VWorldSysMgr) extends MsgJobLogicFactory[VWRequestHeavy, AnyRef] {
+	override def makeJobLogic(jobArg : AnyRef, msgFilterClz : Class[VWRequestHeavy]) : MsgJobLogic[VWRequestHeavy] = {
 		new VWJobLogicDelegatingImpl[VWRequestHeavy](msgFilterClz, sysMgr)
 	}
 }

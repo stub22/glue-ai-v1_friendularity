@@ -21,6 +21,7 @@ import akka.actor._
 import org.appdapter.fancy.log.VarargsLogging
 import org.appdapter.fancy.rclient.EnhancedLocalRepoClient
 import org.cogchar.blob.entry.EntryHost
+import org.cogchar.render.app.humanoid.HumanoidRenderContext
 import org.cogchar.render.goody.basic.{BasicGoodyCtxImpl, BasicGoodyCtx}
 import org.cogchar.render.sys.goody.{GoodyModularRenderContext, GoodyRenderRegistryClient}
 import org.cogchar.render.sys.registry.RenderRegistryClient
@@ -45,18 +46,6 @@ trait VWorldStrap {
 //	def	getPumpCtx : DullPumpCtx
 }
 
-// The vworldBoss supplies this serializable directory of its actors to any client who asks.
-// From here clients can navigate to all published vworld service actors.
-// Client may also know+find these same actors and other actors by other means.
-// This trait is made available as a helpful starting point, not as the definitive or exhaustive API.
-trait VWorldPublicTellers extends VWorldNotice {
-	def getFirstBigTeller : Option[CPMsgTeller] = None
-	def getSecondCoolTeller : Option[CPMsgTeller] = None
-	def getGoodyTeller : Option[CPStrongTeller[VWGoodyRqActionSpec]] = None
-}
-case class VWPubTellersImpl(goodyTeller : CPStrongTeller[VWGoodyRqActionSpec]) extends VWorldPublicTellers {
-	override def getGoodyTeller : Option[CPStrongTeller[VWGoodyRqActionSpec]] = Option(goodyTeller)
-}
 trait VWCnfMgr extends VarargsLogging {
 	lazy private val myMergedProfileJM : JenaModel = makeMergedProfileGraph("Temporarily unused selector args")
 	private val loadLegacyConf = true
@@ -92,17 +81,23 @@ trait VWPTRendezvous {
 	private var myVWPT_opt : Option[VWorldPublicTellers] = None
 
 	def addVWPTListener (teller: CPStrongTeller[VWorldPublicTellers]) : Unit = {
-		myListeners = teller :: myListeners
-		if (myVWPT_opt.isDefined) {
-			teller.tellStrongCPMsg(myVWPT_opt.get)
+		synchronized{
+			myListeners = teller :: myListeners
+			if (myVWPT_opt.isDefined) {
+				teller.tellStrongCPMsg(myVWPT_opt.get)
+			}
 		}
 	}
 	protected def notifyVWPTListeners(vwpt : VWorldPublicTellers) : Unit = {
-		myListeners.foreach (_.tellStrongCPMsg(vwpt))
+		synchronized {
+			myListeners.foreach (_.tellStrongCPMsg (vwpt) )
+		}
 	}
 	def setVWPT(vwpt : VWorldPublicTellers): Unit = {
-		myVWPT_opt = Option(vwpt)
-		notifyVWPTListeners(vwpt)
+		synchronized {
+			myVWPT_opt = Option (vwpt)
+			notifyVWPTListeners (vwpt)
+		}
 	}
 }
 trait VWorldBossLogic [VWSM <: VWorldSysMgr] extends VarargsLogging with VWPTRendezvous {
@@ -129,9 +124,10 @@ trait VWorldBossLogic [VWSM <: VWorldSysMgr] extends VarargsLogging with VWPTRen
 			case gfpa : VWARM_GreetFromPumpAdmin => {
 
 			}
+			/*
 			case fgt : VWARM_FindGoodyTeller => {
-
 			}
+			*/
 			case fpt : VWARM_FindPublicTellers => {
 				addVWPTListener(fpt.answerTeller)
 			}
@@ -141,7 +137,8 @@ trait VWorldBossLogic [VWSM <: VWorldSysMgr] extends VarargsLogging with VWPTRen
 		vwmsg match {
 			case setupResults: VWSetupResultsNotice => {
 				val lesserIng = setupResults.lesserIngred
-				notifySetupResults(lesserIng, localActorCtx)
+				val bodyMgrIng = setupResults.bodyMgrIngred
+				notifySetupResults(lesserIng, bodyMgrIng, localActorCtx)
 			}
 		}
 	}
@@ -164,7 +161,7 @@ trait VWorldBossLogic [VWSM <: VWorldSysMgr] extends VarargsLogging with VWPTRen
 		val legConf_opt = cnfMgr.getLegConfERC_opt
 	}
 
-	def notifySetupResults(lesserIngred: LesserIngred, localActorCtx : ActorContext): Unit = {
+	def notifySetupResults(lesserIngred: LesserIngred, bmi : BodyMgrIngred, localActorCtx : ActorContext): Unit = {
 		//
 		info1("Got setup result (lesser) ingredients: {}", lesserIngred)
 		val rrc : RenderRegistryClient = lesserIngred.getRendRegClient
@@ -174,7 +171,13 @@ trait VWorldBossLogic [VWSM <: VWorldSysMgr] extends VarargsLogging with VWPTRen
 
 		val goodyActorRef = VWorldActorFactoryFuncs.makeVWGoodyActor(localActorCtx, "googoo", bgc)
 		val goodyTeller = new ActorRefCPMsgTeller[VWGoodyRqActionSpec](goodyActorRef)
-		val vwpt = new VWPubTellersImpl(goodyTeller)
+
+		val pmrc = bmi.getPMRC
+		val cmgrCtx = new VWCharMgrCtxImpl(pmrc)
+		val charAdmActorRef = VWorldActorFactoryFuncs.makeVWCharAdminActor(localActorCtx, "charAdm", cmgrCtx)
+		val charAdmTeller  = new ActorRefCPMsgTeller[VWCharAdminRq](charAdmActorRef)
+
+		val vwpt = new VWPubTellersImpl(goodyTeller, charAdmTeller)
 		setVWPT(vwpt)
 	}
 
@@ -228,6 +231,12 @@ object VWorldActorFactoryFuncs {
 		val goodyActorProps = Props(classOf[VWGoodyActor], goodyCtx)
 		val goodyActorRef : ActorRef = parentARF.actorOf(goodyActorProps, goodyActorName)
 		goodyActorRef
+	}
+	def makeVWCharAdminActor(parentARF : ActorRefFactory, chrMgrActorName : String, charMgrCtx : VWCharMgrCtx) : ActorRef = {
+		val charMgrActorProps = Props(classOf[VWCharMgrActor], charMgrCtx)
+		val chrMgrActorRef : ActorRef = parentARF.actorOf(charMgrActorProps, chrMgrActorName)
+		chrMgrActorRef
+
 	}
 }
 

@@ -14,7 +14,7 @@ import org.friendularity.cpump.CPMsgTeller
 
 // import org.cogchar.api.space.GridSpaceTest._
 import org.cogchar.bind.midi.in.{CCParamRouter, TempMidiBridge}
-import org.cogchar.render.sys.context.{FramedRenderContext, CogcharRenderContext}
+import org.cogchar.render.sys.context.{PhysicalModularRenderContext, FramedRenderContext, CogcharRenderContext}
 import org.cogchar.render.sys.registry.RenderRegistryClient
 import org.cogchar.render.trial.{TrialUpdater, TrialCameras, TrialContent, TrialBalloon}
 
@@ -92,8 +92,9 @@ class SimBalloonJmeApp extends BigBalloonJmeApp with UpdateAttacher with VWCore 
 					val framedRendCtx : FramedRenderContext = crc.asInstanceOf[FramedRenderContext]
 					val winStatMon : WindowStatusMonitor = framedRendCtx
 					val rrc : RenderRegistryClient = crc.getRenderRegistryClient
-					val lessIng = new LesserIngredImpl(rrc, winStatMon)
-					val notice = new VWSetupResultsNotice(lessIng)
+					val physModRendCtx = crc.asInstanceOf[PhysicalModularRenderContext]
+					val fullIng = new FullIngredImpl(rrc, winStatMon, physModRendCtx)
+					val notice = new VWSetupResultsNotice(fullIng, fullIng)
 					getLogger.info("Sending setupResults notice: {}", notice)
 					myResultsTeller_opt.get.tellCPMsg(notice)
 				} else {

@@ -76,16 +76,17 @@ class GeneralMsgActorMakerImpl extends MsgJobActorMaker
 // can do further switching at runtime based on the msgFilterClz.
 // So, we could have a lot of subtypes of this Factory, or only a few subtypes, which know
 // how to process more kinds of JobLogic.
-trait MsgJobLogicFactory[Msg <: CPumpMsg] {
-	def makeJobLogic(msgFilterClz : Class[Msg]) : MsgJobLogic[Msg]
+trait MsgJobLogicFactory[Msg <: CPumpMsg, JobArg <: AnyRef] {
+	def makeJobLogic(jobArg : JobArg, msgFilterClz : Class[Msg]) : MsgJobLogic[Msg]
 }
 // This factory knows how to make logic and actors for a  given filterClz.
-trait MsgFactoryPair[Msg <: CPumpMsg]  {
+trait MsgFactoryPair[Msg <: CPumpMsg, JobArg <: AnyRef]  {
 	def getUpperFilterClz : Class[Msg]
-	def getMsgJobLogicFactory : MsgJobLogicFactory[Msg]
+	def getMsgJobLogicFactory : MsgJobLogicFactory[Msg, JobArg]
 	def getMsgJobActorMaker : MsgJobActorMaker
 
-	def makeLogicAndActor (actx : ActorRefFactory, jobActName : String, subFilterClz_opt : Option[Class[Msg]]) : ActorRef = {
+	// Does not account for any app-specific args for this job instance.
+	def makeLogicAndActor (jobArg : JobArg, actx : ActorRefFactory, jobActName : String, subFilterClz_opt : Option[Class[Msg]]) : ActorRef = {
 		val actualFilterClz : Class[Msg] = if (subFilterClz_opt.isDefined) {
 			val subClz = subFilterClz_opt.get
 			validateSubFilterClz(subClz)
@@ -96,7 +97,7 @@ trait MsgFactoryPair[Msg <: CPumpMsg]  {
 
 		val jlf = getMsgJobLogicFactory
 		// All business logic used to handle messages to the actor is encapsulated in the MsgJogLogic.
-		val mjl : MsgJobLogic[Msg] = jlf.makeJobLogic(actualFilterClz)
+		val mjl : MsgJobLogic[Msg] = jlf.makeJobLogic(jobArg, actualFilterClz)
 		val jam = getMsgJobActorMaker
 		// Next step handles the creation of Props and then Actor.
 		val jobActRef = jam.makeFilteredMsgJobActor(actx, jobActName, mjl, actualFilterClz)
@@ -112,15 +113,15 @@ trait MsgFactoryPair[Msg <: CPumpMsg]  {
 // This factory pair knows how to supply a jobLogic-factory and a jobActor-maker,
 // for some particular category of upperFilterClz specified in constructor param (which may
 // often be ignored, as it is here by default).
-class MsgJobFactoryPairImpl[Msg <: CPumpMsg](upperFilterClz : Class[Msg], jobLogicFactory : MsgJobLogicFactory[Msg],
-											 jobActorMaker : MsgJobActorMaker) extends MsgFactoryPair[Msg] {
+class MsgJobFactoryPairImpl[Msg <: CPumpMsg, JobArg <: AnyRef](upperFilterClz : Class[Msg], jobLogicFactory : MsgJobLogicFactory[Msg, JobArg],
+											 jobActorMaker : MsgJobActorMaker) extends MsgFactoryPair[Msg, JobArg] {
 	override def getUpperFilterClz : Class[Msg] = upperFilterClz
-	override def getMsgJobLogicFactory : MsgJobLogicFactory[Msg] = jobLogicFactory
+	override def getMsgJobLogicFactory : MsgJobLogicFactory[Msg, JobArg] = jobLogicFactory
 	override def getMsgJobActorMaker : MsgJobActorMaker = jobActorMaker
 }
 
 trait MasterFactory extends VarargsLogging {
-	def makeFactoryPair[Msg <: CPumpMsg](msgFilterClz : Class[Msg], jlFact : MsgJobLogicFactory[Msg]): MsgFactoryPair[Msg] = {
+	def makeFactoryPair[Msg <: CPumpMsg, JobArg <: AnyRef](msgFilterClz : Class[Msg], jlFact : MsgJobLogicFactory[Msg,JobArg]): MsgFactoryPair[Msg, JobArg] = {
 		val actMak = new GeneralMsgActorMakerImpl
 		new MsgJobFactoryPairImpl(msgFilterClz, jlFact, actMak)
 	}
@@ -143,7 +144,7 @@ trait VWorldJobLogic[-Msg <: VWorldMsg] extends MsgJobLogic[Msg] {
 trait VWorldMasterFactory extends MasterFactory {
 
 	// Meaning of list ordering not yet specified.
-	def makeBaselineMsgJobPairFactories: List[MsgFactoryPair[_ <: VWorldMsg]] = {
+	def makeBaselineMsgJobPairFactories: List[MsgFactoryPair[_ <: VWorldMsg, AnyRef]] = {
 		List(
 			//classOf[HeavyRequestTwo],
 			/*
@@ -166,7 +167,7 @@ trait VWorldMasterFactory extends MasterFactory {
 // or match-case block saying, in some fashion: "MakeItDoOne   getsProcessedBy  SomethingDoerOne".
 // OR, we must assume that client of an actor
 // wrapper knows which actor to send to (so then that client knowledge is effectively the "mapping").
-class SomethingDoerOne extends VWorldJobLogic[MakeItDoOne] {
+class SomethingDoerOne(jobArg : AnyRef) extends VWorldJobLogic[MakeItDoOne] {
 	override def processMsgUnsafe(msg : MakeItDoOne, slf : ActorRef, sndr : ActorRef, actx : ActorContext) : Unit = ???
 }
 // Here we show how that even a "heavy" (code-bearing) input can be sent to an explicit handler
@@ -175,9 +176,9 @@ class SomethingDoerTwo extends VWorldJobLogic[MakeItDoTwoHeavy] {
 }
 
 class PhonyMasterFactory extends VWorldMasterFactory {
-	val factOne = new MsgJobLogicFactory[MakeItDoOne]() {
-		override def makeJobLogic(msgFilterClz : Class[MakeItDoOne]) : MsgJobLogic[MakeItDoOne] = {
-			new SomethingDoerOne
+	val factOne = new MsgJobLogicFactory[MakeItDoOne, AnyRef]() {
+		override def makeJobLogic(jobArg : AnyRef, msgFilterClz : Class[MakeItDoOne]) : MsgJobLogic[MakeItDoOne] = {
+			new SomethingDoerOne(jobArg)
 			//msgFilterClz match {
 			//	case clzA : classOf[MakeItDoOneAy => {
 			//		new VWorldJobLogic[MakeItDoOne]() {
@@ -187,7 +188,7 @@ class PhonyMasterFactory extends VWorldMasterFactory {
 			// }
 		}
 	}
-	val factPairOne = makeFactoryPair[MakeItDoOne](classOf[MakeItDoOne], factOne)
+	val factPairOne = makeFactoryPair[MakeItDoOne, AnyRef](classOf[MakeItDoOne], factOne)
 }
 
 /*
