@@ -5,9 +5,6 @@ import org.friendularity.cpump.{CPumpMsg, CPStrongTeller, CPMsgTeller}
 /**
   * Created by Owner on 6/6/2016.
   */
-class VWTeller {
-
-}
 
 
 // The vworldBoss supplies this serializable directory of its actors to any client who asks.
@@ -26,3 +23,6 @@ case class VWPubTellersImpl(goodyTeller : CPStrongTeller[VWGoodyRqActionSpec],
 	override def getCharAdminTeller : Option[CPStrongTeller[VWCharAdminRq]] = Option(charAdminTeller)
 }
 
+trait VWBodyNotice extends VWorldNotice {
+	def getBodyTeller : CPStrongTeller[VWBodyRq]
+}

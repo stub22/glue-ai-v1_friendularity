@@ -79,22 +79,29 @@ trait DualBodyInitFuncs extends VarargsLogging {
 		return pump
 	}
 
-	def attachBonyRobotToFigure(mbsrc : ModelBlendingRobotServiceContext, figID : Ident, hf : HumanoidFigure): Unit = {
+	def attachBonyRobotToFigure(mbsrc : ModelBlendingRobotServiceContext, figID : Ident, hf : HumanoidFigure): VWorldRoboPump = {
 		val bonyRobot : ModelRobot = mbsrc.getRobot
 		info1("Calling connnectBonyRobotToHumanoidFigure for charID={}", figID)
 
 		val pump: VWorldRoboPump = setupRoboPump(figID, bonyRobot, hf)
+		pump
 	}
 }
 class DualBodyHelper() extends HumaFigureInitFuncs with DualBodyInitFuncs {
 	// Cannot be called until we have both a happy V-World context and a happy Model-BoneRobot conn to MechIO.
-	def finishDualBodInit(dualBodyID: Ident, mbsrc : ModelBlendingRobotServiceContext, pmrc: PhysicalModularRenderContext,  hfm : HumanoidFigureManager, hfConf  : HumanoidFigureConfig) {
-		info0("******* ********************** Calling makeAndAttachHumaFigure")
+	def finishDualBodInit(dualBodyID: Ident, mbsrc : ModelBlendingRobotServiceContext, pmrc: PhysicalModularRenderContext,
+						  hfm : HumanoidFigureManager, hfConf  : HumanoidFigureConfig) : DualBodyRecord = {
+		info1("******* ********************** Calling makeAndAttachHumaFigure for dualBodyID={}", dualBodyID)
 		val humaFig : HumanoidFigure = makeAndAttachHumaFigure(pmrc, hfm, hfConf)
-		info0("******* ********************** Calling attachBonyRobotToFigure")
-		attachBonyRobotToFigure(mbsrc, dualBodyID, humaFig);
+		info1("******* ********************** Calling attachBonyRobotToFigure for dualBodyID={}", dualBodyID)
+		val vwRoboPump = attachBonyRobotToFigure(mbsrc, dualBodyID, humaFig);
+		info1("******* ********************** Finished attaching bony robot and human figure for dualBodyID={}", dualBodyID)
+		new DualBodyRecord(dualBodyID, mbsrc, hfConf, humaFig, vwRoboPump)
 	}
 }
+case class DualBodyRecord(dualBodyID: Ident, mbsrc : ModelBlendingRobotServiceContext, hfConf  : HumanoidFigureConfig,
+						  humaFig: HumanoidFigure, vwRoboPump : VWorldRoboPump)
+
 class HumaConfHelper() extends HumaFigureInitFuncs {
 	def finishOldConfLoad(partialFigCfg : FigureConfig, repoCli : RepoClient, bonyGraphID : Ident, matPath : String) : HumanoidFigureConfig = {
 		info2("******* ********************** Calling makeHumaFigCfg with bonyGraph={} and matPath={}", bonyGraphID, matPath)

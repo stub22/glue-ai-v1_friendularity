@@ -20,10 +20,15 @@ import org.cogchar.blob.emit.RenderConfigEmitter;
 import org.cogchar.blob.entry.EntryHost;
 import org.cogchar.bundle.app.vworld.central.VirtualWorldFactory;
 import org.friendularity.api.west.WorldEstimate;
+import org.friendularity.cpump.CPStrongTeller;
+import org.friendularity.navui.ExoBodyUserLogic;
 import org.friendularity.navui.NavUiAppImpl;
 import org.friendularity.navui.NavUiAppSvc;
 import org.friendularity.rbody.BodyConnImpl;
 import org.friendularity.rbody.HumaConfHelper;
+import org.friendularity.respire.VWBodyMoveRq;
+import org.friendularity.respire.VWBodyNotice;
+import org.friendularity.respire.VWBodyRq;
 import org.friendularity.vworld.UnusedNetworkVisionDataFeed;
 import org.osgi.framework.BundleContext;
 import org.rwshop.swing.common.lifecycle.ServicesFrame;
@@ -196,7 +201,17 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 		HumanoidFigureConfig fullHumaCfg = hch.finishOldConfLoad(partialFigCfg, legacyRC_hooboy, bonyGraphID, matPath);
 
 		getLogger().info("Posting patient char create Rq for body={}", dualBodyID);
-		appSvc.postPatientCharCreateRq(dualBodyID, fullHumaCfg, mbrsc);
+		ExoBodyUserLogic userLogic = new ExoBodyUserLogic() {
+			@Override public void rcvBodyNotice(VWBodyNotice bodyNotice) {
+				super.rcvBodyNotice(bodyNotice);
+				CPStrongTeller<VWBodyRq> bodyTeller = bodyNotice.getBodyTeller();
+				VWBodyRq moveRq = new VWBodyMoveRq(-2.0f, 12.0f, -1.0f);
+				info2("ExoUserBodyLogic found body teller={}.   Sending moveRq={}", bodyTeller, moveRq);
+				bodyTeller.tellStrongCPMsg(moveRq);
+			}
+		};
+		CPStrongTeller<VWBodyNotice> bodyNoticer = appSvc.makeExoBodyUserTeller(akkaSys, "coolBodyUser", userLogic);
+		appSvc.postPatientCharCreateRq(dualBodyID, fullHumaCfg, mbrsc, bodyNoticer);
 
 		// This is something we have to wait for VWorld postponed init:
 		// HumanoidRenderContext hrc
