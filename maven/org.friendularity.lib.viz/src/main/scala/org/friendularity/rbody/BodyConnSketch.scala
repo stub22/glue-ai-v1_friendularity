@@ -59,9 +59,8 @@ trait BonyRobotInitFuncs extends VarargsLogging {
 	}
 }
 trait HumaFigureInitFuncs extends VarargsLogging {
-	def makeHumaFigCfg(partialFigCfg : FigureConfig, rce : RenderConfigEmitter, repoCli : RepoClient,
-					   bonyGraphID : Ident) : HumanoidFigureConfig = {
-		val matPath = rce.getMaterialPath
+	def makeHumaFigCfg(partialFigCfg : FigureConfig, repoCli : RepoClient,
+					   bonyGraphID : Ident, matPath : String) : HumanoidFigureConfig = {
 		val hfc = new HumanoidFigureConfig(repoCli, partialFigCfg, matPath, bonyGraphID);
 		hfc
 	}
@@ -97,9 +96,9 @@ class DualBodyHelper() extends HumaFigureInitFuncs with DualBodyInitFuncs {
 	}
 }
 class HumaConfHelper() extends HumaFigureInitFuncs {
-	def finishOldConfLoad(partialFigCfg : FigureConfig, rce : RenderConfigEmitter, repoCli : RepoClient, bonyGraphID : Ident) : HumanoidFigureConfig = {
-		info0("******* ********************** Calling makeHumaFigCfg")
-		val hfConf: HumanoidFigureConfig = makeHumaFigCfg(partialFigCfg, rce, repoCli, bonyGraphID)
+	def finishOldConfLoad(partialFigCfg : FigureConfig, repoCli : RepoClient, bonyGraphID : Ident, matPath : String) : HumanoidFigureConfig = {
+		info2("******* ********************** Calling makeHumaFigCfg with bonyGraph={} and matPath={}", bonyGraphID, matPath)
+		val hfConf: HumanoidFigureConfig = makeHumaFigCfg(partialFigCfg, repoCli, bonyGraphID, matPath)
 		info1("Got completed huma-fig-conf: {}", hfConf)
 		hfConf
 	}

@@ -188,10 +188,14 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 
 		HumaConfHelper hch = new HumaConfHelper();
 
-		RenderConfigEmitter rce = null;
+		// Next three lines are  just our obtuse way to get a default mat string, which happens to be:
+		// 	val PATH_UNSHADED_MAT =  "Common/MatDefs/Misc/Unshaded.j3md";
+		scala.Option<String> noURI = scala.Option.apply(null);
+		RenderConfigEmitter rce = new RenderConfigEmitter(noURI);
+		String matPath = rce.getMaterialPath();
+		HumanoidFigureConfig fullHumaCfg = hch.finishOldConfLoad(partialFigCfg, legacyRC_hooboy, bonyGraphID, matPath);
 
-		HumanoidFigureConfig fullHumaCfg = hch.finishOldConfLoad(partialFigCfg, rce, legacyRC_hooboy, bonyGraphID);
-
+		getLogger().info("Posting patient char create Rq for body={}", dualBodyID);
 		appSvc.postPatientCharCreateRq(dualBodyID, fullHumaCfg, mbrsc);
 
 		// This is something we have to wait for VWorld postponed init:

@@ -231,14 +231,17 @@ trait PatientSender_GoodyTest extends OuterLogic {
 }
 trait PatientForwarder_CharAdminTest extends OuterLogic {
 	private var myStoredTellers_opt : Option[VWorldPublicTellers] = None
-	private var myPendingCharAdminRqs : List[VWCharAdminRq] = Nil // Any inbound messages we have not gotten to yet.
+	private val myPendingCharAdminRqs = new scala.collection.mutable.ListBuffer[VWCharAdminRq]() //  = Nil // Any inbound messages we have not gotten to yet.
 
-	override def rcvPubTellers(vwpt: VWorldPublicTellers): Unit = propagateMessages(myStoredTellers_opt)
+	override def rcvPubTellers(vwpt: VWorldPublicTellers): Unit = {
+		myStoredTellers_opt = Option(vwpt)
+		propagateMessages(myStoredTellers_opt)
+	}
 
 	def appendInboundRq(rqMsg : VWCharAdminRq) : Unit = {
 		synchronized {
-			// It is expensive to append to end of a Scala list, but so what.  This is an infrequent op.
-			myPendingCharAdminRqs = myPendingCharAdminRqs :+ rqMsg
+			myPendingCharAdminRqs.append(rqMsg)
+			info1("After append, pending charAdm msgs={}", myPendingCharAdminRqs)
 			if (myStoredTellers_opt.isDefined) {
 				propagateMessages(myStoredTellers_opt)
 			}
@@ -252,8 +255,9 @@ trait PatientForwarder_CharAdminTest extends OuterLogic {
 					val charAdminTeller = charAdminTeller_opt.get
 					while (myPendingCharAdminRqs.nonEmpty) {
 						val headRQ = myPendingCharAdminRqs.head
+						info1("Forwarding pending charAdmRq={}", headRQ)
 						charAdminTeller.tellCPMsg(headRQ)
-						myPendingCharAdminRqs = myPendingCharAdminRqs.tail
+						myPendingCharAdminRqs.remove(0) //  = myPendingCharAdminRqs.tail
 					}
 
 				}
@@ -272,7 +276,7 @@ class OuterJobbyWrapper(outerLogic : OuterLogic) extends MsgJobLogic[VWorldPubli
 	// Note that we could also pass constructor parameters in via the factory, without Props hassles.
 	override def processMsgUnsafe(msg : VWorldPublicTellers, slf : ActorRef, sndr : ActorRef,
 								  actx : ActorContext) : Unit = {
-		debug1("Processing jobby version of public tellers handler, outerLogic={}", outerLogic)
+		debug2("Received public-tellers-ready msg={} for outerLogic={}", msg, outerLogic)
 		msg match {
 			case vwpt : VWorldPublicTellers => 	outerLogic.rcvPubTellers(vwpt)
 		}
