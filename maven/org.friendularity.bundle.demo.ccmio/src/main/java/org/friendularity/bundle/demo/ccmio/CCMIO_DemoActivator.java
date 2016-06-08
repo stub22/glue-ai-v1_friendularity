@@ -9,16 +9,21 @@ import org.appdapter.fancy.rspec.RepoSpec;
 import org.appdapter.osgi.core.BundleActivatorBase;
 import org.appdapter.xload.rspec.OnlineSheetRepoSpec;
 import org.cogchar.api.humanoid.FigureConfig;
+import org.cogchar.api.humanoid.HumanoidFigureConfig;
 import org.cogchar.app.puma.boot.PumaSysCtx;
 import org.cogchar.app.puma.boot.PumaBooter;
 import org.cogchar.app.puma.config.PumaContextMediator;
 import org.cogchar.app.puma.registry.PumaGlobalPrebootInjector;
+import org.cogchar.bind.mio.robot.svc.ModelBlendingRobotServiceContext;
 import org.cogchar.bind.symja.MathGate;
+import org.cogchar.blob.emit.RenderConfigEmitter;
 import org.cogchar.blob.entry.EntryHost;
 import org.cogchar.bundle.app.vworld.central.VirtualWorldFactory;
 import org.friendularity.api.west.WorldEstimate;
 import org.friendularity.navui.NavUiAppImpl;
+import org.friendularity.navui.NavUiAppSvc;
 import org.friendularity.rbody.BodyConnImpl;
+import org.friendularity.rbody.HumaConfHelper;
 import org.friendularity.vworld.UnusedNetworkVisionDataFeed;
 import org.osgi.framework.BundleContext;
 import org.rwshop.swing.common.lifecycle.ServicesFrame;
@@ -133,7 +138,7 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 		} else {
 			// 2016 way:
 			ActorSystem akkaSys = myCPumpHelper.dangerActorSysExposed();  // Should be avail because startAkkaOSGi was called during .start().
-			startNewNavUI(bundleCtx, akkaSys);
+			NavUiAppSvc appSvc = startNewNavUI(bundleCtx, akkaSys);
 			// Now the VWorld is up and accepting messages, but there is no char in it yet.
 			// Still a throwback here, just keeping the boat steady while we turn
 			getLogger().info("============= calling makeLegacyELRC() ======");
@@ -141,7 +146,7 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 			EnhancedLocalRepoClient elrc = makeLegacyELRC(mergedProfileJM, legConfEHost);
 			// Temporary revised compromise here - keep using the old data known to work until we can prove that
 			// newer data is workin.
-			startUpgradedYetLegacyBodyConn(bundleCtx, akkaSys, elrc);
+			startUpgradedYetLegacyBodyConn(bundleCtx, akkaSys, elrc, appSvc);
 		}
 
 		getLogger().info("============ Calling launchCPumpService() ==========");
@@ -166,7 +171,7 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 	// It is now better, when possible, to instead pull the body conf from recipes and our finer, newer chunks,
 	// and also to do that asynchronously upon request, compliant with lifecycles of model-blending-ctx guys.
 	// We keep both alternatives alive to help during debugging.
-	public void startUpgradedYetLegacyBodyConn(BundleContext bundleCtx, ActorSystem akkaSys, EnhancedLocalRepoClient legacyELRC) {
+	public void startUpgradedYetLegacyBodyConn(BundleContext bundleCtx, ActorSystem akkaSys, EnhancedLocalRepoClient legacyELRC, NavUiAppSvc appSvc) {
 		Ident dualBodyID = new FreeIdent("urn:ftd:cogchar.org:2012:runtime#char_sinbad_88");
 		Ident hmdGraphID = new FreeIdent("urn:ftd:cogchar.org:2012:runtime#hmd_sheet_22");
 		Ident bonyGraphID = new FreeIdent("urn:ftd:cogchar.org:2012:runtime#bony_sheet_sinbad");
@@ -177,7 +182,22 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 
 		RepoClient legacyRC_hooboy = legacyELRC;
 
-		bci.connectBonyRobot(bundleCtx, partialFigCfg, bonyGraphID, legacyRC_hooboy);
+		bci.connectBonyRobot_usingOldRC(bundleCtx, partialFigCfg, bonyGraphID, legacyRC_hooboy);
+
+		ModelBlendingRobotServiceContext mbrsc = bci.getMBRSvcCtx();
+
+		HumaConfHelper hch = new HumaConfHelper();
+
+		RenderConfigEmitter rce = null;
+
+		HumanoidFigureConfig fullHumaCfg = hch.finishOldConfLoad(partialFigCfg, rce, legacyRC_hooboy, bonyGraphID);
+
+		appSvc.postPatientCharCreateRq(dualBodyID, fullHumaCfg, mbrsc);
+
+		// This is something we have to wait for VWorld postponed init:
+		// HumanoidRenderContext hrc
+		// DualBodyHelper hfh = new DualBodyHelper()
+		// hfh.humanize();
 	}
 	public void startOldPumaThenVWorld(BundleContext bundleCtx) {
 		getLogger().info("============ Calling launchPumaRobotsAndChars()  ==========");

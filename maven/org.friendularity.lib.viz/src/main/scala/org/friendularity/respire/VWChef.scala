@@ -17,6 +17,7 @@ import org.cogchar.bundle.app.vworld.busker.TriggerItems
 import org.cogchar.bundle.app.vworld.central.{VWCtxCmdBox, StatefulVWorldRegistry, VWorldRegistry}
 import org.cogchar.platform.trigger.BoxSpace;
 import org.cogchar.platform.trigger.CommandSpace
+import org.cogchar.render.sys.context.PhysicalModularRenderContext
 import org.cogchar.render.sys.goody.{GoodyModularRenderContext, GoodyRenderRegistryClient}
 import org.cogchar.render.sys.registry.RenderRegistryClient
 import org.cogchar.render.sys.window.WindowStatusMonitor
@@ -28,7 +29,12 @@ import org.osgi.framework.BundleContext
 // import org.cogchar.bundle.app.vworld.central._
 
 import java.util.{Map => JMap, ArrayList => JArrayList}
-/** Chef uses modern recipes and fresh chunks, to prepare tasty delights!
+/** README
+  * As of June 2016, none of this VWChef.scala code is used in CCMIO demo.
+  * However, it provides important reference points and documented design info.
+  * ---------------------------------------------------------------------------
+  *
+  * Chef uses modern recipes and fresh chunks, to prepare tasty delights!
   *
   * Chef is responsible for preparing the state of the runtime, using the
   * same ingredients (config-records translated to config-messages) that any other client
@@ -79,11 +85,14 @@ trait LesserIngred {
 	def getWindowStatusMonitor : WindowStatusMonitor
 	// def getGMRendCtx : GoodyModularRenderContext
 }
-case class LesserIngredImpl(rendRegCli : RenderRegistryClient, winStatMon : WindowStatusMonitor) // gmRendCtx : GoodyModularRenderContext)
-		extends LesserIngred {
+trait BodyMgrIngred {
+	def	getPMRC : PhysicalModularRenderContext
+}
+case class FullIngredImpl(rendRegCli : RenderRegistryClient, winStatMon : WindowStatusMonitor, pmrc : PhysicalModularRenderContext)
+		extends LesserIngred with BodyMgrIngred {
 	override def getRendRegClient : RenderRegistryClient = rendRegCli
 	override def getWindowStatusMonitor : WindowStatusMonitor = winStatMon
-	// override def getGMRendCtx : GoodyModularRenderContext = gmRendCtx
+	override def	getPMRC : PhysicalModularRenderContext = pmrc
 }
 
 // Supplies pointers sufficient to launch bodies in VWorld in 2012-2014 style.
@@ -122,6 +131,7 @@ case class VintageBodyIngredImpl(pcMediator: PumaContextMediator,
 	override def getBodyHandleRecList: JArrayList[BodyHandleRecord] = bodyHandleRecList
 }
 
+case class InterimBodyIngredImpl()
 
 trait EmulateVintageLaunch extends VarargsLogging {
 	// Keys from   org.cogchar.bundle.app.vworld.central.VWorldMapperLifecycle

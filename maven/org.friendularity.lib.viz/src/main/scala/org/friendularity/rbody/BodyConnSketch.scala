@@ -17,7 +17,8 @@ import org.cogchar.blob.emit.RenderConfigEmitter
 import org.cogchar.bundle.app.vworld.central.VWorldRoboPump
 import org.cogchar.platform.util.ClassLoaderUtils
 import org.cogchar.render.app.humanoid.HumanoidRenderContext
-import org.cogchar.render.model.humanoid.HumanoidFigure
+import org.cogchar.render.model.humanoid.{HumanoidFigureManager, HumanoidFigure}
+import org.cogchar.render.sys.context.PhysicalModularRenderContext
 import org.osgi.framework.BundleContext
 import org.mechio.api.motion.Robot
 import org.cogchar.api.humanoid.{HumanoidFigureConfig, FigureConfig}
@@ -64,16 +65,16 @@ trait HumaFigureInitFuncs extends VarargsLogging {
 		val hfc = new HumanoidFigureConfig(repoCli, partialFigCfg, matPath, bonyGraphID);
 		hfc
 	}
-	def makeAndAttachHumaFigure(hrc: HumanoidRenderContext, humaFigCfg : HumanoidFigureConfig) : HumanoidFigure = {
-		val hfm = hrc.getHumanoidFigureManager
+	def makeAndAttachHumaFigure(pmrc : PhysicalModularRenderContext, hfm : HumanoidFigureManager, humaFigCfg : HumanoidFigureConfig) : HumanoidFigure = {
+
 		val hf : HumanoidFigure = hfm.addHumanoidFigure(humaFigCfg)
-		hfm.attachFigure(hrc, hf)  // Blocks until attachment complete on VW render thread
+		hfm.attachFigure(pmrc, hf)  // Blocks until attachment complete on VW render thread
 		hf
 	}
 }
 trait DualBodyInitFuncs extends VarargsLogging {
 	// Methods which appear to be stateless, although they may cause some side effects.
-	def setupRoboPump(dualBodyID: Ident, mr: ModelRobot, hf: HumanoidFigure): VWorldRoboPump = {
+	private def setupRoboPump(dualBodyID: Ident, mr: ModelRobot, hf: HumanoidFigure): VWorldRoboPump = {
 		val pump: VWorldRoboPump = new VWorldRoboPump(dualBodyID, mr, hf)
 		pump.completeSetup
 		return pump
@@ -86,7 +87,23 @@ trait DualBodyInitFuncs extends VarargsLogging {
 		val pump: VWorldRoboPump = setupRoboPump(figID, bonyRobot, hf)
 	}
 }
-
+class DualBodyHelper() extends HumaFigureInitFuncs with DualBodyInitFuncs {
+	// Cannot be called until we have both a happy V-World context and a happy Model-BoneRobot conn to MechIO.
+	def finishDualBodInit(dualBodyID: Ident, mbsrc : ModelBlendingRobotServiceContext, pmrc: PhysicalModularRenderContext,  hfm : HumanoidFigureManager, hfConf  : HumanoidFigureConfig) {
+		info0("******* ********************** Calling makeAndAttachHumaFigure")
+		val humaFig : HumanoidFigure = makeAndAttachHumaFigure(pmrc, hfm, hfConf)
+		info0("******* ********************** Calling attachBonyRobotToFigure")
+		attachBonyRobotToFigure(mbsrc, dualBodyID, humaFig);
+	}
+}
+class HumaConfHelper() extends HumaFigureInitFuncs {
+	def finishOldConfLoad(partialFigCfg : FigureConfig, rce : RenderConfigEmitter, repoCli : RepoClient, bonyGraphID : Ident) : HumanoidFigureConfig = {
+		info0("******* ********************** Calling makeHumaFigCfg")
+		val hfConf: HumanoidFigureConfig = makeHumaFigCfg(partialFigCfg, rce, repoCli, bonyGraphID)
+		info1("Got completed huma-fig-conf: {}", hfConf)
+		hfConf
+	}
+}
 trait BodyConn extends VarargsLogging {
 	// Connection info for a *single* character body.
 
@@ -130,12 +147,14 @@ class BodyConnImpl(myBunCtx : BundleContext, myDualBodyID : Ident) extends BodyC
 
 	override protected def getDualBodyID : Ident = myDualBodyID
 
-	// The Graph and RepoClient are needed to allow completion of the BoneRobotConfig
-	def connectBonyRobot(bunCtx : BundleContext, partialFigCfg : FigureConfig, bonyGraphID : Ident, rc : RepoClient) : Unit = {
+	// The Graph and RepoClient are needed to allow completion of the BoneRobotConfig using the OLDE pathways.
+	// This only connects to OSGi MechIO bony-model robot movement features.
+	// It does not init any of the Avatar VWorld features.
+	def connectBonyRobot_usingOldRC(bunCtx : BundleContext, partialFigCfg : FigureConfig, bonyGraphID : Ident, rc : RepoClient) : Unit = {
 		// PumaRegistryClient prc
 
 		val mioConfCLs: JList[ClassLoader] = new JArrayList[ClassLoader]()
-/*
+/* 2014 classloader setup
 		prc.getResFileCLsForCat(ResourceFileCategory.RESFILE_MIO_CONF)
 		val extraCLs : util.List[ClassLoader] = myMediator.getExtraResFileCLsForCat(cat)
 		val totalCLs : util.List[ClassLoader] = new util.ArrayList[ClassLoader](extraCLs)
@@ -146,13 +165,15 @@ class BodyConnImpl(myBunCtx : BundleContext, myDualBodyID : Ident) extends BodyC
 		val bodyID = getDualBodyID
 		val boneRobotConf: BoneRobotConfig = new BoneRobotConfig(rc, bodyID, bonyGraphID, boneCN)
 
-		val mbsrc = getMBRSvcCtx
-		connectBonyRobotToMio(bunCtx, mbsrc, partialFigCfg, boneRobotConf, mioConfCLs)
+		val mbrsc = getMBRSvcCtx
+		connectBonyRobotToMio(bunCtx, mbrsc, partialFigCfg, boneRobotConf, mioConfCLs)
 
 	}
 
 }
 /*
+Old ways we are replacing looked like this:
+
 	graphIdentForBony = pgmm.resolveGraphForCharAndRole(charIdent, EntityRoleCN.BONY_CONFIG_ROLE);
 	graphIdentForHumanoid = pgmm.resolveGraphForCharAndRole(charIdent, EntityRoleCN.HUMANOID_CONFIG_ROLE);
 

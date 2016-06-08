@@ -1,8 +1,14 @@
 package org.friendularity.respire
 
 import akka.actor.{ActorRef, ActorContext}
+import org.appdapter.core.name.Ident
 import org.appdapter.fancy.log.VarargsLogging
+import org.appdapter.fancy.rclient.RepoClient
+import org.cogchar.api.humanoid.{HumanoidFigureConfig, FigureConfig}
+import org.cogchar.bind.mio.robot.svc.ModelBlendingRobotServiceContext
+import org.cogchar.blob.emit.RenderConfigEmitter
 import org.cogchar.impl.thing.basic.BasicThingActionSpec
+import org.cogchar.render.app.humanoid.HumanoidRenderContext
 import org.friendularity.cpump.{CPStrongTeller, CPMsgTeller, CPumpMsg}
 import com.hp.hpl.jena.rdf.model.{Model => JenaModel}
 import java.lang.{Long => JLong}
@@ -26,6 +32,19 @@ trait VWContentRq extends VWorldRequest {
 trait VWCoreRq extends VWorldRequest {
 	// Used to talk to internal "VWCore" actor
 }
+
+trait VWCharAdminRq extends VWorldRequest {
+
+}
+case class VWCreateCharRq(dualBodyID: Ident, fullHumaCfg : HumanoidFigureConfig,
+						  myMBRoboSvcCtx : ModelBlendingRobotServiceContext) extends VWCharAdminRq {
+}
+
+// Message sent directly to a particular VWBody, not for creation/deletion of same.
+trait VWBodyRq extends VWorldRequest {
+
+}
+
 trait VWSceneCoreRq extends VWCoreRq {
 	// Describes a change to managed VW scene graph, to be translated (usually by VWCore actor)
 	// into calls on JME render thread.
@@ -53,7 +72,7 @@ trait VWAdminRqMsg extends VWorldRequest with VarargsLogging {
 
 }
 case class VWARM_GreetFromPumpAdmin(pumpAdminTeller : CPMsgTeller) extends VWAdminRqMsg
-case class VWARM_FindGoodyTeller(answerTeller: CPMsgTeller) extends VWAdminRqMsg
+// case class VWARM_FindGoodyTeller(answerTeller: CPMsgTeller) extends VWAdminRqMsg
 
 // Receiver can wait to answer until the system is sufficiently ready, e.g. until the VWorld is up.
 // However, Sndr may inquire well after the VWorld is up, and then Rcvr should answer right away.
@@ -75,7 +94,7 @@ case class VWSetupRq_Conf extends VWorldRequest {
 case class VWSetupRq_Lnch extends VWorldRequest {
 	// Includes callback-teller hook for result pointers after successful launch
 }
-case class VWSetupResultsNotice(lesserIngred: LesserIngred) extends VWorldInternalNotice
+case class VWSetupResultsNotice(lesserIngred: LesserIngred, bodyMgrIngred: BodyMgrIngred) extends VWorldInternalNotice
 
 
 

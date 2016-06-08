@@ -12,8 +12,8 @@ trait CPMsgTeller extends JSerializable {
 	def tellCPMsg(msg: CPumpMsg)
 }
 
-// Wrapper for sender who wants an answer
-trait CPStrongTeller[MsgType <: CPumpMsg] extends CPMsgTeller {
+// Strongly typed, contravariant
+trait CPStrongTeller[-MsgType <: CPumpMsg] extends CPMsgTeller {
 	// Strongly typed wrapper for the weakly-typed inner tell.
 	def tellStrongCPMsg(msg: MsgType) = tellCPMsg(msg)
 }

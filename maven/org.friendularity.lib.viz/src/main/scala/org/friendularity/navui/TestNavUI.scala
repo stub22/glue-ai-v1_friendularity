@@ -19,9 +19,12 @@ package org.friendularity.navui
 // import akka.actor._
 import akka.actor.{Actor, ActorRef, ActorContext, ActorSystem, ActorRefFactory, Props, ActorLogging}
 import com.hp.hpl.jena.rdf.model.{Model => JenaModel}
+import org.appdapter.core.name.Ident
 import org.appdapter.core.store.Repo
 import org.appdapter.fancy.log.VarargsLogging
 import org.appdapter.fancy.rclient.EnhancedLocalRepoClient
+import org.cogchar.api.humanoid.HumanoidFigureConfig
+import org.cogchar.bind.mio.robot.svc.ModelBlendingRobotServiceContext
 import org.cogchar.blob.emit.RenderConfigEmitter
 import org.cogchar.blob.entry.EntryHost
 import org.cogchar.impl.scene.read.BehavMasterConfigTest
@@ -106,8 +109,14 @@ class StandaloneNavAppSys() {
 
 	def findOrMakeNavUiApp : NavUiAppImpl = myNavUiApp
 }
+
+trait NavUiAppSvc extends VarargsLogging {
+	def postPatientCharCreateRq(dualBodyID : Ident, fullHumaCfg : HumanoidFigureConfig,
+								mbrsc : ModelBlendingRobotServiceContext)
+}
+
 // "App" here means FriendU app, not a JME3 "app".  The latter is made during launchSimRenderSpace at bottom.
-class NavUiAppImpl(myAkkaSys : ActorSystem) extends VarargsLogging {
+class NavUiAppImpl(myAkkaSys : ActorSystem) extends NavUiAppSvc {
 
 	lazy private val myStandalonePumpSpace = new SpecialAppPumpSpace(myAkkaSys)
 
@@ -118,21 +127,29 @@ class NavUiAppImpl(myAkkaSys : ActorSystem) extends VarargsLogging {
 	lazy private val standPumpCtxActorRef : ActorRef = myStandalonePumpSpace.findTopActorRef(standPumpTestCtxName)
 	lazy private val standPumpAdminTeller = new ActorRefCPMsgTeller(standPumpCtxActorRef)
 
+
+	/*
 	// Direct approach
 	lazy private val outerCtxName = "nav_ui_outer"
 	lazy private val outerCtxActorRef : ActorRef = makeCustomOuterActor(myAkkaSys)
 	lazy private val outerTellerDirect = new ActorRefCPMsgTeller(outerCtxActorRef)
 
-
-	// Jobby approach
-	lazy private val jobbyOuterTeller = OuterJobbyLogic_MasterFactory.makeOoLogicAndTeller(myAkkaSys)
-
-	// Custom-outer approach
 	private def makeCustomOuterActor(akkaSys: ActorSystem) : ActorRef = {
 		val vwbossActorProps = Props(classOf[OuterDirectActor])
 		val vwbActorRef : ActorRef = akkaSys.actorOf(vwbossActorProps, outerCtxName)
 		vwbActorRef
 	}
+	*/
+
+	// Jobby approach
+	lazy private val goodyTestSenderLogic = new PatientSender_GoodyTest {}
+	lazy private val goodyTestSenderTrigTeller  = OuterJobbyLogic_MasterFactory.makeOoLogicAndTeller(goodyTestSenderLogic, myAkkaSys, "goodyTstSndr")
+
+	lazy private val charAdmForwarderLogic = new PatientForwarder_CharAdminTest {}
+	lazy private val charAdmSenderTrigTeller  = OuterJobbyLogic_MasterFactory.makeOoLogicAndTeller(charAdmForwarderLogic, myAkkaSys, "charAdmForwarder")
+
+	// Custom-outer approach
+
 
 	def sendSetupMsgs_Async {
 		val hpatMsg = new VWARM_GreetFromPumpAdmin(standPumpAdminTeller)
@@ -143,11 +160,7 @@ class NavUiAppImpl(myAkkaSys : ActorSystem) extends VarargsLogging {
 
 		sendVWSetup_Lnch()
 
-		// Request the results of happy startup, to trigger further ops
-		val fptMsg = new VWARM_FindPublicTellers(jobbyOuterTeller)
-		info2("Sending msg={} to VWBossTeller : {}", fptMsg, vwBossTeller)
-		vwBossTeller.tellCPMsg(fptMsg)
-
+		registePostInitWaiters()
 	}
 	def sendVWSetup_Conf() : Unit = {
 		val msg = new VWSetupRq_Conf
@@ -158,29 +171,39 @@ class NavUiAppImpl(myAkkaSys : ActorSystem) extends VarargsLogging {
 		val msg = new VWSetupRq_Lnch
 		vwBossTeller.tellCPMsg(msg)
 	}
+	def registePostInitWaiters() : Unit = {
+		// Each of these the results of happy startup, to trigger further ops.
+		// The VWPTRendezvous logic makes sure that each such waiter gets notified regardless of message order,
+		// so it is OK to send them after init is already complete (although usually it won't be).
+		val goodyTstRegMsg = new VWARM_FindPublicTellers(goodyTestSenderTrigTeller)
+		debug2("Sending goody-reg-msg={} to VWBossTeller : {}", goodyTstRegMsg, vwBossTeller)
+		vwBossTeller.tellCPMsg(goodyTstRegMsg)
 
+		val charAdmRegMsg = new VWARM_FindPublicTellers(charAdmSenderTrigTeller)
+		vwBossTeller.tellCPMsg(charAdmRegMsg)
+
+	}
+	// Could easily send this in as an actor msg, probably will soon, but trying to prevent confusion across API layers.
+	def appendCharAdmRq(chrAdmRq : VWCharAdminRq) : Unit = charAdmForwarderLogic.appendInboundRq(chrAdmRq)
+
+	override def postPatientCharCreateRq(dualBodyID : Ident, fullHumaCfg : HumanoidFigureConfig,
+							   mbrsc : ModelBlendingRobotServiceContext) : Unit = {
+		val ccrq = VWCreateCharRq(dualBodyID, fullHumaCfg, mbrsc)
+		appendCharAdmRq(ccrq)
+	}
 	def testDetachedGS : Unit = {
 		val dgst = new DetachedGST{}
 		dgst.gridSpaceTest
 	}
 	// registerAvatarConfigRepoClient(bunCtx, erc);
 }
-
-trait NavUiOuterLogic extends VarargsLogging {
-	def rcvPubTellers (vwpt : VWorldPublicTellers): Unit = {
-		// This is the notice we get back from boss, confirming system has started and these tellers are ready for biz.
-		info1("Outer logic got public tellers: {}", vwpt)
-		val goodyTeller = vwpt.getGoodyTeller
-		if (goodyTeller.isDefined) {
-			info1("Sending goody tst msgs to: {}", goodyTeller.get)
-			sndGoodyTstMsgs(goodyTeller.get)
-		} else {
-			warn0("GoodyTeller is not available, cannot send goody tst msgs.")
-		}
-
-	}
+trait OuterLogic extends VarargsLogging {
+	def rcvPubTellers (vwpt : VWorldPublicTellers): Unit
+}
+trait PatientSender_GoodyTest extends OuterLogic {
 	import scala.collection.JavaConverters._
-	def sndGoodyTstMsgs(goodyTeller : CPMsgTeller): Unit = {
+
+	def finallySendGoodyTstMsgs(goodyTeller : CPMsgTeller): Unit = {
 
 		val gtmm: GoodyTestMsgMaker = new GoodyTestMsgMaker
 		val msgsJList = gtmm.makeGoodyCreationMsgs
@@ -191,46 +214,88 @@ trait NavUiOuterLogic extends VarargsLogging {
 			goodyTeller.tellCPMsg(vwMsgWrap)
 		}
 	}
+	private var myStoredTellers_opt : Option[VWorldPublicTellers] = None
+	override def rcvPubTellers (vwpt : VWorldPublicTellers): Unit = {
+		// This is the (outbound) notice we get back from boss, confirming system has started and these tellers are ready for biz.
+		info1("Outer logic got public tellers: {}", vwpt)
+		myStoredTellers_opt = Option(vwpt)
+		val goodyTeller = vwpt.getGoodyTeller
+		if (goodyTeller.isDefined) {
+			info1("Sending goody tst msgs to: {}", goodyTeller.get)
+			finallySendGoodyTstMsgs(goodyTeller.get)
+		} else {
+			warn0("GoodyTeller is not available, cannot send goody tst msgs.")
+		}
 
-}
-//
-// If this class were going to take constructor params, we would have to pass those through the Props mechanism.
-class OuterDirectActor	extends Actor with ActorLogging with NavUiOuterLogic {
-	def receive = {
-		case vwpt : VWorldPublicTellers => rcvPubTellers(vwpt)
 	}
 }
+trait PatientForwarder_CharAdminTest extends OuterLogic {
+	private var myStoredTellers_opt : Option[VWorldPublicTellers] = None
+	private var myPendingCharAdminRqs : List[VWCharAdminRq] = Nil // Any inbound messages we have not gotten to yet.
+
+	override def rcvPubTellers(vwpt: VWorldPublicTellers): Unit = propagateMessages(myStoredTellers_opt)
+
+	def appendInboundRq(rqMsg : VWCharAdminRq) : Unit = {
+		synchronized {
+			// It is expensive to append to end of a Scala list, but so what.  This is an infrequent op.
+			myPendingCharAdminRqs = myPendingCharAdminRqs :+ rqMsg
+			if (myStoredTellers_opt.isDefined) {
+				propagateMessages(myStoredTellers_opt)
+			}
+		}
+	}
+	def propagateMessages(pubTellers_opt : Option[VWorldPublicTellers]) : Unit = {
+		this.synchronized {
+			if (pubTellers_opt.isDefined) {
+				val charAdminTeller_opt = pubTellers_opt.get.getCharAdminTeller
+				if (charAdminTeller_opt.isDefined) {
+					val charAdminTeller = charAdminTeller_opt.get
+					while (myPendingCharAdminRqs.nonEmpty) {
+						val headRQ = myPendingCharAdminRqs.head
+						charAdminTeller.tellCPMsg(headRQ)
+						myPendingCharAdminRqs = myPendingCharAdminRqs.tail
+					}
+
+				}
+			}
+		}
+	}
+}
+
 
 // Unnecessary to use the Jobby approach here, but working through it anyway as an excercise.
 // First we must define the actual job-handler classes.
 // Give the logic a dummy constructor param just to show how they flow in.
-class OuterJobbyLogic(unusedParam : Int) extends MsgJobLogic[VWorldPublicTellers] with NavUiOuterLogic {
+class OuterJobbyWrapper(outerLogic : OuterLogic) extends MsgJobLogic[VWorldPublicTellers] {
 	// Differences here is that we get exception handling+logging, runtime type verification,
 	// and actor wrapping for free, but we must also create the factory stuff below.
 	// Note that we could also pass constructor parameters in via the factory, without Props hassles.
 	override def processMsgUnsafe(msg : VWorldPublicTellers, slf : ActorRef, sndr : ActorRef,
 								  actx : ActorContext) : Unit = {
-		info1("Processing jobby version of public tellers handler, unusedParam={}", unusedParam : Integer)
-		rcvPubTellers(msg)
+		debug1("Processing jobby version of public tellers handler, outerLogic={}", outerLogic)
+		msg match {
+			case vwpt : VWorldPublicTellers => 	outerLogic.rcvPubTellers(vwpt)
+		}
+
 	}
 }
 // Now we would make the factories needed to construct our logic + actor instances.
 // Question is:  When is this less bother than making an actor wrapper by hand, as in OuterDirectActor above?
 
 object OuterJobbyLogic_MasterFactory extends VWorldMasterFactory {
-	val thatOtherParam : Int = 22
-	val oolFactory = new MsgJobLogicFactory[VWorldPublicTellers]() {
-		override def makeJobLogic(msgFilterClz: Class[VWorldPublicTellers]): MsgJobLogic[VWorldPublicTellers] = {
-			info1("Making outer jobby logic for specific runtime filter clz: {}", msgFilterClz)
-			new OuterJobbyLogic(thatOtherParam)
+	// val thatOtherParam : Int = 22
+	val oolFactory = new MsgJobLogicFactory[VWorldPublicTellers, OuterLogic]() {
+		override def makeJobLogic(olJobArg : OuterLogic, msgFilterClz: Class[VWorldPublicTellers]): MsgJobLogic[VWorldPublicTellers] = {
+			info2("Making jobby wrapper for outerlogic-jobArg={} for specific runtime filter clz: {}", olJobArg,  msgFilterClz)
+			new OuterJobbyWrapper(olJobArg)
 		}
 	}
-	val oolFactPair = makeFactoryPair[VWorldPublicTellers](classOf[VWorldPublicTellers], oolFactory)
+	val oolFactPair = makeFactoryPair[VWorldPublicTellers, OuterLogic](classOf[VWorldPublicTellers], oolFactory)
 
 	val oolJobbyActorName = "outer_jobby"
 
-	def makeOoLogicAndTeller(arf : ActorRefFactory) : CPStrongTeller[VWorldPublicTellers] = {
-		val aref = oolFactPair.makeLogicAndActor(arf, oolJobbyActorName, None)
+	def makeOoLogicAndTeller(jobArg : OuterLogic,  arf : ActorRefFactory, actorName : String) : CPStrongTeller[VWorldPublicTellers] = {
+		val aref = oolFactPair.makeLogicAndActor(jobArg, arf, actorName, None)
 		new ActorRefCPMsgTeller[VWorldPublicTellers](aref)
 	}
 }
