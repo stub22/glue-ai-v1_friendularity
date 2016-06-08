@@ -37,13 +37,17 @@ trait VWCharAdminRq extends VWorldRequest {
 
 }
 case class VWCreateCharRq(dualBodyID: Ident, fullHumaCfg : HumanoidFigureConfig,
-						  myMBRoboSvcCtx : ModelBlendingRobotServiceContext) extends VWCharAdminRq {
+						  myMBRoboSvcCtx : ModelBlendingRobotServiceContext,
+						  answerTeller : CPStrongTeller[VWBodyNotice]) extends VWCharAdminRq {
+
 }
 
 // Message sent directly to a particular VWBody, not for creation/deletion of same.
 trait VWBodyRq extends VWorldRequest {
 
 }
+
+case class VWBodyMoveRq(xPos : Float, yPos : Float, zPos : Float) extends VWBodyRq
 
 trait VWSceneCoreRq extends VWCoreRq {
 	// Describes a change to managed VW scene graph, to be translated (usually by VWCore actor)

@@ -112,7 +112,13 @@ class StandaloneNavAppSys() {
 
 trait NavUiAppSvc extends VarargsLogging {
 	def postPatientCharCreateRq(dualBodyID : Ident, fullHumaCfg : HumanoidFigureConfig,
-								mbrsc : ModelBlendingRobotServiceContext)
+								mbrsc : ModelBlendingRobotServiceContext, answerTeller : CPStrongTeller[VWBodyNotice])
+
+	def makeExoBodyUserTeller(parentARF : ActorRefFactory, ebuActorName : String, userLogic : ExoBodyUserLogic) : CPStrongTeller[VWBodyNotice] = {
+		val ebuActor = ExoActorFactory.makeExoBodyUserActor(parentARF, ebuActorName, userLogic)
+		val ebuTeller : CPStrongTeller[VWBodyNotice] = new ActorRefCPMsgTeller[VWBodyNotice](ebuActor)
+		ebuTeller
+	}
 }
 
 // "App" here means FriendU app, not a JME3 "app".  The latter is made during launchSimRenderSpace at bottom.
@@ -187,8 +193,8 @@ class NavUiAppImpl(myAkkaSys : ActorSystem) extends NavUiAppSvc {
 	def appendCharAdmRq(chrAdmRq : VWCharAdminRq) : Unit = charAdmForwarderLogic.appendInboundRq(chrAdmRq)
 
 	override def postPatientCharCreateRq(dualBodyID : Ident, fullHumaCfg : HumanoidFigureConfig,
-							   mbrsc : ModelBlendingRobotServiceContext) : Unit = {
-		val ccrq = VWCreateCharRq(dualBodyID, fullHumaCfg, mbrsc)
+							   mbrsc : ModelBlendingRobotServiceContext, answerTeller : CPStrongTeller[VWBodyNotice]) : Unit = {
+		val ccrq = VWCreateCharRq(dualBodyID, fullHumaCfg, mbrsc, answerTeller)
 		appendCharAdmRq(ccrq)
 	}
 	def testDetachedGS : Unit = {
@@ -268,8 +274,6 @@ trait PatientForwarder_CharAdminTest extends OuterLogic {
 
 
 // Unnecessary to use the Jobby approach here, but working through it anyway as an excercise.
-// First we must define the actual job-handler classes.
-// Give the logic a dummy constructor param just to show how they flow in.
 class OuterJobbyWrapper(outerLogic : OuterLogic) extends MsgJobLogic[VWorldPublicTellers] {
 	// Differences here is that we get exception handling+logging, runtime type verification,
 	// and actor wrapping for free, but we must also create the factory stuff below.
@@ -302,4 +306,27 @@ object OuterJobbyLogic_MasterFactory extends VWorldMasterFactory {
 		val aref = oolFactPair.makeLogicAndActor(jobArg, arf, actorName, None)
 		new ActorRefCPMsgTeller[VWorldPublicTellers](aref)
 	}
+}
+
+// Beyond all the Outer stuff, we have:
+
+class ExoBodyUserLogic extends VarargsLogging {
+	def rcvBodyNotice(bodyNotice : VWBodyNotice): Unit = {
+		info1("ExoBody UserLogic received bodyNotice={}", bodyNotice)
+	}
+}
+
+class ExoBodyUserActor(bodyUserLogic : ExoBodyUserLogic)  extends Actor {
+	def receive = {
+		case vwbn: VWBodyNotice => bodyUserLogic.rcvBodyNotice(vwbn)
+
+	}
+}
+object ExoActorFactory {
+	def makeExoBodyUserActor(parentARF : ActorRefFactory, ebuActorName : String, userLogic : ExoBodyUserLogic) : ActorRef = {
+		val ebuActorProps = Props(classOf[ExoBodyUserActor], userLogic)
+		val ebuActorRef : ActorRef = parentARF.actorOf(ebuActorProps, ebuActorName)
+		ebuActorRef
+	}
+
 }

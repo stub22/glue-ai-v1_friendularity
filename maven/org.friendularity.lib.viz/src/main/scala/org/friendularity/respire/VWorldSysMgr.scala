@@ -29,6 +29,7 @@ import org.cogchar.render.sys.window.WindowStatusMonitor
 import org.friendularity.appro.TestRaizLoad
 import org.friendularity.cpump._
 import com.hp.hpl.jena.rdf.model.{Model => JenaModel}
+import org.friendularity.rbody.DualBodyRecord
 
 /**
   * Created by Owner on 4/14/2016.
@@ -219,6 +220,9 @@ class VWStrapImpl extends VWorldStrap {
 	// Good news - the hackStrap is still empty!  Let's hope it stays that way.
 }
 object VWorldActorFactoryFuncs {
+
+	// These are for "core" actors used within the PublicTellers boundary, not for the Outer+Exo actors.
+
 	// Following akka pattern, parentARF is either an ActorSystem (root) OR ActorContext (not-root)
 	def makeVWorldBoss(parentARF : ActorRefFactory, bossActorName : String) : ActorRef = {
 		val vwstrap = new VWStrapImpl
@@ -236,7 +240,11 @@ object VWorldActorFactoryFuncs {
 		val charMgrActorProps = Props(classOf[VWCharMgrActor], charMgrCtx)
 		val chrMgrActorRef : ActorRef = parentARF.actorOf(charMgrActorProps, chrMgrActorName)
 		chrMgrActorRef
-
+	}
+	def makeVWBodyActor(parentARF : ActorRefFactory, bodyActorName : String, dualBodyRec : DualBodyRecord) : ActorRef = {
+		val bodyActorProps = Props(classOf[VWBodyActor], dualBodyRec)
+		val bodyActorRef : ActorRef = parentARF.actorOf(bodyActorProps, bodyActorName)
+		bodyActorRef
 	}
 }
 
