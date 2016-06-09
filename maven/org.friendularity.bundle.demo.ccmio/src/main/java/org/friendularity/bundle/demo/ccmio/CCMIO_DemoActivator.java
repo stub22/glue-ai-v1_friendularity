@@ -5,31 +5,25 @@ import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
 import org.appdapter.fancy.rclient.EnhancedLocalRepoClient;
 import org.appdapter.fancy.rclient.RepoClient;
-import org.appdapter.fancy.rspec.RepoSpec;
 import org.appdapter.osgi.core.BundleActivatorBase;
-import org.appdapter.xload.rspec.OnlineSheetRepoSpec;
 import org.cogchar.api.humanoid.FigureConfig;
 import org.cogchar.api.humanoid.HumanoidFigureConfig;
-import org.cogchar.app.puma.boot.PumaSysCtx;
-import org.cogchar.app.puma.boot.PumaBooter;
-import org.cogchar.app.puma.config.PumaContextMediator;
-import org.cogchar.app.puma.registry.PumaGlobalPrebootInjector;
 import org.cogchar.bind.mio.robot.svc.ModelBlendingRobotServiceContext;
 import org.cogchar.bind.symja.MathGate;
 import org.cogchar.blob.emit.RenderConfigEmitter;
 import org.cogchar.blob.entry.EntryHost;
-import org.cogchar.bundle.app.vworld.central.VirtualWorldFactory;
 import org.friendularity.api.west.WorldEstimate;
 import org.friendularity.cpump.CPStrongTeller;
 import org.friendularity.navui.ExoBodyUserLogic;
 import org.friendularity.navui.NavUiAppImpl;
 import org.friendularity.navui.NavUiAppSvc;
+import org.friendularity.old.ccmio.OldLaunchHelper;
 import org.friendularity.rbody.BodyConnImpl;
 import org.friendularity.rbody.HumaConfHelper;
 import org.friendularity.respire.VWBodyMoveRq;
 import org.friendularity.respire.VWBodyNotice;
 import org.friendularity.respire.VWBodyRq;
-import org.friendularity.vworld.UnusedNetworkVisionDataFeed;
+import org.friendularity.vsim.vworld.UnusedNetworkVisionDataFeed;
 import org.osgi.framework.BundleContext;
 import org.rwshop.swing.common.lifecycle.ServicesFrame;
 
@@ -86,12 +80,14 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 	private	boolean		myFlag_connectSwingDebugGUI = false;  // Swing debug code disabled, anyway
 	private boolean		myFlag_monitorLifecycles = true;  // LifeMon window is launched by .start()
 
-	private boolean 	myFlag_useOldLaunchStyle2014 = false;
+	private boolean 	myFlag_useOldLaunchStyle2014 = true;
 	// attach... flag now used only during old launch style 2014
 	public static	boolean		myFlag_attachVizappTChunkRepo = true; // false => uses old vanilla mediator backup
 
 	private Class 		myProfileMarkerClz = TestRaizLoad.class;
 	private Class 		myLegConfMarkerClz = TestRaizLoad.class;
+
+	private OldLaunchHelper myOldLaunchHelper;
 
 	@Override public void start(final BundleContext context) throws Exception {
 		// Need to tell the MacroBundle system that we are the main launcher, so that forceLog4JConfig will work.
@@ -107,8 +103,9 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 		startAkkaOSGi(context);
 
 		if (myFlag_useOldLaunchStyle2014) {
+			myOldLaunchHelper = new OldLaunchHelper();
 			// Preliminary step allows fallback to old-old 2012 way (doubly outdated now, really).
-			registerOldMediatorStuff_duringStart();
+			myOldLaunchHelper.registerOldMediatorStuff_duringStart();
 		}
 
 		// Schedule our callback to the handle method below.
@@ -119,6 +116,10 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 		getLogger().info("Setting JVision.LAUNCH_MYSELF to {}", myFlag_connectJVision);
 		org.friendularity.bundle.jvision.JVisionBundleActivator.setLaunchFlag(myFlag_connectJVision);
 	}
+	@Override public void stop(BundleContext context) throws Exception {
+		super.stop(context);
+	}
+
 	// This callback after OSGi bundles loaded handles the main init process
 	@Override protected void handleFrameworkStartedEvent(BundleContext bundleCtx) {
 		launchCcmioDemo(bundleCtx);
@@ -139,7 +140,7 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 				attachVizTChunkLegConfRepo(bundleCtx, mergedProfileJM, legConfEHost);
 			} // else we would be seeing fallback injected mediator in control
 
-			startOldPumaThenVWorld(bundleCtx);
+			myOldLaunchHelper.startOldPumaThenVWorld(bundleCtx);
 		} else {
 			// 2016 way:
 			ActorSystem akkaSys = myCPumpHelper.dangerActorSysExposed();  // Should be avail because startAkkaOSGi was called during .start().
@@ -218,17 +219,6 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 		// DualBodyHelper hfh = new DualBodyHelper()
 		// hfh.humanize();
 	}
-	public void startOldPumaThenVWorld(BundleContext bundleCtx) {
-		getLogger().info("============ Calling launchPumaRobotsAndChars()  ==========");
-		launchPumaRobotsAndChars(bundleCtx);
-		getLogger().info("============ Calling launchCogcharVWorldLifecycles() ========");
-		launchVWorldLifecycles(bundleCtx);
-
-	}
-	@Override public void stop(BundleContext context) throws Exception {
-		super.stop(context);
-    }
-
 
 	// profileDataMarkerClz should have same classpath (i.e. same OSGi bundle) as the profile data.
 	private Model loadMergedProfileGraph(EntryHost	 profileEHost) {
@@ -251,16 +241,6 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 		return legacyConfERC;
 	}
 
-	private void launchPumaRobotsAndChars(BundleContext bundleCtx) {
-		PumaBooter pumaBooter = new PumaBooter();
-		// Older config mechanism is used only if attachVizTChunk repo is *not* used.
-		PumaContextMediator mediator = PumaGlobalPrebootInjector.getTheInjector().getMediator();
-
-		// PumaBooter no longer includes the V-World.
-		// Sets up character config mappings in a way we are now ready to fixup (Stu - 2016-03-16)
-		PumaBooter.BootResult bootResult = pumaBooter.bootUnderOSGi(bundleCtx, mediator);
-		getLogger().info("Got PUMA BootResult: " + bootResult);
-	}
 	private CCMIO_CPumpHelper myCPumpHelper = new CCMIO_CPumpHelper();
 
 	private void startAkkaOSGi(BundleContext bundleCtx) {
@@ -273,33 +253,6 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 		myCPumpHelper.launchCPump(bundleCtx);
 	}
 
-	private void launchVWorldLifecycles(BundleContext bundleCtx) {
-		launchCogcharVWorldLifecycles(bundleCtx);
-		CCMIO_VWorldHelperLifecycle.startHelperLifecycle(bundleCtx);
-		// Last checked (2014) this lifecycle-start appears to actually launch the VWorld inline,
-		// on this same thread, as shown by stack trace below.
-/*
- *   [java] 	at org.cogchar.bundle.app.vworld.startup.PumaVirtualWorldMapper.initCinematicStuff(PumaVirtualWorldMapper.java:165)
-     [java] 	at org.cogchar.bundle.app.vworld.startup.PumaVirtualWorldMapper.initVirtualWorlds(PumaVirtualWorldMapper.java:115)
-     [java] 	at org.cogchar.bundle.app.vworld.central.VWorldRegistry.initCinema(VWorldRegistry.java:117)
-     [java] 	at org.cogchar.bundle.app.vworld.central.VWorldMapperLifecycle.createService(VWorldMapperLifecycle.java:100)
-     [java] 	at org.cogchar.bundle.app.vworld.central.VWorldMapperLifecycle.createService(VWorldMapperLifecycle.java:28)
-     [java] 	at org.jflux.api.service.ServiceManager.tryCreate(ServiceManager.java:184)
-     [java] 	at org.jflux.api.service.ServiceManager.bindDependencies(ServiceManager.java:162)
-     [java] 	at org.jflux.api.service.ServiceManager.start(ServiceManager.java:128)
-     [java] 	at org.cogchar.bundle.app.vworld.central.VirtualWorldFactory.startVWorldLifecycle(VirtualWorldFactory.java:73)
-     [java] 	at org.friendularity.bundle.demo.ccmio.CCMIO_VWorldHelper.launchCogcharVWorldLifecycles(CCMIO_VWorldHelper.java:118)
-    ...
-     [java] 	at org.friendularity.bundle.demo.ccmio.CCMIO_DemoActivator.handleFrameworkStartedEvent(CCMIO_DemoActivator.java:129)
-
- */
-	}
-	private void launchCogcharVWorldLifecycles(BundleContext bundleCtx) {
-		// The startVWorldLifecycle call is only necessary under new-PUMA regime.
-		// Starts the lifecycle for Cogchar VWorldRegistry, which has 5 input dependencies.
-		getLogger().info("Starting Cogchar VWorldLifecycle using bundleContext {}", bundleCtx);
-		VirtualWorldFactory.startVWorldLifecycle(bundleCtx);
-	}
 
 	private void launchOtherStuffLate()  {
 	
@@ -364,39 +317,4 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 	 // ScriptEngineExperiment.main(null);
 	 */
 
-	@Deprecated  private void registerOldMediatorStuff_duringStart() {
-		// Register a dummySheet default mediator, which only acts if there is no vizapp-tchunk repo.
-		// (Reads from online sheet and functions well as of 2016-03-19, with vizapp-tchunk-flag == false)
-		DummySheetMediator mediator = new DummySheetMediator();
-		PumaGlobalPrebootInjector injector = PumaGlobalPrebootInjector.getTheInjector();
-		// False => Do not overwrite, so any other customer mediator will get preference.
-		// (Crude DemoMediator coded at bottom of file is only used as a backup/default).
-		injector.setMediator(mediator, false);
-
-	}
-
-
-	// These mediators decorate the application lifecycle as needed.
-	// This early example shows a hardcoded reference to a particular online spreadsheet config.
-	// It only has effect if there is no other config source set above (e.g. see VizTChunk)
-	private static class DummySheetMediator extends PumaContextMediator {
-		// Override base class methods to customize the way that PUMA boots + runs, and
-		// to receive notifications of progress during the boot / re-boot process.
-		String TEST_REPO_SHEET_KEY = "0ArBjkBoH40tndDdsVEVHZXhVRHFETTB5MGhGcWFmeGc";
-		int  DFLT_NAMESPACE_SHEET_NUM = 9;
-		int   DFLT_DIRECTORY_SHEET_NUM = 8;
-		
-		public	PumaSysCtx	myDemoPACtx;
-		
-		@Override public RepoSpec getMainConfigRepoSpec() {
-			java.util.List<ClassLoader> fileResModelCLs = new java.util.ArrayList<ClassLoader>();
-			return new OnlineSheetRepoSpec(TEST_REPO_SHEET_KEY, DFLT_NAMESPACE_SHEET_NUM, DFLT_DIRECTORY_SHEET_NUM,
-							fileResModelCLs);
-		}
-		@Override public void notifyBeforeBootComplete(PumaSysCtx ctx) throws Throwable {
-			myDemoPACtx = ctx;
-			// We could do some additional init here, if desired.
-			// We are on the frameworkStartedCallback() thread.  
-		}
-	}
 }

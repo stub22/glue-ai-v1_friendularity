@@ -21,6 +21,12 @@
             <groupId>org.cogchar</groupId>
             <artifactId>org.cogchar.bundle.app.vworld.startup</artifactId>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>org.friendularity.bundle.jvision</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
 		<dependency>
             <groupId>org.appdapter</groupId>
             <artifactId>org.appdapter.bundle.gui</artifactId>

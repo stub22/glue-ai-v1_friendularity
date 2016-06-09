@@ -38,7 +38,22 @@
 			<artifactId>org.friendularity.lib.viz</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		
+
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>org.friendularity.bundle.jvision</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mechio</groupId>
+            <artifactId>org.mechio.api.vision</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mechio</groupId>
+            <artifactId>org.mechio.impl.vision</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
@@ -60,21 +75,23 @@
 								Don't know of a tidier way than explicitly exporting all the packages we do want.
 								(Including "*" exports the whole universe of visible classes - exciting but horrible!)
 						-->                        
-						<Export-Package>org.friendularity.bundle.vsim,
-										org.friendularity.api.*, 
-										org.friendularity.impl.visual,
-										org.friendularity.vworld,
-										org.friendularity.respire,
-										org.friendularity.struct,
-                                        org.friendu.tchunk.*,
-                                        org.friendularity.appro,
-                                        org.friendularity.chnkr,
-                                        org.friendularity.cpump,
-                                        org.friendularity.dull,
-                                        org.friendularity.navui,
-                                        org.friendularity.rbody,
-                                        org.friendularity.ignore.*
-						</Export-Package>
+						<Export-Package>
+                            org.friendularity.bundle.vsim,
+                            org.friendularity.vsim.*,
+                            org.friendularity.api.*,
+                            org.friendularity.visual.*,
+                            org.friendularity.impl.visual,
+                            org.friendularity.respire,
+                            org.friendularity.struct,
+                            org.friendu.tchunk.*,
+                            org.friendularity.appro,
+                            org.friendularity.chnkr,
+                            org.friendularity.cpump,
+                            org.friendularity.dull,
+                            org.friendularity.navui,
+                            org.friendularity.rbody,
+                            org.friendularity.ignore.*
+                        </Export-Package>
 						<!-- org.parboiled,  shapeless,  org.uncommons.maths  are used by spray-http -->
                     </instructions>
                 </configuration>

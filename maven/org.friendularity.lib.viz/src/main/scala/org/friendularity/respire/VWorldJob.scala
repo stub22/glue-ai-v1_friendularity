@@ -85,7 +85,7 @@ trait MsgFactoryPair[Msg <: CPumpMsg, JobArg <: AnyRef]  {
 	def getMsgJobLogicFactory : MsgJobLogicFactory[Msg, JobArg]
 	def getMsgJobActorMaker : MsgJobActorMaker
 
-	// Does not account for any app-specific args for this job instance.
+	// jobArg should contain all app-specific args for this job instance.
 	def makeLogicAndActor (jobArg : JobArg, actx : ActorRefFactory, jobActName : String, subFilterClz_opt : Option[Class[Msg]]) : ActorRef = {
 		val actualFilterClz : Class[Msg] = if (subFilterClz_opt.isDefined) {
 			val subClz = subFilterClz_opt.get
