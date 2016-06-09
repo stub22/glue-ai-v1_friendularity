@@ -53,19 +53,8 @@
 			<groupId>org.rwshop</groupId>
 			<artifactId>org.rwshop.swing.common</artifactId>
 		</dependency>		
-		<dependency>
-			<groupId>org.mechio</groupId>
-			<artifactId>org.mechio.api.vision</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.mechio</groupId>
-			<artifactId>org.mechio.impl.vision</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>org.friendularity.bundle.jvision</artifactId>
-			<version>${project.version}</version>
-		</dependency>	
+
+
 		
 		<dependency>
 			<groupId>${project.groupId}</groupId>

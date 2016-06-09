@@ -88,5 +88,29 @@ public class CCMIO_DemoMidiCommandMapper extends BasicDebugger implements MidiEv
 		if (lpadOK) {
 			mySwitcheroo.myNLT = myNLT;
 		}
-	}	
+	}
+	public static class MidiLaunchWrapper {
+		private boolean myFlag_connectMidiIn = true;
+		private boolean myFlag_connectMidiOut = true;
+		private boolean myFlag_connectMidiSwitcheroo = true;
+
+		private CCMIO_DemoMidiCommandMapper myMidiMapper;
+		public CCMIO_DemoMidiCommandMapper initMapperWithFeatures() {
+			if (myMidiMapper == null) {
+				myMidiMapper = new CCMIO_DemoMidiCommandMapper();
+
+				if (myFlag_connectMidiIn) {
+					myMidiMapper.startMidiRouters();
+				}
+				if (myFlag_connectMidiOut) {
+					myMidiMapper.startMidiOutputDemo();
+				}
+				if (myFlag_connectMidiSwitcheroo) {
+					myMidiMapper.startMidiSwitcherooDemo();
+				}
+			}
+
+			return myMidiMapper;
+		}
+	}
 }

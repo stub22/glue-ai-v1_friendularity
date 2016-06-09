@@ -26,12 +26,11 @@ import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
 import com.jme3.scene.Node;
 import org.friendularity.api.west.WorldEstimate;
-import org.friendularity.bundle.demo.ccmio.CCMIO_DemoMidiCommandMapper;
 import org.friendularity.impl.visual.DemoWorldVisualizer;
 import org.friendularity.impl.visual.EstimateVisualizer;
-import org.friendularity.vworld.JVisionTextureMapper;
-import org.friendularity.vworld.MagicVisionBoxScene;
-import org.friendularity.vworld.SnapshotMonitor;
+import org.friendularity.visual.texture.JVisionTextureMapper;
+import org.friendularity.visual.texture.MagicVisionBoxScene;
+import org.friendularity.vsim.vworld.SnapshotMonitor;
 
 /**
  * @author Stu B. <www.texpedient.com>

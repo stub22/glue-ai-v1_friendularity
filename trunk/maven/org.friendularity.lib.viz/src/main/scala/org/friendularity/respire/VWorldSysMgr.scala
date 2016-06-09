@@ -27,7 +27,7 @@ import org.cogchar.render.sys.goody.{GoodyModularRenderContext, GoodyRenderRegis
 import org.cogchar.render.sys.registry.RenderRegistryClient
 import org.cogchar.render.sys.window.WindowStatusMonitor
 import org.friendularity.appro.TestRaizLoad
-import org.friendularity.cpump._
+import org.friendularity.cpump.{ActorRefCPMsgTeller, CPStrongTeller}
 import com.hp.hpl.jena.rdf.model.{Model => JenaModel}
 import org.friendularity.rbody.DualBodyRecord
 
