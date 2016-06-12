@@ -41,6 +41,8 @@ import org.friendularity.visual.texture.JVisionTextureMapper;
 
 /**
  * @author Stu B. <www.texpedient.com>
+ *
+ *  Depends on OuterRingBuf, so cannot move to java-pkgs in o.f.lib.viz.
  */
 public class SnapshotMonitor extends TrialContent implements ParamValueListener {
 
