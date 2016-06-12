@@ -23,8 +23,11 @@ case class VWGoodyRqTurtle(myTurtleTxt : String) extends VWGoodyRqRdf with Varar
 		val modelTurtleTxt : String = asTurtleString
 		val modelReader = new StringReader(modelTurtleTxt)
 		val model = JenaModelFactory.createDefaultModel() ;
-		model.read(modelReader, "TTL")
-		info2("After read, model size is {} bytes, contentDump:\n{}", model.size() : java.lang.Long, model)
+		val baseURI_orNull : String = null
+		val lang : String = "TURTLE"
+		model.read(modelReader, baseURI_orNull, lang)
+		info1("After read, model size is (at least) {} stmts", model.size() : java.lang.Long)
+		debug1("Model contentDump:\n{}", model)
 		model
 	}
 }

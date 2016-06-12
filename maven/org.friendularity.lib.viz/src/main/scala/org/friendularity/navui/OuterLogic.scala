@@ -35,7 +35,8 @@ trait PatientSender_GoodyTest extends OuterLogic {
 				val specModelWithPrefixes : JenaModel  = ftmw.writeTASpecAndPrefixesToNewModel(actSpec, myRandomizer)
 
 				val turtleTriplesString : String = ftmw.serializeSpecModelToTurtleString(specModelWithPrefixes)
-				info1("Got serialized turtle message:\n {}", turtleTriplesString)
+				info1("Serialized turtle message of length {} chars", turtleTriplesString.length : Integer)
+				debug1("Dumping serialized turtle message before send:\n {}", turtleTriplesString)
 				val turtleMsg = new VWGoodyRqTurtle(turtleTriplesString)
 				goodyTeller.tellCPMsg(turtleMsg)
 			} else {
