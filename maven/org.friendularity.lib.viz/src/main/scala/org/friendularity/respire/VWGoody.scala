@@ -34,7 +34,10 @@ trait VWGoodyJobLogic extends VarargsLogging {
 		goodyCtx.consumeAction(actSpec)
 	}
 
-	protected def processVWGoodyRdfMsg (goodyMsg : VWGoodyRqRdf, localActorCtx : ActorContext) : Unit = ???
+	protected def processVWGoodyRdfMsg (goodyMsg : VWGoodyRqRdf, localActorCtx : ActorContext) : Unit = {
+		val jenaModel = goodyMsg.asJenaModel(None)
+		// Drawing inspiration from
+	}
 }
 class VWGoodyActor(myGoodyCtx : BasicGoodyCtx) extends Actor with VWGoodyJobLogic {
 	override protected def getGoodyCtx : BasicGoodyCtx = myGoodyCtx

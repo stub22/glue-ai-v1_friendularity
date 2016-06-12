@@ -16,15 +16,19 @@ trait OuterLogic extends VarargsLogging {
 trait PatientSender_GoodyTest extends OuterLogic {
 	import scala.collection.JavaConverters._
 
-	def finallySendGoodyTstMsgs(goodyTeller : CPMsgTeller): Unit = {
+	def finallySendGoodyTstMsgs(goodyTeller : CPMsgTeller, flag_serToTurtle : Boolean): Unit = {
 
 		val gtmm: GoodyTestMsgMaker = new GoodyTestMsgMaker
 		val msgsJList = gtmm.makeGoodyCreationMsgs
 		val msgsScbuf = msgsJList.asScala
 		for (actSpec <- msgsScbuf) {
-			getLogger.info("Wrapping and sending: {}", actSpec)
-			val vwMsgWrap = new VWGoodyRqBTAS(actSpec)
-			goodyTeller.tellCPMsg(vwMsgWrap)
+			if (flag_serToTurtle) {
+
+			} else {
+				getLogger.info("Wrapping java-serializable message: {}", actSpec)
+				val vwMsgWrap = new VWGoodyRqBTAS(actSpec)
+				goodyTeller.tellCPMsg(vwMsgWrap)
+			}
 		}
 	}
 	private var myStoredTellers_opt : Option[VWorldPublicTellers] = None
@@ -35,7 +39,7 @@ trait PatientSender_GoodyTest extends OuterLogic {
 		val goodyTeller = vwpt.getGoodyTeller
 		if (goodyTeller.isDefined) {
 			info1("Sending goody tst msgs to: {}", goodyTeller.get)
-			finallySendGoodyTstMsgs(goodyTeller.get)
+			finallySendGoodyTstMsgs(goodyTeller.get, false)
 		} else {
 			warn0("GoodyTeller is not available, cannot send goody tst msgs.")
 		}
