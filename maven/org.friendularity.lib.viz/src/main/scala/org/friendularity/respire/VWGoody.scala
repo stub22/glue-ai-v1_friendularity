@@ -1,10 +1,12 @@
 package org.friendularity.respire
 
-import java.io.StringReader
+import java.io.{ByteArrayInputStream, StringReader}
+import java.nio.charset.StandardCharsets
 
 import akka.actor.{Actor, ActorContext, ActorRef}
 
 import com.hp.hpl.jena.rdf.model.{Model => JenaModel, ModelFactory => JenaModelFactory}
+import org.apache.jena.riot.RDFFormat
 import org.appdapter.core.name.{FreeIdent, Ident}
 import org.appdapter.fancy.log.VarargsLogging
 import org.cogchar.impl.thing.basic.BasicThingActionSpec
@@ -21,11 +23,13 @@ case class VWGoodyRqTurtle(myTurtleTxt : String) extends VWGoodyRqRdf with Varar
 
 	override def asJenaModel(flags_opt: Option[AnyRef]) : JenaModel = {
 		val modelTurtleTxt : String = asTurtleString
-		val modelReader = new StringReader(modelTurtleTxt)
+		// val modelReader = new StringReader(modelTurtleTxt)
+		val modelBytes = modelTurtleTxt.getBytes(StandardCharsets.UTF_8)
+		val modelByteStream = new ByteArrayInputStream(modelBytes);
 		val model = JenaModelFactory.createDefaultModel() ;
 		val baseURI_orNull : String = null
-		val lang : String = "TURTLE"
-		model.read(modelReader, baseURI_orNull, lang)
+		val lang : String = RDFFormat.TURTLE.getLang.getName //  "TURTLE"
+		model.read(modelByteStream, baseURI_orNull, lang)
 		info1("After read, model size is (at least) {} stmts", model.size() : java.lang.Long)
 		debug1("Model contentDump:\n{}", model)
 		model
