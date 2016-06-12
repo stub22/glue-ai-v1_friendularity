@@ -1,7 +1,7 @@
 package org.friendularity.dull
 
 import com.hp.hpl.jena
-import com.hp.hpl.jena.rdf.model.{Model => JenaModel, ModelFactory => JenaModelFactory, Literal}
+import com.hp.hpl.jena.rdf.model.{Model => JenaModel, ModelFactory => JenaModelFactory, Resource, ResIterator, Literal}
 import org.appdapter.bind.rdf.jena.assembly.ItemAssemblyReader
 import org.appdapter.core.item.{JenaResourceItem, Item}
 import org.appdapter.core.item.Item.LinkDirection
@@ -11,11 +11,14 @@ import org.appdapter.fancy.query.{SolutionList, Solution, SolutionHelper}
 import org.appdapter.fancy.rclient.RepoClient
 import org.cogchar.api.thing.{SerTypedValueMap, ThingActionSpec}
 import org.cogchar.impl.thing.basic.{BasicTypedValueMapWithConversion, BasicTypedValueMap, BasicThingActionSpec}
+import org.cogchar.name.dir.NamespaceDir
 import org.cogchar.name.thing.ThingCN
 
 import java.util.{List=>JList, ArrayList => JArrayList, Set => JSet}
-import org.cogchar.name.thing.ThingCN._
+
 import org.slf4j.Logger
+
+import scala.collection.mutable.ListBuffer
 
 /**
   * Created by Owner on 6/11/2016.
@@ -36,20 +39,24 @@ trait ThingActExposer extends VarargsLogging {
 	protected def safeFreeIdent(uri: String): FreeIdent = {
 		val mappedURI = if (uri.indexOf('#') == -1) {
 			warn1("Found bare local name instead of URI, prefixing {} with TA_NS ", uri)
-			TA_NS + uri
+			ThingCN.TA_NS + uri
 		} else uri
 		return new FreeIdent(mappedURI)
 	}
 
-	private val propID_tgtThing: Ident = safeFreeIdent(P_targetThing)
-	private val propID_tgtThingType: Ident = safeFreeIdent(P_targetThingType)
-	private val propID_verb: Ident = safeFreeIdent(P_verb)
-	private val propID_srcAgent: Ident = safeFreeIdent(P_sourceAgent)
-	private val propID_postedTStamp: Ident = safeFreeIdent(P_postedTSMsec)
+	private val propID_tgtThing: Ident = safeFreeIdent(ThingCN.P_targetThing)
+//	private val propID_tgtThingType: Ident = safeFreeIdent(P_targetThingType)
 
-	private val propID_linkFromParamToAction : Ident = safeFreeIdent(P_IdentAttachedToThingAction)
-	private val propID_paramKeyID : Ident = safeFreeIdent(P_paramIdent)
-	private val propID_paramVal : Ident = safeFreeIdent(P_paramValue)
+	private val propID_rdfType : Ident = safeFreeIdent(NamespaceDir.RDF_NS + "type")
+
+
+	private val propID_verb: Ident = safeFreeIdent(ThingCN.P_verb)
+	private val propID_srcAgent: Ident = safeFreeIdent(ThingCN.P_sourceAgent)
+	private val propID_postedTStamp: Ident = safeFreeIdent(ThingCN.P_postedTSMsec)
+
+	private val propID_linkFromParamToAction : Ident = safeFreeIdent(ThingCN.P_IdentAttachedToThingAction)
+	private val propID_paramKeyID : Ident = safeFreeIdent(ThingCN.P_paramIdent)
+	private val propID_paramVal : Ident = safeFreeIdent(ThingCN.P_paramValue)
 
 	protected def populateFieldsAndLinks(tgtSpec: BasicThingActionSpec, srcItem: Item) {
 
@@ -69,7 +76,7 @@ trait ThingActExposer extends VarargsLogging {
 			tgtSpec.setMyTargetThingID(targetThingItem.getIdent)
 		}
 
-		val targetTypeItem: Item = srcItem.getOptionalSingleLinkedItem(propID_tgtThingType, LinkDirection.FORWARD)
+		val targetTypeItem: Item = targetThingItem.getOptionalSingleLinkedItem(propID_rdfType, LinkDirection.FORWARD)
 		if (targetTypeItem != null) {
 			tgtSpec.setMyTargetThingTypeID(targetTypeItem.getIdent)
 		}
@@ -100,6 +107,30 @@ trait ThingActExposer extends VarargsLogging {
 			btvm.putValueAtName(pKeyID, pValString)
 		}
 
+	}
+	def extractThingActsFromModel(jenaModel : JenaModel) : List[ThingActionSpec] = {
+	//	val RDF_NS = NamespaceDir.RDF_NS //   "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+		val typeProp = jenaModel.getProperty(propID_rdfType.getAbsUriString) //   RDF_NS, "type")
+
+		val TA_TYPE : String = ThingCN.T_ThingAction
+		val taTypeRes = jenaModel.getResource(TA_TYPE)
+
+		val taResIter : ResIterator = jenaModel.listResourcesWithProperty(typeProp, taTypeRes)
+		val resBuffer = new ListBuffer[Resource]
+		while (taResIter.hasNext) {
+			resBuffer.append(taResIter.nextResource())
+		}
+		val foundRsrcs : List[Resource] = resBuffer.toList
+		info2("Found {} ThingAct resources: {}", foundRsrcs.length : Integer, foundRsrcs)
+
+		val specBuffer = new ListBuffer[ThingActionSpec]
+		for (rsrc <- foundRsrcs) {
+			val actionID : Ident = new JenaResourceItem(rsrc)
+			val actSpec : ThingActionSpec = readActionFromJenaModel(jenaModel, actionID)
+			info1("Read thingActionSpec: {}", actSpec)
+			specBuffer.append(actSpec)
+		}
+		specBuffer.toList
 	}
 }
 
