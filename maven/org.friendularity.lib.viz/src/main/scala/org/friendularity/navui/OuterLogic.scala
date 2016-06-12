@@ -7,7 +7,7 @@ import org.appdapter.fancy.log.VarargsLogging
 import org.cogchar.api.fancy.FancyThingModelWriter
 import org.cogchar.render.rendtest.GoodyTestMsgMaker
 import org.friendularity.cpump.{ActorRefCPMsgTeller, CPStrongTeller, CPMsgTeller}
-import org.friendularity.respire.{VWGoodyRqTurtle, VWGoodyRqBTAS, MsgJobLogic, MsgJobLogicFactory, VWorldMasterFactory, VWCharAdminRq, VWorldPublicTellers}
+import org.friendularity.respire.{VWGoodyRqTurtle, VWGoodyRqTAS, MsgJobLogic, MsgJobLogicFactory, VWorldMasterFactory, VWCharAdminRq, VWorldPublicTellers}
 
 import com.hp.hpl.jena.rdf.model.{Model => JenaModel, ModelFactory => JenaModelFactory, Literal}
 
@@ -41,7 +41,7 @@ trait PatientSender_GoodyTest extends OuterLogic {
 				goodyTeller.tellCPMsg(turtleMsg)
 			} else {
 				getLogger.info("Wrapping java-serializable message: {}", actSpec)
-				val vwMsgWrap = new VWGoodyRqBTAS(actSpec)
+				val vwMsgWrap = new VWGoodyRqTAS(actSpec)
 				goodyTeller.tellCPMsg(vwMsgWrap)
 			}
 		}
