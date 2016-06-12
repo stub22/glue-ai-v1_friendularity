@@ -1,10 +1,15 @@
 package org.friendularity.navui
 
+import java.util.Random
+
 import akka.actor.{ActorRefFactory, ActorContext, ActorRef}
 import org.appdapter.fancy.log.VarargsLogging
+import org.cogchar.api.fancy.FancyThingModelWriter
 import org.cogchar.render.rendtest.GoodyTestMsgMaker
 import org.friendularity.cpump.{ActorRefCPMsgTeller, CPStrongTeller, CPMsgTeller}
-import org.friendularity.respire._
+import org.friendularity.respire.{VWGoodyRqTurtle, VWGoodyRqBTAS, MsgJobLogic, MsgJobLogicFactory, VWorldMasterFactory, VWCharAdminRq, VWorldPublicTellers}
+
+import com.hp.hpl.jena.rdf.model.{Model => JenaModel, ModelFactory => JenaModelFactory, Literal}
 
 
 /**
@@ -16,14 +21,23 @@ trait OuterLogic extends VarargsLogging {
 trait PatientSender_GoodyTest extends OuterLogic {
 	import scala.collection.JavaConverters._
 
+	lazy val myRandomizer: Random = new Random
+
 	def finallySendGoodyTstMsgs(goodyTeller : CPMsgTeller, flag_serToTurtle : Boolean): Unit = {
 
 		val gtmm: GoodyTestMsgMaker = new GoodyTestMsgMaker
 		val msgsJList = gtmm.makeGoodyCreationMsgs
 		val msgsScbuf = msgsJList.asScala
+
 		for (actSpec <- msgsScbuf) {
 			if (flag_serToTurtle) {
+				val ftmw = new FancyThingModelWriter
+				val specModelWithPrefixes : JenaModel  = ftmw.writeTASpecAndPrefixesToNewModel(actSpec, myRandomizer)
 
+				val turtleTriplesString : String = ftmw.serializeSpecModelToTurtleString(specModelWithPrefixes)
+				info1("Got serialized turtle message:\n {}", turtleTriplesString)
+				val turtleMsg = new VWGoodyRqTurtle(turtleTriplesString)
+				goodyTeller.tellCPMsg(turtleMsg)
 			} else {
 				getLogger.info("Wrapping java-serializable message: {}", actSpec)
 				val vwMsgWrap = new VWGoodyRqBTAS(actSpec)
@@ -32,6 +46,8 @@ trait PatientSender_GoodyTest extends OuterLogic {
 		}
 	}
 	private var myStoredTellers_opt : Option[VWorldPublicTellers] = None
+
+	private val useTurtleSerialization : Boolean = true
 	override def rcvPubTellers (vwpt : VWorldPublicTellers): Unit = {
 		// This is the (outbound) notice we get back from boss, confirming system has started and these tellers are ready for biz.
 		info1("Outer logic got public tellers: {}", vwpt)
@@ -39,7 +55,7 @@ trait PatientSender_GoodyTest extends OuterLogic {
 		val goodyTeller = vwpt.getGoodyTeller
 		if (goodyTeller.isDefined) {
 			info1("Sending goody tst msgs to: {}", goodyTeller.get)
-			finallySendGoodyTstMsgs(goodyTeller.get, false)
+			finallySendGoodyTstMsgs(goodyTeller.get, useTurtleSerialization)
 		} else {
 			warn0("GoodyTeller is not available, cannot send goody tst msgs.")
 		}
