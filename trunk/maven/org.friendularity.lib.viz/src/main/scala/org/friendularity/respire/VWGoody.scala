@@ -60,7 +60,8 @@ trait VWGoodyJobLogic extends VarargsLogging {
 	}
 	protected def processVWGoodyActSpec (goodyActSpecMsg : VWGoodyRqActionSpec, localActorCtx : ActorContext) : Unit = {
 		val actSpec = goodyActSpecMsg.getActionSpec
-		info1("VWBossLogic is processing received actSpec: {}", actSpec)
+		info4("VWGoodyJobLogic is processing received actSpec of class={}, verb={}, tgtType={} tgtID={}",
+					actSpec.getClass, actSpec.getVerbID, actSpec.getTargetThingTypeID, actSpec.getTargetThingID)
 		val goodyCtx = getGoodyCtx
 		goodyCtx.consumeAction(actSpec)
 	}
