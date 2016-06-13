@@ -96,13 +96,14 @@ trait ThingActExposer extends VarargsLogging {
 	// Assumes "weak" param convention, where each param gets its own instanceURI
 	def readWeakParamsIntoBTVMap( btvm : BasicTypedValueMap, actionItem : Item) : Unit = {
 		val paramItems: JSet[Item] = actionItem.getLinkedItemSet(propID_linkFromParamToAction, LinkDirection.REVERSE)
-		info2("Found {} paramItems, dump={}", paramItems.size() : Integer, paramItems)
+		info1("Found {} paramItems", paramItems.size() : Integer)
+		debug1("ParamItems dump={}", paramItems)
 		for (pit <- paramItems) {
 			val pitItem : Item = pit
 			val pKeyID : Ident  = pitItem.getSingleLinkedItem(propID_paramKeyID, LinkDirection.FORWARD).getIdent
 			// Consider:  We could produce a fancier TVM that uses model knowledge during field access.
 			val pValString : String = pitItem.getValString(propID_paramVal, "ERR_NO_VAL")
-			info2("Storing param for key={}, val-string={}", pKeyID, pValString)
+			debug2("Storing param for key={}, val-string={}", pKeyID, pValString)
 			// TODO:  If pValString is a URI, we should instead use     btvm.putNameAtName()
 			btvm.putValueAtName(pKeyID, pValString)
 		}
@@ -127,7 +128,10 @@ trait ThingActExposer extends VarargsLogging {
 		for (rsrc <- foundRsrcs) {
 			val actionID : Ident = new JenaResourceItem(rsrc)
 			val actSpec : ThingActionSpec = readActionFromJenaModel(jenaModel, actionID)
-			info1("Read thingActionSpec: {}", actSpec)
+			info4("extractThingsFromModel read actSpec of actionID={}, verb={}, tgtType={} tgtID={}",
+				actionID, actSpec.getVerbID, actSpec.getTargetThingTypeID, actSpec.getTargetThingID)
+
+			debug1("Full dump of thingActionSpec:\n {}", actSpec)
 			specBuffer.append(actSpec)
 		}
 		specBuffer.toList
