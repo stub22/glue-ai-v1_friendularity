@@ -112,7 +112,7 @@ trait VWorldBossLogic [VWSM <: VWorldSysMgr] extends VarargsLogging with VWPTRen
 
 			case vwSetupLnchMsg : VWSetupRq_Lnch => launchSimRenderSpace(vwSetupLnchMsg, slfActr, localActorCtx)
 
-			case adminMsg : VWAdminRqMsg => processVWAdminMsg(adminMsg, localActorCtx)
+			case otherAdminRq : VWAdminRqMsg => processVWAdminMsg(otherAdminRq, localActorCtx)
 
 		}
 	}
@@ -134,6 +134,7 @@ trait VWorldBossLogic [VWSM <: VWorldSysMgr] extends VarargsLogging with VWPTRen
 			}
 		}
 	}
+	// Handle event from inside this boss, translate into messages for boss-clients.
 	protected def processVWorldInternalNotice(vwmsg : VWorldNotice, slfActr : ActorRef, localActorCtx : ActorContext): Unit = {
 		vwmsg match {
 			case setupResults: VWSetupResultsNotice => {
@@ -221,7 +222,7 @@ class VWStrapImpl extends VWorldStrap {
 }
 object VWorldActorFactoryFuncs {
 
-	// These are for "core" actors used within the PublicTellers boundary, not for the Outer+Exo actors.
+	// These are for "core" actors used within the PublicTellers boundary, (thus excluding Outer+Exo actors).
 
 	// Following akka pattern, parentARF is either an ActorSystem (root) OR ActorContext (not-root)
 	def makeVWorldBoss(parentARF : ActorRefFactory, bossActorName : String) : ActorRef = {

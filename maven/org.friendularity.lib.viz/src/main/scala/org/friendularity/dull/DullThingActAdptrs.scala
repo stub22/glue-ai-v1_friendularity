@@ -6,7 +6,9 @@ import org.cogchar.impl.thing.route.BasicThingActionRouter
 import org.friendularity.cpump.{TACPFilterAdptr, CPMsgTeller, CPRepliableThingActionMsg, CPThingActionMsg}
 
 /**
-  * Created by Owner on 4/13/2016.
+  * Created by Stu on 4/13/2016.
+  *
+  * Just a sketch of a way to plug in the 2014-era thingAction delivery as an Adptr
   */
 case class DullTACPFilterAdptrOne(taRouter : WantsThingAction)
 			extends DullFilterAdptr[CPThingActionMsg] with TACPFilterAdptr[DullPumpCtx] {
@@ -31,6 +33,7 @@ case class DullTACPFilterAdptrOne(taRouter : WantsThingAction)
 	}
 
 	def routeOnewayInbound(cprtam : CPThingActionMsg) : Unit = {
+		error0("routeOnewayInbound is not fully implemented")
 		val ta = cprtam.getThingAction
 		val routerInternalMap : java.util.Map[Ident, java.util.List[WantsThingAction]] =
 			taRouter.asInstanceOf[BasicThingActionRouter].hackExposeConsumerMap
@@ -41,6 +44,7 @@ case class DullTACPFilterAdptrOne(taRouter : WantsThingAction)
 
 	def routeInboundAndCollectAnswersNow(inCprtam : CPThingActionMsg) : Traversable[CPThingActionMsg] = {
 		val ta = inCprtam.getThingAction
+		error0("routeInboundAndCollectAnswersNow is not really implemented")
 		// taRouter.consumeAction(ta)
 		Nil
 	}
