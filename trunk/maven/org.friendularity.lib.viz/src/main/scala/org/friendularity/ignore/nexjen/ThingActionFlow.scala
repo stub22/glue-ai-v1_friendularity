@@ -96,11 +96,10 @@ import javax.naming.InitialContext;
 import java.util.Properties;
 
 class TAFlow_QPid extends ThingActionFlow {
-	def sendAndConsumeTAMsg(jmsSession : Session, jmsMsgProducer : MessageProducer, jmsMsgConsumer : MessageConsumer ) {
+		def sendAndConsumeTAMsg(jmsSession : Session, jmsMsgProducer : MessageProducer, jmsMsgConsumer : MessageConsumer ) {
 		info0("================= Creating ObjectMessage to hold TA")
 
 		val thingActionKey = "thingAction"
-
 		val objMsg_toSend : ObjectMessage = jmsSession.createObjectMessage()
 
 		val mapMsg_toSend : MapMessage = jmsSession.createMapMessage()
@@ -124,7 +123,7 @@ class TAFlow_QPid extends ThingActionFlow {
 		// On the *first* message sent, there can be is a longish (perhaps 2-400 msec) delay (due to classloading and
 		// other setup, no doubt) between the preSendSysTimeMsec and the eventual postSendStamp below.
 		// On subsequent messages it is a smaller delay.
-		info3("================= Sending BTAS Obj-Message (at t={}), messageID={} probably NULL, sentStamp={} probably zero",
+		info3("================= Sending BTAS Obj-Message (at t={}), messageID={} probably NULL, pre-sentStamp={} probably zero",
 				preSendSysTimeMsec : java.lang.Long, preSendMsgID, preSendStampNone : java.lang.Long)
 		jmsMsgProducer.send(msgToSend);
 		val postSendMsgID = msgToSend.getJMSMessageID

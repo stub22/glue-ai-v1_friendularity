@@ -22,7 +22,12 @@ trait Dummy66
 
 /**
  * @author Stu B. <www.texpedient.com>
- * 
+  *
+  * Current mission in 2016 is just shallow testing of basic QPid+JMS features across different
+  * versions of QPid libs + broker.
+ * --------------------
+  * Original mission, ca. 2013:
+  *
  * Uses the flowy(->snazzy) ontology types to configure agents that read/write to/from both graphs and topics.
  * 
  * We expect that when graphs are written, a quad-store monitor can pick up the changes and publish them to
@@ -71,17 +76,12 @@ object QPid_010_Names {
 
 	val topicExchangeDestName_value = "amq.topic";		
 			//// Changing the above from amq.topic yields, with QPid client 0.10 running against broker 0.12
-			//	The name 'niceTopic001' supplied in the address doesn't resolve to an exchange or a queue	
-
-
-
+			//	The name 'niceTopic001' supplied in the address doesn't resolve to an exchange or a queue
 			/*
-			 * 
 	Caused by: org.apache.qpid.AMQException: The name 'niceTopic001' supplied in the address doesn't resolve to an exchange or a queue
 	at org.apache.qpid.client.AMQSession_0_10.handleAddressBasedDestination(AMQSession_0_10.java:1239)
 	at org.apache.qpid.client.BasicMessageProducer_0_10.declareDestination(BasicMessageProducer_0_10.java:86)
 			 */
-
 }
 
 
