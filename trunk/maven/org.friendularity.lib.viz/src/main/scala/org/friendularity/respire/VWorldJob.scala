@@ -141,6 +141,9 @@ trait VWorldJobLogic[-Msg <: VWorldMsg] extends MsgJobLogic[Msg] {
 	// May throw exceptions.
 }
 
+/*
+Unfinished sketch of an uber-general factory
+ */
 trait VWorldMasterFactory extends MasterFactory {
 
 	// Meaning of list ordering not yet specified.
