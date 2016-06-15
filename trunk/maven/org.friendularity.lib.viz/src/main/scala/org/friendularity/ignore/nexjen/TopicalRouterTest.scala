@@ -112,9 +112,13 @@ object QPid_032_Names {
 	val qpConnFactoryURL = "amqp://guest:guest@clientid/default?brokerlist='tcp://localhost:5672'"
 	val jndiNamingFactory_key = "java.naming.factory.initial"
 	val jndiNamingFactory_val =  "org.apache.qpid.jndi.PropertiesFileInitialContextFactory"
-	val destName_key_prefix =  "destination";
+	private val destName_key_prefix =  "destination";
 
-	val topicExchangeDestName_value = "amq.topic";		
+	private val topicUrlPrefix = "amq.topic";
+
+	def destKeyNameForTail(tail : String) = destName_key_prefix + "." + tail
+
+	def topicUrlForTail(tail : String) = topicUrlPrefix + "/" + tail
 }
 class QPid_032_NameManager extends VarargsLogging {
 	def makeJndiPropsForTopicSetup(topicExchangeNames : List[String]) : Properties = {
@@ -127,8 +131,9 @@ class QPid_032_NameManager extends VarargsLogging {
 		for (topicExchName <- topicExchangeNames) {
 			// Register an AMQP destination in JNDI
 			// destination.[jniName] = [Address Format]
-			val destName_full = QPid_032_Names.destName_key_prefix + "." + topicExchName
-			jndiProps.put(destName_full, QPid_032_Names.topicExchangeDestName_value)
+			val destName_full = QPid_032_Names.destKeyNameForTail(topicExchName)
+			val jndiVal : String = QPid_032_Names.topicUrlForTail(topicExchName)
+			jndiProps.put(destName_full, jndiVal)
 		}
 		jndiProps
 	}
@@ -175,10 +180,13 @@ class QPidConnector(val myJndiProps : Properties) extends VarargsLogging  {
 		myJmsConn.createSession(false, Session.AUTO_ACKNOWLEDGE);
 	}
 	
-	def makeDestination(destNameTail : String)  = {
+	def makeDestination(destNameTail : String) : Destination = {
 		// Creates a destination for the topic exchange, so senders and receivers can use it.
-		info0("================= Creating Destination")
-		myJndiCtx.lookup(destNameTail).asInstanceOf[Destination];
+		info1("================= Creating Destination for nameTail={}", destNameTail)
+		val fullName = QPid_032_Names.destKeyNameForTail(destNameTail)
+		val dest : Destination = myJndiCtx.lookup(destNameTail).asInstanceOf[Destination];
+		info2("Resolved fullName={} to destination={}", fullName, dest)
+		dest
 	}
 	
 	def close() = {
@@ -200,7 +208,7 @@ class QpidHelloWorld extends VarargsLogging {
 			val nameMgr = new QPid_032_NameManager()
 			
 			val jndiProps = nameMgr.makeJndiPropsForTopicSetup(topicExchangeNames)
-
+			info1("jndiProps={}", jndiProps)
 			val qpidConn = new QPidConnector(jndiProps) 
 			qpidConn.startConn()
 			

@@ -2,6 +2,12 @@ package org.friendularity.dull
 
 import com.hp.hpl.jena
 import com.hp.hpl.jena.rdf.model.{Model => JenaModel, ModelFactory => JenaModelFactory, Resource, ResIterator, Literal}
+
+import java.util.{List => JList, ArrayList => JArrayList, Set => JSet, Random}
+import java.lang.{Long => JLong}
+
+import org.slf4j.Logger
+
 import org.appdapter.bind.rdf.jena.assembly.ItemAssemblyReader
 import org.appdapter.core.item.{JenaResourceItem, Item}
 import org.appdapter.core.item.Item.LinkDirection
@@ -9,14 +15,13 @@ import org.appdapter.core.name.{FreeIdent, Ident}
 import org.appdapter.fancy.log.VarargsLogging
 import org.appdapter.fancy.query.{SolutionList, Solution, SolutionHelper}
 import org.appdapter.fancy.rclient.RepoClient
+import org.cogchar.api.fancy.FancyThingModelWriter
 import org.cogchar.api.thing.{SerTypedValueMap, ThingActionSpec}
 import org.cogchar.impl.thing.basic.{BasicTypedValueMapWithConversion, BasicTypedValueMap, BasicThingActionSpec}
 import org.cogchar.name.dir.NamespaceDir
 import org.cogchar.name.thing.ThingCN
 
-import java.util.{List=>JList, ArrayList => JArrayList, Set => JSet}
-
-import org.slf4j.Logger
+import org.friendularity.respire.{VWGoodyRqRdf, VWGoodyRqTurtle}
 
 import scala.collection.mutable.ListBuffer
 
@@ -138,6 +143,19 @@ trait ThingActExposer extends VarargsLogging {
 	}
 }
 
+trait ThingActTurtleEncoder extends VarargsLogging {
+	lazy val myRandomizer: Random = new Random
+
+	def encodeAsTurtleMsg(actSpec : ThingActionSpec) : String = {
+		val ftmw = new FancyThingModelWriter
+		val specModelWithPrefixes : JenaModel  = ftmw.writeTASpecAndPrefixesToNewModel(actSpec, myRandomizer)
+
+		val turtleTriplesString : String = ftmw.serializeSpecModelToTurtleString(specModelWithPrefixes)
+		info2("Serialized turtle message FROM model of size {} triples TO string of length {} chars", specModelWithPrefixes.size() : JLong, turtleTriplesString.length : Integer)
+		debug1("Debug-Dumping encoded turtle message:\n {}", turtleTriplesString)
+		turtleTriplesString
+	}
+}
 
 trait UnusedSolutionRowReadersWoo {
 	// Not currently using this form, which we pasted from:
