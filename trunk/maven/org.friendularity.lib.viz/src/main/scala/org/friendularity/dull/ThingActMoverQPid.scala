@@ -85,10 +85,8 @@ trait SenderQPid extends VarargsLogging {
 		putHeadersOnMsg(objMsg_toSend)
 		val jmsProd = getJmsProducer_TAJSer
 		val dest = jmsProd.getDestination
-		info1("ThingAct-JavaSer Destination={}", dest)
-		// Seems that, even though the producer is created with a destination, if we do not supply it in the .send params,
-		// the message is sent to "all" destinations, i.e.
-		// JMS Destination: 'amq.topic'/'#'; None
+		// Earlier we had an error causing the destination to be too general, displaying as:  'amq.topic'/'#'; None
+		info2("ThingAct-JavaSer destination clz={}, dump={}", dest.getClass, dest)
 		jmsProd.send(objMsg_toSend)
 	}
 
@@ -98,7 +96,7 @@ trait SenderQPid extends VarargsLogging {
 		putHeadersOnMsg(txtMsg_toSend)
 		val jmsProd = getJmsProducer_TATurtle
 		val dest = jmsProd.getDestination
-		info1("ThingAct-TurtleTxt Destination={}", dest)
+		info2("ThingAct-TurtleTxt destination clz={}, dump={}", dest.getClass, dest)
 		jmsProd.send(txtMsg_toSend)
 	}
 
@@ -190,42 +188,7 @@ class ThingActReceiverBinary(goodyTADirectTeller : CPStrongTeller[VWGoodyRqActio
 	}
 
 }
-/*
-class ThingActJmsListener(rcvrTxt : ThingActReceiverTxt, rcvrBin : ThingActReceiverBinary)
-			extends JMSMsgListener with VarargsLogging {
-	override def onMessage(msg: JMSMsg): Unit = {
-		debug1("ThingAct-JMSListener - received msg, dumping to see if 'wacky' headers show up:\n{}", msg)
-		msg match {
-			case txtMsg : JMSTextMsg => {
-				info1("Listener processing received txtMsg with tstamp={}", txtMsg.getJMSTimestamp : JLong)
-				rcvrTxt.receiveTextMsg(txtMsg)
-			}
-			case objMsg : JMSObjMsg => {
-				info1("Listener processing received objMsg with tstamp={}", objMsg.getJMSTimestamp : JLong)
-				rcvrBin.receiveJSerBinaryMsg(objMsg)
-			}
-			case other => {
-				error1("Received unexpected message: {}", other)
-			}
 
-		}
-	}
-}
-
-class RecvrFactory {
-	def makeThingActJMSListener(turtleTeller : CPStrongTeller[VWGoodyRqRdf],
-						   	jserDirectTeller : CPStrongTeller[VWGoodyRqActionSpec]) : JMSMsgListener = {
-		val rcvrTxt : ThingActReceiverTxt = new ThingActReceiverTxt(turtleTeller)
-		val rcvrBin : ThingActReceiverBinary = new ThingActReceiverBinary(jserDirectTeller)
-		new ThingActJmsListener(rcvrTxt, rcvrBin)
-	}
-
-	def makeItWeakerButEasier(oneWeakTeller : CPMsgTeller) : JMSMsgListener = {
-		makeThingActJMSListener(oneWeakTeller.asInstanceOf[CPStrongTeller[VWGoodyRqRdf]],
-			oneWeakTeller.asInstanceOf[CPStrongTeller[VWGoodyRqActionSpec]])
-	}
-}
-*/
 class QPidTopicConn_032(myTopicExchangeNameList : List[String]) extends VarargsLogging {
 	lazy val myNameMgr = new QPid_032_NameManager()
 
@@ -240,7 +203,7 @@ class QPidTopicConn_032(myTopicExchangeNameList : List[String]) extends VarargsL
 
 	def makeSession : JMSSession = myQPidConn.makeSessionAutoAck()
 
-	lazy val myDestMap : Map[String, JMSDestination] = myTopicExchangeNameList.map(n => n -> myQPidConn.makeDestination(n)).toMap
+	lazy val myDestsByNameTail : Map[String, JMSDestination] = myTopicExchangeNameList.map(n => n -> myQPidConn.makeDestination(n)).toMap
 
 }
 object TestAppNames {
@@ -268,8 +231,8 @@ class TATestDummyActor(argGoesHere : String) extends FrienduActor {
 class QPidTestEndpoint(myQPidConnMgr : QPidTopicConn_032) {
 	lazy val myJmsSession = myQPidConnMgr.makeSession
 
-	lazy val destForTATxtMSg : JMSDestination = myQPidConnMgr.myDestMap.get(TestAppNames.topicName_forTurtleTxtTA).get
-	lazy val destForTABinMSg : JMSDestination = myQPidConnMgr.myDestMap.get(TestAppNames.topicName_forJSerBinTA).get
+	lazy val destForTATxtMSg : JMSDestination = myQPidConnMgr.myDestsByNameTail.get(TestAppNames.topicName_forTurtleTxtTA).get
+	lazy val destForTABinMSg : JMSDestination = myQPidConnMgr.myDestsByNameTail.get(TestAppNames.topicName_forJSerBinTA).get
 }
 
 class TestTAQpidServer(myParentARF : ActorRefFactory, qpidConnMgr : QPidTopicConn_032)
@@ -307,8 +270,6 @@ class TestTAQPidClient(qpidConnMgr : QPidTopicConn_032) extends QPidTestEndpoint
 
 	val mySender = new ThingActSenderQPid(myJmsSession, myProdForJSer, myProdForTurtle)
 
-
-
 	def sendThingAct(taSpec : ThingActionSpec, encodePref : Integer): Unit = mySender.postThingAct(taSpec, encodePref)
 
 	def sendSomeMsgs : Unit = {
@@ -334,7 +295,7 @@ object ThingActMoverQPid_UnitTest extends VarargsLogging {
 
 		val qpidConnMgr = new QPidTopicConn_032(TestAppNames.allTopics)
 
-		info1("QPidConnMgr.DestMap={}", qpidConnMgr.myDestMap)
+		info1("QPidConnMgr.DestMap={}", qpidConnMgr.myDestsByNameTail)
 
 		// server and client are in same Java process, same qpid-conn, but separate JMSSessions.
 		val server = new TestTAQpidServer(myServerAkkaSys, qpidConnMgr)
@@ -343,7 +304,6 @@ object ThingActMoverQPid_UnitTest extends VarargsLogging {
 
 		client.sendSomeMsgs
 	}
-
 
 }
 
