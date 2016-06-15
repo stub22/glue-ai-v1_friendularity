@@ -80,7 +80,7 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 	private	boolean		myFlag_connectSwingDebugGUI = false;  // Swing debug code disabled, anyway
 	private boolean		myFlag_monitorLifecycles = true;  // LifeMon window is launched by .start()
 
-	private boolean 	myFlag_useOldLaunchStyle2014 = true;
+	private boolean 	myFlag_useOldLaunchStyle2014 = false;
 	// attach... flag now used only during old launch style 2014
 	public static	boolean		myFlag_attachVizappTChunkRepo = true; // false => uses old vanilla mediator backup
 
@@ -144,9 +144,15 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 		} else {
 			// 2016 way:
 			ActorSystem akkaSys = myCPumpHelper.dangerActorSysExposed();  // Should be avail because startAkkaOSGi was called during .start().
+
+			// Launches OpenGL world and actors for talking to it.
+			// Can be tested separately using the TestNavUI.main() launcher.
 			NavUiAppSvc appSvc = startNewNavUI(bundleCtx, akkaSys);
 			// Now the VWorld is up and accepting messages, but there is no char in it yet.
-			// Still a throwback here, just keeping the boat steady while we turn
+			// Next we load an old config chunk of ~30 turtle files, most of which
+			// are unused.  We really just want the bone mappngs + body mesh-names,
+			// which occupy just a few of these loaded graphs.
+
 			getLogger().info("============= calling makeLegacyELRC() ======");
 
 			EnhancedLocalRepoClient elrc = makeLegacyELRC(mergedProfileJM, legConfEHost);
@@ -212,6 +218,12 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 			}
 		};
 		CPStrongTeller<VWBodyNotice> bodyNoticer = appSvc.makeExoBodyUserTeller(akkaSys, "coolBodyUser", userLogic);
+
+		// Now we've done all the "outer" setup that requires assumptions, and we can
+		// send off a tidy async request to the v-world actors, requesting them to
+		// instantiate the avatar body and send back a notice when done, to our bodyNoticer.
+		// THEN our bodyNoticer can send more requests do any additional manipulation on the body
+		// such as move its v-world position and orientation, attach a camera, launch an animation.
 		appSvc.postPatientCharCreateRq(dualBodyID, fullHumaCfg, mbrsc, bodyNoticer);
 
 		// This is something we have to wait for VWorld postponed init:

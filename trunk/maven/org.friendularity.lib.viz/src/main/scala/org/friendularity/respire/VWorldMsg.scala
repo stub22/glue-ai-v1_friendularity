@@ -92,10 +92,10 @@ class MakeItDoOne() extends VWorldRequest {
 class MakeItDoOneAy() extends MakeItDoOne
 class MakeItDoOneBee() extends MakeItDoOne
 
-case class VWSetupRq_Conf extends VWorldRequest {
+case class VWSetupRq_Conf() extends VWorldRequest {
 
 }
-case class VWSetupRq_Lnch extends VWorldRequest {
+case class VWSetupRq_Lnch() extends VWorldRequest {
 	// Includes callback-teller hook for result pointers after successful launch
 }
 case class VWSetupResultsNotice(lesserIngred: LesserIngred, bodyMgrIngred: BodyMgrIngred) extends VWorldInternalNotice
