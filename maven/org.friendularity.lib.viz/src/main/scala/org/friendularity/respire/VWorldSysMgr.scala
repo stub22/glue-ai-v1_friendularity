@@ -157,6 +157,9 @@ trait VWorldBossLogic [VWSM <: VWorldSysMgr] extends VarargsLogging with VWPTRen
 	}
 
 	protected def loadConf(vwConfMsg : VWSetupRq_Conf, localActorCtx : ActorContext): Unit = {
+		// This is loading a complete copy of the legacy avatar config, but ...
+		// it is not used in the current load of the vw-bodies/avatars, which is being
+		// done under OSGi under direct control of the CCMIO_DemoActivator.
 		val cnfMgr = new VWCnfMgr {}
 		val profileGraph = cnfMgr.getProfileGraph
 		info1("Got profileGraph: {}", profileGraph)

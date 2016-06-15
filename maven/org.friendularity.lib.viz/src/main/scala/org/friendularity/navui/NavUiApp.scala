@@ -64,7 +64,10 @@ class NavUiAppImpl(myAkkaSys : ActorSystem) extends NavUiAppSvc {
 		info2("Sending msg={} to VWBossTeller : {}", hpatMsg, vwBossTeller)
 		vwBossTeller.tellCPMsg(hpatMsg)
 
-		sendVWSetup_Conf()
+		// This conf step causes a duplicate copy of legacy config repo to be
+		// loaded, which we don't have any actual use for presently.   Under
+		// OSGi there is an outer copy of that config.
+		// sendVWSetup_Conf()
 
 		sendVWSetup_Lnch()
 

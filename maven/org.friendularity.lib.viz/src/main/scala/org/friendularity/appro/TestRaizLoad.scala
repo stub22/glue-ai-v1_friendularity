@@ -16,12 +16,11 @@
 
 package org.friendularity.appro
 
-import org.appdapter.fancy.log.VarargsLogging;
+import java.lang.{Long => JLong}
 
 import com.hp.hpl.jena
-import jena.rdf.model.{ Model => JenaModel, ModelFactory => JenaModelFactory }
-import org.friendularity.chnkr.{ChnkrWrapRepo, AvatarLegacySetupFuncs}
-
+import jena.reasoner.{Reasoner, ReasonerRegistry}
+import jena.rdf.model.{Model => JenaModel, ModelFactory => JenaModelFactory, InfModel}
 
 import org.ontoware.rdf2go
 import org.ontoware.rdfreactor
@@ -29,13 +28,14 @@ import org.ontoware.rdfreactor
 import rdf2go.model.{Model => R2GoModel}
 import rdf2go.model.node.{URI => R2GoURI}
 
+import org.friendularity.chnkr.{ChnkrWrapRepo, AvatarLegacySetupFuncs}
 
 import org.appdapter.fancy.log.VarargsLogging
 import org.appdapter.core.name.{ FreeIdent, Ident }
+import org.appdapter.fancy.log.VarargsLogging;
 
 import org.cogchar.blob.ghost.{GraphScanTest, IndexResult,  RRUtil, GHostUtil, GHostRecipeWrap}
 import org.cogchar.blob.entry.{EntryHost, PlainEntry, FolderEntry, DiskEntryHost, ResourceEntryHost}
-
 
 import org.cogchar.api.owrap.crcp.{BRFeature => CC_BRFeature}
 import org.cogchar.api.owrap.appro.AFBRLegacyConfig
@@ -104,5 +104,15 @@ object TestRaizLoad extends AvatarLegacySetupFuncs with  VarargsLogging {
 		val r2goModel : R2GoModel = new rdf2go.impl.jena.ModelImplJena(jmodel)
 		r2goModel.open
 		r2goModel
+	}
+
+	def appendOntoAndInfer(inModel : JenaModel) : Unit = {
+		val rdfsReasoner : Reasoner =  ReasonerRegistry.getRDFSReasoner
+		val infModelWithRDFS : InfModel = JenaModelFactory.createInfModel(rdfsReasoner, inModel)
+		val deductionsModel : JenaModel = infModelWithRDFS.getDeductionsModel
+
+		info3("model sizes: inputWithOnto={}, deductions={}, inferred={}", inModel.size : JLong,
+					deductionsModel.size : JLong,  infModelWithRDFS.size : JLong)
+
 	}
 }
