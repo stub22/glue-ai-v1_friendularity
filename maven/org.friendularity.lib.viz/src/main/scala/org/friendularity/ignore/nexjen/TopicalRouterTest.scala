@@ -183,9 +183,10 @@ class QPidConnector(val myJndiProps : Properties) extends VarargsLogging  {
 	def makeDestination(destNameTail : String) : Destination = {
 		// Creates a destination for the topic exchange, so senders and receivers can use it.
 		info1("================= Creating Destination for nameTail={}", destNameTail)
-		val fullName = QPid_032_Names.destKeyNameForTail(destNameTail)
+		// val fullName = QPid_032_Names.destKeyNameForTail(destNameTail)
+		// jndiCtx wants just the name tail, rather than the "full name" we specified in jndiProps key (with prefix "destination.").
 		val dest : Destination = myJndiCtx.lookup(destNameTail).asInstanceOf[Destination];
-		info2("Resolved fullName={} to destination={}", fullName, dest)
+		info3("Resolved nameTail={} to destination clz={}, dump={}", destNameTail, dest.getClass, dest)
 		dest
 	}
 	
