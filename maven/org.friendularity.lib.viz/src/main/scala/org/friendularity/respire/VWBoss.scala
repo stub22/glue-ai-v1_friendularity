@@ -6,6 +6,7 @@ import org.cogchar.render.goody.basic.{BasicGoodyCtxImpl, BasicGoodyCtx}
 import org.cogchar.render.sys.registry.RenderRegistryClient
 import org.cogchar.render.sys.window.WindowStatusMonitor
 import org.friendularity.cpump.ActorRefCPMsgTeller
+import org.friendularity.vwmsg.{VWorldInternalNotice, VWBodyLifeRq, VWPubTellersMsgImpl, VWGoodyRqActionSpec, LesserIngred, BodyMgrIngred, VWorldNotice, VWSetupResultsNotice, VWARM_GreetFromPumpAdmin, VWARM_FindPublicTellers, VWAdminRqMsg, VWSetupRq_Lnch, VWSetupRq_Conf, VWorldRequest}
 
 /**
   * Created by Owner on 6/15/2016.
@@ -90,9 +91,9 @@ trait VWorldBossLogic [VWSM <: VWorldSysMgr] extends VarargsLogging with VWPTRen
 		val pmrc = bmi.getPMRC
 		val cmgrCtx = new VWCharMgrCtxImpl(pmrc)
 		val charAdmActorRef = VWorldActorFactoryFuncs.makeVWCharAdminActor(localActorCtx, "charAdm", cmgrCtx)
-		val charAdmTeller  = new ActorRefCPMsgTeller[VWCharAdminRq](charAdmActorRef)
+		val charAdmTeller  = new ActorRefCPMsgTeller[VWBodyLifeRq](charAdmActorRef)
 
-		val vwpt = new VWPubTellersImpl(goodyTeller, charAdmTeller)
+		val vwpt = new VWPubTellersMsgImpl(goodyTeller, charAdmTeller)
 		setVWPT(vwpt)
 	}
 

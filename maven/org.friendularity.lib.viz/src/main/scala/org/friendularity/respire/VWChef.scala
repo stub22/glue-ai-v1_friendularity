@@ -79,21 +79,6 @@ class VWChef {
 		// The latter is preferred.
 	}
 }
-trait LesserIngred {
-	// Includes pointers from our JME app that are needed to make a goody space
-	def getRendRegClient : RenderRegistryClient
-	def getWindowStatusMonitor : WindowStatusMonitor
-	// def getGMRendCtx : GoodyModularRenderContext
-}
-trait BodyMgrIngred {
-	def	getPMRC : PhysicalModularRenderContext
-}
-case class FullIngredImpl(rendRegCli : RenderRegistryClient, winStatMon : WindowStatusMonitor, pmrc : PhysicalModularRenderContext)
-		extends LesserIngred with BodyMgrIngred {
-	override def getRendRegClient : RenderRegistryClient = rendRegCli
-	override def getWindowStatusMonitor : WindowStatusMonitor = winStatMon
-	override def	getPMRC : PhysicalModularRenderContext = pmrc
-}
 
 
 

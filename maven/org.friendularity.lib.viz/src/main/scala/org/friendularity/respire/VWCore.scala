@@ -17,6 +17,7 @@ import org.cogchar.bind.midi.in.{CCParamRouter, TempMidiBridge}
 import org.cogchar.render.sys.context.{PhysicalModularRenderContext, FramedRenderContext, CogcharRenderContext}
 import org.cogchar.render.sys.registry.RenderRegistryClient
 import org.cogchar.render.trial.{TrialUpdater, TrialCameras, TrialContent, TrialBalloon}
+import org.friendularity.vwmsg.{FullIngredMsgImpl, VWSetupResultsNotice, VWSceneCoreRq}
 
 // Marker trait for a vw sys kernel.   Usually only one exists per java runtime, but should be safe in plural, too.
 trait VWCore {
@@ -116,7 +117,7 @@ class SimBalloonJmeApp extends BigBalloonJmeApp with UpdateAttacher with VWCore 
 		val physModRendCtx = crc.asInstanceOf[PhysicalModularRenderContext]
 		// We currently happen to lump all the ingredients together, but we have the choice
 		// to instead provide finer grained LesserIngred and BodyMgrIngred.
-		val fullIng = new FullIngredImpl(rrc, winStatMon, physModRendCtx)
+		val fullIng = new FullIngredMsgImpl(rrc, winStatMon, physModRendCtx)
 		val notice = new VWSetupResultsNotice(fullIng, fullIng)
 		notice
 	}

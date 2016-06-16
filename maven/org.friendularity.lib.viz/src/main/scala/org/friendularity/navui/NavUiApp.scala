@@ -8,6 +8,7 @@ import org.cogchar.bind.mio.robot.svc.ModelBlendingRobotServiceContext
 import org.friendularity.cpump.{ActorRefCPMsgTeller, CPStrongTeller}
 import org.friendularity.dull.SpecialAppPumpSpace
 import org.friendularity.respire._
+import org.friendularity.vwmsg.{VWBodyMakeRq, VWBodyLifeRq, VWARM_FindPublicTellers, VWSetupRq_Lnch, VWSetupRq_Conf, VWARM_GreetFromPumpAdmin, VWBodyNotice}
 
 /**
   * Created by Owner on 6/8/2016.
@@ -79,11 +80,11 @@ class NavUiAppImpl(myAkkaSys : ActorSystem) extends NavUiAppSvc {
 
 	}
 	// Could easily send this in as an actor msg, probably will soon, but trying to prevent confusion across API layers.
-	def appendCharAdmRq(chrAdmRq : VWCharAdminRq) : Unit = charAdmForwarderLogic.appendInboundRq(chrAdmRq)
+	def appendCharAdmRq(chrAdmRq : VWBodyLifeRq) : Unit = charAdmForwarderLogic.appendInboundRq(chrAdmRq)
 
 	override def postPatientCharCreateRq(dualBodyID : Ident, fullHumaCfg : HumanoidFigureConfig,
 										 mbrsc : ModelBlendingRobotServiceContext, answerTeller : CPStrongTeller[VWBodyNotice]) : Unit = {
-		val ccrq = VWCreateCharRq(dualBodyID, fullHumaCfg, mbrsc, answerTeller)
+		val ccrq = VWBodyMakeRq(dualBodyID, fullHumaCfg, mbrsc, answerTeller)
 		appendCharAdmRq(ccrq)
 	}
 	def testDetachedGS : Unit = {
