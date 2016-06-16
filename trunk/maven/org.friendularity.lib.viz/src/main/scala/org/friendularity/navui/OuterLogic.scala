@@ -8,9 +8,10 @@ import org.cogchar.api.fancy.FancyThingModelWriter
 import org.cogchar.render.rendtest.GoodyTestMsgMaker
 import org.friendularity.cpump.{ActorRefCPMsgTeller, CPStrongTeller, CPMsgTeller}
 import org.friendularity.mjob.{MsgJobLogicFactory, MsgJobLogic}
-import org.friendularity.respire.{VWGoodyRqTurtle, VWGoodyRqTAS, VWorldMasterFactory, VWCharAdminRq, VWorldPublicTellers}
 
 import com.hp.hpl.jena.rdf.model.{Model => JenaModel, ModelFactory => JenaModelFactory, Literal}
+import org.friendularity.respire.VWorldMasterFactory
+import org.friendularity.vwmsg.{VWBodyLifeRq, VWGoodyRqTAS, VWGoodyRqTurtle, VWorldPublicTellers}
 
 
 /**
@@ -66,14 +67,14 @@ trait PatientSender_GoodyTest extends OuterLogic {
 }
 trait PatientForwarder_CharAdminTest extends OuterLogic {
 	private var myStoredTellers_opt : Option[VWorldPublicTellers] = None
-	private val myPendingCharAdminRqs = new scala.collection.mutable.ListBuffer[VWCharAdminRq]() //  = Nil // Any inbound messages we have not gotten to yet.
+	private val myPendingCharAdminRqs = new scala.collection.mutable.ListBuffer[VWBodyLifeRq]() //  = Nil // Any inbound messages we have not gotten to yet.
 
 	override def rcvPubTellers(vwpt: VWorldPublicTellers): Unit = {
 		myStoredTellers_opt = Option(vwpt)
 		propagateMessages(myStoredTellers_opt)
 	}
 
-	def appendInboundRq(rqMsg : VWCharAdminRq) : Unit = {
+	def appendInboundRq(rqMsg : VWBodyLifeRq) : Unit = {
 		synchronized {
 			myPendingCharAdminRqs.append(rqMsg)
 			info1("After append, pending charAdm msgs={}", myPendingCharAdminRqs)

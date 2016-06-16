@@ -4,7 +4,8 @@ import akka.actor._
 import org.appdapter.core.name.{FreeIdent, Ident}
 import org.appdapter.fancy.log.VarargsLogging
 import org.friendularity.cpump._
-import org.friendularity.respire.{VWARM_FindPublicTellers, VWARM_GreetFromPumpAdmin, VWorldActorFactoryFuncs}
+import org.friendularity.respire.VWorldActorFactoryFuncs
+import org.friendularity.vwmsg.VWARM_GreetFromPumpAdmin
 
 /**
   * Created by Owner on 4/13/2016.

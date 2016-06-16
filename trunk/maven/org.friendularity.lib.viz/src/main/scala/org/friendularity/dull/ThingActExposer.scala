@@ -21,7 +21,6 @@ import org.cogchar.impl.thing.basic.{BasicTypedValueMapWithConversion, BasicType
 import org.cogchar.name.dir.NamespaceDir
 import org.cogchar.name.thing.ThingCN
 
-import org.friendularity.respire.{VWGoodyRqRdf, VWGoodyRqTurtle}
 
 import scala.collection.mutable.ListBuffer
 

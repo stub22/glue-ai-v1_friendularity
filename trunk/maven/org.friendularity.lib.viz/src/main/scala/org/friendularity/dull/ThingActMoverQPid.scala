@@ -16,7 +16,8 @@ import org.cogchar.render.goody.basic.BasicGoodyCtx
 import org.cogchar.render.rendtest.GoodyTestMsgMaker
 import org.friendularity.cpump.{ActorRefCPMsgTeller, CPMsgTeller, CPStrongTeller}
 import org.friendularity.ignore.nexjen.{QPidConnector, QPid_032_NameManager}
-import org.friendularity.respire.{VWorldRequest, VWGoodyActor, VWGoodyRqTAS, VWGoodyRqActionSpec, VWGoodyRqRdf, VWGoodyRqTurtle}
+import org.friendularity.vwmsg.{VWGoodyRqTurtle, VWGoodyRqRdf, VWGoodyRqTAS, VWGoodyRqActionSpec}
+
 
 import scala.collection.immutable.HashMap
 

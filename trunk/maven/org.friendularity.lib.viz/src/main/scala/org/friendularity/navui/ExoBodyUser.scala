@@ -2,7 +2,7 @@ package org.friendularity.navui
 
 import akka.actor.{Props, ActorRef, ActorRefFactory, Actor}
 import org.appdapter.fancy.log.VarargsLogging
-import org.friendularity.respire.VWBodyNotice
+import org.friendularity.vwmsg.VWBodyNotice
 
 /**
   * Created by Owner on 6/8/2016.

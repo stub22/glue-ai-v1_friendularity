@@ -11,6 +11,7 @@ import org.cogchar.render.model.humanoid.HumanoidFigureManager
 import org.cogchar.render.sys.context.PhysicalModularRenderContext
 import org.friendularity.cpump.{CPStrongTeller, ActorRefCPMsgTeller}
 import org.friendularity.rbody.{DualBodyRecord, DualBodyHelper}
+import org.friendularity.vwmsg.{VWBodyMoveRq, VWBodyNotice, VWBodyRq, VWBodyMakeRq, VWBodyLifeRq}
 
 /**
   * Created by Owner on 6/6/2016.
@@ -37,9 +38,9 @@ trait VWCharMgrJobLogic extends VarargsLogging {
 		val hfm = getChrMgrCtx.getHumaFigMgr
 		myHelper.finishDualBodInit(dualBodyID, mbsrc, pmrc, hfm, fullHumaCfg)
 	}
-	def processCharRq(vwcr: VWCharAdminRq, slfActr : ActorRef, localActorCtx : ActorContext): Unit = {
+	def processCharRq(vwcr: VWBodyLifeRq, slfActr : ActorRef, localActorCtx : ActorContext): Unit = {
 		vwcr match {
-			case crchr : VWCreateCharRq => {
+			case crchr : VWBodyMakeRq => {
 				info1("Processing create-char rq={}", crchr)
 				val dbr : DualBodyRecord = createAndBindVWBody(crchr.dualBodyID, crchr.fullHumaCfg, crchr.myMBRoboSvcCtx)
 				info1("Finished connecting dual body, now what kind of notices do we want to send?  dbr={}", dbr)
@@ -58,7 +59,7 @@ trait VWCharMgrJobLogic extends VarargsLogging {
 class VWCharMgrActor(myBodyCtx : VWCharMgrCtx) extends Actor with VWCharMgrJobLogic {
 	override protected def getChrMgrCtx : VWCharMgrCtx = myBodyCtx
 	def receive = {
-		case vwrq: VWCharAdminRq => {
+		case vwrq: VWBodyLifeRq => {
 			processCharRq(vwrq, self, context)
 		}
 	}

@@ -4,6 +4,7 @@ import akka.actor._
 import org.appdapter.fancy.log.VarargsLogging
 import org.friendularity.cpump.CPumpMsg
 import org.friendularity.mjob.{MsgFactoryPair, MasterFactory, MsgJobLogic}
+import org.friendularity.vwmsg.VWorldMsg
 
 /**
   * Created by Owner on 4/19/2016.

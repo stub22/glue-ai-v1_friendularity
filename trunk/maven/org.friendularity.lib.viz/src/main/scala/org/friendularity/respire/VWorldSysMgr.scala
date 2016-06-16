@@ -30,6 +30,7 @@ import org.friendularity.appro.TestRaizLoad
 import org.friendularity.cpump.{ActorRefCPMsgTeller, CPStrongTeller}
 import com.hp.hpl.jena.rdf.model.{Model => JenaModel}
 import org.friendularity.rbody.DualBodyRecord
+import org.friendularity.vwmsg.VWorldPublicTellers
 
 /**
   * Created by Owner on 4/14/2016.
