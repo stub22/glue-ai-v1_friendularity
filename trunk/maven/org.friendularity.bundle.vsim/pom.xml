@@ -92,7 +92,8 @@
                             org.friendularity.rbody,
                             org.friendularity.ignore.*,
                             org.friendularity.vwmsg,
-                            org.friendularity.vwimpl
+                            org.friendularity.vwimpl,
+                            org.friendularity.mjob
                         </Export-Package>
 						<!-- org.parboiled,  shapeless,  org.uncommons.maths  are used by spray-http -->
                     </instructions>

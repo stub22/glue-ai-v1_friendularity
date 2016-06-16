@@ -8,7 +8,7 @@ import org.cogchar.bind.mio.robot.svc.ModelBlendingRobotServiceContext
 import org.friendularity.cpump.{ActorRefCPMsgTeller, CPStrongTeller}
 import org.friendularity.dull.SpecialAppPumpSpace
 import org.friendularity.respire._
-import org.friendularity.vwmsg.{VWBodyMakeRq, VWBodyLifeRq, VWARM_FindPublicTellers, VWSetupRq_Lnch, VWSetupRq_Conf, VWARM_GreetFromPumpAdmin, VWBodyNotice}
+import org.friendularity.vwmsg.{VWBodyMoveRq, VWBodyRq, VWBodyMakeRq, VWBodyLifeRq, VWARM_FindPublicTellers, VWSetupRq_Lnch, VWSetupRq_Conf, VWARM_GreetFromPumpAdmin, VWBodyNotice}
 
 /**
   * Created by Owner on 6/8/2016.
@@ -22,6 +22,21 @@ trait NavUiAppSvc extends VarargsLogging {
 		val ebuTeller : CPStrongTeller[VWBodyNotice] = new ActorRefCPMsgTeller[VWBodyNotice](ebuActor)
 		ebuTeller
 	}
+
+	def makeFunUserLogic(): ExoBodyUserLogic = {
+		val userLogic: ExoBodyUserLogic = new ExoBodyUserLogic() {
+			override def rcvBodyNotice(bodyNotice: VWBodyNotice) {
+				super.rcvBodyNotice(bodyNotice)
+				val bodyTeller: CPStrongTeller[VWBodyRq] = bodyNotice.getBodyTeller
+				val moveRq: VWBodyRq = new VWBodyMoveRq(-2.0f, 12.0f, -1.0f)
+				info2("ExoUserBodyLogic found body teller={}.   Sending moveRq={}", bodyTeller, moveRq)
+				bodyTeller.tellStrongCPMsg(moveRq)
+			}
+		}
+		userLogic
+	}
+
+
 }
 
 // "App" here means FriendU app, not a JME3 "app".  The latter is made during launchSimRenderSpace at bottom.
