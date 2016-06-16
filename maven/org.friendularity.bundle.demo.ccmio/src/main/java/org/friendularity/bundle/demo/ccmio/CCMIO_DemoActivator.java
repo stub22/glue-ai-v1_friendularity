@@ -187,6 +187,7 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 	// This method instantiates necessary config objects and outer callback ("bodyNoticer"),
 	// and then enqueues an async request for the char-admin actor.
 	public void startUpgradedYetLegacyBodyConn(BundleContext bundleCtx, ActorSystem akkaSys, EnhancedLocalRepoClient legacyELRC, NavUiAppSvc appSvc) {
+
 		Ident dualBodyID = new FreeIdent("urn:ftd:cogchar.org:2012:runtime#char_sinbad_88");
 		Ident hmdGraphID = new FreeIdent("urn:ftd:cogchar.org:2012:runtime#hmd_sheet_22");
 		Ident bonyGraphID = new FreeIdent("urn:ftd:cogchar.org:2012:runtime#bony_sheet_sinbad");

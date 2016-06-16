@@ -12,7 +12,9 @@ import org.cogchar.render.sys.registry.RenderRegistryClient
 import org.cogchar.render.trial.{TrialCameras, TrialContent}
 import com.jme3.scene.{Node => JmeNode}
 /**
-  * Created by Owner on 6/16/2016.
+  * This stuff contains about 10 steps of testing content + camera setup, all not essential except
+  * as standin for better testing with equal/superior client messages.
+  *
   */
 trait IsolatedBonusContentMaker extends VarargsLogging {
 	protected def doItUsingArgs(crc : CogcharRenderContext, flyCam : FlyByCamera, rootDeepNode : JmeNode,
