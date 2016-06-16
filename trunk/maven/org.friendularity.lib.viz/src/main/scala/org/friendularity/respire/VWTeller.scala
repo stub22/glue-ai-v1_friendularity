@@ -12,14 +12,13 @@ import org.friendularity.cpump.{CPumpMsg, CPStrongTeller, CPMsgTeller}
 // Client may also know+find these same actors and other actors by other means.
 // This trait is made available as a helpful starting point, not as the definitive or exhaustive API.
 trait VWorldPublicTellers extends VWorldNotice  {
-	def getFirstBigTeller : Option[CPMsgTeller] = None
-	def getSecondCoolTeller : Option[CPMsgTeller] = None
-	def getGoodyTeller : Option[CPStrongTeller[VWGoodyRqActionSpec]] = None
+
+	def getGoodyDirectTeller : Option[CPStrongTeller[VWGoodyRqActionSpec]] = None
 	def getCharAdminTeller : Option[CPStrongTeller[VWCharAdminRq]] = None
 }
 case class VWPubTellersImpl(goodyTeller : CPStrongTeller[VWGoodyRqActionSpec],
 				charAdminTeller: CPStrongTeller[VWCharAdminRq] ) extends VWorldPublicTellers {
-	override def getGoodyTeller : Option[CPStrongTeller[VWGoodyRqActionSpec]] = Option(goodyTeller)
+	override def getGoodyDirectTeller : Option[CPStrongTeller[VWGoodyRqActionSpec]] = Option(goodyTeller)
 	override def getCharAdminTeller : Option[CPStrongTeller[VWCharAdminRq]] = Option(charAdminTeller)
 }
 

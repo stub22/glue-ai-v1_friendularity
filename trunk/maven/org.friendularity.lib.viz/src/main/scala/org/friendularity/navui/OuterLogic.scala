@@ -7,7 +7,8 @@ import org.appdapter.fancy.log.VarargsLogging
 import org.cogchar.api.fancy.FancyThingModelWriter
 import org.cogchar.render.rendtest.GoodyTestMsgMaker
 import org.friendularity.cpump.{ActorRefCPMsgTeller, CPStrongTeller, CPMsgTeller}
-import org.friendularity.respire.{VWGoodyRqTurtle, VWGoodyRqTAS, MsgJobLogic, MsgJobLogicFactory, VWorldMasterFactory, VWCharAdminRq, VWorldPublicTellers}
+import org.friendularity.mjob.{MsgJobLogicFactory, MsgJobLogic}
+import org.friendularity.respire.{VWGoodyRqTurtle, VWGoodyRqTAS, VWorldMasterFactory, VWCharAdminRq, VWorldPublicTellers}
 
 import com.hp.hpl.jena.rdf.model.{Model => JenaModel, ModelFactory => JenaModelFactory, Literal}
 
@@ -53,7 +54,7 @@ trait PatientSender_GoodyTest extends OuterLogic {
 		// This is the (outbound) notice we get back from boss, confirming system has started and these tellers are ready for biz.
 		info1("Outer logic got public tellers: {}", vwpt)
 		myStoredTellers_opt = Option(vwpt)
-		val goodyTeller = vwpt.getGoodyTeller
+		val goodyTeller = vwpt.getGoodyDirectTeller
 		if (goodyTeller.isDefined) {
 			info1("Sending goody tst msgs to: {}", goodyTeller.get)
 			finallySendGoodyTstMsgs(goodyTeller.get, useTurtleSerialization)
