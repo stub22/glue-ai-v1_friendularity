@@ -183,6 +183,9 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 	// It is now better, when possible, to instead pull the body conf from recipes and our finer, newer chunks,
 	// and also to do that asynchronously upon request, compliant with lifecycles of model-blending-ctx guys.
 	// We keep both alternatives alive to help during debugging.
+
+	// This method instantiates necessary config objects and outer callback ("bodyNoticer"),
+	// and then enqueues an async request for the char-admin actor.
 	public void startUpgradedYetLegacyBodyConn(BundleContext bundleCtx, ActorSystem akkaSys, EnhancedLocalRepoClient legacyELRC, NavUiAppSvc appSvc) {
 		Ident dualBodyID = new FreeIdent("urn:ftd:cogchar.org:2012:runtime#char_sinbad_88");
 		Ident hmdGraphID = new FreeIdent("urn:ftd:cogchar.org:2012:runtime#hmd_sheet_22");

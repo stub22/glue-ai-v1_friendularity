@@ -2,6 +2,7 @@ package org.friendularity.respire
 
 import akka.actor.{ActorContext, ActorRef}
 import org.appdapter.fancy.log.VarargsLogging
+import org.friendularity.mjob.{MsgJobLogic, MsgJobLogicFactory}
 
 /**
   * Created by Owner on 5/20/2016.

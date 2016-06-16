@@ -16,43 +16,37 @@ import java.lang.{Long => JLong}
   * Created by Owner on 4/19/2016.
   */
 trait VWorldMsg extends CPumpMsg
-trait VWorldRequest  extends VWorldMsg {
-
-
-}
+trait VWorldRequest  extends VWorldMsg
 
 trait VWorldNotice extends VWorldMsg
 
 trait VWorldInternalNotice extends  VWorldNotice
 
-
-trait VWContentRq extends VWorldRequest {
-}
+trait VWContentRq extends VWorldRequest
 
 trait VWCoreRq extends VWorldRequest {
 	// Used to talk to internal "VWCore" actor
 }
-
-trait VWCharAdminRq extends VWorldRequest {
-
-}
-case class VWCreateCharRq(dualBodyID: Ident, fullHumaCfg : HumanoidFigureConfig,
-						  myMBRoboSvcCtx : ModelBlendingRobotServiceContext,
-						  answerTeller : CPStrongTeller[VWBodyNotice]) extends VWCharAdminRq {
-
-}
-
-// Message sent directly to a particular VWBody, not for creation/deletion of same.
-trait VWBodyRq extends VWorldRequest {
-
-}
-
-case class VWBodyMoveRq(xPos : Float, yPos : Float, zPos : Float) extends VWBodyRq
-
 trait VWSceneCoreRq extends VWCoreRq {
 	// Describes a change to managed VW scene graph, to be translated (usually by VWCore actor)
 	// into calls on JME render thread.
 }
+
+
+trait VWAdminRqMsg extends VWorldRequest with VarargsLogging
+
+trait VWCharAdminRq extends VWorldRequest
+
+case class VWCreateCharRq(dualBodyID: Ident, fullHumaCfg : HumanoidFigureConfig,
+						  myMBRoboSvcCtx : ModelBlendingRobotServiceContext,
+						  answerTeller : CPStrongTeller[VWBodyNotice]) extends VWCharAdminRq
+
+// Message sent directly to a particular existing VWBody, not for creation/deletion of same.
+trait VWBodyRq extends VWorldRequest
+
+case class VWBodyMoveRq(xPos : Float, yPos : Float, zPos : Float) extends VWBodyRq
+
+
 // Just blobs of standalone RDF models.   Not used with query/update languages, at this time.
 trait RdfMsg {
 	def asTurtleString : String
@@ -71,10 +65,6 @@ trait RdfMsgIntrp extends VarargsLogging {
 }
 
 
-
-trait VWAdminRqMsg extends VWorldRequest with VarargsLogging {
-
-}
 case class VWARM_GreetFromPumpAdmin(pumpAdminTeller : CPMsgTeller) extends VWAdminRqMsg
 // case class VWARM_FindGoodyTeller(answerTeller: CPMsgTeller) extends VWAdminRqMsg
 
@@ -83,22 +73,13 @@ case class VWARM_GreetFromPumpAdmin(pumpAdminTeller : CPMsgTeller) extends VWAdm
 case class VWARM_FindPublicTellers(answerTeller: CPStrongTeller[VWorldPublicTellers]) extends VWAdminRqMsg
 
 // Concept:  Type filtering hooha uses concrete classes.  We expect there will be a case class Msg.
-class MakeItDoOne() extends VWorldRequest {
-	// No contract methods are required for this relatively *light* request, but it expects server
-	// side to have sufficient logic to interpret it.  Generally that server logic will need to know
-	// the type name MakeItDoOne, and pass it to some kind of handler.
-}
 
-class MakeItDoOneAy() extends MakeItDoOne
-class MakeItDoOneBee() extends MakeItDoOne
 
-case class VWSetupRq_Conf() extends VWorldRequest {
+case class VWSetupRq_Conf() extends VWorldRequest // Not being sent as of 2016-06-16
 
-}
-case class VWSetupRq_Lnch() extends VWorldRequest {
+case class VWSetupRq_Lnch() extends VWorldRequest {  // Sent from NuiiApp to VWBoss, as of 2016-06-16
 	// Includes callback-teller hook for result pointers after successful launch
 }
+
 case class VWSetupResultsNotice(lesserIngred: LesserIngred, bodyMgrIngred: BodyMgrIngred) extends VWorldInternalNotice
-
-
 

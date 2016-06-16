@@ -35,29 +35,12 @@ class NavUiAppImpl(myAkkaSys : ActorSystem) extends NavUiAppSvc {
 	lazy private val standPumpCtxActorRef : ActorRef = myStandalonePumpSpace.findTopActorRef(standPumpTestCtxName)
 	lazy private val standPumpAdminTeller = new ActorRefCPMsgTeller(standPumpCtxActorRef)
 
-
-	/*
-	// Direct approach
-	lazy private val outerCtxName = "nav_ui_outer"
-	lazy private val outerCtxActorRef : ActorRef = makeCustomOuterActor(myAkkaSys)
-	lazy private val outerTellerDirect = new ActorRefCPMsgTeller(outerCtxActorRef)
-
-	private def makeCustomOuterActor(akkaSys: ActorSystem) : ActorRef = {
-		val vwbossActorProps = Props(classOf[OuterDirectActor])
-		val vwbActorRef : ActorRef = akkaSys.actorOf(vwbossActorProps, outerCtxName)
-		vwbActorRef
-	}
-	*/
-
-	// Jobby approach
+	// Jobby approach to actor launch is used here for our outer actors, experimentally.
 	lazy private val goodyTestSenderLogic = new PatientSender_GoodyTest {}
 	lazy private val goodyTestSenderTrigTeller  = OuterJobbyLogic_MasterFactory.makeOoLogicAndTeller(goodyTestSenderLogic, myAkkaSys, "goodyTstSndr")
 
 	lazy private val charAdmForwarderLogic = new PatientForwarder_CharAdminTest {}
 	lazy private val charAdmSenderTrigTeller  = OuterJobbyLogic_MasterFactory.makeOoLogicAndTeller(charAdmForwarderLogic, myAkkaSys, "charAdmForwarder")
-
-	// Custom-outer approach
-
 
 	def sendSetupMsgs_Async {
 		val hpatMsg = new VWARM_GreetFromPumpAdmin(standPumpAdminTeller)
@@ -66,12 +49,13 @@ class NavUiAppImpl(myAkkaSys : ActorSystem) extends NavUiAppSvc {
 
 		// This conf step causes a duplicate copy of legacy config repo to be
 		// loaded, which we don't have any actual use for presently.   Under
-		// OSGi there is an outer copy of that config.
+		// OSGi there is an outer copy of that same config repo, used for launching
+		// the avatar bodies.
 		// sendVWSetup_Conf()
 
 		sendVWSetup_Lnch()
 
-		registePostInitWaiters()
+		registerPostInitWaiters()
 	}
 	def sendVWSetup_Conf() : Unit = {
 		val msg = new VWSetupRq_Conf
@@ -82,7 +66,7 @@ class NavUiAppImpl(myAkkaSys : ActorSystem) extends NavUiAppSvc {
 		val msg = new VWSetupRq_Lnch
 		vwBossTeller.tellCPMsg(msg)
 	}
-	def registePostInitWaiters() : Unit = {
+	def registerPostInitWaiters() : Unit = {
 		// Each of these the results of happy startup, to trigger further ops.
 		// The VWPTRendezvous logic makes sure that each such waiter gets notified regardless of message order,
 		// so it is OK to send them after init is already complete (although usually it won't be).
