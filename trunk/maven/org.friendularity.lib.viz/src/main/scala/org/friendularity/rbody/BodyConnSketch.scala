@@ -161,7 +161,8 @@ class BodyConnImpl(myBunCtx : BundleContext, myDualBodyID : Ident) extends BodyC
 	// The Graph and RepoClient are needed to allow completion of the BoneRobotConfig using the OLDE pathways.
 	// This only connects to OSGi MechIO bony-model robot movement features.
 	// It does not init any of the Avatar VWorld features.
-	def connectBonyRobot_usingOldRC(bunCtx : BundleContext, partialFigCfg : FigureConfig, bonyGraphID : Ident, rc : RepoClient) : Unit = {
+	def connectBonyRobot_usingOldRC(bunCtx : BundleContext, partialFigCfg : FigureConfig, bonyGraphID : Ident,
+									rc : RepoClient) : Unit = {
 		// PumaRegistryClient prc
 
 		val mioConfCLs: JList[ClassLoader] = new JArrayList[ClassLoader]()

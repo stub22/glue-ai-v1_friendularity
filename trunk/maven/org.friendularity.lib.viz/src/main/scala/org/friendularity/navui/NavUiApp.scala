@@ -47,11 +47,17 @@ trait NavUiAppSvc extends VarargsLogging {
 									   legacyELRC: EnhancedLocalRepoClient): Unit = {
 
 		val legBodyMgr = new LegacyBodyMgr{}
-		val fullHumaCfg : HumanoidFigureConfig = legBodyMgr.loadSinbadHumaConf(legacyELRC, bundleCtx, sinbadBodyID)
+		val fullHumaCfg : HumanoidFigureConfig = legBodyMgr.loadFullHumaConfig_SemiLegacy(legacyELRC, bundleCtx, sinbadBodyID, hmdGraphID, bonyGraphID)
 		val mbrsc: ModelBlendingRobotServiceContext = legBodyMgr.connectMechIOBody(legacyELRC, bundleCtx, fullHumaCfg, bonyGraphID)
 
 		val funUserLogic = makeFunUserLogic()
 		val bodyNoticer : CPStrongTeller[VWBodyNotice] = makeExoBodyUserTeller(akkaSys, "sinbad_ccmio_body_user", funUserLogic)
+
+		// Now we've done all the "outer" setup that requires assumptions, and we can
+		// send off a tidy async request to the v-world actors, requesting them to
+		// instantiate the avatar body and send back a notice when done, to our bodyNoticer.
+		// THEN our bodyNoticer can send more requests do any additional manipulation on the body
+		// such as move its v-world position and orientation, attach a camera, launch an animation.
 
 		postPatientCharCreateRq(sinbadBodyID, fullHumaCfg, Option(mbrsc), bodyNoticer)
 

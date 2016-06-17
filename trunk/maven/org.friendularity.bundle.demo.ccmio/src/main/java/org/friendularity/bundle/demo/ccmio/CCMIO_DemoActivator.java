@@ -181,9 +181,6 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 		return nuiApp;
 	}
 
-	public void 	improvedButStillPartlyLegacy(BundleContext bundleCtx, ActorSystem akkaSys, EnhancedLocalRepoClient legacyELRC, NavUiAppSvc appSvc) {
-
-	}
 	// Yet STILL a semi-old way of producing body conf (from legacy-style repo), but no longer buried under the PUMA.
 	// It is now better, when possible, to instead pull the body conf from recipes and our finer, newer chunks,
 	// and also to do that asynchronously upon request, compliant with lifecycles of model-blending-ctx guys.
