@@ -1,28 +1,14 @@
 package org.friendularity.bundle.demo.ccmio;
 
 import akka.actor.ActorSystem;
-import org.appdapter.core.name.FreeIdent;
-import org.appdapter.core.name.Ident;
 import org.appdapter.fancy.rclient.EnhancedLocalRepoClient;
-import org.appdapter.fancy.rclient.RepoClient;
 import org.appdapter.osgi.core.BundleActivatorBase;
-import org.cogchar.api.humanoid.FigureConfig;
-import org.cogchar.api.humanoid.HumanoidFigureConfig;
-import org.cogchar.bind.mio.robot.svc.ModelBlendingRobotServiceContext;
 import org.cogchar.bind.symja.MathGate;
-import org.cogchar.blob.emit.RenderConfigEmitter;
 import org.cogchar.blob.entry.EntryHost;
 import org.friendularity.api.west.WorldEstimate;
-import org.friendularity.cpump.CPStrongTeller;
-import org.friendularity.navui.ExoBodyUserLogic;
 import org.friendularity.navui.NavUiAppImpl;
 import org.friendularity.navui.NavUiAppSvc;
 import org.friendularity.old.ccmio.OldLaunchHelper;
-import org.friendularity.rbody.BodyConnImpl;
-import org.friendularity.rbody.HumaConfHelper;
-import org.friendularity.vwmsg.VWBodyMoveRq;
-import org.friendularity.vwmsg.VWBodyNotice;
-import org.friendularity.vwmsg.VWBodyRq;
 import org.friendularity.vsim.vworld.UnusedNetworkVisionDataFeed;
 import org.osgi.framework.BundleContext;
 import org.rwshop.swing.common.lifecycle.ServicesFrame;
@@ -135,8 +121,8 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 		EntryHost	legConfEHost = TestRaizLoad.makeBundleEntryHost(myLegConfMarkerClz);
 		if (myFlag_useOldLaunchStyle2014) {
 			if (myFlag_attachVizappTChunkRepo) {
-
-				getLogger().info("============= Calling attachVizTChunkLegConfRepo() ======");
+				// OLD launch mechanism, which we keep working for comparative testing
+				getLogger().info("============= 2014-style launch is calling attachVizTChunkLegConfRepo() ======");
 				attachVizTChunkLegConfRepo(bundleCtx, mergedProfileJM, legConfEHost);
 			} // else we would be seeing fallback injected mediator in control
 
@@ -144,24 +130,8 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 		} else {
 			// 2016 way:
 			ActorSystem akkaSys = myCPumpHelper.dangerActorSysExposed();  // Should be avail because startAkkaOSGi was called during .start().
-
-			// Launches OpenGL world and actors for talking to it.
-			// Can be tested separately using the TestNavUI.main() launcher.
-			NavUiAppSvc appSvc = startNewNavUI(bundleCtx, akkaSys);
-			// Now the VWorld is up and accepting messages, but there is no char in it yet.
-			// Next we load an old config chunk of ~30 turtle files, most of which
-			// are unused.  We really just want the bone mappngs + body mesh-names,
-			// which occupy just a few of these loaded graphs.
-
-			getLogger().info("============= calling makeLegacyELRC() ======");
-
-			EnhancedLocalRepoClient elrc = makeLegacyELRC(mergedProfileJM, legConfEHost);
-			// Temporary revised compromise here - keep using the old data known to work until we can prove that
-			// newer data is workin.
-		//	startUpgradedYetLegacyBodyConn(bundleCtx, akkaSys, elrc, appSvc);
-			startSemiLegacyBodyConn_Sinbad(bundleCtx, akkaSys, elrc, appSvc);
+			launchVWorldWithSinbad_2016(bundleCtx, akkaSys, mergedProfileJM, legConfEHost);
 		}
-
 		getLogger().info("============ Calling launchCPumpService() ==========");
 		launchCPumpService(bundleCtx);
 		getLogger().info("============ Calling launchOtherStuffLate() ==========");
@@ -171,75 +141,38 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 		// PUMA  behavior system.  However, the Cogchar config system is intended to be sufficiently general to
 		// handle most initialization cases without help from bundle activators.
 	}
-	public NavUiAppImpl startNewNavUI(BundleContext bundleCtx, ActorSystem akkaSys) {
+	public void launchVWorldWithSinbad_2016(BundleContext bundleCtx, ActorSystem akkaSys,
+											Model mergedProfileJM,	EntryHost legConfEHost) {
+		// Launches OpenGL world and actors for talking to it.
+		// Can be tested separately using the TestNavUI.main() launcher.
+
+		NavUiAppSvc appSvc = startVWorldNavUI_2016(bundleCtx, akkaSys);
+
+		// Now the VWorld is up and accepting messages, but there is no char in it yet.
+		// Temporary revised compromise here - keep using the old ("legacy") data known to work until we
+		// can prove that newer data is workin.
+		// So we now load an old config chunk of ~30 turtle files, most of which
+		// are unused.  We really just want the bone mappngs + body mesh-names,
+		// which occupy just a few of these loaded graphs.
+
+		getLogger().info("============= 2016 semi-legacy launcher calling makeLegacyELRC() ======");
+		EnhancedLocalRepoClient elrc = makeLegacyELRC(mergedProfileJM, legConfEHost);
+
+		getLogger().info("============= 2016 semi-legacy launcher calling startSemiLegacyBodyConn_OSGi_Sinbad() ======");
+		// This method instantiates necessary config objects and outer callback ("bodyNoticer"),
+		// and then enqueues an async request for the char-admin actor.
+
+		appSvc.startSemiLegacyBodyConn_OSGi_Sinbad(bundleCtx, akkaSys, elrc);
+		getLogger().info("============= 2016 semi-legacy VWorld + Body launcher is done sending messages  ======");
+
+	}
+	private NavUiAppImpl startVWorldNavUI_2016(BundleContext bundleCtx, ActorSystem akkaSys) {
 		NavUiAppImpl nuiApp = new NavUiAppImpl(akkaSys);
 		getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^  TestNavUI.main() created nuiApp={}", nuiApp);
-		// info0("^^^^^^^^^^^^^^^^^^^^^^^^  TestNavUI.main() - fetching legacy config graphs")
-		// val legConfERC_opt = nuii.getLegConfERC_opt
-		// info1("^^^^^^^^^^^^^^^^^^^^^^^^  TestNavUI.main() got legConfERC_opt={}", legConfERC_opt)
 		nuiApp.sendSetupMsgs_Async();
 		return nuiApp;
 	}
 
-	// Yet STILL a semi-old way of producing body conf (from legacy-style repo), but no longer buried under the PUMA.
-	// It is now better, when possible, to instead pull the body conf from recipes and our finer, newer chunks,
-	// and also to do that asynchronously upon request, compliant with lifecycles of model-blending-ctx guys.
-	// We keep both alternatives alive to help during debugging.
-
-	// This method instantiates necessary config objects and outer callback ("bodyNoticer"),
-	// and then enqueues an async request for the char-admin actor.
-
-	public void startSemiLegacyBodyConn_Sinbad(BundleContext bundleCtx, ActorSystem akkaSys, EnhancedLocalRepoClient legacyELRC, NavUiAppSvc appSvc) {
-		appSvc.startSemiLegacyBodyConn_OSGi_Sinbad(bundleCtx, akkaSys, legacyELRC);
-	}
-/*
-	public void startUpgradedYetLegacyBodyConn(BundleContext bundleCtx, ActorSystem akkaSys, EnhancedLocalRepoClient legacyELRC, NavUiAppSvc appSvc) {
-
-		Ident dualBodyID = new FreeIdent("urn:ftd:cogchar.org:2012:runtime#char_sinbad_88");
-		Ident hmdGraphID = new FreeIdent("urn:ftd:cogchar.org:2012:runtime#hmd_sheet_22");
-		Ident bonyGraphID = new FreeIdent("urn:ftd:cogchar.org:2012:runtime#bony_sheet_sinbad");
-
-		FigureConfig partialFigCfg = new FigureConfig(legacyELRC, dualBodyID, hmdGraphID);
-
-		BodyConnImpl bci = new BodyConnImpl(bundleCtx, dualBodyID);
-
-		RepoClient legacyRC_hooboy = legacyELRC;
-
-		bci.connectBonyRobot_usingOldRC(bundleCtx, partialFigCfg, bonyGraphID, legacyRC_hooboy);
-
-		ModelBlendingRobotServiceContext mbrsc = bci.getMBRSvcCtx();
-
-		HumaConfHelper hch = new HumaConfHelper();
-
-		// Next three lines are  just our obtuse way to get a default mat string, which happens to be:
-		// 	val PATH_UNSHADED_MAT =  "Common/MatDefs/Misc/Unshaded.j3md";
-		scala.Option<String> noURI = scala.Option.apply(null);
-		RenderConfigEmitter rce = new RenderConfigEmitter(noURI);
-		String matPath = rce.getMaterialPath();
-		HumanoidFigureConfig fullHumaCfg = hch.finishOldConfLoad(partialFigCfg, legacyRC_hooboy, bonyGraphID, matPath);
-
-		getLogger().info("Posting patient char create Rq for body={}", dualBodyID);
-		ExoBodyUserLogic userLogic = new ExoBodyUserLogic() {
-			@Override public void rcvBodyNotice(VWBodyNotice bodyNotice) {
-				super.rcvBodyNotice(bodyNotice);
-				CPStrongTeller<VWBodyRq> bodyTeller = bodyNotice.getBodyTeller();
-				VWBodyRq moveRq = new VWBodyMoveRq(-2.0f, 12.0f, -1.0f);
-				info2("ExoUserBodyLogic found body teller={}.   Sending moveRq={}", bodyTeller, moveRq);
-				bodyTeller.tellStrongCPMsg(moveRq);
-			}
-		};
-		CPStrongTeller<VWBodyNotice> bodyNoticer = appSvc.makeExoBodyUserTeller(akkaSys, "coolBodyUser", userLogic);
-
-		// Now we've done all the "outer" setup that requires assumptions, and we can
-		// send off a tidy async request to the v-world actors, requesting them to
-		// instantiate the avatar body and send back a notice when done, to our bodyNoticer.
-		// THEN our bodyNoticer can send more requests do any additional manipulation on the body
-		// such as move its v-world position and orientation, attach a camera, launch an animation.
-
-		appSvc.postPatientCharCreateRq(dualBodyID, fullHumaCfg, mbrsc, bodyNoticer);
-
-	}
-*/
 	// profileDataMarkerClz should have same classpath (i.e. same OSGi bundle) as the profile data.
 	private Model loadMergedProfileGraph(EntryHost	 profileEHost) {
 		Model mergedProfileGraph = TestRaizLoad.getMergedProfileGraph_RegularDesktop(profileEHost);
