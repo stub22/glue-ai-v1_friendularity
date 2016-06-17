@@ -9,7 +9,7 @@ import org.friendularity.cpump.CPStrongTeller
 trait VWBodyLifeRq extends VWorldRequest // disjoint from VWBodyRq
 
 case class VWBodyMakeRq(dualBodyID: Ident, fullHumaCfg : HumanoidFigureConfig,
-						myMBRoboSvcCtx : ModelBlendingRobotServiceContext,
+						myMBRoboSvcCtx_opt : Option[ModelBlendingRobotServiceContext],
 						answerTeller : CPStrongTeller[VWBodyNotice]) extends VWBodyLifeRq
 
 // Message sent directly to a particular existing VWBody, not for creation/deletion of same.

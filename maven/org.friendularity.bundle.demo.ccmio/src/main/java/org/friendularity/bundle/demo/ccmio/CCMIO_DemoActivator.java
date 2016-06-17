@@ -158,7 +158,8 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 			EnhancedLocalRepoClient elrc = makeLegacyELRC(mergedProfileJM, legConfEHost);
 			// Temporary revised compromise here - keep using the old data known to work until we can prove that
 			// newer data is workin.
-			startUpgradedYetLegacyBodyConn(bundleCtx, akkaSys, elrc, appSvc);
+		//	startUpgradedYetLegacyBodyConn(bundleCtx, akkaSys, elrc, appSvc);
+			startSemiLegacyBodyConn_Sinbad(bundleCtx, akkaSys, elrc, appSvc);
 		}
 
 		getLogger().info("============ Calling launchCPumpService() ==========");
@@ -179,6 +180,10 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 		nuiApp.sendSetupMsgs_Async();
 		return nuiApp;
 	}
+
+	public void 	improvedButStillPartlyLegacy(BundleContext bundleCtx, ActorSystem akkaSys, EnhancedLocalRepoClient legacyELRC, NavUiAppSvc appSvc) {
+
+	}
 	// Yet STILL a semi-old way of producing body conf (from legacy-style repo), but no longer buried under the PUMA.
 	// It is now better, when possible, to instead pull the body conf from recipes and our finer, newer chunks,
 	// and also to do that asynchronously upon request, compliant with lifecycles of model-blending-ctx guys.
@@ -186,6 +191,11 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 
 	// This method instantiates necessary config objects and outer callback ("bodyNoticer"),
 	// and then enqueues an async request for the char-admin actor.
+
+	public void startSemiLegacyBodyConn_Sinbad(BundleContext bundleCtx, ActorSystem akkaSys, EnhancedLocalRepoClient legacyELRC, NavUiAppSvc appSvc) {
+		appSvc.startSemiLegacyBodyConn_OSGi_Sinbad(bundleCtx, akkaSys, legacyELRC);
+	}
+/*
 	public void startUpgradedYetLegacyBodyConn(BundleContext bundleCtx, ActorSystem akkaSys, EnhancedLocalRepoClient legacyELRC, NavUiAppSvc appSvc) {
 
 		Ident dualBodyID = new FreeIdent("urn:ftd:cogchar.org:2012:runtime#char_sinbad_88");
@@ -228,14 +238,11 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 		// instantiate the avatar body and send back a notice when done, to our bodyNoticer.
 		// THEN our bodyNoticer can send more requests do any additional manipulation on the body
 		// such as move its v-world position and orientation, attach a camera, launch an animation.
+
 		appSvc.postPatientCharCreateRq(dualBodyID, fullHumaCfg, mbrsc, bodyNoticer);
 
-		// This is something we have to wait for VWorld postponed init:
-		// HumanoidRenderContext hrc
-		// DualBodyHelper hfh = new DualBodyHelper()
-		// hfh.humanize();
 	}
-
+*/
 	// profileDataMarkerClz should have same classpath (i.e. same OSGi bundle) as the profile data.
 	private Model loadMergedProfileGraph(EntryHost	 profileEHost) {
 		Model mergedProfileGraph = TestRaizLoad.getMergedProfileGraph_RegularDesktop(profileEHost);

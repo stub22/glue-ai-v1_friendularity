@@ -89,18 +89,23 @@ trait DualBodyInitFuncs extends VarargsLogging {
 }
 class DualBodyHelper() extends HumaFigureInitFuncs with DualBodyInitFuncs {
 	// Cannot be called until we have both a happy V-World context and a happy Model-BoneRobot conn to MechIO.
-	def finishDualBodInit(dualBodyID: Ident, mbsrc : ModelBlendingRobotServiceContext, pmrc: PhysicalModularRenderContext,
+	def finishDualBodInit(dualBodyID: Ident, mbsrc_opt : Option[ModelBlendingRobotServiceContext], pmrc: PhysicalModularRenderContext,
 						  hfm : HumanoidFigureManager, hfConf  : HumanoidFigureConfig) : DualBodyRecord = {
 		info1("******* ********************** Calling makeAndAttachHumaFigure for dualBodyID={}", dualBodyID)
 		val humaFig : HumanoidFigure = makeAndAttachHumaFigure(pmrc, hfm, hfConf)
-		info1("******* ********************** Calling attachBonyRobotToFigure for dualBodyID={}", dualBodyID)
-		val vwRoboPump = attachBonyRobotToFigure(mbsrc, dualBodyID, humaFig);
+
+
+		val vwRoboPump_opt : Option[VWorldRoboPump] = mbsrc_opt.map(mrbsc => {
+			info1("******* **********************  attachBonyRobotToFigure for dualBodyID={}", dualBodyID)
+			attachBonyRobotToFigure(mrbsc, dualBodyID, humaFig)
+		})
+
 		info1("******* ********************** Finished attaching bony robot and human figure for dualBodyID={}", dualBodyID)
-		new DualBodyRecord(dualBodyID, mbsrc, hfConf, humaFig, vwRoboPump)
+		new DualBodyRecord(dualBodyID, hfConf, humaFig, vwRoboPump_opt)
 	}
 }
-case class DualBodyRecord(dualBodyID: Ident, mbsrc : ModelBlendingRobotServiceContext, hfConf  : HumanoidFigureConfig,
-						  humaFig: HumanoidFigure, vwRoboPump : VWorldRoboPump)
+case class DualBodyRecord(dualBodyID: Ident, hfConf  : HumanoidFigureConfig,
+						  humaFig: HumanoidFigure, vwRoboPump_opt : Option[VWorldRoboPump])
 
 class HumaConfHelper() extends HumaFigureInitFuncs {
 	def finishOldConfLoad(partialFigCfg : FigureConfig, repoCli : RepoClient, bonyGraphID : Ident, matPath : String) : HumanoidFigureConfig = {
@@ -124,7 +129,7 @@ trait BodyConn extends VarargsLogging {
 		new ModelBlendingRobotServiceContext(bunCtx)
 	}
 
-	protected def getMBRSvcCtx : ModelBlendingRobotServiceContext = myMBRSvcCtx
+	def getMBRSvcCtx : ModelBlendingRobotServiceContext = myMBRSvcCtx
 
 	protected def getBundleCtx : BundleContext
 
