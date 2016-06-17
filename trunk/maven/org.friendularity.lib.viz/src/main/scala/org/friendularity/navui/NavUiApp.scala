@@ -1,21 +1,24 @@
 package org.friendularity.navui
 
 import akka.actor.{ActorRef, ActorSystem, ActorRefFactory}
-import org.appdapter.core.name.Ident
+import org.appdapter.core.name.{FreeIdent, Ident}
 import org.appdapter.fancy.log.VarargsLogging
+import org.appdapter.fancy.rclient.EnhancedLocalRepoClient
 import org.cogchar.api.humanoid.HumanoidFigureConfig
 import org.cogchar.bind.mio.robot.svc.ModelBlendingRobotServiceContext
 import org.friendularity.cpump.{ActorRefCPMsgTeller, CPStrongTeller}
 import org.friendularity.dull.SpecialAppPumpSpace
 import org.friendularity.respire._
+import org.friendularity.vwimpl.LegacyBodyMgr
 import org.friendularity.vwmsg.{VWBodyMoveRq, VWBodyRq, VWBodyMakeRq, VWBodyLifeRq, VWARM_FindPublicTellers, VWSetupRq_Lnch, VWSetupRq_Conf, VWARM_GreetFromPumpAdmin, VWBodyNotice}
+import org.osgi.framework.BundleContext
 
 /**
   * Created by Owner on 6/8/2016.
   */
 trait NavUiAppSvc extends VarargsLogging {
 	def postPatientCharCreateRq(dualBodyID : Ident, fullHumaCfg : HumanoidFigureConfig,
-								mbrsc : ModelBlendingRobotServiceContext, answerTeller : CPStrongTeller[VWBodyNotice])
+								mbrsc_opt : Option[ModelBlendingRobotServiceContext], answerTeller : CPStrongTeller[VWBodyNotice])
 
 	def makeExoBodyUserTeller(parentARF : ActorRefFactory, ebuActorName : String, userLogic : ExoBodyUserLogic) : CPStrongTeller[VWBodyNotice] = {
 		val ebuActor = ExoActorFactory.makeExoBodyUserActor(parentARF, ebuActorName, userLogic)
@@ -36,10 +39,29 @@ trait NavUiAppSvc extends VarargsLogging {
 		userLogic
 	}
 
+	val sinbadBodyID : Ident = new FreeIdent("urn:ftd:cogchar.org:2012:runtime#char_sinbad_88")
+	val hmdGraphID: Ident = new FreeIdent("urn:ftd:cogchar.org:2012:runtime#hmd_sheet_22")
+	val bonyGraphID: Ident = new FreeIdent("urn:ftd:cogchar.org:2012:runtime#bony_sheet_sinbad")
+
+	def startSemiLegacyBodyConn_OSGi_Sinbad(bundleCtx: BundleContext, akkaSys: ActorSystem,
+									   legacyELRC: EnhancedLocalRepoClient): Unit = {
+
+		val legBodyMgr = new LegacyBodyMgr{}
+		val fullHumaCfg : HumanoidFigureConfig = legBodyMgr.loadSinbadHumaConf(legacyELRC, bundleCtx, sinbadBodyID)
+		val mbrsc: ModelBlendingRobotServiceContext = legBodyMgr.connectMechIOBody(legacyELRC, bundleCtx, fullHumaCfg, bonyGraphID)
+
+		val funUserLogic = makeFunUserLogic()
+		val bodyNoticer : CPStrongTeller[VWBodyNotice] = makeExoBodyUserTeller(akkaSys, "sinbad_ccmio_body_user", funUserLogic)
+
+		postPatientCharCreateRq(sinbadBodyID, fullHumaCfg, Option(mbrsc), bodyNoticer)
+
+	}
 
 }
 
-// "App" here means FriendU app, not a JME3 "app".  The latter is made during launchSimRenderSpace at bottom.
+// "App" here means FriendU app, not a JME3 "app".  (This instance is several layers further out)
+// The latter is made during launchSimRenderSpace in VWCore.scala.
+
 class NavUiAppImpl(myAkkaSys : ActorSystem) extends NavUiAppSvc {
 
 	lazy private val myStandalonePumpSpace = new SpecialAppPumpSpace(myAkkaSys)
@@ -98,8 +120,8 @@ class NavUiAppImpl(myAkkaSys : ActorSystem) extends NavUiAppSvc {
 	def appendCharAdmRq(chrAdmRq : VWBodyLifeRq) : Unit = charAdmForwarderLogic.appendInboundRq(chrAdmRq)
 
 	override def postPatientCharCreateRq(dualBodyID : Ident, fullHumaCfg : HumanoidFigureConfig,
-										 mbrsc : ModelBlendingRobotServiceContext, answerTeller : CPStrongTeller[VWBodyNotice]) : Unit = {
-		val ccrq = VWBodyMakeRq(dualBodyID, fullHumaCfg, mbrsc, answerTeller)
+										 mbrsc_opt : Option[ModelBlendingRobotServiceContext], answerTeller : CPStrongTeller[VWBodyNotice]) : Unit = {
+		val ccrq = new VWBodyMakeRq(dualBodyID, fullHumaCfg, mbrsc_opt, answerTeller)
 		appendCharAdmRq(ccrq)
 	}
 	def testDetachedGS : Unit = {

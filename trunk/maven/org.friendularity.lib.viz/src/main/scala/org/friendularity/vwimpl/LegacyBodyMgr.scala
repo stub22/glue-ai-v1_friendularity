@@ -21,19 +21,21 @@ class LegacyBodyMgr extends VarargsLogging {
 	// It is now better, when possible, to instead pull the body conf from recipes and our finer, newer chunks,
 	// and also to do that asynchronously upon request, compliant with lifecycles of model-blending-ctx guys.
 	// We keep both alternatives alive to help during debugging.
-	def startUpgradedYetLegacyBodyConn(bundleCtx: BundleContext, akkaSys: ActorSystem,
-									   legacyELRC: EnhancedLocalRepoClient, appSvc: NavUiAppSvc) {
-		val dualBodyID: Ident = new FreeIdent("urn:ftd:cogchar.org:2012:runtime#char_sinbad_88")
+
+	def loadSinbadHumaConf(legacyELRC: EnhancedLocalRepoClient, bundleCtx: BundleContext,
+						   sinbadCharID : Ident) :	HumanoidFigureConfig = {
+		val dualBodyID: Ident = sinbadCharID // new FreeIdent("urn:ftd:cogchar.org:2012:runtime#char_sinbad_88")
 		val hmdGraphID: Ident = new FreeIdent("urn:ftd:cogchar.org:2012:runtime#hmd_sheet_22")
 		val bonyGraphID: Ident = new FreeIdent("urn:ftd:cogchar.org:2012:runtime#bony_sheet_sinbad")
-		val fullHumaCfg: HumanoidFigureConfig =
+		val fullHumaCfg: HumanoidFigureConfig = loadFullHumaConfig_SemiLegacy(legacyELRC, bundleCtx,
+					dualBodyID, hmdGraphID, bonyGraphID)
 		getLogger.info("Posting patient char create Rq for body={}", dualBodyID)
-		// val mbrsc: ModelBlendingRobotServiceContext = bci.getMBRSvcCtx
-		// val bodyNoticer: CPStrongTeller[VWBodyNotice] = appSvc.makeExoBodyUserTeller(akkaSys, "coolBodyUser", userLogic)
-		// appSvc.postPatientCharCreateRq(dualBodyID, fullHumaCfg, mbrsc, bodyNoticer)
+		fullHumaCfg
 
 	}
-	def loadFullHumaConfig_SemiLegacy(legacyELRC: EnhancedLocalRepoClient, bundleCtx: BundleContext, dualBodyID : Ident, hmdGraphID : Ident, bonyGraphID : Ident) : HumanoidFigureConfig = {
+	def loadFullHumaConfig_SemiLegacy(legacyELRC: EnhancedLocalRepoClient, bundleCtx: BundleContext,
+				dualBodyID : Ident, hmdGraphID : Ident, bonyGraphID : Ident) : HumanoidFigureConfig = {
+
 		val partialFigCfg: FigureConfig = new FigureConfig(legacyELRC, dualBodyID, hmdGraphID)
 		val bci: BodyConnImpl = new BodyConnImpl(bundleCtx, dualBodyID)
 		val legacyRC_hooboy: RepoClient = legacyELRC
@@ -45,5 +47,16 @@ class LegacyBodyMgr extends VarargsLogging {
 		val matPath: String = rce.getMaterialPath
 		val fullHumaCfg: HumanoidFigureConfig = hch.finishOldConfLoad(partialFigCfg, legacyRC_hooboy, bonyGraphID, matPath)
 		fullHumaCfg
+	}
+	// OK to pass in either a partial FigureConfig or a full HumanoidFigureConfig
+	def connectMechIOBody(legacyELRC: EnhancedLocalRepoClient, bundleCtx: BundleContext,
+						  partialFigCfg: FigureConfig, bonyGraphID : Ident) : ModelBlendingRobotServiceContext = {
+
+		val dualBodyID = partialFigCfg.getFigureID
+		val bci: BodyConnImpl = new BodyConnImpl(bundleCtx, dualBodyID)
+		val legacyRC_hooboy: RepoClient = legacyELRC
+		bci.connectBonyRobot_usingOldRC(bundleCtx, partialFigCfg, bonyGraphID, legacyRC_hooboy)
+		val mbrsc: ModelBlendingRobotServiceContext = bci.getMBRSvcCtx
+		mbrsc
 	}
 }

@@ -33,16 +33,16 @@ trait VWCharMgrJobLogic extends VarargsLogging {
 
 	lazy private val myHelper = new DualBodyHelper
 	def createAndBindVWBody(dualBodyID: Ident,  fullHumaCfg : HumanoidFigureConfig,
-							mbsrc : ModelBlendingRobotServiceContext) : DualBodyRecord = {
+							mbsrc_opt : Option[ModelBlendingRobotServiceContext]) : DualBodyRecord = {
 		val pmrc = getChrMgrCtx.getRenderCtx
 		val hfm = getChrMgrCtx.getHumaFigMgr
-		myHelper.finishDualBodInit(dualBodyID, mbsrc, pmrc, hfm, fullHumaCfg)
+		myHelper.finishDualBodInit(dualBodyID, mbsrc_opt, pmrc, hfm, fullHumaCfg)
 	}
 	def processCharRq(vwcr: VWBodyLifeRq, slfActr : ActorRef, localActorCtx : ActorContext): Unit = {
 		vwcr match {
 			case crchr : VWBodyMakeRq => {
 				info1("Processing create-char rq={}", crchr)
-				val dbr : DualBodyRecord = createAndBindVWBody(crchr.dualBodyID, crchr.fullHumaCfg, crchr.myMBRoboSvcCtx)
+				val dbr : DualBodyRecord = createAndBindVWBody(crchr.dualBodyID, crchr.fullHumaCfg, crchr.myMBRoboSvcCtx_opt)
 				info1("Finished connecting dual body, now what kind of notices do we want to send?  dbr={}", dbr)
 				val actorName = "bdActr_" + crchr.dualBodyID.getLocalName
 				val bodyActor = VWorldActorFactoryFuncs.makeVWBodyActor(localActorCtx, actorName, dbr)
