@@ -16,13 +16,13 @@ import org.osgi.framework.BundleContext
 /**
   * Created by Owner on 6/16/2016.
   */
-class LegacyBodyMgr extends VarargsLogging {
+class LegacyBodyLoader_Stateless extends VarargsLogging {
 	// Yet STILL a semi-old way of producing body conf (from legacy-style repo), but no longer buried under the PUMA.
 	// It is now better, when possible, to instead pull the body conf from recipes and our finer, newer chunks,
 	// and also to do that asynchronously upon request, compliant with lifecycles of model-blending-ctx guys.
 	// We keep both alternatives alive to help during debugging.
 
-	def loadFullHumaConfig_SemiLegacy(legacyELRC: EnhancedLocalRepoClient, bundleCtx: BundleContext,
+	def loadFullHumaConfig_SemiLegacy(legacyELRC: EnhancedLocalRepoClient,
 				dualBodyID : Ident, hmdGraphID : Ident, bonyGraphID : Ident) : HumanoidFigureConfig = {
 
 		val partialFigCfg: FigureConfig = new FigureConfig(legacyELRC, dualBodyID, hmdGraphID)

@@ -30,16 +30,17 @@ trait VWorldBossLogic [VWSM <: VWorldSysMgr] extends VarargsLogging with VWPTRen
 
 	protected def processVWAdminMsg(vwmsg : VWAdminRqMsg, localActorCtx : ActorContext): Unit = {
 		val sysMgr = getSysMgr
-		info3("Processing  msg={} with sysMgr={} and actCtx={}", vwmsg, sysMgr, localActorCtx)
+		info3("VWBoss processing  msg={} with sysMgr={} and actCtx={}", vwmsg, sysMgr, localActorCtx)
 		vwmsg match {
 			case gfpa : VWARM_GreetFromPumpAdmin => {
-
+				info1("VWBoss says thanks for the greet msg: {}", gfpa)
 			}
 			/*
 			case fgt : VWARM_FindGoodyTeller => {
 			}
 			*/
 			case fpt : VWARM_FindPublicTellers => {
+				info1("VWBoss registering a pub-teller listener: {}", fpt)
 				addVWPTListener(fpt.answerTeller)
 			}
 		}

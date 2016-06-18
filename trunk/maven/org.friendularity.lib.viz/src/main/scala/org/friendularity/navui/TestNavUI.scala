@@ -78,6 +78,10 @@ object TestNavUI extends VarargsLogging {
 		// val legConfERC_opt = nuii.getLegConfERC_opt
 		// info1("^^^^^^^^^^^^^^^^^^^^^^^^  TestNavUI.main() got legConfERC_opt={}", legConfERC_opt)
 		nuii.sendSetupMsgs_Async
+
+
+		appSysStandalone.startSemiLegacyBodyConn_Sinbad()
+
 		// info0("^^^^^^^^^^^^^^^^^^^^^^^^  TestNavUI.main() finished running setup msgs, now making SimSpace VWCanv")
 		// nuii.launchSimRenderSpace()
 		//info0("^^^^^^^^^^^^^^^^^^^^^^^^  TestNavUI.main() finished launchSimRenderSpace()")
@@ -108,7 +112,30 @@ class StandaloneNavAppSys() {
 	lazy private val myNavUiApp = new NavUiAppImpl(myAkkaSys)
 
 	def findOrMakeNavUiApp : NavUiAppImpl = myNavUiApp
-}
 
+	lazy private val myLegacyELRC: EnhancedLocalRepoClient = {
+
+		// Note that TestRaizLoad extends AvatarLegacySetupFuncs, and is also currently used from CCMIO_DemoActivator
+		val unitTestConfEHost: EntryHost = TestRaizLoad.getUnitTestResourceEntryHost
+		val mergedProfileGraph: JenaModel = TestRaizLoad.getMergedProfileGraph_RegularDesktop(unitTestConfEHost)
+		val legConfEHost: EntryHost = unitTestConfEHost // just emphasizing this is a separate choice
+		val vzBrkRcpUriTxt: String = TestRaizLoad.vzpLegCnfBrkrRcpUriTxt
+		TestRaizLoad.makeAvatarLegacyConfigRepo(mergedProfileGraph, vzBrkRcpUriTxt, legConfEHost)
+	}
+
+	def getLegacyELRC : EnhancedLocalRepoClient = myLegacyELRC
+
+	def startSemiLegacyBodyConn_Sinbad(): Unit = {
+		myNavUiApp.startSemiLegacyBodyConn_Standy_Sinbad(myAkkaSys, myLegacyELRC)
+	}
+}
+/*
+	private   def makeLegacyELRC(mergedProfileGraph : Model, legConfEHost : EntryHost) : EnhancedLocalRepoClient = {
+  val vzBrkRcpUriTxt : String = TestRaizLoad.vzpLegCnfBrkrRcpUriTxt
+  val legacyConfERC : EnhancedLocalRepoClient = TestRaizLoad.makeAvatarLegacyConfigRepo(mergedProfileGraph, vzBrkRcpUriTxt, legConfEHost)
+getLogger.info("legConfEnhRepoCli={}", legacyConfERC)
+return legacyConfERC
+}
+ */
 
 
