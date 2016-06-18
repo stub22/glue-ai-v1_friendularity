@@ -79,8 +79,7 @@ object TestNavUI extends VarargsLogging {
 		// info1("^^^^^^^^^^^^^^^^^^^^^^^^  TestNavUI.main() got legConfERC_opt={}", legConfERC_opt)
 		nuii.sendSetupMsgs_Async
 
-
-		appSysStandalone.startSemiLegacyBodyConn_Sinbad()
+		appSysStandalone.sendStart_SemiLegacySinbad()
 
 		// info0("^^^^^^^^^^^^^^^^^^^^^^^^  TestNavUI.main() finished running setup msgs, now making SimSpace VWCanv")
 		// nuii.launchSimRenderSpace()
@@ -125,17 +124,9 @@ class StandaloneNavAppSys() {
 
 	def getLegacyELRC : EnhancedLocalRepoClient = myLegacyELRC
 
-	def startSemiLegacyBodyConn_Sinbad(): Unit = {
-		myNavUiApp.startSemiLegacyBodyConn_Standy_Sinbad(myAkkaSys, myLegacyELRC)
+	def sendStart_SemiLegacySinbad(): Unit = {
+		myNavUiApp.requestStandySemiLegacyBody_Sinbad(myAkkaSys, myLegacyELRC)
 	}
 }
-/*
-	private   def makeLegacyELRC(mergedProfileGraph : Model, legConfEHost : EntryHost) : EnhancedLocalRepoClient = {
-  val vzBrkRcpUriTxt : String = TestRaizLoad.vzpLegCnfBrkrRcpUriTxt
-  val legacyConfERC : EnhancedLocalRepoClient = TestRaizLoad.makeAvatarLegacyConfigRepo(mergedProfileGraph, vzBrkRcpUriTxt, legConfEHost)
-getLogger.info("legConfEnhRepoCli={}", legacyConfERC)
-return legacyConfERC
-}
- */
 
 

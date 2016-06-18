@@ -44,8 +44,11 @@ trait NavUiAppSvc extends VarargsLogging {
 	val hmdGraphID: Ident = new FreeIdent("urn:ftd:cogchar.org:2012:runtime#hmd_sheet_22")
 	val bonyGraphID: Ident = new FreeIdent("urn:ftd:cogchar.org:2012:runtime#bony_sheet_sinbad")
 
-	def startSemiLegacyBodyConn_OSGi_Sinbad(bundleCtx: BundleContext, akkaSys: ActorSystem,
-									   legacyELRC: EnhancedLocalRepoClient): Unit = {
+	// Includes MechIO anim connections, requires bundleCtx.
+	// TODO:  If we were sending to an actor that knew how to discover the MechIOBody connection,
+	// possibly by waiting for a lifecycle update, then this impl could be same as the "Standy" method below.
+	def requestSemiLegacyBodyConn_OSGi_Sinbad(bundleCtx: BundleContext, akkaSys: ActorSystem,
+											  legacyELRC: EnhancedLocalRepoClient): Unit = {
 
 		val legBodyLdr = new LegacyBodyLoader_Stateless
 		val fullHumaCfg : HumanoidFigureConfig = legBodyLdr.loadFullHumaConfig_SemiLegacy(legacyELRC, sinbadBodyID, hmdGraphID, bonyGraphID)
@@ -63,8 +66,9 @@ trait NavUiAppSvc extends VarargsLogging {
 		postPatientCharCreateRq(sinbadBodyID, fullHumaCfg, Option(mbrsc), bodyNoticer)
 
 	}
-	def startSemiLegacyBodyConn_Standy_Sinbad(akkaSys: ActorSystem,
-											legacyELRC: EnhancedLocalRepoClient): Unit = {
+	// Creates a posable VW character, but does not ask for or assume any MechIO (or other OSGi) infrastructure.
+	def requestStandySemiLegacyBody_Sinbad(akkaSys: ActorSystem,
+										   legacyELRC: EnhancedLocalRepoClient): Unit = {
 		val legBodyLdr = new LegacyBodyLoader_Stateless
 		val fullHumaCfg : HumanoidFigureConfig = legBodyLdr.loadFullHumaConfig_SemiLegacy(legacyELRC, sinbadBodyID, hmdGraphID, bonyGraphID)
 		val funUserLogic = makeFunUserLogic()
@@ -105,6 +109,10 @@ class NavUiAppImpl(myAkkaSys : ActorSystem) extends NavUiAppSvc with NavPumpSpac
 	lazy private val charAdmForwarderLogic = new PatientForwarder_CharAdminTest {}
 	lazy private val charAdmSenderTrigTeller  = OuterJobbyLogic_MasterFactory.makeOoLogicAndTeller(charAdmForwarderLogic, myAkkaSys, "charAdmForwarder")
 
+
+	// Desired effect of these messages is to launch a running OpenGL v-world, ready for characters and other content
+	// to be inserted into it.  Those facilities are available via actors defined in PubTeller replies sent to the
+	// postInitWaiters.
 	def sendSetupMsgs_Async {
 
 		sendGreetMsgs_Async(myVWBossTeller)  // No concrete effect as of 2016-06-16
@@ -118,7 +126,7 @@ class NavUiAppImpl(myAkkaSys : ActorSystem) extends NavUiAppSvc with NavPumpSpac
 
 		sendVWSetup_Lnch() // First and only call that really makes async launch happen, as of 206-06-17
 
-		registerPostInitWaiters() // Setup listeners to do more stuff at appropriate times.
+		registerPostInitWaiters() // Setup listeners to do more stuff at appropriate times, as VWorld init completes.
 	}
 	def sendVWSetup_Conf() : Unit = {
 		val msg = new VWSetupRq_Conf
@@ -142,7 +150,7 @@ class NavUiAppImpl(myAkkaSys : ActorSystem) extends NavUiAppSvc with NavPumpSpac
 		myVWBossTeller.tellCPMsg(charAdmRegMsg)
 
 	}
-	// Could easily send this in as an actor msg, probably will soon, but trying to prevent confusion across API layers.
+	// Could easily send this in as an actor msg, except for the optional MechIO-OSGi connection.
 	def appendCharAdmRq(chrAdmRq : VWBodyLifeRq) : Unit = charAdmForwarderLogic.appendInboundRq(chrAdmRq)
 
 	override def postPatientCharCreateRq(dualBodyID : Ident, fullHumaCfg : HumanoidFigureConfig,
