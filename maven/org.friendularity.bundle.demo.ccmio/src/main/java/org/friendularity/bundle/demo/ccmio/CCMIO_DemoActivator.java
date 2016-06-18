@@ -168,7 +168,7 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 	}
 	private NavUiAppImpl startVWorldNavUI_2016(BundleContext bundleCtx, ActorSystem akkaSys) {
 		NavUiAppImpl nuiApp = new NavUiAppImpl(akkaSys);
-		getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^  TestNavUI.main() created nuiApp={}", nuiApp);
+		getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^  TestNavUI.main() created nuiApp={}\n\nNow sending setup msgs", nuiApp);
 		nuiApp.sendSetupMsgs_Async();
 		return nuiApp;
 	}

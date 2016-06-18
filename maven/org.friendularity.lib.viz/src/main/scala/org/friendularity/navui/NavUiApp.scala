@@ -6,10 +6,10 @@ import org.appdapter.fancy.log.VarargsLogging
 import org.appdapter.fancy.rclient.EnhancedLocalRepoClient
 import org.cogchar.api.humanoid.HumanoidFigureConfig
 import org.cogchar.bind.mio.robot.svc.ModelBlendingRobotServiceContext
-import org.friendularity.cpump.{ActorRefCPMsgTeller, CPStrongTeller}
+import org.friendularity.cpump.{CPMsgTeller, ActorRefCPMsgTeller, CPStrongTeller}
 import org.friendularity.dull.SpecialAppPumpSpace
 import org.friendularity.respire._
-import org.friendularity.vwimpl.LegacyBodyMgr
+import org.friendularity.vwimpl.LegacyBodyLoader_Stateless
 import org.friendularity.vwmsg.{VWBodyMoveRq, VWBodyRq, VWBodyMakeRq, VWBodyLifeRq, VWARM_FindPublicTellers, VWSetupRq_Lnch, VWSetupRq_Conf, VWARM_GreetFromPumpAdmin, VWBodyNotice}
 import org.osgi.framework.BundleContext
 
@@ -18,7 +18,8 @@ import org.osgi.framework.BundleContext
   */
 trait NavUiAppSvc extends VarargsLogging {
 	def postPatientCharCreateRq(dualBodyID : Ident, fullHumaCfg : HumanoidFigureConfig,
-								mbrsc_opt : Option[ModelBlendingRobotServiceContext], answerTeller : CPStrongTeller[VWBodyNotice])
+								mbrsc_opt : Option[ModelBlendingRobotServiceContext],
+								answerTeller : CPStrongTeller[VWBodyNotice]) : Unit
 
 	def makeExoBodyUserTeller(parentARF : ActorRefFactory, ebuActorName : String, userLogic : ExoBodyUserLogic) : CPStrongTeller[VWBodyNotice] = {
 		val ebuActor = ExoActorFactory.makeExoBodyUserActor(parentARF, ebuActorName, userLogic)
@@ -46,9 +47,9 @@ trait NavUiAppSvc extends VarargsLogging {
 	def startSemiLegacyBodyConn_OSGi_Sinbad(bundleCtx: BundleContext, akkaSys: ActorSystem,
 									   legacyELRC: EnhancedLocalRepoClient): Unit = {
 
-		val legBodyMgr = new LegacyBodyMgr{}
-		val fullHumaCfg : HumanoidFigureConfig = legBodyMgr.loadFullHumaConfig_SemiLegacy(legacyELRC, bundleCtx, sinbadBodyID, hmdGraphID, bonyGraphID)
-		val mbrsc: ModelBlendingRobotServiceContext = legBodyMgr.connectMechIOBody(legacyELRC, bundleCtx, fullHumaCfg, bonyGraphID)
+		val legBodyLdr = new LegacyBodyLoader_Stateless
+		val fullHumaCfg : HumanoidFigureConfig = legBodyLdr.loadFullHumaConfig_SemiLegacy(legacyELRC, sinbadBodyID, hmdGraphID, bonyGraphID)
+		val mbrsc: ModelBlendingRobotServiceContext = legBodyLdr.connectMechIOBody(legacyELRC, bundleCtx, fullHumaCfg, bonyGraphID)
 
 		val funUserLogic = makeFunUserLogic()
 		val bodyNoticer : CPStrongTeller[VWBodyNotice] = makeExoBodyUserTeller(akkaSys, "sinbad_ccmio_body_user", funUserLogic)
@@ -62,22 +63,40 @@ trait NavUiAppSvc extends VarargsLogging {
 		postPatientCharCreateRq(sinbadBodyID, fullHumaCfg, Option(mbrsc), bodyNoticer)
 
 	}
-
+	def startSemiLegacyBodyConn_Standy_Sinbad(akkaSys: ActorSystem,
+											legacyELRC: EnhancedLocalRepoClient): Unit = {
+		val legBodyLdr = new LegacyBodyLoader_Stateless
+		val fullHumaCfg : HumanoidFigureConfig = legBodyLdr.loadFullHumaConfig_SemiLegacy(legacyELRC, sinbadBodyID, hmdGraphID, bonyGraphID)
+		val funUserLogic = makeFunUserLogic()
+		val bodyNoticer : CPStrongTeller[VWBodyNotice] = makeExoBodyUserTeller(akkaSys, "sinbad_standy_body_user", funUserLogic)
+		postPatientCharCreateRq(sinbadBodyID, fullHumaCfg, None, bodyNoticer)
+	}
 }
 
+trait NavPumpSpaceOwner extends VarargsLogging {
+	protected def getAkkaSys : ActorSystem
+	lazy private val myPumpSpace = new SpecialAppPumpSpace(getAkkaSys)
+	lazy private val standPumpTestCtxName = NavUiTestPublicNames.cpumpName
+	lazy private val standPumpCtxActorRef : ActorRef = myPumpSpace.findTopActorRef(standPumpTestCtxName)
+	lazy private val standPumpAdminTeller = new ActorRefCPMsgTeller(standPumpCtxActorRef)
+
+	protected def sendGreetMsgs_Async(vwBossTeller : CPMsgTeller) : Unit = {
+		// We send a currently-non-essential administrative howdy to get the game rollin
+		val hpatMsg = new VWARM_GreetFromPumpAdmin(standPumpAdminTeller)
+		info2("Sending greeting msg={} to VWBossTeller : {}", hpatMsg, vwBossTeller)
+		vwBossTeller.tellCPMsg(hpatMsg)
+	}
+
+}
 // "App" here means FriendU app, not a JME3 "app".  (This instance is several layers further out)
 // The latter is made during launchSimRenderSpace in VWCore.scala.
 
-class NavUiAppImpl(myAkkaSys : ActorSystem) extends NavUiAppSvc {
+class NavUiAppImpl(myAkkaSys : ActorSystem) extends NavUiAppSvc with NavPumpSpaceOwner {
 
-	lazy private val myStandalonePumpSpace = new SpecialAppPumpSpace(myAkkaSys)
+	override protected def getAkkaSys : ActorSystem = myAkkaSys
 
-	lazy private val vwBossAR: ActorRef = VWorldActorFactoryFuncs.makeVWorldBoss(myAkkaSys, "vworldBoss_818")
-	lazy private val vwBossTeller = new ActorRefCPMsgTeller(vwBossAR)
-
-	lazy private val standPumpTestCtxName = NavUiTestPublicNames.cpumpName
-	lazy private val standPumpCtxActorRef : ActorRef = myStandalonePumpSpace.findTopActorRef(standPumpTestCtxName)
-	lazy private val standPumpAdminTeller = new ActorRefCPMsgTeller(standPumpCtxActorRef)
+	lazy private val myVWBossAR: ActorRef = VWorldActorFactoryFuncs.makeVWorldBoss(myAkkaSys, "vworldBoss_818")
+	lazy private val myVWBossTeller = new ActorRefCPMsgTeller(myVWBossAR)
 
 	// Jobby approach to actor launch is used here for our outer actors, experimentally.
 	lazy private val goodyTestSenderLogic = new PatientSender_GoodyTest {}
@@ -87,39 +106,40 @@ class NavUiAppImpl(myAkkaSys : ActorSystem) extends NavUiAppSvc {
 	lazy private val charAdmSenderTrigTeller  = OuterJobbyLogic_MasterFactory.makeOoLogicAndTeller(charAdmForwarderLogic, myAkkaSys, "charAdmForwarder")
 
 	def sendSetupMsgs_Async {
-		val hpatMsg = new VWARM_GreetFromPumpAdmin(standPumpAdminTeller)
-		info2("Sending msg={} to VWBossTeller : {}", hpatMsg, vwBossTeller)
-		vwBossTeller.tellCPMsg(hpatMsg)
 
-		// This conf step causes a duplicate copy of legacy config repo to be
+		sendGreetMsgs_Async(myVWBossTeller)  // No concrete effect as of 2016-06-16
+
+		// As of 2016-06-16 "Conf" is disabled, and we proceed directly to launch.
+		// When active, this conf step causes a duplicate copy of legacy config repo to be
 		// loaded, which we don't have any actual use for presently.   Under
 		// OSGi there is an outer copy of that same config repo, used for launching
 		// the avatar bodies.
 		// sendVWSetup_Conf()
 
-		sendVWSetup_Lnch()
+		sendVWSetup_Lnch() // First and only call that really makes async launch happen, as of 206-06-17
 
-		registerPostInitWaiters()
+		registerPostInitWaiters() // Setup listeners to do more stuff at appropriate times.
 	}
 	def sendVWSetup_Conf() : Unit = {
 		val msg = new VWSetupRq_Conf
-		vwBossTeller.tellCPMsg(msg)
+		myVWBossTeller.tellCPMsg(msg)
 	}
 
 	def sendVWSetup_Lnch() : Unit = {
 		val msg = new VWSetupRq_Lnch
-		vwBossTeller.tellCPMsg(msg)
+		myVWBossTeller.tellCPMsg(msg)
 	}
 	def registerPostInitWaiters() : Unit = {
 		// Each of these the results of happy startup, to trigger further ops.
 		// The VWPTRendezvous logic makes sure that each such waiter gets notified regardless of message order,
 		// so it is OK to send them after init is already complete (although usually it won't be).
 		val goodyTstRegMsg = new VWARM_FindPublicTellers(goodyTestSenderTrigTeller)
-		debug2("Sending goody-reg-msg={} to VWBossTeller : {}", goodyTstRegMsg, vwBossTeller)
-		vwBossTeller.tellCPMsg(goodyTstRegMsg)
+		debug2("Sending goody-listener--reg={} to VWBossTeller : {}", goodyTstRegMsg, myVWBossTeller)
+		myVWBossTeller.tellCPMsg(goodyTstRegMsg)
 
 		val charAdmRegMsg = new VWARM_FindPublicTellers(charAdmSenderTrigTeller)
-		vwBossTeller.tellCPMsg(charAdmRegMsg)
+		debug2("Sending char-admin-listener-reg={} to VWBossTeller : {}", charAdmRegMsg, myVWBossTeller)
+		myVWBossTeller.tellCPMsg(charAdmRegMsg)
 
 	}
 	// Could easily send this in as an actor msg, probably will soon, but trying to prevent confusion across API layers.
@@ -134,5 +154,4 @@ class NavUiAppImpl(myAkkaSys : ActorSystem) extends NavUiAppSvc {
 		val dgst = new DetachedGST{}
 		dgst.gridSpaceTest
 	}
-	// registerAvatarConfigRepoClient(bunCtx, erc);
 }
