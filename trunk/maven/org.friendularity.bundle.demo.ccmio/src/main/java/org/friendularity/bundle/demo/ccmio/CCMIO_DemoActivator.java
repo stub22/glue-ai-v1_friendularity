@@ -162,7 +162,7 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 		// This method instantiates necessary config objects and outer callback ("bodyNoticer"),
 		// and then enqueues an async request for the char-admin actor.
 
-		appSvc.startSemiLegacyBodyConn_OSGi_Sinbad(bundleCtx, akkaSys, elrc);
+		appSvc.requestSemiLegacyBodyConn_OSGi_Sinbad(bundleCtx, akkaSys, elrc);
 		getLogger().info("============= 2016 semi-legacy VWorld + Body launcher is done sending messages  ======");
 
 	}
