@@ -1,7 +1,10 @@
 package org.friendularity.rbody
 
 import java.io.InputStream
+import java.util
+import java.util.concurrent.{Callable, Future}
 
+import com.jme3.math.Vector3f
 import org.appdapter.core.log.BasicDebugger
 import org.appdapter.core.name.Ident
 import org.appdapter.fancy.log.VarargsLogging
@@ -17,8 +20,13 @@ import org.cogchar.blob.emit.RenderConfigEmitter
 import org.cogchar.bundle.app.vworld.central.VWorldRoboPump
 import org.cogchar.platform.util.ClassLoaderUtils
 import org.cogchar.render.app.humanoid.HumanoidRenderContext
-import org.cogchar.render.model.humanoid.{HumanoidFigureManager, HumanoidFigure}
+import org.cogchar.render.goody.basic.BasicGoodyCtx
+import org.cogchar.render.model.humanoid.{VWorldHumanoidFigureEntity, HumanoidFigureManager, HumanoidFigure}
 import org.cogchar.render.sys.context.PhysicalModularRenderContext
+import org.cogchar.render.sys.goody.GoodyRenderRegistryClient
+import org.cogchar.render.sys.registry.RenderRegistryClient
+import org.cogchar.render.sys.task.CogcharRenderSchedule
+import org.cogchar.render.sys.task.Queuer.QueueingStyle
 import org.osgi.framework.BundleContext
 import org.mechio.api.motion.Robot
 import org.cogchar.api.humanoid.{HumanoidFigureConfig, FigureConfig}
@@ -64,7 +72,7 @@ trait HumaFigureInitFuncs extends VarargsLogging {
 		val hfc = new HumanoidFigureConfig(repoCli, partialFigCfg, matPath, bonyGraphID);
 		hfc
 	}
-	def makeAndAttachHumaFigure(pmrc : PhysicalModularRenderContext, hfm : HumanoidFigureManager, humaFigCfg : HumanoidFigureConfig) : HumanoidFigure = {
+	def makeAndAttachHumaFigure_isBlocking(pmrc : PhysicalModularRenderContext, hfm : HumanoidFigureManager, humaFigCfg : HumanoidFigureConfig) : HumanoidFigure = {
 
 		val hf : HumanoidFigure = hfm.addHumanoidFigure(humaFigCfg)
 		hfm.attachFigure(pmrc, hf)  // Blocks until attachment complete on VW render thread
@@ -92,7 +100,7 @@ class DualBodyHelper() extends HumaFigureInitFuncs with DualBodyInitFuncs {
 	def finishDualBodInit(dualBodyID: Ident, mbsrc_opt : Option[ModelBlendingRobotServiceContext], pmrc: PhysicalModularRenderContext,
 						  hfm : HumanoidFigureManager, hfConf  : HumanoidFigureConfig) : DualBodyRecord = {
 		info1("******* ********************** Calling makeAndAttachHumaFigure for dualBodyID={}", dualBodyID)
-		val humaFig : HumanoidFigure = makeAndAttachHumaFigure(pmrc, hfm, hfConf)
+		val humaFig : HumanoidFigure = makeAndAttachHumaFigure_isBlocking(pmrc, hfm, hfConf)
 
 
 		val vwRoboPump_opt : Option[VWorldRoboPump] = mbsrc_opt.map(mrbsc => {
@@ -101,11 +109,48 @@ class DualBodyHelper() extends HumaFigureInitFuncs with DualBodyInitFuncs {
 		})
 
 		info1("******* ********************** Finished attaching bony robot and human figure for dualBodyID={}", dualBodyID)
-		new DualBodyRecord(dualBodyID, hfConf, humaFig, vwRoboPump_opt)
+		val rrc =  pmrc.getRenderRegistryClient
+		new DualBodyRecord(dualBodyID, hfConf, humaFig, vwRoboPump_opt, rrc)
 	}
 }
+trait JmeQueueClient {
+	// See also "Queuer.java" in o.c.lib.render.impl/o.c.render.sys.task
+	protected def getRenderTaskScheduler : CogcharRenderSchedule
+
+	def enqueueTask[V](taskToCall: Callable[V]): Future[V] = {
+		val scheduler = getRenderTaskScheduler
+		scheduler.enqueue(taskToCall)
+	}
+
+}
 case class DualBodyRecord(dualBodyID: Ident, hfConf  : HumanoidFigureConfig,
-						  humaFig: HumanoidFigure, vwRoboPump_opt : Option[VWorldRoboPump])
+						  humaFig: HumanoidFigure, vwRoboPump_opt : Option[VWorldRoboPump],
+						  rrc : RenderRegistryClient ) extends JmeQueueClient {
+
+	override def getRenderTaskScheduler : CogcharRenderSchedule = rrc.getWorkaroundAppStub
+
+	lazy val myOrphanEntity = new VWorldHumanoidFigureEntity(rrc, hfConf.getFigureID, humaFig)
+
+	def moveVWBody_usingEntity(x : Float, y : Float, z : Float) : Unit = {
+		val posVec3f = new Vector3f(x, y, z)
+		myOrphanEntity.setPosition(posVec3f, QueueingStyle.QUEUE_AND_RETURN)
+	}
+	def moveVWBody_usingNode(x : Float, y : Float, z : Float) : Unit = {
+		val moveTask = new Callable[Unit]() {
+			override def call(): Unit = {
+				val vec = new Vector3f(x, y, z)
+				// oops, need node or other methods that are protected in humaFig
+			}
+		}
+	}
+
+	def unused_because_vwbody_should_be_autonomous_registerAsHumaGoody(bgc : BasicGoodyCtx, grrc: GoodyRenderRegistryClient) : Unit = {
+		val vhfe: VWorldHumanoidFigureEntity = new VWorldHumanoidFigureEntity(grrc,  hfConf.getFigureID, humaFig)
+		bgc.getVWER.addGoody(vhfe)
+
+	}
+}
+
 
 class HumaConfHelper() extends HumaFigureInitFuncs {
 	def finishOldConfLoad(partialFigCfg : FigureConfig, repoCli : RepoClient, bonyGraphID : Ident, matPath : String) : HumanoidFigureConfig = {

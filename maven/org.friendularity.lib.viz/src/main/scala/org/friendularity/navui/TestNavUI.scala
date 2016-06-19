@@ -29,7 +29,12 @@ import org.cogchar.blob.emit.RenderConfigEmitter
 import org.cogchar.blob.entry.EntryHost
 import org.cogchar.impl.scene.read.BehavMasterConfigTest
 import org.cogchar.impl.thing.basic.BasicThingActionSpec
+import org.cogchar.platform.trigger.CommandSpace
+import org.cogchar.render.app.humanoid.HumanoidRenderWorldMapper
+import org.cogchar.render.goody.basic.BasicGoodyCtx
+import org.cogchar.render.model.humanoid.{VWorldHumanoidFigureEntity, HumanoidFigure}
 import org.cogchar.render.rendtest.{GoodyTestMsgMaker, GoodyRenderTestApp}
+import org.cogchar.render.sys.goody.GoodyRenderRegistryClient
 import org.friendularity.appro.TestRaizLoad
 import org.friendularity.chnkr.ChnkrWrapRepoSpec
 import org.friendularity.cpump.{CPStrongTeller, CPumpMsg, CPMsgTeller, ActorRefCPMsgTeller}
@@ -83,7 +88,6 @@ object TestNavUI extends VarargsLogging {
 		val bodyUserLogic = navUiAppSvc.makeFunUserLogic()
 		appSysStandalone.sendStart_SemiLegacySinbad(bodyUserLogic)
 
-		val sched = appSysStandalone.getScheduler
 
 		// info0("^^^^^^^^^^^^^^^^^^^^^^^^  TestNavUI.main() finished running setup msgs, now making SimSpace VWCanv")
 		// nuii.launchSimRenderSpace()
@@ -131,11 +135,20 @@ class StandaloneNavAppSys() {
 	def sendStart_SemiLegacySinbad(ebul: ExoBodyUserLogic): Unit = {
 		myNavUiApp.requestStandySemiLegacyBody_Sinbad(myAkkaSys, myLegacyELRC, ebul)
 	}
-	def getScheduler: AkkaSched = {
-		myAkkaSys.scheduler
-	}
-	def scheduleSomethin(): Unit = {
 
+	def harumph(cspace : CommandSpace, bgc : BasicGoodyCtx) : Unit = {
+		// val hrwMapper: HumanoidRenderWorldMapper = new HumanoidRenderWorldMapper
+		// hrwMapper.addHumanoidGoodies(bgc, hrc)
+//		val grrc: GoodyRenderRegistryClient = hrc.getGoodyRenderRegistryClient
+// 		hrc.refreshInputBindingsAndHelpScreen(currKeyBindCfg, cspace)
+//		val humanoidFigures: util.Map[Ident, HumanoidFigure] = hrc.getHumanoidFigureManager.getHumanoidFigures
+//		import scala.collection.JavaConversions._
+//		for (figureUri <- humanoidFigures.keySet) {
+//			theLogger.info("Adding a HumanoidFigureGoodyWrapper for {}", figureUri)
+//			val figure: HumanoidFigure = humanoidFigures.get(figureUri)
+//			val vhfe: VWorldHumanoidFigureEntity = new VWorldHumanoidFigureEntity(grrc, figureUri, figure)
+//			bgc.getVWER.addGoody(vhfe)
+//		}
 	}
 }
 
