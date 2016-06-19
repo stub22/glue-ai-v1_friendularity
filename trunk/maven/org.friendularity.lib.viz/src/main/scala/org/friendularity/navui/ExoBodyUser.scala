@@ -15,7 +15,7 @@ import scala.concurrent.duration.{FiniteDuration, Duration}
 /**
   * Created by Owner on 6/8/2016.
   */
-// Beyond all the Outer stuff, we have:
+// Even further out, beyond all the Outer stuff, we have Exo stuff, which is primarily client-standin test logic.
 
 case class SchedItemRepeating(myTickMsg : CPumpMsg, initDelayDur : FiniteDuration, periodDur : FiniteDuration) extends VarargsLogging {
 	def addToSched(sched: AkkaSched, cutionCtxCutor: ExecutionContextExecutor,
@@ -25,7 +25,7 @@ case class SchedItemRepeating(myTickMsg : CPumpMsg, initDelayDur : FiniteDuratio
 		info1("scheduling complere, handle={}", cnclbl)
 		cnclbl
 	}
-	def addToSchedForSys(akkaSys: ActorSystem, tgtActor: ActorRef, senderActor : ActorRef) = {
+	def addToSchedForSys(akkaSys: ActorSystem, tgtActor: ActorRef, senderActor : ActorRef) : Cancellable = {
 		addToSched(akkaSys.scheduler, akkaSys.dispatcher, tgtActor, senderActor)
 	}
 
@@ -36,26 +36,10 @@ trait ScheduleHelper extends VarargsLogging {
 		val periodDur = Duration.create(periodMillis, TimeUnit.MILLISECONDS)
 		new SchedItemRepeating(msg, initDelayDur, periodDur)
 	}
-	/*
-	def addToSched(sched: AkkaSched, cutionCtxCutor: ExecutionContextExecutor, whoMe: ActorRef,
-				   phaseMillis : Int, periodMillis : Int): Unit = {
-		val tickMsg = new VWExoBodyChance {}
 
-		val initDur = Duration.create(phaseMillis, TimeUnit.MILLISECONDS)
-
-		val periodDur = Duration.create(periodMillis, TimeUnit.MILLISECONDS)
-		// Note second pair of args supplying  ExecutionContext and sender
-		val cnclbl = sched.schedule(initDur, periodDur, whoMe, tickMsg)(cutionCtxCutor, whoMe)
-		info1("scheduling complere, handle={}", cnclbl)
-	}
-
-	def addToSchedOuter(akkaSys: ActorSystem, whoMe: ActorRef, phaseMillis : Int, periodMillis : Int): Unit = {
-		addToSched(akkaSys.scheduler, akkaSys.dispatcher, whoMe, phaseMillis, periodMillis)
-	}
-	*/
 }
 
-class ExoBodyUserLogic extends ScheduleHelper with VarargsLogging {
+trait ExoBodyUserLogic extends ScheduleHelper with VarargsLogging {
 	var myBodyTeller_opt : Option[CPStrongTeller[VWBodyRq]] = None
 	def rcvBodyNotice(bodyNotice : VWBodyNotice): Unit = {
 		info1("ExoBody UserLogic received bodyNotice={}", bodyNotice)
@@ -67,13 +51,15 @@ class ExoBodyUserLogic extends ScheduleHelper with VarargsLogging {
 		info1("Exo body up chance received: {}", exoBodyUpChance)
 		if (myBodyTeller_opt.isDefined) {
 			// It is time to move my guy around, or whatever!
+			rcvUpdtickForBody(exoBodyUpChance, myBodyTeller_opt.get)
 		}
 	}
+	protected def rcvUpdtickForBody(exoBodyUpChance : VWExoBodyChance, bodyTeller : CPStrongTeller[VWBodyRq]) : Unit
 	def makeRegularTickItem() : SchedItemRepeating = {
 		val msg = new VWExoBodyChance{}
 		makeSchedItemRepeating(msg, 0, getTickPeriodMillis)
 	}
-	def getTickPeriodMillis : Int = 2000
+	def getTickPeriodMillis : Int = 1500
 }
 
 class ExoBodyUserActor(bodyUserLogic : ExoBodyUserLogic)  extends Actor {
