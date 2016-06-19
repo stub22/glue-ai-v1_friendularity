@@ -17,7 +17,7 @@
 package org.friendularity.navui
 
 // import akka.actor._
-import akka.actor.{Actor, ActorRef, ActorContext, ActorSystem, ActorRefFactory, Props, ActorLogging}
+import akka.actor.{Scheduler => AkkaSched, Actor, ActorRef, ActorContext, ActorSystem, ActorRefFactory, Props, ActorLogging}
 import com.hp.hpl.jena.rdf.model.{Model => JenaModel}
 import org.appdapter.core.name.Ident
 import org.appdapter.core.store.Repo
@@ -70,16 +70,20 @@ object TestNavUI extends VarargsLogging {
 	}
 	def launchNuiiTest : Unit = {
 		val appSysStandalone = new StandaloneNavAppSys();
-		val nuii = appSysStandalone.findOrMakeNavUiApp
- 		info1("^^^^^^^^^^^^^^^^^^^^^^^^  TestNavUI.main() created nuii={}", nuii)
+		val navUiAppImpl : NavUiAppImpl = appSysStandalone.findOrMakeNavUiApp
+		val navUiAppSvc : NavUiAppSvc = navUiAppImpl
+ 		info1("^^^^^^^^^^^^^^^^^^^^^^^^  TestNavUI.main() created nuii={}", navUiAppImpl)
 		warn0("^^^^^^^^^^^^^^^^^^^^^^^^  TestNavUI.main() running detached GridSpace tst - MOVE me to a msgHandler!")
-		nuii.testDetachedGS
+		navUiAppImpl.testDetachedGS
 		// info0("^^^^^^^^^^^^^^^^^^^^^^^^  TestNavUI.main() - fetching legacy config graphs")
 		// val legConfERC_opt = nuii.getLegConfERC_opt
 		// info1("^^^^^^^^^^^^^^^^^^^^^^^^  TestNavUI.main() got legConfERC_opt={}", legConfERC_opt)
-		nuii.sendSetupMsgs_Async
+		navUiAppImpl.sendSetupMsgs_Async
 
-		appSysStandalone.sendStart_SemiLegacySinbad()
+		val bodyUserLogic = navUiAppSvc.makeFunUserLogic()
+		appSysStandalone.sendStart_SemiLegacySinbad(bodyUserLogic)
+
+		val sched = appSysStandalone.getScheduler
 
 		// info0("^^^^^^^^^^^^^^^^^^^^^^^^  TestNavUI.main() finished running setup msgs, now making SimSpace VWCanv")
 		// nuii.launchSimRenderSpace()
@@ -124,8 +128,14 @@ class StandaloneNavAppSys() {
 
 	def getLegacyELRC : EnhancedLocalRepoClient = myLegacyELRC
 
-	def sendStart_SemiLegacySinbad(): Unit = {
-		myNavUiApp.requestStandySemiLegacyBody_Sinbad(myAkkaSys, myLegacyELRC)
+	def sendStart_SemiLegacySinbad(ebul: ExoBodyUserLogic): Unit = {
+		myNavUiApp.requestStandySemiLegacyBody_Sinbad(myAkkaSys, myLegacyELRC, ebul)
+	}
+	def getScheduler: AkkaSched = {
+		myAkkaSys.scheduler
+	}
+	def scheduleSomethin(): Unit = {
+
 	}
 }
 

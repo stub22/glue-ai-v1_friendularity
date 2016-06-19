@@ -2,7 +2,7 @@ package org.friendularity.cpump
 
 import java.io.{Serializable => JSerializable}
 
-import akka.actor.{ActorLogging, Actor, ActorSelection, ActorRef}
+import akka.actor.{Cancellable, ActorLogging, Actor, ActorSelection, ActorRef}
 
 /**
   * Created by Owner on 4/10/2016.
@@ -18,10 +18,19 @@ trait CPStrongTeller[-MsgType <: CPumpMsg] extends CPMsgTeller {
 	def tellStrongCPMsg(msg: MsgType) = tellCPMsg(msg)
 }
 
-case class ActorRefCPMsgTeller[MsgType <: CPumpMsg](actRef : ActorRef) extends CPStrongTeller[MsgType] {
+trait CanSchedule {
+	protected def getActorRef : ActorRef
+/*
+	def scheduleRepeatingMsg(msg : CPumpMsg) : Cancellable = {
+
+	}
+*/
+}
+case class ActorRefCPMsgTeller[MsgType <: CPumpMsg](actRef : ActorRef) extends CPStrongTeller[MsgType]  with CanSchedule {
 	override def tellCPMsg(cpMsg: CPumpMsg): Unit = {
 		actRef ! cpMsg
 	}
+	override protected def getActorRef : ActorRef = actRef
 }
 
 case class ActorSelCPMsgTeller(actSel : ActorSelection) extends CPMsgTeller {

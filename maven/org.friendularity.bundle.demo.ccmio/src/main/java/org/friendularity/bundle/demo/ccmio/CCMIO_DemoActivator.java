@@ -6,6 +6,7 @@ import org.appdapter.osgi.core.BundleActivatorBase;
 import org.cogchar.bind.symja.MathGate;
 import org.cogchar.blob.entry.EntryHost;
 import org.friendularity.api.west.WorldEstimate;
+import org.friendularity.navui.ExoBodyUserLogic;
 import org.friendularity.navui.NavUiAppImpl;
 import org.friendularity.navui.NavUiAppSvc;
 import org.friendularity.old.ccmio.OldLaunchHelper;
@@ -66,7 +67,7 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 	private	boolean		myFlag_connectSwingDebugGUI = false;  // Swing debug code disabled, anyway
 	private boolean		myFlag_monitorLifecycles = true;  // LifeMon window is launched by .start()
 
-	private boolean 	myFlag_useOldLaunchStyle2014 = false;
+	private boolean 	myFlag_useOldLaunchStyle2014 = true;
 	// attach... flag now used only during old launch style 2014
 	public static	boolean		myFlag_attachVizappTChunkRepo = true; // false => uses old vanilla mediator backup
 
@@ -161,8 +162,8 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 		getLogger().info("============= 2016 semi-legacy launcher calling startSemiLegacyBodyConn_OSGi_Sinbad() ======");
 		// This method instantiates necessary config objects and outer callback ("bodyNoticer"),
 		// and then enqueues an async request for the char-admin actor.
-
-		appSvc.requestSemiLegacyBodyConn_OSGi_Sinbad(bundleCtx, akkaSys, elrc);
+		ExoBodyUserLogic funUserLogic = appSvc.makeFunUserLogic();
+		appSvc.requestSemiLegacyBodyConn_OSGi_Sinbad(bundleCtx, akkaSys, elrc, funUserLogic);
 		getLogger().info("============= 2016 semi-legacy VWorld + Body launcher is done sending messages  ======");
 
 	}
