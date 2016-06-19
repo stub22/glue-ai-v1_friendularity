@@ -75,13 +75,14 @@ trait VWBodyLogic extends VarargsLogging {
 		bodyRq match {
 			case moverq : VWBodyMoveRq => {
 				info1("Moving body according to moveRq={}", moverq)
+				getBodyRec.moveVWBody_usingEntity(moverq.xPos, moverq.yPos, moverq.zPos)
 			}
 		}
 	}
 }
 
 class VWBodyActor(dualBodyRec : DualBodyRecord) extends Actor with VWBodyLogic {
-	protected def getBodyRec: DualBodyRecord = dualBodyRec
+	override protected def getBodyRec: DualBodyRecord = dualBodyRec
 	def receive = {
 		case vwbrq: VWBodyRq => {
 			processBodyRq(vwbrq, self, context)
