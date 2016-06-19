@@ -15,7 +15,7 @@
  *  limitations under the License.
  */
 
-package org.friendularity.appro
+package org.friendularity.raiz
 
 
 import org.jflux.api.service.{ServiceDependency, ServiceLifecycle};

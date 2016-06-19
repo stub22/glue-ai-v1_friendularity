@@ -15,7 +15,7 @@
  */
 
 
-package org.friendularity.appro
+package org.friendularity.raiz
 
 
 trait ApproRaiz {

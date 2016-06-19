@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.friendularity.appro
+package org.friendularity.raiz
 
 import java.lang.{Long => JLong}
 
@@ -29,7 +29,7 @@ import org.ontoware.rdfreactor
 import rdf2go.model.{Model => R2GoModel}
 import rdf2go.model.node.{URI => R2GoURI}
 
-import org.cogchar.impl.chnkr.{LegacyRepoFuncs, ChnkrWrapRepo}
+import org.cogchar.impl.legconf.{LegacyRepoFuncs, ChnkrWrapRepo}
 
 import org.appdapter.fancy.log.VarargsLogging
 import org.appdapter.core.name.{ FreeIdent, Ident }

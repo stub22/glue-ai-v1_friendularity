@@ -15,7 +15,7 @@
  */
 
 
-package org.friendularity.appro
+package org.friendularity.raiz
 
 import com.hp.hpl.jena
 import jena.rdf.model.{ Model => JenaModel, ModelFactory => JenaModelFactory }
