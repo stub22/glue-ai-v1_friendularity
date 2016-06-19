@@ -14,7 +14,7 @@ import org.friendularity.vsim.vworld.UnusedNetworkVisionDataFeed;
 import org.osgi.framework.BundleContext;
 import org.rwshop.swing.common.lifecycle.ServicesFrame;
 
-import org.friendularity.appro.TestRaizLoad;
+import org.friendularity.raiz.TestRaizLoad;
 
 import com.hp.hpl.jena.rdf.model.Model;
 
