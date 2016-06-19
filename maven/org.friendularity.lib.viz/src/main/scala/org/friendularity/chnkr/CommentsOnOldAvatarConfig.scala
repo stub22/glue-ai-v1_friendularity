@@ -15,36 +15,8 @@
  */
 
 package org.friendularity.chnkr
-import org.appdapter.fancy.rclient.{RepoClient, EnhancedRepoClient, EnhancedLocalRepoClient};
-import org.appdapter.fancy.rspec.RepoSpec;
-import org.appdapter.core.store.Repo;
-import org.cogchar.impl.scene.read.BehavMasterConfigTest;
 
-import org.cogchar.api.owrap.crcp.{BRFeature => CC_BRFeature}
-import org.cogchar.api.owrap.appro.{AFBRLegacyConfig}
-import com.hp.hpl.jena
-import org.apache.jena.riot.RDFDataMgr
-
-import jena.rdf.model.{ Model => JenaModel, ModelFactory => JenaModelFactory }
-import jena.ontology.Individual
-
-import org.ontoware.rdf2go
-import org.ontoware.rdfreactor
-
-import rdf2go.model.{Model => R2GoModel}
-import rdf2go.model.node.{URI => R2GoURI}
-
-import org.appdapter.fancy.log.VarargsLogging
-
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.FrameworkUtil;
-	
-import org.cogchar.blob.entry.EntryHost;
-import org.cogchar.blob.entry.BundleEntryHost;
-// registerAvatarConfigRepoClient(bunCtx, erc)
-trait CommentsOnOldAvatarConfig extends LegacyRepoFuncs with VarargsLogging {
-
+trait CommentsOnOldAvatarConfig  {
 
 }
 /*
