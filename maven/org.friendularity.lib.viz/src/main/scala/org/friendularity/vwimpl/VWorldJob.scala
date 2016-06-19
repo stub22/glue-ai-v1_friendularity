@@ -1,9 +1,6 @@
-package org.friendularity.respire
+package org.friendularity.vwimpl
 
-import akka.actor._
-import org.appdapter.fancy.log.VarargsLogging
-import org.friendularity.cpump.CPumpMsg
-import org.friendularity.mjob.{MsgFactoryPair, MasterFactory, MsgJobLogic}
+import org.friendularity.mjob.{MasterFactory, MsgFactoryPair, MsgJobLogic}
 import org.friendularity.vwmsg.VWorldMsg
 
 /**

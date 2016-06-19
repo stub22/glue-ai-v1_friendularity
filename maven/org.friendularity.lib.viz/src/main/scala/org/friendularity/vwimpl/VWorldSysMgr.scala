@@ -14,21 +14,16 @@
  *  limitations under the License.
  */
 
-package org.friendularity.respire
+package org.friendularity.vwimpl
 
 import akka.actor._
-
+import com.hp.hpl.jena.rdf.model.{Model => JenaModel}
 import org.appdapter.fancy.log.VarargsLogging
 import org.appdapter.fancy.rclient.EnhancedLocalRepoClient
 import org.cogchar.blob.entry.EntryHost
-import org.cogchar.render.app.humanoid.HumanoidRenderContext
-import org.cogchar.render.goody.basic.{BasicGoodyCtxImpl, BasicGoodyCtx}
-import org.cogchar.render.sys.goody.{GoodyModularRenderContext, GoodyRenderRegistryClient}
-import org.cogchar.render.sys.registry.RenderRegistryClient
-import org.cogchar.render.sys.window.WindowStatusMonitor
+import org.cogchar.render.goody.basic.BasicGoodyCtx
 import org.friendularity.appro.TestRaizLoad
-import org.friendularity.cpump.{ActorRefCPMsgTeller, CPStrongTeller}
-import com.hp.hpl.jena.rdf.model.{Model => JenaModel}
+import org.friendularity.cpump.CPStrongTeller
 import org.friendularity.rbody.DualBodyRecord
 import org.friendularity.vwmsg.VWorldPublicTellers
 
@@ -72,7 +67,7 @@ trait VWCnfMgr extends VarargsLogging {
 		// TODO: Find this URI from either a query or an onto-constant
 		val vzBrkRcpUriTxt: String = TestRaizLoad.vzpLegCnfBrkrRcpUriTxt
 
-		val legConfERC = TestRaizLoad.makeAvatarLegacyConfigRepo(mergedProfGraph, vzBrkRcpUriTxt, tchunkEHost)
+		val legConfERC = TestRaizLoad.makeLegacyConfigELRC_fromJena(mergedProfGraph, vzBrkRcpUriTxt, tchunkEHost)
 		getLogger.info("legConfERC={}", legConfERC)
 		legConfERC
 	}

@@ -1,24 +1,12 @@
-package org.friendularity.respire
-
-import java.io.{ByteArrayInputStream, StringReader}
-import java.nio.charset.StandardCharsets
+package org.friendularity.vwimpl
 
 import akka.actor.{Actor, ActorContext, ActorRef}
-
-import com.hp.hpl.jena.rdf.model.{Model => JenaModel, ModelFactory => JenaModelFactory, Resource, ResIterator}
-import org.apache.jena.riot.RDFFormat
-import org.appdapter.core.item.JenaResourceItem
-import org.appdapter.core.name.{FreeIdent, Ident}
+import com.hp.hpl.jena.rdf.model.{Model => JenaModel, ModelFactory => JenaModelFactory}
 import org.appdapter.fancy.log.VarargsLogging
 import org.cogchar.api.thing.ThingActionSpec
-import org.cogchar.impl.thing.basic.BasicThingActionSpec
-import org.cogchar.name.dir.NamespaceDir
-import org.cogchar.name.thing.ThingCN
 import org.cogchar.render.goody.basic.BasicGoodyCtx
-import org.friendularity.dull.{RdfMsg, ThingActExposer}
-import org.friendularity.vwmsg.{VWGoodyRqTAS, VWGoodyRqRdf, VWGoodyRqActionSpec, VWorldRequest}
-
-import scala.collection.mutable.ListBuffer
+import org.friendularity.dull.ThingActExposer
+import org.friendularity.vwmsg.{VWGoodyRqActionSpec, VWGoodyRqRdf, VWGoodyRqTAS, VWorldRequest}
 
 /**
   * Created by Owner on 5/25/2016.

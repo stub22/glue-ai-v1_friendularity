@@ -1,4 +1,4 @@
-package org.friendularity.respire
+package org.friendularity.vwimpl
 
 import akka.actor.{ActorLogging, Actor, ActorContext, ActorRef}
 import org.appdapter.fancy.log.VarargsLogging

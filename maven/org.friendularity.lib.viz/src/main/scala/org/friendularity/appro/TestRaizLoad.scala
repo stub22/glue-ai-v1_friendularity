@@ -28,7 +28,7 @@ import org.ontoware.rdfreactor
 import rdf2go.model.{Model => R2GoModel}
 import rdf2go.model.node.{URI => R2GoURI}
 
-import org.friendularity.chnkr.{ChnkrWrapRepo, AvatarLegacySetupFuncs}
+import org.friendularity.chnkr.{LegacyRepoFuncs, ChnkrWrapRepo, CommentsOnOldAvatarConfig}
 
 import org.appdapter.fancy.log.VarargsLogging
 import org.appdapter.core.name.{ FreeIdent, Ident }
@@ -40,7 +40,7 @@ import org.cogchar.blob.entry.{EntryHost, PlainEntry, FolderEntry, DiskEntryHost
 import org.cogchar.api.owrap.crcp.{BRFeature => CC_BRFeature}
 import org.cogchar.api.owrap.appro.AFBRLegacyConfig
 
-object TestRaizLoad extends AvatarLegacySetupFuncs with  VarargsLogging {
+object TestRaizLoad extends LegacyRepoFuncs with  VarargsLogging {
 	val vizappRecipeNS : String = "http://onto.friendularity.org/indiv/vizappRecipes_reg_desk_2016Q1#"
 	val vzpLegCnfBrkrRcpUriTxt : String = vizappRecipeNS + "vizapp_legConf_brokerRecipe"
 	val pathToProfileFolder : String = "org/friendu/tchunk/vizapp_profile" // relative to profile eHost
@@ -89,7 +89,7 @@ object TestRaizLoad extends AvatarLegacySetupFuncs with  VarargsLogging {
 
 	def testLegConfLoad(profileJM : JenaModel, cdatEH : EntryHost) : Unit = {
 
-		val cwRepoSpec = makeVWConfRepoSpec(profileJM, vzpLegCnfBrkrRcpUriTxt, cdatEH)
+		val cwRepoSpec = makeLegacyConfRepoSpec(profileJM, vzpLegCnfBrkrRcpUriTxt, cdatEH)
 
 		val cwRepo = cwRepoSpec.getOrMakeRepo.asInstanceOf[ChnkrWrapRepo]
 
@@ -99,11 +99,6 @@ object TestRaizLoad extends AvatarLegacySetupFuncs with  VarargsLogging {
 
 		java.lang.Thread.sleep(3000)
 		info0("That was a good test!")
-	}
-	private def open4R2go(jmodel : JenaModel) : R2GoModel = {
-		val r2goModel : R2GoModel = new rdf2go.impl.jena.ModelImplJena(jmodel)
-		r2goModel.open
-		r2goModel
 	}
 
 	def appendOntoAndInfer(inModel : JenaModel) : Unit = {

@@ -1,34 +1,9 @@
-package org.friendularity.respire
+package org.friendularity.vwimpl
+
+import java.util.{ArrayList => JArrayList, Map => JMap}
 
 import com.hp.hpl.jena.rdf.model.{Model => JenaModel}
-import org.appdapter.core.name.{FreeIdent, Ident}
-import org.appdapter.fancy.log.VarargsLogging
-import org.appdapter.fancy.rclient.RepoClient
 
-import org.cogchar.api.owrap.appro.{ASBRNCharacter, ASBRNVWorldSimRuntime, ASBRNEmbedPhysRuntime,  ACRGamePipe}
-import org.cogchar.api.thing.WantsThingAction
-import org.cogchar.app.puma.behavior.PumaBehaviorManager
-import org.cogchar.app.puma.body.PumaDualBodyManager
-import org.cogchar.app.puma.boot.{PumaContextCommandBox, PumaSysCtx}
-import org.cogchar.app.puma.config.{BodyHandleRecord, PumaContextMediator}
-import org.cogchar.app.puma.event.{Updater, CommandEvent}
-import org.cogchar.app.puma.registry.{PumaRegistryClientImpl, PumaRegistryClient}
-import org.cogchar.bundle.app.vworld.busker.TriggerItems
-import org.cogchar.bundle.app.vworld.central.{VWCtxCmdBox, StatefulVWorldRegistry, VWorldRegistry}
-import org.cogchar.platform.trigger.BoxSpace;
-import org.cogchar.platform.trigger.CommandSpace
-import org.cogchar.render.sys.context.PhysicalModularRenderContext
-import org.cogchar.render.sys.goody.{GoodyModularRenderContext, GoodyRenderRegistryClient}
-import org.cogchar.render.sys.registry.RenderRegistryClient
-import org.cogchar.render.sys.window.WindowStatusMonitor
-
-
-import org.jflux.impl.services.rk.osgi.lifecycle.OSGiComponent
-import org.osgi.framework.BundleContext
-
-
-
-import java.util.{Map => JMap, ArrayList => JArrayList}
 /** README
   * As of June 2016, none of this VWChef.scala code is used in CCMIO demo.
   * However, it provides important reference points and documented design info.

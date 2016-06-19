@@ -129,6 +129,5 @@ class BigBalloonJmeApp extends TrialBalloon with DynamicGoodyParent {
 		val rootDeepNode = rrc.getJme3RootDeepNode(null)
 		rootDeepNode
 	}
-	
-	
+
 }

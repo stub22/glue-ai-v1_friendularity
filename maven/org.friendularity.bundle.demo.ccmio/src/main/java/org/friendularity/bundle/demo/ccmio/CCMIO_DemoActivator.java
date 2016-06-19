@@ -67,7 +67,7 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 	private	boolean		myFlag_connectSwingDebugGUI = false;  // Swing debug code disabled, anyway
 	private boolean		myFlag_monitorLifecycles = true;  // LifeMon window is launched by .start()
 
-	private boolean 	myFlag_useOldLaunchStyle2014 = true;
+	private boolean 	myFlag_useOldLaunchStyle2014 = false;
 	// attach... flag now used only during old launch style 2014
 	public static	boolean		myFlag_attachVizappTChunkRepo = true; // false => uses old vanilla mediator backup
 
@@ -185,11 +185,11 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 		// Easiest way to identify an bundleEHost is to specify a class from same bundle.
 		EnhancedLocalRepoClient legacyConfERC = makeLegacyELRC(mergedProfileGraph, legConfEHost);
 
-		TestRaizLoad.registerAvatarConfigRepoClient(bunCtx, legacyConfERC);
+		TestRaizLoad.registerOSGiServiceForEnhRC(bunCtx, legacyConfERC);
 	}
 	private EnhancedLocalRepoClient makeLegacyELRC(Model mergedProfileGraph, EntryHost legConfEHost) {
 		String vzBrkRcpUriTxt = TestRaizLoad.vzpLegCnfBrkrRcpUriTxt();
-		EnhancedLocalRepoClient legacyConfERC = TestRaizLoad.makeAvatarLegacyConfigRepo(mergedProfileGraph,
+		EnhancedLocalRepoClient legacyConfERC = TestRaizLoad.makeLegacyConfigELRC_fromJena(mergedProfileGraph,
 					vzBrkRcpUriTxt, legConfEHost);
 		getLogger().info("legConfEnhRepoCli={}", legacyConfERC);
 		return legacyConfERC;
