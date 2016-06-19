@@ -36,7 +36,7 @@ import org.cogchar.render.model.humanoid.{VWorldHumanoidFigureEntity, HumanoidFi
 import org.cogchar.render.rendtest.{GoodyTestMsgMaker, GoodyRenderTestApp}
 import org.cogchar.render.sys.goody.GoodyRenderRegistryClient
 import org.friendularity.appro.TestRaizLoad
-import org.friendularity.chnkr.ChnkrWrapRepoSpec
+
 import org.friendularity.cpump.{CPStrongTeller, CPumpMsg, CPMsgTeller, ActorRefCPMsgTeller}
 import org.friendularity.dull.SpecialAppPumpSpace
 
