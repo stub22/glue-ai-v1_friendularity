@@ -37,15 +37,8 @@ trait NavUiAppSvc extends VarargsLogging {
 	}
 
 	def makeFunUserLogic(): ExoBodyUserLogic = {
-		val userLogic: ExoBodyUserLogic = new ExoBodyUserLogic() {
-			override def rcvBodyNotice(bodyNotice: VWBodyNotice) {
-				super.rcvBodyNotice(bodyNotice)
-				val bodyTeller: CPStrongTeller[VWBodyRq] = bodyNotice.getBodyTeller
-				val moveRq: VWBodyRq = new VWBodyMoveRq(-2.0f, 12.0f, -1.0f)
-				info2("ExoUserBodyLogic found body teller={}.   Sending moveRq={}", bodyTeller, moveRq)
-				bodyTeller.tellStrongCPMsg(moveRq)
-			}
-		}
+		val btc = new BodyTestClient {}
+		val userLogic: ExoBodyUserLogic = btc.makeMoveTestLogic()
 		userLogic
 	}
 
