@@ -10,7 +10,9 @@ import org.friendularity.cpump.{ActorRefCPMsgTeller, CPStrongTeller, CPMsgTeller
 import org.friendularity.mjob.{MsgJobLogicFactory, MsgJobLogic}
 
 import com.hp.hpl.jena.rdf.model.{Model => JenaModel, ModelFactory => JenaModelFactory, Literal}
-import org.friendularity.respire.VWorldMasterFactory
+import org.friendularity.vwimpl.VWorldMasterFactory
+
+// import org.friendularity.respire.VWorldMasterFactory
 import org.friendularity.vwmsg.{VWBodyLifeRq, VWGoodyRqTAS, VWGoodyRqTurtle, VWorldPublicTellers}
 
 

@@ -27,7 +27,7 @@ import org.apache.jena.riot.RDFDataMgr
 
 import jena.rdf.model.{ Model => JenaModel, ModelFactory => JenaModelFactory }
 import jena.ontology.Individual
-import org.friendularity.appro.{ApproRaizCtx, ApproRaizRecipeNames}
+
 import org.ontoware.rdf2go
 import org.ontoware.rdfreactor
 
@@ -43,114 +43,11 @@ import org.osgi.framework.FrameworkUtil;
 import org.cogchar.blob.entry.EntryHost;
 import org.cogchar.blob.entry.BundleEntryHost;
 // registerAvatarConfigRepoClient(bunCtx, erc)
-trait AvatarLegacySetupFuncs extends VarargsLogging {
-
-	def makeAvatarLegacyConfigRepo(recipesJM : JenaModel, cbrUri : String, cdatEH : EntryHost) : EnhancedLocalRepoClient = {
-		val recipesR2Go = open4R2go(recipesJM)
-		makeAvatarLegacyConfigRepo(recipesR2Go, cbrUri, cdatEH)
-	}
-	def makeAvatarLegacyConfigRepo(recipesR2Go : R2GoModel, cbrUri : String, cdatEH : EntryHost) : EnhancedLocalRepoClient = {
-		val configBR = new AFBRLegacyConfig(recipesR2Go, cbrUri,  false)
-		makeAvatarLegacyConfigRepo(configBR, cdatEH)
-
-	}
-	def makeAvatarLegacyConfigRepo(legCnfBR : AFBRLegacyConfig, // CC_BRFeature,
-										cdatEH : EntryHost) : EnhancedLocalRepoClient = {
-		val cwRepoSpec = makeVWConfRepoSpec(legCnfBR, cdatEH)
-		// Old way was:  hardcoded query setup param Strings
-		// CCMIO: 2016-04-17   tgtGraphVarName=qGraph  qrySrcGraphQName=ccrt:qry_sheet_77
-		// val tgtGraphSparqlVarName  = BehavMasterConfigTest.TGT_GRAPH_SPARQL_VAR
-		// val qrySrcGraphQName = BehavMasterConfigTest.QUERY_SOURCE_GRAPH_QN
-		// info2("Setting up legacy avatar config with tgtGraphVarName={}  qrySrcGraphQName={}",
-		//			tgtGraphSparqlVarName, qrySrcGraphQName)
+trait CommentsOnOldAvatarConfig extends LegacyRepoFuncs with VarargsLogging {
 
 
-		val recipeSparqlTgtVarName = legCnfBR.getLegacyDefaultSparqlVarName
-		// On a wrong value, first error is from FancyRepo.scala method checkQueryText
-		//  "Unable to find Query Called ccrt:template_globalmode_99 in Model wrongQrySrcQName"
-		// See stack trace in comments at bottom of this file.
-		val recipeSparqlQrySrcQN = legCnfBR.getLegacyQuerySourceQName
-		info3("Found legacy avatar query names in recipe={}  tgtGraphVarName={}  qrySrcGraphQName={}",
-					legCnfBR, recipeSparqlTgtVarName, recipeSparqlQrySrcQN)
-
-		val erc = makeAvatarLegacyConfigERC(cwRepoSpec, recipeSparqlTgtVarName, recipeSparqlQrySrcQN)
-		erc
-
-
-	}
-	def makeVWConfRepoSpec(profileJM : JenaModel, vizappBrokerRecipeUriTxt : String,
-						   cdatEH : EntryHost) :  ChnkrWrapRepoSpec = {
-
-		val bootRecipesR2Go = open4R2go(profileJM)
-
-		val legConfigBR = new AFBRLegacyConfig(bootRecipesR2Go, vizappBrokerRecipeUriTxt, false)
-
-		makeVWConfRepoSpec(legConfigBR, cdatEH)
-	}
-	def makeVWConfRepoSpec(configBR : AFBRLegacyConfig, cdatEH : EntryHost) : ChnkrWrapRepoSpec = {
-		val brokerRecipeWrap: LegacyConfBrokerRecipeWrap = new LegacyConfBrokerRecipeWrap(configBR)
-		val cwRepoSpec = new ChnkrWrapRepoSpec(brokerRecipeWrap, cdatEH)
-		cwRepoSpec
-	}
-	def makeAvatarLegacyConfigERC( repoSpec : RepoSpec,
-					tgtGraphSparqlVarName : String, qrySrcGraphQName : String): EnhancedLocalRepoClient = {
-
-		val repoHandle : Repo.WithDirectory = repoSpec.getOrMakeRepo();
-
-		val erc = new EnhancedLocalRepoClient(repoSpec, repoHandle, tgtGraphSparqlVarName, qrySrcGraphQName)
-		erc
-	}
-
-	def registerAvatarConfigRepoClient(bunCtx : BundleContext,
-							avatarConfigERC : EnhancedRepoClient)  : Unit = {
-		info1("Registering legacy config EnhancedRepoClient: {}", avatarConfigERC);
-		
-		bunCtx.registerService(classOf[RepoClient].getName(), avatarConfigERC, null);
-	}
-	private def open4R2go(jmodel : JenaModel) : R2GoModel = {
-		val r2goModel : R2GoModel = new rdf2go.impl.jena.ModelImplJena(jmodel)
-		r2goModel.open
-		r2goModel
-	}
-	def makeBundleEntryHost (markerClz : Class[_]) : EntryHost = {
-		val bun : Bundle = FrameworkUtil.getBundle(markerClz);
-		if (bun == null) {
-			throw new RuntimeException("Cannot locate bundle for markerClz=" + markerClz)
-		}
-		new BundleEntryHost(bun) ;
-	}
 }
 /*
-	def loadVizappFromChunkFolders(profilePath : String, vwrldConfPath: String): Unit = {
-
-	}
-
-	private def maybeRegisterLegacyConf(arzCtx : ApproRaizCtx) : Unit = {
-		val bun = org.osgi.framework.FrameworkUtil.getBundle(getClass)
-		if (bun != null) {
-			val bunCtx = bun.getBundleContext
-
-			val arzRecipeNames : ApproRaizRecipeNames = arzCtx.getMainRecipeNames
-
-			val legConfBRURI = arzRecipeNames.getLegacyConfBrokerRecipeURI
-			val legConfEHost = arzCtx.getInLegConfEntHost
-			if ((legConfBRURI != null) && (legConfEHost != null)) {
-				val recipeModel = arzCtx.getInRootRecipeModel
-				val rcpmR2Go = open4R2go(recipeModel)
-				makeAndRegisterAvatarConfigRepo(bunCtx, rcpmR2Go, legConfBRURI, legConfEHost)
-			} else {
-				warn2("Not loading legacy config for brokerRecipeURI={}, eHost={}", legConfBRURI, legConfEHost)
-			}
-		} else {
-			warn0("OSGi bundle lookup failed (we are probably in a main() test), so no legacy config will be processed.")
-		}
-	}
-
-	BehavMasterConfigTest.TGT_GRAPH_SPARQL_VAR, BehavMasterConfigTest.QUERY_SOURCE_GRAPH_QN);
-	 final val TGT_GRAPH_SPARQL_VAR = RepoSpecDefaultNames.DFLT_TGT_GRAPH_SPARQL_VAR; // "qGraph"
-  val QUERY_SOURCE_GRAPH_QN = MasterDemoNames.QUERY_SOURCE_GRAPH_QN;
-
-
 
 Comments below copied from org.appdapter.fancy.rspec.RepoSpecDefaultNames on 2016-04-17
 

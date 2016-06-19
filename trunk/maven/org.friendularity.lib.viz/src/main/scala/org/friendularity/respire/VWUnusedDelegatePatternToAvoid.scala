@@ -3,6 +3,7 @@ package org.friendularity.respire
 import akka.actor.{ActorContext, ActorRef}
 import org.appdapter.fancy.log.VarargsLogging
 import org.friendularity.mjob.{MsgJobLogic, MsgJobLogicFactory}
+import org.friendularity.vwimpl.{VWorldJobLogic, VWorldSysMgr}
 import org.friendularity.vwmsg.VWorldRequest
 
 /**

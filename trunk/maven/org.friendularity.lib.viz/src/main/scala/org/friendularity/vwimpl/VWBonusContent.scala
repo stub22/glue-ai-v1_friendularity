@@ -1,16 +1,15 @@
-package org.friendularity.respire
+package org.friendularity.vwimpl
 
 import com.jme3.asset.AssetManager
 import com.jme3.input.FlyByCamera
 import com.jme3.math.ColorRGBA
 import com.jme3.renderer.ViewPort
-import com.jme3.scene.Node
+import com.jme3.scene.{Node => JmeNode}
 import org.appdapter.fancy.log.VarargsLogging
 import org.cogchar.bind.midi.in.{CCParamRouter, TempMidiBridge}
 import org.cogchar.render.sys.context.CogcharRenderContext
 import org.cogchar.render.sys.registry.RenderRegistryClient
 import org.cogchar.render.trial.{TrialCameras, TrialContent}
-import com.jme3.scene.{Node => JmeNode}
 /**
   * This stuff contains about 10 steps of testing content + camera setup, all not essential except
   * as standin for better testing with equal/superior client messages.

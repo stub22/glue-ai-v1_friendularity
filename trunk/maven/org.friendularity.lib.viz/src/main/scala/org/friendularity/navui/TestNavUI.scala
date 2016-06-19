@@ -127,7 +127,7 @@ class StandaloneNavAppSys() {
 		val mergedProfileGraph: JenaModel = TestRaizLoad.getMergedProfileGraph_RegularDesktop(unitTestConfEHost)
 		val legConfEHost: EntryHost = unitTestConfEHost // just emphasizing this is a separate choice
 		val vzBrkRcpUriTxt: String = TestRaizLoad.vzpLegCnfBrkrRcpUriTxt
-		TestRaizLoad.makeAvatarLegacyConfigRepo(mergedProfileGraph, vzBrkRcpUriTxt, legConfEHost)
+		TestRaizLoad.makeLegacyConfigELRC_fromJena(mergedProfileGraph, vzBrkRcpUriTxt, legConfEHost)
 	}
 
 	def getLegacyELRC : EnhancedLocalRepoClient = myLegacyELRC

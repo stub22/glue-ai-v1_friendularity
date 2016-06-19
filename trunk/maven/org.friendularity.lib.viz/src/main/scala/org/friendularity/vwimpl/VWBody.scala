@@ -1,17 +1,15 @@
-package org.friendularity.respire
+package org.friendularity.vwimpl
 
-import akka.actor.{ActorContext, ActorRef, Actor}
+import akka.actor.{Actor, ActorContext, ActorRef}
 import org.appdapter.core.name.Ident
 import org.appdapter.fancy.log.VarargsLogging
 import org.cogchar.api.humanoid.HumanoidFigureConfig
 import org.cogchar.bind.mio.robot.svc.ModelBlendingRobotServiceContext
-import org.cogchar.render.app.humanoid.HumanoidRenderContext
-import org.cogchar.render.goody.basic.BasicGoodyCtx
 import org.cogchar.render.model.humanoid.HumanoidFigureManager
 import org.cogchar.render.sys.context.PhysicalModularRenderContext
-import org.friendularity.cpump.{CPStrongTeller, ActorRefCPMsgTeller}
-import org.friendularity.rbody.{DualBodyRecord, DualBodyHelper}
-import org.friendularity.vwmsg.{VWBodyMoveRq, VWBodyNotice, VWBodyRq, VWBodyMakeRq, VWBodyLifeRq}
+import org.friendularity.cpump.{ActorRefCPMsgTeller, CPStrongTeller}
+import org.friendularity.rbody.{DualBodyHelper, DualBodyRecord}
+import org.friendularity.vwmsg.{VWBodyLifeRq, VWBodyMakeRq, VWBodyMoveRq, VWBodyNotice, VWBodyRq}
 
 /**
   * Created by Owner on 6/6/2016.
