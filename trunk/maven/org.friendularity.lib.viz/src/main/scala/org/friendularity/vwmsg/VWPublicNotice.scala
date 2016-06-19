@@ -21,3 +21,4 @@ case class VWPubTellersMsgImpl(goodyTeller : CPStrongTeller[VWGoodyRqActionSpec]
 trait VWBodyNotice extends VWorldNotice {
 	def getBodyTeller : CPStrongTeller[VWBodyRq]
 }
+trait VWExoBodyChance extends VWorldNotice

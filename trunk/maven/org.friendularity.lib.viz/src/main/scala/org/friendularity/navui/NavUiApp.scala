@@ -6,7 +6,7 @@ import org.appdapter.fancy.log.VarargsLogging
 import org.appdapter.fancy.rclient.EnhancedLocalRepoClient
 import org.cogchar.api.humanoid.HumanoidFigureConfig
 import org.cogchar.bind.mio.robot.svc.ModelBlendingRobotServiceContext
-import org.friendularity.cpump.{CPMsgTeller, ActorRefCPMsgTeller, CPStrongTeller}
+import org.friendularity.cpump.{CPumpMsg, CPMsgTeller, ActorRefCPMsgTeller, CPStrongTeller}
 import org.friendularity.dull.SpecialAppPumpSpace
 import org.friendularity.respire._
 import org.friendularity.vwimpl.LegacyBodyLoader_Stateless
@@ -17,14 +17,23 @@ import org.osgi.framework.BundleContext
   * Created by Owner on 6/8/2016.
   */
 trait NavUiAppSvc extends VarargsLogging {
+
 	def postPatientCharCreateRq(dualBodyID : Ident, fullHumaCfg : HumanoidFigureConfig,
 								mbrsc_opt : Option[ModelBlendingRobotServiceContext],
 								answerTeller : CPStrongTeller[VWBodyNotice]) : Unit
 
-	def makeExoBodyUserTeller(parentARF : ActorRefFactory, ebuActorName : String, userLogic : ExoBodyUserLogic) : CPStrongTeller[VWBodyNotice] = {
-		val ebuActor = ExoActorFactory.makeExoBodyUserActor(parentARF, ebuActorName, userLogic)
+	def makeExoBodyUserTeller_withTicks(akkaSys : ActorSystem, ebuActorName : String, userLogic : ExoBodyUserLogic) : CPStrongTeller[VWBodyNotice] = {
+		val parentARF : ActorRefFactory = akkaSys
+		val ebuActor : ActorRef = ExoActorFactory.makeExoBodyUserActor(parentARF, ebuActorName, userLogic)
 		val ebuTeller : CPStrongTeller[VWBodyNotice] = new ActorRefCPMsgTeller[VWBodyNotice](ebuActor)
+		val regTickItem = userLogic.makeRegularTickItem()
+		regTickItem.addToSchedForSys(akkaSys, ebuActor, ebuActor)
 		ebuTeller
+	}
+	def scheduleCallback(akkaSys : ActorSystem, tgtActor : ActorRef, tickMsg : CPumpMsg, phaseMillis : Integer,
+						 periodMillis : Integer, schedHelper : ScheduleHelper): Unit = {
+		val schedItem = schedHelper.makeSchedItemRepeating(tickMsg, phaseMillis, periodMillis)
+		schedItem.addToSchedForSys(akkaSys, tgtActor, tgtActor)
 	}
 
 	def makeFunUserLogic(): ExoBodyUserLogic = {
@@ -48,14 +57,13 @@ trait NavUiAppSvc extends VarargsLogging {
 	// TODO:  If we were sending to an actor that knew how to discover the MechIOBody connection,
 	// possibly by waiting for a lifecycle update, then this impl could be same as the "Standy" method below.
 	def requestSemiLegacyBodyConn_OSGi_Sinbad(bundleCtx: BundleContext, akkaSys: ActorSystem,
-											  legacyELRC: EnhancedLocalRepoClient): Unit = {
+					 legacyELRC: EnhancedLocalRepoClient, exoBodyUserLogic : ExoBodyUserLogic): Unit = {
 
 		val legBodyLdr = new LegacyBodyLoader_Stateless
 		val fullHumaCfg : HumanoidFigureConfig = legBodyLdr.loadFullHumaConfig_SemiLegacy(legacyELRC, sinbadBodyID, hmdGraphID, bonyGraphID)
 		val mbrsc: ModelBlendingRobotServiceContext = legBodyLdr.connectMechIOBody(legacyELRC, bundleCtx, fullHumaCfg, bonyGraphID)
 
-		val funUserLogic = makeFunUserLogic()
-		val bodyNoticer : CPStrongTeller[VWBodyNotice] = makeExoBodyUserTeller(akkaSys, "sinbad_ccmio_body_user", funUserLogic)
+		val bodyNoticer : CPStrongTeller[VWBodyNotice] = makeExoBodyUserTeller_withTicks(akkaSys, "sinbad_ccmio_body_user", exoBodyUserLogic)
 
 		// Now we've done all the "outer" setup that requires assumptions, and we can
 		// send off a tidy async request to the v-world actors, requesting them to
@@ -68,12 +76,14 @@ trait NavUiAppSvc extends VarargsLogging {
 	}
 	// Creates a posable VW character, but does not ask for or assume any MechIO (or other OSGi) infrastructure.
 	def requestStandySemiLegacyBody_Sinbad(akkaSys: ActorSystem,
-										   legacyELRC: EnhancedLocalRepoClient): Unit = {
+										   legacyELRC: EnhancedLocalRepoClient, exoBodyUserLogic : ExoBodyUserLogic): Unit = {
 		val legBodyLdr = new LegacyBodyLoader_Stateless
 		val fullHumaCfg : HumanoidFigureConfig = legBodyLdr.loadFullHumaConfig_SemiLegacy(legacyELRC, sinbadBodyID, hmdGraphID, bonyGraphID)
-		val funUserLogic = makeFunUserLogic()
-		val bodyNoticer : CPStrongTeller[VWBodyNotice] = makeExoBodyUserTeller(akkaSys, "sinbad_standy_body_user", funUserLogic)
+
+		val bodyNoticer : CPStrongTeller[VWBodyNotice] = makeExoBodyUserTeller_withTicks(akkaSys, "sinbad_standy_body_user", exoBodyUserLogic)
 		postPatientCharCreateRq(sinbadBodyID, fullHumaCfg, None, bodyNoticer)
+
+
 	}
 }
 
@@ -150,7 +160,8 @@ class NavUiAppImpl(myAkkaSys : ActorSystem) extends NavUiAppSvc with NavPumpSpac
 		myVWBossTeller.tellCPMsg(charAdmRegMsg)
 
 	}
-	// Could easily send this in as an actor msg, except for the optional MechIO-OSGi connection.
+	// Can't so directly send this yet as  actor msg.  There is a kind of implicit rendezvous going on here
+	// between  the optional MechIO connection, the legacy-repo-based humaConfig, and the launched VWorld actors.
 	def appendCharAdmRq(chrAdmRq : VWBodyLifeRq) : Unit = charAdmForwarderLogic.appendInboundRq(chrAdmRq)
 
 	override def postPatientCharCreateRq(dualBodyID : Ident, fullHumaCfg : HumanoidFigureConfig,
