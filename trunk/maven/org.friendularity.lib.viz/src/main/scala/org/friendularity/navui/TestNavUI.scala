@@ -29,6 +29,7 @@ import org.cogchar.blob.emit.RenderConfigEmitter
 import org.cogchar.blob.entry.EntryHost
 import org.cogchar.impl.scene.read.BehavMasterConfigTest
 import org.cogchar.impl.thing.basic.BasicThingActionSpec
+import org.cogchar.platform.gui.keybind.KeyBindingConfig
 import org.cogchar.platform.trigger.CommandSpace
 import org.cogchar.render.app.humanoid.HumanoidRenderWorldMapper
 import org.cogchar.render.goody.basic.BasicGoodyCtx
@@ -114,11 +115,11 @@ object NavUiTestPublicNames {
 }
 // Use to run from main().
 class StandaloneNavAppSys() {
-	private val akkaSysName : String = NavUiTestPublicNames.akkaSysName
+	private val akkaSysName: String = NavUiTestPublicNames.akkaSysName
 	lazy private val myAkkaSys = ActorSystem(akkaSysName)
 	lazy private val myNavUiApp = new NavUiAppImpl(myAkkaSys)
 
-	def findOrMakeNavUiApp : NavUiAppImpl = myNavUiApp
+	def findOrMakeNavUiApp: NavUiAppImpl = myNavUiApp
 
 	lazy private val myLegacyELRC: EnhancedLocalRepoClient = {
 
@@ -130,13 +131,62 @@ class StandaloneNavAppSys() {
 		TestRaizLoad.makeLegacyConfigELRC_fromJena(mergedProfileGraph, vzBrkRcpUriTxt, legConfEHost)
 	}
 
-	def getLegacyELRC : EnhancedLocalRepoClient = myLegacyELRC
+	def getLegacyELRC: EnhancedLocalRepoClient = myLegacyELRC
 
 	def sendStart_SemiLegacySinbad(ebul: ExoBodyUserLogic): Unit = {
 		myNavUiApp.requestStandySemiLegacyBody_Sinbad(myAkkaSys, myLegacyELRC, ebul)
 	}
 
-	def harumph(cspace : CommandSpace, bgc : BasicGoodyCtx) : Unit = {
+	def harumph(kbc : KeyBindingConfig, cspace: CommandSpace, bgc: BasicGoodyCtx): Unit = {
+	}
+}
+/*
+		// PumaVirtualWorldMapper.initVirtualWorlds   calls
+		// 	        hrc.refreshInputBindingsAndHelpScreen(currKeyBindCfg, cspace);
+		// HumanoidRenderContext does:
+	//	public void refreshInputBindingsAndHelpScreen(KeyBindingConfig keyBindConfig, CommandSpace cspace) {
+	//		RenderRegistryClient rrc = getRenderRegistryClient();
+	//		VW_InputBindingFuncs.setupKeyBindingsAndHelpScreen(rrc, keyBindConfig, getAppStub(),
+	//			getJMonkeyAppSettings(), cspace);
+	//	}
+VW_InputBindingFuncs does:
+
+static private VW_InputDirector theOpenGLInputDirector;
+	public static void setupKeyBindingsAndHelpScreen(final RenderRegistryClient rrc, KeyBindingConfig keyBindConfig,
+					WorkaroundAppStub appStub, AppSettings someSettings, CommandSpace cspace) {
+		if (theOpenGLInputDirector == null) {
+			theOpenGLInputDirector = new VW_InputDirector();
+		}
+
+		theOpenGLInputDirector.myRenderRegCli = rrc;
+		theOpenGLInputDirector.myKeyBindCfg = keyBindConfig;
+		theOpenGLInputDirector.myAppStub = appStub;
+	//	theOpenGLInputDirector.myHRC_elim = hrc;
+		theOpenGLInputDirector.myAppSettings = someSettings;
+
+		theOpenGLInputDirector.myCommandSpace = cspace;
+
+		theOpenGLInputDirector.clearKeyBindingsAndHelpScreen();
+
+		theOpenGLInputDirector.setupKeyBindingsAndHelpScreen();
+-----------------------------------------------
+VW_InputDirector
+    public void setupKeyBindingsAndHelpScreen() {
+        InputManagerDoodad doodad = new InputManagerDoodad();
+        doodad.myJME3InputManager = myRenderRegCli.getJme3InputManager(null);
+        // If we do that, we'd better clear the KeyBindingTracker too
+        // Since we just cleared mappings and are (for now at least) using the default FlyByCamera mappings, we must re-register them
+        FlyByCamera fbCam = myAppStub.getFlyByCamera();
+        fbCam.registerWithInput(doodad.myJME3InputManager);
+        // Now we'll register the mappings in Cog Char based on theConfig
+        // HumanoidPuppetActions.setupActionListeners(inputManager, myHRC_elim, myKeyBindCfg, myKeyBindingTracker);
+        setupActionListeners(doodad, myKeyBindCfg, myKeyBindingTracker);
+        addScrollWheelBindings(doodad);
+        setupCommandKeybindings();
+
+        // ... and finally set up the help screen now that the mappings are done
+        myHelpScreenMgr.updateHelpTextContents(myRenderRegCli, myAppSettings, myKeyBindCfg, myKeyBindingTracker);
+    }
 		// val hrwMapper: HumanoidRenderWorldMapper = new HumanoidRenderWorldMapper
 		// hrwMapper.addHumanoidGoodies(bgc, hrc)
 //		val grrc: GoodyRenderRegistryClient = hrc.getGoodyRenderRegistryClient
@@ -149,7 +199,6 @@ class StandaloneNavAppSys() {
 //			val vhfe: VWorldHumanoidFigureEntity = new VWorldHumanoidFigureEntity(grrc, figureUri, figure)
 //			bgc.getVWER.addGoody(vhfe)
 //		}
-	}
-}
+*/
 
 
