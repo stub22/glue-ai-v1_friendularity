@@ -186,22 +186,37 @@ trait Srtw extends VarargsLogging {
 
 	def getOuterGuy : OuterGuy
 
-	// From org.cogchar.render.trial.TrialNexus
-	def makeSheetspace(parentNode: Node) {
-		info0("Begin Srtw.makeSheetspace")
-		val xCount: Int = 7
-		val yCount: Int = 5
-		val zCount: Int = 9
-		val deepSpace: MultiDimGridSpace = GridSpaceFactory.makeSpace3D(xCount, -120.0f, 120.0f, yCount, -60.0f, 60.0f, zCount, -200.0f, 100.0f)
-		getLogger.info("Space description={}", deepSpace.describe)
+	def makeFunSubspace(deepSpace : MultiDimGridSpace): Unit = {
 		// Make integer index space range, where 6 args are 3 pairs for x,y,z: (firstX, lastX), (firstY...
 		val extrudedCellBlock: CellBlock = CellRangeFactory.makeBlock3D(3, 5, -1, 6, 2, 7)
 		val extrudedPosBlock: PosBlock = deepSpace.computePosBlockForCellBlock(extrudedCellBlock)
 		getLogger.info("Computed result PosBlock description={}", extrudedPosBlock.describe)
 
+		val xIndexBlock =  extrudedCellBlock.myCIRs(0)
+		val chosenXPos : Range = xIndexBlock.getFirstCellIndex.getIndexFrom0 to xIndexBlock.getLastCellIndex.getIndexFrom0
+		info1("xPosRange using 0-idx is: {}", chosenXPos)
+	}
+
+	def makeSymmetricCenteredGridSpace (countX : Int, widthX : Float, countY : Int, heightY : Float,
+										countZ : Int, depthZ : Float) : MultiDimGridSpace = {
+		GridSpaceFactory.makeSpace3D(countX, widthX / -2.0f, widthX/2.0f, countY, heightY/ -2.0f, heightY/2.0f,
+			countZ, depthZ/ -2.0f, depthZ/2.0f)
+	}
+	def makeUniformCenteredGridSpace(countPerDim : Int, lengthPerDim : Float) : MultiDimGridSpace = {
+		makeSymmetricCenteredGridSpace(countPerDim, lengthPerDim, countPerDim, lengthPerDim, countPerDim, lengthPerDim )
+	}
+	// From org.cogchar.render.trial.TrialNexus
+	def makeSheetspace(parentNode: Node) {
+		info0("Begin Srtw.makeSheetspace")
+		val xCount: Int = 40
+		val yCount: Int = xCount
+		val zCount: Int = xCount
+		// val deepSpace: MultiDimGridSpace = GridSpaceFactory.makeSpace3D(xCount, -120.0f, 120.0f, yCount, -60.0f, 60.0f, zCount, -200.0f, 100.0f)
+		val deepSpace: MultiDimGridSpace = makeUniformCenteredGridSpace(xCount, 500.0f)
+		getLogger.info("Space description={}", deepSpace.describe)
+
 		val vizNode: Node = new Node("sspace_viz_node_" + System.currentTimeMillis())
 		parentNode.attachChild(vizNode)
-
 
 		val cellCount: Int = xCount * yCount * zCount
 		var seq: Int = 0
@@ -213,14 +228,15 @@ trait Srtw extends VarargsLogging {
 		// we show just the creation + attachment of one group of instances, for
 		// a single cell.
 
-		val xIndexBlock =  extrudedCellBlock.myCIRs(0)
-		val chosenXPos : Range = xIndexBlock.getFirstCellIndex.getIndexFrom0 to xIndexBlock.getLastCellIndex.getIndexFrom0
-		val chosenYPos :  Range = 0 to yCount - 1
-		val chosenZPos : Range = 2 to 5
-		for (zIdx <- chosenZPos)
-			for (yIdx <- chosenYPos)
-				for (xIdx <- chosenXPos) {
-					makeBoxWig(deepSpace, vizNode, outerGuy.myBrushJar.cyan_med,  quadMeshFiveByFive, seq, xIdx, yIdx, zIdx)
+
+		val chosenIdxs_X : Range = 10 to 30 by 2
+		val chosenIdxs_Y :  Range = 10 to 30 by 4
+		val chosenIdxs_Z : Range = 5 to 35 by 5
+		for (zIdx <- chosenIdxs_Z)
+			for (yIdx <- chosenIdxs_Y)
+				for (xIdx <- chosenIdxs_X) {
+					makeBoxWig(deepSpace, vizNode, outerGuy.myBrushJar.cyan_med,  outerGuy.myBrushJar.orange_med,
+								quadMeshFiveByFive, seq, xIdx, yIdx, zIdx)
 					seq += 1
 				}
 
@@ -228,7 +244,7 @@ trait Srtw extends VarargsLogging {
 		info0("End Srtw.makeSheetspace")
 	}
 
-	def makeBoxWig(deepSpace: MultiDimGridSpace, vizNode : Node, mainBrush : Brush,  qMesh : Mesh, seq : Int, xi : Int, yi: Int, zi: Int) : Int = {
+	def makeBoxWig(deepSpace: MultiDimGridSpace, vizNode : Node, frontBrush : Brush, sideBrush : Brush, qMesh : Mesh, seq : Int, xi : Int, yi: Int, zi: Int) : Int = {
 		// Make integer index space range, where 6 args are 3 pairs for x,y,z: (firstX, lastX), (firstY...
 		val unitCB: CellBlock = CellRangeFactory.makeUnitBlock3D(xi, yi, zi)
 		val unitPB: PosBlock = deepSpace.computePosBlockForCellBlock(unitCB)
@@ -238,17 +254,21 @@ trait Srtw extends VarargsLogging {
 		val zpr: PosRange = unitPB.myPRs(2)
 		val qlabTxt01: String = "bq_" + seq + "_1"
 		val qg1: Geometry = new Geometry(qlabTxt01, qMesh)
-		mainBrush.stroke(qg1)  // TrialNexus uses bsc1 here
+		frontBrush.stroke(qg1)  // TrialNexus uses bsc1 here
 		qg1.setLocalTranslation(xpr.getMin, ypr.getMin, zpr.getMin)
 		vizNode.attachChild(qg1)
-		val qlabBT_01: BitmapText = myFirstTSF.makeTextSpatial(qlabTxt01, 0.2f, RenderQueue.Bucket.Transparent, 6)
+		val outerGuy = getOuterGuy
+
+		val someBT : BitmapText = outerGuy.happyTxtMaker.makeBitmapTxt(qlabTxt01)
+		val qlabBT_01: BitmapText = someBT //  myFirstTSF.makeTextSpatial(qlabTxt01, 0.2f, RenderQueue.Bucket.Transparent, 6)
 		qlabBT_01.setLocalTranslation(xpr.getCenter, ypr.getCenter, zpr.getCenter)
 		vizNode.attachChild(qlabBT_01)
 
-		val dmaker = new DoodleMaker(mainBrush.myBSC, qMesh) // TrialNexus uses bsc2 here
+		val dmaker = new DoodleMaker(sideBrush.myBSC, qMesh) // TrialNexus uses bsc2 here
 
 		val doodle : Geometry = dmaker.makeDoodle(seq, xpr.getMax, ypr.getCenter, zpr.getCenter)
 		val whatIdx : Int = vizNode.attachChild(doodle)
+		debug2("Doodle for seq={} attached at child={}", seq : Integer, whatIdx : Integer)
 		-1
 	}
 	def translateToMins (g : Geometry) = ???
