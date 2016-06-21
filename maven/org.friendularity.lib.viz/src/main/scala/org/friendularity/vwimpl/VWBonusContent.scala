@@ -2,6 +2,7 @@ package org.friendularity.vwimpl
 
 import com.jme3.asset.AssetManager
 import com.jme3.input.FlyByCamera
+import com.jme3.material.Material
 import com.jme3.math.ColorRGBA
 import com.jme3.renderer.ViewPort
 import com.jme3.scene.{Node => JmeNode}
@@ -10,6 +11,8 @@ import org.cogchar.bind.midi.in.{CCParamRouter, TempMidiBridge}
 import org.cogchar.render.sys.context.CogcharRenderContext
 import org.cogchar.render.sys.registry.RenderRegistryClient
 import org.cogchar.render.trial.{TrialCameras, TrialContent}
+import org.friendularity.respire.{MatPallete, OuterGuy, Srtw}
+
 /**
   * This stuff contains about 10 steps of testing content + camera setup, all not essential except
   * as standin for better testing with equal/superior client messages.
@@ -46,7 +49,8 @@ trait IsolatedBonusContentMaker extends VarargsLogging {
 
 		someContent.attachMidiCCs(ccpr)
 
-		/* If we disable the 3D content, then we get an error in TrialCameras, as it seeks to attach to nodes.
+		/* If we disable the 3D content above, while keeping TrialCameras, then we get an error
+		// in TrialCameras, as it seeks to attach to nodes.
 		at org.cogchar.render.app.entity.CameraBinding.attachSceneNodeToCamera(CameraBinding.java:229)
 		at org.cogchar.render.trial.TrialCameras.setupCamerasAndViews(TrialCameras.java:79)
 		at org.friendularity.respire.SimBalloonJmeApp.shving(VWCore.scala:109)
@@ -57,6 +61,19 @@ trait IsolatedBonusContentMaker extends VarargsLogging {
 		// Hand the MIDI bindings to the camera-aware app.
 		// (Disabled until rebuild with this method public)
 		tcam.attachMidiCCs(ccpr)
+
+
+		val assetMgr = rrc.getJme3AssetManager(null);
+		val someMat = new Material(assetMgr, "Common/MatDefs/Misc/Unshaded.j3md") // someContent.makeAlphaBlendedUnshadedMaterial(rrc, 0f, 1.0f, 0, 0.5f);
+		val matPal = new MatPallete(someMat)
+		val outerGuy = new OuterGuy(rrc, matPal)
+		val srtwInst = new Srtw {
+				override def getRRC = rrc
+				override def getOuterGuy : OuterGuy = outerGuy
+
+			}
+		srtwInst.makeSheetspace(rootDeepNode)
+
 		getLogger.info("IsolatedInitLogic is done!");
 	}
 	protected def doItEasier(crc : CogcharRenderContext, flyCam : FlyByCamera, viewPort : ViewPort, updAtchr : UpdateAttacher, tmb : TempMidiBridge) : Unit = {
