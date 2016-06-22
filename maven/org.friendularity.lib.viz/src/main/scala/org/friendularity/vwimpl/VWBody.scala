@@ -63,8 +63,6 @@ class VWCharMgrActor(myBodyCtx : VWCharMgrCtx) extends Actor with VWCharMgrJobLo
 	}
 }
 
-
-
 trait VWBodyLogic extends VarargsLogging {
 	protected def getBodyRec : DualBodyRecord
 

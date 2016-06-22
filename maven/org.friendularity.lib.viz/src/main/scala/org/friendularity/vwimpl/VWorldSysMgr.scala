@@ -111,5 +111,11 @@ object VWorldActorFactoryFuncs {
 		val stageActorRef : ActorRef = parentARF.actorOf(stageActorProps, stageActorName)
 		stageActorRef
 	}
+
+	def makeVWShaperActor(parentARF : ActorRefFactory, shaperActorName : String, someThing : AnyRef) : ActorRef = {
+		val shaperActorProps = Props(classOf[VWShaperActor], someThing)
+		val shaperActorRef : ActorRef = parentARF.actorOf(shaperActorProps, shaperActorName)
+		shaperActorRef
+	}
 }
 
