@@ -17,13 +17,15 @@ trait VWorldBossLogic [VWSM <: VWorldSysMgr] extends VarargsLogging with VWPTRen
 	protected def processVWorldRequest(vwmsg : VWorldRequest, slfActr : ActorRef, localActorCtx : ActorContext): Unit = {
 		val sysMgr = getSysMgr
 		vwmsg match {
-			// Currently this setup-conf is unnecessary, so client is actually sending it.
-			case vwSetupCnfMsg : VWSetupRq_Conf => loadConf(vwSetupCnfMsg, localActorCtx)
-
 			// Heart of the V-World setup is done here:
 			case vwSetupLnchMsg : VWSetupRq_Lnch => launchSimRenderSpace(vwSetupLnchMsg, slfActr, localActorCtx)
 
 			case otherAdminRq : VWAdminRqMsg => processVWAdminMsg(otherAdminRq, localActorCtx)
+
+			// Currently this setup-conf is unnecessary, so client is actually sending it.
+			case vwSetupCnfMsg : VWSetupRq_Conf =>
+				error1("The VWCnfMgr code is disabled, but we received: {}", vwSetupCnfMsg)
+				// unused_FakeloadConf(vwSetupCnfMsg, localActorCtx)
 
 		}
 	}
@@ -35,10 +37,7 @@ trait VWorldBossLogic [VWSM <: VWorldSysMgr] extends VarargsLogging with VWPTRen
 			case gfpa : VWARM_GreetFromPumpAdmin => {
 				info1("VWBoss says thanks for the greet msg: {}", gfpa)
 			}
-			/*
-			case fgt : VWARM_FindGoodyTeller => {
-			}
-			*/
+
 			case fpt : VWARM_FindPublicTellers => {
 				info1("VWBoss registering a pub-teller listener: {}", fpt)
 				addVWPTListener(fpt.answerTeller)
@@ -65,17 +64,6 @@ trait VWorldBossLogic [VWSM <: VWorldSysMgr] extends VarargsLogging with VWPTRen
 		info0("makeSimSpace Calling bsim.setup")
 		bsim.setup(resultsTeller)
 		info0("makeSimSpace END - vworld is now running, but delayed setup jobs may still be running/pending")
-	}
-
-	// Currently unused
-	protected def loadConf(vwConfMsg : VWSetupRq_Conf, localActorCtx : ActorContext): Unit = {
-		// This is loading a complete copy of the legacy avatar config, but ...
-		// it is not used in the current load of the vw-bodies/avatars, which is being
-		// done under OSGi under direct control of the CCMIO_DemoActivator.
-		val cnfMgr = new VWCnfMgr {}
-		val profileGraph = cnfMgr.getProfileGraph
-		info1("Got profileGraph: {}", profileGraph)
-		val legConf_opt = cnfMgr.getLegConfERC_opt
 	}
 
 	def notifySetupResults(lesserIngred: LesserIngred, bmi : BodyMgrIngred, localActorCtx : ActorContext): Unit = {

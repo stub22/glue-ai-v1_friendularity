@@ -2,9 +2,11 @@ package org.friendularity.respire
 
 import java.util.{ArrayList, Map}
 
+import akka.actor.ActorContext
+import com.hp.hpl.jena.rdf.model.Model
 import org.appdapter.core.name.{FreeIdent, Ident}
 import org.appdapter.fancy.log.VarargsLogging
-import org.appdapter.fancy.rclient.RepoClient
+import org.appdapter.fancy.rclient.{EnhancedLocalRepoClient, RepoClient}
 import org.cogchar.api.thing.WantsThingAction
 import org.cogchar.app.puma.behavior.PumaBehaviorManager
 import org.cogchar.app.puma.body.PumaDualBodyManager
@@ -12,16 +14,58 @@ import org.cogchar.app.puma.boot.{PumaContextCommandBox, PumaSysCtx}
 import org.cogchar.app.puma.config.{BodyHandleRecord, PumaContextMediator}
 import org.cogchar.app.puma.event.{Updater, CommandEvent}
 import org.cogchar.app.puma.registry.{PumaRegistryClientImpl, PumaRegistryClient}
+import org.cogchar.blob.entry.EntryHost
 import org.cogchar.bundle.app.vworld.busker.TriggerItems
 import org.cogchar.bundle.app.vworld.central.{VWCtxCmdBox, StatefulVWorldRegistry, VWorldRegistry}
 import org.cogchar.platform.trigger.{CommandSpace, BoxSpace}
+import org.friendularity.raiz.TestRaizLoad
+import org.friendularity.vwmsg.VWSetupRq_Conf
 import org.osgi.framework.BundleContext
 
 import java.util.{Map => JMap, ArrayList => JArrayList}
+import com.hp.hpl.jena.rdf.model.{Model => JenaModel}
 /**
   * Created by Owner on 6/16/2016.
   */
-class VWUnusedSketches {
+trait VWUnusedSketches extends VarargsLogging {
+	protected def unused_FakeloadConf(vwConfMsg : VWSetupRq_Conf, localActorCtx : ActorContext): Unit = {
+		// This is loading a complete copy of the legacy avatar config, but ...
+		// it is not used in the current load of the vw-bodies/avatars, which is being
+		// done under OSGi under direct control of the CCMIO_DemoActivator.
+		val cnfMgr = new UnusedSketch_VWCnfMgr {}
+		val profileGraph = cnfMgr.getProfileGraph
+		info1("Got profileGraph: {}", profileGraph)
+		val legConf_opt = cnfMgr.getLegConfERC_opt
+	}
+}
+trait UnusedSketch_VWCnfMgr extends VarargsLogging {
+	lazy private val myMergedProfileJM : JenaModel = makeMergedProfileGraph("Temporarily unused selector args")
+	private val loadLegacyConf = true
+	lazy private val legConfERC_opt: Option[EnhancedLocalRepoClient] = {
+		if (loadLegacyConf) Option(buildLegacyConfERC_assumesUnitTest(myMergedProfileJM)) else None
+	}
+	def getProfileGraph = myMergedProfileJM
+	def getLegConfERC_opt = legConfERC_opt
+	protected def makeMergedProfileGraph(profileSelectorArgs : String) : JenaModel = {
+		val tchunkEHost: EntryHost = TestRaizLoad.getUnitTestResourceEntryHost
+		// TODO - Process the profileSelectorArgs
+		val mergedProfileGraph: JenaModel = TestRaizLoad.getMergedProfileGraph_RegularDesktop(tchunkEHost)
+		mergedProfileGraph
+	}
+	protected def buildLegacyConfERC_assumesUnitTest(mergedProfGraph : JenaModel) : EnhancedLocalRepoClient = {
+		// Legacy config load section, gradually becoming obsolete:
+		// Under OSGi (e.g. CCMIO), old PumaBoot process is set up by attachVizTChunkLegConfRepo(BundleContext bunCtx).
+		//val tchunkEHost: EntryHost = TestRaizLoad.makeBundleEntryHost(TestRaizLoad.getClass)
+
+		val tchunkEHost: EntryHost = TestRaizLoad.getUnitTestResourceEntryHost
+
+		// TODO: Find this URI from either a query or an onto-constant
+		val vzBrkRcpUriTxt: String = TestRaizLoad.vzpLegCnfBrkrRcpUriTxt
+
+		val legConfERC = TestRaizLoad.makeLegacyConfigELRC_fromJena(mergedProfGraph, vzBrkRcpUriTxt, tchunkEHost)
+		getLogger.info("legConfERC={}", legConfERC)
+		legConfERC
+	}
 
 }
 trait EmulateVintageLaunch extends VarargsLogging {
