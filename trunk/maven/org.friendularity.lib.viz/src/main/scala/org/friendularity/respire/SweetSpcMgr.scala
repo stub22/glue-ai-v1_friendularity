@@ -199,22 +199,24 @@ trait Srtw extends VarargsLogging {
 		info0("Begin Srtw.makeSheetspace")
 		val uniformCount : Int = 40
 		val uniformLen : Float = 800.0f
-		//val yCount: Int = uniformCount
-		//val zCount: Int = uniformCount
-		//		val cellCount: Int = uniformCount * yCount * zCount
-		// val deepSpace: MultiDimGridSpace = GridSpaceFactory.makeSpace3D(xCount, -120.0f, 120.0f, yCount, -60.0f, 60.0f, zCount, -200.0f, 100.0f)
 
+		// Defines an efficient grid space, which does not allocate objects for cells.
+		// It has infinite implied structure, e.g. cell(-99999, 5555555, -44444444) is well defined.
 		val deepSpace: MultiDimGridSpace = makeUniformCenteredGridSpace(uniformCount, uniformLen)
+
 		getLogger.info("Space description={}", deepSpace.describe)
 
-		val vizNode: JmeNode = new JmeNode("sspace_viz_node_" + System.currentTimeMillis())
-		parentNode.attachChild(vizNode)
-
+		// Decide the cross-sections of cells we want to do something with.
+		// It is actually OK if these indices are outside the implied range of the deepSpace
 		val chosenIdxs_X: Range = 10 to 30 by 2
 		val chosenIdxs_Y: Range = 10 to 30 by 4
 		val chosenIdxs_Z: Range = 5 to 35 by 5
 
+		// Make and attach wig nodes for each combination of x,y,z indices
 		val wigsParent : JmeNode = makeWigs(deepSpace, chosenIdxs_X, chosenIdxs_Y, chosenIdxs_Z)
+
+		val vizNode: JmeNode = new JmeNode("sspace_viz_node_" + System.currentTimeMillis())
+		parentNode.attachChild(vizNode)
 		vizNode.attachChild(wigsParent)
 	}
 	def makeWigs(deepSpace: MultiDimGridSpace, chosenIdxs_X: Range, chosenIdxs_Y: Range, chosenIdxs_Z: Range) : JmeNode = {
@@ -226,7 +228,10 @@ trait Srtw extends VarargsLogging {
 		for (zIdx <- chosenIdxs_Z)
 			for (yIdx <- chosenIdxs_Y)
 				for (xIdx <- chosenIdxs_X) {
+					// Start by making a unit-cell-block for the given index combination.
+					// (Alternatively, this key block could contain a range of cells)
 					val unitCB: CellBlock = CellRangeFactory.makeUnitBlock3D(xIdx, yIdx, zIdx)
+					// Find the physical floating-point boundaries of that given cell unit/group.
 					val unitPB: PosBlock = deepSpace.computePosBlockForCellBlock(unitCB)
 					debug3("Unit cell with seq#={} has cellBlock={} and posBlock.description={}", seq : Integer, unitCB, unitPB.describe)
 

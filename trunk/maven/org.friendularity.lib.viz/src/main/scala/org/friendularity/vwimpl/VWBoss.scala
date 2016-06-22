@@ -6,7 +6,7 @@ import org.cogchar.render.goody.basic.{BasicGoodyCtxImpl, BasicGoodyCtx}
 import org.cogchar.render.sys.registry.RenderRegistryClient
 import org.cogchar.render.sys.window.WindowStatusMonitor
 import org.friendularity.cpump.ActorRefCPMsgTeller
-import org.friendularity.vwmsg.{VWorldInternalNotice, VWBodyLifeRq, VWPubTellersMsgImpl, VWGoodyRqActionSpec, LesserIngred, BodyMgrIngred, VWorldNotice, VWSetupResultsNotice, VWARM_GreetFromPumpAdmin, VWARM_FindPublicTellers, VWAdminRqMsg, VWSetupRq_Lnch, VWSetupRq_Conf, VWorldRequest}
+import org.friendularity.vwmsg.{VWStageRqMsg, VWShapeCreateRq, VWorldInternalNotice, VWBodyLifeRq, VWPubTellersMsgImpl, VWGoodyRqActionSpec, LesserIngred, BodyMgrIngred, VWorldNotice, VWSetupResultsNotice, VWARM_GreetFromPumpAdmin, VWARM_FindPublicTellers, VWAdminRqMsg, VWSetupRq_Lnch, VWSetupRq_Conf, VWorldRequest}
 
 /**
   * Created by Owner on 6/15/2016.
@@ -82,7 +82,14 @@ trait VWorldBossLogic [VWSM <: VWorldSysMgr] extends VarargsLogging with VWPTRen
 		val charAdmActorRef = VWorldActorFactoryFuncs.makeVWCharAdminActor(localActorCtx, "charAdm", cmgrCtx)
 		val charAdmTeller  = new ActorRefCPMsgTeller[VWBodyLifeRq](charAdmActorRef)
 
-		val vwpt = new VWPubTellersMsgImpl(goodyTeller, charAdmTeller)
+		val dummy = "dummyTxt"
+		val shaperActorRef = VWorldActorFactoryFuncs.makeVWShaperActor(localActorCtx, "shaper", dummy)
+		val shaperTeller  = new ActorRefCPMsgTeller[VWShapeCreateRq](shaperActorRef)
+
+		val stageActorRef = VWorldActorFactoryFuncs.makeVWStageActor(localActorCtx, "stager", dummy)
+		val stageTeller  = new ActorRefCPMsgTeller[VWStageRqMsg](stageActorRef)
+
+		val vwpt = new VWPubTellersMsgImpl(goodyTeller, charAdmTeller, shaperTeller, stageTeller)
 		setVWPT(vwpt)
 	}
 
