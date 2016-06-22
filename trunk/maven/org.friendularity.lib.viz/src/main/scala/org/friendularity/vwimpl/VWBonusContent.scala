@@ -11,7 +11,7 @@ import org.cogchar.bind.midi.in.{CCParamRouter, TempMidiBridge}
 import org.cogchar.render.sys.context.CogcharRenderContext
 import org.cogchar.render.sys.registry.RenderRegistryClient
 import org.cogchar.render.trial.{TrialCameras, TrialContent}
-import org.friendularity.respire.{MatPallete, OuterGuy, Srtw}
+import org.friendularity.respire.{Srtw}
 
 /**
   * This stuff contains about 10 steps of testing content + camera setup, all not essential except
@@ -28,7 +28,13 @@ trait IsolatedBonusContentMaker extends VarargsLogging {
 		// Sets the speed of our POV camera movement.  The default is pretty slow.
 
 		flyCam.setMoveSpeed(20)
-		val someContent = new TrialContent
+		val someContent = new TrialContent {
+			override def doUpdate (rrc: RenderRegistryClient, tpf: Float)  : Unit = {
+				super.doUpdate(rrc, tpf)
+				// flyCam is a controller/wrapper around the cam itself.
+
+			}
+		}
 
 		getLogger.info("IsolatedInitLogic: will now init, in order: lights, 3D content, bgcolor, 2D content, contentUpdater, MIDI controllers, extra cameras+views")
 

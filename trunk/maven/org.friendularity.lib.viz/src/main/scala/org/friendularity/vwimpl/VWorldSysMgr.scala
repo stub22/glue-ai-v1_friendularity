@@ -43,36 +43,7 @@ trait VWorldStrap {
 //	def	getPumpCtx : DullPumpCtx
 }
 
-trait VWCnfMgr extends VarargsLogging {
-	lazy private val myMergedProfileJM : JenaModel = makeMergedProfileGraph("Temporarily unused selector args")
-	private val loadLegacyConf = true
-	lazy private val legConfERC_opt: Option[EnhancedLocalRepoClient] = {
-		if (loadLegacyConf) Option(buildLegacyConfERC(myMergedProfileJM)) else None
-	}
-	def getProfileGraph = myMergedProfileJM
-	def getLegConfERC_opt = legConfERC_opt
-	protected def makeMergedProfileGraph(profileSelectorArgs : String) : JenaModel = {
-		val tchunkEHost: EntryHost = TestRaizLoad.getUnitTestResourceEntryHost
-		// TODO - Process the profileSelectorArgs
-		val mergedProfileGraph: JenaModel = TestRaizLoad.getMergedProfileGraph_RegularDesktop(tchunkEHost)
-		mergedProfileGraph
-	}
-	protected def buildLegacyConfERC(mergedProfGraph : JenaModel) : EnhancedLocalRepoClient = {
-		// Legacy config load section, gradually becoming obsolete:
-		// Under OSGi (e.g. CCMIO), old PumaBoot process is set up by attachVizTChunkLegConfRepo(BundleContext bunCtx).
-		//val tchunkEHost: EntryHost = TestRaizLoad.makeBundleEntryHost(TestRaizLoad.getClass)
 
-		val tchunkEHost: EntryHost = TestRaizLoad.getUnitTestResourceEntryHost
-
-		// TODO: Find this URI from either a query or an onto-constant
-		val vzBrkRcpUriTxt: String = TestRaizLoad.vzpLegCnfBrkrRcpUriTxt
-
-		val legConfERC = TestRaizLoad.makeLegacyConfigELRC_fromJena(mergedProfGraph, vzBrkRcpUriTxt, tchunkEHost)
-		getLogger.info("legConfERC={}", legConfERC)
-		legConfERC
-	}
-
-}
 trait VWPTRendezvous {
 	private var myListeners : List[CPStrongTeller[VWorldPublicTellers]] = Nil
 	private var myVWPT_opt : Option[VWorldPublicTellers] = None
@@ -134,6 +105,11 @@ object VWorldActorFactoryFuncs {
 		val bodyActorProps = Props(classOf[VWBodyActor], dualBodyRec)
 		val bodyActorRef : ActorRef = parentARF.actorOf(bodyActorProps, bodyActorName)
 		bodyActorRef
+	}
+	def makeVWStageActor(parentARF : ActorRefFactory, stageActorName : String, someThing : AnyRef) : ActorRef = {
+		val stageActorProps = Props(classOf[VWStageActor], someThing)
+		val stageActorRef : ActorRef = parentARF.actorOf(stageActorProps, stageActorName)
+		stageActorRef
 	}
 }
 

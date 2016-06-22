@@ -23,7 +23,7 @@ import com.jme3.math.{Vector3f, FastMath, Quaternion, ColorRGBA}
 import com.jme3.renderer.Camera
 import com.jme3.renderer.queue.RenderQueue
 import com.jme3.scene.shape.Quad
-import com.jme3.scene.{Spatial, Geometry, Mesh, Node}
+import com.jme3.scene.{Spatial, Geometry, Mesh, Node => JmeNode}
 import org.appdapter.core.name.Ident
 import org.appdapter.core.store.Repo
 import org.appdapter.fancy.log.VarargsLogging
@@ -40,6 +40,7 @@ import org.cogchar.render.sys.goody.GoodyRenderRegistryClient
 import org.cogchar.render.sys.registry.RenderRegistryClient
 import org.cogchar.render.trial.{TrialNexus, TextSpatialFactory}
 import org.friendularity.cpump.{Greeting, WhoToGreet}
+import org.friendularity.vwimpl.{Brush, OuterGuy}
 
 
 /**
@@ -164,19 +165,7 @@ trait DetachedGST extends VarargsLogging {
 }
 import TrialNexus.BlendedShapeContext
 
-class OuterGuy(myRRC : RenderRegistryClient, myMatPal : MatPallete) {
-	lazy val myFirstTSF: TextSpatialFactory = new TextSpatialFactory(myRRC)
-	val myBrushJar = new BrushJar(myMatPal)
 
-	val quadMeshFiveByFive: Mesh = new Quad(5,5)
-
-	val redQuadMaker = new MeshGeoMaker(quadMeshFiveByFive, myBrushJar.reddy)
-	val orngQuadMaker = new MeshGeoMaker(quadMeshFiveByFive, myBrushJar.orange_med)
-
-	val happyTxtMaker = new TextSpatMaker(myFirstTSF)
-
-
-}
 
 //  Captures TrialNexus content, not used from lib.viz, yet (we still get original TN).
 trait Srtw extends VarargsLogging {
@@ -206,174 +195,111 @@ trait Srtw extends VarargsLogging {
 		makeSymmetricCenteredGridSpace(countPerDim, lengthPerDim, countPerDim, lengthPerDim, countPerDim, lengthPerDim )
 	}
 	// From org.cogchar.render.trial.TrialNexus
-	def makeSheetspace(parentNode: Node) {
+	def makeSheetspace(parentNode: JmeNode) {
 		info0("Begin Srtw.makeSheetspace")
-		val xCount: Int = 40
-		val yCount: Int = xCount
-		val zCount: Int = xCount
+		val uniformCount : Int = 40
+		val uniformLen : Float = 800.0f
+		//val yCount: Int = uniformCount
+		//val zCount: Int = uniformCount
+		//		val cellCount: Int = uniformCount * yCount * zCount
 		// val deepSpace: MultiDimGridSpace = GridSpaceFactory.makeSpace3D(xCount, -120.0f, 120.0f, yCount, -60.0f, 60.0f, zCount, -200.0f, 100.0f)
-		val deepSpace: MultiDimGridSpace = makeUniformCenteredGridSpace(xCount, 500.0f)
+
+		val deepSpace: MultiDimGridSpace = makeUniformCenteredGridSpace(uniformCount, uniformLen)
 		getLogger.info("Space description={}", deepSpace.describe)
 
-		val vizNode: Node = new Node("sspace_viz_node_" + System.currentTimeMillis())
+		val vizNode: JmeNode = new JmeNode("sspace_viz_node_" + System.currentTimeMillis())
 		parentNode.attachChild(vizNode)
 
-		val cellCount: Int = xCount * yCount * zCount
+		val chosenIdxs_X: Range = 10 to 30 by 2
+		val chosenIdxs_Y: Range = 10 to 30 by 4
+		val chosenIdxs_Z: Range = 5 to 35 by 5
+
+		val wigsParent : JmeNode = makeWigs(deepSpace, chosenIdxs_X, chosenIdxs_Y, chosenIdxs_Z)
+		vizNode.attachChild(wigsParent)
+	}
+	def makeWigs(deepSpace: MultiDimGridSpace, chosenIdxs_X: Range, chosenIdxs_Y: Range, chosenIdxs_Z: Range) : JmeNode = {
+		val outerGuy : OuterGuy = getOuterGuy
+		val quadMeshFiveByFive: Mesh = new Quad(5, 5)
+		val wsParentNode: JmeNode = new JmeNode("wsParent_" + System.currentTimeMillis())
+
 		var seq: Int = 0
-		val quadMeshFiveByFive: Mesh = new Quad(5,5)
-
-		val outerGuy = getOuterGuy
-
-		// Original does loops over x, y, z, attaching instances.  Here so far
-		// we show just the creation + attachment of one group of instances, for
-		// a single cell.
-
-
-		val chosenIdxs_X : Range = 10 to 30 by 2
-		val chosenIdxs_Y :  Range = 10 to 30 by 4
-		val chosenIdxs_Z : Range = 5 to 35 by 5
 		for (zIdx <- chosenIdxs_Z)
 			for (yIdx <- chosenIdxs_Y)
 				for (xIdx <- chosenIdxs_X) {
-					makeBoxWig(deepSpace, vizNode, outerGuy.myBrushJar.cyan_med,  outerGuy.myBrushJar.orange_med,
-								quadMeshFiveByFive, seq, xIdx, yIdx, zIdx)
+					val unitCB: CellBlock = CellRangeFactory.makeUnitBlock3D(xIdx, yIdx, zIdx)
+					val unitPB: PosBlock = deepSpace.computePosBlockForCellBlock(unitCB)
+					debug3("Unit cell with seq#={} has cellBlock={} and posBlock.description={}", seq : Integer, unitCB, unitPB.describe)
+
+					val wigNode : JmeNode = makeBoxWig(unitPB,
+								outerGuy.myBrushJar.cyan_med,  outerGuy.myBrushJar.orange_med,
+								quadMeshFiveByFive, seq)
+					val wigNum = wsParentNode.attachChild(wigNode)
+					if (seq % 23 == 0) {
+						info3("Made wigNum={} at seq={}, wig={}", wigNum : Integer, seq : Integer, wigNode)
+					}
+
 					seq += 1
 				}
 
-
 		info0("End Srtw.makeSheetspace")
+		wsParentNode
 	}
-
-	def makeBoxWig(deepSpace: MultiDimGridSpace, vizNode : Node, frontBrush : Brush, sideBrush : Brush, qMesh : Mesh, seq : Int, xi : Int, yi: Int, zi: Int) : Int = {
-		// Make integer index space range, where 6 args are 3 pairs for x,y,z: (firstX, lastX), (firstY...
-		val unitCB: CellBlock = CellRangeFactory.makeUnitBlock3D(xi, yi, zi)
-		val unitPB: PosBlock = deepSpace.computePosBlockForCellBlock(unitCB)
-		debug3("Unit cell with seq#={} has cellBlock={} and posBlock.description={}", seq : Integer, unitCB, unitPB.describe)
+	def translateToMins(spat : Spatial, unitPB: PosBlock) : Unit = {
 		val xpr: PosRange = unitPB.myPRs(0)
 		val ypr: PosRange = unitPB.myPRs(1)
 		val zpr: PosRange = unitPB.myPRs(2)
-		val qlabTxt01: String = "bq_" + seq + "_1"
+		spat.setLocalTranslation(xpr.getMin, ypr.getMin, zpr.getMin)
+	}
+
+	def makeBoxWig(unitPB: PosBlock,  frontBrush : Brush, sideBrush : Brush, qMesh : Mesh,
+				   seq : Int) : JmeNode = { // xi : Int, yi: Int, zi: Int)
+
+		val wigNode = new JmeNode("wig_" + seq)
+
+
+		val qlabTxt01: String = "shc_" + seq + "_1"
 		val qg1: Geometry = new Geometry(qlabTxt01, qMesh)
 		frontBrush.stroke(qg1)  // TrialNexus uses bsc1 here
-		qg1.setLocalTranslation(xpr.getMin, ypr.getMin, zpr.getMin)
-		vizNode.attachChild(qg1)
+		val g = -0.02f
+		val pos = 0.4f
+		val mum = 0.7f
+		qg1.setLocalTranslation(g, g, g) // xpr.getMin, ypr.getMin, zpr.getMin)
+		wigNode.attachChild(qg1)
+
 		val outerGuy = getOuterGuy
 
 		val someBT : BitmapText = outerGuy.happyTxtMaker.makeBitmapTxt(qlabTxt01)
 		val qlabBT_01: BitmapText = someBT //  myFirstTSF.makeTextSpatial(qlabTxt01, 0.2f, RenderQueue.Bucket.Transparent, 6)
-		qlabBT_01.setLocalTranslation(xpr.getCenter, ypr.getCenter, zpr.getCenter)
-		vizNode.attachChild(qlabBT_01)
+
+		qlabBT_01.setLocalTranslation(pos, pos, pos) //) xpr.getCenter, ypr.getCenter, zpr.getCenter)
+		wigNode.attachChild(qlabBT_01)
 
 		val dmaker = new DoodleMaker(sideBrush.myBSC, qMesh) // TrialNexus uses bsc2 here
 
-		val doodle : Geometry = dmaker.makeDoodle(seq, xpr.getMax, ypr.getCenter, zpr.getCenter)
-		val whatIdx : Int = vizNode.attachChild(doodle)
+		val doodle : Geometry = dmaker.makeDoodle(seq, mum, mum, mum) // xpr.getMax, ypr.getCenter, zpr.getCenter)
+		val whatIdx : Int = wigNode.attachChild(doodle)
 		debug2("Doodle for seq={} attached at child={}", seq : Integer, whatIdx : Integer)
-		-1
-	}
-	def translateToMins (g : Geometry) = ???
+		translateToMins(wigNode, unitPB)
 
+		val wigRot = new Quaternion().fromAngleAxis(FastMath.HALF_PI * 0.01f * seq, Vector3f.UNIT_Z)
+		wigNode.setLocalRotation(wigRot)
+		wigNode
+	}
 	def makePlaceAndAttach() = ???
 
 }
 class DoodleMaker(bsc : BlendedShapeContext, qMesh : Mesh) {
 	lazy val myRot = new Quaternion().fromAngleAxis(FastMath.HALF_PI, Vector3f.UNIT_Y)
 	def getRot : Quaternion = myRot
+	// Reaturns a geom which is a spat that may be added as child of a node
 	def makeDoodle(seq: Int, xf : Float, yf : Float, zf : Float) : Geometry = {
-		val qlabTxt02: String = "bq_" + seq + "_2"
+		val qlabTxt02: String = "dood_" + seq + "_2"
 		val qg2: Geometry = new Geometry(qlabTxt02, qMesh)
 		bsc.setupGeom(qg2)
 		val spat : Spatial = qg2
-		// qg2.setLocalTranslation(xpr.getMin, ypr.getMin, zpr.getMin)
 		spat.setLocalTranslation(xf, yf, zf)
 		val rotAboutY_90: Quaternion = getRot
 		spat.setLocalRotation(rotAboutY_90)
 		qg2
 	}
 }
-class MatPallete(myBaseMat: Material) {
-	val myBaseBSC: BlendedShapeContext = new BlendedShapeContext(myBaseMat)
-	myBaseBSC.setRenderStateVals(myBaseMat)
-
-	def getBSC_forColor(crgba : ColorRGBA) : BlendedShapeContext = {
-		val localMat: Material = myBaseMat.clone
-		localMat.setColor("Color", crgba)
-		new BlendedShapeContext(myBaseBSC, localMat)
-	}
-}
-class Brush(myMatPal : MatPallete, myColor : ColorRGBA) {
-	lazy val myBSC = myMatPal.getBSC_forColor(myColor)
-
-	def stroke(geom : Geometry) : Unit = {
-		myBSC.setupGeom(geom)
-	}
-}
-trait SpatPlacer {
-	def place(spat : Spatial) : Unit
-}
-class DoodlePlacer(xf : Float, yf : Float, zf : Float, rotQuat : Quaternion) extends SpatPlacer {
-	override def place(spat : Spatial) : Unit = {
-		spat.setLocalTranslation(xf, yf, zf)
-		spat.setLocalRotation(rotQuat)
-	}
-}
-trait SpatMaker  {
-	def makeSpat(nam : String) : Spatial
-}
-class TextSpatMaker(myTSF: TextSpatialFactory) extends SpatMaker {
-	def makeBitmapTxt(txt : String): BitmapText = {
-		myTSF.makeTextSpatial(txt, 0.2f, RenderQueue.Bucket.Transparent, 6)
-	}
-	override def makeSpat(nam : String) : Spatial = makeBitmapTxt(nam)
-}
-class MeshGeoMaker(myMesh : Mesh, myBrush : Brush) {
-	def makeGeom(nam : String) : Geometry = {
-		val geo: Geometry = new Geometry(nam, myMesh)
-		myBrush.stroke(geo)
-		geo
-	}
-}
-
-class BrushJar(myMatPal : MatPallete) {
-	def applyAlpha(baseColor : ColorRGBA, alpha : Float ) : ColorRGBA = {
-		new ColorRGBA(baseColor.getRed, baseColor.getGreen, baseColor.getBlue, alpha)
-	}
-	val zeroAlpha : Float = 0.0f
-	val thinAlpha : Float = 0.25f
-	val mediumAlpha : Float = 0.5f
-	val thickAlpha : Float = 0.75f
-	val fullAlpha : Float = 1.0f
-
-	def makeBrush(color : ColorRGBA) : Brush = new Brush(myMatPal, color)
-
-	def makeBrushDil(baseColor : ColorRGBA, alpha : Float) : Brush = {
-		val dilutedColor = applyAlpha(baseColor, alpha)
-		makeBrush(dilutedColor)
-	}
-	def makeBrushThin(baseColor : ColorRGBA) = makeBrushDil(baseColor, thinAlpha)
-	def makeBrushMed(baseColor : ColorRGBA) = makeBrushDil(baseColor, mediumAlpha)
-	def makeBrushThick(baseColor : ColorRGBA) = makeBrushDil(baseColor, thickAlpha)
-
-	val black_thin = makeBrushThin(ColorRGBA.Black)
-
-	val cyan_med = makeBrushMed(ColorRGBA.Cyan)
-
-	val blue_med = makeBrushMed(ColorRGBA.Blue)
-
-	val brown_med = makeBrushMed(ColorRGBA.Brown)
-
-	val orange_med = makeBrushMed(ColorRGBA.Orange)
-
-	val purply = makeBrush(new ColorRGBA(0.5f, 0.1f, 0.9f, 0.5f))
-	val yellowy = makeBrush(new ColorRGBA(0.9f, 0.8f, 0.1f, 0.5f))
-	val reddy = makeBrush(new ColorRGBA(1.0f, 0.0f, 0.0f, 0.7f))
-
-}
-class BscJar(myMatPal : MatPallete) {
-	lazy val bsc_cyan: BlendedShapeContext = myMatPal.getBSC_forColor(ColorRGBA.Cyan)
-	lazy val bsc_purply = myMatPal.getBSC_forColor(new ColorRGBA(0.5f, 0.1f, 0.9f, 0.5f))
-	lazy val bsc_yellwy = myMatPal.getBSC_forColor(new ColorRGBA(0.9f, 0.8f, 0.1f, 0.5f))
-	lazy val bsc_reddy = myMatPal.getBSC_forColor(new ColorRGBA(1.0f, 0.0f, 0.0f, 0.7f))
-
-}
-class GeomSrc()
