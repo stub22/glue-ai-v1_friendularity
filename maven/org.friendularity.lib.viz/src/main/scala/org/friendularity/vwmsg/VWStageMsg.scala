@@ -1,5 +1,6 @@
 package org.friendularity.vwmsg
 
+import com.jme3.math.ColorRGBA
 import org.friendularity.vwimpl.MoreIsolatedBonusContentTask
 
 /**
@@ -9,7 +10,8 @@ import org.friendularity.vwimpl.MoreIsolatedBonusContentTask
 trait VWStageRqMsg extends VWorldRequest {
 }
 
-case class VWStageEmulateBonus() extends VWStageRqMsg {
+case class VWStageEmulateBonusContentAndCams() extends VWStageRqMsg
 
-}
+
+case class VWStageOpticsBasic(moveSpeed : Int, bgColor: ColorRGBA)  extends VWStageRqMsg
 

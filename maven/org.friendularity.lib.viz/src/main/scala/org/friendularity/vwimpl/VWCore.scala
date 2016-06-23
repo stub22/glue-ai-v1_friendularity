@@ -52,7 +52,8 @@ trait SimBalloonAppLauncher extends VarargsLogging {
 	}
 
 }
-trait UpdateAttacher {
+trait UpdateAttacher {  // Is implemented by:  SimBalloonJmeApp (in VWCore.scala)
+	// Note that TrialContent implements TrialUpdater
 	def attachUpdater(tu : TrialUpdater) : Unit
 }
 // Binds sweetDynaSpace to vworld

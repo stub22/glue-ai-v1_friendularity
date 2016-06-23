@@ -67,6 +67,8 @@ trait VWorldBossLogic [VWSM <: VWorldSysMgr] extends VarargsLogging with VWPTRen
 		info0("makeSimSpace END - vworld is now running, but delayed setup jobs may still be running/pending")
 	}
 
+	// Crucial method which wraps the internal setup results handles with a set of public actors,
+	// and then publishes that API for outer clients to use.
 	def notifySetupResults(lesserIngred: LesserIngred, bmi : BodyMgrIngred, bonusTask : MoreIsolatedBonusContentTask, localActorCtx : ActorContext): Unit = {
 		//
 		info1("Got setup result (lesser) ingredients: {}", lesserIngred)
@@ -83,12 +85,14 @@ trait VWorldBossLogic [VWSM <: VWorldSysMgr] extends VarargsLogging with VWPTRen
 		val charAdmActorRef = VWorldActorFactoryFuncs.makeVWCharAdminActor(localActorCtx, "charAdm", cmgrCtx)
 		val charAdmTeller  = new ActorRefCPMsgTeller[VWBodyLifeRq](charAdmActorRef)
 
-		val dummy = "dummyTxt"
-		val shaperActorRef = VWorldActorFactoryFuncs.makeVWShaperActor(localActorCtx, "shaper", dummy)
+		val shaperActorRef = VWorldActorFactoryFuncs.makeVWShaperActor(localActorCtx, "shaper", rrc)
 		val shaperTeller  = new ActorRefCPMsgTeller[VWShapeCreateRq](shaperActorRef)
 
 		val stageActorRef = VWorldActorFactoryFuncs.makeVWStageActor(localActorCtx, "stager", bonusTask)
 		val stageTeller  = new ActorRefCPMsgTeller[VWStageRqMsg](stageActorRef)
+
+		// Now the boss can publish this nice public API offering message, providing network-ready
+		// handles to all the services defined above.
 
 		val vwpt = new VWPubTellersMsgImpl(goodyTeller, charAdmTeller, shaperTeller, stageTeller)
 		setVWPT(vwpt)

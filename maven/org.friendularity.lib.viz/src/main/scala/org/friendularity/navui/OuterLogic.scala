@@ -3,6 +3,7 @@ package org.friendularity.navui
 import java.util.Random
 import java.lang.{Long => JLong}
 import akka.actor.{ActorRefFactory, ActorContext, ActorRef}
+import com.jme3.math.ColorRGBA
 import org.appdapter.fancy.log.VarargsLogging
 import org.cogchar.api.fancy.FancyThingModelWriter
 import org.cogchar.render.rendtest.GoodyTestMsgMaker
@@ -13,7 +14,7 @@ import com.hp.hpl.jena.rdf.model.{Model => JenaModel, ModelFactory => JenaModelF
 import org.friendularity.vwimpl.VWorldMasterFactory
 
 // import org.friendularity.respire.VWorldMasterFactory
-import org.friendularity.vwmsg.{VWStageEmulateBonus, VWBodyLifeRq, VWGoodyRqTAS, VWGoodyRqTurtle, VWorldPublicTellers}
+import org.friendularity.vwmsg.{VWStageOpticsBasic, VWSCR_CellGrid, VWStageEmulateBonusContentAndCams, VWBodyLifeRq, VWGoodyRqTAS, VWGoodyRqTurtle, VWorldPublicTellers}
 
 
 /**
@@ -26,6 +27,11 @@ trait PatientSender_GoodyTest extends OuterLogic {
 	import scala.collection.JavaConverters._
 
 	lazy val myRandomizer: Random = new Random
+
+	def finallySendFunShapeRqs(shapeTeller : CPMsgTeller) : Unit = {
+		val rq_makeBigGrid = new VWSCR_CellGrid{}
+		shapeTeller.tellCPMsg(rq_makeBigGrid)
+	}
 
 	def finallySendGoodyTstMsgs(goodyTeller : CPMsgTeller, flag_serToTurtle : Boolean): Unit = {
 
@@ -63,6 +69,10 @@ trait PatientSender_GoodyTest extends OuterLogic {
 			finallySendGoodyTstMsgs(goodyTeller.get, useTurtleSerialization)
 		} else {
 			warn0("GoodyTeller is not available, cannot send goody tst msgs.")
+		}
+		val shapeTeller = vwpt.getShaperTeller
+		if (shapeTeller.isDefined) {
+			finallySendFunShapeRqs(shapeTeller.get)
 		}
 
 	}
@@ -106,8 +116,12 @@ trait PatientForwarder_CharAdminTest extends OuterLogic {
 trait PatientSender_BonusStaging extends OuterLogic {
 	override def rcvPubTellers(vwpt: VWorldPublicTellers): Unit = {
 		val stageTeller = vwpt.getStageTeller.get
-		val emuBonusRq = new VWStageEmulateBonus()
+		val emuBonusRq = new VWStageEmulateBonusContentAndCams()
 		stageTeller.tellStrongCPMsg(emuBonusRq)
+		val moveSpeed : Int = 25
+		val bgColor = ColorRGBA.Yellow
+		val opticsBasicRq = new VWStageOpticsBasic(moveSpeed, bgColor)
+		stageTeller.tellCPMsg(opticsBasicRq)
 	}
 }
 
