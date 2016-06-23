@@ -50,7 +50,8 @@ trait VWorldBossLogic [VWSM <: VWorldSysMgr] extends VarargsLogging with VWPTRen
 			case setupResults: VWSetupResultsNotice => {
 				val lesserIng = setupResults.lesserIngred
 				val bodyMgrIng = setupResults.bodyMgrIngred
-				notifySetupResults(lesserIng, bodyMgrIng, localActorCtx)
+				val bonusTask = setupResults.bonusTask
+				notifySetupResults(lesserIng, bodyMgrIng, bonusTask, localActorCtx)
 			}
 		}
 	}
@@ -66,7 +67,7 @@ trait VWorldBossLogic [VWSM <: VWorldSysMgr] extends VarargsLogging with VWPTRen
 		info0("makeSimSpace END - vworld is now running, but delayed setup jobs may still be running/pending")
 	}
 
-	def notifySetupResults(lesserIngred: LesserIngred, bmi : BodyMgrIngred, localActorCtx : ActorContext): Unit = {
+	def notifySetupResults(lesserIngred: LesserIngred, bmi : BodyMgrIngred, bonusTask : MoreIsolatedBonusContentTask, localActorCtx : ActorContext): Unit = {
 		//
 		info1("Got setup result (lesser) ingredients: {}", lesserIngred)
 		val rrc : RenderRegistryClient = lesserIngred.getRendRegClient
@@ -86,7 +87,7 @@ trait VWorldBossLogic [VWSM <: VWorldSysMgr] extends VarargsLogging with VWPTRen
 		val shaperActorRef = VWorldActorFactoryFuncs.makeVWShaperActor(localActorCtx, "shaper", dummy)
 		val shaperTeller  = new ActorRefCPMsgTeller[VWShapeCreateRq](shaperActorRef)
 
-		val stageActorRef = VWorldActorFactoryFuncs.makeVWStageActor(localActorCtx, "stager", dummy)
+		val stageActorRef = VWorldActorFactoryFuncs.makeVWStageActor(localActorCtx, "stager", bonusTask)
 		val stageTeller  = new ActorRefCPMsgTeller[VWStageRqMsg](stageActorRef)
 
 		val vwpt = new VWPubTellersMsgImpl(goodyTeller, charAdmTeller, shaperTeller, stageTeller)

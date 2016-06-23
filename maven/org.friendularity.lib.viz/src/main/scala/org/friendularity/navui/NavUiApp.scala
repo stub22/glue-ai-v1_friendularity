@@ -112,6 +112,8 @@ class NavUiAppImpl(myAkkaSys : ActorSystem) extends NavUiAppSvc with NavPumpSpac
 	lazy private val charAdmForwarderLogic = new PatientForwarder_CharAdminTest {}
 	lazy private val charAdmSenderTrigTeller  = OuterJobbyLogic_MasterFactory.makeOoLogicAndTeller(charAdmForwarderLogic, myAkkaSys, "charAdmForwarder")
 
+	lazy private val bonusStagingLogic = new PatientSender_BonusStaging {}
+	lazy private val bonusStagingTrigTeller  = OuterJobbyLogic_MasterFactory.makeOoLogicAndTeller(bonusStagingLogic, myAkkaSys, "bonusStagingRequester")
 
 	// Desired effect of these messages is to launch a running OpenGL v-world, ready for characters and other content
 	// to be inserted into it.  Those facilities are available via actors defined in PubTeller replies sent to the
@@ -151,6 +153,10 @@ class NavUiAppImpl(myAkkaSys : ActorSystem) extends NavUiAppSvc with NavPumpSpac
 		val charAdmRegMsg = new VWARM_FindPublicTellers(charAdmSenderTrigTeller)
 		debug2("Sending char-admin-listener-reg={} to VWBossTeller : {}", charAdmRegMsg, myVWBossTeller)
 		myVWBossTeller.tellCPMsg(charAdmRegMsg)
+
+		val bonusStageRegMsg = new VWARM_FindPublicTellers(bonusStagingTrigTeller)
+		debug2("Sending bonusStage-listener-reg={} to VWBossTeller : {}", bonusStageRegMsg, myVWBossTeller)
+		myVWBossTeller.tellCPMsg(bonusStageRegMsg)
 
 	}
 	// Can't so directly send this yet as  actor msg.  There is a kind of implicit rendezvous going on here

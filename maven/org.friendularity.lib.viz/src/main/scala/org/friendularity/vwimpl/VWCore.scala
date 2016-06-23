@@ -98,20 +98,31 @@ class SimBalloonJmeApp extends ArbBalloonJmeApp with UpdateAttacher with VWCore 
 		// a series of smaller client requests, which may be read by an outer config mechanism when desired.
 		// In that case the render-threading is in smaller batches.
 
-		val sampleContentTask = makeSampleContentCreationTask // Make description of work to be done later.
+		val bonusTask : MoreIsolatedBonusContentTask = makeSampleContentCreationTask // Make description of work to be done later.
+		val oldWay = false
+		if (oldWay) {
+			obsolete_scheduleLaterInit(bonusTask)
+		} else {
+			maybeSendSetupResults(bonusTask)
+		}
+	}
+	private def maybeSendSetupResults(sampleContentTask : MoreIsolatedBonusContentTask): Unit = {
+		if (myResultsTeller_opt.isDefined) {
+			val notice = makeSetupResultsNotice(sampleContentTask)
+			getLogger.info("Sending setupResults notice: {}", notice)
+			myResultsTeller_opt.get.tellCPMsg(notice)
+		} else {
+			getLogger().warn("No results teller found, so no setup results are passed back.")
+		}
 
+	}
+	def obsolete_scheduleLaterInit(sampleContentTask : MoreIsolatedBonusContentTask): Unit ={
 		// Define and instantiate callback object.
 		val scTskCallable = new java.util.concurrent.Callable[Unit] {
 			@throws(classOf[Exception])	override def call : Unit = {
 				// One big chunk of work, done on the render thread.
 				sampleContentTask.doItMostEasily
-				if (myResultsTeller_opt.isDefined) {
-					val notice = makeSetupResultsNotice()
-					getLogger.info("Sending setupResults notice: {}", notice)
-					myResultsTeller_opt.get.tellCPMsg(notice)
-				} else {
-					getLogger().warn("No results teller found, so no setup results are passed back.")
-				}
+				maybeSendSetupResults(sampleContentTask)
 			}
 		}
 		// Now the sampleContent task is made and ready to enqueue.
@@ -119,12 +130,12 @@ class SimBalloonJmeApp extends ArbBalloonJmeApp with UpdateAttacher with VWCore 
 		// (which can only happen after this method we are in returns!)
 		getLogger().info("Deferring additional VWorld setup to future rend-thread task: {}", scTskCallable)
 		val futureWhichWeIgnore = enqueue(scTskCallable)
-	}
 
+	}
 	// Make (not serializable) notice sent to our results teller after the OpenGL
 	// world is running, allowing the app to confidently perform any further wiring.
 
-	private def makeSetupResultsNotice(): VWSetupResultsNotice = {
+	private def makeSetupResultsNotice(bonusTask : MoreIsolatedBonusContentTask): VWSetupResultsNotice = {
 		// Limitation:  These yummy ingred are usually not serializable.
 		val crc = getRenderContext
 		val framedRendCtx : FramedRenderContext = crc.asInstanceOf[FramedRenderContext]
@@ -134,7 +145,7 @@ class SimBalloonJmeApp extends ArbBalloonJmeApp with UpdateAttacher with VWCore 
 		// We currently happen to lump all the ingredients together, but we have the choice
 		// to instead provide finer grained LesserIngred and BodyMgrIngred.
 		val fullIng = new FullIngredMsgImpl(rrc, winStatMon, physModRendCtx)
-		val notice = new VWSetupResultsNotice(fullIng, fullIng)
+		val notice = new VWSetupResultsNotice(fullIng, fullIng, bonusTask)
 		notice
 	}
 	private def makeSampleContentCreationTask : MoreIsolatedBonusContentTask = {

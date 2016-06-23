@@ -13,7 +13,7 @@ import com.hp.hpl.jena.rdf.model.{Model => JenaModel, ModelFactory => JenaModelF
 import org.friendularity.vwimpl.VWorldMasterFactory
 
 // import org.friendularity.respire.VWorldMasterFactory
-import org.friendularity.vwmsg.{VWBodyLifeRq, VWGoodyRqTAS, VWGoodyRqTurtle, VWorldPublicTellers}
+import org.friendularity.vwmsg.{VWStageEmulateBonus, VWBodyLifeRq, VWGoodyRqTAS, VWGoodyRqTurtle, VWorldPublicTellers}
 
 
 /**
@@ -103,7 +103,13 @@ trait PatientForwarder_CharAdminTest extends OuterLogic {
 		}
 	}
 }
-
+trait PatientSender_BonusStaging extends OuterLogic {
+	override def rcvPubTellers(vwpt: VWorldPublicTellers): Unit = {
+		val stageTeller = vwpt.getStageTeller.get
+		val emuBonusRq = new VWStageEmulateBonus()
+		stageTeller.tellStrongCPMsg(emuBonusRq)
+	}
+}
 
 // Unnecessary to use the Jobby approach here, but working through it anyway as an excercise.
 class OuterJobbyWrapper(outerLogic : OuterLogic) extends MsgJobLogic[VWorldPublicTellers] {

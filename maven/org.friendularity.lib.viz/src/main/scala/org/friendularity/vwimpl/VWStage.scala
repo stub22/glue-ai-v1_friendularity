@@ -12,13 +12,14 @@ import org.cogchar.render.sys.context.CogcharRenderContext
 import org.cogchar.render.sys.registry.RenderRegistryClient
 import org.cogchar.render.trial.{TrialCameras, TrialContent}
 import org.friendularity.rbody.DualBodyRecord
-import org.friendularity.vwmsg.{VWStageRqMsg, VWBodyRq}
+import org.friendularity.vwmsg.{VWStageEmulateBonus, VWStageRqMsg, VWBodyRq}
 
 
 /**
   * Created by StuB22 on 6/21/2016.
   *
-  * Manages cameras, viewports and lights
+  * Manages cameras, viewports and lights.
+  * Also currently manages TrialContent, because it is connected to cameras...
   */
 trait VWStageLogic extends VarargsLogging {
 
@@ -88,11 +89,11 @@ trait VWStageLogic extends VarargsLogging {
 		extra.makeBigGrid(rrc, rootDeepNode)
 
 	}
-	def prepareStage(crc: CogcharRenderContext, flyCam: FlyByCamera, rootDeepNode: JmeNode,
-					 mainViewPort: ViewPort, guiNode: JmeNode, assetManager: AssetManager,
-					 updAtchr: UpdateAttacher, tmb_opt: Option[TempMidiBridge]): Unit = {
+	def prepareStage_onRendThrd(crc: CogcharRenderContext, flyCam: FlyByCamera, rootDeepNode: JmeNode,
+								mainViewPort: ViewPort, guiNode: JmeNode, assetManager: AssetManager,
+								updAtchr: UpdateAttacher, tmb_opt: Option[TempMidiBridge]): Unit = {
 
-		getLogger.info("********************prepareStage begins now.")
+
 		// Code for this method originally copied from cogchar.TrialBalloon.doMoreSimpleInit
 		val rrc: RenderRegistryClient = crc.getRenderRegistryClient
 
@@ -106,10 +107,28 @@ trait VWStageLogic extends VarargsLogging {
 
 		getLogger.info("********************prepareStage is done!");
 	}
+	def sendRendTaskForStagePrepare(crc : CogcharRenderContext, flyCam : FlyByCamera, viewPort : ViewPort,
+									updAtchr : UpdateAttacher, tmb_opt : Option[TempMidiBridge]) : Unit = {
+		val rrc: RenderRegistryClient = crc.getRenderRegistryClient
+		val rootDeepNode = rrc.getJme3RootDeepNode(null)
+		val rootFlatNode = rrc.getJme3RootOverlayNode(null)
+		val assetMgr = rrc.getJme3AssetManager(null)
+
+		val taskForRendThrd  = new java.util.concurrent.Callable[Unit] {
+			@throws(classOf[Exception]) override def call: Unit = {
+				prepareStage_onRendThrd(crc, flyCam, rootDeepNode, viewPort, rootFlatNode, assetMgr, updAtchr, tmb_opt)
+			}
+		}
+		crc.enqueueCallable(taskForRendThrd)
+	}
 }
-class VWStageActor(someThing : AnyRef) extends Actor with VWStageLogic {
+class VWStageActor(myBonusTask : MoreIsolatedBonusContentTask) extends Actor with VWStageLogic {
 
 	def receive = {
+		case embon : VWStageEmulateBonus => {
+			val task = myBonusTask //  embon.bonusTask
+			sendRendTaskForStagePrepare(task.crc, task.myFlyCam, task.myMainViewPort, task.upAtchr, Option(task.tmb))
+		}
 		case vwsrq: VWStageRqMsg => {
 			// processBodyRq(vwbrq, self, context)
 		}
