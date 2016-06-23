@@ -14,22 +14,7 @@ import org.cogchar.render.trial.{TrialCameras, TrialContent}
 import org.friendularity.respire.{Srtw}
 
 
-trait ExtraStuff extends VarargsLogging {
-	def makeBigGrid(rrc: RenderRegistryClient, parentNode : JmeNode) : Unit = {
-		val assetMgr = rrc.getJme3AssetManager(null);
-		val someMat = new Material(assetMgr, "Common/MatDefs/Misc/Unshaded.j3md") // someContent.makeAlphaBlendedUnshadedMaterial(rrc, 0f, 1.0f, 0, 0.5f);
-		val matPal = new MatPallete(someMat)
-		val outerGuy = new OuterGuy(rrc, matPal)
-		val srtwInst = new Srtw {
-			override def getRRC = rrc
-			override def getOuterGuy : OuterGuy = outerGuy
-
-		}
-		srtwInst.makeSheetspace(parentNode)
-
-	}
-}
-/**
+/** OBSOLETE except for pseudo-msg at very bottom.
   * This stuff contains about 10 steps of testing content + camera setup, all not essential except
   * as standin for better testing with equal/superior client messages.
   */
@@ -39,10 +24,11 @@ trait IsolatedBonusContentMaker extends VarargsLogging {
 	// Works for creating some test grid content, an extra camera, and wiring to MIDI controller
 	// A newer version of these features is now found in VWStageLogic
 
-	protected def doItUsingArgs(crc : CogcharRenderContext, flyCam : FlyByCamera, rootDeepNode : JmeNode,
-								mainViewPort : ViewPort, guiNode : JmeNode, assetManager: AssetManager,
-								updAtchr : UpdateAttacher, tmb : TempMidiBridge) : Unit = {
+	protected def OLD_doItUsingArgs_UNUSED(crc : CogcharRenderContext, flyCam : FlyByCamera, rootDeepNode : JmeNode,
+										   mainViewPort : ViewPort, guiNode : JmeNode, assetManager: AssetManager,
+										   updAtchr : UpdateAttacher, tmb : TempMidiBridge) : Unit = {
 
+		/*
 		// Code for this method originally copied from cogchar.TrialBalloon.doMoreSimpleInit
 		val rrc: RenderRegistryClient = crc.getRenderRegistryClient
 		getLogger.info("IsolatedInitLogic: setting flyCam speed.")
@@ -90,9 +76,10 @@ trait IsolatedBonusContentMaker extends VarargsLogging {
 		tcam.attachMidiCCs(ccpr)
 
 		val extra = new ExtraStuff {}
-		extra.makeBigGrid(rrc, rootDeepNode)
+		extra.makeBigGridAndAttach_onRendThrd(rrc, rootDeepNode)
 
 		getLogger.info("IsolatedInitLogic is done!");
+		*/
 	}
 	protected def doItEasier(crc : CogcharRenderContext, flyCam : FlyByCamera, viewPort : ViewPort, updAtchr : UpdateAttacher, tmb : TempMidiBridge) : Unit = {
 		val rrc: RenderRegistryClient = crc.getRenderRegistryClient
@@ -100,13 +87,13 @@ trait IsolatedBonusContentMaker extends VarargsLogging {
 		val rootFlatNode = rrc.getJme3RootOverlayNode(null)
 		val assetMgr = rrc.getJme3AssetManager(null)
 
-		doItUsingArgs(crc, flyCam, rootDeepNode, viewPort, rootFlatNode, assetMgr, updAtchr, tmb)
+		OLD_doItUsingArgs_UNUSED(crc, flyCam, rootDeepNode, viewPort, rootFlatNode, assetMgr, updAtchr, tmb)
 	}
 }
 
 // Shopping list of 7 appy things we need, besides CRC:
 // flyCam, rootNode, viewPort, guiNode, assetManager, attachVWorldUpdater(=myUpdaters), myTMB
-class IsolatedBonusContentTask(myCRC: CogcharRenderContext, myUpAtchr : UpdateAttacher, myTMB : TempMidiBridge)
+class IsolatedBonusContentTask(val myCRC: CogcharRenderContext, val myUpAtchr : UpdateAttacher, val myTMB : TempMidiBridge)
 			extends IsolatedBonusContentMaker {
 
 	def doItEvenMoreEasily(flyCam : FlyByCamera, viewPort : ViewPort) : Unit = {
@@ -114,6 +101,7 @@ class IsolatedBonusContentTask(myCRC: CogcharRenderContext, myUpAtchr : UpdateAt
 		// Can get flyCam from opticFacade?  Appears it currently only keeps track of "default" camera,
 		// which is different how?
 		// What about viewPort?
+		/*
 		val oldWay = false
 		if (oldWay) {
 			// OldWay = use method from above
@@ -122,11 +110,12 @@ class IsolatedBonusContentTask(myCRC: CogcharRenderContext, myUpAtchr : UpdateAt
 		} else {
 			// New way = simulate what new stageActor soon will do in response to messages.
 			val stager = new VWStageLogic {}
-			stager.sendRendTaskForStagePrepare(myCRC, flyCam, viewPort, myUpAtchr, Option(myTMB))
+			stager.sendRendTaskForStagePrepare(myCRC, myUpAtchr, Option(myTMB))
 		}
-
+		*/
 	}
 }
+// Used as a pseudo-message
 case class MoreIsolatedBonusContentTask(crc: CogcharRenderContext, upAtchr : UpdateAttacher, tmb : TempMidiBridge,
 									myFlyCam : FlyByCamera, myMainViewPort : ViewPort)
 			extends IsolatedBonusContentTask(crc, upAtchr, tmb) {

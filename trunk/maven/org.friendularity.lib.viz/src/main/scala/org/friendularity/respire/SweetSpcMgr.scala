@@ -195,29 +195,23 @@ trait Srtw extends VarargsLogging {
 		makeSymmetricCenteredGridSpace(countPerDim, lengthPerDim, countPerDim, lengthPerDim, countPerDim, lengthPerDim )
 	}
 	// From org.cogchar.render.trial.TrialNexus
-	def makeSheetspace(parentNode: JmeNode) {
+	def makeSheetspace(uniformCount : Int, uniformLen : Float, chosenIdxs_X: Range, chosenIdxs_Y : Range,
+					   chosenIdxs_Z : Range) : JmeNode = {
 		info0("Begin Srtw.makeSheetspace")
-		val uniformCount : Int = 40
-		val uniformLen : Float = 800.0f
 
 		// Defines an efficient grid space, which does not allocate objects for cells.
 		// It has infinite implied structure, e.g. cell(-99999, 5555555, -44444444) is well defined.
 		val deepSpace: MultiDimGridSpace = makeUniformCenteredGridSpace(uniformCount, uniformLen)
 
-		getLogger.info("Space description={}", deepSpace.describe)
+		getLogger.info("Uniform space description={}", deepSpace.describe)
 
-		// Decide the cross-sections of cells we want to do something with.
-		// It is actually OK if these indices are outside the implied range of the deepSpace
-		val chosenIdxs_X: Range = 10 to 30 by 2
-		val chosenIdxs_Y: Range = 10 to 30 by 4
-		val chosenIdxs_Z: Range = 5 to 35 by 5
-
-		// Make and attach wig nodes for each combination of x,y,z indices
+		// Make and attach wig nodes for each combination of chosen x,y,z indices
 		val wigsParent : JmeNode = makeWigs(deepSpace, chosenIdxs_X, chosenIdxs_Y, chosenIdxs_Z)
 
 		val vizNode: JmeNode = new JmeNode("sspace_viz_node_" + System.currentTimeMillis())
-		parentNode.attachChild(vizNode)
+
 		vizNode.attachChild(wigsParent)
+		vizNode
 	}
 	def makeWigs(deepSpace: MultiDimGridSpace, chosenIdxs_X: Range, chosenIdxs_Y: Range, chosenIdxs_Z: Range) : JmeNode = {
 		val outerGuy : OuterGuy = getOuterGuy

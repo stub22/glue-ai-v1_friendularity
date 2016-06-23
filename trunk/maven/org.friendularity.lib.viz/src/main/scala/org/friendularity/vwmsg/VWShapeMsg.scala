@@ -36,6 +36,8 @@ trait VWSCR_TextBox extends VWShapeCreateRq
 
 trait VWSCR_Node extends VWShapeCreateRq
 
+trait VWSCR_CellGrid extends VWShapeCreateRq
+
 trait VWShapeMaker {
 	def makeForRq(vwscr : VWShapeCreateRq) : Spatial = {
 		val mesh : Mesh = vwscr match {
