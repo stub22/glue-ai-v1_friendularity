@@ -13,14 +13,36 @@ import org.cogchar.render.sys.registry.RenderRegistryClient
 import org.cogchar.render.trial.{TrialCameras, TrialContent}
 import org.friendularity.respire.{Srtw}
 
+
+trait ExtraStuff extends VarargsLogging {
+	def makeBigGrid(rrc: RenderRegistryClient, parentNode : JmeNode) : Unit = {
+		val assetMgr = rrc.getJme3AssetManager(null);
+		val someMat = new Material(assetMgr, "Common/MatDefs/Misc/Unshaded.j3md") // someContent.makeAlphaBlendedUnshadedMaterial(rrc, 0f, 1.0f, 0, 0.5f);
+		val matPal = new MatPallete(someMat)
+		val outerGuy = new OuterGuy(rrc, matPal)
+		val srtwInst = new Srtw {
+			override def getRRC = rrc
+			override def getOuterGuy : OuterGuy = outerGuy
+
+		}
+		srtwInst.makeSheetspace(parentNode)
+
+	}
+}
 /**
   * This stuff contains about 10 steps of testing content + camera setup, all not essential except
   * as standin for better testing with equal/superior client messages.
   */
 trait IsolatedBonusContentMaker extends VarargsLogging {
+
+	// This is preserved "oldWay" usage of fields from JME-App during post-Init work.
+	// Works for creating some test grid content, an extra camera, and wiring to MIDI controller
+	// A newer version of these features is now found in VWStageLogic
+
 	protected def doItUsingArgs(crc : CogcharRenderContext, flyCam : FlyByCamera, rootDeepNode : JmeNode,
 								mainViewPort : ViewPort, guiNode : JmeNode, assetManager: AssetManager,
 								updAtchr : UpdateAttacher, tmb : TempMidiBridge) : Unit = {
+
 		// Code for this method originally copied from cogchar.TrialBalloon.doMoreSimpleInit
 		val rrc: RenderRegistryClient = crc.getRenderRegistryClient
 		getLogger.info("IsolatedInitLogic: setting flyCam speed.")
@@ -40,13 +62,13 @@ trait IsolatedBonusContentMaker extends VarargsLogging {
 		someContent.shedLight_onRendThread(crc)
 		// The other args besides rrc are superfluous, since they are indirectly accessible through rrc.
 		// Note that these other args are all instance variables of this TrialBalloon app, inherited from JME3 SimpleApp.
-//		someContent.initContent3D_onRendThread(rrc, rootDeepNode)
+		someContent.initContent3D_onRendThread(rrc, rootDeepNode)
 
 		mainViewPort.setBackgroundColor(ColorRGBA.Gray)
 
 		// Camera-viewports are placed in the screen coordinate system, so we might consider them to be a kind
 		// of 2-D content.  They are part of that layout, anyhoo.
-//		someContent.initContent2D_onRendThread(rrc, guiNode, assetManager)
+		someContent.initContent2D_onRendThread(rrc, guiNode, assetManager)
 
 		updAtchr.attachUpdater(someContent) // Adds someContent to list of V-world updaters that get regular ticks
 
@@ -62,21 +84,13 @@ trait IsolatedBonusContentMaker extends VarargsLogging {
 		*/
 
 		val tcam: TrialCameras = new TrialCameras
-	//	tcam.setupCamerasAndViews(rrc, crc, someContent)
+		tcam.setupCamerasAndViews(rrc, crc, someContent)
 		// Hand the MIDI bindings to the camera-aware app.
 		// (Disabled until rebuild with this method public)
 		tcam.attachMidiCCs(ccpr)
 
-		val assetMgr = rrc.getJme3AssetManager(null);
-		val someMat = new Material(assetMgr, "Common/MatDefs/Misc/Unshaded.j3md") // someContent.makeAlphaBlendedUnshadedMaterial(rrc, 0f, 1.0f, 0, 0.5f);
-		val matPal = new MatPallete(someMat)
-		val outerGuy = new OuterGuy(rrc, matPal)
-		val srtwInst = new Srtw {
-				override def getRRC = rrc
-				override def getOuterGuy : OuterGuy = outerGuy
-
-			}
-		srtwInst.makeSheetspace(rootDeepNode)
+		val extra = new ExtraStuff {}
+		extra.makeBigGrid(rrc, rootDeepNode)
 
 		getLogger.info("IsolatedInitLogic is done!");
 	}
@@ -86,7 +100,15 @@ trait IsolatedBonusContentMaker extends VarargsLogging {
 		val rootFlatNode = rrc.getJme3RootOverlayNode(null)
 		val assetMgr = rrc.getJme3AssetManager(null)
 
-		doItUsingArgs(crc, flyCam, rootDeepNode, viewPort, rootFlatNode, assetMgr, updAtchr, tmb)
+		val oldWay = false
+		if (oldWay) {
+			// OldWay = use method from above
+			doItUsingArgs(crc, flyCam, rootDeepNode, viewPort, rootFlatNode, assetMgr, updAtchr, tmb)
+		} else {
+			// New way = simulate what new stageActor soon will do in response to messages.
+			val stager = new VWStageLogic {}
+			stager.prepareStage(crc, flyCam, rootDeepNode, viewPort, rootFlatNode, assetMgr, updAtchr, Option(tmb))
+		}
 	}
 }
 
