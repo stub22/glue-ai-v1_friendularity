@@ -16,6 +16,7 @@ trait LesserIngred {
 trait BodyMgrIngred {
 	def	getPMRC : PhysicalModularRenderContext
 }
+trait AppyIngred
 case class FullIngredMsgImpl(rendRegCli : RenderRegistryClient, winStatMon : WindowStatusMonitor, pmrc : PhysicalModularRenderContext)
 			extends LesserIngred with BodyMgrIngred {
 	override def getRendRegClient : RenderRegistryClient = rendRegCli

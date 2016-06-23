@@ -100,15 +100,7 @@ trait IsolatedBonusContentMaker extends VarargsLogging {
 		val rootFlatNode = rrc.getJme3RootOverlayNode(null)
 		val assetMgr = rrc.getJme3AssetManager(null)
 
-		val oldWay = false
-		if (oldWay) {
-			// OldWay = use method from above
-			doItUsingArgs(crc, flyCam, rootDeepNode, viewPort, rootFlatNode, assetMgr, updAtchr, tmb)
-		} else {
-			// New way = simulate what new stageActor soon will do in response to messages.
-			val stager = new VWStageLogic {}
-			stager.prepareStage(crc, flyCam, rootDeepNode, viewPort, rootFlatNode, assetMgr, updAtchr, Option(tmb))
-		}
+		doItUsingArgs(crc, flyCam, rootDeepNode, viewPort, rootFlatNode, assetMgr, updAtchr, tmb)
 	}
 }
 
@@ -122,10 +114,20 @@ class IsolatedBonusContentTask(myCRC: CogcharRenderContext, myUpAtchr : UpdateAt
 		// Can get flyCam from opticFacade?  Appears it currently only keeps track of "default" camera,
 		// which is different how?
 		// What about viewPort?
-		doItEasier(myCRC, flyCam, viewPort, myUpAtchr, myTMB)
+		val oldWay = false
+		if (oldWay) {
+			// OldWay = use method from above
+
+			doItEasier(myCRC, flyCam, viewPort, myUpAtchr, myTMB)
+		} else {
+			// New way = simulate what new stageActor soon will do in response to messages.
+			val stager = new VWStageLogic {}
+			stager.sendRendTaskForStagePrepare(myCRC, flyCam, viewPort, myUpAtchr, Option(myTMB))
+		}
+
 	}
 }
-class MoreIsolatedBonusContentTask(crc: CogcharRenderContext, upAtchr : UpdateAttacher, tmb : TempMidiBridge,
+case class MoreIsolatedBonusContentTask(crc: CogcharRenderContext, upAtchr : UpdateAttacher, tmb : TempMidiBridge,
 									myFlyCam : FlyByCamera, myMainViewPort : ViewPort)
 			extends IsolatedBonusContentTask(crc, upAtchr, tmb) {
 

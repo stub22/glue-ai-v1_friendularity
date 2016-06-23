@@ -1,5 +1,7 @@
 package org.friendularity.vwmsg
 
+import org.friendularity.vwimpl.MoreIsolatedBonusContentTask
+
 /**
   * Created by Owner on 6/16/2016.
   */
@@ -7,4 +9,7 @@ package org.friendularity.vwmsg
 trait VWStageRqMsg extends VWorldRequest {
 }
 
+case class VWStageEmulateBonus() extends VWStageRqMsg {
+
+}
 

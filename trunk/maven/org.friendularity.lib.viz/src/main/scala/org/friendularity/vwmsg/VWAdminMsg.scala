@@ -2,6 +2,7 @@ package org.friendularity.vwmsg
 
 import org.appdapter.fancy.log.VarargsLogging
 import org.friendularity.cpump.{CPStrongTeller, CPMsgTeller}
+import org.friendularity.vwimpl.MoreIsolatedBonusContentTask
 
 
 trait VWAdminRqMsg extends VWorldRequest with VarargsLogging
@@ -23,5 +24,6 @@ case class VWSetupRq_Lnch() extends VWorldRequest {  // Sent from NuiiApp to VWB
 	// Includes callback-teller hook for result pointers after successful launch
 }
 
-case class VWSetupResultsNotice(lesserIngred: LesserIngred, bodyMgrIngred: BodyMgrIngred) extends VWorldInternalNotice
+case class VWSetupResultsNotice(lesserIngred: LesserIngred,
+								bodyMgrIngred: BodyMgrIngred, bonusTask : MoreIsolatedBonusContentTask) extends VWorldInternalNotice
 
