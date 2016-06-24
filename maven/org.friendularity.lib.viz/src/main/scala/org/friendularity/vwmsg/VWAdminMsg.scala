@@ -1,8 +1,9 @@
 package org.friendularity.vwmsg
 
 import org.appdapter.fancy.log.VarargsLogging
+import org.cogchar.bind.midi.in.TempMidiBridge
 import org.friendularity.cpump.{CPStrongTeller, CPMsgTeller}
-import org.friendularity.vwimpl.MoreIsolatedBonusContentTask
+import org.friendularity.vwimpl.{UpdateAttacher}
 
 
 trait VWAdminRqMsg extends VWorldRequest with VarargsLogging
@@ -25,5 +26,6 @@ case class VWSetupRq_Lnch() extends VWorldRequest {  // Sent from NuiiApp to VWB
 }
 
 case class VWSetupResultsNotice(lesserIngred: LesserIngred,
-								bodyMgrIngred: BodyMgrIngred, bonusTask : MoreIsolatedBonusContentTask) extends VWorldInternalNotice
+								bodyMgrIngred: BodyMgrIngred,
+								updAtchr : UpdateAttacher, tmb_opt : Option[TempMidiBridge]) extends VWorldInternalNotice
 

@@ -1,7 +1,6 @@
 package org.friendularity.vwmsg
 
 import com.jme3.math.ColorRGBA
-import org.friendularity.vwimpl.MoreIsolatedBonusContentTask
 
 /**
   * Created by Owner on 6/16/2016.
