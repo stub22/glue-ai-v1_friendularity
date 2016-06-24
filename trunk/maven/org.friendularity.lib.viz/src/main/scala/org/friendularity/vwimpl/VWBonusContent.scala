@@ -17,6 +17,9 @@ import org.friendularity.respire.{Srtw}
 /** OBSOLETE - kept only as reminder of old-style "Trial" content+camera+midi init sequence.
   * This stuff contains about 10 steps of testing content + camera setup, all not essential except
   * as standin for better testing with equal/superior client messages.
+  *
+  * Note also the equivalence of these steps to the Java code in Cogchar's
+  * TrialBalloon.doMoreSimpleInit, which we override in our SimBaloonJmeApp.
   */
 trait IsolatedBonusContentMaker extends VarargsLogging {
 
@@ -24,7 +27,9 @@ trait IsolatedBonusContentMaker extends VarargsLogging {
 	// Works for creating some test grid content, an extra camera, and wiring to MIDI controller
 	// A newer version of these features is now found in VWStageLogic
 	/*
-		protected def OLD_doItUsingArgs_UNUSED(crc : CogcharRenderContext, flyCam : FlyByCamera, rootDeepNode : JmeNode,
+		Copied in Spring 2016 from Cogchar TrialBalloon.doMoreSimpleInit:
+
+			protected def OLD_doItUsingArgs_UNUSED(crc : CogcharRenderContext, flyCam : FlyByCamera, rootDeepNode : JmeNode,
 											   mainViewPort : ViewPort, guiNode : JmeNode, assetManager: AssetManager,
 											   updAtchr : UpdateAttacher, tmb : TempMidiBridge) : Unit = {
 
