@@ -22,6 +22,20 @@ import java.util.concurrent.{Callable => ConcurrentCallable}
   * Manages cameras, viewports and lights.
   * Also currently manages TrialContent, because it is connected to cameras...
   */
+
+trait VWStageCtx extends VarargsLogging {
+	def getCRC : CogcharRenderContext
+	def getRRC : RenderRegistryClient
+	def getUpdateAttacher : UpdateAttacher
+	def getTempMidiBridge_opt : Option[TempMidiBridge]
+}
+case class StageCtxImpl(crc: CogcharRenderContext, upAtchr : UpdateAttacher, tmb_opt : Option[TempMidiBridge]) extends  VWStageCtx {
+	override def getCRC : CogcharRenderContext = crc
+	override def getRRC : RenderRegistryClient = getCRC.getRenderRegistryClient
+	override def getUpdateAttacher : UpdateAttacher = upAtchr
+	override def getTempMidiBridge_opt : Option[TempMidiBridge] = tmb_opt
+
+}
 trait VWStageLogic extends VarargsLogging {
 
 	def prepareOpticsStage1_onRendThrd(flyCam: FlyByCamera, mainViewPort: ViewPort,
@@ -92,7 +106,6 @@ trait VWStageLogic extends VarargsLogging {
 	def prepareDummyFeatures_onRendThrd(crc: CogcharRenderContext, parentDeepNode: JmeNode, parentFlatGuiNode: JmeNode,
 										assetManager: AssetManager, updAtchr: UpdateAttacher, tmb_opt: Option[TempMidiBridge]): Unit = {
 
-
 		// Code for this method originally copied from cogchar.TrialBalloon.doMoreSimpleInit
 		val rrc: RenderRegistryClient = crc.getRenderRegistryClient
 
@@ -104,8 +117,8 @@ trait VWStageLogic extends VarargsLogging {
 
 		getLogger.info("********************prepareStage is done!");
 	}
-	def sendRendTaskForStagePrepare(crc : CogcharRenderContext, // flyCam : FlyByCamera, viewPort : ViewPort,
-									updAtchr : UpdateAttacher, tmb_opt : Option[TempMidiBridge]) : Unit = {
+	def sendRendTaskForDummyFeatures(crc : CogcharRenderContext, // flyCam : FlyByCamera, viewPort : ViewPort,
+									 updAtchr : UpdateAttacher, tmb_opt : Option[TempMidiBridge]) : Unit = {
 		val rrc: RenderRegistryClient = crc.getRenderRegistryClient
 		val rootDeepNode = rrc.getJme3RootDeepNode(null)
 		val rootFlatNode = rrc.getJme3RootOverlayNode(null)
@@ -131,16 +144,16 @@ trait VWStageLogic extends VarargsLogging {
 		workaroundStub.enqueue(taskForRendThrd)
 	}
 }
-class VWStageActor(myBonusTask : MoreIsolatedBonusContentTask) extends Actor with VWStageLogic {
+class VWStageActor(myStageCtx : VWStageCtx) extends Actor with VWStageLogic {
 
 	def receive = {
 		case embon : VWStageEmulateBonusContentAndCams => {
-			val task = myBonusTask //  embon.bonusTask
-			sendRendTaskForStagePrepare(task.crc, // task.myFlyCam, task.myMainViewPort,
-								task.upAtchr, Option(task.tmb))
+
+			sendRendTaskForDummyFeatures(myStageCtx.getCRC, myStageCtx.getUpdateAttacher, myStageCtx.getTempMidiBridge_opt)
+
 		}
 		case opticsBasicRq :	VWStageOpticsBasic => {
-			sendRendTaskForOpticsBasic(opticsBasicRq, myBonusTask.crc.getRenderRegistryClient)
+			sendRendTaskForOpticsBasic(opticsBasicRq, myStageCtx.getRRC)
 		}
 		case vwsrq: VWStageRqMsg => {
 			// processBodyRq(vwbrq, self, context)

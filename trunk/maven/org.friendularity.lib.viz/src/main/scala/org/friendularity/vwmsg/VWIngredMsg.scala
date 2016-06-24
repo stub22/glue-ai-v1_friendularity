@@ -1,8 +1,10 @@
 package org.friendularity.vwmsg
 
-import org.cogchar.render.sys.context.PhysicalModularRenderContext
+import org.cogchar.bind.midi.in.TempMidiBridge
+import org.cogchar.render.sys.context.{CogcharRenderContext, PhysicalModularRenderContext}
 import org.cogchar.render.sys.registry.RenderRegistryClient
 import org.cogchar.render.sys.window.WindowStatusMonitor
+import org.friendularity.vwimpl.UpdateAttacher
 
 // When used in messages, these ingreds are not fully serializable, and thus may not be passed over
 // networking connections.  They generally work OK as messages within a single JVM, however.
@@ -16,8 +18,9 @@ trait LesserIngred {
 trait BodyMgrIngred {
 	def	getPMRC : PhysicalModularRenderContext
 }
-trait AppyIngred
-case class FullIngredMsgImpl(rendRegCli : RenderRegistryClient, winStatMon : WindowStatusMonitor, pmrc : PhysicalModularRenderContext)
+
+case class FullIngredMsgImpl(rendRegCli : RenderRegistryClient, winStatMon : WindowStatusMonitor,
+							 pmrc : PhysicalModularRenderContext)
 			extends LesserIngred with BodyMgrIngred {
 	override def getRendRegClient : RenderRegistryClient = rendRegCli
 	override def getWindowStatusMonitor : WindowStatusMonitor = winStatMon

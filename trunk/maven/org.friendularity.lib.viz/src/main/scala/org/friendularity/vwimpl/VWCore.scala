@@ -77,6 +77,7 @@ class ArbBalloonJmeApp extends TrialBalloon with DynamicGoodyParent {
 	}
 
 }
+
 // This is our "app" class in the JME taxonomy.
 // It *inherits* a .start() method, and init callback, which eventually calls doMoreSimpleInit.
 // It also inherits an enqueue() method that can be used to postpone work into a later task on render thread.
@@ -94,22 +95,13 @@ class SimBalloonJmeApp extends ArbBalloonJmeApp with UpdateAttacher with VWCore 
 	// Creates a sampleContentTask object to do our remaining setup *later*, queued
 	// to JME thread.
 	override protected def doMoreSimpleInit: Unit = {
-		// Make and launch a task for later builtin (hardcoded) setup of this app, to be run directly on render
-		// thread. Best to make it a smaller amount of stuff, and do more population later, based on
-		// a series of smaller client requests, which may be read by an outer config mechanism when desired.
-		// In that case the render-threading is in smaller batches.
 
-		val bonusTask : MoreIsolatedBonusContentTask = makeSampleContentCreationTask // Make description of work to be done later.
-		val oldWay = false
-		if (oldWay) {
-			obsolete_scheduleLaterInit(bonusTask)
-		} else {
-			maybeSendSetupResults(bonusTask)
-		}
+		maybeSendSetupResults()
+
 	}
-	private def maybeSendSetupResults(sampleContentTask : MoreIsolatedBonusContentTask): Unit = {
+	private def maybeSendSetupResults(): Unit = {
 		if (myResultsTeller_opt.isDefined) {
-			val notice = makeSetupResultsNotice(sampleContentTask)
+			val notice = makeSetupResultsNotice()
 			getLogger.info("Sending setupResults notice: {}", notice)
 			myResultsTeller_opt.get.tellCPMsg(notice)
 		} else {
@@ -117,26 +109,11 @@ class SimBalloonJmeApp extends ArbBalloonJmeApp with UpdateAttacher with VWCore 
 		}
 
 	}
-	def obsolete_scheduleLaterInit(sampleContentTask : MoreIsolatedBonusContentTask): Unit ={
-		// Define and instantiate callback object.
-		val scTskCallable = new java.util.concurrent.Callable[Unit] {
-			@throws(classOf[Exception])	override def call : Unit = {
-				// One big chunk of work, done on the render thread.
-				sampleContentTask.doItMostEasily
-				maybeSendSetupResults(sampleContentTask)
-			}
-		}
-		// Now the sampleContent task is made and ready to enqueue.
-		// Defer the callable work onto a future callback on render-thread, which occurs after JME.start is complete
-		// (which can only happen after this method we are in returns!)
-		getLogger().info("Deferring additional VWorld setup to future rend-thread task: {}", scTskCallable)
-		val futureWhichWeIgnore = enqueue(scTskCallable)
 
-	}
 	// Make (not serializable) notice sent to our results teller after the OpenGL
 	// world is running, allowing the app to confidently perform any further wiring.
 
-	private def makeSetupResultsNotice(bonusTask : MoreIsolatedBonusContentTask): VWSetupResultsNotice = {
+	private def makeSetupResultsNotice(): VWSetupResultsNotice = {
 		// Limitation:  These yummy ingred are usually not serializable.
 		val crc = getRenderContext
 		val framedRendCtx : FramedRenderContext = crc.asInstanceOf[FramedRenderContext]
@@ -146,9 +123,11 @@ class SimBalloonJmeApp extends ArbBalloonJmeApp with UpdateAttacher with VWCore 
 		// We currently happen to lump all the ingredients together, but we have the choice
 		// to instead provide finer grained LesserIngred and BodyMgrIngred.
 		val fullIng = new FullIngredMsgImpl(rrc, winStatMon, physModRendCtx)
-		val notice = new VWSetupResultsNotice(fullIng, fullIng, bonusTask)
+		// val bonusTask = makeSampleContentCreationTask
+		val notice = new VWSetupResultsNotice(fullIng, fullIng, this, Option(myTMB))
 		notice
 	}
+	/*
 	private def makeSampleContentCreationTask : MoreIsolatedBonusContentTask = {
 		val crc: CogcharRenderContext = getRenderContext
 		// TODO:  Get the flyCam and viewPort from render context/registry stuff, instead of here in the "app".
@@ -157,6 +136,7 @@ class SimBalloonJmeApp extends ArbBalloonJmeApp with UpdateAttacher with VWCore 
 		val miit = new MoreIsolatedBonusContentTask(crc, this, myTMB, fc, vp)
 		miit
 	}
+	*/
 
 	override def destroy : Unit = {
 		getLogger.warn("SimBalloonJmeApp.destroy() called, indicating JME app exit.")

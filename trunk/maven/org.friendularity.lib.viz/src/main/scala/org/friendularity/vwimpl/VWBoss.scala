@@ -2,6 +2,7 @@ package org.friendularity.vwimpl
 
 import akka.actor.{ActorLogging, Actor, ActorContext, ActorRef}
 import org.appdapter.fancy.log.VarargsLogging
+import org.cogchar.bind.midi.in.TempMidiBridge
 import org.cogchar.render.goody.basic.{BasicGoodyCtxImpl, BasicGoodyCtx}
 import org.cogchar.render.sys.registry.RenderRegistryClient
 import org.cogchar.render.sys.window.WindowStatusMonitor
@@ -50,8 +51,9 @@ trait VWorldBossLogic [VWSM <: VWorldSysMgr] extends VarargsLogging with VWPTRen
 			case setupResults: VWSetupResultsNotice => {
 				val lesserIng = setupResults.lesserIngred
 				val bodyMgrIng = setupResults.bodyMgrIngred
-				val bonusTask = setupResults.bonusTask
-				notifySetupResults(lesserIng, bodyMgrIng, bonusTask, localActorCtx)
+				val updAtchr = setupResults.updAtchr
+				val tmb_opt = setupResults.tmb_opt
+				completeBossSetupAndPublish(lesserIng, bodyMgrIng, updAtchr, tmb_opt, localActorCtx)
 			}
 		}
 	}
@@ -69,7 +71,9 @@ trait VWorldBossLogic [VWSM <: VWorldSysMgr] extends VarargsLogging with VWPTRen
 
 	// Crucial method which wraps the internal setup results handles with a set of public actors,
 	// and then publishes that API for outer clients to use.
-	def notifySetupResults(lesserIngred: LesserIngred, bmi : BodyMgrIngred, bonusTask : MoreIsolatedBonusContentTask, localActorCtx : ActorContext): Unit = {
+	def completeBossSetupAndPublish(lesserIngred: LesserIngred, bmi : BodyMgrIngred,
+									updAtchr : UpdateAttacher, tmb_opt : Option[TempMidiBridge],
+									localActorCtx : ActorContext): Unit = {
 		//
 		info1("Got setup result (lesser) ingredients: {}", lesserIngred)
 		val rrc : RenderRegistryClient = lesserIngred.getRendRegClient
@@ -88,7 +92,8 @@ trait VWorldBossLogic [VWSM <: VWorldSysMgr] extends VarargsLogging with VWPTRen
 		val shaperActorRef = VWorldActorFactoryFuncs.makeVWShaperActor(localActorCtx, "shaper", rrc)
 		val shaperTeller  = new ActorRefCPMsgTeller[VWShapeCreateRq](shaperActorRef)
 
-		val stageActorRef = VWorldActorFactoryFuncs.makeVWStageActor(localActorCtx, "stager", bonusTask)
+		val stagerCtx = new StageCtxImpl(pmrc, updAtchr, tmb_opt)
+		val stageActorRef = VWorldActorFactoryFuncs.makeVWStageActor(localActorCtx, "stager", stagerCtx)
 		val stageTeller  = new ActorRefCPMsgTeller[VWStageRqMsg](stageActorRef)
 
 		// Now the boss can publish this nice public API offering message, providing network-ready
