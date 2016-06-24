@@ -38,8 +38,8 @@ case class StageCtxImpl(crc: CogcharRenderContext, upAtchr : UpdateAttacher, tmb
 }
 trait VWStageLogic extends VarargsLogging {
 
-	def prepareOpticsStage1_onRendThrd(flyCam: FlyByCamera, mainViewPort: ViewPort,
-									   moveSpeed : Int, bgColor: ColorRGBA): Unit = {
+	def prepareIndependentOptics_onRendThrd(flyCam: FlyByCamera, mainViewPort: ViewPort,
+											moveSpeed : Int, bgColor: ColorRGBA): Unit = {
 
 		info2("prepareOpticsStage1: setting flyCam speed to {}, and background color to {}",
 					moveSpeed : Integer, bgColor)
@@ -48,13 +48,11 @@ trait VWStageLogic extends VarargsLogging {
 
 		mainViewPort.setBackgroundColor(bgColor)
 	}
-	def prepareOpticsStage2_onRendThrd(crc: CogcharRenderContext, someContent : TrialContent) : TrialCameras = {
+	def prepareCoupledOptics_onRendThrd(crc: CogcharRenderContext, someContent : TrialContent, tcam: TrialCameras) : Unit = {
 		someContent.shedLight_onRendThread(crc)
-		val tcam: TrialCameras = new TrialCameras
 		val rrc: RenderRegistryClient = crc.getRenderRegistryClient
 		val crc_orNull_notUsed : CogcharRenderContext = null
 		tcam.setupCamerasAndViews(rrc, crc_orNull_notUsed, someContent)
-		tcam
 	}
 
 	def makeOldDummyContent() : TrialContent = {
@@ -95,10 +93,10 @@ trait VWStageLogic extends VarargsLogging {
 
 	}
 
-	def setupDummyCamsAndWiring(tcont : TrialContent, crc: CogcharRenderContext, updAtchr: UpdateAttacher,
+	def setupDummyCamsAndWiring(tcont : TrialContent, tcam: TrialCameras, crc: CogcharRenderContext, updAtchr: UpdateAttacher,
 								tmb_opt: Option[TempMidiBridge]) : Unit = {
 
-		val tcam = prepareOpticsStage2_onRendThrd(crc, tcont)
+		prepareCoupledOptics_onRendThrd(crc, tcont, tcam)
 
 		wireDummyContentToCamsAndMidi(tcont, tcam, updAtchr, tmb_opt)
 
@@ -111,9 +109,11 @@ trait VWStageLogic extends VarargsLogging {
 
 //		prepareOpticsStage1_onRendThrd(flyCam, mainViewPort, moveSpeed, bgColor)
 		val tcont = makeOldDummyContent()
+		val tcam: TrialCameras = new TrialCameras
+
 		// TODO:  Look for which parts of this need to happen before the "wire" step
 		displayDummyContent_onRendThrd(tcont, rrc, parentDeepNode, parentFlatGuiNode, assetManager)
-		setupDummyCamsAndWiring(tcont, crc, updAtchr, tmb_opt)
+		setupDummyCamsAndWiring(tcont, tcam, crc, updAtchr, tmb_opt)
 
 		getLogger.info("********************prepareStage is done!");
 	}
@@ -138,7 +138,7 @@ trait VWStageLogic extends VarargsLogging {
 		val mvp = workaroundStub.getPrimaryAppViewPort
 		val taskForRendThrd  = new ConcurrentCallable[Unit] {
 			override def call: Unit = {
-				prepareOpticsStage1_onRendThrd(fbCam, mvp, rq.moveSpeed, rq.bgColor)
+				prepareIndependentOptics_onRendThrd(fbCam, mvp, rq.moveSpeed, rq.bgColor)
 			}
 		}
 		workaroundStub.enqueue(taskForRendThrd)
