@@ -116,12 +116,14 @@ trait PatientForwarder_CharAdminTest extends OuterLogic {
 trait PatientSender_BonusStaging extends OuterLogic {
 	override def rcvPubTellers(vwpt: VWorldPublicTellers): Unit = {
 		val stageTeller = vwpt.getStageTeller.get
-		val emuBonusRq = new VWStageEmulateBonusContentAndCams()
-		stageTeller.tellStrongCPMsg(emuBonusRq)
+
 		val moveSpeed : Int = 25
 		val bgColor = ColorRGBA.Yellow
 		val opticsBasicRq = new VWStageOpticsBasic(moveSpeed, bgColor)
 		stageTeller.tellCPMsg(opticsBasicRq)
+
+		val emuBonusRq = new VWStageEmulateBonusContentAndCams()
+		stageTeller.tellStrongCPMsg(emuBonusRq)
 	}
 }
 
