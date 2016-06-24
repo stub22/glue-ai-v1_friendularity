@@ -117,8 +117,9 @@ trait VWStageLogic extends VarargsLogging {
 
 		getLogger.info("********************prepareStage is done!");
 	}
-	def sendRendTaskForDummyFeatures(crc : CogcharRenderContext, // flyCam : FlyByCamera, viewPort : ViewPort,
-									 updAtchr : UpdateAttacher, tmb_opt : Option[TempMidiBridge]) : Unit = {
+	def sendRendTaskForDummyFeatures(crc : CogcharRenderContext, updAtchr : UpdateAttacher,
+									 tmb_opt : Option[TempMidiBridge]) : Unit = {
+
 		val rrc: RenderRegistryClient = crc.getRenderRegistryClient
 		val rootDeepNode = rrc.getJme3RootDeepNode(null)
 		val rootFlatNode = rrc.getJme3RootOverlayNode(null)
@@ -126,6 +127,7 @@ trait VWStageLogic extends VarargsLogging {
 
 		val taskForRendThrd  = new ConcurrentCallable[Unit] {
 			override def call: Unit = {
+				// Note that updAtchr is actually a handle to our JME-App object (SimBalloonJmeApp)
 				prepareDummyFeatures_onRendThrd(crc, rootDeepNode, rootFlatNode, assetMgr, updAtchr, tmb_opt)
 			}
 		}

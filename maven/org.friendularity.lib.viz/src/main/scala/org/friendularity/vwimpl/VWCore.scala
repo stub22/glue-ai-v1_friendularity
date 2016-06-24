@@ -65,7 +65,7 @@ class ArbBalloonJmeApp extends TrialBalloon with DynamicGoodyParent {
 		attachVWorldUpdater(sweetDS);
 	}
 
-	override   def getUniqueName() : String = {
+	override def getUniqueName() : String = {
 		"generatedName_99";
 	}
 
@@ -127,16 +127,6 @@ class SimBalloonJmeApp extends ArbBalloonJmeApp with UpdateAttacher with VWCore 
 		val notice = new VWSetupResultsNotice(fullIng, fullIng, this, Option(myTMB))
 		notice
 	}
-	/*
-	private def makeSampleContentCreationTask : MoreIsolatedBonusContentTask = {
-		val crc: CogcharRenderContext = getRenderContext
-		// TODO:  Get the flyCam and viewPort from render context/registry stuff, instead of here in the "app".
-		val fc : FlyByCamera = getFlyByCamera(); // Defined in CogcharPresumedApp
-		val vp : ViewPort = getPrimaryAppViewPort(); // Defined in CogcharPresumedApp
-		val miit = new MoreIsolatedBonusContentTask(crc, this, myTMB, fc, vp)
-		miit
-	}
-	*/
 
 	override def destroy : Unit = {
 		getLogger.warn("SimBalloonJmeApp.destroy() called, indicating JME app exit.")
