@@ -6,7 +6,7 @@ import com.jme3.input.FlyByCamera
 import com.jme3.math.ColorRGBA
 import com.jme3.renderer.ViewPort
 import com.jme3.scene.{Node => JmeNode}
-import com.sun.javafx.image.impl.ByteBgraPre.ToByteBgraConv
+
 import org.appdapter.fancy.log.VarargsLogging
 import org.cogchar.bind.midi.in.{CCParamRouter, TempMidiBridge}
 import org.cogchar.render.sys.context.CogcharRenderContext
@@ -89,26 +89,18 @@ trait VWStageLogic extends VarargsLogging {
 		wireDummyContentToCamsAndMidi(tcont, tcam, updAtchr, tmb_opt)
 
 	}
-/*
-	def displayMoreModernContentYay_onRendThrd(rrc: RenderRegistryClient, rootDeepNode: JmeNode): Unit = {
-		val extra = new ExtraStuff {}
-		extra.makeBigGridAndAttach_onRendThrd(rrc, rootDeepNode)
-
-	}
-*/
-	def prepareStage_onRendThrd(crc: CogcharRenderContext, parentDeepNode: JmeNode, parentFlatGuiNode: JmeNode,
-								assetManager: AssetManager, updAtchr: UpdateAttacher, tmb_opt: Option[TempMidiBridge]): Unit = {
+	def prepareDummyFeatures_onRendThrd(crc: CogcharRenderContext, parentDeepNode: JmeNode, parentFlatGuiNode: JmeNode,
+										assetManager: AssetManager, updAtchr: UpdateAttacher, tmb_opt: Option[TempMidiBridge]): Unit = {
 
 
 		// Code for this method originally copied from cogchar.TrialBalloon.doMoreSimpleInit
 		val rrc: RenderRegistryClient = crc.getRenderRegistryClient
+
 //		prepareOpticsStage1_onRendThrd(flyCam, mainViewPort, moveSpeed, bgColor)
 		val tcont = makeOldDummyContent()
 		// TODO:  Look for which parts of this need to happen before the "wire" step
 		displayDummyContent_onRendThrd(tcont, rrc, parentDeepNode, parentFlatGuiNode, assetManager)
 		setupDummyCamsAndWiring(tcont, crc, updAtchr, tmb_opt)
-
-		// displayMoreModernContentYay_onRendThrd(rrc, rootDeepNode)
 
 		getLogger.info("********************prepareStage is done!");
 	}
@@ -121,7 +113,7 @@ trait VWStageLogic extends VarargsLogging {
 
 		val taskForRendThrd  = new ConcurrentCallable[Unit] {
 			override def call: Unit = {
-				prepareStage_onRendThrd(crc, rootDeepNode, rootFlatNode, assetMgr, updAtchr, tmb_opt)
+				prepareDummyFeatures_onRendThrd(crc, rootDeepNode, rootFlatNode, assetMgr, updAtchr, tmb_opt)
 			}
 		}
 		crc.enqueueCallable(taskForRendThrd)
