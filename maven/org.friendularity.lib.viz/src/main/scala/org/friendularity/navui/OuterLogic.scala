@@ -14,7 +14,7 @@ import com.hp.hpl.jena.rdf.model.{Model => JenaModel, ModelFactory => JenaModelF
 import org.friendularity.vwimpl.VWorldMasterFactory
 
 // import org.friendularity.respire.VWorldMasterFactory
-import org.friendularity.vwmsg.{VWStageOpticsBasic, VWSCR_CellGrid, VWStageEmulateBonusContentAndCams, VWBodyLifeRq, VWGoodyRqTAS, VWGoodyRqTurtle, VWorldPublicTellers}
+import org.friendularity.vwmsg.{VWSCR_Sphere, VWStageOpticsBasic, VWSCR_CellGrid, VWStageEmulateBonusContentAndCams, VWBodyLifeRq, VWGoodyRqTAS, VWGoodyRqTurtle, VWorldPublicTellers}
 
 
 /**
@@ -30,6 +30,9 @@ trait PatientSender_GoodyTest extends OuterLogic {
 
 	def finallySendFunShapeRqs(shapeTeller : CPMsgTeller) : Unit = {
 		val rq_makeBigGrid = new VWSCR_CellGrid{}
+		val sphereCol = new ColorRGBA(0.1f,1.0f,0.5f, 0.65f)
+		val rq_makeSphere = new VWSCR_Sphere(9.0f, sphereCol)
+		shapeTeller.tellCPMsg(rq_makeSphere)
 		shapeTeller.tellCPMsg(rq_makeBigGrid)
 	}
 

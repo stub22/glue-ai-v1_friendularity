@@ -1,5 +1,6 @@
 package org.friendularity.vwmsg
 
+import com.jme3.math.ColorRGBA
 import com.jme3.scene.{Geometry, Mesh, Spatial}
 import com.jme3.scene.shape.Sphere
 import org.appdapter.core.name.Ident
@@ -18,23 +19,29 @@ import org.cogchar.render.trial.TextSpatialFactory
 	* SkeletonWire, Sphere, Surface, Torus, WireBox, WireFrustum, WireSphere
   */
 trait VWShapeCreateRq extends VWContentRq {
-	def getKnownURI_opt : Option[String] = None
-	def expectUniqueURI : Boolean = false
+	def getKnownID_opt : Option[Ident] = None // We allow but don't require a client-assigned ID
+	// def getKnownURI_opt : Option[String] = None
+	def expectEmptySlot : Boolean = false
 
-	def getKnownParentID_opt : Option[Ident] = None
-	def inFlatSpace : Boolean = false
+	def getKnownParentID_opt : Option[Ident] = None // We allow but don't require a parentID.
+
+	def inFlatSpace : Boolean = false // Default is inDeepSpace=3D, override to make flat=2D=true
 }
 
 trait VWShapeClearRq extends VWContentRq {
 }
 
-case class VWCleaAllShapes()
+case class VWClearAllShapes()
 
 // These message types are matchable to the fleshier 3D primitives in JMonkey3
 
-trait VWMeshyShapeRq extends VWShapeCreateRq
+trait VWMeshyShapeRq extends VWShapeCreateRq {
+	def dangerSerialColor : ColorRGBA = new ColorRGBA(1.0f, 0.5f, 0.2f, 0.5f);
+}
 
-case class VWSCR_Sphere(myRadius : Float) extends VWMeshyShapeRq
+case class VWSCR_Sphere(myRadius : Float, mySerialColor : ColorRGBA) extends VWMeshyShapeRq {
+	override def dangerSerialColor = mySerialColor
+}
 
 trait VWSCR_Box extends VWMeshyShapeRq
 
