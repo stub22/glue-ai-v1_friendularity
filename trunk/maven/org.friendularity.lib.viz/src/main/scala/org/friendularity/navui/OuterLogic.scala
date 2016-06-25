@@ -3,7 +3,7 @@ package org.friendularity.navui
 import java.util.Random
 import java.lang.{Long => JLong}
 import akka.actor.{ActorRefFactory, ActorContext, ActorRef}
-import com.jme3.math.ColorRGBA
+import com.jme3.math.{Quaternion, Vector3f, ColorRGBA}
 import org.appdapter.fancy.log.VarargsLogging
 import org.cogchar.api.fancy.FancyThingModelWriter
 import org.cogchar.render.rendtest.GoodyTestMsgMaker
@@ -14,7 +14,7 @@ import com.hp.hpl.jena.rdf.model.{Model => JenaModel, ModelFactory => JenaModelF
 import org.friendularity.vwimpl.VWorldMasterFactory
 
 // import org.friendularity.respire.VWorldMasterFactory
-import org.friendularity.vwmsg.{VWSCR_Sphere, VWStageOpticsBasic, VWSCR_CellGrid, VWStageEmulateBonusContentAndCams, VWBodyLifeRq, VWGoodyRqTAS, VWGoodyRqTurtle, VWorldPublicTellers}
+import org.friendularity.vwmsg.{OrdinaryParams3D, VWSCR_Sphere, VWStageOpticsBasic, VWSCR_CellGrid, VWStageEmulateBonusContentAndCams, VWBodyLifeRq, VWGoodyRqTAS, VWGoodyRqTurtle, VWorldPublicTellers}
 
 
 /**
@@ -31,7 +31,10 @@ trait PatientSender_GoodyTest extends OuterLogic {
 	def finallySendFunShapeRqs(shapeTeller : CPMsgTeller) : Unit = {
 		val rq_makeBigGrid = new VWSCR_CellGrid{}
 		val sphereCol = new ColorRGBA(0.1f,1.0f,0.5f, 0.65f)
-		val rq_makeSphere = new VWSCR_Sphere(9.0f, sphereCol)
+		val spherePos = new Vector3f(-15.0f, 12.0f, 4.0f)
+		val sphereRot = Quaternion.IDENTITY
+		val sphereParams = new OrdinaryParams3D(spherePos, sphereRot, sphereCol)
+		val rq_makeSphere = new VWSCR_Sphere(9.0f, sphereParams)
 		shapeTeller.tellCPMsg(rq_makeSphere)
 		shapeTeller.tellCPMsg(rq_makeBigGrid)
 	}

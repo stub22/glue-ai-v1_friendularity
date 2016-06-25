@@ -2,7 +2,7 @@ package org.friendularity.vwimpl
 
 import akka.actor.Actor
 import com.jme3.material.Material
-import com.jme3.math.ColorRGBA
+import com.jme3.math.{Quaternion, Vector3f, ColorRGBA}
 import com.jme3.scene.shape.Sphere
 
 import com.jme3.scene.{Node => JmeNode, Geometry, Mesh, Spatial}
@@ -10,7 +10,7 @@ import org.appdapter.core.name.{FreeIdent, Ident}
 import org.appdapter.fancy.log.VarargsLogging
 import org.cogchar.render.sys.registry.RenderRegistryClient
 import org.friendularity.respire.Srtw
-import org.friendularity.vwmsg.{VWMeshyShapeRq, VWClearAllShapes, VWSCR_Sphere, VWSCR_TextBox, VWShapeCreateRq, VWSCR_CellGrid, VWStageRqMsg}
+import org.friendularity.vwmsg.{BasicSpatialParams3D, VWMeshyShapeRq, VWClearAllShapes, VWSCR_Sphere, VWSCR_TextBox, VWShapeCreateRq, VWSCR_CellGrid, VWStageRqMsg}
 
 import scala.collection.mutable
 import scala.util.Random
@@ -74,8 +74,8 @@ trait VWSpatialsForShapes extends PatternGridMaker with SpatMatHelper {
 			case bigGrid : VWSCR_CellGrid => {
 				makeBigGridNode(getTooMuchRRC)
 			}
-			case meshBased : VWMeshyShapeRq => {
-				val mesh: Mesh = meshBased match {
+			case meshBasedRq : VWMeshyShapeRq => {
+				val mesh: Mesh = meshBasedRq match {
 					case sph: VWSCR_Sphere => {
 						// zSamp, rSamp, radius
 						new Sphere(16, 16, sph.myRadius)
@@ -83,15 +83,23 @@ trait VWSpatialsForShapes extends PatternGridMaker with SpatMatHelper {
 				}
 				val geomNameArb: String = "geom_from_msg_shape_" + System.currentTimeMillis()
 				val geom = new Geometry(geomNameArb, mesh)
-				applyMat(geom, meshBased)
+				applyMat(geom, meshBasedRq)
+				applyPosAndRot(geom, meshBasedRq.getCoreParams3D.get)
 				geom
 			}
 		}
 	}
-	def applyMat(geom : Geometry, srq : VWMeshyShapeRq) : Unit = {
-		val dsc : ColorRGBA = srq.dangerSerialColor
+	def applyMat(geom : Geometry, mshShpRq : VWMeshyShapeRq) : Unit = {
+		val dsc_opt : Option[ColorRGBA] = mshShpRq.getColorParam
+		val dsc = dsc_opt.getOrElse(ColorRGBA.Gray)
 		val brush = getBrushJar.makeBrush(dsc)
 		brush.stroke(geom)
+	}
+	def applyPosAndRot(spat : Spatial, params : BasicSpatialParams3D) : Unit = {
+		val pos : Vector3f = params.getPos
+		spat.setLocalTranslation(pos)
+		val rot : Quaternion = params.getRotQuat
+		spat.setLocalRotation(rot)
 	}
 }
 
