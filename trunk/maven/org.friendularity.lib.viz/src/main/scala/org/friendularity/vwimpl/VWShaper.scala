@@ -228,7 +228,7 @@ class VWShaperActor(myRRC: RenderRegistryClient) extends Actor with VWShaperLogi
 	def receive = {
 		case clearAll : VWClearAllShapes => {
 			val func : Function0[Unit] = () => {clearAllShapes_onRendThrd}
-			enqueueCallable(myRRC, func)
+			enqueueJmeCallable(myRRC, func)
 		}
 		case cellGridRq : VWSCR_CellGrid => {
 			attachBigGrid

@@ -26,12 +26,13 @@ trait NavUiAppSvc extends VarargsLogging {
 		val parentARF : ActorRefFactory = akkaSys
 		val ebuActor : ActorRef = ExoActorFactory.makeExoBodyUserActor(parentARF, ebuActorName, userLogic)
 		val ebuTeller : CPStrongTeller[VWBodyNotice] = new ActorRefCPMsgTeller[VWBodyNotice](ebuActor)
+		// Let the user logic create the TickItem = callback func and schedule params
 		val regTickItem = userLogic.makeRegularTickItem()
 		regTickItem.addToSchedForSys(akkaSys, ebuActor, ebuActor)
 		ebuTeller
 	}
-	def scheduleCallback(akkaSys : ActorSystem, tgtActor : ActorRef, tickMsg : CPumpMsg, phaseMillis : Integer,
-						 periodMillis : Integer, schedHelper : ScheduleHelper): Unit = {
+	def UNUSED_scheduleCallback_UNUSED(akkaSys : ActorSystem, tgtActor : ActorRef, tickMsg : CPumpMsg, phaseMillis : Integer,
+									   periodMillis : Integer, schedHelper : ScheduleHelper): Unit = {
 		val schedItem = schedHelper.makeSchedItemRepeating(tickMsg, phaseMillis, periodMillis)
 		schedItem.addToSchedForSys(akkaSys, tgtActor, tgtActor)
 	}

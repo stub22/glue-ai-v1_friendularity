@@ -48,13 +48,13 @@ trait EnqHlp {
 			}
 		}
 	}
-	def enqueueCallable(rrc : RenderRegistryClient, func: Function0[Unit]) : Future[Unit] = {
+	def enqueueJmeCallable(rrc : RenderRegistryClient, func: Function0[Unit]) : Future[Unit] = {
 		val workAppStub = rrc.getWorkaroundAppStub
 		val callable = makeJConcurCallable(func)
 		workAppStub.enqueue(callable)
 	}
 }
-trait VWStageLogic extends VarargsLogging {
+trait VWStageLogic extends VarargsLogging with EnqHlp {
 
 	def prepareIndependentOptics_onRendThrd(flyCam: FlyByCamera, mainViewPort: ViewPort,
 											moveSpeed : Int, bgColor: ColorRGBA): Unit = {
@@ -143,88 +143,26 @@ trait VWStageLogic extends VarargsLogging {
 		val rootFlatNode = rrc.getJme3RootOverlayNode(null)
 		val assetMgr = rrc.getJme3AssetManager(null)
 
-		val taskForRendThrd  = new ConcurrentCallable[Unit] {
-			override def call: Unit = {
-				// Note that updAtchr is actually a handle to our JME-App object (SimBalloonJmeApp)
-				prepareDummyFeatures_onRendThrd(crc, rootDeepNode, rootFlatNode, assetMgr, updAtchr, tmb_opt)
-			}
+		val senderCallable : Function0[Unit] = () => {
+			// Note that updAtchr is actually a handle to our JME-App object (SimBalloonJmeApp)
+			prepareDummyFeatures_onRendThrd(crc, rootDeepNode, rootFlatNode, assetMgr, updAtchr, tmb_opt)
 		}
-		crc.enqueueCallable(taskForRendThrd)
+		enqueueJmeCallable(rrc, senderCallable)
 	}
 	def sendRendTaskForOpticsBasic(rq : VWStageOpticsBasic, rrc: RenderRegistryClient) : Unit = {
 		val workaroundStub = rrc.getWorkaroundAppStub
 		val fbCam = workaroundStub.getFlyByCamera
 
 		val mvp = workaroundStub.getPrimaryAppViewPort
-		val taskForRendThrd  = new ConcurrentCallable[Unit] {
-			override def call: Unit = {
+		val senderCallable : Function0[Unit] = () => {
 				prepareIndependentOptics_onRendThrd(fbCam, mvp, rq.moveSpeed, rq.bgColor)
-			}
 		}
-		workaroundStub.enqueue(taskForRendThrd)
+		enqueueJmeCallable(rrc, senderCallable)
 	}
 
-	private def makeJmeActionListener(vwpt: VWorldPublicTellers,
-								   actionsByName : Map[String,Function1[VWorldPublicTellers,Unit]])
-			= new ActionListener {
-		override def onAction(actionName: String, isPressed: Boolean, tpf: Float): Unit = {
-			if (isPressed) {
-				val actFunc_opt = actionsByName.get(actionName)
-				info2("VWStage Listener for JME:  Resolved actionName={} to func_opt={}", actionName, actFunc_opt)
-				if (actFunc_opt.isDefined) {
-					actFunc_opt.get.apply(vwpt)
-				}
-			} else {
-				info1("Ignoring un-pressed event at action={}", actionName)
-			}
-		}
-	}
-	// Uses additive semantics.  If called multiple times, may result in duplicate or overlapping bindings.
-	// To start over, use clearJmeInputMappings... below.
-	// All state is kept in the JME mappings + listener bindings.
-	def registerKeymap(rrc: RenderRegistryClient, keynamesToActions : Map[String,Function1[VWorldPublicTellers,Unit]],
-					   pubTellers : VWorldPublicTellers) : Unit = {
-		val jmeInpMgr : InputManager = rrc.getJme3InputManager(null)
 
-		val baloney = new KeyBindingTracker // We don't actually use this, but is wanted by makeJME3InputTriggers
-
-		var theseActionsByName : Map[String,Function1[VWorldPublicTellers,Unit]] = Map()
-		for ((keyOrInputName,actFunc) <- keynamesToActions) {
-			// 3 steps: 1) create/find a JME trigger, 2) register the trigger to an actionName, and 3) assoc the cback.
-			// val actionNameFromChr = "actionFor_" + keyChr
-			val ourKeyConstant = VW_InputBindingFuncs.getKeyConstantForName(keyOrInputName)
-			if (ourKeyConstant != VW_InputBindingFuncs.NULL_KEY) {
-				val actionName = "actFor_" + keyOrInputName
-				val triggersArr : Array[Trigger] = VW_InputBindingFuncs.makeJME3InputTriggers(ourKeyConstant, actionName, baloney)
-				if (triggersArr.length == 1) {
-					info3("Registering triggers={} for action={} at inputCode={}", triggersArr, actionName, ourKeyConstant : Integer)
-					jmeInpMgr.addMapping(actionName, triggersArr(0))
-				}  else {
-					warn3("Got wrong number ot triggers={} for action={} at inputCode={}", triggersArr, actionName, ourKeyConstant : Integer)
-				}
-				theseActionsByName += (actionName -> actFunc)
-			}
-		}
-		val theseActionNames : Array[String] = theseActionsByName.keys.toArray
-
-		val listener = makeJmeActionListener(pubTellers, theseActionsByName)
-		jmeInpMgr.addListener(listener, theseActionNames : _*) // cast to java method varargs
-
-	}
-
-	protected def clearJmeInputMappingsAndRelinkFBCam(rrc: RenderRegistryClient) : Unit = {
-		val jmeInpMgr : InputManager = rrc.getJme3InputManager(null)
-		jmeInpMgr.clearMappings;
-		val workAppStub = rrc.getWorkaroundAppStub
-		// Since we just cleared mappings and are (for now at least) using the default FlyByCamera mappings, we must re-register them
-		val fbCam: FlyByCamera = workAppStub.getFlyByCamera
-		fbCam.registerWithInput(jmeInpMgr)
-
-		// val appSett : AppSettings = rrc.get  - but we have only *set*
-
-	}
 }
-class VWStageActor(myStageCtx : VWStageCtx) extends Actor with VWStageLogic {
+class VWStageActor(myStageCtx : VWStageCtx) extends Actor with VWStageLogic with VWKeyMapLogic {
 
 	def receive = {
 		case embon : VWStageEmulateBonusContentAndCams => {

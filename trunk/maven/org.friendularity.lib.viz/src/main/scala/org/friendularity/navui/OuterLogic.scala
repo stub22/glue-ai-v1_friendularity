@@ -16,7 +16,7 @@ import org.friendularity.vwimpl.VWorldMasterFactory
 import scala.collection.immutable.HashMap
 
 // import org.friendularity.respire.VWorldMasterFactory
-import org.friendularity.vwmsg.{VWClearAllShapes, VWStageResetToDefault, VWKeymapBinding_Medial, OrdinaryParams3D, VWSCR_Sphere, VWStageOpticsBasic, VWSCR_CellGrid, VWStageEmulateBonusContentAndCams, VWBodyLifeRq, VWGoodyRqTAS, VWGoodyRqTurtle, VWorldPublicTellers}
+import org.friendularity.vwmsg.{VWBodySkeletonDisplayToggle, VWBroadcastToAllBodies, VWClearAllShapes, VWStageResetToDefault, VWKeymapBinding_Medial, OrdinaryParams3D, VWSCR_Sphere, VWStageOpticsBasic, VWSCR_CellGrid, VWStageEmulateBonusContentAndCams, VWBodyLifeRq, VWGoodyRqTAS, VWGoodyRqTurtle, VWorldPublicTellers}
 
 
 /**
@@ -152,6 +152,11 @@ trait PatientSender_BonusStaging extends OuterLogic {
 		val clrShpsMsg = new VWClearAllShapes
 		shapeTeller.tellCPMsg(clrShpsMsg)
 	}
+	def sendToggleSkelHilite(cadmTeller : CPMsgTeller) : Unit = {
+		val innerBodyRq = new VWBodySkeletonDisplayToggle
+		val brdcstRq = new VWBroadcastToAllBodies(innerBodyRq)
+		cadmTeller.tellCPMsg(brdcstRq)
+	}
 	def setupKeysAndClicks(vwpt: VWorldPublicTellers) : Unit = {
 
 		// val registerKeyMap // HashMap[Char, String]
@@ -167,6 +172,12 @@ trait PatientSender_BonusStaging extends OuterLogic {
 		info1("inlineKeymap={}", inlineMap) // , typedMap)
 		val regMsg = new VWKeymapBinding_Medial(inlineMap, vwpt)
 		stageTeller.tellCPMsg(regMsg)
+
+		val funcSkelHiliteToggle = (pt : VWorldPublicTellers) => {sendToggleSkelHilite(pt.getCharAdminTeller.get)}
+
+		val nextMap = Map("F2" -> funcSkelHiliteToggle)
+		val regMsg2 = new VWKeymapBinding_Medial(nextMap, vwpt)
+		stageTeller.tellCPMsg(regMsg2)
 	}
 
 }

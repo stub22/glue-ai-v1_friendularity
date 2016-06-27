@@ -39,6 +39,7 @@ trait ScheduleHelper extends VarargsLogging {
 
 }
 
+// We expect to have one such UserLogic for *each* separate VWBody created.
 trait ExoBodyUserLogic extends ScheduleHelper with VarargsLogging {
 	var myBodyTeller_opt : Option[CPStrongTeller[VWBodyRq]] = None
 	def rcvBodyNotice(bodyNotice : VWBodyNotice): Unit = {
