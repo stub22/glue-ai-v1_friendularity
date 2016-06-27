@@ -1,6 +1,6 @@
 package org.friendularity.navui
 
-import java.util.Random
+import java.util.{Random => JRandom}
 import java.lang.{Long => JLong}
 import akka.actor.{ActorRefFactory, ActorContext, ActorRef}
 import com.jme3.math.{Quaternion, Vector3f, ColorRGBA}
@@ -13,12 +13,14 @@ import org.friendularity.mjob.{MsgJobLogicFactory, MsgJobLogic}
 import com.hp.hpl.jena.rdf.model.{Model => JenaModel, ModelFactory => JenaModelFactory, Literal}
 import org.friendularity.vwimpl.VWorldMasterFactory
 
+import scala.collection.immutable.HashMap
+
 // import org.friendularity.respire.VWorldMasterFactory
-import org.friendularity.vwmsg.{OrdinaryParams3D, VWSCR_Sphere, VWStageOpticsBasic, VWSCR_CellGrid, VWStageEmulateBonusContentAndCams, VWBodyLifeRq, VWGoodyRqTAS, VWGoodyRqTurtle, VWorldPublicTellers}
+import org.friendularity.vwmsg.{VWClearAllShapes, VWStageResetToDefault, VWKeymapBinding_Medial, OrdinaryParams3D, VWSCR_Sphere, VWStageOpticsBasic, VWSCR_CellGrid, VWStageEmulateBonusContentAndCams, VWBodyLifeRq, VWGoodyRqTAS, VWGoodyRqTurtle, VWorldPublicTellers}
 
 
 /**
-  * Created by Owner on 6/8/2016.
+  * Limits
   */
 trait OuterLogic extends VarargsLogging {
 	def rcvPubTellers (vwpt : VWorldPublicTellers): Unit
@@ -26,17 +28,21 @@ trait OuterLogic extends VarargsLogging {
 trait PatientSender_GoodyTest extends OuterLogic {
 	import scala.collection.JavaConverters._
 
-	lazy val myRandomizer: Random = new Random
+	lazy val myRandomizer: JRandom = new JRandom
 
 	def finallySendFunShapeRqs(shapeTeller : CPMsgTeller) : Unit = {
 		val rq_makeBigGrid = new VWSCR_CellGrid{}
 		val sphereCol = new ColorRGBA(0.1f,1.0f,0.5f, 0.65f)
 		val spherePos = new Vector3f(-15.0f, 12.0f, 4.0f)
 		val sphereRot = Quaternion.IDENTITY
-		val sphereParams = new OrdinaryParams3D(spherePos, sphereRot, sphereCol)
+		val sphereParams = new OrdinaryParams3D(spherePos, sphereRot, Vector3f.UNIT_XYZ, sphereCol)
 		val rq_makeSphere = new VWSCR_Sphere(9.0f, sphereParams)
 		shapeTeller.tellCPMsg(rq_makeSphere)
 		shapeTeller.tellCPMsg(rq_makeBigGrid)
+		// chose your fate
+		//   repeat
+		//   reshuffle
+		//   exit
 	}
 
 	def finallySendGoodyTstMsgs(goodyTeller : CPMsgTeller, flag_serToTurtle : Boolean): Unit = {
@@ -83,6 +89,7 @@ trait PatientSender_GoodyTest extends OuterLogic {
 
 	}
 }
+
 trait PatientForwarder_CharAdminTest extends OuterLogic {
 	private var myStoredTellers_opt : Option[VWorldPublicTellers] = None
 	private val myPendingCharAdminRqs = new scala.collection.mutable.ListBuffer[VWBodyLifeRq]() //  = Nil // Any inbound messages we have not gotten to yet.
@@ -101,8 +108,10 @@ trait PatientForwarder_CharAdminTest extends OuterLogic {
 			}
 		}
 	}
+
 	def propagateMessages(pubTellers_opt : Option[VWorldPublicTellers]) : Unit = {
 		this.synchronized {
+			// Top part of this method could easily be shortened to a few lines of functional piping, sure.
 			if (pubTellers_opt.isDefined) {
 				val charAdminTeller_opt = pubTellers_opt.get.getCharAdminTeller
 				if (charAdminTeller_opt.isDefined) {
@@ -130,7 +139,36 @@ trait PatientSender_BonusStaging extends OuterLogic {
 
 		val emuBonusRq = new VWStageEmulateBonusContentAndCams()
 		stageTeller.tellStrongCPMsg(emuBonusRq)
+
+
+		setupKeysAndClicks(vwpt)
 	}
+	//
+	def sendStageReset(stageTeller : CPMsgTeller) : Unit = {
+		val stgResetMsg = new VWStageResetToDefault()
+		stageTeller.tellCPMsg(stgResetMsg)
+	}
+	def sendClearShaps(shapeTeller : CPMsgTeller) : Unit = {
+		val clrShpsMsg = new VWClearAllShapes
+		shapeTeller.tellCPMsg(clrShpsMsg)
+	}
+	def setupKeysAndClicks(vwpt: VWorldPublicTellers) : Unit = {
+
+		// val registerKeyMap // HashMap[Char, String]
+
+		val stageTeller = vwpt.getStageTeller.get
+
+		val funcStgRst = (pt : VWorldPublicTellers) => {sendStageReset(pt.getStageTeller.get)}
+
+		val funcClrShps = (pt : VWorldPublicTellers) => {sendClearShaps(pt.getShaperTeller.get)}
+
+		val inlineMap : Map[String,Function1[VWorldPublicTellers,Unit]] = Map("K" -> funcStgRst, "L" -> funcClrShps)
+		// val typedMap =  HashMap(inlineMap)
+		info1("inlineKeymap={}", inlineMap) // , typedMap)
+		val regMsg = new VWKeymapBinding_Medial(inlineMap, vwpt)
+		stageTeller.tellCPMsg(regMsg)
+	}
+
 }
 
 // Unnecessary to use the Jobby approach here, but working through it anyway as an excercise.
