@@ -80,11 +80,12 @@ trait VWSpatialsForShapes extends PatternGridMaker with SpatMatHelper {
 						// zSamp, rSamp, radius
 						new Sphere(16, 16, sph.myRadius)
 					}
+
 				}
 				val geomNameArb: String = "geom_from_msg_shape_" + System.currentTimeMillis()
 				val geom = new Geometry(geomNameArb, mesh)
 				applyMat(geom, meshBasedRq)
-				applyPosAndRot(geom, meshBasedRq.getCoreParams3D.get)
+				applySpatialTransform(geom, meshBasedRq.getCoreParams3D.get)
 				geom
 			}
 		}
@@ -95,17 +96,19 @@ trait VWSpatialsForShapes extends PatternGridMaker with SpatMatHelper {
 		val brush = getBrushJar.makeBrush(dsc)
 		brush.stroke(geom)
 	}
-	def applyPosAndRot(spat : Spatial, params : BasicSpatialParams3D) : Unit = {
+	def applySpatialTransform(spat : Spatial, params : BasicSpatialParams3D) : Unit = {
 		val pos : Vector3f = params.getPos
 		spat.setLocalTranslation(pos)
 		val rot : Quaternion = params.getRotQuat
 		spat.setLocalRotation(rot)
+		val scl : Vector3f = params.getScale
+		spat.setLocalScale(scl)
 	}
 }
 
 case class MadeSpatRec(mySpat : Spatial, myID_opt : Option[Ident], myCreateRq : VWShapeCreateRq)
 
-trait VWShaperLogic extends PatternGridMaker {
+trait VWShaperLogic extends PatternGridMaker with EnqHlp {
 	val uniqueR = new Random()
 
 	protected def getRRC : RenderRegistryClient
@@ -224,7 +227,8 @@ class VWShaperActor(myRRC: RenderRegistryClient) extends Actor with VWShaperLogi
 
 	def receive = {
 		case clearAll : VWClearAllShapes => {
-			clearAllShapes_onRendThrd()
+			val func : Function0[Unit] = () => {clearAllShapes_onRendThrd}
+			enqueueCallable(myRRC, func)
 		}
 		case cellGridRq : VWSCR_CellGrid => {
 			attachBigGrid

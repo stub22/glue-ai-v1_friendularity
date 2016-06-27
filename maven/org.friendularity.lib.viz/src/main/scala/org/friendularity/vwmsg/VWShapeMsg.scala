@@ -34,7 +34,10 @@ trait Located3D {
 trait Rotated3D {
 	def getRotQuat : Quaternion
 }
-trait BasicSpatialParams3D extends Located3D with Rotated3D
+trait Scaled3D {
+	def getScale : Vector3f
+}
+trait BasicSpatialParams3D extends Located3D with Rotated3D with Scaled3D
 
 
 trait Colored {
@@ -43,23 +46,24 @@ trait Colored {
 
 trait CoreParams3D extends BasicSpatialParams3D with Colored
 
-class OrdinaryParams3D(myPos3f : Vector3f, myRotQuat : Quaternion, myColor : ColorRGBA) extends CoreParams3D {
+class OrdinaryParams3D(myPos3f : Vector3f, myRotQuat : Quaternion, myScale3f : Vector3f, myColor : ColorRGBA) extends CoreParams3D {
 	override def getPos : Vector3f = myPos3f
 	override def getRotQuat : Quaternion = myRotQuat
+	override def getScale : Vector3f = myScale3f
 	override def getColor : ColorRGBA = myColor
 }
 object ParamsConstants {
 	private val  zeroPos = Vector3f.ZERO
 
 	val dullishColor = new ColorRGBA(1.0f, 0.5f, 0.2f, 0.5f);
-	val dullestParams = new OrdinaryParams3D(Vector3f.ZERO, Quaternion.IDENTITY, dullishColor)
+	val dullestParams = new OrdinaryParams3D(Vector3f.ZERO, Quaternion.IDENTITY, Vector3f.UNIT_XYZ, dullishColor)
 }
 
 trait VWShapeClearRq extends VWContentRq {
 
 }
 
-case class VWClearAllShapes()
+case class VWClearAllShapes() extends VWShapeClearRq
 
 // These message types are matchable to the fleshier 3D primitives in JMonkey3
 

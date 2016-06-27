@@ -138,9 +138,13 @@ class StandaloneNavAppSys() {
 	}
 
 	def harumph(kbc : KeyBindingConfig, cspace: CommandSpace, bgc: BasicGoodyCtx): Unit = {
+
 	}
 }
 /*
+22966   INFO [Service Manager Thread - 7] org.cogchar.platform.gui.keybind.KeyBindingConfig
+(KeyBindingConfig.java:53) addBindings - addBindings found 42 bindings
+
 		// PumaVirtualWorldMapper.initVirtualWorlds   calls
 		// 	        hrc.refreshInputBindingsAndHelpScreen(currKeyBindCfg, cspace);
 		// HumanoidRenderContext does:
