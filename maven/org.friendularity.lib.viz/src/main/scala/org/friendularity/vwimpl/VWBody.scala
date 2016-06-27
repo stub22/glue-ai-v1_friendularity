@@ -9,7 +9,7 @@ import org.cogchar.render.model.humanoid.HumanoidFigureManager
 import org.cogchar.render.sys.context.PhysicalModularRenderContext
 import org.friendularity.cpump.{ActorRefCPMsgTeller, CPStrongTeller}
 import org.friendularity.rbody.{DualBodyHelper, DualBodyRecord}
-import org.friendularity.vwmsg.{VWBodyLifeRq, VWBodyMakeRq, VWBodyMoveRq, VWBodyNotice, VWBodyRq}
+import org.friendularity.vwmsg.{VWBroadcastToAllBodies, VWBodySkeletonDisplayToggle, VWBodyLifeRq, VWBodyMakeRq, VWBodyMoveRq, VWBodyNotice, VWBodyRq}
 
 /**
   * Created by Owner on 6/6/2016.
@@ -30,28 +30,45 @@ trait VWCharMgrJobLogic extends VarargsLogging {
 	protected def getChrMgrCtx : VWCharMgrCtx
 
 	lazy private val myHelper = new DualBodyHelper
+
+	// This var only exists to support broadcasting msgs to all bodies
+
 	def createAndBindVWBody(dualBodyID: Ident,  fullHumaCfg : HumanoidFigureConfig,
 							mbsrc_opt : Option[ModelBlendingRobotServiceContext]) : DualBodyRecord = {
 		val pmrc = getChrMgrCtx.getRenderCtx
 		val hfm = getChrMgrCtx.getHumaFigMgr
-		myHelper.finishDualBodInit(dualBodyID, mbsrc_opt, pmrc, hfm, fullHumaCfg)
+		val dbr = myHelper.finishDualBodInit(dualBodyID, mbsrc_opt, pmrc, hfm, fullHumaCfg)
+		dbr
 	}
+	private var myBodyTellersForBrdcst :Set[CPStrongTeller[VWBodyRq]] = Set()
 	def processCharRq(vwcr: VWBodyLifeRq, slfActr : ActorRef, localActorCtx : ActorContext): Unit = {
 		vwcr match {
-			case crchr : VWBodyMakeRq => {
+			case crchr: VWBodyMakeRq => {
 				info1("Processing create-char rq={}", crchr)
-				val dbr : DualBodyRecord = createAndBindVWBody(crchr.dualBodyID, crchr.fullHumaCfg, crchr.myMBRoboSvcCtx_opt)
+				val dbr: DualBodyRecord = createAndBindVWBody(crchr.dualBodyID, crchr.fullHumaCfg, crchr.myMBRoboSvcCtx_opt)
 				info1("Finished connecting dual body, now what kind of notices do we want to send?  dbr={}", dbr)
 				val actorName = "bdActr_" + crchr.dualBodyID.getLocalName
 				val bodyActor = VWorldActorFactoryFuncs.makeVWBodyActor(localActorCtx, actorName, dbr)
 				val bodyTeller = new ActorRefCPMsgTeller[VWBodyRq](bodyActor)
+				myBodyTellersForBrdcst += bodyTeller
 				val bodyNotice = new VWBodyNotice {
 					override def getBodyTeller: CPStrongTeller[VWBodyRq] = bodyTeller
 				}
 				crchr.answerTeller.tellStrongCPMsg(bodyNotice)
+
+			}
+			case brdcst: VWBroadcastToAllBodies => {
+				val msgToBrdcst = brdcst.bodyRQ
+				broadcastBodyRq(msgToBrdcst)
 			}
 		}
 	}
+	protected def broadcastBodyRq(bodyRq : VWBodyRq) : Unit = {
+		for (bt <- myBodyTellersForBrdcst) {
+			bt.tellStrongCPMsg(bodyRq)
+		}
+	}
+
 }
 
 class VWCharMgrActor(myBodyCtx : VWCharMgrCtx) extends Actor with VWCharMgrJobLogic {
@@ -63,15 +80,23 @@ class VWCharMgrActor(myBodyCtx : VWCharMgrCtx) extends Actor with VWCharMgrJobLo
 	}
 }
 
-trait VWBodyLogic extends VarargsLogging {
+trait VWBodyLogic extends EnqHlp with VarargsLogging {
 	protected def getBodyRec : DualBodyRecord
 
 	protected def processBodyRq(bodyRq : VWBodyRq, slfActr : ActorRef, localActorCtx : ActorContext): Unit = {
-		info2("Received bodyRq {} for bodyID={}", bodyRq, getBodyRec.dualBodyID)
+		val bodyRec = getBodyRec
+		info2("Received bodyRq {} for bodyID={}", bodyRq, bodyRec.dualBodyID)
+
 		bodyRq match {
 			case moverq : VWBodyMoveRq => {
 				info1("Moving body according to moveRq={}", moverq)
-				getBodyRec.moveVWBody_usingEntity(moverq.xPos, moverq.yPos, moverq.zPos)
+				bodyRec.moveVWBody_usingEntity(moverq.xPos, moverq.yPos, moverq.zPos)
+			}
+			case toggleSkelHilite : VWBodySkeletonDisplayToggle => {
+				info1("Toggling skeleton hilite for body={}", bodyRec)
+				val fig = bodyRec.humaFig
+				val func = () => {fig.toggleDebugSkeleton_onSceneThread}
+				enqueueJmeCallable(bodyRec.rrc, func)
 			}
 		}
 	}
