@@ -57,7 +57,10 @@
             <artifactId>ext.bundle.akka.remote_v2315_s210</artifactId>
             <version>${appdapter.version}</version>
         </dependency>
+
+
         <dependency>
+            <!-- Separate akka-slf4j dependence helps during unit testing -->
             <groupId>com.typesafe.akka</groupId>
             <artifactId>akka-slf4j_2.10</artifactId>
             <version>2.3.15</version>

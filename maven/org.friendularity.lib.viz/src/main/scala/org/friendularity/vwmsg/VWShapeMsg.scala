@@ -95,4 +95,51 @@ case class  VWSCR_TextBox(contentTxt : String) extends VWShapeCreateRq {
 trait VWSCR_Node extends VWShapeCreateRq
 
 trait VWSCR_CellGrid extends VWShapeCreateRq
+// "AnimControl is a Spatial control that allows manipulation of skeletal animation."
+// SpatialTrack(float[] times, Vector3f[] translations, Quaternion[] rotations, Vector3f[] scales)
+// Creates a spatial track for the given track data.
 
+/*
+AnimationFactory
+extends java.lang.Object
+A convenience class to easily setup a spatial keyframed animation you can add some keyFrames for a given time or a given keyFrameIndex, for translation rotation and scale. The animationHelper will then generate an appropriate SpatialAnimation by interpolating values between the keyFrames.
+
+Usage is :
+- Create the AnimationHelper
+- add some keyFrames
+- call the buildAnimation() method that will retruna new Animation
+- add the generated Animation to any existing AnimationControl
+
+Note that the first keyFrame (index 0) is defaulted with the identy transforms. If you want to change that you have to replace this keyFrame with any transform you want.
+
+public Animation buildAnimation()
+
+Creates an Animation based on the keyFrames previously added to the helper.
+
+ */
+
+// Jme3 Spatial
+// addControl(Control control)
+// All Known Implementing Classes:
+// AbstractControl, AnimControl, BillboardControl, CameraControl, CharacterControl, ChaseCamera,
+// EffectTrack.KillParticleControl, GhostControl, KinematicRagdollControl, LightControl, LodControl,
+// MotionEvent, MotionTrack, MultiTerrainLodControl, NormalRecalcControl,
+// ParticleEmitter.ParticleEmitterControl, RigidBodyControl, SkeletonControl, StatsView,
+// TerrainGridLodControl, TerrainLodControl, UpdateControl, VehicleControl
+
+
+/*
+https://hub.jmonkeyengine.org/t/animations-in-jme/17554/12
+
+Sorry it's an error in the javadoc.
+
+Actually what you need is AnimationFactory, it's a convenience class that use a key framed approach (you set transformation for a spatial at a given time, or keyframe), and allow in the end to generate a proper animation for the spatial.
+
+Then the usage is exactly the same than for bone animations via AnimControl and AnimChannel.
+
+Look at TestCinematic for an example, that's how the teapot is animated.
+
+http://code.google.com/p/jmonkeyengine/source/browse/trunk/engine/src/test/jme3test/animation/TestCinematic.java
+
+
+ */

@@ -67,7 +67,7 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 	private	boolean		myFlag_connectSwingDebugGUI = false;  // Swing debug code disabled, anyway
 	private boolean		myFlag_monitorLifecycles = true;  // LifeMon window is launched by .start()
 
-	private boolean 	myFlag_useOldLaunchStyle2014 = false;
+	private boolean 	myFlag_useOldLaunchStyle2014 = false;  // USe this flag to switch between 2014 (PUMA) and 2016 (akka) style launch
 	// attach... flag now used only during old launch style 2014
 	public static	boolean		myFlag_attachVizappTChunkRepo = true; // false => uses old vanilla mediator backup
 

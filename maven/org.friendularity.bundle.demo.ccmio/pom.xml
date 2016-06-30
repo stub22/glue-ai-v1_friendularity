@@ -54,8 +54,6 @@
 			<artifactId>org.rwshop.swing.common</artifactId>
 		</dependency>		
 
-
-		
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>org.friendularity.bundle.vsim</artifactId>

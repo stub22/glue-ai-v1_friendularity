@@ -125,7 +125,6 @@ trait VWStageLogic extends VarargsLogging with EnqHlp {
 		// Code for this method originally copied from cogchar.TrialBalloon.doMoreSimpleInit
 		val rrc: RenderRegistryClient = crc.getRenderRegistryClient
 
-//		prepareOpticsStage1_onRendThrd(flyCam, mainViewPort, moveSpeed, bgColor)
 		val tcont = makeOldDummyContent()
 		val tcam: TrialCameras = new TrialCameras
 
@@ -164,7 +163,7 @@ trait VWStageLogic extends VarargsLogging with EnqHlp {
 }
 class VWStageActor(myStageCtx : VWStageCtx) extends Actor with VWStageLogic with VWKeyMapLogic {
 
-	def receive = {
+	override def receive : Actor.Receive = {
 		case embon : VWStageEmulateBonusContentAndCams => {
 
 			sendRendTaskForDummyFeatures(myStageCtx.getCRC, myStageCtx.getUpdateAttacher, myStageCtx.getTempMidiBridge_opt)

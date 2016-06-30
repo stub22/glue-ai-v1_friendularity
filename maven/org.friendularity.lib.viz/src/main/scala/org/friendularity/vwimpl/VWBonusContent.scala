@@ -5,12 +5,16 @@ import com.jme3.input.FlyByCamera
 import com.jme3.material.Material
 import com.jme3.math.ColorRGBA
 import com.jme3.renderer.ViewPort
+import com.jme3.renderer.queue.RenderQueue
+import com.jme3.scene.control.BillboardControl
 import com.jme3.scene.{Node => JmeNode}
+import org.appdapter.core.name.FreeIdent
 import org.appdapter.fancy.log.VarargsLogging
 import org.cogchar.bind.midi.in.{CCParamRouter, TempMidiBridge}
 import org.cogchar.render.sys.context.CogcharRenderContext
 import org.cogchar.render.sys.registry.RenderRegistryClient
-import org.cogchar.render.trial.{TrialCameras, TrialContent}
+import org.cogchar.render.sys.task.Queuer
+import org.cogchar.render.trial.{TextBox2D, TrialNexus, TextSpatialFactory, TrialCameras, TrialContent}
 import org.friendularity.respire.{Srtw}
 
 
@@ -86,4 +90,56 @@ trait IsolatedBonusContentMaker extends VarargsLogging {
 			getLogger.info("IsolatedInitLogic is done!");
 	}
 	*/
+}
+
+
+trait TrialStuffConverted extends VarargsLogging {
+	private val letters: String = "abcd\nABCD\nEFGHIKLMNOPQRS\nTUVWXYZ"
+	private val digits: String = "1\n234567890"
+	private val syms: String = "`~!@#$\n%^&*()-=_+[]\\;',./{}|:<>?"
+	private val myCamStatTxt: String = "cam stat\ntext goest\nhere"
+
+	def initContent3D_onRendThread (rrc: RenderRegistryClient, appRootNode: JmeNode) : Unit = {
+		val myMainDeepNode = new JmeNode("my_main_deep")
+		appRootNode.attachChild(myMainDeepNode)
+		val tsf: TextSpatialFactory = new TextSpatialFactory(rrc)
+		getLogger.info("Making 3D text spatials for letters, digits, syms = 3 total")
+		val myLettersBTS = tsf.makeTextSpatial(letters, 0.2f, RenderQueue.Bucket.Transparent, 6)
+		val myDigitsBTS = tsf.makeTextSpatial(digits, 0.1f, RenderQueue.Bucket.Transparent, 6)
+		val mySymsBTS = tsf.makeTextSpatial(syms, 0.05f, RenderQueue.Bucket.Transparent, 6)
+		myMainDeepNode.attachChild(myLettersBTS)
+		myLettersBTS.move(3.0f, 3.0f, -50.0f)
+		myMainDeepNode.attachChild(myDigitsBTS)
+		myMainDeepNode.attachChild(mySymsBTS)
+		myDigitsBTS.move(-10f, -10f, -10f)
+		val bbCont: BillboardControl = new BillboardControl
+		bbCont.setAlignment(BillboardControl.Alignment.Screen)
+		myLettersBTS.addControl(bbCont)
+		val tNexus: TrialNexus = new TrialNexus(rrc)
+// 		makeRectilinearParamViz(tNexus, rrc)
+//		makeDisplayTestCones(rrc)
+	}
+
+	def initContent2D_onRendThread (rrc: RenderRegistryClient, parentGUInode: JmeNode, assetMgr: AssetManager) : Unit = {
+		val myMainGuiNode = new JmeNode("my_main_gui")
+		val tsf: TextSpatialFactory = new TextSpatialFactory(rrc)
+		val textWrapPixWidth: Int = 60
+		val txtRegScale: Float = 1.0f
+		val txtDoubleScale: Float = 2.0f
+		parentGUInode.attachChild(myMainGuiNode)
+		val guiBucket: RenderQueue.Bucket = RenderQueue.Bucket.Gui
+		getLogger.info("Making 2D text spatials for letters, digits, syms = 3 total")
+		val  myFlatDigitsBTS = tsf.makeTextSpatial(digits, txtRegScale, guiBucket, textWrapPixWidth)
+		val myCamStatBT = tsf.makeTextSpatial(myCamStatTxt, txtRegScale * 0.7f, null, 95)
+		val myOverlayEqnBT = tsf.makeTextSpatial("X+Y", txtDoubleScale, null, textWrapPixWidth)
+		myFlatDigitsBTS.setLocalTranslation(200.0f, 60.0f, 0.0f)
+		myCamStatBT.setLocalTranslation(540.0f, 80.0f, -5.0f)
+		myOverlayEqnBT.setLocalTranslation(300.0f, 250.0f, 0.0f)
+		myMainGuiNode.attachChild(myCamStatBT)
+		myMainGuiNode.attachChild(myFlatDigitsBTS)
+		myMainGuiNode.attachChild(myOverlayEqnBT)
+		val myFloatingStatBox = new TextBox2D(rrc, new FreeIdent("uri:org.cogchar/goody_inst#camStatBox2D"), "opt init txt", ColorRGBA.White, ColorRGBA.Magenta)
+		myFloatingStatBox.setCoordinates(380, 150, -2.5f, 110, 90, Queuer.QueueingStyle.INLINE)
+		myFloatingStatBox.setupContentsAndAttachToParent(myMainGuiNode, rrc, assetMgr)
+	}
 }
