@@ -162,7 +162,8 @@ trait VWShaperLogic extends PatternGridMaker with EnqHlp {
 	def makeAndPlace(toMake : VWShapeCreateRq): MadeSpatRec = {
 		val madeSpat : Spatial = myShapeMaker.makeForRq(toMake)
 		val madeSpatRec = registerSpat(madeSpat, toMake)
-		attachToParent(madeSpat, toMake)
+		val deferredAttachFunc : Function0[Unit] = () => {attachToParent_onRendThrd(madeSpat, toMake)}
+		enqueueJmeCallable(getRRC, deferredAttachFunc)
 		madeSpatRec
 	}
 	protected def getOrMakeID_opt (toMake : VWShapeCreateRq) : Option[Ident] = {
@@ -193,7 +194,7 @@ trait VWShaperLogic extends PatternGridMaker with EnqHlp {
 		}
 		madeSpatRec
 	}
-	def attachToParent(madeSpat : Spatial, toMake : VWShapeCreateRq) : Unit = {
+	def attachToParent_onRendThrd(madeSpat : Spatial, toMake : VWShapeCreateRq) : Unit = {
 		val knownParentID_opt = toMake.getKnownParentID_opt
 		val knownParentNode_opt : Option[JmeNode] = if (knownParentID_opt.isDefined) {
 			val kparid = knownParentID_opt.get
@@ -208,16 +209,18 @@ trait VWShaperLogic extends PatternGridMaker with EnqHlp {
 			}
 		} else None
 
-		val parentToUse_opt : Option[JmeNode] = knownParentNode_opt.orElse(if (toMake.inFlatSpace) {
+		val parentToUse_opt : Option[JmeNode] = knownParentNode_opt.orElse(
+			if (toMake.inFlatSpace) {
 				Option(myTopFlatNode)
 			} else {
-			Option(myTopDeepNode)
+				Option(myTopDeepNode)
 			})
+
 		info2("Using parentNode={} for childSpatial={}", parentToUse_opt, madeSpat)
 		val dooda = parentToUse_opt.map(_.attachChild(madeSpat))
 
 	}
-	def attachBigGrid(): Unit = {
+	def attachBigGrid_onRendThrd(): Unit = {
 		makeBigGridAndAttach_onRendThrd(getRRC, myTopDeepNode)
 	}
 }
@@ -231,7 +234,8 @@ class VWShaperActor(myRRC: RenderRegistryClient) extends Actor with VWShaperLogi
 			enqueueJmeCallable(myRRC, func)
 		}
 		case cellGridRq : VWSCR_CellGrid => {
-			attachBigGrid
+			val func : Function0[Unit] = () => {attachBigGrid_onRendThrd}
+			enqueueJmeCallable(myRRC, func)
 		}
 		case vwsrq: VWShapeCreateRq => {
 			val unusedResult : MadeSpatRec = makeAndPlace(vwsrq)

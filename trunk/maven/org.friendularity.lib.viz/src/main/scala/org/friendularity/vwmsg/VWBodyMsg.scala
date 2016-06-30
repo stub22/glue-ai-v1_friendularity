@@ -1,5 +1,6 @@
 package org.friendularity.vwmsg
 
+import com.jme3.renderer.Camera
 import org.appdapter.core.name.Ident
 import org.cogchar.api.humanoid.HumanoidFigureConfig
 import org.friendularity.cpump.CPStrongTeller
@@ -25,3 +26,4 @@ case class VWBodyMoveRq(xPos : Float, yPos : Float, zPos : Float) extends VWBody
 
 case class VWBodySkeletonDisplayToggle()  extends VWBodyRq
 
+case class VWBodyAttachCamToBone(cam : Camera, boneName : String) extends VWBodyRq
