@@ -10,7 +10,7 @@ import org.appdapter.core.name.{FreeIdent, Ident}
 import org.appdapter.fancy.log.VarargsLogging
 import org.cogchar.render.sys.registry.RenderRegistryClient
 import org.friendularity.respire.Srtw
-import org.friendularity.vwmsg.{BasicSpatialParams3D, VWMeshyShapeRq, VWClearAllShapes, VWSCR_Sphere, VWSCR_TextBox, VWShapeCreateRq, VWSCR_CellGrid, VWStageRqMsg}
+import org.friendularity.vwmsg.{SmooveFromCurrent3D, Transform3D, VWMeshyShapeRq, VWClearAllShapes, VWSCR_Sphere, VWSCR_TextBox, VWShapeCreateRq, VWSCR_CellGrid, VWStageRqMsg}
 
 import scala.collection.mutable
 import scala.util.Random
@@ -96,7 +96,7 @@ trait VWSpatialsForShapes extends PatternGridMaker with SpatMatHelper {
 		val brush = getBrushJar.makeBrush(dsc)
 		brush.stroke(geom)
 	}
-	def applySpatialTransform(spat : Spatial, params : BasicSpatialParams3D) : Unit = {
+	def applySpatialTransform(spat : Spatial, params : Transform3D) : Unit = {
 		val pos : Vector3f = params.getPos
 		spat.setLocalTranslation(pos)
 		val rot : Quaternion = params.getRotQuat
@@ -106,14 +106,34 @@ trait VWSpatialsForShapes extends PatternGridMaker with SpatMatHelper {
 	}
 }
 
-case class MadeSpatRec(mySpat : Spatial, myID_opt : Option[Ident], myCreateRq : VWShapeCreateRq)
 
-trait VWShaperLogic extends PatternGridMaker with EnqHlp {
+case class MadeSpatRec(mySpat : Spatial, myID_opt : Option[Ident], myCreateRq : VWShapeCreateRq)
+			extends Smoovable {
+	override def getMainSpat : Spatial = mySpat
+	override def getID : Ident = myID_opt.get // Will throw if myID_opt is None!
+}
+
+trait IdentHlp {
 	val uniqueR = new Random()
 
-	protected def getRRC : RenderRegistryClient
 	val noSuffix = ""
 	val idSuffix = "#id"
+
+	def makeStampyRandyString (prefix : String, suffix : String) : String = {
+		val rnum = uniqueR.nextInt(1000 * 1000)
+		val tstamp = System.currentTimeMillis()
+		String.format("%s%d_%06d%s", prefix, tstamp : java.lang.Long, rnum : Integer, suffix)
+	}
+	def makeStampyRandyIdent() : Ident = {
+		val uriTxt = makeStampyRandyString("urn:sri_", idSuffix)
+		val id = new FreeIdent(uriTxt)
+		id
+	}
+}
+
+trait VWShaperLogic extends PatternGridMaker with EnqHlp with IdentHlp {
+
+	protected def getRRC : RenderRegistryClient
 	protected val myTopDeepNode : JmeNode = {
 		val nodeName = makeStampyRandyString("deep_shape_parent_", noSuffix)
 		val tdn = new JmeNode(nodeName)
@@ -153,11 +173,6 @@ trait VWShaperLogic extends PatternGridMaker with EnqHlp {
 	val makeIdentIfMissing : Boolean = true
 
 
-	private def makeStampyRandyString (prefix : String, suffix : String) : String = {
-		val rnum = uniqueR.nextInt(1000 * 1000)
-		val tstamp = System.currentTimeMillis()
-		String.format("%s%d_%06d%s", prefix, tstamp : java.lang.Long, rnum : Integer, suffix)
-	}
 
 	def makeAndPlace(toMake : VWShapeCreateRq): MadeSpatRec = {
 		val madeSpat : Spatial = myShapeMaker.makeForRq(toMake)
@@ -166,13 +181,12 @@ trait VWShaperLogic extends PatternGridMaker with EnqHlp {
 		enqueueJmeCallable(getRRC, deferredAttachFunc)
 		madeSpatRec
 	}
+	protected def findMadeSpat(shapeID : Ident) : Option[MadeSpatRec] = {
+		myMadeSpatRecsByID.get(shapeID)
+	}
 	protected def getOrMakeID_opt (toMake : VWShapeCreateRq) : Option[Ident] = {
 		val clientSentID_opt = toMake.getKnownID_opt
-		clientSentID_opt.orElse(if (makeIdentIfMissing) {
-			val aUriTxt = makeStampyRandyString("urn:ash_", idSuffix)
-			val id = new FreeIdent(aUriTxt)
-			Some(id)
-		} else None)
+		clientSentID_opt.orElse(if (makeIdentIfMissing) Some(makeStampyRandyIdent()) else None)
 	}
 	protected def registerSpat(madeSpat : Spatial, toMake : VWShapeCreateRq): MadeSpatRec = {
 		val assignedID_opt = getOrMakeID_opt(toMake)
@@ -223,6 +237,8 @@ trait VWShaperLogic extends PatternGridMaker with EnqHlp {
 	def attachBigGrid_onRendThrd(): Unit = {
 		makeBigGridAndAttach_onRendThrd(getRRC, myTopDeepNode)
 	}
+
+
 }
 
 class VWShaperActor(myRRC: RenderRegistryClient) extends Actor with VWShaperLogic {
@@ -239,6 +255,11 @@ class VWShaperActor(myRRC: RenderRegistryClient) extends Actor with VWShaperLogi
 		}
 		case vwsrq: VWShapeCreateRq => {
 			val unusedResult : MadeSpatRec = makeAndPlace(vwsrq)
+		}
+		case smvFromCur : SmooveFromCurrent3D => {
+			val shapeID : Ident = smvFromCur.getTgtShapeID
+			val madeSpatRec_opt = findMadeSpat(shapeID)
+			madeSpatRec_opt.get.applySmooveFromCurrent_mystThrd(smvFromCur)
 		}
 	}
 }
