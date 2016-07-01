@@ -4,6 +4,7 @@ import java.util.{Random => JRandom}
 import java.lang.{Long => JLong}
 import akka.actor.{ActorRefFactory, ActorContext, ActorRef}
 import com.jme3.math.{Quaternion, Vector3f, ColorRGBA}
+import org.appdapter.core.name.Ident
 import org.appdapter.fancy.log.VarargsLogging
 import org.cogchar.api.fancy.FancyThingModelWriter
 import org.cogchar.render.rendtest.GoodyTestMsgMaker
@@ -11,12 +12,11 @@ import org.friendularity.cpump.{ActorRefCPMsgTeller, CPStrongTeller, CPMsgTeller
 import org.friendularity.mjob.{MsgJobLogicFactory, MsgJobLogic}
 
 import com.hp.hpl.jena.rdf.model.{Model => JenaModel, ModelFactory => JenaModelFactory, Literal}
-import org.friendularity.vwimpl.VWorldMasterFactory
+import org.friendularity.vwimpl.{IdentHlp, VWorldMasterFactory}
 
 import scala.collection.immutable.HashMap
 
-// import org.friendularity.respire.VWorldMasterFactory
-import org.friendularity.vwmsg.{VWBodySkeletonDisplayToggle, VWBroadcastToAllBodies, VWClearAllShapes, VWStageResetToDefault, VWKeymapBinding_Medial, OrdinaryParams3D, VWSCR_Sphere, VWStageOpticsBasic, VWSCR_CellGrid, VWStageEmulateBonusContentAndCams, VWBodyLifeRq, VWGoodyRqTAS, VWGoodyRqTurtle, VWorldPublicTellers}
+import org.friendularity.vwmsg.{TransformParams3D, SmooveFromCurrentImpl, VWBodySkeletonDisplayToggle, VWBroadcastToAllBodies, VWClearAllShapes, VWStageResetToDefault, VWKeymapBinding_Medial, OrdinaryParams3D, VWSCR_Sphere, VWStageOpticsBasic, VWSCR_CellGrid, VWStageEmulateBonusContentAndCams, VWBodyLifeRq, VWGoodyRqTAS, VWGoodyRqTurtle, VWorldPublicTellers}
 
 
 /**
@@ -25,7 +25,7 @@ import org.friendularity.vwmsg.{VWBodySkeletonDisplayToggle, VWBroadcastToAllBod
 trait OuterLogic extends VarargsLogging {
 	def rcvPubTellers (vwpt : VWorldPublicTellers): Unit
 }
-trait PatientSender_GoodyTest extends OuterLogic {
+trait PatientSender_GoodyTest extends OuterLogic with IdentHlp {
 	import scala.collection.JavaConverters._
 
 	lazy val myRandomizer: JRandom = new JRandom
@@ -36,9 +36,18 @@ trait PatientSender_GoodyTest extends OuterLogic {
 		val spherePos = new Vector3f(-15.0f, 12.0f, 4.0f)
 		val sphereRot = Quaternion.IDENTITY
 		val sphereParams = new OrdinaryParams3D(spherePos, sphereRot, Vector3f.UNIT_XYZ, sphereCol)
-		val rq_makeSphere = new VWSCR_Sphere(9.0f, sphereParams)
+		val knownSphereID_opt : Option[Ident] = Some(makeStampyRandyIdent())
+		val rq_makeSphere = new VWSCR_Sphere(9.0f, sphereParams, knownSphereID_opt)
 		shapeTeller.tellCPMsg(rq_makeSphere)
 		shapeTeller.tellCPMsg(rq_makeBigGrid)
+
+		val tgtPos = new Vector3f(-25.0f, 45.0f, 6.0f)
+		val tgtRot = Quaternion.IDENTITY
+		val tgtScale = new Vector3f(1.0f, 0.5f, 4.0f)
+		val tgtXform = new TransformParams3D(tgtPos, tgtRot, tgtScale)
+		val smvFromCur = new SmooveFromCurrentImpl(knownSphereID_opt.get, tgtXform, 40.0f)
+		shapeTeller.tellCPMsg(smvFromCur)
+
 		// chose your fate
 		//   repeat
 		//   reshuffle
@@ -139,7 +148,6 @@ trait PatientSender_BonusStaging extends OuterLogic {
 
 		val emuBonusRq = new VWStageEmulateBonusContentAndCams()
 		stageTeller.tellStrongCPMsg(emuBonusRq)
-
 
 		setupKeysAndClicks(vwpt)
 	}

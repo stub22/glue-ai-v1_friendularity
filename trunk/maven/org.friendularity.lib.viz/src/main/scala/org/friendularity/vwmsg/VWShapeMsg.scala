@@ -28,6 +28,9 @@ trait VWShapeCreateRq extends VWContentRq {
 	def inFlatSpace : Boolean = false // Default is inDeepSpace=3D, override to make flat=2D=true
 }
 
+trait VWShapeManipRq extends VWContentRq {
+	def getTgtShapeID : Ident
+}
 trait Located3D {
 	def getPos : Vector3f
 }
@@ -37,19 +40,55 @@ trait Rotated3D {
 trait Scaled3D {
 	def getScale : Vector3f
 }
-trait BasicSpatialParams3D extends Located3D with Rotated3D with Scaled3D
+trait Transform3D extends Located3D with Rotated3D with Scaled3D {
+}
+trait HasDuration {
+	def getDuration_sec : Float
+	def getDuration_millisec : Int
+}
+trait HasFinishXform3D {
+	def getXform_finish : Transform3D
+}
+trait SmooveFromCurrent3D extends HasFinishXform3D with HasDuration with VWShapeManipRq
+
+trait Smoove3D extends HasFinishXform3D with HasDuration {
+	def getXform_begin : Transform3D
+}
+
+
+class TransformParams3D(myPos3f : Vector3f, myRotQuat : Quaternion, myScale3f : Vector3f) extends Transform3D {
+	override def getPos : Vector3f = myPos3f
+	override def getRotQuat : Quaternion = myRotQuat
+	override def getScale : Vector3f = myScale3f
+
+}
+
+class ShapeManipImpl(tgtShapeID : Ident) extends VWShapeManipRq {
+	override def getTgtShapeID : Ident = tgtShapeID
+}
+class SmooveFinishImpl(tgtShapeID : Ident, finishXForm : Transform3D,
+					   durSec : Float) extends ShapeManipImpl(tgtShapeID) with HasFinishXform3D with HasDuration {
+	override def getDuration_sec : Float = durSec
+	override def getDuration_millisec : Int = Math.round(durSec * 1000.0f)
+	override def getXform_finish : Transform3D = finishXForm
+}
+case class SmooveFromCurrentImpl(tgtShapeID : Ident, finishXForm : Transform3D, durSec : Float)
+			extends SmooveFinishImpl(tgtShapeID, finishXForm, durSec) with SmooveFromCurrent3D
+
+class SmooveFullImpl(tgtShapeID : Ident, beginXform : Transform3D, finishXForm : Transform3D, durSec : Float)
+			extends SmooveFinishImpl(tgtShapeID, finishXForm, durSec) with Smoove3D {
+	override def getXform_begin : Transform3D = beginXform
+}
 
 
 trait Colored {
 	def getColor : ColorRGBA
 }
 
-trait CoreParams3D extends BasicSpatialParams3D with Colored
+trait CoreParams3D extends Transform3D with Colored
 
-class OrdinaryParams3D(myPos3f : Vector3f, myRotQuat : Quaternion, myScale3f : Vector3f, myColor : ColorRGBA) extends CoreParams3D {
-	override def getPos : Vector3f = myPos3f
-	override def getRotQuat : Quaternion = myRotQuat
-	override def getScale : Vector3f = myScale3f
+class OrdinaryParams3D(pos3f : Vector3f, rotQuat : Quaternion, scale3f : Vector3f, myColor : ColorRGBA)
+			extends TransformParams3D(pos3f, rotQuat, scale3f) with CoreParams3D {
 	override def getColor : ColorRGBA = myColor
 }
 object ParamsConstants {
@@ -74,8 +113,10 @@ trait VWMeshyShapeRq extends VWShapeCreateRq {
 	def getRotParam : Option[Quaternion] = getCoreParams3D.map(_.getRotQuat)
 }
 
-case class VWSCR_Sphere(myRadius : Float, myCoreParams : CoreParams3D) extends VWMeshyShapeRq {
+case class VWSCR_Sphere(myRadius : Float, myCoreParams : CoreParams3D, knownID_opt : Option[Ident]) extends VWMeshyShapeRq {
 	override def getCoreParams3D : Option[CoreParams3D] = Option(myCoreParams)
+
+	override def getKnownID_opt : Option[Ident] = knownID_opt
 }
 
 trait VWSCR_Box extends VWMeshyShapeRq
