@@ -10,7 +10,7 @@ import org.cogchar.blob.emit.RenderConfigEmitter
 import org.friendularity.cpump.CPStrongTeller
 import org.friendularity.navui.{NavUiAppSvc, ExoBodyUserLogic}
 import org.friendularity.rbody.{HumaConfHelper, BodyConnImpl}
-import org.friendularity.vwmsg.{VWBodyNotice, VWBodyMoveRq, VWBodyRq}
+import org.friendularity.vwmsg.{VWBodyNotice, VWBodyRq}
 import org.osgi.framework.BundleContext
 
 /**
