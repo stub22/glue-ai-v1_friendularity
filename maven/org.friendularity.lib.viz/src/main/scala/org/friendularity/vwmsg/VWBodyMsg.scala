@@ -22,9 +22,10 @@ case class VWBroadcastToAllBodies(bodyRQ : VWBodyRq) extends VWBodyLifeRq
 // Message sent directly to a particular existing VWBody, not for creation/deletion of same.
 trait VWBodyRq extends VWorldRequest // disjoint from VWBodyLifeRq
 
-case class VWBodyMoveRq(xPos : Float, yPos : Float, zPos : Float) extends VWBodyRq
+// Use VWBodyManipRq
+// case class VWBodyMoveRq(xPos : Float, yPos : Float, zPos : Float) extends VWBodyRq
 
-case class VWBodyManipRq(manipGuts : VWShapeManipRq) extends VWBodyRq
+case class VWBodyManipRq(manipGuts : ManipDesc) extends VWBodyRq
 
 case class VWBodySkeletonDisplayToggle()  extends VWBodyRq
 
