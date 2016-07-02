@@ -24,6 +24,8 @@ trait VWBodyRq extends VWorldRequest // disjoint from VWBodyLifeRq
 
 case class VWBodyMoveRq(xPos : Float, yPos : Float, zPos : Float) extends VWBodyRq
 
+case class VWBodyManipRq(manipGuts : VWShapeManipRq) extends VWBodyRq
+
 case class VWBodySkeletonDisplayToggle()  extends VWBodyRq
 
 case class VWBodyAttachCamToBone(cam : Camera, boneName : String) extends VWBodyRq

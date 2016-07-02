@@ -9,7 +9,7 @@ import org.cogchar.render.model.humanoid.HumanoidFigureManager
 import org.cogchar.render.sys.context.PhysicalModularRenderContext
 import org.friendularity.cpump.{ActorRefCPMsgTeller, CPStrongTeller}
 import org.friendularity.rbody.{DualBodyHelper, DualBodyRecord}
-import org.friendularity.vwmsg.{VWBroadcastToAllBodies, VWBodySkeletonDisplayToggle, VWBodyLifeRq, VWBodyMakeRq, VWBodyMoveRq, VWBodyNotice, VWBodyRq}
+import org.friendularity.vwmsg.{VWShapeManipRq, VWBodyManipRq, VWBroadcastToAllBodies, VWBodySkeletonDisplayToggle, VWBodyLifeRq, VWBodyMakeRq, VWBodyMoveRq, VWBodyNotice, VWBodyRq}
 
 /**
   * Created by Owner on 6/6/2016.
@@ -97,6 +97,10 @@ trait VWBodyLogic extends EnqHlp with VarargsLogging {
 				val fig = bodyRec.humaFig
 				val func = () => {fig.toggleDebugSkeleton_onSceneThread}
 				enqueueJmeCallable(bodyRec.rrc, func)
+			}
+			case manipWrap : VWBodyManipRq => {
+				val manipGuts : VWShapeManipRq = manipWrap.manipGuts
+
 			}
 		}
 	}

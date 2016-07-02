@@ -54,6 +54,12 @@ trait EnqHlp {
 		workAppStub.enqueue(callable)
 	}
 }
+trait FullEnqHlp extends EnqHlp {
+	protected def getRRC : RenderRegistryClient
+	def enqueueJmeCallable(func: Function0[Unit]): Unit = {
+		enqueueJmeCallable(getRRC, func)
+	}
+}
 trait VWStageLogic extends VarargsLogging with EnqHlp {
 
 	def prepareIndependentOptics_onRendThrd(flyCam: FlyByCamera, mainViewPort: ViewPort,
