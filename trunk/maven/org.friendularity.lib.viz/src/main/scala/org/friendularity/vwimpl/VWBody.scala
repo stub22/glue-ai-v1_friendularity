@@ -7,9 +7,10 @@ import org.cogchar.api.humanoid.HumanoidFigureConfig
 import org.cogchar.bind.mio.robot.svc.ModelBlendingRobotServiceContext
 import org.cogchar.render.model.humanoid.HumanoidFigureManager
 import org.cogchar.render.sys.context.PhysicalModularRenderContext
+import org.cogchar.render.sys.registry.RenderRegistryClient
 import org.friendularity.cpump.{ActorRefCPMsgTeller, CPStrongTeller}
 import org.friendularity.rbody.{DualBodyHelper, DualBodyRecord}
-import org.friendularity.vwmsg.{VWShapeManipRq, VWBodyManipRq, VWBroadcastToAllBodies, VWBodySkeletonDisplayToggle, VWBodyLifeRq, VWBodyMakeRq, VWBodyMoveRq, VWBodyNotice, VWBodyRq}
+import org.friendularity.vwmsg.{ManipDesc, VWBodyManipRq, VWBroadcastToAllBodies, VWBodySkeletonDisplayToggle, VWBodyLifeRq, VWBodyMakeRq,  VWBodyNotice, VWBodyRq}
 
 /**
   * Created by Owner on 6/6/2016.
@@ -80,26 +81,28 @@ class VWCharMgrActor(myBodyCtx : VWCharMgrCtx) extends Actor with VWCharMgrJobLo
 	}
 }
 
-trait VWBodyLogic extends EnqHlp with VarargsLogging {
+trait VWBodyLogic extends FullEnqHlp with VarargsLogging {
 	protected def getBodyRec : DualBodyRecord
+	override protected def getRRC: RenderRegistryClient = getBodyRec.rrc
 
 	protected def processBodyRq(bodyRq : VWBodyRq, slfActr : ActorRef, localActorCtx : ActorContext): Unit = {
 		val bodyRec = getBodyRec
 		info2("Received bodyRq {} for bodyID={}", bodyRq, bodyRec.dualBodyID)
 
 		bodyRq match {
-			case moverq : VWBodyMoveRq => {
-				info1("Moving body according to moveRq={}", moverq)
-				bodyRec.moveVWBody_usingEntity(moverq.xPos, moverq.yPos, moverq.zPos)
-			}
+			// case moverq : VWBodyMoveRq => {
+			//	info1("Moving body according to moveRq={}", moverq)
+			//	bodyRec.moveVWBody_usingEntity(moverq.xPos, moverq.yPos, moverq.zPos)
+			//}
 			case toggleSkelHilite : VWBodySkeletonDisplayToggle => {
 				info1("Toggling skeleton hilite for body={}", bodyRec)
 				val fig = bodyRec.humaFig
 				val func = () => {fig.toggleDebugSkeleton_onSceneThread}
-				enqueueJmeCallable(bodyRec.rrc, func)
+				enqueueJmeCallable(func)
 			}
 			case manipWrap : VWBodyManipRq => {
-				val manipGuts : VWShapeManipRq = manipWrap.manipGuts
+				val manipGuts : ManipDesc = manipWrap.manipGuts
+				bodyRec.applyManipDesc(manipGuts, this)
 
 			}
 		}
@@ -108,9 +111,12 @@ trait VWBodyLogic extends EnqHlp with VarargsLogging {
 
 class VWBodyActor(dualBodyRec : DualBodyRecord) extends Actor with VWBodyLogic {
 	override protected def getBodyRec: DualBodyRecord = dualBodyRec
+
 	def receive = {
 		case vwbrq: VWBodyRq => {
 			processBodyRq(vwbrq, self, context)
 		}
 	}
+
+
 }
