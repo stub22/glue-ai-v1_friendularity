@@ -5,6 +5,7 @@ import java.util
 import java.util.concurrent.{Callable, Future}
 
 import com.jme3.math.Vector3f
+import com.jme3.scene.Spatial
 import org.appdapter.core.log.BasicDebugger
 import org.appdapter.core.name.Ident
 import org.appdapter.fancy.log.VarargsLogging
@@ -27,6 +28,7 @@ import org.cogchar.render.sys.goody.GoodyRenderRegistryClient
 import org.cogchar.render.sys.registry.RenderRegistryClient
 import org.cogchar.render.sys.task.CogcharRenderSchedule
 import org.cogchar.render.sys.task.Queuer.QueueingStyle
+import org.friendularity.vwimpl.{Manipable, Smoovable, HasMainSpat}
 import org.osgi.framework.BundleContext
 import org.mechio.api.motion.Robot
 import org.cogchar.api.humanoid.{HumanoidFigureConfig, FigureConfig}
@@ -125,10 +127,11 @@ trait JmeQueueClient {
 }
 case class DualBodyRecord(dualBodyID: Ident, hfConf  : HumanoidFigureConfig,
 						  humaFig: HumanoidFigure, vwRoboPump_opt : Option[VWorldRoboPump],
-						  rrc : RenderRegistryClient ) extends JmeQueueClient {
+						  rrc : RenderRegistryClient ) extends JmeQueueClient with Manipable {
 
 	override def getRenderTaskScheduler : CogcharRenderSchedule = rrc.getWorkaroundAppStub
 
+	// Called an orphan because it is not part of a 2012-2014 entity-space
 	lazy val myOrphanEntity = new VWorldHumanoidFigureEntity(rrc, hfConf.getFigureID, humaFig)
 
 	def moveVWBody_usingEntity(x : Float, y : Float, z : Float) : Unit = {
@@ -149,6 +152,9 @@ case class DualBodyRecord(dualBodyID: Ident, hfConf  : HumanoidFigureConfig,
 		bgc.getVWER.addGoody(vhfe)
 
 	}
+	// These two methods required to be Smoovable!
+	override def getMainSpat: Spatial = humaFig.getNode // Could instead call getFigureNode, which returns same thing
+	override def getID: Ident = dualBodyID
 }
 
 

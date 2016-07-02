@@ -10,7 +10,7 @@ import org.appdapter.core.name.{FreeIdent, Ident}
 import org.appdapter.fancy.log.VarargsLogging
 import org.cogchar.render.sys.registry.RenderRegistryClient
 import org.friendularity.respire.Srtw
-import org.friendularity.vwmsg.{SmooveFromCurrent3D, Transform3D, VWMeshyShapeRq, VWClearAllShapes, VWSCR_Sphere, VWSCR_TextBox, VWShapeCreateRq, VWSCR_CellGrid, VWStageRqMsg}
+import org.friendularity.vwmsg.{VWShapeManipRq, Transform3D, VWMeshyShapeRq, VWClearAllShapes, VWSCR_Sphere, VWSCR_TextBox, VWShapeCreateRq, VWSCR_CellGrid, VWStageRqMsg}
 
 import scala.collection.mutable
 import scala.util.Random
@@ -108,7 +108,7 @@ trait VWSpatialsForShapes extends PatternGridMaker with SpatMatHelper {
 
 
 case class MadeSpatRec(mySpat : Spatial, myID_opt : Option[Ident], myCreateRq : VWShapeCreateRq)
-			extends Smoovable {
+			extends Manipable {
 	override def getMainSpat : Spatial = mySpat
 	override def getID : Ident = myID_opt.get // Will throw if myID_opt is None!
 }
@@ -131,9 +131,9 @@ trait IdentHlp {
 	}
 }
 
-trait VWShaperLogic extends PatternGridMaker with EnqHlp with IdentHlp {
+trait VWShaperLogic extends PatternGridMaker with FullEnqHlp with IdentHlp {
 
-	protected def getRRC : RenderRegistryClient
+
 	protected val myTopDeepNode : JmeNode = {
 		val nodeName = makeStampyRandyString("deep_shape_parent_", noSuffix)
 		val tdn = new JmeNode(nodeName)
@@ -178,7 +178,7 @@ trait VWShaperLogic extends PatternGridMaker with EnqHlp with IdentHlp {
 		val madeSpat : Spatial = myShapeMaker.makeForRq(toMake)
 		val madeSpatRec = registerSpat(madeSpat, toMake)
 		val deferredAttachFunc : Function0[Unit] = () => {attachToParent_onRendThrd(madeSpat, toMake)}
-		enqueueJmeCallable(getRRC, deferredAttachFunc)
+		enqueueJmeCallable(deferredAttachFunc)
 		madeSpatRec
 	}
 	protected def findMadeSpat(shapeID : Ident) : Option[MadeSpatRec] = {
@@ -256,10 +256,11 @@ class VWShaperActor(myRRC: RenderRegistryClient) extends Actor with VWShaperLogi
 		case vwsrq: VWShapeCreateRq => {
 			val unusedResult : MadeSpatRec = makeAndPlace(vwsrq)
 		}
-		case smvFromCur : SmooveFromCurrent3D => {
-			val shapeID : Ident = smvFromCur.getTgtShapeID
-			val madeSpatRec_opt = findMadeSpat(shapeID)
-			madeSpatRec_opt.get.applySmooveFromCurrent_mystThrd(smvFromCur)
+		case manipRq : VWShapeManipRq => {
+			val shapeID : Ident = manipRq.getTgtShapeID
+			val madeSpatRec_opt : Option[MadeSpatRec] = findMadeSpat(shapeID)
+			val manipDesc = manipRq.getManipDesc
+			madeSpatRec_opt.get.applyManipDesc(manipDesc, this) // applySmooveFromCurrent_mystThrd(smvFromCur)
 		}
 	}
 }

@@ -30,55 +30,29 @@ trait VWShapeCreateRq extends VWContentRq {
 
 trait VWShapeManipRq extends VWContentRq {
 	def getTgtShapeID : Ident
+	def getManipDesc : ManipDesc
 }
-trait Located3D {
-	def getPos : Vector3f
-}
-trait Rotated3D {
-	def getRotQuat : Quaternion
-}
-trait Scaled3D {
-	def getScale : Vector3f
-}
-trait Transform3D extends Located3D with Rotated3D with Scaled3D {
-}
-trait HasDuration {
-	def getDuration_sec : Float
-	def getDuration_millisec : Int
-}
-trait HasFinishXform3D {
-	def getXform_finish : Transform3D
-}
-trait SmooveFromCurrent3D extends HasFinishXform3D with HasDuration with VWShapeManipRq
+case class ShapeManipRqImpl(myTgtShapeID : Ident, myManipDesc : ManipDesc) extends 	VWShapeManipRq {
+	override def getTgtShapeID: Ident = myTgtShapeID
 
-trait Smoove3D extends HasFinishXform3D with HasDuration {
-	def getXform_begin : Transform3D
+	override def getManipDesc: ManipDesc = myManipDesc
 }
 
-
-class TransformParams3D(myPos3f : Vector3f, myRotQuat : Quaternion, myScale3f : Vector3f) extends Transform3D {
-	override def getPos : Vector3f = myPos3f
-	override def getRotQuat : Quaternion = myRotQuat
-	override def getScale : Vector3f = myScale3f
-
+// Actual msgs we expect, with case-class impls below.
+trait DoTransformAbsoluteNow extends VWShapeManipRq {
+	// Abruptly moves the target to this new state.
+	// "Abs" pos is w.r.t. parent, not world.
+	def getAbsXform : Transform3D
+}
+trait DoTransformIncrementNow extends VWShapeManipRq {
+	// Incremental change in each xform, based on current state of the target.
+	// Use cases are mainly for casual scripting and experiments.
+	// Is still a jump-state, presumably just a relatively small one.
+	// Not intended for smooth animation - see Smoove* classes for that feature.
+	// (Or for cine-style waypoint anim, see the VWCinePath)
+	def getIncrementXform : Transform3D
 }
 
-class ShapeManipImpl(tgtShapeID : Ident) extends VWShapeManipRq {
-	override def getTgtShapeID : Ident = tgtShapeID
-}
-class SmooveFinishImpl(tgtShapeID : Ident, finishXForm : Transform3D,
-					   durSec : Float) extends ShapeManipImpl(tgtShapeID) with HasFinishXform3D with HasDuration {
-	override def getDuration_sec : Float = durSec
-	override def getDuration_millisec : Int = Math.round(durSec * 1000.0f)
-	override def getXform_finish : Transform3D = finishXForm
-}
-case class SmooveFromCurrentImpl(tgtShapeID : Ident, finishXForm : Transform3D, durSec : Float)
-			extends SmooveFinishImpl(tgtShapeID, finishXForm, durSec) with SmooveFromCurrent3D
-
-class SmooveFullImpl(tgtShapeID : Ident, beginXform : Transform3D, finishXForm : Transform3D, durSec : Float)
-			extends SmooveFinishImpl(tgtShapeID, finishXForm, durSec) with Smoove3D {
-	override def getXform_begin : Transform3D = beginXform
-}
 
 
 trait Colored {

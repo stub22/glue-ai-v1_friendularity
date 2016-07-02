@@ -16,7 +16,7 @@ import org.friendularity.vwimpl.{IdentHlp, VWorldMasterFactory}
 
 import scala.collection.immutable.HashMap
 
-import org.friendularity.vwmsg.{TransformParams3D, SmooveFromCurrentImpl, VWBodySkeletonDisplayToggle, VWBroadcastToAllBodies, VWClearAllShapes, VWStageResetToDefault, VWKeymapBinding_Medial, OrdinaryParams3D, VWSCR_Sphere, VWStageOpticsBasic, VWSCR_CellGrid, VWStageEmulateBonusContentAndCams, VWBodyLifeRq, VWGoodyRqTAS, VWGoodyRqTurtle, VWorldPublicTellers}
+import org.friendularity.vwmsg.{ShapeManipRqImpl, SmooveManipEndingImpl, TransformParams3D, VWBodySkeletonDisplayToggle, VWBroadcastToAllBodies, VWClearAllShapes, VWStageResetToDefault, VWKeymapBinding_Medial, OrdinaryParams3D, VWSCR_Sphere, VWStageOpticsBasic, VWSCR_CellGrid, VWStageEmulateBonusContentAndCams, VWBodyLifeRq, VWGoodyRqTAS, VWGoodyRqTurtle, VWorldPublicTellers}
 
 
 /**
@@ -45,8 +45,9 @@ trait PatientSender_GoodyTest extends OuterLogic with IdentHlp {
 		val tgtRot = Quaternion.IDENTITY
 		val tgtScale = new Vector3f(1.0f, 0.5f, 4.0f)
 		val tgtXform = new TransformParams3D(tgtPos, tgtRot, tgtScale)
-		val smvFromCur = new SmooveFromCurrentImpl(knownSphereID_opt.get, tgtXform, 40.0f)
-		shapeTeller.tellCPMsg(smvFromCur)
+		val endingManip = new SmooveManipEndingImpl(tgtXform, 40.0f)
+		val sphereManipMsg = new ShapeManipRqImpl(knownSphereID_opt.get, endingManip)
+		shapeTeller.tellCPMsg(sphereManipMsg)
 
 		// chose your fate
 		//   repeat
