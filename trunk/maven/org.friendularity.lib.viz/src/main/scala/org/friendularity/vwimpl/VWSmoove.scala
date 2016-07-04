@@ -92,7 +92,10 @@ trait Smoovable extends Movable with Locatable with Addressable {
 
 
 	def makeJmeAnimUsingFactory (smv : SmooveManipFull): Animation = {
-
+		// Hmmm, the animFactory creates all frames in memory when it creates a SpatialTrack.
+		// SpatialTrack does have a times[] array, but it is used very bluntly by AnimFactory.
+		// It looks like if we made SpatialTracks directly, they could use much less RAM.
+		// We could fill in
 		val durF = smv.getDuration_sec
 		val animName = "smv_" + smv.hashCode() + "_at_" + System.currentTimeMillis()
 		val animFactory = new AnimationFactory(durF, animName)
@@ -102,6 +105,9 @@ trait Smoovable extends Movable with Locatable with Addressable {
 		jmeAnim
 	}
 	// This is an jme.AnimFactory-KeyFrame, not the KeyFrame found in jme.cinematic.
+
+	// Animation is treated as a seq of interpolated frames.
+
 	def addJmeAnimKeyFrame(af : AnimationFactory, frameTimeIdx  : Int, frameXform : Transform3D) : Unit = {
 
 		val fPos = frameXform.getPos
@@ -122,10 +128,23 @@ trait Smoovable extends Movable with Locatable with Addressable {
 	}
 
 	def applyAnim_anyThrd(a : Animation, s : Spatial) : Unit = {
-		val ctrl = new AnimControl()
-		ctrl.addAnim(a)
+		val ctrl = new AnimControl()  // Trigger point + update bridge for a set of animations, over many channels,
+
+		ctrl.addAnim(a) // Each anim may have multiple tracks of type:  SpatialTrack, BoneTrack, AudioTrack, EffectTrack
+		// Rendering happens on callbacks to the tracks that look like:
+		// void setTime(float time, float weight, AnimControl control, AnimChannel channel, TempVars vars);
+		// BoneTrack constructor is:
+		// BoneTrack(int targetBoneIndex, float[] times, Vector3f[] translations, Quaternion[] rotations, Vector3f[] scales)
+		// While SpatialTrack constructor is:
+		// SpatialTrack(float[] times, Vector3f[] translations, Quaternion[] rotations, Vector3f[] scales)
+		// It does:
+		/*
+		    tempQ.nlerp(tempQ2, blend);
+            tempV.interpolateLocal(tempV2, blend);
+            tempS.interpolateLocal(tempS2, blend);
+		 */
 		s.addControl(ctrl)
-		val chan = ctrl.createChannel
+		val chan = ctrl.createChannel // Each chan
 		val blendTime = 0f
 		chan.setAnim(a.getName, blendTime) // This step "activates" the ctrl-chan-anim combo, yes?
 		chan.setLoopMode(LoopMode.DontLoop)  // Cogchar lore says this should be done after setAnim
@@ -150,6 +169,17 @@ trait Manipable extends Smoovable {
 	}
 
 }
+/*  Inefficient RAM use in AnimationFactory - we could do a tighter  MotionTrack creator than this:
+https://github.com/jMonkeyEngine/jmonkeyengine/blob/master/jme3-core/src/main/java/com/jme3/animation/AnimationFactory.java
+        totalFrames = (int) (fps * duration) + 1;
+        tpf = 1 / (float) fps;
+        times = new float[totalFrames];
+        translations = new Vector3f[totalFrames];
+        rotations = new Quaternion[totalFrames];
+        scales = new Vector3f[totalFrames];
+ */
+
+
 // Other main tricks for rot of a spatial are shown in JME Cine MotionEvent.computeTargetDirection, such as
 // directly instructing the spatial to look at a Vector3f lookAt, in *world* coordinates.    Reviewing the
 // code indicates

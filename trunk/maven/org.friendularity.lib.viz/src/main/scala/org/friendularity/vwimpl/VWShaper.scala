@@ -260,7 +260,7 @@ class VWShaperActor(myRRC: RenderRegistryClient) extends Actor with VWShaperLogi
 			val shapeID : Ident = manipRq.getTgtShapeID
 			val madeSpatRec_opt : Option[MadeSpatRec] = findMadeSpat(shapeID)
 			val manipDesc = manipRq.getManipDesc
-			madeSpatRec_opt.get.applyManipDesc(manipDesc, this) // applySmooveFromCurrent_mystThrd(smvFromCur)
+			madeSpatRec_opt.get.applyManipDesc(manipDesc, this)
 		}
 	}
 }

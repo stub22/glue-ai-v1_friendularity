@@ -5,19 +5,23 @@ import com.jme3.asset.AssetManager
 import com.jme3.input.controls.{Trigger, ActionListener}
 import com.jme3.input.{InputManager, FlyByCamera}
 import com.jme3.math.ColorRGBA
-import com.jme3.renderer.ViewPort
+import com.jme3.renderer.{Camera, ViewPort}
 import com.jme3.scene.{Node => JmeNode}
 import com.jme3.system.AppSettings
+import org.appdapter.core.name.Ident
 
 import org.appdapter.fancy.log.VarargsLogging
 import org.cogchar.bind.midi.in.{CCParamRouter, TempMidiBridge}
 import org.cogchar.platform.gui.keybind.KeyBindingTracker
+import org.cogchar.render.app.entity.CameraBinding
+import org.cogchar.render.opengl.optic.CameraMgr
 import org.cogchar.render.sys.context.CogcharRenderContext
 import org.cogchar.render.sys.input.VW_InputBindingFuncs
 import org.cogchar.render.sys.registry.RenderRegistryClient
+import org.cogchar.render.sys.task.Queuer
 import org.cogchar.render.trial.{TrialCameras, TrialContent}
 import org.friendularity.rbody.DualBodyRecord
-import org.friendularity.vwmsg.{VWorldPublicTellers, VWKeymapBinding_Medial, VWStageOpticsBasic, VWStageEmulateBonusContentAndCams, VWStageRqMsg, VWBodyRq}
+import org.friendularity.vwmsg.{CamState3D, ViewportDesc, VWModifyCamStateRq, VWCreateCamAndViewportRq, VWBindCamNodeRq, VWorldPublicTellers, VWKeymapBinding_Medial, VWStageOpticsBasic, VWStageEmulateBonusContentAndCams, VWStageRqMsg, VWBodyRq}
 import java.util.concurrent.{Callable => ConcurrentCallable, Future}
 
 /**
@@ -33,33 +37,16 @@ trait VWStageCtx extends VarargsLogging {
 	def getUpdateAttacher : UpdateAttacher
 	def getTempMidiBridge_opt : Option[TempMidiBridge]
 }
-case class StageCtxImpl(crc: CogcharRenderContext, upAtchr : UpdateAttacher, tmb_opt : Option[TempMidiBridge]) extends  VWStageCtx {
+case class StageCtxImpl(crc: CogcharRenderContext, upAtchr : UpdateAttacher, tmb_opt : Option[TempMidiBridge])
+			extends  VWStageCtx {
+
 	override def getCRC : CogcharRenderContext = crc
 	override def getRRC : RenderRegistryClient = getCRC.getRenderRegistryClient
 	override def getUpdateAttacher : UpdateAttacher = upAtchr
 	override def getTempMidiBridge_opt : Option[TempMidiBridge] = tmb_opt
 
 }
-trait EnqHlp {
-	def makeJConcurCallable(func: Function0[Unit]) : ConcurrentCallable[Unit] = {
-		new ConcurrentCallable[Unit] {
-			override def call: Unit = {
-				func()
-			}
-		}
-	}
-	def enqueueJmeCallable(rrc : RenderRegistryClient, func: Function0[Unit]) : Future[Unit] = {
-		val workAppStub = rrc.getWorkaroundAppStub
-		val callable = makeJConcurCallable(func)
-		workAppStub.enqueue(callable)
-	}
-}
-trait FullEnqHlp extends EnqHlp {
-	protected def getRRC : RenderRegistryClient
-	def enqueueJmeCallable(func: Function0[Unit]): Unit = {
-		enqueueJmeCallable(getRRC, func)
-	}
-}
+
 trait VWStageLogic extends VarargsLogging with EnqHlp {
 
 	def prepareIndependentOptics_onRendThrd(flyCam: FlyByCamera, mainViewPort: ViewPort,
@@ -164,10 +151,62 @@ trait VWStageLogic extends VarargsLogging with EnqHlp {
 		}
 		enqueueJmeCallable(rrc, senderCallable)
 	}
-
-
 }
-class VWStageActor(myStageCtx : VWStageCtx) extends Actor with VWStageLogic with VWKeyMapLogic {
+trait VWCamLogic extends VarargsLogging {
+	// We rely on the Cogchar cam-registry to keep track of cams by ID.
+
+	def getStageCtx : VWStageCtx
+	lazy val myCamMgr : CameraMgr = getStageCtx.getRRC.getOpticCameraFacade(null);
+
+	def makeCam_rendThrd(mcavRq : VWCreateCamAndViewportRq) : Unit = {
+		info1("Making cam for rq: {}", mcavRq)
+		val cbind : CameraBinding = myCamMgr.findOrMakeCameraBinding(mcavRq.camID) // makes the JME Camera object
+		applyCamState_anyThrd(cbind, mcavRq.initState)
+		applyViewportDesc_rendThrd(cbind, mcavRq.initVP)
+		// "attach_" is Designed to only be called once for each cam/binding, it appears.
+		cbind.attachViewPort(getStageCtx.getRRC)
+	}
+
+	def updateCamState_rendThrd(mcRq : VWModifyCamStateRq) : Unit = {
+		val cbind : CameraBinding = myCamMgr.findOrMakeCameraBinding(mcRq.camID)
+		mcRq.updState_opt.map(applyCamState_anyThrd(cbind, _))
+		mcRq.updVP_opt.map(applyViewportDesc_rendThrd(cbind, _))
+
+	}
+	def processBindCamNode(bcnRq : VWBindCamNodeRq) : Unit = {
+		val cbind : CameraBinding = myCamMgr.findOrMakeCameraBinding(bcnRq.camID)
+
+		val spcTlr = bcnRq.spaceTeller
+		val spcNodeID = bcnRq.spaceNodeID
+		val camID = bcnRq.camID
+		// val existing
+		val bindMe = "bind this cam instance as opaque value to a (usually VWShape-enclosed) node"
+		// Should work on translate, rotate may be trickier
+
+	}
+	def applyCamState_anyThrd(cbind : CameraBinding, camState : CamState3D) : Unit = {
+		cbind.setWorldPos(camState.getPos)
+		cbind.setPointDir(camState.getPointDir)
+		cbind.applyInVWorld(Queuer.QueueingStyle.QUEUE_AND_RETURN)
+	}
+	def applyViewportDesc_rendThrd(cbind : CameraBinding, vpDesc : ViewportDesc): Unit = {
+	//	val camID = cbind.getIdent()
+		vpDesc.myBGColor_opt.map(cbind.setViewPortColor_rendThrd(_))  		// getViewPort
+	 	val jmeCam = cbind.getCamera
+		applyViewRectToCamState_rendThrd(jmeCam, vpDesc)
+	}
+	private def applyViewRectToCamState_rendThrd(cam : Camera, vpd : ViewportDesc): Unit = {
+		cam.setViewPort(vpd.myX1_left, vpd.myX2_right, vpd.myY1_bot, vpd.myY2_top)
+	}
+
+	def setViewportBackroundColor_rendThrd (camID : Ident, bgColor : ColorRGBA): Unit = {
+		val cbind : CameraBinding = myCamMgr.findOrMakeCameraBinding(camID)
+		// setViewPortColor_rendThrd
+	}
+}
+class VWStageActor(myStageCtx : VWStageCtx) extends Actor with VWStageLogic with VWCamLogic with VWKeyMapLogic {
+
+	override def getStageCtx : VWStageCtx = myStageCtx
 
 	override def receive : Actor.Receive = {
 		case embon : VWStageEmulateBonusContentAndCams => {
@@ -181,7 +220,18 @@ class VWStageActor(myStageCtx : VWStageCtx) extends Actor with VWStageLogic with
 		case keymapMedial : VWKeymapBinding_Medial => {
 			registerKeymap(myStageCtx.getRRC, keymapMedial.inpNamesToActionFuncs, keymapMedial.pubTellers)
 		}
-		case vwsrq: VWStageRqMsg => {
+
+		case makeCam : VWCreateCamAndViewportRq => {
+			makeCam_rendThrd(makeCam)
+		}
+		case ucs : VWModifyCamStateRq => {
+			updateCamState_rendThrd(ucs)
+		}
+		case bindCamNode : VWBindCamNodeRq => {
+			processBindCamNode(bindCamNode)
+		}
+
+		case otherStageRq: VWStageRqMsg => {
 			// processBodyRq(vwbrq, self, context)
 		}
 	}

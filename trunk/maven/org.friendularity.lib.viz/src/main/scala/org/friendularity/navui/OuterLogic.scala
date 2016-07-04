@@ -16,7 +16,7 @@ import org.friendularity.vwimpl.{IdentHlp, VWorldMasterFactory}
 
 import scala.collection.immutable.HashMap
 
-import org.friendularity.vwmsg.{ShapeManipRqImpl, SmooveManipEndingImpl, TransformParams3D, VWBodySkeletonDisplayToggle, VWBroadcastToAllBodies, VWClearAllShapes, VWStageResetToDefault, VWKeymapBinding_Medial, OrdinaryParams3D, VWSCR_Sphere, VWStageOpticsBasic, VWSCR_CellGrid, VWStageEmulateBonusContentAndCams, VWBodyLifeRq, VWGoodyRqTAS, VWGoodyRqTurtle, VWorldPublicTellers}
+import org.friendularity.vwmsg.{VWCreateCamAndViewportRq, CamStateParams3D, CamState3D, ViewportDesc, ShapeManipRqImpl, SmooveManipEndingImpl, TransformParams3D, VWBodySkeletonDisplayToggle, VWBroadcastToAllBodies, VWClearAllShapes, VWStageResetToDefault, VWKeymapBinding_Medial, OrdinaryParams3D, VWSCR_Sphere, VWStageOpticsBasic, VWSCR_CellGrid, VWStageEmulateBonusContentAndCams, VWBodyLifeRq, VWGoodyRqTAS, VWGoodyRqTurtle, VWorldPublicTellers}
 
 
 /**
@@ -138,7 +138,7 @@ trait PatientForwarder_CharAdminTest extends OuterLogic {
 		}
 	}
 }
-trait PatientSender_BonusStaging extends OuterLogic {
+trait PatientSender_BonusStaging extends OuterLogic with IdentHlp {
 	override def rcvPubTellers(vwpt: VWorldPublicTellers): Unit = {
 		val stageTeller = vwpt.getStageTeller.get
 
@@ -151,6 +151,8 @@ trait PatientSender_BonusStaging extends OuterLogic {
 		stageTeller.tellStrongCPMsg(emuBonusRq)
 
 		setupKeysAndClicks(vwpt)
+
+		sendExtraCameraRq(stageTeller)
 	}
 	//
 	def sendStageReset(stageTeller : CPMsgTeller) : Unit = {
@@ -188,7 +190,15 @@ trait PatientSender_BonusStaging extends OuterLogic {
 		val regMsg2 = new VWKeymapBinding_Medial(nextMap, vwpt)
 		stageTeller.tellCPMsg(regMsg2)
 	}
-
+	def sendExtraCameraRq(stageTeller : CPMsgTeller): Unit = {
+		val vpd = new ViewportDesc(0.2f, 0.35f, 0.15f, 0.25f, Some(ColorRGBA.Pink))
+		val cpv = new Vector3f(-50.0f, 5.0f, 0.0f)
+		val pdir = new Vector3f(1.0f, 0.0f, 0.0f)
+		val cst = new CamStateParams3D(cpv, pdir)
+		val camID : Ident = makeStampyRandyIdent
+		val makeCamRq = new VWCreateCamAndViewportRq(camID, cst, vpd)
+		stageTeller.tellCPMsg(makeCamRq)
+	}
 }
 
 // Unnecessary to use the Jobby approach here, but working through it anyway as an excercise.

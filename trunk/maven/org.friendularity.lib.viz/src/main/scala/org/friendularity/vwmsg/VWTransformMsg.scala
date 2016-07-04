@@ -36,4 +36,18 @@ class TransformParams3D(myPos3f : Vector3f, myRotQuat : Quaternion, myScale3f : 
 }
 // ... OR, TODO:  supply only optional components, with nice defaults filled in automagically
 
+trait Pointed3D { // Used for Cameras, presumes there is a well defined meaning of "pointing" the thing
+	def getPointDir : Vector3f
+}
+trait CamState3D extends Located3D with Pointed3D
+
+case class CamStateParams3D(myWorldPos : Vector3f, myPointDir : Vector3f) extends CamState3D {
+
+	override def getPos: Vector3f = myWorldPos
+
+	override def getPointDir: Vector3f = myPointDir
+}
+
 // More advanced topic, not urgent:  Demarking between "no value" and "default value", or "leave unchanged" vs "reset"
+
+
