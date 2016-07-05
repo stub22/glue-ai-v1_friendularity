@@ -3,6 +3,8 @@ package org.friendularity.vwmsg
 import com.jme3.math.{Quaternion, Vector3f, ColorRGBA}
 import com.jme3.scene.{Geometry, Mesh, Spatial}
 import com.jme3.scene.shape.Sphere
+import com.jme3.scene.{Node => JmeNode}
+
 import org.appdapter.core.name.Ident
 import org.cogchar.render.trial.TextSpatialFactory
 
@@ -76,11 +78,19 @@ trait VWShapeClearRq extends VWContentRq {
 
 }
 
+
 case class VWClearAllShapes() extends VWShapeClearRq
 
 // These message types are matchable to the fleshier 3D primitives in JMonkey3
 
 // case class VWCamWrapShapeCreateRq() extends VWShapeCreateRq
+
+case class VWSCR_ExistingNode(existingNode : JmeNode,  nodeID : Ident, knownParentID_opt : Option[Ident])
+			extends VWShapeCreateRq {
+	override def getKnownID_opt : Option[Ident] = Option(nodeID)
+	override def getKnownParentID_opt : Option[Ident] = knownParentID_opt
+}
+
 
 case class VWSCR_Node(knownNodeID : Ident, knownParentID_opt : Option[Ident]) extends VWShapeCreateRq {
 	override def getKnownID_opt : Option[Ident] = Option(knownNodeID)

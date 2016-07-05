@@ -6,7 +6,8 @@ import com.jme3.input.controls.{Trigger, ActionListener}
 import com.jme3.input.{InputManager, FlyByCamera}
 import com.jme3.math.ColorRGBA
 import com.jme3.renderer.{Camera, ViewPort}
-import com.jme3.scene.{Node => JmeNode}
+import com.jme3.scene.control.CameraControl
+import com.jme3.scene.{Node => JmeNode, CameraNode}
 import com.jme3.system.AppSettings
 import org.appdapter.core.name.Ident
 
@@ -21,7 +22,7 @@ import org.cogchar.render.sys.registry.RenderRegistryClient
 import org.cogchar.render.sys.task.Queuer
 import org.cogchar.render.trial.{TrialCameras, TrialContent}
 import org.friendularity.rbody.DualBodyRecord
-import org.friendularity.vwmsg.{CamState3D, ViewportDesc, VWModifyCamStateRq, VWCreateCamAndViewportRq, VWBindCamNodeRq, VWorldPublicTellers, VWKeymapBinding_Medial, VWStageOpticsBasic, VWStageEmulateBonusContentAndCams, VWStageRqMsg, VWBodyRq}
+import org.friendularity.vwmsg.{VWSCR_ExistingNode, CamState3D, ViewportDesc, VWModifyCamStateRq, VWCreateCamAndViewportRq, VWBindCamNodeRq, VWorldPublicTellers, VWKeymapBinding_Medial, VWStageOpticsBasic, VWStageEmulateBonusContentAndCams, VWStageRqMsg, VWBodyRq}
 import java.util.concurrent.{Callable => ConcurrentCallable, Future}
 
 /**
@@ -152,7 +153,7 @@ trait VWStageLogic extends VarargsLogging with EnqHlp {
 		enqueueJmeCallable(rrc, senderCallable)
 	}
 }
-trait VWCamLogic extends VarargsLogging {
+trait VWCamLogic extends VarargsLogging with IdentHlp {
 	// We rely on the Cogchar cam-registry to keep track of cams by ID.
 
 	def getStageCtx : VWStageCtx
@@ -175,14 +176,16 @@ trait VWCamLogic extends VarargsLogging {
 	}
 	def processBindCamNode(bcnRq : VWBindCamNodeRq) : Unit = {
 		val cbind : CameraBinding = myCamMgr.findOrMakeCameraBinding(bcnRq.camID)
+		val camNodeName = makeStampyRandyString("camNode_", "")
+		val cam = cbind.getCamera
+		val camNode = new CameraNode(camNodeName, cam)
+		camNode.setControlDir(CameraControl.ControlDirection.SpatialToCamera)
 
-		val spcTlr = bcnRq.spaceTeller
-		val spcNodeID = bcnRq.spaceNodeID
-		val camID = bcnRq.camID
-		// val existing
-		val bindMe = "bind this cam instance as opaque value to a (usually VWShape-enclosed) node"
-		// Should work on translate, rotate is trickier
+		val camNodeShapeID = makeStampyRandyIdent()
+		val registerCamNodeAsShape = new VWSCR_ExistingNode(camNode, camNodeShapeID, Option(bcnRq.spaceNodeID))
 
+		bcnRq.spaceTeller.tellCPMsg(registerCamNodeAsShape)
+		// Should work OK for translate, but rotate is trickier
 	}
 	def applyCamState_anyThrd(cbind : CameraBinding, camState : CamState3D) : Unit = {
 		cbind.setWorldPos(camState.getPos)

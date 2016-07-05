@@ -10,7 +10,7 @@ import org.appdapter.core.name.{FreeIdent, Ident}
 import org.appdapter.fancy.log.VarargsLogging
 import org.cogchar.render.sys.registry.RenderRegistryClient
 import org.friendularity.respire.Srtw
-import org.friendularity.vwmsg.{VWSCR_Node, VWShapeManipRq, Transform3D, VWMeshyShapeRq, VWClearAllShapes, VWSCR_Sphere, VWSCR_TextBox, VWShapeCreateRq, VWSCR_CellGrid, VWStageRqMsg}
+import org.friendularity.vwmsg.{VWSCR_ExistingNode, VWSCR_Node, VWShapeManipRq, Transform3D, VWMeshyShapeRq, VWClearAllShapes, VWSCR_Sphere, VWSCR_TextBox, VWShapeCreateRq, VWSCR_CellGrid, VWStageRqMsg}
 
 import scala.collection.mutable
 import scala.util.Random
@@ -71,6 +71,9 @@ trait VWSpatialsForShapes extends PatternGridMaker with SpatMatHelper {
 			case aNode : VWSCR_Node => {
 				val madeNode: JmeNode = new JmeNode("made_node_" + System.currentTimeMillis())
 				madeNode
+			}
+			case existingNode :	VWSCR_ExistingNode => {
+				existingNode.existingNode
 			}
 			case txtBox : VWSCR_TextBox => {
 				null
@@ -202,16 +205,19 @@ trait VWShaperLogic extends PatternGridMaker with FullEnqHlp with IdentHlp {
 		// We only mess with the map, if there is no assignedID
 		if (assignedID_opt.isDefined) {
 			val assignedID: Ident = assignedID_opt.get
-			if (toMake.expectEmptySlot) {
+			val skipIt = if (toMake.expectEmptySlot) {
 				val previousMadeSpatRec_opt = myMadeSpatRecsByID.get(assignedID)
 
 				if (previousMadeSpatRec_opt.isDefined) {
 					warn2("Found existing shape-spat at oldShape={}, so IGNORING newShape={}",
 						previousMadeSpatRec_opt, toMake)
-				}
+					true
+				} else false
+			} else false
+			if (!skipIt) {
+				info2("Storing madeSpatRec at id={}, rec={}", assignedID, madeSpatRec)
+				myMadeSpatRecsByID.put(assignedID, madeSpatRec)
 			}
-			info1("Storing madeSpatRec at id={}", assignedID)
-			myMadeSpatRecsByID.put(assignedID, madeSpatRec)
 
 		}
 		madeSpatRec
@@ -223,6 +229,7 @@ trait VWShaperLogic extends PatternGridMaker with FullEnqHlp with IdentHlp {
 			val knownParentMadeRec_opt = myMadeSpatRecsByID.get(kparid)
 			if (knownParentMadeRec_opt.isDefined) {
 				val pNode : JmeNode = knownParentMadeRec_opt.get.mySpat.asInstanceOf[JmeNode]
+				info1("Found known parentNode: {}", pNode)
 				Option(pNode)
 			} else {
 				warn2("Could not find expected parentNode at ID={}, for child={}", kparid, toMake)

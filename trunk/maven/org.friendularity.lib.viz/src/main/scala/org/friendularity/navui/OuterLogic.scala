@@ -201,6 +201,7 @@ trait PatientSender_BonusStaging extends OuterLogic with IdentHlp {
 		stageTeller.tellCPMsg(makeCamRq)
 
 		val camGuideNodeID : Ident = makeStampyRandyIdent
+		info1("Requesting cam-guide node at ID={}", camGuideNodeID)
 		val makeGuideNodeRQ = new VWSCR_Node(camGuideNodeID, None)
 		spcTeller.tellCPMsg(makeGuideNodeRQ)
 
@@ -212,7 +213,7 @@ trait PatientSender_BonusStaging extends OuterLogic with IdentHlp {
 		val guideTgtRot = Quaternion.IDENTITY
 		val guideTgtScale = Vector3f.UNIT_XYZ
 		val guideTgtXform = new TransformParams3D(guideTgtPos, guideTgtRot, guideTgtScale)
-		val endingManip = new SmooveManipEndingImpl(guideTgtXform, 30.0f)
+		val endingManip = new SmooveManipEndingImpl(guideTgtXform, 60.0f)
 		val guideManipMsg = new ShapeManipRqImpl(camGuideNodeID, endingManip)
 		spcTeller.tellCPMsg(guideManipMsg)
 
