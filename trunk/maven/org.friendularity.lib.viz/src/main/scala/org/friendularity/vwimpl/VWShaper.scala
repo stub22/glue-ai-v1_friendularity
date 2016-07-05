@@ -10,7 +10,7 @@ import org.appdapter.core.name.{FreeIdent, Ident}
 import org.appdapter.fancy.log.VarargsLogging
 import org.cogchar.render.sys.registry.RenderRegistryClient
 import org.friendularity.respire.Srtw
-import org.friendularity.vwmsg.{VWShapeManipRq, Transform3D, VWMeshyShapeRq, VWClearAllShapes, VWSCR_Sphere, VWSCR_TextBox, VWShapeCreateRq, VWSCR_CellGrid, VWStageRqMsg}
+import org.friendularity.vwmsg.{VWSCR_Node, VWShapeManipRq, Transform3D, VWMeshyShapeRq, VWClearAllShapes, VWSCR_Sphere, VWSCR_TextBox, VWShapeCreateRq, VWSCR_CellGrid, VWStageRqMsg}
 
 import scala.collection.mutable
 import scala.util.Random
@@ -68,6 +68,10 @@ trait VWSpatialsForShapes extends PatternGridMaker with SpatMatHelper {
 	//	val tsf: TextSpatialFactory = new TextSpatialFactory(rrc)
 	def makeForRq(vwscr : VWShapeCreateRq) : Spatial = {
 		vwscr match {
+			case aNode : VWSCR_Node => {
+				val madeNode: JmeNode = new JmeNode("made_node_" + System.currentTimeMillis())
+				madeNode
+			}
 			case txtBox : VWSCR_TextBox => {
 				null
 			}
@@ -138,17 +142,21 @@ trait VWShaperLogic extends PatternGridMaker with FullEnqHlp with IdentHlp {
 		val nodeName = makeStampyRandyString("deep_shape_parent_", noSuffix)
 		val tdn = new JmeNode(nodeName)
 		val rootN = getRRC.getJme3RootDeepNode(null)
-		rootN.attachChild(tdn)
+		deferredAttach(tdn, rootN)
 		tdn
 	}
 	protected val myTopFlatNode : JmeNode = {
 		val nodeName = makeStampyRandyString("flat_shape_parent_", noSuffix)
 		val tfn = new JmeNode(nodeName)
 		val rootN = getRRC.getJme3RootOverlayNode(null)
-		rootN.attachChild(tfn)
+		deferredAttach(tfn, rootN)
 		tfn
 	}
 
+	protected def deferredAttach(childSpat : Spatial, parentNode : JmeNode) : Unit = {
+		val deferredAttachFunc : Function0[Unit] = () => {parentNode.attachChild(childSpat)}
+		enqueueJmeCallable(deferredAttachFunc)
+	}
 	protected val myAssetMgr = getRRC.getJme3AssetManager(null)
 
 	val myShapeMaker = new VWSpatialsForShapes{
