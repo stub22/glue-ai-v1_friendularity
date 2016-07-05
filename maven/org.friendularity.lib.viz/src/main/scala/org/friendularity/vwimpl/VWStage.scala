@@ -20,9 +20,10 @@ import org.cogchar.render.sys.context.CogcharRenderContext
 import org.cogchar.render.sys.input.VW_InputBindingFuncs
 import org.cogchar.render.sys.registry.RenderRegistryClient
 import org.cogchar.render.sys.task.Queuer
-import org.cogchar.render.trial.{TrialCameras, TrialContent}
+import org.cogchar.render.trial.{PointerCone, TrialCameras, TrialContent}
 import org.friendularity.rbody.DualBodyRecord
 import org.friendularity.vwmsg.{VWSCR_ExistingNode, CamState3D, ViewportDesc, VWModifyCamStateRq, VWCreateCamAndViewportRq, VWBindCamNodeRq, VWorldPublicTellers, VWKeymapBinding_Medial, VWStageOpticsBasic, VWStageEmulateBonusContentAndCams, VWStageRqMsg, VWBodyRq}
+
 import java.util.concurrent.{Callable => ConcurrentCallable, Future}
 
 /**
@@ -179,13 +180,25 @@ trait VWCamLogic extends VarargsLogging with IdentHlp {
 		val camNodeName = makeStampyRandyString("camNode_", "")
 		val cam = cbind.getCamera
 		val camNode = new CameraNode(camNodeName, cam)
+
+		val camMarkerNode: JmeNode = makePointerCone(getStageCtx.getRRC, "markerConeFor_" + camNodeName)
+		camNode.attachChild(camMarkerNode)
+
 		camNode.setControlDir(CameraControl.ControlDirection.SpatialToCamera)
 
 		val camNodeShapeID = makeStampyRandyIdent()
 		val registerCamNodeAsShape = new VWSCR_ExistingNode(camNode, camNodeShapeID, Option(bcnRq.spaceNodeID))
 
+		// Unclear exactly how previous state of camera is affected/replaced by the node attachment.
+		// Need more debug output.
 		bcnRq.spaceTeller.tellCPMsg(registerCamNodeAsShape)
-		// Should work OK for translate, but rotate is trickier
+
+	}
+	def makePointerCone(rrc : RenderRegistryClient, nameSuffix : String) : JmeNode = {
+		val pc: PointerCone = new PointerCone(nameSuffix)
+		pc.setup(rrc)
+		pc.setTextPositionFraction(0.75f)
+		pc.getAssemblyNode
 	}
 	def applyCamState_anyThrd(cbind : CameraBinding, camState : CamState3D) : Unit = {
 		cbind.setWorldPos(camState.getPos)
