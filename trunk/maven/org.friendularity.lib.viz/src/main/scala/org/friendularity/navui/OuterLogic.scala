@@ -209,8 +209,9 @@ trait PatientSender_BonusStaging extends OuterLogic with IdentHlp {
 		val camGuideBindRq = new VWBindCamNodeRq(camID, guideIsParent, spcTeller, camGuideNodeID)
 		stageTeller.tellCPMsg(camGuideBindRq)
 
-		val guideTgtPos = new Vector3f(-45.0f, 45.0f, 3.0f)
-		val guideTgtRot = Quaternion.IDENTITY
+		val guideTgtPos = new Vector3f(-1.0f, 5.0f, 3.0f)
+		val rotAngles = Array(45.0f, -45.0f, 15.0f)
+		val guideTgtRot = new Quaternion(rotAngles)
 		val guideTgtScale = Vector3f.UNIT_XYZ
 		val guideTgtXform = new TransformParams3D(guideTgtPos, guideTgtRot, guideTgtScale)
 		val endingManip = new SmooveManipEndingImpl(guideTgtXform, 60.0f)
@@ -221,7 +222,7 @@ trait PatientSender_BonusStaging extends OuterLogic with IdentHlp {
 	}
 }
 
-// Unnecessary to use the Jobby approach here, but working through it anyway as an excercise.
+// Unnecessary to use the Jobby approach here, but working through it anyway as a comparative exercise.
 class OuterJobbyWrapper(outerLogic : OuterLogic) extends MsgJobLogic[VWorldPublicTellers] {
 	// Differences here is that we get exception handling+logging, runtime type verification,
 	// and actor wrapping for free, but we must also create the factory stuff below.
