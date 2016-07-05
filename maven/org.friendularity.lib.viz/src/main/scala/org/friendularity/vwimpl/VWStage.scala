@@ -181,7 +181,7 @@ trait VWCamLogic extends VarargsLogging {
 		val camID = bcnRq.camID
 		// val existing
 		val bindMe = "bind this cam instance as opaque value to a (usually VWShape-enclosed) node"
-		// Should work on translate, rotate may be trickier
+		// Should work on translate, rotate is trickier
 
 	}
 	def applyCamState_anyThrd(cbind : CameraBinding, camState : CamState3D) : Unit = {
@@ -222,9 +222,11 @@ class VWStageActor(myStageCtx : VWStageCtx) extends Actor with VWStageLogic with
 		}
 
 		case makeCam : VWCreateCamAndViewportRq => {
+			// TODO:  We *think* this call needs to be deferred onto rend-thrd
 			makeCam_rendThrd(makeCam)
 		}
 		case ucs : VWModifyCamStateRq => {
+			// TODO:  We *think* this call needs to be deferred onto rend-thrd
 			updateCamState_rendThrd(ucs)
 		}
 		case bindCamNode : VWBindCamNodeRq => {

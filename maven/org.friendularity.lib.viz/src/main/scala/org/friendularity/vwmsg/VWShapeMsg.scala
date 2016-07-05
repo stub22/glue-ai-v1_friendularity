@@ -20,7 +20,7 @@ import org.cogchar.render.trial.TextSpatialFactory
   */
 trait VWShapeCreateRq extends VWContentRq {
 	def getKnownID_opt : Option[Ident] = None // We allow but don't require a client-assigned ID
-	// def getKnownURI_opt : Option[String] = None
+
 	def expectEmptySlot : Boolean = false
 
 	def getKnownParentID_opt : Option[Ident] = None // We allow but don't require a parentID.
@@ -80,6 +80,17 @@ case class VWClearAllShapes() extends VWShapeClearRq
 
 // These message types are matchable to the fleshier 3D primitives in JMonkey3
 
+// case class VWCamWrapShapeCreateRq() extends VWShapeCreateRq
+
+case class VWSCR_Node(knownNodeID : Ident, knownParentID_opt : Option[Ident]) extends VWShapeCreateRq {
+	override def getKnownID_opt : Option[Ident] = Option(knownNodeID)
+	override def expectEmptySlot : Boolean = true
+
+	// We allow but don't require a parentID.
+	override def getKnownParentID_opt : Option[Ident] = knownParentID_opt
+
+}
+
 trait VWMeshyShapeRq extends VWShapeCreateRq {
 	def getCoreParams3D : Option[CoreParams3D] = None
 	def getColorParam : Option[ColorRGBA] = getCoreParams3D.map(_.getColor)
@@ -107,7 +118,6 @@ case class  VWSCR_TextBox(contentTxt : String) extends VWShapeCreateRq {
 	override def inFlatSpace : Boolean = true
 }
 
-trait VWSCR_Node extends VWShapeCreateRq
 
 trait VWSCR_CellGrid extends VWShapeCreateRq
 // "AnimControl is a Spatial control that allows manipulation of skeletal animation."

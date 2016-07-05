@@ -16,7 +16,7 @@ import org.friendularity.vwimpl.{IdentHlp, VWorldMasterFactory}
 
 import scala.collection.immutable.HashMap
 
-import org.friendularity.vwmsg.{VWCreateCamAndViewportRq, CamStateParams3D, CamState3D, ViewportDesc, ShapeManipRqImpl, SmooveManipEndingImpl, TransformParams3D, VWBodySkeletonDisplayToggle, VWBroadcastToAllBodies, VWClearAllShapes, VWStageResetToDefault, VWKeymapBinding_Medial, OrdinaryParams3D, VWSCR_Sphere, VWStageOpticsBasic, VWSCR_CellGrid, VWStageEmulateBonusContentAndCams, VWBodyLifeRq, VWGoodyRqTAS, VWGoodyRqTurtle, VWorldPublicTellers}
+import org.friendularity.vwmsg.{VWSCR_Node, VWBindCamNodeRq, VWCreateCamAndViewportRq, CamStateParams3D, CamState3D, ViewportDesc, ShapeManipRqImpl, SmooveManipEndingImpl, TransformParams3D, VWBodySkeletonDisplayToggle, VWBroadcastToAllBodies, VWClearAllShapes, VWStageResetToDefault, VWKeymapBinding_Medial, OrdinaryParams3D, VWSCR_Sphere, VWStageOpticsBasic, VWSCR_CellGrid, VWStageEmulateBonusContentAndCams, VWBodyLifeRq, VWGoodyRqTAS, VWGoodyRqTurtle, VWorldPublicTellers}
 
 
 /**
@@ -152,7 +152,8 @@ trait PatientSender_BonusStaging extends OuterLogic with IdentHlp {
 
 		setupKeysAndClicks(vwpt)
 
-		sendExtraCameraRq(stageTeller)
+		sendExtraCameraRqs(stageTeller, vwpt.getShaperTeller.get)
+
 	}
 	//
 	def sendStageReset(stageTeller : CPMsgTeller) : Unit = {
@@ -190,14 +191,32 @@ trait PatientSender_BonusStaging extends OuterLogic with IdentHlp {
 		val regMsg2 = new VWKeymapBinding_Medial(nextMap, vwpt)
 		stageTeller.tellCPMsg(regMsg2)
 	}
-	def sendExtraCameraRq(stageTeller : CPMsgTeller): Unit = {
-		val vpd = new ViewportDesc(0.2f, 0.35f, 0.15f, 0.25f, Some(ColorRGBA.Pink))
-		val cpv = new Vector3f(-50.0f, 5.0f, 0.0f)
+	def sendExtraCameraRqs(stageTeller : CPMsgTeller, spcTeller : CPMsgTeller): Unit = {
+		val vpd = new ViewportDesc(0.2f, 0.4f, 0.15f, 0.30f, Some(ColorRGBA.Pink))
+		val cpv = new Vector3f(-70.0f, 5.0f, -3.0f)
 		val pdir = new Vector3f(1.0f, 0.0f, 0.0f)
 		val cst = new CamStateParams3D(cpv, pdir)
 		val camID : Ident = makeStampyRandyIdent
 		val makeCamRq = new VWCreateCamAndViewportRq(camID, cst, vpd)
 		stageTeller.tellCPMsg(makeCamRq)
+
+		val camGuideNodeID : Ident = makeStampyRandyIdent
+		val makeGuideNodeRQ = new VWSCR_Node(camGuideNodeID, None)
+		spcTeller.tellCPMsg(makeGuideNodeRQ)
+
+		val guideIsParent = true
+		val camGuideBindRq = new VWBindCamNodeRq(camID, guideIsParent, spcTeller, camGuideNodeID)
+		stageTeller.tellCPMsg(camGuideBindRq)
+
+		val guideTgtPos = new Vector3f(-45.0f, 45.0f, 3.0f)
+		val guideTgtRot = Quaternion.IDENTITY
+		val guideTgtScale = Vector3f.UNIT_XYZ
+		val guideTgtXform = new TransformParams3D(guideTgtPos, guideTgtRot, guideTgtScale)
+		val endingManip = new SmooveManipEndingImpl(guideTgtXform, 30.0f)
+		val guideManipMsg = new ShapeManipRqImpl(camGuideNodeID, endingManip)
+		spcTeller.tellCPMsg(guideManipMsg)
+
+
 	}
 }
 
