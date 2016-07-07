@@ -8,7 +8,7 @@ import org.appdapter.core.name.Ident
 import org.appdapter.fancy.log.VarargsLogging
 import org.cogchar.api.fancy.FancyThingModelWriter
 import org.cogchar.render.rendtest.GoodyTestMsgMaker
-import org.friendularity.cpump.{ActorRefCPMsgTeller, CPStrongTeller, CPMsgTeller}
+import org.friendularity.cpump.{CPumpMsg, ActorRefCPMsgTeller, CPStrongTeller, CPMsgTeller}
 import org.friendularity.mjob.{MsgJobLogicFactory, MsgJobLogic}
 
 import com.hp.hpl.jena.rdf.model.{Model => JenaModel, ModelFactory => JenaModelFactory, Literal}
@@ -16,7 +16,7 @@ import org.friendularity.vwimpl.{IdentHlp, VWorldMasterFactory}
 
 import scala.collection.immutable.HashMap
 
-import org.friendularity.vwmsg.{VWSCR_Node, VWBindCamNodeRq, VWCreateCamAndViewportRq, CamStateParams3D, CamState3D, ViewportDesc, ShapeManipRqImpl, SmooveManipEndingImpl, TransformParams3D, VWBodySkeletonDisplayToggle, VWBroadcastToAllBodies, VWClearAllShapes, VWStageResetToDefault, VWKeymapBinding_Medial, OrdinaryParams3D, VWSCR_Sphere, VWStageOpticsBasic, VWSCR_CellGrid, VWStageEmulateBonusContentAndCams, VWBodyLifeRq, VWGoodyRqTAS, VWGoodyRqTurtle, VWorldPublicTellers}
+import org.friendularity.vwmsg.{NavCmdImpl, NavCmdKeyClkBind, NavCmd, InnerNavCmds, VWorldPublicTellers, VWSCR_Node, VWBindCamNodeRq, VWCreateCamAndViewportRq, CamStateParams3D, CamState3D, ViewportDesc, ShapeManipRqImpl, SmooveManipEndingImpl, TransformParams3D, VWBodySkeletonDisplayToggle, VWBroadcastToAllBodies, VWClearAllShapes, VWStageResetToDefault, VWKeymapBinding_Medial, OrdinaryParams3D, VWSCR_Sphere, VWStageOpticsBasic, VWSCR_CellGrid, VWStageEmulateBonusContentAndCams, VWBodyLifeRq, VWGoodyRqTAS, VWGoodyRqTurtle}
 
 
 /**
@@ -160,21 +160,27 @@ trait PatientSender_BonusStaging extends OuterLogic with IdentHlp {
 		val stgResetMsg = new VWStageResetToDefault()
 		stageTeller.tellCPMsg(stgResetMsg)
 	}
+	def sendClearKeysAndClicks(stageTeller : CPMsgTeller) : Unit = ???
 	def sendClearShaps(shapeTeller : CPMsgTeller) : Unit = {
 		val clrShpsMsg = new VWClearAllShapes
 		shapeTeller.tellCPMsg(clrShpsMsg)
 	}
+
 	def sendToggleSkelHilite(cadmTeller : CPMsgTeller) : Unit = {
 		val innerBodyRq = new VWBodySkeletonDisplayToggle
 		val brdcstRq = new VWBroadcastToAllBodies(innerBodyRq)
 		cadmTeller.tellCPMsg(brdcstRq)
 	}
-	def setupKeysAndClicks(vwpt: VWorldPublicTellers) : Unit = {
+	// Cmds sent to navTeller
 
-		// val registerKeyMap // HashMap[Char, String]
+
+	def setupKeysAndClicks(vwpt: VWorldPublicTellers) : Unit = {
 
 		val stageTeller = vwpt.getStageTeller.get
 
+		// sendClearKeysAndClicks(stageTeller)
+
+		// Define callback functions to be invoked in response to keyboard down stroke events.
 		val funcStgRst = (pt : VWorldPublicTellers) => {sendStageReset(pt.getStageTeller.get)}
 
 		val funcClrShps = (pt : VWorldPublicTellers) => {sendClearShaps(pt.getShaperTeller.get)}
@@ -190,6 +196,10 @@ trait PatientSender_BonusStaging extends OuterLogic with IdentHlp {
 		val nextMap = Map("F2" -> funcSkelHiliteToggle)
 		val regMsg2 = new VWKeymapBinding_Medial(nextMap, vwpt)
 		stageTeller.tellCPMsg(regMsg2)
+
+		val outerKeysWidg = new OuterBindNavCmdKeys{}
+		val kcmdReg = new VWKeymapBinding_Medial(outerKeysWidg.navCmdKeyBindMap, vwpt)
+		stageTeller.tellCPMsg(kcmdReg)
 	}
 	def sendExtraCameraRqs(stageTeller : CPMsgTeller, spcTeller : CPMsgTeller): Unit = {
 		val vpd = new ViewportDesc(0.2f, 0.4f, 0.15f, 0.30f, Some(ColorRGBA.Pink))

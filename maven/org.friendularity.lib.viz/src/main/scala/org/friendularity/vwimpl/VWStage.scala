@@ -22,7 +22,7 @@ import org.cogchar.render.sys.registry.RenderRegistryClient
 import org.cogchar.render.sys.task.Queuer
 import org.cogchar.render.trial.{PointerCone, TrialCameras, TrialContent}
 import org.friendularity.rbody.DualBodyRecord
-import org.friendularity.vwmsg.{VWSCR_ExistingNode, CamState3D, ViewportDesc, VWModifyCamStateRq, VWCreateCamAndViewportRq, VWBindCamNodeRq, VWorldPublicTellers, VWKeymapBinding_Medial, VWStageOpticsBasic, VWStageEmulateBonusContentAndCams, VWStageRqMsg, VWBodyRq}
+import org.friendularity.vwmsg.{NavCmd, InnerNavCmds, VWSCR_ExistingNode, CamState3D, ViewportDesc, VWModifyCamStateRq, VWCreateCamAndViewportRq, VWBindCamNodeRq, VWorldPublicTellers, VWKeymapBinding_Medial, VWStageOpticsBasic, VWStageEmulateBonusContentAndCams, VWStageRqMsg, VWBodyRq}
 
 import java.util.concurrent.{Callable => ConcurrentCallable, Future}
 
@@ -220,7 +220,27 @@ trait VWCamLogic extends VarargsLogging with IdentHlp {
 		// setViewPortColor_rendThrd
 	}
 }
-class VWStageActor(myStageCtx : VWStageCtx) extends Actor with VWStageLogic with VWCamLogic with VWKeyMapLogic {
+trait NavCmdLogic extends VarargsLogging with InnerNavCmds {
+	def processNavCmd(nc : NavCmd): Unit = {
+		nc match {
+			case NCmd_SHOW_TOGGLE => {
+				info1("Processing SHOW TOGGLE cmd: {}", nc)
+			}
+			case NCmd_GO_IN => {
+				info1("Processing GO IN cmd: {}", nc)
+			}
+			case NCmd_GO_OUT => {
+				info1("Processing GO OUT cmd: {}", nc)
+			}
+			case _ => {
+				info1("Processing unexpected cmd: {}", nc)
+			}
+		}
+	}
+}
+
+class VWStageActor(myStageCtx : VWStageCtx) extends Actor with VWStageLogic with VWCamLogic
+			with VWKeyMapLogic with NavCmdLogic {
 
 	override def getStageCtx : VWStageCtx = myStageCtx
 
@@ -249,6 +269,9 @@ class VWStageActor(myStageCtx : VWStageCtx) extends Actor with VWStageLogic with
 			processBindCamNode(bindCamNode)
 		}
 
+		case navCmd : NavCmd => {
+			processNavCmd(navCmd)
+		}
 		case otherStageRq: VWStageRqMsg => {
 			// processBodyRq(vwbrq, self, context)
 		}
