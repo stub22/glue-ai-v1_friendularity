@@ -21,6 +21,7 @@ import org.cogchar.render.sys.input.VW_InputBindingFuncs
 import org.cogchar.render.sys.registry.RenderRegistryClient
 import org.cogchar.render.sys.task.Queuer
 import org.cogchar.render.trial.{PointerCone, TrialCameras, TrialContent}
+import org.friendularity.navui.NavPage_Bodies
 import org.friendularity.rbody.DualBodyRecord
 import org.friendularity.vwmsg.{NavCmd, InnerNavCmds, VWSCR_ExistingNode, CamState3D, ViewportDesc, VWModifyCamStateRq, VWCreateCamAndViewportRq, VWBindCamNodeRq, VWorldPublicTellers, VWKeymapBinding_Medial, VWStageOpticsBasic, VWStageEmulateBonusContentAndCams, VWStageRqMsg, VWBodyRq}
 
@@ -225,6 +226,9 @@ trait NavCmdLogic extends VarargsLogging with InnerNavCmds {
 		nc match {
 			case NCmd_SHOW_TOGGLE => {
 				info1("Processing SHOW TOGGLE cmd: {}", nc)
+				val bodyPage = new NavPage_Bodies()
+				val topWidg = bodyPage.getTopFlatWidget
+				info1("Got bodies topFlatWidget={}", topWidg)
 			}
 			case NCmd_GO_IN => {
 				info1("Processing GO IN cmd: {}", nc)
