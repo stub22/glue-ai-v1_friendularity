@@ -228,7 +228,6 @@ trait PatientSender_BonusStaging extends OuterLogic with IdentHlp {
 		val guideManipMsg = new ShapeManipRqImpl(camGuideNodeID, endingManip)
 		spcTeller.tellCPMsg(guideManipMsg)
 
-
 	}
 }
 

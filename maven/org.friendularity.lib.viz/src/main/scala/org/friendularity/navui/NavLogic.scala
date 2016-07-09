@@ -5,7 +5,13 @@ import org.friendularity.vwmsg.{VWorldPublicTellers, NavCmdImpl, InnerNavCmds, N
 /** Created by Stub22 on 7/7/2016.
   */
 
-trait NavLogic
+
+trait NavLogic // Placeholder matching our .scala filename
+
+case class NavPageImpl()
+trait NavCursor {
+
+}
 
 case class NavCmdKeyClkBindImpl(cmd : NavCmd, keyClickName : String) extends NavCmdKeyClkBind
 
@@ -38,4 +44,5 @@ trait OuterBindNavCmdKeys extends InnerNavCmds {
 		navCmdBindPairs.toMap.mapValues(_.makeSendingFunc)
 
 }
+
 
