@@ -9,7 +9,7 @@ import org.cogchar.render.sys.task.Queuer
 import org.cogchar.render.trial.TextBox2D
 import org.friendularity.cpump.{CPStrongTeller, CPumpMsg, CPMsgTeller}
 
-import scala.collection.mutable
+// import scala.collection.mutable
 
 /**
   * Created by Stub22 on 7/6/2016.
@@ -92,12 +92,77 @@ class FlatGadgetImpl(myID: Ident, kindID: Ident) extends FlatGadget {
 
 // A gadget serves as a (named) wiring point to some (named, separately) primitve value
 // data source/sink, which usually takes the form of a field of an item.
-// A piece of data that we may read+write as a client of some remote service (e.g. some actor).
-// Lower level data-port concept, where we *do* param by CType.
-trait RemoteItemField[CType] {
+
+// Item and Field are our primary terms to describe app data structures enabled for change-notice events.
+// This structure is highly compatible with RDF, but does not strictly require RDF at any boundary.
+// Thus implementations are free to use any RDF system, or none.  Generally slower-changing structural
+// data benefits from RDF infrastructure, while high-volume regular data (e.g. video frames) benefits much less.
+
+// Item = Resource
+// Field = Property, optionally defined via rdfs: or owl:DataProperty, owl:ObjectProperty.
+// An owl:AnnotationProperty does not have a field.
+// ItemField = Reference to the value of a property at a resource
+// The value can be of two main logical forms:
+// 1) "Bag" = Set of item-refs = set of Idents = set of URIs
+// (implies ObjectProperty value = Unordered  collection of items (but may be tagged with order meaning on a serialization)
+// Bag = Collection of resources, formally equiv. to a set.  O
+
+// 2) "Leaf" = Single leaf value, corresponding to an RDF Literal Value at a Functional owl:DataProperty
+// We do not support multi-valued data properties directly; instead such a property must be mapped
+// to being a set of synthetic items which each have the corresponding field value.
+
+trait ItemFieldSpec {
 	def getItemID : Ident
 	def getFieldID : Ident
-	// def getContent : CType // Returns a future or other promise
+}
+
+case class ItemFieldSpecDirectImpl(myItemID : Ident, myFieldID : Ident) extends ItemFieldSpec {
+	override def getItemID: Ident = myItemID
+	override def getFieldID: Ident = myFieldID
+}
+// Perceived value expression at an ItemFieldSpec is an instance of ItemFieldData.
+trait ItemFieldData {
+	def getFieldAddress : ItemFieldSpec
+}
+trait FieldDataLeaf extends ItemFieldData {
+	// Single primitive/literal value
+	def getData : Any
+}
+trait TypedFieldDataLeaf[LDT] extends FieldDataLeaf {
+	override def getData : Any = getTypedData
+	def getTypedData : LDT
+}
+trait FieldDataItemBag extends ItemFieldData {
+	// Unordered collection of Item-IDs, which may be used as further query keys in get___SubFields
+	def getContainedItemIDs : Set[Ident]
+}
+class ShallowFieldDataItemBag(myFieldAddr : ItemFieldSpec, myContItemIDs : Set[Ident]) extends FieldDataItemBag {
+	override def getFieldAddress: ItemFieldSpec = myFieldAddr
+
+	override def getContainedItemIDs : Set[Ident] = myContItemIDs
+}
+class EmptyFieldDataItemBag(fieldAddr : ItemFieldSpec) extends ShallowFieldDataItemBag(fieldAddr, Set())
+// Unordered collection of Items, as well as some of their fields, possibly recursive.
+trait DeeperBagData extends FieldDataItemBag {
+	// Input is an itemID prev returned by getContainedItemIDs
+	def getSomeSubFields(containedItemID : Ident) : Traversable[ItemFieldData]  // Some Subset
+}
+// Unordered collection of Items, as well as all of their fields, recursively.  Includes all reachable data
+trait DeepestBagData extends DeeperBagData {
+	// Input is an itemID prev returned by getContainedItemIDs
+	def getAllSubFields(containedItemID : Ident) : Traversable[ItemFieldData]  // Exaustive set
+}
+trait FieldDataFilterFuncs {
+	def justFieldDataLeafs(mixedFieldData : Traversable[ItemFieldData]) : Traversable[FieldDataLeaf] =
+		mixedFieldData.filter(_.isInstanceOf[FieldDataLeaf]).map(_.asInstanceOf[FieldDataLeaf])
+
+	def justFieldDataBags(mixedFieldData : Traversable[ItemFieldData]) : Traversable[FieldDataItemBag] =
+		mixedFieldData.filter(_.isInstanceOf[FieldDataItemBag]).map(_.asInstanceOf[FieldDataItemBag])
+}
+// RemoteItem = A piece of data that we may read+write as a client of some remote service (e.g. some actor).
+// Lower level data-port concept, where we *do* param by CType.
+trait RemoteItemField[CType] {
+	def getItemFieldSpec : ItemFieldSpec
 }
 trait SendableRemoteItemField[CType] extends RemoteItemField[CType] {
 	def sendContent(c : CType) : Unit
@@ -113,40 +178,73 @@ trait ReceivableRemoteItemField[CType] extends RemoteItemField[CType]  {
 		myChangeHandlers.map(_.apply(upDat))
 	}
 }
-trait ItemFieldDataChgMsg[CType] extends CPumpMsg {
-	def getItemID : Ident
-	def getFieldID : Ident
+
+trait ItemDataMsg extends CPumpMsg
+trait ItemFieldDataMsg extends ItemDataMsg {
+	def getFieldSpec: ItemFieldSpec
+}
+trait ItemFieldDataChgMsg[CType] extends ItemFieldDataMsg {
 	def getUpdatedValue : CType
 }
-case class ItemFieldDataChgMsgImpl[CType](itemID : Ident, fieldID : Ident, upData : CType)
+
+case class ItemFieldDataChgMsgImpl[CType](myItemFieldSpec : ItemFieldSpec, upData : CType)
 			extends ItemFieldDataChgMsg[CType] {
-	override def getItemID: Ident = itemID
-	override def getFieldID: Ident = fieldID
+
 	override def getUpdatedValue: CType = upData
+	override def getFieldSpec: ItemFieldSpec = myItemFieldSpec
 }
-case class RegisterForDataChgNotices(itemID : Ident, fieldID : Ident, answerTeller : CPMsgTeller)
-			extends CPumpMsg
+// Interesting choice here of whether to parametrize this type.  Currently punting with a Wildcard.
+trait RegisterItemFieldInterestMsg extends ItemFieldDataMsg {
+	def getNoticeTeler : CPStrongTeller[ItemFieldDataChgMsg[_]]  // Note wildcard.
+}
+case class RegisterForDataChgNotices(myItemFieldSpec : ItemFieldSpec,
+									 myNoticeTeller : CPStrongTeller[ItemFieldDataChgMsg[_]])
+			extends  RegisterItemFieldInterestMsg {
+	override def getFieldSpec: ItemFieldSpec = myItemFieldSpec
+
+	override def getNoticeTeler: CPStrongTeller[ItemFieldDataChgMsg[_]] = myNoticeTeller
+}
 // For these data-items, we can presume the serializable message is same in both directions.
 
-class TellerRemoteItemFieldImpl[CType](myItemID : Ident, myFieldID : Ident,
+case class RemoteItemFieldSenderImpl[CType](myItemFieldSpec : ItemFieldSpec,
 									   myRemoteTeller : CPStrongTeller[ItemFieldDataChgMsg[CType]])
+			extends SendableRemoteItemField[CType] {
+	override def sendContent(c: CType): Unit = {
+		val msg = new ItemFieldDataChgMsgImpl[CType](myItemFieldSpec, c)
+		myRemoteTeller.tellStrongCPMsg(msg)
+	}
+	override def getItemFieldSpec: ItemFieldSpec = myItemFieldSpec
+}
+case class RemoteItemFieldReceiverImpl[CType](myItemFieldSpec : ItemFieldSpec,
+									myRemoteTeller : CPStrongTeller[RegisterItemFieldInterestMsg],
+									myLocalNoticeTeller : CPStrongTeller[ItemFieldDataChgMsg[_]]		 )
+		extends ReceivableRemoteItemField[CType] {
+	override def getItemFieldSpec: ItemFieldSpec = myItemFieldSpec
+
+	def registerForNotices(): Unit = {
+		val registerMeMsg = new RegisterForDataChgNotices(myItemFieldSpec, myLocalNoticeTeller)
+		myRemoteTeller.tellStrongCPMsg (registerMeMsg)
+		// But how does myLocalNoticeTeller know about us?
+	}
+}
+/*
+class DuplexRemoteItemFieldImpl[CType](myItemFieldSpec : ItemFieldSpec,
+								  myRemoteTeller : CPStrongTeller[ItemFieldDataMsg])
 			extends SendableRemoteItemField[CType] with ReceivableRemoteItemField[CType] {
 
-	override def getItemID: Ident = myItemID
-	override def getFieldID: Ident = myFieldID
-	// override def getContent: CType = ???
+	override def getItemFieldSpec: ItemFieldSpec = myItemFieldSpec
 
-	override def sendContent(c: CType): Unit = {
-		val msg = new ItemFieldDataChgMsgImpl[CType](getItemID, getFieldID, c)
-		myRemoteTeller.tellCPMsg(msg)
-	}
+	lazy val mySender = new RemoteItemFieldSenderImpl[CType](myItemFieldSpec, myRemoteTeller)
+	lazy val myRcvr = new RemoteItemFieldReceiverImpl(myItemFieldSpec, myRemoteTeller)
+
+	override def sendContent(c: CType): Unit = mySender.sendContent(c)
 
 	def registerForChangeNotices(remoteTeller : CPMsgTeller, callbackTeller : CPMsgTeller) : Unit = {
 		val registerMeMsg = new RegisterForDataChgNotices(getItemID, getFieldID, callbackTeller)
-		myRemoteTeller.tellCPMsg(registerMeMsg)
+		myRemoteTeller.tellStrongCPMsg(registerMeMsg)
 	}
 }
-
+*/
 
 // A partial (or complete, for some purpose) rectangular 2D screen recipe,
 // which has a name and may be hidden/shown as a unit ("complete") or sub-unit.
@@ -240,7 +338,7 @@ class FlatFieldDisplayImpl[FDT] extends FlatFieldDisplay[FDT] {
 	def getBoundGadget : FlatGadget = ???
 }
 class FlatWidgetImpl extends UnfinishedFlatWidget {
-	val fieldsByGadgetID = new mutable.HashMap[Ident, FlatFieldDisplay[_]]()
+	val fieldsByGadgetID = new scala.collection.mutable.HashMap[Ident, FlatFieldDisplay[_]]()
 
 	override def getFieldGadgets : List[FlatGadget] = {
 		fieldsByGadgetID.values.map(_.asInstanceOf[FlatFieldDisplayImpl[_]].getBoundGadget).toList
