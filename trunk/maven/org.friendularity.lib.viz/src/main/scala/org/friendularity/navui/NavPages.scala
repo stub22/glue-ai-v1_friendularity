@@ -1,7 +1,8 @@
 package org.friendularity.navui
 
 import org.appdapter.core.name.{FreeIdent, Ident}
-import org.friendularity.vwimpl.{TextLine, UpdatableTextLineGadget, UpdatableTextLine, IdentHlp, FixedFlatGadgetTxtLine, RemoteItemField, FlatGadget, FinishedFlatWidget, FlatWidget}
+import org.friendularity.dull.RemoteItemField
+import org.friendularity.vwimpl.{TextLine, UpdatableTextLineGadget, UpdatableTextLine, IdentHlp, FixedFlatGadgetTxtLine, FlatGadget, FinishedFlatWidget, FlatWidget}
 
 /**
   * Created by Owner on 7/7/2016.
@@ -11,7 +12,6 @@ import org.friendularity.vwimpl.{TextLine, UpdatableTextLineGadget, UpdatableTex
 // They may be navigated by user using the NavLogic keybindings.
 trait  NavPage {
 	def getTopFlatWidget : FlatWidget
-
 
 }
 trait  GadgetMaker extends IdentHlp {
