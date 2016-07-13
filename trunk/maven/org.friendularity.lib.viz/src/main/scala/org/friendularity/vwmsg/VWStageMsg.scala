@@ -38,4 +38,4 @@ case class VWBindCamNodeRq(camID : Ident, spaceNodeIsCamParent_NotChild : Boolea
 // case class VWCamNodeManipRq(camNodeID : Ident, manipGuts : ManipDesc) extends VWStageRqMsg
 
 
-
+case class VWSetupOvlBookRq() extends VWStageRqMsg

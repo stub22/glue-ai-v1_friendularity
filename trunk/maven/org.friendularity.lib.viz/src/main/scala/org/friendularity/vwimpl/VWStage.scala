@@ -38,7 +38,7 @@ import org.cogchar.render.sys.task.Queuer
 import org.cogchar.render.trial.{PointerCone, TrialCameras, TrialContent}
 import org.friendularity.navui.NavPage_Bodies
 import org.friendularity.rbody.DualBodyRecord
-import org.friendularity.vwmsg.{NavCmd, InnerNavCmds, VWSCR_ExistingNode, CamState3D, ViewportDesc, VWModifyCamStateRq, VWCreateCamAndViewportRq, VWBindCamNodeRq, VWorldPublicTellers, VWKeymapBinding_Medial, VWStageOpticsBasic, VWStageEmulateBonusContentAndCams, VWStageRqMsg, VWBodyRq}
+import org.friendularity.vwmsg.{VWSetupOvlBookRq, NavCmd, InnerNavCmds, VWSCR_ExistingNode, CamState3D, ViewportDesc, VWModifyCamStateRq, VWCreateCamAndViewportRq, VWBindCamNodeRq, VWorldPublicTellers, VWKeymapBinding_Medial, VWStageOpticsBasic, VWStageEmulateBonusContentAndCams, VWStageRqMsg, VWBodyRq}
 
 import java.util.concurrent.{Callable => ConcurrentCallable, Future}
 
@@ -236,33 +236,13 @@ trait VWCamLogic extends VarargsLogging with IdentHlp {
 		// setViewPortColor_rendThrd
 	}
 }
-trait NavCmdLogic extends VarargsLogging with InnerNavCmds {
-	def processNavCmd(nc : NavCmd): Unit = {
-		nc match {
-			case NCmd_SHOW_TOGGLE => {
-				info1("Processing SHOW TOGGLE cmd: {}", nc)
-				val bodyPage = new NavPage_Bodies()
-				val topWidg = bodyPage.getTopFlatWidget
-				info1("Got bodies topFlatWidget={}", topWidg)
-
-			}
-			case NCmd_GO_IN => {
-				info1("Processing GO IN cmd: {}", nc)
-			}
-			case NCmd_GO_OUT => {
-				info1("Processing GO OUT cmd: {}", nc)
-			}
-			case _ => {
-				info1("Processing unexpected cmd: {}", nc)
-			}
-		}
-	}
-}
 
 class VWStageActor(myStageCtx : VWStageCtx) extends Actor with VWStageLogic with VWCamLogic
-			with VWKeyMapLogic with NavCmdLogic {
+			with VWKeyMapLogic with OverlayLogic {
 
 	override def getStageCtx : VWStageCtx = myStageCtx
+
+	// private var myOvlBook_opt : Option[OverlayLogic] = None
 
 	override def receive : Actor.Receive = {
 		case embon : VWStageEmulateBonusContentAndCams => {
@@ -288,7 +268,9 @@ class VWStageActor(myStageCtx : VWStageCtx) extends Actor with VWStageLogic with
 		case bindCamNode : VWBindCamNodeRq => {
 			processBindCamNode(bindCamNode)
 		}
-
+		case setupOvl : VWSetupOvlBookRq => {
+			setupBook(myStageCtx.getRRC)
+		}
 		case navCmd : NavCmd => {
 			processNavCmd(navCmd)
 		}
