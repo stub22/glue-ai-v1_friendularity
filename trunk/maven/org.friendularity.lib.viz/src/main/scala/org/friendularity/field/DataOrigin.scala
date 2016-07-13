@@ -1,7 +1,23 @@
+/*
+ *  Copyright 2016 by The Friendularity Project (www.friendularity.org).
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.friendularity.field
 
-import org.appdapter.core.name.Ident
+import org.appdapter.core.name.{FreeIdent, Ident}
 import org.friendularity.dull.FrienduActor
+import org.friendularity.vwimpl.IdentHlp
 
 import scala.collection.mutable.{HashMap => MutableHashMap}
 
@@ -11,24 +27,50 @@ import scala.collection.mutable.{HashMap => MutableHashMap}
 class InterestNotifyChan(initialInterestMsg : FieldInterestRegMsg) {
 	private var myLastRegMsg : FieldInterestRegMsg = initialInterestMsg
 	private var myLastUpdateSent_opt : Option[ItemFieldDataMsg] = None
+	private var myPendingUpdateData_opt : List[ItemFieldData] = Nil
 
 	// Return value indicates whether we published, allowing caller to count messages sent.
-	def maybePublish() : Boolean = {
+	def maybePublish(srcStampMsec : Long, fdbf : List[ItemFieldData]) : Boolean = {
+		val currIntrstMsg = myLastRegMsg
+		val relevantData = fdbf.filter(currIntrstMsg.isInterestedIn(_))
+		if (relevantData.nonEmpty) {
+			// TODO: In heterog environments, need to distinguish update times for varying fieldSpec keys
+			// ALSO:  for this to make sense, we also need a followup timer task to sweep through and
+			// make sure we have not left updates hanging.
+			// It could also be more sophisticated in terms of estimating update rate, rather than just
+			// time-since-last
+			val lastUpdateTime_opt = myLastUpdateSent_opt.map(_.getSourceTStampMsec)
+			val secSinceLast_opt : Option[Float] = lastUpdateTime_opt.map(srcStampMsec - _)
+			val minUpd : Float = 0.6f * currIntrstMsg.getUpdatePeriodSec
+			if (secSinceLast_opt.isEmpty || (secSinceLast_opt.get > minUpd )) {
+				val notice : ItemFieldDataMsg = buildCrudeNoticeFromData(currIntrstMsg, relevantData)
+				val tlr = currIntrstMsg.getInterestedTeller
+				tlr.tellStrongCPMsg(notice)
+				myLastUpdateSent_opt = Some(notice)
+				true
+			} else false
+		} else false
 
-		false
 	}
 
+	def buildCrudeNoticeFromData(intReg : FieldInterestRegMsg,
+								 updatedFieldsBreadthFirst : List[ItemFieldData]) : ItemFieldDataMsg = {
+
+		null
+	}
 }
 
 //
 trait InterestRegistryLogic extends FieldDataFilterFuncs {
-	val myInterestsByID = new MutableHashMap[Ident, FieldInterestRegMsg]()
+	val myInterestChansByID = new MutableHashMap[Ident, InterestNotifyChan]()
 	val myInterestIdentsByFieldSpec = new MutableHashMap[ItemFieldSpecDirectImpl, Set[Ident]]()
 	def addOrUpdateInterestReg(iirg : FieldInterestRegMsg) : Unit = {
-		// TODO:  If there was an old version of this interest, and it has different fieldSpecs,
+		// TODO 1:  If there was an old version of this interest, and it has different fieldSpecs,
 		// then we need to remove them from the fieldSpec keymap.
+		// TODO 2:  We want to send a first update based on current state of the data.
 		val regID = iirg.getInterestRegID
-		myInterestsByID.put(regID, iirg)
+		val interestChan = new InterestNotifyChan(iirg)
+		myInterestChansByID.put(regID, interestChan)
 		val fieldSpecs : Traversable[ItemFieldSpec] = iirg.getInterestingFieldSpecs
 		fieldSpecs.map(recordFSMapping(_, regID))
 	}
@@ -36,26 +78,19 @@ trait InterestRegistryLogic extends FieldDataFilterFuncs {
 
 	}
 
-	def findMatchingSpecificInterests(fieldSpec : ItemFieldSpec) :  Traversable[FieldInterestRegMsg] = {
+	def findMatchingIntrstChans(fieldSpec : ItemFieldSpec) :  Traversable[InterestNotifyChan] = {
 		Nil
 	}
-	def buildCrudeNoticeFromData(intReg : FieldInterestRegMsg,
-								 updatedFieldsBreadthFirst : List[ItemFieldData]) : ItemFieldDataMsg = {
-
-		null
-	}
-	def publishNoticesForUpdatedData(sdmi : SourceDataMsgImpl) : Unit = {
-		val fdbf = sdmi.getFieldDataBreadthFirst
+	def publishNoticesForUpdatedData(sdmi : SourceDataMsgImpl) : Int = {
+		val fdbf : List[ItemFieldData] = sdmi.getFieldDataBreadthFirst
+		val srcStampMsec : Long = sdmi.getSourceTStampMsec
 		val topSpecs = fdbf.map(_.getFieldAddress)
-		val matchingInterests = topSpecs.flatMap(findMatchingSpecificInterests(_)).toSet
-		for (mi <- matchingInterests) {
-
-			val relevantData = fdbf.filter(mi.isInterestedIn(_))
-			val notice = buildCrudeNoticeFromData(mi, relevantData)
-			val tlr = mi.getInterestedTeller
-		}
-		val bags = justFieldDataBags(fdbf)
-
+		// Todo:  Look for deeper patterns of possibly matching specs in nested data, etc.
+		// val bags = justFieldDataBags(fdbf)
+		val matchingInterestChans = topSpecs.flatMap(findMatchingIntrstChans(_)).toList
+		val sentFlags : List[Boolean] = matchingInterestChans.map(_.maybePublish(srcStampMsec, fdbf))
+		val sentCount : Int = sentFlags.count(flg => flg)
+		sentCount
 	}
 	// What does "changed" mean?  (On upstream side)
 	// How do we ensure we can send initial state when downstream clients register interest?
@@ -68,6 +103,7 @@ class FieldDataOriginActor(logic : InterestRegistryLogic) extends FrienduActor {
 			logic.addOrUpdateInterestReg(regint)
 		}
 		case sdmi : SourceDataMsgImpl => {
+			logic.publishNoticesForUpdatedData(sdmi)
 		}
 
 		case msg: AnyRef => {
@@ -77,3 +113,4 @@ class FieldDataOriginActor(logic : InterestRegistryLogic) extends FrienduActor {
 		}
 	}
 }
+
