@@ -1,3 +1,18 @@
+/*
+ *  Copyright 2016 by The Friendularity Project (www.friendularity.org).
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.friendularity.vwimpl
 
 import com.jme3.font.BitmapText
@@ -11,22 +26,9 @@ import org.cogchar.render.trial.TextSpatialFactory
 import org.cogchar.render.trial.TrialNexus.BlendedShapeContext
 
 /**
-  * Created by Owner on 6/21/2016.
+  * Created by Stub22 on 6/21/2016.
   */
 class VWBrush {
-
-}
-class OuterGuy(myRRC : RenderRegistryClient, myMatPal : MatPallete) {
-	lazy val myFirstTSF: TextSpatialFactory = new TextSpatialFactory(myRRC)
-	val myBrushJar = new BrushJar(myMatPal)
-
-	val quadMeshFiveByFive: Mesh = new Quad(5,5)
-
-	val redQuadMaker = new MeshGeoMaker(quadMeshFiveByFive, myBrushJar.reddy)
-	val orngQuadMaker = new MeshGeoMaker(quadMeshFiveByFive, myBrushJar.orange_med)
-
-	val happyTxtMaker = new TextSpatMaker(myFirstTSF)
-
 
 }
 

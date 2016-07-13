@@ -1,14 +1,30 @@
+/*
+ *  Copyright 2016 by The Friendularity Project (www.friendularity.org).
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.friendularity.vwimpl
 
 import akka.actor.Actor
 import com.jme3.material.Material
 import com.jme3.math.{Quaternion, Vector3f, ColorRGBA}
-import com.jme3.scene.shape.Sphere
+import com.jme3.scene.shape.{Quad, Sphere}
 
 import com.jme3.scene.{Node => JmeNode, Geometry, Mesh, Spatial}
 import org.appdapter.core.name.{FreeIdent, Ident}
 import org.appdapter.fancy.log.VarargsLogging
 import org.cogchar.render.sys.registry.RenderRegistryClient
+import org.cogchar.render.trial.TextSpatialFactory
 import org.friendularity.respire.Srtw
 import org.friendularity.vwmsg.{VWSCR_ExistingNode, VWSCR_Node, VWShapeManipRq, Transform3D, VWMeshyShapeRq, VWClearAllShapes, VWSCR_Sphere, VWSCR_TextBox, VWShapeCreateRq, VWSCR_CellGrid, VWStageRqMsg}
 
@@ -30,10 +46,10 @@ trait PatternGridMaker extends VarargsLogging {
 		val assetMgr = rrc.getJme3AssetManager(null);
 		val someMat = new Material(assetMgr, "Common/MatDefs/Misc/Unshaded.j3md") // someContent.makeAlphaBlendedUnshadedMaterial(rrc, 0f, 1.0f, 0, 0.5f);
 		val matPal = new MatPallete(someMat)
-		val outerGuy = new OuterGuy(rrc, matPal)
+		val outerGuy = new OuterTestQuadsAndTextMaker(rrc, matPal)
 		val srtwInst = new Srtw {
 			override def getRRC = rrc
-			override def getOuterGuy : OuterGuy = outerGuy
+			override def getOuterGuy : OuterTestQuadsAndTextMaker = outerGuy
 
 		}
 		val uniformCount : Int = 40
@@ -57,7 +73,7 @@ trait SpatMatHelper {
 	val assetMgr = rrc.getJme3AssetManager(null);
 	val someMat = new Material(assetMgr, "Common/MatDefs/Misc/Unshaded.j3md") // someContent.makeAlphaBlendedUnshadedMaterial(rrc, 0f, 1.0f, 0, 0.5f);
 	val matPal = new MatPallete(someMat)
-	val outerGuy = new OuterGuy(rrc, matPal)
+	val outerGuy = new OuterTestQuadsAndTextMaker(rrc, matPal)
 	def getBrushJar : BrushJar = outerGuy.myBrushJar
 
 
@@ -138,28 +154,23 @@ trait IdentHlp {
 	}
 }
 
-trait VWShaperLogic extends PatternGridMaker with FullEnqHlp with IdentHlp {
-
+trait VWShaperLogic extends PatternGridMaker with AttachHlp with IdentHlp {
 
 	protected val myTopDeepNode : JmeNode = {
 		val nodeName = makeStampyRandyString("deep_shape_parent_", noSuffix)
 		val tdn = new JmeNode(nodeName)
 		val rootN = getRRC.getJme3RootDeepNode(null)
-		deferredAttach(tdn, rootN)
+		enqueueAttach(tdn, rootN)
 		tdn
 	}
 	protected val myTopFlatNode : JmeNode = {
 		val nodeName = makeStampyRandyString("flat_shape_parent_", noSuffix)
 		val tfn = new JmeNode(nodeName)
 		val rootN = getRRC.getJme3RootOverlayNode(null)
-		deferredAttach(tfn, rootN)
+		enqueueAttach(tfn, rootN)
 		tfn
 	}
 
-	protected def deferredAttach(childSpat : Spatial, parentNode : JmeNode) : Unit = {
-		val deferredAttachFunc : Function0[Unit] = () => {parentNode.attachChild(childSpat)}
-		enqueueJmeCallable(deferredAttachFunc)
-	}
 	protected val myAssetMgr = getRRC.getJme3AssetManager(null)
 
 	val myShapeMaker = new VWSpatialsForShapes{
@@ -182,7 +193,6 @@ trait VWShaperLogic extends PatternGridMaker with FullEnqHlp with IdentHlp {
 		myTopFlatNode.detachAllChildren()
 	}
 	val makeIdentIfMissing : Boolean = true
-
 
 
 	def makeAndPlace(toMake : VWShapeCreateRq): MadeSpatRec = {
@@ -278,4 +288,18 @@ class VWShaperActor(myRRC: RenderRegistryClient) extends Actor with VWShaperLogi
 			madeSpatRec_opt.get.applyManipDesc(manipDesc, this)
 		}
 	}
+}
+
+
+class OuterTestQuadsAndTextMaker(myRRC : RenderRegistryClient, myMatPal : MatPallete) {
+	lazy val myFirstTSF: TextSpatialFactory = new TextSpatialFactory(myRRC)
+	val myBrushJar = new BrushJar(myMatPal)
+
+	val quadMeshFiveByFive: Mesh = new Quad(5,5)
+
+	val redQuadMaker = new MeshGeoMaker(quadMeshFiveByFive, myBrushJar.reddy)
+	val orngQuadMaker = new MeshGeoMaker(quadMeshFiveByFive, myBrushJar.orange_med)
+
+	val happyTxtMaker = new TextSpatMaker(myFirstTSF)
+
 }

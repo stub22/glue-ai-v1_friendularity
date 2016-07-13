@@ -1,13 +1,30 @@
+/*
+ *  Copyright 2016 by The Friendularity Project (www.friendularity.org).
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.friendularity.vwimpl
 
+
 import com.jme3.asset.AssetManager
-import com.jme3.math.{Rectangle, ColorRGBA}
+import com.jme3.math.{ColorRGBA}
 import com.jme3.scene.{Node => JmeNode}
 import org.appdapter.core.name.{FreeIdent, Ident}
 import org.cogchar.render.sys.registry.RenderRegistryClient
 import org.cogchar.render.sys.task.Queuer
 import org.cogchar.render.trial.TextBox2D
 import org.friendularity.cpump.{CPStrongTeller, CPumpMsg, CPMsgTeller}
+import org.friendularity.field.ItemFieldSpec
 
 // import scala.collection.mutable
 
@@ -26,7 +43,7 @@ trait VWFlatLogic {
 	def makeHidableNavScreen2D(): JmeNode = {
 		// Request a semi-opaque nav-screen which includes our key-menu help, opacity adjust,
 		// and obj-property inspector.   "Picking" in 3-D space selects object to show props.
-		// Bone states have a montioring page showing bone/servo positions.  Anim-state and
+		// Bone states have a monitoring page showing bone/servo positions.  Anim-state and
 		// speech-out blocks are viewable as 2D text and numbers, bar-graphs, dials, etc.
 		// Up to 1 item may be selected within a particular screen, and when that screen has focus,
 		// that selected item is the target of commands from keyboard.  When this screen is up,
@@ -64,48 +81,49 @@ object FunFlatGadgetKinds {
 // by CType.
 
 // Denominate widths + heights in *characters*
-trait SizeBounds
+
 trait FlatGadget {
 	def getGadgetID : Ident
 	def getGadgetKindID : Ident
+
 }
-// Big trick is that we can use these params to help size things that are not really text, too.
-trait TextBlockSizeParams {
-	// All measurements in presumed ideal chars
-	def getMinWidth : Int = 4
-	def getMinHeight : Int = 1
-	def getMaxHeight : Int = 10
-	def getMaxWidth : Int = 80
-	def getPreferredWidth : Int = 24
-	def getPreferredHeight : Int = 2
+trait SizableAsText {
+	def getSizeParams : TextBlockSizeParams
 }
-trait OneLineTextBlockSizeParams extends TextBlockSizeParams {
-	override def getMaxHeight : Int = 1
-	override def getPreferredHeight : Int = 1
+// Used to monitor detail on a known field of a known item.
+trait FullyBoundToItemField {
+	def getAddress : ItemFieldSpec
+}
+
+trait BoundToFieldOfVariableItem {
+	def getFieldID : Ident
 }
 
 class FlatGadgetImpl(myID: Ident, kindID: Ident) extends FlatGadget {
 	override def getGadgetID : Ident = myID
 	override def getGadgetKindID : Ident = kindID
 	// Depending on the kind, we may expect additional attribs.
+	// override def getSizeParams : TextBlockSizeParams = sizeParams
 }
 
 // A gadget serves as a (named) wiring point to some (named, separately) primitve value
 // data source/sink, which usually takes the form of a field of an item.
 
-
+// A Widget is a wired up set of gadgets, to be displayed or hidden onscreen.
 // A partial (or complete, for some purpose) rectangular 2D screen recipe,
 // which has a name and may be hidden/shown as a unit ("complete") or sub-unit.
 // Subclass to customize the behavior of a group of displayed fields.
 trait FlatWidget {  // Is not itself a Gadget, but may produce one
 	def getFieldGadgets : List[FlatGadget]
 	def getOuterGadgetForMe : FlatGadget
-}
-trait LayoutRecipe {
 
+	def showOrHide(showit : Boolean): Unit = {
+
+	}
 }
+trait LayoutRect
 trait WidgetViewSpec {
-	def layoutRectangles(someGadgs : List[FlatGadget]) : List[Rectangle]
+	def layoutRectangles(someGadgs : List[FlatGadget]) : List[LayoutRect]
 	def getLabelTextForGadget(ag : FlatGadget) : String
 }
 trait UnfinishedFlatWidget extends FlatWidget {
@@ -124,23 +142,7 @@ trait PixelRectangleDesc {
 	def getY : Integer
 	def getZorder : Float
 }
-trait TextLine {
-	def getTextLine : String
-}
-trait UpdatableTextLine extends TextLine {
-	def updateTextLine(upTxt : String)
-}
-case class FixedFlatGadgetTxtLine(id: Ident, fixedTxt : String)
-			extends FlatGadgetImpl(id, FunFlatGadgetKinds.FGK_textLine) with TextLine {
-	override def getTextLine: String = fixedTxt
-}
 
-case class UpdatableTextLineGadget(id : Ident) extends FlatGadgetImpl(id, FunFlatGadgetKinds.FGK_textLine) with UpdatableTextLine {
-	var myCachedTxtLine = ""
-	override def updateTextLine(upTxt: String): Unit = {myCachedTxtLine = upTxt}
-
-	override def getTextLine: String = myCachedTxtLine
-}
 trait DisplayBox2D {
 	def updatePixelRectDesc(prd : PixelRectangleDesc)
 }
@@ -175,7 +177,7 @@ object TestWidgs {
 // Subclass to give different field-level UI patterns
 trait FlatFieldDisplay[FDT] {
 	def notifyStateUpdated(udat : FDT) : Unit = ??? // Latest data from sys-side of our gadget, which we send to UI
-	def recordUserChange(udat : FDT) : Unit = ??? // Pull data from UI, send to Gadget.
+	def recordUserChange(udat : FDT) : Unit = ??? // Pull data from UI, send to gadget+sys wiring.
 	// System confirms change by notifying us with equal data.
 
 	// Good chunk to modularize, because it can always be done off rend thrd.
@@ -186,14 +188,14 @@ class FlatFieldDisplayImpl[FDT] extends FlatFieldDisplay[FDT] {
 	def getBoundGadget : FlatGadget = ???
 }
 class FlatWidgetImpl extends UnfinishedFlatWidget {
-	val fieldsByGadgetID = new scala.collection.mutable.HashMap[Ident, FlatFieldDisplay[_]]()
+	val fieldDispsByGadgetID = new scala.collection.mutable.HashMap[Ident, FlatFieldDisplay[_]]()
 
 	override def getFieldGadgets : List[FlatGadget] = {
-		fieldsByGadgetID.values.map(_.asInstanceOf[FlatFieldDisplayImpl[_]].getBoundGadget).toList
+		fieldDispsByGadgetID.values.map(_.asInstanceOf[FlatFieldDisplayImpl[_]].getBoundGadget).toList
 	}
 	override def insertFieldGadget(fg : FlatGadget): Unit = {
 		val fieldDisp = new FlatFieldDisplayImpl
-		fieldsByGadgetID.put(fg.getGadgetID, fieldDisp)
+		fieldDispsByGadgetID.put(fg.getGadgetID, fieldDisp)
 	}
 
 	override def getOuterGadgetForMe : FlatGadget = {
@@ -202,7 +204,4 @@ class FlatWidgetImpl extends UnfinishedFlatWidget {
 	}
 }
 
-class FWBodyStatus extends FlatWidgetImpl
-trait VWCamStatus
-trait VWSpeechStatus
-trait VWSensorStatus
+

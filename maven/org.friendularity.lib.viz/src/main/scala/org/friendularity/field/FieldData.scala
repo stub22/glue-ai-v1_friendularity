@@ -1,6 +1,22 @@
+/*
+ *  Copyright 2016 by The Friendularity Project (www.friendularity.org).
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.friendularity.field
 
-import org.appdapter.core.name.Ident
+import org.appdapter.core.name.{FreeIdent, Ident}
+import org.friendularity.vwimpl.IdentHlp
 
 /**
   * Created by Owner on 7/11/2016.
@@ -98,4 +114,21 @@ trait FieldDataFilterFuncs {
 
 	def justFieldDataBags(mixedFieldData : Traversable[ItemFieldData]) : Traversable[FieldDataBag] =
 		mixedFieldData.filter(_.isInstanceOf[FieldDataBag]).map(_.asInstanceOf[FieldDataBag])
+}
+
+object TestFieldIdents extends IdentHlp {
+	// TODO:  These will be generated constants from an ontology.
+	// The root items are owl:Individuals, while the properties are owl:ObjectProps and owl:DataProps.
+
+	val ROOT_ITEM_BODIES = new FreeIdent("urn:ROOT_ITEM_BODIES#id")
+	val ROOT_ITEM_CAMERAS = new FreeIdent("urn:ROOT_ITEM_CAMERAS#id")
+	val ROOT_ITEM_GOODIES = new FreeIdent("urn:ROOT_ITEM_GOODIES#id")
+
+	val PROP_hasBody = new FreeIdent("urn:PROP_hasBody#id")
+	val PROP_hasCamera = new FreeIdent("urn:PROP_hasCamera#id")
+	val PROP_hasGoody = new FreeIdent("urn:PROP_hasGoody#id")
+
+	val PROP_hasX = new FreeIdent("urn:PROP_hasX#id")
+	val PROP_hasY = new FreeIdent("urn:PROP_hasY#id")
+	val PROP_hasZ = new FreeIdent("urn:PROP_hasZ#id")
 }

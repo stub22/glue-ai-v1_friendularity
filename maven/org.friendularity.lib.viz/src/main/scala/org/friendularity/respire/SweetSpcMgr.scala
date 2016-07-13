@@ -40,7 +40,7 @@ import org.cogchar.render.sys.goody.GoodyRenderRegistryClient
 import org.cogchar.render.sys.registry.RenderRegistryClient
 import org.cogchar.render.trial.{TrialNexus, TextSpatialFactory}
 import org.friendularity.cpump.{Greeting, WhoToGreet}
-import org.friendularity.vwimpl.{Brush, OuterGuy}
+import org.friendularity.vwimpl.{Brush, OuterTestQuadsAndTextMaker}
 
 
 /**
@@ -173,7 +173,7 @@ trait Srtw extends VarargsLogging {
 	lazy val rrcli = getRRC
 	lazy val myFirstTSF: TextSpatialFactory = new TextSpatialFactory(rrcli)
 
-	def getOuterGuy : OuterGuy
+	def getOuterGuy : OuterTestQuadsAndTextMaker
 
 	def makeFunSubspace(deepSpace : MultiDimGridSpace): Unit = {
 		// Make integer index space range, where 6 args are 3 pairs for x,y,z: (firstX, lastX), (firstY...
@@ -214,7 +214,7 @@ trait Srtw extends VarargsLogging {
 		vizNode
 	}
 	def makeWigs(deepSpace: MultiDimGridSpace, chosenIdxs_X: Range, chosenIdxs_Y: Range, chosenIdxs_Z: Range) : JmeNode = {
-		val outerGuy : OuterGuy = getOuterGuy
+		val outerGuy : OuterTestQuadsAndTextMaker = getOuterGuy
 		val quadMeshFiveByFive: Mesh = new Quad(5, 5)
 		val wsParentNode: JmeNode = new JmeNode("wsParent_" + System.currentTimeMillis())
 
