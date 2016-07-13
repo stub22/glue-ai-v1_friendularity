@@ -32,7 +32,7 @@ import org.friendularity.vwimpl.{IdentHlp, VWorldMasterFactory}
 
 import scala.collection.immutable.HashMap
 
-import org.friendularity.vwmsg.{NavCmdImpl, NavCmdKeyClkBind, NavCmd, InnerNavCmds, VWorldPublicTellers, VWSCR_Node, VWBindCamNodeRq, VWCreateCamAndViewportRq, CamStateParams3D, CamState3D, ViewportDesc, ShapeManipRqImpl, SmooveManipEndingImpl, TransformParams3D, VWBodySkeletonDisplayToggle, VWBroadcastToAllBodies, VWClearAllShapes, VWStageResetToDefault, VWKeymapBinding_Medial, OrdinaryParams3D, VWSCR_Sphere, VWStageOpticsBasic, VWSCR_CellGrid, VWStageEmulateBonusContentAndCams, VWBodyLifeRq, VWGoodyRqTAS, VWGoodyRqTurtle}
+import org.friendularity.vwmsg.{VWSetupOvlBookRq, NavCmdImpl, NavCmdKeyClkBind, NavCmd, InnerNavCmds, VWorldPublicTellers, VWSCR_Node, VWBindCamNodeRq, VWCreateCamAndViewportRq, CamStateParams3D, CamState3D, ViewportDesc, ShapeManipRqImpl, SmooveManipEndingImpl, TransformParams3D, VWBodySkeletonDisplayToggle, VWBroadcastToAllBodies, VWClearAllShapes, VWStageResetToDefault, VWKeymapBinding_Medial, OrdinaryParams3D, VWSCR_Sphere, VWStageOpticsBasic, VWSCR_CellGrid, VWStageEmulateBonusContentAndCams, VWBodyLifeRq, VWGoodyRqTAS, VWGoodyRqTurtle}
 
 
 /**
@@ -166,6 +166,8 @@ trait PatientSender_BonusStaging extends OuterLogic with IdentHlp {
 		val emuBonusRq = new VWStageEmulateBonusContentAndCams()
 		stageTeller.tellStrongCPMsg(emuBonusRq)
 
+		setupOverlayBook(vwpt)
+
 		setupKeysAndClicks(vwpt)
 
 		sendExtraCameraRqs(stageTeller, vwpt.getShaperTeller.get)
@@ -189,6 +191,13 @@ trait PatientSender_BonusStaging extends OuterLogic with IdentHlp {
 	}
 	// Cmds sent to navTeller
 
+	def setupOverlayBook(vwpt: VWorldPublicTellers) : Unit = {
+		val stageTeller = vwpt.getStageTeller.get
+
+		val ovlSetupMsg = new VWSetupOvlBookRq()
+
+		stageTeller.tellStrongCPMsg(ovlSetupMsg)
+	}
 
 	def setupKeysAndClicks(vwpt: VWorldPublicTellers) : Unit = {
 

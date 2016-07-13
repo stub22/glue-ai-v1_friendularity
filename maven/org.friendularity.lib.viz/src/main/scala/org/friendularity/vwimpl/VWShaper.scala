@@ -70,10 +70,10 @@ trait PatternGridMaker extends VarargsLogging {
 trait SpatMatHelper {
 	protected def getTooMuchRRC : RenderRegistryClient
 	val rrc = getTooMuchRRC
-	val assetMgr = rrc.getJme3AssetManager(null);
-	val someMat = new Material(assetMgr, "Common/MatDefs/Misc/Unshaded.j3md") // someContent.makeAlphaBlendedUnshadedMaterial(rrc, 0f, 1.0f, 0, 0.5f);
-	val matPal = new MatPallete(someMat)
-	val outerGuy = new OuterTestQuadsAndTextMaker(rrc, matPal)
+	val myAssetMgr = rrc.getJme3AssetManager(null);
+	val myUnshMat = new Material(myAssetMgr, "Common/MatDefs/Misc/Unshaded.j3md") // someContent.makeAlphaBlendedUnshadedMaterial(rrc, 0f, 1.0f, 0, 0.5f);
+	val myMatPal = new MatPallete(myUnshMat)
+	val outerGuy = new OuterTestQuadsAndTextMaker(rrc, myMatPal)
 	def getBrushJar : BrushJar = outerGuy.myBrushJar
 
 

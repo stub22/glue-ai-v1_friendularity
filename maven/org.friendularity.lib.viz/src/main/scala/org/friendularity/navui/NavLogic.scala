@@ -21,12 +21,11 @@ import org.friendularity.vwmsg.{VWorldPublicTellers, NavCmdImpl, InnerNavCmds, N
   */
 
 
+/*
 trait NavLogic // Placeholder matching our .scala filename
-
 case class NavPageImpl()
-trait NavCursor {
-
-}
+trait NavCursor
+*/
 
 case class NavCmdKeyClkBindImpl(cmd : NavCmd, keyClickName : String) extends NavCmdKeyClkBind
 
