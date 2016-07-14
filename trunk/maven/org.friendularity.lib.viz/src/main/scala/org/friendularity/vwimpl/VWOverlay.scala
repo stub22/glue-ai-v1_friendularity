@@ -86,9 +86,9 @@ trait OvlOuterDisplayHelp extends OvlDisplayHelp {
 		val highGeom = orngQuadMaker.makeGeom("orangeQuadFixMe")
 		val guiBucket: RenderQueue.Bucket = RenderQueue.Bucket.Gui
 		highGeom.setQueueBucket(guiBucket)
-		highGeom.setLocalScale(100.0f, 100.0f, 1.0f)
+		highGeom.setLocalScale(40.0f, 40.0f, 1.0f)
 		highFlatNode.attachChild(highGeom)
-		highFlatNode.setLocalTranslation(new Vector3f(300.0f, 220.0f, 0.9f))
+		highFlatNode.setLocalTranslation(new Vector3f(150.0f, 120.0f, 0.9f))
 		highFlatNode
 	}
 }
@@ -106,7 +106,20 @@ class OvlPageBook(myRRC : RenderRegistryClient) extends OvlOuterDisplayHelp {
 	private def getPagesInDisplayOrder : List[OverlayPage] = myPageDisplayOrderBuf.toList.flatMap(myPagesByID.get(_))
 	def getPageChooserGadgetsInDisplayOrder : List[FlatGadget] = getPagesInDisplayOrder.map(_.getTopFlatWidget.getOuterGadgetForMe)
 
-	lazy val myOuterFrameNode : JmeNode = makeOuterBookFrameNode
+	lazy val myOuterFrameNode : JmeNode = {
+		val outerFrameNode = makeOuterBookFrameNode
+		val selectorGroupNode = new JmeNode("selectorGadgets")
+		val yOff = 40.0f
+		var xOff = 10.0f
+		for (pcg <- getPageChooserGadgetsInDisplayOrder) {
+			val gadgSpat = pcg.getSpat(this)
+			gadgSpat.setLocalTranslation(xOff, yOff, 0.3f)
+			selectorGroupNode.attachChild(gadgSpat)
+			xOff += 40.0f
+		}
+		outerFrameNode.attachChild(selectorGroupNode)
+		outerFrameNode
+	}
 
 	var isShown : Boolean = false
 	def showOrHideBook(showIt : Boolean): Unit = {
@@ -132,9 +145,11 @@ class OvlPageBook(myRRC : RenderRegistryClient) extends OvlOuterDisplayHelp {
 
 trait OverlayLogic extends VarargsLogging with InnerNavCmds  {
 	var myBook_opt : Option[OvlPageBook] = None
-	def setupBook(rrc : RenderRegistryClient): Unit = {
+	def setupBook(rrc : RenderRegistryClient, pages : List[OverlayPage]): Unit = {
 		val book = new OvlPageBook(rrc)
+		pages.map(book.registerPage(_))
 		myBook_opt = Option(book)
+
 	}
 	def toggleBookDisplay(): Unit = {
 		if (myBook_opt.isDefined) {

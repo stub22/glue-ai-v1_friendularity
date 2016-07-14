@@ -267,7 +267,7 @@ trait Srtw extends VarargsLogging {
 
 		val outerGuy = getOuterGuy
 
-		val someBT : BitmapText = outerGuy.happyTxtMaker.makeBitmapTxt(qlabTxt01)
+		val someBT : BitmapText = outerGuy.happyTxtMaker.makeBitmapTxt3D(qlabTxt01)
 		val qlabBT_01: BitmapText = someBT //  myFirstTSF.makeTextSpatial(qlabTxt01, 0.2f, RenderQueue.Bucket.Transparent, 6)
 
 		qlabBT_01.setLocalTranslation(pos, pos, pos) //) xpr.getCenter, ypr.getCenter, zpr.getCenter)

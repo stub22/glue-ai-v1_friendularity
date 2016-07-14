@@ -28,7 +28,7 @@ import org.friendularity.cpump.{CPumpMsg, ActorRefCPMsgTeller, CPStrongTeller, C
 import org.friendularity.mjob.{MsgJobLogicFactory, MsgJobLogic}
 
 import com.hp.hpl.jena.rdf.model.{Model => JenaModel, ModelFactory => JenaModelFactory, Literal}
-import org.friendularity.vwimpl.{IdentHlp, VWorldMasterFactory}
+import org.friendularity.vwimpl.{OverlayPage, IdentHlp, VWorldMasterFactory}
 
 import scala.collection.immutable.HashMap
 
@@ -192,9 +192,11 @@ trait PatientSender_BonusStaging extends OuterLogic with IdentHlp {
 	// Cmds sent to navTeller
 
 	def setupOverlayBook(vwpt: VWorldPublicTellers) : Unit = {
+
+		val pages : List[OverlayPage] = NavPageDefs.pageList
 		val stageTeller = vwpt.getStageTeller.get
 
-		val ovlSetupMsg = new VWSetupOvlBookRq()
+		val ovlSetupMsg = new VWSetupOvlBookRq(pages)
 
 		stageTeller.tellStrongCPMsg(ovlSetupMsg)
 	}

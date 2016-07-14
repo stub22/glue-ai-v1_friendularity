@@ -1,5 +1,7 @@
 package org.friendularity.vwimpl
 
+import com.jme3.font.BitmapText
+import com.jme3.scene.Spatial
 import org.appdapter.core.name.Ident
 
 /**
@@ -29,6 +31,14 @@ trait UpdatingTextLine extends TextLine {
 case class FixedFlatGadgetTxtLine(id: Ident, fixedTxt : String)
 			extends FlatGadgetImpl(id, FunFlatGadgetKinds.FGK_textLine) with TextLine {
 	override def getTextLine: String = fixedTxt
+
+
+	override def getSpat(odh : OvlDisplayHelp) : Spatial = {
+		val txtMaker = odh.happyTxtMaker
+		val someBT : BitmapText = txtMaker.makeBitmapTxt2D(fixedTxt)
+		someBT.scale(10.0f, 10.0f, 1.0f)
+		someBT
+	}
 }
 
 case class UpdatingTextLineGadget(id : Ident) extends FlatGadgetImpl(id, FunFlatGadgetKinds.FGK_textLine) with UpdatingTextLine {
@@ -36,4 +46,8 @@ case class UpdatingTextLineGadget(id : Ident) extends FlatGadgetImpl(id, FunFlat
 	override def updateTextLine(upTxt: String): Unit = {myCachedTxtLine = upTxt}
 
 	override def getTextLine: String = myCachedTxtLine
+
+	override def getSpat(odh : OvlDisplayHelp) : Spatial = {
+		null
+	}
 }

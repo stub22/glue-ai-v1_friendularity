@@ -30,9 +30,18 @@ import scala.collection.mutable.ListBuffer
   */
 
 
+class SimplePageItem(label : String, fieldStuffWillGrow : Ident) {
+
+}
+
+class SimpleNavPage(outerLabel : String, items : List[SimplePageItem]) extends OverlayPage with  GadgetMaker {
+	val myOuterGadg : FlatGadget = makeFixedTxtLine(outerLabel).asInstanceOf[FlatGadget]
+
+	override def makeTopFlatWidget: FlatWidget =  new FinishedFlatWidget(Nil, myOuterGadg)
+}
 
 // We expect VW-picking to eventually interact sensibly with any of these.
-class NavPage_Bodies extends OverlayPage with  GadgetMaker  {
+class NavPage_Bodies() extends OverlayPage with  GadgetMaker  {
 	val b1DataSrcID = makeStampyRandyIdent()
 	val b2DataSrcID = makeStampyRandyIdent()
 
@@ -45,39 +54,32 @@ class NavPage_Bodies extends OverlayPage with  GadgetMaker  {
 	override def makeTopFlatWidget: FlatWidget =  new FinishedFlatWidget(myFieldGadgs, myOuterGadg)
 
 }
-trait NavPage_Anims extends OverlayPage {
+object NavPageDefs {
+
+	val page_Bodies = new SimpleNavPage("Anims", Nil)
+	// Table showing gross properties of all bodies, plus we see detail on selected body col/row.
+
+
+	val page_Anims = new SimpleNavPage("Anims", Nil)
 	// Shows available anims of each kind, highlighting any that are running, and allowing
 	// for triggering and cancelling.
-}
-trait NavPage_Cams extends OverlayPage {
+
+	val page_Cams  = new SimpleNavPage("Cams", Nil)
 	// Table showing properties of each cam, mainly pos+dir.  Ops to manipulate cams are lower priority.
-	override def makeTopFlatWidget: FlatWidget = ???
-}
-trait NavPage_Goodies extends OverlayPage {
+
+	val page_Goodies = new SimpleNavPage("Goodies", Nil)
 	// Shows available goodies of each kind.  Highlight row to select the actual goody in (2 or) 3-space.
 	// Also shows stats for goody messages rcvd, total and per-kind and per-goody.
 	// Blinks colors on new msg.
-	override def makeTopFlatWidget: FlatWidget = ???
-}
-trait NavPage_Speech extends OverlayPage {
+
+	val page_Speech = new SimpleNavPage("Speech", Nil)
 	// Shows any running speech job, plus some stats.
 	// Should also show bookmark info and viseme summary.
 	// Eventually can lead into speech config menus.
+
+	val pageList : List[OverlayPage] = List(page_Bodies, page_Cams, page_Goodies, page_Anims, page_Speech)
 }
 // Additional pages to come:
 trait NavPage_Modulators extends OverlayPage  	// = Content players and behavioral state machines
 trait NavPage_Sys extends OverlayPage 			// = Status of JVM, network connections
 trait NavPage_Sensors extends OverlayPage 		// = Estim features = the salient point of our structure
-
-import scala.collection.mutable.{HashMap => MutableHashMap}
-
-class NavBook (myRRC : RenderRegistryClient, myMatPal : MatPallete) extends OvlPageBook(myRRC) {
-	override protected def getRRC : RenderRegistryClient = myRRC
-
-	registerPage(new NavPage_Bodies{})
-	registerPage(new NavPage_Cams{})
-	registerPage(new NavPage_Goodies{})
-
-
-
-}
