@@ -3,6 +3,7 @@ package org.friendularity.vwmsg
 import com.jme3.math.ColorRGBA
 import org.appdapter.core.name.Ident
 import org.friendularity.cpump.CPMsgTeller
+import org.friendularity.vwimpl.OverlayPage
 
 /**
   * Created by Stub22 on 6/16/2016.
@@ -38,4 +39,4 @@ case class VWBindCamNodeRq(camID : Ident, spaceNodeIsCamParent_NotChild : Boolea
 // case class VWCamNodeManipRq(camNodeID : Ident, manipGuts : ManipDesc) extends VWStageRqMsg
 
 
-case class VWSetupOvlBookRq() extends VWStageRqMsg
+case class VWSetupOvlBookRq(pages : List[OverlayPage]) extends VWStageRqMsg

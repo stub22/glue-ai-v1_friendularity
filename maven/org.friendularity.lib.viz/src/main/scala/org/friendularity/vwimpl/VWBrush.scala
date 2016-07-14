@@ -62,10 +62,13 @@ trait SpatMaker  {
 	def makeSpat(nam : String) : Spatial
 }
 class TextSpatMaker(myTSF: TextSpatialFactory) extends SpatMaker {
-	def makeBitmapTxt(txt : String): BitmapText = {
+	def makeBitmapTxt3D(txt : String): BitmapText = {
 		myTSF.makeTextSpatial(txt, 0.2f, RenderQueue.Bucket.Transparent, 6)
 	}
-	override def makeSpat(nam : String) : Spatial = makeBitmapTxt(nam)
+	def makeBitmapTxt2D(txt : String): BitmapText = {
+		myTSF.makeTextSpatial(txt, 0.2f, RenderQueue.Bucket.Gui, 6)
+	}
+	override def makeSpat(nam : String) : Spatial = makeBitmapTxt3D(nam)
 }
 class MeshGeoMaker(myMesh : Mesh, myBrush : Brush) {
 	def makeGeom(nam : String) : Geometry = {

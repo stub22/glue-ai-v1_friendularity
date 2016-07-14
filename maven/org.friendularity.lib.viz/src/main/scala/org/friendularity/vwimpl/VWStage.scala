@@ -269,7 +269,7 @@ class VWStageActor(myStageCtx : VWStageCtx) extends Actor with VWStageLogic with
 			processBindCamNode(bindCamNode)
 		}
 		case setupOvl : VWSetupOvlBookRq => {
-			setupBook(myStageCtx.getRRC)
+			setupBook(myStageCtx.getRRC, setupOvl.pages)
 		}
 		case navCmd : NavCmd => {
 			processNavCmd(navCmd)

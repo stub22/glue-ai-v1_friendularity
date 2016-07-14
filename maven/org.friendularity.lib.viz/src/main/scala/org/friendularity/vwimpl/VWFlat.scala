@@ -18,7 +18,7 @@ package org.friendularity.vwimpl
 
 import com.jme3.asset.AssetManager
 import com.jme3.math.{ColorRGBA}
-import com.jme3.scene.{Node => JmeNode}
+import com.jme3.scene.{Node => JmeNode, Spatial}
 import org.appdapter.core.name.{FreeIdent, Ident}
 import org.cogchar.render.sys.registry.RenderRegistryClient
 import org.cogchar.render.sys.task.Queuer
@@ -85,7 +85,7 @@ object FunFlatGadgetKinds {
 trait FlatGadget {
 	def getGadgetID : Ident
 	def getGadgetKindID : Ident
-
+	def getSpat(odh : OvlDisplayHelp) : Spatial
 }
 trait SizableAsText {
 	def getSizeParams : TextBlockSizeParams
@@ -99,7 +99,7 @@ trait BoundToFieldOfVariableItem {
 	def getFieldID : Ident
 }
 
-class FlatGadgetImpl(myID: Ident, kindID: Ident) extends FlatGadget {
+abstract class FlatGadgetImpl(myID: Ident, kindID: Ident) extends FlatGadget {
 	override def getGadgetID : Ident = myID
 	override def getGadgetKindID : Ident = kindID
 	// Depending on the kind, we may expect additional attribs.
