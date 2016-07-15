@@ -58,17 +58,25 @@ class DoodlePlacer(xf : Float, yf : Float, zf : Float, rotQuat : Quaternion) ext
 		spat.setLocalRotation(rotQuat)
 	}
 }
-trait SpatMaker  {
-	def makeSpat(nam : String) : Spatial
+trait SpatMaker2D  {
+	def makeSpat2D(nam : String) : Spatial
 }
-class TextSpatMaker(myTSF: TextSpatialFactory) extends SpatMaker {
+trait SpatMaker3D  {
+	def makeSpat3D(nam : String) : Spatial
+}
+class TextSpatMaker(myTSF: TextSpatialFactory) extends SpatMaker3D with SpatMaker2D {
+	val renderScale_meansWhat : Float = 0.2f
+	val rectWidth_relatesToCharsPerScaleUnitOrWhat = 12
+
 	def makeBitmapTxt3D(txt : String): BitmapText = {
-		myTSF.makeTextSpatial(txt, 0.2f, RenderQueue.Bucket.Transparent, 6)
+		myTSF.makeTextSpatial(txt, renderScale_meansWhat, RenderQueue.Bucket.Transparent, rectWidth_relatesToCharsPerScaleUnitOrWhat)
 	}
 	def makeBitmapTxt2D(txt : String): BitmapText = {
-		myTSF.makeTextSpatial(txt, 0.2f, RenderQueue.Bucket.Gui, 6)
+		val bucket = RenderQueue.Bucket.Gui // or can use null => Inherit
+		myTSF.makeTextSpatial(txt, renderScale_meansWhat, bucket, rectWidth_relatesToCharsPerScaleUnitOrWhat)
 	}
-	override def makeSpat(nam : String) : Spatial = makeBitmapTxt3D(nam)
+	override def makeSpat2D(nam : String) : Spatial = makeBitmapTxt2D(nam)
+	override def makeSpat3D(nam : String) : Spatial = makeBitmapTxt3D(nam)
 }
 class MeshGeoMaker(myMesh : Mesh, myBrush : Brush) {
 	def makeGeom(nam : String) : Geometry = {
