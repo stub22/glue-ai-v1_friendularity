@@ -90,13 +90,26 @@ trait OvlOuterDisplayHelp extends OvlDisplayHelp {
 		val highGeom = orngQuadMaker.makeGeom("orangeQuadFixMe")
 		val guiBucket: RenderQueue.Bucket = RenderQueue.Bucket.Gui
 		highGeom.setQueueBucket(guiBucket)
-		val hgWidthPix : Float = 580.0f
+
+		// Currently assuming 640x480 window, with 30 pix margins.
+		// JME 2D objects (unlike 3D objects) are measured in pixels.
+		val expectScreenWidthPix = 640 // TODO:  Allow replacement with actual width
+		val ovlWidthFrac : Float = 580.0f / 640.0f
+		val hgWidthPix : Float = ovlWidthFrac * expectScreenWidthPix
 		val hgWidthScale = hgWidthPix / pixPerUnitMeshX
-		val hgHeightPix : Float = 420.0f
+
+		val expectScreenHeightPix = 480 // TODO: Allow replacement with actual screen height
+		val ovlHeightFrac : Float = 420.0f / 480.0f
+		val hgHeightPix : Float = ovlHeightFrac * expectScreenHeightPix
 		val hgHeightScale = hgHeightPix / pixPerUnitMeshY
-		val hnTrnslt = new Vector3f(30.0f, 30.0f, 0.9f)
+
 		highGeom.setLocalScale(hgWidthScale, hgHeightScale, 1.0f)  // For 5X5 mesh, gives dim=550, 400
 		highFlatNode.attachChild(highGeom)
+
+		val xLeftMarginPix : Float = expectScreenWidthPix * (1.0f - ovlWidthFrac) / 2.0f
+		val yBottomMarginPix : Float = expectScreenHeightPix * (1.0f - ovlHeightFrac) / 2.0f
+
+		val hnTrnslt = new Vector3f(xLeftMarginPix, yBottomMarginPix, 0.9f)
 		highFlatNode.setLocalTranslation(hnTrnslt)
 		highFlatNode
 	}
