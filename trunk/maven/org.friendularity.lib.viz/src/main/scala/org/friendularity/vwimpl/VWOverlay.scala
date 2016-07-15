@@ -69,10 +69,14 @@ trait Leaf extends PageItem // No subcontent
 trait OvlDisplayHelp extends SvcGate with SpatMatHelper with VarargsLogging  {
 	lazy val myFirstTSF: TextSpatialFactory = new TextSpatialFactory(getRRC)
 	val myBrushJar = new BrushJar(myMatPal)
-	val quadMeshFiveByFive: Mesh = new Quad(5,5)
 
-	val redQuadMaker = new MeshGeoMaker(quadMeshFiveByFive, myBrushJar.reddy)
-	val orngQuadMaker = new MeshGeoMaker(quadMeshFiveByFive, myBrushJar.orange_med)
+	val pixPerUnitMeshX = 5
+	val pixPerUnitMeshY = 5
+	// create a single small quad, reusable in many geoms, which can each be scaled
+	val myUnitQuadMesh: Mesh = new Quad(pixPerUnitMeshX,pixPerUnitMeshY) // Arbitrary size decision, means 5-pix x 5-pix *if* in 2D GUI.
+
+	val redQuadMaker = new MeshGeoMaker(myUnitQuadMesh, myBrushJar.reddy)
+	val orngQuadMaker = new MeshGeoMaker(myUnitQuadMesh, myBrushJar.orange_med)
 
 	val happyTxtMaker = new TextSpatMaker(myFirstTSF)
 
@@ -86,9 +90,14 @@ trait OvlOuterDisplayHelp extends OvlDisplayHelp {
 		val highGeom = orngQuadMaker.makeGeom("orangeQuadFixMe")
 		val guiBucket: RenderQueue.Bucket = RenderQueue.Bucket.Gui
 		highGeom.setQueueBucket(guiBucket)
-		highGeom.setLocalScale(40.0f, 40.0f, 1.0f)
+		val hgWidthPix : Float = 580.0f
+		val hgWidthScale = hgWidthPix / pixPerUnitMeshX
+		val hgHeightPix : Float = 420.0f
+		val hgHeightScale = hgHeightPix / pixPerUnitMeshY
+		val hnTrnslt = new Vector3f(30.0f, 30.0f, 0.9f)
+		highGeom.setLocalScale(hgWidthScale, hgHeightScale, 1.0f)  // For 5X5 mesh, gives dim=550, 400
 		highFlatNode.attachChild(highGeom)
-		highFlatNode.setLocalTranslation(new Vector3f(150.0f, 120.0f, 0.9f))
+		highFlatNode.setLocalTranslation(hnTrnslt)
 		highFlatNode
 	}
 }
