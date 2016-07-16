@@ -24,7 +24,7 @@ import org.cogchar.render.sys.registry.RenderRegistryClient
 import org.cogchar.render.sys.task.Queuer
 import org.cogchar.render.trial.TextBox2D
 import org.friendularity.cpump.{CPStrongTeller, CPumpMsg, CPMsgTeller}
-import org.friendularity.field.ItemFieldSpec
+import org.friendularity.field.{BoundToDataSrc, ItemFieldSpec}
 
 // import scala.collection.mutable
 
@@ -86,17 +86,10 @@ trait FlatGadget {
 	def getGadgetID : Ident
 	def getGadgetKindID : Ident
 	def getSpat(odh : OvlDisplayHelp) : Spatial
+	def getSizeHints : TextBlockSizeParams
 }
 trait SizableAsText {
 	def getSizeParams : TextBlockSizeParams
-}
-// Used to monitor detail on a known field of a known item.
-trait FullyBoundToItemField {
-	def getAddress : ItemFieldSpec
-}
-
-trait BoundToFieldOfVariableItem {
-	def getFieldID : Ident
 }
 
 abstract class FlatGadgetImpl(myID: Ident, kindID: Ident) extends FlatGadget {
@@ -104,6 +97,7 @@ abstract class FlatGadgetImpl(myID: Ident, kindID: Ident) extends FlatGadget {
 	override def getGadgetKindID : Ident = kindID
 	// Depending on the kind, we may expect additional attribs.
 	// override def getSizeParams : TextBlockSizeParams = sizeParams
+
 }
 
 // A gadget serves as a (named) wiring point to some (named, separately) primitve value
@@ -115,7 +109,8 @@ abstract class FlatGadgetImpl(myID: Ident, kindID: Ident) extends FlatGadget {
 // Subclass to customize the behavior of a group of displayed fields.
 trait FlatWidget {  // Is not itself a Gadget, but may produce one
 	def getFieldGadgets : List[FlatGadget]
-	def getOuterGadgetForMe : FlatGadget
+	def getBindingForGadg(g : FlatGadget) : BoundToDataSrc
+	def getOuterGadgetForMe : FlatGadget // Used to label+activate this widget
 
 	def showOrHide(showit : Boolean): Unit = {
 
@@ -129,9 +124,12 @@ trait WidgetViewSpec {
 trait UnfinishedFlatWidget extends FlatWidget {
 	def insertFieldGadget(fg : FlatGadget): Unit
 }
-case class FinishedFlatWidget(myFieldGadgs : List[FlatGadget], myOuterGadg : FlatGadget) extends FlatWidget {
+case class FinishedFlatWidget(myFieldGadgs : List[FlatGadget], bindFunc : FlatGadget => BoundToDataSrc,
+							  myOuterGadg : FlatGadget) extends FlatWidget {
 	override def getFieldGadgets : List[FlatGadget] = myFieldGadgs
 	def getOuterGadgetForMe : FlatGadget = myOuterGadg
+
+	override def getBindingForGadg(g: FlatGadget): BoundToDataSrc = bindFunc(g)
 }
 // 1) Low-level JME boxes are of course allowed to collide and overlap with siblings.
 // Here the positions and sizes are in *pixels*.
@@ -202,6 +200,8 @@ class FlatWidgetImpl extends UnfinishedFlatWidget {
 		val outer = ???
 		outer
 	}
+
+	override def getBindingForGadg(g: FlatGadget): BoundToDataSrc = ???
 }
 
 

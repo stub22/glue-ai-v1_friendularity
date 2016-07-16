@@ -1,43 +1,38 @@
+/*
+ *  Copyright 2016 by The Friendularity Project (www.friendularity.org).
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.friendularity.navui
 
 import java.util.concurrent.TimeUnit
 
-import akka.actor.{Scheduler => AkkaSched, Cancellable, ActorSystem, Props, ActorRef, ActorRefFactory, Actor}
-import akka.dispatch.{Dispatcher => AkkaDisp}
+import akka.actor.{Props, ActorRef, ActorRefFactory, Actor}
+// import akka.dispatch.{Dispatcher => AkkaDisp}
 import org.friendularity.cpump.{CPStrongTeller, CPumpMsg}
-import scala.concurrent.ExecutionContextExecutor
-import akka.dispatch.Dispatcher
+import org.friendularity.field.{ScheduleHelper, SchedItemRepeating}
+// import scala.concurrent.ExecutionContextExecutor
+// import akka.dispatch.Dispatcher
 import org.appdapter.fancy.log.VarargsLogging
 import org.friendularity.vwmsg.{VWBodyRq, VWExoBodyChance, VWBodyNotice}
 
-import scala.concurrent.duration.{FiniteDuration, Duration}
+// import scala.concurrent.duration.{FiniteDuration, Duration}
 
 /**
-  * Created by Owner on 6/8/2016.
+  * Created by Stub22 on 6/8/2016.
   */
 // Even further out, beyond all the Outer stuff, we have Exo stuff, which is primarily client-standin test logic.
 
-case class SchedItemRepeating(myTickMsg : CPumpMsg, initDelayDur : FiniteDuration, periodDur : FiniteDuration) extends VarargsLogging {
-	def addToSched(sched: AkkaSched, cutionCtxCutor: ExecutionContextExecutor,
-				   tgtActor: ActorRef, senderActor : ActorRef): Cancellable = {
-		// Note second pair of args supplying  ExecutionContext and sender
-		val cnclbl = sched.schedule(initDelayDur, periodDur, tgtActor, myTickMsg)(cutionCtxCutor, senderActor)
-		info1("scheduling complere, handle={}", cnclbl)
-		cnclbl
-	}
-	def addToSchedForSys(akkaSys: ActorSystem, tgtActor: ActorRef, senderActor : ActorRef) : Cancellable = {
-		addToSched(akkaSys.scheduler, akkaSys.dispatcher, tgtActor, senderActor)
-	}
-
-}
-trait ScheduleHelper extends VarargsLogging {
-	def makeSchedItemRepeating(msg : CPumpMsg, phaseMillis : Int, periodMillis : Int): SchedItemRepeating = {
-		val initDelayDur = Duration.create(phaseMillis, TimeUnit.MILLISECONDS)
-		val periodDur = Duration.create(periodMillis, TimeUnit.MILLISECONDS)
-		new SchedItemRepeating(msg, initDelayDur, periodDur)
-	}
-
-}
 
 // We expect to have one such UserLogic for *each* separate VWBody created.
 trait ExoBodyUserLogic extends ScheduleHelper with VarargsLogging {

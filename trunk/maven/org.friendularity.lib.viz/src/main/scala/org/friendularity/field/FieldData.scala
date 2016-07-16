@@ -19,7 +19,7 @@ import org.appdapter.core.name.{FreeIdent, Ident}
 import org.friendularity.vwimpl.IdentHlp
 
 /**
-  * Created by Owner on 7/11/2016.
+  * Created by Stub22 on 7/11/2016.
   */
 // Item and Field are our primary terms to describe app data structures enabled for change-notice events.
 // This structure is highly compatible with RDF, but does not strictly require RDF at any boundary.
@@ -46,6 +46,8 @@ import org.friendularity.vwimpl.IdentHlp
 
 // An itemFieldSpec may be seen as an ordered pair of Idents = (absolute) URIs.
 trait ItemFieldSpec {
+	// We don't allow either of these fields to be optional.  This spec is required to be very specific.
+	// Leaving either of these fields as "*", conceptually, is accomplished by other mechanisms.
 	def getItemID : Ident
 	def getFieldID : Ident
 	def makeDirectImpl : ItemFieldSpecDirectImpl = new ItemFieldSpecDirectImpl(getItemID,getFieldID)
@@ -116,7 +118,7 @@ trait FieldDataFilterFuncs {
 		mixedFieldData.filter(_.isInstanceOf[FieldDataBag]).map(_.asInstanceOf[FieldDataBag])
 }
 
-object TestFieldIdents extends IdentHlp {
+object VWTestFieldIdents extends IdentHlp {
 	// TODO:  These will be generated constants from an ontology.
 	// The root items are owl:Individuals, while the properties are owl:ObjectProps and owl:DataProps.
 

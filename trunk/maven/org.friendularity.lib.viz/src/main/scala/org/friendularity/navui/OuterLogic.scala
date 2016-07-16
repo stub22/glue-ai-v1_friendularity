@@ -36,7 +36,7 @@ import org.friendularity.vwmsg.{VWSetupOvlBookRq, NavCmdImpl, NavCmdKeyClkBind, 
 
 
 /**
-  * Limits
+  * Created by Stu B22 - June 2016
   */
 trait OuterLogic extends VarargsLogging {
 	def rcvPubTellers (vwpt : VWorldPublicTellers): Unit
@@ -166,6 +166,8 @@ trait PatientSender_BonusStaging extends OuterLogic with IdentHlp {
 		val emuBonusRq = new VWStageEmulateBonusContentAndCams()
 		stageTeller.tellStrongCPMsg(emuBonusRq)
 
+		setupStatusPumps(vwpt)
+
 		setupOverlayBook(vwpt)
 
 		setupKeysAndClicks(vwpt)
@@ -199,6 +201,10 @@ trait PatientSender_BonusStaging extends OuterLogic with IdentHlp {
 		val ovlSetupMsg = new VWSetupOvlBookRq(pages)
 
 		stageTeller.tellStrongCPMsg(ovlSetupMsg)
+	}
+
+	def setupStatusPumps(vwpt: VWorldPublicTellers) : Unit = {
+
 	}
 
 	def setupKeysAndClicks(vwpt: VWorldPublicTellers) : Unit = {

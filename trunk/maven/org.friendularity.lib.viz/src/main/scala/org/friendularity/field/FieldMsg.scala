@@ -16,7 +16,7 @@
 package org.friendularity.field
 
 import org.appdapter.core.name.Ident
-import org.friendularity.cpump.{CPStrongTeller, CPumpMsg}
+import org.friendularity.cpump.{CPMsgTeller, CPStrongTeller, CPumpMsg}
 
 /**
   * Created by Owner on 7/11/2016.
@@ -59,16 +59,44 @@ trait FieldInterestRegMsg extends CPumpMsg {
 	// isInterestedIn() below may also return true for other fieldSpecs.
 	def getInterestingFieldSpecs : Traversable[ItemFieldSpec]
 	// Convention:  Empty value => ALL fields.   TODO: Make more formal.
-	def getInterestedTeller: CPStrongTeller[ItemFieldDataMsg] // ItemFieldDataChgMsg[_]]
+	def getDownstreamTeller: CPStrongTeller[ItemFieldDataMsg] // ItemFieldDataChgMsg[_]]
 	def getUpdatePeriodSec : Float
 
+	// Sassy:  Allowing the (stored) interest message to supply a filter predicate
 	def isInterestedIn(ifd : ItemFieldData) : Boolean = {
 		val itmFldSpec : ItemFieldSpec = ifd.getFieldAddress
 		getInterestingFieldSpecs.toIterator.contains(itmFldSpec)
 	}
 }
 
+case class IntRegMsgImpl(regID : Ident, fieldSpecs : Traversable[ItemFieldSpec],
+						 downTeller : CPStrongTeller[ItemFieldDataMsg], upPeriodSec : Float) extends FieldInterestRegMsg {
+
+	override def getInterestRegID: Ident = regID
+
+	// Convention:  Empty value => ALL fields.   TODO: Make more formal.
+	override def getInterestingFieldSpecs: Traversable[ItemFieldSpec] = fieldSpecs
+
+
+	override def getDownstreamTeller: CPStrongTeller[ItemFieldDataMsg] = downTeller
+
+
+	override def getUpdatePeriodSec: Float = upPeriodSec
+
+	// Can be used to cancel this interest, later.
+
+}
+
 case class DistribFlowControlMsg(active : Boolean) extends CPumpMsg
 
+trait UpstreamTellerAvailabilityNotice extends CPumpMsg {
+	def getUpstreamTeller : CPStrongTeller[FieldInterestRegMsg]
+	def getKnownItemIDs : Traversable[Ident]
+}
+
+case class FieldCallbackRegMsgImpl(cbackRegID : Ident,
+		leafRegPairs: Traversable[(ItemFieldSpec, Function1[FieldDataLeaf, Unit])],
+		bagRegPairs: Traversable[(ItemFieldSpec, Function1[FieldDataBag, Unit])]) extends CPumpMsg {
 
 
+}
