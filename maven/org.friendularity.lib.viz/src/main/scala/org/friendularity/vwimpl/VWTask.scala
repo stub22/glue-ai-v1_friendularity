@@ -19,7 +19,11 @@ import java.util.concurrent.{Callable => ConcurrentCallable, Future}
 
 import com.jme3.scene.Spatial.CullHint
 import com.jme3.scene.{Node => JmeNode, Spatial}
+import org.appdapter.fancy.log.VarargsLogging
 import org.cogchar.render.sys.registry.RenderRegistryClient
+import org.friendularity.cpump.CPumpMsg
+import org.friendularity.field.{SchedItemRepeating, ScheduleHelper}
+import org.friendularity.vwmsg.VWExoBodyChance
 
 /**
   * Created by Stub22 on 7/3/2016.
@@ -68,3 +72,16 @@ trait SvcGate extends AttachHlp {
 //class SvcGateImpl (myRRC : RenderRegistryClient, myMatPal : MatPallete)  extends SvcGate {
 //	override protected def getRRC: RenderRegistryClient = myRRC
 //}
+
+trait StatusTickMsg extends CPumpMsg // Should be a notice
+
+trait StatusEventPumpLogic extends ScheduleHelper with VarargsLogging {
+	def makeRegularTickItem() : SchedItemRepeating = {
+		val msg = new StatusTickMsg{}
+		makeSchedItemRepeating(msg, 0, getTickPeriodMillis)
+	}
+	def getTickPeriodMillis : Int = 600
+
+}
+
+

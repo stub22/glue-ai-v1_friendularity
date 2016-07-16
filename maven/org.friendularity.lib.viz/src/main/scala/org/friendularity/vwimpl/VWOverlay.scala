@@ -25,7 +25,8 @@ import org.appdapter.fancy.log.VarargsLogging
 import org.cogchar.render.sys.registry.RenderRegistryClient
 import org.cogchar.render.trial.TextSpatialFactory
 import org.friendularity.dull.RemoteItemField
-import org.friendularity.navui.NavPage_Bodies
+import org.friendularity.field.BoundToDataSrc
+// import org.friendularity.navui.NavPage_Bodies
 import org.friendularity.vwmsg.{NavCmd, InnerNavCmds}
 
 import scala.collection.mutable.{ListBuffer, HashMap => MutableHashMap}
@@ -40,6 +41,7 @@ import com.jme3.scene.{Node => JmeNode, Mesh}
 // They may be navigated by user using the NavLogic keybindings.
 trait  OverlayPage extends IdentHlp {
 	def getPageID : Ident = makeStampyRandyIdent()
+
 	protected def makeTopFlatWidget : FlatWidget
 	lazy val myTopWidget : FlatWidget = makeTopFlatWidget
 	def getTopFlatWidget : FlatWidget = myTopWidget
@@ -50,21 +52,27 @@ trait  OverlayPage extends IdentHlp {
 		mySvcGate = sg
 	}
 }
+trait BoundPage {
+	def lookupBinding(g : FlatGadget) : Option[BoundToDataSrc]
+}
 trait  GadgetMaker extends IdentHlp {
-	def makeFixedTxtLine(txt : String) : TextLine = new FixedFlatGadgetTxtLine(makeStampyRandyIdent(), txt)
-	def makeUpdatableTxtLine(dataSrcID : Ident) : UpdatingTextLine = {
+	def makeFixedTxtLine(gadgID : Ident, txt : String) : TextLine = new FixedFlatGadgetTxtLine(gadgID, txt)
+	def makeUpdatableTxtLine(dataSrcID : Ident, preferredSize : Int) : UpdatingTextLine = {
 		//		val remote = ???
-		val gadg = new UpdatingTextLineGadget(makeStampyRandyIdent())
+		val sizeHints =  new OneLineTxtBlkSzHints(Some(preferredSize / 2), Some(preferredSize), Some(preferredSize * 2))
+		val gadg = new UpdatingTextLineGadget(makeStampyRandyIdent(), sizeHints)
 		gadg
 	}
 }
+/*
 trait PageItem {
 	protected def getGadget = ???
 	protected def getPartnerItem : RemoteItemField[_]
 }
-trait Clctn extends PageItem // Collection of items, possibly ordered
-trait Assembly extends PageItem // Has summary and also subcontent, which may be shown or hidden
-trait Leaf extends PageItem // No subcontent
+*/
+// trait Clctn extends PageItem // Collection of items, possibly ordered
+// trait Assembly extends PageItem // Has summary and also subcontent, which may be shown or hidden
+// trait Leaf extends PageItem // No subcontent
 
 trait OvlDisplayHelp extends SvcGate with SpatMatHelper with VarargsLogging  {
 	lazy val myFirstTSF: TextSpatialFactory = new TextSpatialFactory(getRRC)
@@ -137,7 +145,7 @@ class OvlPageBook(myRRC : RenderRegistryClient) extends OvlOuterDisplayHelp {
 			val gadgSpat = pcg.getSpat(this)
 			gadgSpat.setLocalTranslation(xOff, yOff, 0.3f)
 			selectorGroupNode.attachChild(gadgSpat)
-			xOff += 40.0f
+			xOff += 80.0f
 		}
 		outerFrameNode.attachChild(selectorGroupNode)
 		outerFrameNode
@@ -186,9 +194,6 @@ trait OverlayLogic extends VarargsLogging with InnerNavCmds  {
 			case NCmd_SHOW_TOGGLE => {
 				info1("Processing SHOW TOGGLE cmd: {}", nc)
 				toggleBookDisplay()
-//				val bodyPage = new NavPage_Bodies()
-//				val topWidg = bodyPage.getTopFlatWidget
-//				info1("Got bodies topFlatWidget={}", topWidg)
 			}
 			case NCmd_GO_IN => {
 				info1("Processing GO IN cmd: {}", nc)

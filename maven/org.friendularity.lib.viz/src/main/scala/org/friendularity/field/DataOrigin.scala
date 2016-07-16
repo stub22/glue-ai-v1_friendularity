@@ -44,7 +44,7 @@ class InterestNotifyChan(initialInterestMsg : FieldInterestRegMsg) {
 			val minUpd : Float = 0.6f * currIntrstMsg.getUpdatePeriodSec
 			if (secSinceLast_opt.isEmpty || (secSinceLast_opt.get > minUpd )) {
 				val notice : ItemFieldDataMsg = buildCrudeNoticeFromData(currIntrstMsg, relevantData)
-				val tlr = currIntrstMsg.getInterestedTeller
+				val tlr = currIntrstMsg.getDownstreamTeller
 				tlr.tellStrongCPMsg(notice)
 				myLastUpdateSent_opt = Some(notice)
 				true
@@ -99,10 +99,10 @@ trait InterestRegistryLogic extends FieldDataFilterFuncs {
 class FieldDataOriginActor(logic : InterestRegistryLogic) extends FrienduActor {
 	getLogger.info("In FieldDataDistributor actor constructor, logic={}", logic)
 	def receive = {
-		case regint : FieldInterestRegMsg => {
+		case regint : FieldInterestRegMsg => { // Usually connects us to some DistributorActor
 			logic.addOrUpdateInterestReg(regint)
 		}
-		case sdmi : SourceDataMsgImpl => {
+		case sdmi : SourceDataMsgImpl => { // Source data for us to route to appropriate distributors
 			logic.publishNoticesForUpdatedData(sdmi)
 		}
 

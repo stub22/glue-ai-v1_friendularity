@@ -41,21 +41,23 @@ trait TextLine {
 trait UpdatingTextLine extends TextLine {
 	def updateTextLine(upTxt : String)
 }
-case class FixedFlatGadgetTxtLine(id: Ident, fixedTxt : String)
-			extends FlatGadgetImpl(id, FunFlatGadgetKinds.FGK_textLine) with TextLine {
+case class FixedFlatGadgetTxtLine(gadgetID: Ident, fixedTxt : String)
+			extends FlatGadgetImpl(gadgetID, FunFlatGadgetKinds.FGK_textLine) with TextLine {
 	override def getTextLine: String = fixedTxt
 
-
+	val textLen = fixedTxt.length
+	override def getSizeHints : TextBlockSizeParams = new OneLineTxtBlkSzHints(Some(textLen / 2), Some(textLen), Some(textLen))
 	override def getSpat(odh : OvlDisplayHelp) : Spatial = {
 		val txtMaker = odh.happyTxtMaker
 		val someBT : BitmapText = txtMaker.makeBitmapTxt2D(fixedTxt)
-		someBT.scale(10.0f, 10.0f, 1.0f)
+		val scaleFactor = 7.0f
+		someBT.scale(scaleFactor, scaleFactor, 1.0f)
 		someBT
 	}
 }
 
 // Usually we want size to be fixed, rather than changing when text updates.
-case class UpdatingTextLineGadget(id : Ident) extends FlatGadgetImpl(id, FunFlatGadgetKinds.FGK_textLine) with UpdatingTextLine {
+case class UpdatingTextLineGadget(id : Ident, sizeHints : TextBlockSizeParams) extends FlatGadgetImpl(id, FunFlatGadgetKinds.FGK_textLine) with UpdatingTextLine {
 	var myCachedTxtLine = ""
 	override def updateTextLine(upTxt: String): Unit = {myCachedTxtLine = upTxt}
 
@@ -64,4 +66,6 @@ case class UpdatingTextLineGadget(id : Ident) extends FlatGadgetImpl(id, FunFlat
 	override def getSpat(odh : OvlDisplayHelp) : Spatial = {
 		null
 	}
+
+	override def getSizeHints: TextBlockSizeParams = sizeHints
 }
