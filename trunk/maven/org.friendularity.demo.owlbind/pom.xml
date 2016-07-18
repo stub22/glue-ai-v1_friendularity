@@ -108,6 +108,9 @@ public class Visitrow extends SPRFunctions {
     /** http://spinrdf.org/spr#visitCol */
 	public static final URI RDFS_CLASS = new URIImpl("http://spinrdf.org/spr#visitCol", false);			
 	-->
+
+    <!--        Sometimes we get "error: class Aggregaterow is public, should be declared in a file named Aggregaterow.java"
+                ...and sometimes we don't.
 					<execution>
 						<id>spinResults</id>
 						<goals>
@@ -119,7 +122,7 @@ public class Visitrow extends SPRFunctions {
 							<rdfReactorLogfile>target/rdfreactor_spinResults.log</rdfReactorLogfile>
 						</configuration>
 					</execution>
-				
+	-->
 					<execution>
 						<id>spinBuiltinFuncs</id>
 						<goals>
