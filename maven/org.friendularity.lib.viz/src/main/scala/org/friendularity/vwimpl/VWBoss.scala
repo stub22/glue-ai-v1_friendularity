@@ -7,7 +7,7 @@ import org.cogchar.render.goody.basic.{BasicGoodyCtxImpl, BasicGoodyCtx}
 import org.cogchar.render.sys.registry.RenderRegistryClient
 import org.cogchar.render.sys.window.WindowStatusMonitor
 import org.friendularity.cpump.ActorRefCPMsgTeller
-import org.friendularity.vwmsg.{VWStageRqMsg, VWShapeCreateRq, VWorldInternalNotice, VWBodyLifeRq, VWPubTellersMsgImpl, VWGoodyRqActionSpec, LesserIngred, BodyMgrIngred, VWorldNotice, VWSetupResultsNotice, VWARM_GreetFromPumpAdmin, VWARM_FindPublicTellers, VWAdminRqMsg, VWSetupRq_Lnch, VWSetupRq_Conf, VWorldRequest}
+import org.friendularity.vwmsg.{VWOverlayRq, VWStageRqMsg, VWShapeCreateRq, VWorldInternalNotice, VWBodyLifeRq, VWPubTellersMsgImpl, VWGoodyRqActionSpec, LesserIngred, BodyMgrIngred, VWorldNotice, VWSetupResultsNotice, VWARM_GreetFromPumpAdmin, VWARM_FindPublicTellers, VWAdminRqMsg, VWSetupRq_Lnch, VWSetupRq_Conf, VWorldRequest}
 
 /**
   * Created by Owner on 6/15/2016.
@@ -96,10 +96,13 @@ trait VWorldBossLogic [VWSM <: VWorldSysMgr] extends VarargsLogging with VWPTRen
 		val stageActorRef = VWorldActorFactoryFuncs.makeVWStageActor(localActorCtx, "stager", stagerCtx)
 		val stageTeller  = new ActorRefCPMsgTeller[VWStageRqMsg](stageActorRef)
 
+		val ovlActorRef = VWorldActorFactoryFuncs.makeVWOverlayActor(localActorCtx, "overlay", rrc)
+		val ovlTeller = new ActorRefCPMsgTeller[VWOverlayRq](ovlActorRef)
+
 		// Now the boss can publish this nice public API offering message, providing network-ready
 		// handles to all the services defined above.
 
-		val vwpt = new VWPubTellersMsgImpl(goodyTeller, charAdmTeller, shaperTeller, stageTeller)
+		val vwpt = new VWPubTellersMsgImpl(goodyTeller, charAdmTeller, shaperTeller, stageTeller, ovlTeller)
 		setVWPT(vwpt)
 	}
 

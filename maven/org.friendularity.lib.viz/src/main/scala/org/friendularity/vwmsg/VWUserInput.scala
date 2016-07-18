@@ -26,11 +26,12 @@ case class VWKeymapBinding_Medial(inpNamesToActionFuncs : Map[String,Function1[V
 // We do not allow for direct callback from keyboard into code that talks to the RenderRegistryClient, JME3, etc.
 // That all must be done by actor messages triggered from the medial (or external) callback actions, responding to
 // the messages above.
-trait NavCmd extends CPumpMsg {
+trait NavCmd extends VWOverlayRq {
 
 	def makeSendingFunc : Function1[VWorldPublicTellers,Unit] = pt => {
 		val standinNavTeller : CPMsgTeller = pt.getStageTeller.get
-		standinNavTeller.tellCPMsg(this)
+		val ovlTeller = pt.getOverlayTeller.get
+		ovlTeller.tellCPMsg(this)
 	}
 }
 trait NavCmdKeyClkBind

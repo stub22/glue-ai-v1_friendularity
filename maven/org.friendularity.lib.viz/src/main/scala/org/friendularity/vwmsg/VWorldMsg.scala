@@ -1,6 +1,7 @@
 package org.friendularity.vwmsg
 
 import org.friendularity.cpump.CPumpMsg
+import org.friendularity.vwimpl.OverlayPage
 
 // Our most general vw-msg traits are all simply type markers, adding no new methods.
 trait VWorldMsg extends CPumpMsg
@@ -23,3 +24,7 @@ trait VWSceneCoreRq extends VWCoreRq {
 	// Describes a change to managed VW scene graph, to be translated (usually by VWCore actor)
 	// into calls on JME render thread.
 }
+
+trait VWOverlayRq extends VWorldRequest
+
+case class VWSetupOvlBookRq(pages : List[OverlayPage]) extends VWOverlayRq

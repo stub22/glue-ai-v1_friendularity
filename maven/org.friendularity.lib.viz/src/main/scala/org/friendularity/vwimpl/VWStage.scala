@@ -19,7 +19,7 @@ import akka.actor.Actor
 import com.jme3.asset.AssetManager
 import com.jme3.input.controls.{Trigger, ActionListener}
 import com.jme3.input.{InputManager, FlyByCamera}
-import com.jme3.math.ColorRGBA
+import com.jme3.math.{Rectangle, Vector2f, Vector3f, ColorRGBA}
 import com.jme3.renderer.{Camera, ViewPort}
 import com.jme3.scene.control.CameraControl
 import com.jme3.scene.{Node => JmeNode, CameraNode}
@@ -36,7 +36,8 @@ import org.cogchar.render.sys.input.VW_InputBindingFuncs
 import org.cogchar.render.sys.registry.RenderRegistryClient
 import org.cogchar.render.sys.task.Queuer
 import org.cogchar.render.trial.{PointerCone, TrialCameras, TrialContent}
-// import  org.friendularity.navui.NavPage_Bodies
+import org.friendularity.field.{MsgToStatusSrc, ReportSourceCtrlMsg, ReportingTickChance, MediumFieldDataBag, ItemFieldSpecDirectImpl, VWTestFieldIdents, ReportFilteringPolicy, ItemFieldData, MonitoredSpaceImpl}
+
 import org.friendularity.rbody.DualBodyRecord
 import org.friendularity.vwmsg.{VWSetupOvlBookRq, NavCmd, InnerNavCmds, VWSCR_ExistingNode, CamState3D, ViewportDesc, VWModifyCamStateRq, VWCreateCamAndViewportRq, VWBindCamNodeRq, VWorldPublicTellers, VWKeymapBinding_Medial, VWStageOpticsBasic, VWStageEmulateBonusContentAndCams, VWStageRqMsg, VWBodyRq}
 
@@ -170,72 +171,6 @@ trait VWStageLogic extends VarargsLogging with EnqHlp {
 		enqueueJmeCallable(rrc, senderCallable)
 	}
 }
-trait VWCamLogic extends VarargsLogging with IdentHlp {
-	// We rely on the Cogchar cam-registry to keep track of cams by ID.
-
-	def getStageCtx : VWStageCtx
-	lazy val myCamMgr : CameraMgr = getStageCtx.getRRC.getOpticCameraFacade(null);
-
-	def makeCam_rendThrd(mcavRq : VWCreateCamAndViewportRq) : Unit = {
-		info1("Making cam for rq: {}", mcavRq)
-		val cbind : CameraBinding = myCamMgr.findOrMakeCameraBinding(mcavRq.camID) // makes the JME Camera object
-		applyCamState_anyThrd(cbind, mcavRq.initState)
-		applyViewportDesc_rendThrd(cbind, mcavRq.initVP)
-		// "attach_" is Designed to only be called once for each cam/binding, it appears.
-		cbind.attachViewPort(getStageCtx.getRRC)
-	}
-
-	def updateCamState_rendThrd(mcRq : VWModifyCamStateRq) : Unit = {
-		val cbind : CameraBinding = myCamMgr.findOrMakeCameraBinding(mcRq.camID)
-		mcRq.updState_opt.map(applyCamState_anyThrd(cbind, _))
-		mcRq.updVP_opt.map(applyViewportDesc_rendThrd(cbind, _))
-
-	}
-	def processBindCamNode(bcnRq : VWBindCamNodeRq) : Unit = {
-		val cbind : CameraBinding = myCamMgr.findOrMakeCameraBinding(bcnRq.camID)
-		val camNodeName = makeStampyRandyString("camNode_", "")
-		val cam = cbind.getCamera
-		val camNode = new CameraNode(camNodeName, cam)
-
-		val camMarkerNode: JmeNode = makePointerCone(getStageCtx.getRRC, "markerConeFor_" + camNodeName)
-		camNode.attachChild(camMarkerNode)
-
-		camNode.setControlDir(CameraControl.ControlDirection.SpatialToCamera)
-
-		val camNodeShapeID = makeStampyRandyIdent()
-		val registerCamNodeAsShape = new VWSCR_ExistingNode(camNode, camNodeShapeID, Option(bcnRq.spaceNodeID))
-
-		// Unclear exactly how previous state of camera is affected/replaced by the node attachment.
-		// Need more debug output.
-		bcnRq.spaceTeller.tellCPMsg(registerCamNodeAsShape)
-
-	}
-	def makePointerCone(rrc : RenderRegistryClient, nameSuffix : String) : JmeNode = {
-		val pc: PointerCone = new PointerCone(nameSuffix)
-		pc.setup(rrc)
-		pc.setTextPositionFraction(0.75f)
-		pc.getAssemblyNode
-	}
-	def applyCamState_anyThrd(cbind : CameraBinding, camState : CamState3D) : Unit = {
-		cbind.setWorldPos(camState.getPos)
-		cbind.setPointDir(camState.getPointDir)
-		cbind.applyInVWorld(Queuer.QueueingStyle.QUEUE_AND_RETURN)
-	}
-	def applyViewportDesc_rendThrd(cbind : CameraBinding, vpDesc : ViewportDesc): Unit = {
-	//	val camID = cbind.getIdent()
-		vpDesc.myBGColor_opt.map(cbind.setViewPortColor_rendThrd(_))  		// getViewPort
-	 	val jmeCam = cbind.getCamera
-		applyViewRectToCamState_rendThrd(jmeCam, vpDesc)
-	}
-	private def applyViewRectToCamState_rendThrd(cam : Camera, vpd : ViewportDesc): Unit = {
-		cam.setViewPort(vpd.myX1_left, vpd.myX2_right, vpd.myY1_bot, vpd.myY2_top)
-	}
-
-	def setViewportBackroundColor_rendThrd (camID : Ident, bgColor : ColorRGBA): Unit = {
-		val cbind : CameraBinding = myCamMgr.findOrMakeCameraBinding(camID)
-		// setViewPortColor_rendThrd
-	}
-}
 
 class VWStageActor(myStageCtx : VWStageCtx) extends Actor with VWStageLogic with VWCamLogic
 			with VWKeyMapLogic with OverlayLogic {
@@ -268,11 +203,8 @@ class VWStageActor(myStageCtx : VWStageCtx) extends Actor with VWStageLogic with
 		case bindCamNode : VWBindCamNodeRq => {
 			processBindCamNode(bindCamNode)
 		}
-		case setupOvl : VWSetupOvlBookRq => {
-			setupBook(myStageCtx.getRRC, setupOvl.pages)
-		}
-		case navCmd : NavCmd => {
-			processNavCmd(navCmd)
+		case msgToStatusSrc: MsgToStatusSrc => {
+			processMsgToStatusSrc(msgToStatusSrc)
 		}
 		case otherStageRq: VWStageRqMsg => {
 			// processBodyRq(vwbrq, self, context)

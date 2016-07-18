@@ -110,6 +110,13 @@ trait DeepestBagData extends DeeperBagData {
 	// Input is an itemID prev returned by getContainedItemIDs
 	def getAllSubFields(containedItemID : Ident) : Traversable[ItemFieldData]  // Exaustive set
 }
+// Has one level of properties
+class MediumFieldDataBag(fieldAddr : ItemFieldSpec, fieldCollsByItem : Map[Ident,Traversable[ItemFieldData]]) extends
+			ShallowFieldDataBag(fieldAddr, fieldCollsByItem.keys.toSet) {
+	override def getSomeSubFields(containedItemID : Ident) : Traversable[ItemFieldData]  = {
+		fieldCollsByItem.get(containedItemID).get
+	}
+}
 trait FieldDataFilterFuncs {
 	def justFieldDataLeafs(mixedFieldData : Traversable[ItemFieldData]) : Traversable[FieldDataLeaf] =
 		mixedFieldData.filter(_.isInstanceOf[FieldDataLeaf]).map(_.asInstanceOf[FieldDataLeaf])
@@ -129,6 +136,8 @@ object VWTestFieldIdents extends IdentHlp {
 	val PROP_hasBody = new FreeIdent("urn:PROP_hasBody#id")
 	val PROP_hasCamera = new FreeIdent("urn:PROP_hasCamera#id")
 	val PROP_hasGoody = new FreeIdent("urn:PROP_hasGoody#id")
+
+	val PROP_hasSummary = new FreeIdent("urn:PROP_hasSummary#id")
 
 	val PROP_hasX = new FreeIdent("urn:PROP_hasX#id")
 	val PROP_hasY = new FreeIdent("urn:PROP_hasY#id")

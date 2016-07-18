@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit
 import akka.actor.{Props, ActorRef, ActorRefFactory, Actor}
 // import akka.dispatch.{Dispatcher => AkkaDisp}
 import org.friendularity.cpump.{CPStrongTeller, CPumpMsg}
-import org.friendularity.field.{ScheduleHelper, SchedItemRepeating}
+import org.friendularity.field.{ScheduleHelper, SchedTaskRepeating}
 // import scala.concurrent.ExecutionContextExecutor
 // import akka.dispatch.Dispatcher
 import org.appdapter.fancy.log.VarargsLogging
@@ -51,7 +51,9 @@ trait ExoBodyUserLogic extends ScheduleHelper with VarargsLogging {
 		}
 	}
 	protected def rcvUpdtickForBody(exoBodyUpChance : VWExoBodyChance, bodyTeller : CPStrongTeller[VWBodyRq]) : Unit
-	def makeRegularTickItem() : SchedItemRepeating = {
+
+	// Called from   NavUiAppSvc.makeExoBodyUserTeller_withTicks
+	def makeRegularTickItem() : SchedTaskRepeating = {
 		val msg = new VWExoBodyChance{}
 		makeSchedItemRepeating(msg, 0, getTickPeriodMillis)
 	}

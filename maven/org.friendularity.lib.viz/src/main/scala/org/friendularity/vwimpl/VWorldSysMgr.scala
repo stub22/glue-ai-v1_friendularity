@@ -117,5 +117,11 @@ object VWorldActorFactoryFuncs {
 		val shaperActorRef : ActorRef = parentARF.actorOf(shaperActorProps, shaperActorName)
 		shaperActorRef
 	}
+	def makeVWOverlayActor(parentARF : ActorRefFactory, ovlActorName : String, someThing : AnyRef) : ActorRef = {
+		val ovlProps = Props(classOf[VWOverlayActor], someThing)
+		val ovlActorRef : ActorRef = parentARF.actorOf(ovlProps, ovlActorName)
+		ovlActorRef
+	}
+
 }
 
