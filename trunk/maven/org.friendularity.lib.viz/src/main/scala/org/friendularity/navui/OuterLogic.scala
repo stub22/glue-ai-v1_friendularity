@@ -18,13 +18,14 @@ package org.friendularity.navui
 
 import java.util.{Random => JRandom}
 import java.lang.{Long => JLong}
-import akka.actor.{ActorRefFactory, ActorContext, ActorRef}
+import akka.actor.{ActorSystem, ActorRefFactory, ActorContext, ActorRef}
 import com.jme3.math.{Quaternion, Vector3f, ColorRGBA}
 import org.appdapter.core.name.Ident
 import org.appdapter.fancy.log.VarargsLogging
 import org.cogchar.api.fancy.FancyThingModelWriter
 import org.cogchar.render.rendtest.GoodyTestMsgMaker
 import org.friendularity.cpump.{CPumpMsg, ActorRefCPMsgTeller, CPStrongTeller, CPMsgTeller}
+import org.friendularity.field.{ReportingPolicy, ReportSrcOpen, SourceDataMsg, MsgToStatusSrc, StatusTickActorFactory, ReportingTickChance, StatusTickDistributor, StatusTickScheduler, FieldActorFactory}
 import org.friendularity.mjob.{MsgJobLogicFactory, MsgJobLogic}
 
 import com.hp.hpl.jena.rdf.model.{Model => JenaModel, ModelFactory => JenaModelFactory, Literal}
@@ -32,7 +33,7 @@ import org.friendularity.vwimpl.{OverlayPage, IdentHlp, VWorldMasterFactory}
 
 import scala.collection.immutable.HashMap
 
-import org.friendularity.vwmsg.{VWSetupOvlBookRq, NavCmdImpl, NavCmdKeyClkBind, NavCmd, InnerNavCmds, VWorldPublicTellers, VWSCR_Node, VWBindCamNodeRq, VWCreateCamAndViewportRq, CamStateParams3D, CamState3D, ViewportDesc, ShapeManipRqImpl, SmooveManipEndingImpl, TransformParams3D, VWBodySkeletonDisplayToggle, VWBroadcastToAllBodies, VWClearAllShapes, VWStageResetToDefault, VWKeymapBinding_Medial, OrdinaryParams3D, VWSCR_Sphere, VWStageOpticsBasic, VWSCR_CellGrid, VWStageEmulateBonusContentAndCams, VWBodyLifeRq, VWGoodyRqTAS, VWGoodyRqTurtle}
+import org.friendularity.vwmsg.{VWOverlayRq, VWSetupOvlBookRq, NavCmdImpl, NavCmdKeyClkBind, NavCmd, InnerNavCmds, VWorldPublicTellers, VWSCR_Node, VWBindCamNodeRq, VWCreateCamAndViewportRq, CamStateParams3D, CamState3D, ViewportDesc, ShapeManipRqImpl, SmooveManipEndingImpl, TransformParams3D, VWBodySkeletonDisplayToggle, VWBroadcastToAllBodies, VWClearAllShapes, VWStageResetToDefault, VWKeymapBinding_Medial, OrdinaryParams3D, VWSCR_Sphere, VWStageOpticsBasic, VWSCR_CellGrid, VWStageEmulateBonusContentAndCams, VWBodyLifeRq, VWGoodyRqTAS, VWGoodyRqTurtle}
 
 
 /**
@@ -196,11 +197,11 @@ trait PatientSender_BonusStaging extends OuterLogic with IdentHlp {
 	def setupOverlayBook(vwpt: VWorldPublicTellers) : Unit = {
 
 		val pages : List[OverlayPage] = NavPageDefs.pageList
-		val stageTeller = vwpt.getStageTeller.get
+		val ovlTeller = vwpt.getOverlayTeller.get
 
 		val ovlSetupMsg = new VWSetupOvlBookRq(pages)
 
-		stageTeller.tellStrongCPMsg(ovlSetupMsg)
+		ovlTeller.tellStrongCPMsg(ovlSetupMsg)
 	}
 
 	def setupStatusPumps(vwpt: VWorldPublicTellers) : Unit = {
@@ -263,7 +264,36 @@ trait PatientSender_BonusStaging extends OuterLogic with IdentHlp {
 
 	}
 }
+// Serves as a rendezvous
+trait OuterAppPumpSetupLogic extends OuterLogic with IdentHlp with StatusTickScheduler {
+	protected def getAkkaSystem : ActorSystem
 
+	def setupDownstreamActors(ovlTeller : CPStrongTeller[VWOverlayRq]) : CPMsgTeller = {
+		val downstreamTeller = FieldActorFactory.makeDistribIndep(getAkkaSystem, "downstreamFieldDistrib")
+		downstreamTeller
+	}
+	def setupOuterPumpActors(stageTeller : CPStrongTeller[ReportingTickChance]) : Unit = {
+		val statusTickHandler = new StatusTickDistributor{}
+		statusTickHandler.registerTickLover(stageTeller)
+		val akkaSys = getAkkaSystem
+		val statusTickActorRef = StatusTickActorFactory.makeStatusTickDistribActor(akkaSys, "statusTickHandler", statusTickHandler)
+		info1("Made statusTickHandler-Actor: {}", statusTickActorRef)
+		scheduleReportingTicks(akkaSys, statusTickActorRef, statusTickActorRef)
+
+	}
+	override def rcvPubTellers(vwpt: VWorldPublicTellers): Unit = {
+		info0("OuterAppPumpSetup received pubTellers")
+		val downstreamTeller = setupDownstreamActors(vwpt.getOverlayTeller.get)
+		val stageTeller = vwpt.getStageTeller.get
+		val chanID = makeStampyRandyIdent()
+		val wrong = downstreamTeller
+		val toWhom : CPStrongTeller[SourceDataMsg] = ???
+		val blankPolicy = new ReportingPolicy{}
+		val chanOpenMsg = new ReportSrcOpen(chanID, toWhom,  blankPolicy)
+		setupOuterPumpActors(vwpt.getStageTeller.get.asInstanceOf[CPStrongTeller[MsgToStatusSrc]])
+
+	}
+}
 // Unnecessary to use the Jobby approach here, but working through it anyway as a comparative exercise.
 class OuterJobbyWrapper(outerLogic : OuterLogic) extends MsgJobLogic[VWorldPublicTellers] {
 	// Differences here is that we get exception handling+logging, runtime type verification,
@@ -271,9 +301,12 @@ class OuterJobbyWrapper(outerLogic : OuterLogic) extends MsgJobLogic[VWorldPubli
 	// Note that we could also pass constructor parameters in via the factory, without Props hassles.
 	override def processMsgUnsafe(msg : VWorldPublicTellers, slf : ActorRef, sndr : ActorRef,
 								  actx : ActorContext) : Unit = {
-		debug2("Received public-tellers-ready msg={} for outerLogic={}", msg, outerLogic)
+
 		msg match {
-			case vwpt : VWorldPublicTellers => 	outerLogic.rcvPubTellers(vwpt)
+			case vwpt : VWorldPublicTellers => 	{
+				debug2("Received public-tellers-ready msg={} for outerLogic={}", msg, outerLogic)
+				outerLogic.rcvPubTellers(vwpt)
+			}
 		}
 
 	}

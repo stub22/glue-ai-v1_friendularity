@@ -16,10 +16,11 @@
 package org.friendularity.field
 
 import org.appdapter.core.name.Ident
+import org.appdapter.fancy.log.VarargsLogging
 import org.friendularity.cpump.{CPMsgTeller, CPStrongTeller, CPumpMsg}
 
 /**
-  * Created by Owner on 7/11/2016.
+  * Created by Stub22 on 7/11/2016.
   */
 trait ItemDataMsg extends CPumpMsg
 trait ItemFieldDataMsg extends ItemDataMsg {
@@ -36,10 +37,13 @@ case class MatchedDataMsgImpl(myMatchedInterestRegID : Ident, myTStampMsec : Lon
 	override def getSourceTStampMsec : Long = myTStampMsec
 	override def getFieldDataBreadthFirst : List[ItemFieldData] = myFieldDataBreadthFirst
 }
-
-case class SourceDataMsgImpl(myTStampMsec : Long, myFieldDataBreadthFirst : List[ItemFieldData]) extends ItemDataMsg {
-	def getSourceTStampMsec : Long = myTStampMsec
-	def getFieldDataBreadthFirst : List[ItemFieldData] = myFieldDataBreadthFirst
+trait SourceDataMsg  extends ItemDataMsg {
+	def getSourceTStampMsec : Long
+	def getFieldDataBreadthFirst : List[ItemFieldData]
+}
+case class SourceDataMsgImpl(myTStampMsec : Long, myFieldDataBreadthFirst : List[ItemFieldData]) extends SourceDataMsg {
+	override def getSourceTStampMsec : Long = myTStampMsec
+	override def getFieldDataBreadthFirst : List[ItemFieldData] = myFieldDataBreadthFirst
 }
 /*
 trait ItemFieldDataChgMsg[CType] extends ItemFieldDataMsg {
@@ -96,7 +100,21 @@ trait UpstreamTellerAvailabilityNotice extends CPumpMsg {
 
 case class FieldCallbackRegMsgImpl(cbackRegID : Ident,
 		leafRegPairs: Traversable[(ItemFieldSpec, Function1[FieldDataLeaf, Unit])],
-		bagRegPairs: Traversable[(ItemFieldSpec, Function1[FieldDataBag, Unit])]) extends CPumpMsg {
+		bagRegPairs: Traversable[(ItemFieldSpec, Function1[FieldDataBag, Unit])]) extends CPumpMsg
 
 
-}
+//class SvcGateImpl (myRRC : RenderRegistryClient, myMatPal : MatPallete)  extends SvcGate {
+//	override protected def getRRC: RenderRegistryClient = myRRC
+//}
+
+trait MsgToStatusSrc extends CPumpMsg
+
+trait ReportSourceCtrlMsg extends MsgToStatusSrc
+case class ReportSrcOpen(chanID : Ident, toWhom : CPStrongTeller[SourceDataMsg], policy : ReportingPolicy)
+			extends ReportSourceCtrlMsg
+
+trait StatusTickMsg extends MsgToStatusSrc // Effectively a "notice"
+case class ReportingTickChance() extends StatusTickMsg
+
+
+

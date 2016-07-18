@@ -13,16 +13,18 @@ trait VWorldPublicTellers extends VWorldNotice  {
 	def getCharAdminTeller : Option[CPStrongTeller[VWBodyLifeRq]] = None
 	def getShaperTeller : Option[CPStrongTeller[VWShapeCreateRq]] = None
 	def getStageTeller : Option[CPStrongTeller[VWStageRqMsg]] = None
+	def getOverlayTeller : Option[CPStrongTeller[VWOverlayRq]] = None
 }
 case class VWPubTellersMsgImpl(goodyTeller : CPStrongTeller[VWGoodyRqActionSpec],
 							   charAdminTeller: CPStrongTeller[VWBodyLifeRq],
 							   shaperTeller : CPStrongTeller[VWShapeCreateRq],
-								stageTeller: CPStrongTeller[VWStageRqMsg]) extends VWorldPublicTellers {
+								stageTeller: CPStrongTeller[VWStageRqMsg],
+							    ovlTeller : CPStrongTeller[VWOverlayRq]) extends VWorldPublicTellers {
 	override def getGoodyDirectTeller : Option[CPStrongTeller[VWGoodyRqActionSpec]] = Option(goodyTeller)
 	override def getCharAdminTeller : Option[CPStrongTeller[VWBodyLifeRq]] = Option(charAdminTeller)
 	override def getShaperTeller : Option[CPStrongTeller[VWShapeCreateRq]] = Option(shaperTeller)
 	override def getStageTeller : Option[CPStrongTeller[VWStageRqMsg]] = Option(stageTeller)
-
+	override def getOverlayTeller : Option[CPStrongTeller[VWOverlayRq]] = Option(ovlTeller)
 }
 
 trait VWBodyNotice extends VWorldNotice {

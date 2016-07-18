@@ -16,6 +16,7 @@
 
 package org.friendularity.vwimpl
 
+import akka.actor.Actor
 import com.jme3.math.Vector3f
 import com.jme3.renderer.queue.RenderQueue
 import com.jme3.scene.Node
@@ -27,7 +28,7 @@ import org.cogchar.render.trial.TextSpatialFactory
 import org.friendularity.dull.RemoteItemField
 import org.friendularity.field.BoundToDataSrc
 // import org.friendularity.navui.NavPage_Bodies
-import org.friendularity.vwmsg.{NavCmd, InnerNavCmds}
+import org.friendularity.vwmsg.{VWSetupOvlBookRq, VWStageOpticsBasic, NavCmd, InnerNavCmds}
 
 import scala.collection.mutable.{ListBuffer, HashMap => MutableHashMap}
 import com.jme3.scene.{Node => JmeNode, Mesh}
@@ -204,6 +205,16 @@ trait OverlayLogic extends VarargsLogging with InnerNavCmds  {
 			case _ => {
 				info1("Processing unexpected cmd: {}", nc)
 			}
+		}
+	}
+}
+class VWOverlayActor(myRRC : RenderRegistryClient) extends Actor with OverlayLogic {
+	override def receive: Actor.Receive = {
+		case setupOvl: VWSetupOvlBookRq => {
+			setupBook(myRRC, setupOvl.pages)
+		}
+		case navCmd: NavCmd => {
+			processNavCmd(navCmd)
 		}
 	}
 }

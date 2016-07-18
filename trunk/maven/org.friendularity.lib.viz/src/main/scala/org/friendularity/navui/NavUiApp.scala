@@ -26,7 +26,7 @@ import org.friendularity.dull.SpecialAppPumpSpace
 import org.friendularity.field.ScheduleHelper
 import org.friendularity.respire._
 import org.friendularity.vwimpl.{VWorldActorFactoryFuncs, LegacyBodyLoader_Stateless}
-import org.friendularity.vwmsg.{VWBodyRq, VWBodyMakeRq, VWBodyLifeRq, VWARM_FindPublicTellers, VWSetupRq_Lnch, VWSetupRq_Conf, VWARM_GreetFromPumpAdmin, VWBodyNotice}
+import org.friendularity.vwmsg.{VWorldPublicTellers, VWBodyRq, VWBodyMakeRq, VWBodyLifeRq, VWARM_FindPublicTellers, VWSetupRq_Lnch, VWSetupRq_Conf, VWARM_GreetFromPumpAdmin, VWBodyNotice}
 import org.osgi.framework.BundleContext
 
 /**
@@ -73,6 +73,8 @@ trait NavUiAppSvc extends VarargsLogging {
 		val fullHumaCfg : HumanoidFigureConfig = legBodyLdr.loadFullHumaConfig_SemiLegacy(legacyELRC, sinbadBodyID, hmdGraphID, bonyGraphID)
 		val mbrsc: ModelBlendingRobotServiceContext = legBodyLdr.connectMechIOBody(legacyELRC, bundleCtx, fullHumaCfg, bonyGraphID)
 
+		// Before we create the body itself, create an external client actor, with ability to
+		// talk to VW body, and also to receive schedule ticks
 		val bodyNoticer : CPStrongTeller[VWBodyNotice] = makeExoBodyUserTeller_withTicks(akkaSys, "sinbad_ccmio_body_user", exoBodyUserLogic)
 
 		// Now we've done all the "outer" setup that requires assumptions, and we can
@@ -90,6 +92,8 @@ trait NavUiAppSvc extends VarargsLogging {
 		val legBodyLdr = new LegacyBodyLoader_Stateless
 		val fullHumaCfg : HumanoidFigureConfig = legBodyLdr.loadFullHumaConfig_SemiLegacy(legacyELRC, sinbadBodyID, hmdGraphID, bonyGraphID)
 
+		// Before we create the body itself, create an external client actor, with ability to
+		// talk to VW body, and also to receive schedule ticks
 		val bodyNoticer : CPStrongTeller[VWBodyNotice] = makeExoBodyUserTeller_withTicks(akkaSys, "sinbad_standy_body_user", exoBodyUserLogic)
 		postPatientCharCreateRq(sinbadBodyID, fullHumaCfg, None, bodyNoticer)
 
@@ -131,6 +135,13 @@ class NavUiAppImpl(myAkkaSys : ActorSystem) extends NavUiAppSvc with NavPumpSpac
 
 	lazy private val bonusStagingLogic = new PatientSender_BonusStaging {}
 	lazy private val bonusStagingTrigTeller  = OuterJobbyLogic_MasterFactory.makeOoLogicAndTeller(bonusStagingLogic, myAkkaSys, "bonusStagingRequester")
+
+	lazy private val statusTickPumpLogic = new OuterAppPumpSetupLogic {
+		override protected def getAkkaSystem : ActorSystem = getAkkaSys
+	}
+
+	lazy private val statusTickTrigTeller  = OuterJobbyLogic_MasterFactory.makeOoLogicAndTeller(statusTickPumpLogic, myAkkaSys, "statusTickPumpSetup")
+
 
 	// Desired effect of these messages is to launch a running OpenGL v-world, ready for characters and other content
 	// to be inserted into it.  Those facilities are available via actors defined in PubTeller replies sent to the
@@ -174,6 +185,10 @@ class NavUiAppImpl(myAkkaSys : ActorSystem) extends NavUiAppSvc with NavPumpSpac
 		val bonusStageRegMsg = new VWARM_FindPublicTellers(bonusStagingTrigTeller)
 		debug2("Sending bonusStage-listener-reg={} to VWBossTeller : {}", bonusStageRegMsg, myVWBossTeller)
 		myVWBossTeller.tellCPMsg(bonusStageRegMsg)
+
+		val tickPumpRegMsg = new VWARM_FindPublicTellers(statusTickTrigTeller)
+		debug2("Sending tickPump-listener-reg={} to VWBossTeller : {}", tickPumpRegMsg, myVWBossTeller)
+		myVWBossTeller.tellCPMsg(tickPumpRegMsg)
 
 	}
 	// Can't so directly send this yet as  actor msg.  There is a kind of implicit rendezvous going on here

@@ -16,6 +16,8 @@
 package org.friendularity.field
 
 import org.appdapter.core.name.{FreeIdent, Ident}
+import org.appdapter.fancy.log.VarargsLogging
+import org.friendularity.cpump.{CPumpMsg, CPStrongTeller, CPMsgTeller}
 import org.friendularity.dull.FrienduActor
 import org.friendularity.vwimpl.IdentHlp
 
@@ -24,7 +26,7 @@ import scala.collection.mutable.{HashMap => MutableHashMap}
 /**
   * Created by Stub22 on 7/11/2016.
   */
-class InterestNotifyChan(initialInterestMsg : FieldInterestRegMsg) {
+class InterestChan(initialInterestMsg : FieldInterestRegMsg) {
 	private var myLastRegMsg : FieldInterestRegMsg = initialInterestMsg
 	private var myLastUpdateSent_opt : Option[ItemFieldDataMsg] = None
 	private var myPendingUpdateData_opt : List[ItemFieldData] = Nil
@@ -62,14 +64,14 @@ class InterestNotifyChan(initialInterestMsg : FieldInterestRegMsg) {
 
 //
 trait InterestRegistryLogic extends FieldDataFilterFuncs {
-	val myInterestChansByID = new MutableHashMap[Ident, InterestNotifyChan]()
+	val myInterestChansByID = new MutableHashMap[Ident, InterestChan]()
 	val myInterestIdentsByFieldSpec = new MutableHashMap[ItemFieldSpecDirectImpl, Set[Ident]]()
 	def addOrUpdateInterestReg(iirg : FieldInterestRegMsg) : Unit = {
 		// TODO 1:  If there was an old version of this interest, and it has different fieldSpecs,
 		// then we need to remove them from the fieldSpec keymap.
 		// TODO 2:  We want to send a first update based on current state of the data.
 		val regID = iirg.getInterestRegID
-		val interestChan = new InterestNotifyChan(iirg)
+		val interestChan = new InterestChan(iirg)
 		myInterestChansByID.put(regID, interestChan)
 		val fieldSpecs : Traversable[ItemFieldSpec] = iirg.getInterestingFieldSpecs
 		fieldSpecs.map(recordFSMapping(_, regID))
@@ -78,10 +80,10 @@ trait InterestRegistryLogic extends FieldDataFilterFuncs {
 
 	}
 
-	def findMatchingIntrstChans(fieldSpec : ItemFieldSpec) :  Traversable[InterestNotifyChan] = {
+	def findMatchingIntrstChans(fieldSpec : ItemFieldSpec) :  Traversable[InterestChan] = {
 		Nil
 	}
-	def publishNoticesForUpdatedData(sdmi : SourceDataMsgImpl) : Int = {
+	def publishNoticesForUpdatedData(sdmi : SourceDataMsg) : Int = {
 		val fdbf : List[ItemFieldData] = sdmi.getFieldDataBreadthFirst
 		val srcStampMsec : Long = sdmi.getSourceTStampMsec
 		val topSpecs = fdbf.map(_.getFieldAddress)
@@ -102,7 +104,7 @@ class FieldDataOriginActor(logic : InterestRegistryLogic) extends FrienduActor {
 		case regint : FieldInterestRegMsg => { // Usually connects us to some DistributorActor
 			logic.addOrUpdateInterestReg(regint)
 		}
-		case sdmi : SourceDataMsgImpl => { // Source data for us to route to appropriate distributors
+		case sdmi : SourceDataMsg => { // Source data for us to route to appropriate distributors
 			logic.publishNoticesForUpdatedData(sdmi)
 		}
 
@@ -114,3 +116,31 @@ class FieldDataOriginActor(logic : InterestRegistryLogic) extends FrienduActor {
 	}
 }
 
+trait ReportFilteringPolicy {
+	// Empty => Reporter's discretion
+	def itemsIncluded : Traversable[Ident] = Nil
+	def itemsExcluded : Traversable[Ident] = Nil
+
+	def fieldsIncluded : Traversable[Ident] = Nil
+	def fieldsExcluded : Traversable[Ident] = Nil
+
+	// Combos are higher priority, overriding any item/field settings
+	def combosIncluded : Traversable[ItemFieldSpec] = Nil
+	def combosExcluded : Traversable[ItemFieldSpec] = Nil
+}
+trait ReportingPolicy {
+	// How is detail specified?   What combination of changed + unchanged field data?
+	// Usually we want to send an initial exhaustive state report, followed by
+	// smaller reports on changes.
+	// How often?  What kind of throttling to use?
+
+	def initialFilter_opt : Option[ReportFilteringPolicy] = Some(new ReportFilteringPolicy {})
+	def updateFilter_opt : Option[ReportFilteringPolicy] = Some(new ReportFilteringPolicy {})
+}
+trait ReportOncePolicy extends ReportingPolicy {
+	override def updateFilter_opt = None
+}
+
+
+class ScalaItemState
+class RdfItemState

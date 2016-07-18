@@ -16,9 +16,10 @@
 
 package org.friendularity.field
 
+import akka.actor.{ActorRef, Props, ActorRefFactory}
 import org.appdapter.core.name.Ident
 import org.appdapter.fancy.log.VarargsLogging
-import org.friendularity.cpump.{CPStrongTeller, ActorRefCPMsgTeller, CPMsgTeller}
+import org.friendularity.cpump.{CPumpMsg, CPStrongTeller, ActorRefCPMsgTeller, CPMsgTeller}
 import org.friendularity.dull.FrienduActor
 import org.friendularity.vwimpl.IdentHlp
 
@@ -179,6 +180,18 @@ class FieldDataDistributorActor(distributor : FieldDataDistributor) extends Frie
 	}
 
 	override protected def getDownstreamTeller: CPStrongTeller[ItemFieldDataMsg] = tellerForMe
+}
+
+object FieldActorFactory {
+	def makeDistribIndep(parentARF : ActorRefFactory, distroActorName : String) : CPMsgTeller = {
+		val distrib = new MutableFieldDataDistrib
+		val distroActorProps = Props(classOf[FieldDataDistributorActor], distrib)
+		val distroActorRef : ActorRef = parentARF.actorOf(distroActorProps, distroActorName)
+		val teller = new ActorRefCPMsgTeller[CPumpMsg](distroActorRef)
+		teller
+	}
+
+
 }
 
 
