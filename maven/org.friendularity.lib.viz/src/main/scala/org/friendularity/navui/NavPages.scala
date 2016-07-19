@@ -20,7 +20,7 @@ import org.appdapter.core.name.{FreeIdent, Ident}
 import org.cogchar.render.sys.registry.RenderRegistryClient
 import org.cogchar.render.trial.TextSpatialFactory
 import org.friendularity.dull.RemoteItemField
-import org.friendularity.field.BoundToDataSrc
+import org.friendularity.field.{BoundToFieldOfVariableItem, BoundToDataSrc}
 import org.friendularity.vwimpl.{BoundPage, OvlPageBook, GadgetMaker, OverlayPage, SvcGate, AttachHlp, FullEnqHlp, TextSpatMaker, MeshGeoMaker, BrushJar, MatPallete, TextLine, UpdatingTextLineGadget, UpdatingTextLine, IdentHlp, FixedFlatGadgetTxtLine, FlatGadget, FinishedFlatWidget, FlatWidget}
 import com.jme3.scene.{Node => JmeNode, Mesh}
 
@@ -30,16 +30,37 @@ import scala.collection.mutable.ListBuffer
   * Created by Stub22 on 7/7/2016.
   */
 
+// Hierarchy
+// Book
+//   Page
+//     Entity = one camera, one body, ...
+//       Part = one descriptive chunk, such as a vector or color
+//         Fragment = one field
 
 trait PageEntrySpec {
+	// Defined as a pair of options of gadget-pairs.
+	// Contains up to one "Label" and up to one "Dynamic", where the latter could be any kind of single/multi
+	// field display+action.
 	def getFixedLabelPair_opt : Option[(Ident,String)]
 	def getDynamicPair_opt : Option[(Ident,BoundToDataSrc)]
+}
+trait PageEntryTemplate {
+
+}
+trait PartTemplate {
+
+}
+trait FragmentDisplayTemplate extends BoundToFieldOfVariableItem {
+
+}
+trait EntityDisplayTemplate {
+
 }
 class SimplePageEntrySpec(myLabelTxt_opt : Option[String], myBinding_opt : Option[BoundToDataSrc])
 					extends PageEntrySpec with IdentHlp {
 
-	val myLabelGadgID = makeStampyRandyIdent()
-	val myDynaGadgID = makeStampyRandyIdent()
+	lazy val myLabelGadgID = makeStampyRandyIdent()
+	lazy val myDynaGadgID = makeStampyRandyIdent()
 
 	//override def getFixedLabelGadgetID_opt = Option(myLabelGadgID)
 	//override def getFixedLabelTxt : String = myLabelTxt
@@ -50,8 +71,17 @@ class SimplePageEntrySpec(myLabelTxt_opt : Option[String], myBinding_opt : Optio
 
 	override def getDynamicPair_opt: Option[(Ident, BoundToDataSrc)] = myBinding_opt.map((myDynaGadgID,_))
 }
-
-class SimpleNavPage(outerLabel : String, items : List[PageEntrySpec]) extends OverlayPage
+trait PageEntrySpecMaker {
+	def makeEntry(labelTxt_opt : Option[String], binding_opt : Option[BoundToDataSrc]) : PageEntrySpec = {
+		new SimplePageEntrySpec(labelTxt_opt, binding_opt)
+	}
+}
+trait PageEntryToGadget extends GadgetMaker {
+	def toGadgets(pes : PageEntrySpec) : List[FlatGadget] = {
+		Nil
+	}
+}
+class SimpleNavPage(outerLabel : String, entries : List[PageEntrySpec]) extends OverlayPage
 			with BoundPage with  GadgetMaker {
 
 	val myOuterGadgID = makeStampyRandyIdent()
@@ -59,7 +89,7 @@ class SimpleNavPage(outerLabel : String, items : List[PageEntrySpec]) extends Ov
 
 	override def lookupBinding(g : FlatGadget) : Option[BoundToDataSrc] = {
 		val ggid = g.getGadgetID
-		val item : Option[PageEntrySpec] = items.find(_.getDynamicPair_opt.map(_._1).getOrElse("").equals(ggid))
+		val item : Option[PageEntrySpec] = entries.find(_.getDynamicPair_opt.map(_._1).getOrElse("").equals(ggid))
 		item.flatMap(_.getDynamicPair_opt.map(_._2))
 	}
 	override def makeTopFlatWidget: FlatWidget =  {
@@ -67,6 +97,8 @@ class SimpleNavPage(outerLabel : String, items : List[PageEntrySpec]) extends Ov
 		val tfw = new FinishedFlatWidget(gadgList, {lookupBinding(_).get}, myOuterGadg )
 		tfw
 	}
+	protected def getPageEntrySpecs : List[PageEntrySpec] = entries
+	protected def getInsideGadgets : List[FlatGadget] = Nil
 }
 
 // We expect VW-picking to eventually interact sensibly with any of these.
@@ -88,13 +120,23 @@ class NavPage_BodiesUnused() extends OverlayPage with  GadgetMaker  {
 
 	override def makeTopFlatWidget: FlatWidget =  ??? // new FinishedFlatWidget(myFieldGadgs, myOuterGadg)
 } */
-object NavPageDefs {
+object NavPageDefs extends PageEntrySpecMaker {
 
 	val page_Bodies = new SimpleNavPage("Bodies", Nil)
 	// Table showing gross properties of all bodies, plus we see detail on selected body col/row.
 
-	val page_Cams  = new SimpleNavPage("Cams", Nil)
-	// Table showing properties of each cam, mainly pos+dir.  Ops to manipulate cams are lower priority.
+	val camEntries : List[PageEntrySpec] = List (makeEntry(Some("dirVec"), None), makeEntry(Some("pos-X"), None))
+	val page_Cams  = new SimpleNavPage("Cams", camEntries) {
+		// Table showing properties of each cam, mainly pos+dir.  Ops to manipulate cams are lower priority.
+		override protected def getInsideGadgets : List[FlatGadget] = {
+			val pgEntrySpcs = getPageEntrySpecs
+			val gdgs = pgEntrySpcs.flatMap(pes => {
+				Nil
+			})
+			Nil
+		}
+	}
+
 
 	val page_Goodies = new SimpleNavPage("Goodies", Nil)
 	// Shows available goodies of each kind.  Highlight row to select the actual goody in (2 or) 3-space.
