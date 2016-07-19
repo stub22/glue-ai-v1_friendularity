@@ -139,7 +139,18 @@ object VWTestFieldIdents extends IdentHlp {
 
 	val PROP_hasSummary = new FreeIdent("urn:PROP_hasSummary#id")
 
+	val PROP_hasPos = new FreeIdent("urn:PROP_hasPos#id")
+	val PROP_hasPointDir = new FreeIdent("urn:PROP_hasPointDir#id")
+	val PROP_hasUpDir = new FreeIdent("urn:PROP_hasUpDir#id")
+	val PROP_hasViewport = new FreeIdent("urn:PROP_hasViewport#id")
+
 	val PROP_hasX = new FreeIdent("urn:PROP_hasX#id")
 	val PROP_hasY = new FreeIdent("urn:PROP_hasY#id")
 	val PROP_hasZ = new FreeIdent("urn:PROP_hasZ#id")
+
+	val PROP_hasLeft = new FreeIdent("urn:PROP_hasLeft#id")
+	val PROP_hasRight = new FreeIdent("urn:PROP_hasRight#id")
+	val PROP_hasTop = new FreeIdent("urn:PROP_hasTop#id")
+	val PROP_hasBottom = new FreeIdent("urn:PROP_hasBottom#id")
+
 }

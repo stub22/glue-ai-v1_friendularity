@@ -17,7 +17,7 @@
 package org.friendularity.vwimpl
 
 import akka.actor.Actor
-import com.jme3.math.Vector3f
+import com.jme3.math.{Vector2f, Vector3f}
 import com.jme3.renderer.queue.RenderQueue
 import com.jme3.scene.Node
 import com.jme3.scene.shape.Quad
@@ -26,7 +26,9 @@ import org.appdapter.fancy.log.VarargsLogging
 import org.cogchar.render.sys.registry.RenderRegistryClient
 import org.cogchar.render.trial.TextSpatialFactory
 import org.friendularity.dull.RemoteItemField
-import org.friendularity.field.BoundToDataSrc
+import org.friendularity.field.{VWTestFieldIdents, BoundToDataSrc}
+
+
 // import org.friendularity.navui.NavPage_Bodies
 import org.friendularity.vwmsg.{VWSetupOvlBookRq, VWStageOpticsBasic, NavCmd, InnerNavCmds}
 
@@ -75,6 +77,17 @@ trait PageItem {
 // trait Assembly extends PageItem // Has summary and also subcontent, which may be shown or hidden
 // trait Leaf extends PageItem // No subcontent
 
+trait JmeNodeSupplier {
+	def getNode : JmeNode
+}
+case class HasJmeNode(myNode : JmeNode) extends JmeNodeSupplier {
+	override def getNode : JmeNode = myNode
+}
+case class MakesJmeNode(myNodeName : String) extends JmeNodeSupplier {
+	lazy val myNode : JmeNode = new JmeNode(myNodeName)
+	override def getNode : JmeNode = myNode
+}
+
 trait OvlDisplayHelp extends SvcGate with SpatMatHelper with VarargsLogging  {
 	lazy val myFirstTSF: TextSpatialFactory = new TextSpatialFactory(getRRC)
 	val myBrushJar = new BrushJar(myMatPal)
@@ -88,6 +101,20 @@ trait OvlDisplayHelp extends SvcGate with SpatMatHelper with VarargsLogging  {
 	val orngQuadMaker = new MeshGeoMaker(myUnitQuadMesh, myBrushJar.orange_med)
 
 	val happyTxtMaker = new TextSpatMaker(myFirstTSF)
+
+	def layoutGadgSpatsInLine(parentSupplier : JmeNodeSupplier, gadgs : List[FlatGadget], initPos : Vector3f,
+							  incr : Vector3f) : JmeNode = {
+		val parentJmeNode = parentSupplier.getNode
+		val curr = initPos.clone()
+		for (g <- gadgs) {
+			val gadgSpat = g.getSpat(this)
+			gadgSpat.setLocalTranslation(curr)
+			parentJmeNode.attachChild(gadgSpat)
+			curr.addLocal(incr)
+		}
+		parentJmeNode
+	}
+
 
 }
 trait OvlOuterDisplayHelp extends OvlDisplayHelp {
@@ -136,8 +163,20 @@ class OvlPageBook(myRRC : RenderRegistryClient) extends OvlOuterDisplayHelp {
 	}
 	private def getPagesInDisplayOrder : List[OverlayPage] = myPageDisplayOrderBuf.toList.flatMap(myPagesByID.get(_))
 	def getPageChooserGadgetsInDisplayOrder : List[FlatGadget] = getPagesInDisplayOrder.map(_.getTopFlatWidget.getOuterGadgetForMe)
+	def newWay: JmeNode = {
+		val gadgs = getPageChooserGadgetsInDisplayOrder
+		val selLineParentNode = layoutGadgSpatsInLine(MakesJmeNode("selGadgLine"), gadgs,
+					new Vector3f(35.0f, 45.0f, 3.5f), new Vector3f(80.0f, 5.0f, -1.7f))
+		val outerFrameNode = makeOuterBookFrameNode
+		outerFrameNode.attachChild(selLineParentNode)
+		outerFrameNode
 
+	}
 	lazy val myOuterFrameNode : JmeNode = {
+		newWay
+	}
+	/*
+	def oldWay : JmeNode = {
 		val outerFrameNode = makeOuterBookFrameNode
 		val selectorGroupNode = new JmeNode("selectorGadgets")
 		val yOff = 40.0f
@@ -151,7 +190,7 @@ class OvlPageBook(myRRC : RenderRegistryClient) extends OvlOuterDisplayHelp {
 		outerFrameNode.attachChild(selectorGroupNode)
 		outerFrameNode
 	}
-
+*/
 	var isShown : Boolean = false
 	def showOrHideBook(showIt : Boolean): Unit = {
 		val bookNode = myOuterFrameNode
@@ -217,4 +256,97 @@ class VWOverlayActor(myRRC : RenderRegistryClient) extends Actor with OverlayLog
 			processNavCmd(navCmd)
 		}
 	}
+}
+
+trait ValueAcceptor {
+
+}
+trait DynamicDisplayPart extends IdentHlp {
+	def updateFromSrc(src : CoolDataSrc) : Unit
+
+	def getGadgetForSubfield(subFieldID : Ident) : UpdatingTextLineGadget = ???
+
+	def layoutSpatialTree(dispHlp : OvlDisplayHelp, flagParentIsVertical : Boolean,
+						  groupSizeHints : TextBlockSizeParams) : JmeNode = ???
+}
+trait CoolDataSrc {
+	def getDataVector3f(fieldID : Ident) : Vector3f
+	def getDataVector2f(fieldID : Ident) : Vector2f
+}
+case class FloatDataGadget(id : Ident, sizeHints : TextBlockSizeParams)
+			extends UpdatingTextLineGadget(id, sizeHints)
+case class DDPartVector3f(label : String, fieldID : Ident) extends DynamicDisplayPart {
+
+	val fieldSizeHints = new OneLineTxtBlkSzHints(Some(3), Some(7), Some(11))
+	val xGadget = new FloatDataGadget(makeStampyRandyIdent(), fieldSizeHints)
+	val yGadget = new FloatDataGadget(makeStampyRandyIdent(), fieldSizeHints)
+	val zGadget = new FloatDataGadget(makeStampyRandyIdent(), fieldSizeHints)
+
+	def layoutVert(dispHlp : OvlDisplayHelp) : JmeNode = {
+		dispHlp.layoutGadgSpatsInLine(MakesJmeNode("nodeFor_" + fieldID.getLocalName),
+					List(xGadget, yGadget, zGadget),
+					new Vector3f(), new Vector3f())
+	}
+
+	def updateDisplayValues(v3f : Vector3f) = {
+		val xGadget = getGadgetForSubfield(VWTestFieldIdents.PROP_hasX)
+		val yGadget = getGadgetForSubfield(VWTestFieldIdents.PROP_hasY)
+		xGadget.updateTextLine(v3f.getX.toString)
+		yGadget.updateTextLine(v3f.getY.toString)
+
+	}
+	override def updateFromSrc(src : CoolDataSrc) : Unit = {
+		val v3f = src.getDataVector3f(fieldID)
+		updateDisplayValues(v3f)
+	}
+
+
+}
+case class DDPartVector2f() extends DynamicDisplayPart {
+	def updateDisplayValue(v2f : Vector2f) = ???
+	override def updateFromSrc(src : CoolDataSrc) : Unit = ???
+}
+trait DynamicDisplayEntity {
+	def addPartDisplay(partFieldID : Ident, ddPart : DynamicDisplayPart) = ???
+	def updateDisplayedText(partFieldID : Ident, fragFieldID : Option[Ident], upTxt : String) = ???
+	def findDisplayPart(partID : Ident) : DynamicDisplayPart = ???
+	def getAllParts : Traversable[DynamicDisplayPart] = Nil
+	def updateAllParts(dataSrc : CoolDataSrc) : Unit = {
+		val allParts = getAllParts
+		for (p <- allParts) {
+			p.updateFromSrc(dataSrc)
+		}
+	}
+
+}
+trait CamStatusDisplayLogicGoesWhereHuh {
+	val myCamSummariesByID = new  MutableHashMap[Ident, VWCamSummary]()
+	val myDisplayEntitiesByCamID = Map()
+	def absorbCamStatusSummary(camStatSum : VWCamSummary) : Unit = {
+		// Here we are receiving a single large leaf-field data chunk.  It is a composite, but not of items/fields.
+		// Two extremes in how we can think about processing it.
+		// field-Factored way:  We map into set of smaller field updates that go directly to gadgets for display.
+		// page-Pulled way:  Write one comprehensive display updater, bypass gadgets, render in one swoop.
+
+		// Former is a formal block-construction approach, easy to add properties, config-compatible, authoring-oriented.
+		// Pages will display uniformly, display of all of them is improved centrally.
+
+		// Latter allows for more customization at page level, is more code-oriented, easier to improve individual
+		// page layout.  Pages will diverge in appearance and behavior until refactored by libs.
+
+	}
+	def setupNewDisplayEntity(camID : Ident) : Unit = {
+		val posDDPart = DDPartVector3f("Position", VWTestFieldIdents.PROP_hasPos)
+		val pointDDPart = DDPartVector3f("Point Dir", VWTestFieldIdents.PROP_hasPointDir)
+		val ddEntity = new DynamicDisplayEntity{}
+		ddEntity.addPartDisplay(posDDPart.fieldID, posDDPart)
+		ddEntity.addPartDisplay(pointDDPart.fieldID, pointDDPart)
+
+	}
+	def copySummaryValuesToTargets(camSum : VWCamSummary, ddEntity : DynamicDisplayEntity) : Unit = {
+		val posPart = ddEntity.findDisplayPart(VWTestFieldIdents.PROP_hasPos).asInstanceOf[DDPartVector3f]
+		posPart.updateDisplayValues(camSum.posLoc)
+		val pointDirPart = ddEntity.findDisplayPart(VWTestFieldIdents.PROP_hasPointDir).asInstanceOf[DDPartVector3f]
+	}
+
 }

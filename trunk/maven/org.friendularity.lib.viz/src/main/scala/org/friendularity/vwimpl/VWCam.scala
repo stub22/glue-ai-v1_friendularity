@@ -17,7 +17,7 @@ import org.friendularity.vwmsg.{ViewportDesc, CamState3D, VWSCR_ExistingNode, VW
 /**
   * Created by Owner on 7/17/2016.
   */
-case class VWCamSummary(posLoc: Vector3f, pointDir: Vector3f, upDir: Vector3f,
+case class VWCamSummary(camID : Ident, posLoc: Vector3f, pointDir: Vector3f, upDir: Vector3f,
 						viewLowerLeft : Vector2f, viewTopRight : Vector2f) {
 }
 trait VWCamLogic extends VarargsLogging with IdentHlp with MonitoredSpaceImpl {
@@ -110,7 +110,7 @@ trait VWCamLogic extends VarargsLogging with IdentHlp with MonitoredSpaceImpl {
 			val vpLeftBot = new Vector2f(cam.getViewPortLeft, cam.getViewPortBottom)
 			val vpRightTop = new Vector2f(cam.getViewPortRight, cam.getViewPortTop)
 			val frustLeftBotNear = new Vector3f(cam.getFrustumLeft, cam.getFrustumBottom, cam.getFrustumNear)
-			val camSummary = new VWCamSummary(camPos, camDir, upDir, vpLeftBot, vpRightTop)
+			val camSummary = new VWCamSummary(id, camPos, camDir, upDir, vpLeftBot, vpRightTop)
 
 			val summaryFieldAddr = new ItemFieldSpecDirectImpl(id, VWTestFieldIdents.PROP_hasSummary)
 			val summaryLeaf = new TypedFieldDataLeafImpl[VWCamSummary](summaryFieldAddr, camSummary)

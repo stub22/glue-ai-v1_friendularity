@@ -41,7 +41,7 @@ trait TextLine {
 trait UpdatingTextLine extends TextLine {
 	def updateTextLine(upTxt : String)
 }
-case class FixedFlatGadgetTxtLine(gadgetID: Ident, fixedTxt : String)
+class FixedFlatGadgetTxtLine(gadgetID: Ident, fixedTxt : String)
 			extends FlatGadgetImpl(gadgetID, FunFlatGadgetKinds.FGK_textLine) with TextLine {
 	override def getTextLine: String = fixedTxt
 
@@ -57,7 +57,7 @@ case class FixedFlatGadgetTxtLine(gadgetID: Ident, fixedTxt : String)
 }
 
 // Usually we want size to be fixed, rather than changing when text updates.
-case class UpdatingTextLineGadget(id : Ident, sizeHints : TextBlockSizeParams) extends FlatGadgetImpl(id, FunFlatGadgetKinds.FGK_textLine) with UpdatingTextLine {
+class UpdatingTextLineGadget(id : Ident, sizeHints : TextBlockSizeParams) extends FlatGadgetImpl(id, FunFlatGadgetKinds.FGK_textLine) with UpdatingTextLine {
 	var myCachedTxtLine = ""
 	override def updateTextLine(upTxt: String): Unit = {myCachedTxtLine = upTxt}
 
