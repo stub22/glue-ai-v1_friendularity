@@ -48,6 +48,8 @@ Disabled 2015-05-05
 
 		<module>../org.friendularity.lib.viz</module>
 		<module>../org.friendularity.bundle.vsim</module>
+
+        <module>../org.friendularity.bundle.qpid_broker_wrap</module>
 		
 		<module>../org.friendularity.bundle.gaze</module>
         
