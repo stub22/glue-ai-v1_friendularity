@@ -15,19 +15,41 @@
 	<name>${project.artifactId} - OSGi</name>	
 
 	<dependencies>
+
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>org.friendularity.bundle.qpid_broker_wrap</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>org.friendularity.bundle.headless.messaging</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		<dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>org.friendularity.bundle.headless.speech</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>org.friendularity.bundle.vsim</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- content for 3D models, incl Sinbad char -->
+        <dependency>
+            <groupId>org.cogchar</groupId>
+            <artifactId>org.cogchar.bundle.render.resources</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!-- Next two ar eused only when we boot in old(2014) compat mode.  Can be removed soon. -->
+        <dependency>
 			<groupId>org.cogchar</groupId>
 			<artifactId>org.cogchar.bundle.app.puma</artifactId>
-		</dependency>
-		<!-- o.a.b.gui allows us to use DemoBrowser object inspector -->
-		<dependency>
-			<groupId>org.appdapter</groupId>
-			<artifactId>org.appdapter.bundle.gui</artifactId>
 		</dependency>
     	<dependency>
 			<groupId>org.appdapter</groupId>
@@ -35,30 +57,15 @@
 			<version>${appdapter.version}</version>
 		</dependency>
 
-        <dependency>
-			<groupId>org.cogchar</groupId>
-			<artifactId>org.cogchar.bundle.app.vworld.startup</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.cogchar</groupId>
-			<artifactId>org.cogchar.bundle.render.resources</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>org.friendularity.bundle.headless.speech</artifactId>
-			<version>${project.version}</version>
-		</dependency>
 		<dependency>
 			<groupId>org.rwshop</groupId>
 			<artifactId>org.rwshop.swing.common</artifactId>
-		</dependency>		
-
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>org.friendularity.bundle.vsim</artifactId>
-			<version>${project.version}</version>
 		</dependency>
+        <!-- o.a.b.gui allows us to use DemoBrowser object inspector -->
+        <dependency>
+            <groupId>org.appdapter</groupId>
+            <artifactId>org.appdapter.bundle.gui</artifactId>
+        </dependency>
 
 	</dependencies>
 

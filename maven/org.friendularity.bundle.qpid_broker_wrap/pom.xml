@@ -19,11 +19,46 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.apache.qpid</groupId>
+            <artifactId>qpid-broker</artifactId>
+            <version>0.32</version>
+            <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.qpid</groupId>
+                    <artifactId>qpid-common</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>log4j</groupId>
+                    <artifactId>log4j</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>log4j</groupId>
+                    <artifactId>log4j</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+            </exclusions>
+
+        </dependency>
+        <dependency>
+            <groupId>org.appdapter</groupId>
+            <artifactId>ext.bundle.apache_qpid_032</artifactId>
+
+        </dependency>
+        <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.core</artifactId>
             <version>4.3.0</version>
             <scope>provided</scope>
         </dependency>
+
     </dependencies>
 
     <build>
@@ -35,8 +70,12 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Bundle-Activator>org.friendularity.bundle.qpid_broker_wrap.Activator</Bundle-Activator>
-                        <Export-Package/>
+                        <Bundle-Activator>org.friendularity.bundle.qpid_broker_wrap.QpidBrokerSubsetBundleActivator</Bundle-Activator>
+                        <Export-Package>
+                            org.friendularity.bundle.qpid_broker_wrap,
+                            org.apache.qpid.server,
+                            org.apache.commons.cli
+                        </Export-Package>
                     </instructions>
                 </configuration>
             </plugin>
