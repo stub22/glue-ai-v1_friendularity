@@ -33,10 +33,6 @@
                     <artifactId>log4j</artifactId>
                 </exclusion>
                 <exclusion>
-                    <groupId>log4j</groupId>
-                    <artifactId>log4j</artifactId>
-                </exclusion>
-                <exclusion>
                     <groupId>org.slf4j</groupId>
                     <artifactId>slf4j-log4j12</artifactId>
                 </exclusion>
@@ -44,14 +40,42 @@
                     <groupId>org.slf4j</groupId>
                     <artifactId>slf4j-api</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>org.apache.qpid</groupId>
+                    <artifactId>qpid-broker-plugins-management-http</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.qpid</groupId>
+                    <artifactId>qpid-broker-plugins-websocket</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.qpid</groupId>
+                    <artifactId>qpid-broker-plugins-jdbc-store</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.qpid</groupId>
+                    <artifactId>qpid-broker-plugins-jdbc-provider-bone</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.qpid</groupId>
+                    <artifactId>qpid-broker-plugins-derby-store</artifactId>
+                </exclusion>
+
             </exclusions>
 
         </dependency>
         <dependency>
             <groupId>org.appdapter</groupId>
             <artifactId>ext.bundle.apache_qpid_032</artifactId>
-
         </dependency>
+
+        <!-- Including this dep makes some common infra (logging, apache.commons, etc)
+        resolve more easily at osgi-wiring time -->
+        <dependency>
+            <groupId>org.appdapter</groupId>
+            <artifactId>org.appdapter.bundle.core</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.core</artifactId>
@@ -73,9 +97,19 @@
                         <Bundle-Activator>org.friendularity.bundle.qpid_broker_wrap.QpidBrokerSubsetBundleActivator</Bundle-Activator>
                         <Export-Package>
                             org.friendularity.bundle.qpid_broker_wrap,
-                            org.apache.qpid.server,
-                            org.apache.commons.cli
+                            org.apache.qpid.server.*
                         </Export-Package>
+                        <Private-Package>
+                            org.apache.qpid.amqp_1_0.*,
+                            org.apache.qpid.management.*,
+                            org.apache.bcel.*
+                        </Private-Package>
+                        <!--
+                            org.apache.commons.cli
+                            org.apache.commons.codec.binary...
+
+
+                        c.g.common. (base, collect, ... -->
                     </instructions>
                 </configuration>
             </plugin>

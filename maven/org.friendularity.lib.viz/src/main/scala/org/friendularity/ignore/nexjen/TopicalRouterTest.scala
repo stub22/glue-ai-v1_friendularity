@@ -109,8 +109,12 @@ object QPid_032_Names {
 	// Update for 0.32:  Changed to use virtual host 'default' instead of 'test'.
 	// (which should give same result as omitting virutalhost).
 	// Determined the name 'default' by using broker web mgmt interface.
-	val useBroker026 : Boolean = true
-	val virtualHostName = if (useBroker026) "test" else "default"  // 'test' for broker v0.26, 'default' for broker v0.32
+	val useBroker026 : Boolean = false
+	val useMemNode : Boolean = false
+	val useFrvhn : Boolean = true
+	val useRkvhn : Boolean = false
+
+	val virtualHostName = if (useFrvhn) "friendu-vhn" else if (useRkvhn) "rkvhn" else if(useMemNode) "stu_mem_node" else if (useBroker026) "test" else "default"  // 'test' for broker v0.26, 'default' for broker v0.32
 	val qpConnFactoryURL = "amqp://guest:guest@clientid/" + virtualHostName + "?brokerlist='tcp://localhost:5672'"
 	val jndiNamingFactory_key = "java.naming.factory.initial"
 	val jndiNamingFactory_val =  "org.apache.qpid.jndi.PropertiesFileInitialContextFactory"
