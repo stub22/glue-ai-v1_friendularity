@@ -36,7 +36,9 @@ Disabled 2015-05-05
 
 		<module>../org.friendularity.bundle.launcher.oglweb</module>
 		<module>../org.friendularity.bundle.launcher.webonly</module>
-		
+
+        <module>../org.friendularity.bundle.wbrst</module>
+
 		<module>../org.friendularity.bundle.xweb.minlift</module>
 		<module>../org.friendularity.bundle.xweb.xgra</module>
 		<module>../org.friendularity.bundle.xweb.fustdb</module>

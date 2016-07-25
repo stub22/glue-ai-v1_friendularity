@@ -124,11 +124,12 @@ class StandaloneNavAppSys() {
 	lazy private val myLegacyELRC: EnhancedLocalRepoClient = {
 
 		// Note that TestRaizLoad extends AvatarLegacySetupFuncs, and is also currently used from CCMIO_DemoActivator
-		val unitTestConfEHost: EntryHost = TestRaizLoad.getUnitTestResourceEntryHost
-		val mergedProfileGraph: JenaModel = TestRaizLoad.getMergedProfileGraph_RegularDesktop(unitTestConfEHost)
+		val setupLoader = TestRaizLoad.getDfltSetupLoader
+		val unitTestConfEHost: EntryHost = setupLoader.getUnitTestResourceEntryHost
+		val mergedProfileGraph: JenaModel = setupLoader.getMergedProfileGraph_RegularDesktop(unitTestConfEHost)
 		val legConfEHost: EntryHost = unitTestConfEHost // just emphasizing this is a separate choice
-		val vzBrkRcpUriTxt: String = TestRaizLoad.vzpLegCnfBrkrRcpUriTxt
-		TestRaizLoad.makeLegacyConfigELRC_fromJena(mergedProfileGraph, vzBrkRcpUriTxt, legConfEHost)
+		val vzBrkRcpUriTxt: String = setupLoader.rootNames.vzpLegCnfBrkrRcpUriTxt
+		setupLoader.makeLegacyConfigELRC_fromJena(mergedProfileGraph, vzBrkRcpUriTxt, legConfEHost)
 	}
 
 	def getLegacyELRC: EnhancedLocalRepoClient = myLegacyELRC

@@ -79,16 +79,7 @@
 
         <!-- For network integration we use Spray and/or Camel (which has a QPid component) -->
         <!--
-        <dependency>
-            <groupId>io.spray</groupId>
-            <artifactId>spray-routing_2.10</artifactId>
-            <version>1.3.3</version>
-        </dependency>
-        <dependency>
-            <groupId>io.spray</groupId>
-            <artifactId>spray-can_2.10</artifactId>
-            <version>1.3.3</version>
-        </dependency>
+
         <dependency>
             <groupId>io.spray</groupId>
             <artifactId>spray-client_2.10</artifactId>
