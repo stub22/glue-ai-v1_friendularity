@@ -2,12 +2,17 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.friendularity</groupId>
+    <parent>
+        <groupId>org.friendularity</groupId>
+        <artifactId>org.friendularity.modules.main</artifactId>
+        <version>1.0.9-SNAPSHOT</version>
+        <relativePath>../org.friendularity.modules.main/pom.xml</relativePath>
+    </parent>
+
     <artifactId>org.friendularity.bundle.wbrst</artifactId>
-    <version>1.0-SNAPSHOT</version>
     <packaging>bundle</packaging>
 
-    <name>org.friendularity.bundle.wbrst OSGi Bundle</name>
+    <name>${project.artifactId} - OSGi</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -20,6 +25,28 @@
             <version>4.3.0</version>
             <scope>provided</scope>
         </dependency>
+
+        <dependency>
+            <groupId>io.spray</groupId>
+            <artifactId>spray-routing_2.10</artifactId>
+            <version>1.3.3</version>
+        </dependency>
+        <dependency>
+            <groupId>io.spray</groupId>
+            <artifactId>spray-can_2.10</artifactId>
+            <version>1.3.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.appdapter</groupId>
+            <artifactId>ext.bundle.akka.remote_v2315_s210</artifactId>
+            <version>${appdapter.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.appdapter</groupId>
+            <artifactId>org.appdapter.bundle.core</artifactId>
+            <version>${appdapter.version}</version>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -36,6 +63,25 @@
                     </instructions>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.scala-tools</groupId>
+                <artifactId>maven-scala-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>compile</goal>
+                            <!-- We're not actually using any scala tests right now
+                            <goal>testCompile</goal>
+                            -->
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
         </plugins>
     </build>
 

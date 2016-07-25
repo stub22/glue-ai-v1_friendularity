@@ -41,34 +41,13 @@ import org.cogchar.blob.entry.{EntryHost, PlainEntry, FolderEntry, DiskEntryHost
 import org.cogchar.api.owrap.crcp.{BRFeature => CC_BRFeature}
 import org.cogchar.api.owrap.appro.AFBRLegacyConfig
 
-object TestRaizLoad extends LegacyRepoFuncs with  VarargsLogging {
+trait FriendUVizappTestRootNames {
 	val vizappRecipeNS : String = "http://onto.friendularity.org/indiv/vizappRecipes_reg_desk_2016Q1#"
 	val vzpLegCnfBrkrRcpUriTxt : String = vizappRecipeNS + "vizapp_legConf_brokerRecipe"
 	val pathToProfileFolder : String = "org/friendu/tchunk/vizapp_profile" // relative to profile eHost
+}
+class TestSetupLoader(val rootNames : FriendUVizappTestRootNames) extends LegacyRepoFuncs with  VarargsLogging {
 
-	def main(args: Array[String]) : Unit = {
-
-		// These two lines activate Log4J (at max verbosity!) without requiring a log4j.properties file.
-		// However, when a log4j.properties file is present, these commands should not be used.
-		//	org.apache.log4j.BasicConfigurator.configure();
-		//	org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.ALL);
-		//
-		//	Appears that currently Akka is automatically initing logging with our log4j.properties.
-
-		info0("^^^^^^^^^^^^^^^^^^^^^^^^  TestRaizLoad main().START");
-
-		// GraphScanTest.setupScanTestLogging
-		info0("Starting TestProfileLoad")
-
-		val profDataEntryHost : EntryHost = getUnitTestResourceEntryHost
-
-		val mergedProfileGraph = getMergedProfileGraph_RegularDesktop(profDataEntryHost)
-		info1("Fetched mergedProfileGraph of size {}", mergedProfileGraph.size : java.lang.Long)
-		debug1("mergedProfileGraph dump:\n{}", mergedProfileGraph)
-
-		val cdatEntryHost = profDataEntryHost // This could easily be a *different* eHost, instead!
-		testLegConfLoad(mergedProfileGraph, cdatEntryHost)
-	}
 	def getMergedProfileGraph_RegularDesktop (profDataEntryHost : EntryHost) : JenaModel = {
 
 		val activeTokens = Array[String]("all", "regular", "desktop")
@@ -76,7 +55,7 @@ object TestRaizLoad extends LegacyRepoFuncs with  VarargsLogging {
 	}
 	def getMergedProfileGraph(activeTokens : Array[String], profDataEntryHost : EntryHost) : JenaModel = {
 
-		val pgm = new ApproProfileGraphMaker(profDataEntryHost, pathToProfileFolder,  activeTokens)
+		val pgm = new ApproProfileGraphMaker(profDataEntryHost, rootNames.pathToProfileFolder,  activeTokens)
 
 		val mergedProfileGraph : JenaModel = pgm.makeMergedProfileGraph
 		mergedProfileGraph
@@ -90,7 +69,7 @@ object TestRaizLoad extends LegacyRepoFuncs with  VarargsLogging {
 
 	def testLegConfLoad(profileJM : JenaModel, cdatEH : EntryHost) : Unit = {
 
-		val cwRepoSpec = makeLegacyConfRepoSpec(profileJM, vzpLegCnfBrkrRcpUriTxt, cdatEH)
+		val cwRepoSpec = makeLegacyConfRepoSpec(profileJM, rootNames.vzpLegCnfBrkrRcpUriTxt, cdatEH)
 
 		val cwRepo = cwRepoSpec.getOrMakeRepo.asInstanceOf[ChnkrWrapRepo]
 
@@ -110,5 +89,35 @@ object TestRaizLoad extends LegacyRepoFuncs with  VarargsLogging {
 		info3("model sizes: inputWithOnto={}, deductions={}, inferred={}", inModel.size : JLong,
 					deductionsModel.size : JLong,  infModelWithRDFS.size : JLong)
 
+	}
+}
+object TestRaizLoad extends  VarargsLogging {
+	lazy val dfltRootNames = new FriendUVizappTestRootNames {}
+	lazy val dfltSetupLoader = new TestSetupLoader(dfltRootNames)
+	def getDfltSetupLoader : TestSetupLoader = dfltSetupLoader
+
+	def main(args: Array[String]): Unit = {
+
+		// These two lines activate Log4J (at max verbosity!) without requiring a log4j.properties file.
+		// However, when a log4j.properties file is present, these commands should not be used.
+		//	org.apache.log4j.BasicConfigurator.configure();
+		//	org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.ALL);
+		//
+		//	Appears that currently Akka is automatically initing logging with our log4j.properties.
+
+		info0("^^^^^^^^^^^^^^^^^^^^^^^^  TestRaizLoad main().START");
+
+		// GraphScanTest.setupScanTestLogging
+		info0("Starting TestProfileLoad")
+
+		val setupLoader = getDfltSetupLoader
+		val profDataEntryHost: EntryHost = setupLoader.getUnitTestResourceEntryHost
+
+		val mergedProfileGraph = setupLoader.getMergedProfileGraph_RegularDesktop(profDataEntryHost)
+		info1("Fetched mergedProfileGraph of size {}", mergedProfileGraph.size: java.lang.Long)
+		debug1("mergedProfileGraph dump:\n{}", mergedProfileGraph)
+
+		val cdatEntryHost = profDataEntryHost // This could easily be a *different* eHost, instead!
+		setupLoader.testLegConfLoad(mergedProfileGraph, cdatEntryHost)
 	}
 }

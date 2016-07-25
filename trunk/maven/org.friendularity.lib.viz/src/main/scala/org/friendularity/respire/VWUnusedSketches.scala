@@ -39,6 +39,7 @@ trait VWUnusedSketches extends VarargsLogging {
 	}
 }
 trait UnusedSketch_VWCnfMgr extends VarargsLogging {
+	val mySetupLoader = TestRaizLoad.getDfltSetupLoader
 	lazy private val myMergedProfileJM : JenaModel = makeMergedProfileGraph("Temporarily unused selector args")
 	private val loadLegacyConf = true
 	lazy private val legConfERC_opt: Option[EnhancedLocalRepoClient] = {
@@ -47,9 +48,9 @@ trait UnusedSketch_VWCnfMgr extends VarargsLogging {
 	def getProfileGraph = myMergedProfileJM
 	def getLegConfERC_opt = legConfERC_opt
 	protected def makeMergedProfileGraph(profileSelectorArgs : String) : JenaModel = {
-		val tchunkEHost: EntryHost = TestRaizLoad.getUnitTestResourceEntryHost
+		val tchunkEHost: EntryHost = mySetupLoader.getUnitTestResourceEntryHost
 		// TODO - Process the profileSelectorArgs
-		val mergedProfileGraph: JenaModel = TestRaizLoad.getMergedProfileGraph_RegularDesktop(tchunkEHost)
+		val mergedProfileGraph: JenaModel = mySetupLoader.getMergedProfileGraph_RegularDesktop(tchunkEHost)
 		mergedProfileGraph
 	}
 	protected def buildLegacyConfERC_assumesUnitTest(mergedProfGraph : JenaModel) : EnhancedLocalRepoClient = {
@@ -57,12 +58,12 @@ trait UnusedSketch_VWCnfMgr extends VarargsLogging {
 		// Under OSGi (e.g. CCMIO), old PumaBoot process is set up by attachVizTChunkLegConfRepo(BundleContext bunCtx).
 		//val tchunkEHost: EntryHost = TestRaizLoad.makeBundleEntryHost(TestRaizLoad.getClass)
 
-		val tchunkEHost: EntryHost = TestRaizLoad.getUnitTestResourceEntryHost
+		val tchunkEHost: EntryHost = mySetupLoader.getUnitTestResourceEntryHost
 
 		// TODO: Find this URI from either a query or an onto-constant
-		val vzBrkRcpUriTxt: String = TestRaizLoad.vzpLegCnfBrkrRcpUriTxt
+		val vzBrkRcpUriTxt: String = mySetupLoader.rootNames.vzpLegCnfBrkrRcpUriTxt
 
-		val legConfERC = TestRaizLoad.makeLegacyConfigELRC_fromJena(mergedProfGraph, vzBrkRcpUriTxt, tchunkEHost)
+		val legConfERC = mySetupLoader.makeLegacyConfigELRC_fromJena(mergedProfGraph, vzBrkRcpUriTxt, tchunkEHost)
 		getLogger.info("legConfERC={}", legConfERC)
 		legConfERC
 	}

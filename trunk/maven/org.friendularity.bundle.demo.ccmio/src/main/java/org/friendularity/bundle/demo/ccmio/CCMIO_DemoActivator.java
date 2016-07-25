@@ -10,6 +10,7 @@ import org.friendularity.navui.ExoBodyUserLogic;
 import org.friendularity.navui.NavUiAppImpl;
 import org.friendularity.navui.NavUiAppSvc;
 import org.friendularity.old.ccmio.OldLaunchHelper;
+import org.friendularity.raiz.TestSetupLoader;
 import org.friendularity.vsim.vworld.UnusedNetworkVisionDataFeed;
 import org.osgi.framework.BundleContext;
 import org.rwshop.swing.common.lifecycle.ServicesFrame;
@@ -114,12 +115,13 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 
 	private void launchCcmioDemo(BundleContext bundleCtx) {
 		getLogger().info("============ launchCcmioDemo BEGIN  ==========");
-		EntryHost	profileEHost = TestRaizLoad.makeBundleEntryHost(myProfileMarkerClz);
+		TestSetupLoader setupLoader = TestRaizLoad.getDfltSetupLoader();
+		EntryHost	profileEHost = setupLoader.makeBundleEntryHost(myProfileMarkerClz);
 		Model mergedProfileJM = loadMergedProfileGraph(profileEHost);
 		if (mergedProfileJM == null) {
 			throw new RuntimeException("launchCcmioDemo cannot read profile from classpath containing " + myProfileMarkerClz);
 		}
-		EntryHost	legConfEHost = TestRaizLoad.makeBundleEntryHost(myLegConfMarkerClz);
+		EntryHost	legConfEHost = setupLoader.makeBundleEntryHost(myLegConfMarkerClz);
 		if (myFlag_useOldLaunchStyle2014) {
 			if (myFlag_attachVizappTChunkRepo) {
 				// OLD launch mechanism, which we keep working for comparative testing
@@ -176,20 +178,23 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 
 	// profileDataMarkerClz should have same classpath (i.e. same OSGi bundle) as the profile data.
 	private Model loadMergedProfileGraph(EntryHost	 profileEHost) {
-		Model mergedProfileGraph = TestRaizLoad.getMergedProfileGraph_RegularDesktop(profileEHost);
+		TestSetupLoader setupLoader = TestRaizLoad.getDfltSetupLoader();
+		Model mergedProfileGraph = setupLoader.getMergedProfileGraph_RegularDesktop(profileEHost);
 		return mergedProfileGraph;
 	}
 	// When active this VizTChunk removes the need for DemoMediator setup at bottom of this file.
 	private void attachVizTChunkLegConfRepo(final BundleContext bunCtx, Model mergedProfileGraph, EntryHost legConfEHost) {
+		TestSetupLoader setupLoader = TestRaizLoad.getDfltSetupLoader();
 		// Same eHost is used here for profile and config data, but separate eHosts is also OK.
 		// Easiest way to identify an bundleEHost is to specify a class from same bundle.
 		EnhancedLocalRepoClient legacyConfERC = makeLegacyELRC(mergedProfileGraph, legConfEHost);
 
-		TestRaizLoad.registerOSGiServiceForEnhRC(bunCtx, legacyConfERC);
+		setupLoader.registerOSGiServiceForEnhRC(bunCtx, legacyConfERC);
 	}
 	private EnhancedLocalRepoClient makeLegacyELRC(Model mergedProfileGraph, EntryHost legConfEHost) {
-		String vzBrkRcpUriTxt = TestRaizLoad.vzpLegCnfBrkrRcpUriTxt();
-		EnhancedLocalRepoClient legacyConfERC = TestRaizLoad.makeLegacyConfigELRC_fromJena(mergedProfileGraph,
+		TestSetupLoader setupLoader = TestRaizLoad.getDfltSetupLoader();
+		String vzBrkRcpUriTxt = setupLoader.rootNames().vzpLegCnfBrkrRcpUriTxt();
+		EnhancedLocalRepoClient legacyConfERC = setupLoader.makeLegacyConfigELRC_fromJena(mergedProfileGraph,
 					vzBrkRcpUriTxt, legConfEHost);
 		getLogger().info("legConfEnhRepoCli={}", legacyConfERC);
 		return legacyConfERC;
