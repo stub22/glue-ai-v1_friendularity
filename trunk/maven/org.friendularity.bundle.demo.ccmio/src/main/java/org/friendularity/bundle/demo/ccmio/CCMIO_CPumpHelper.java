@@ -20,6 +20,8 @@ package org.friendularity.bundle.demo.ccmio;
 import akka.actor.ActorSystem;
 import akka.osgi.ActorSystemActivator;
 import org.appdapter.core.log.BasicDebugger;
+import org.friendularity.cpump.AkkaOSGiHelp;
+import org.friendularity.cpump.AkkaOSGiLaunchHelper;
 import org.friendularity.cpump.CPMsgTeller;
 import org.friendularity.cpump.DemoCPumpMgr;
 import org.friendularity.cpump.PluginDemoCPumpMgr;
@@ -30,46 +32,54 @@ import org.slf4j.Logger;
 /**
  * Created by Owner on 3/29/2016.
  */
-public class CCMIO_CPumpHelper extends BasicDebugger {
+public class CCMIO_CPumpHelper extends AkkaOSGiLaunchHelper {
 
 	private DemoCPumpMgr myDCPM;
 
+	/*
 	// http://doc.akka.io/docs/akka/2.3.14/additional/osgi.html
 	// Instantiating this (or invoking start()?)  triggers Akka bundle scan setup ... right?
 	private static OurAkkaOSGiActivator ourAkkaActivator = null;
-
+*/
 	public static String ourAkkaSysName = "ccmioBundle";
+
 	public static String ourPumpName = "ccmioPump";
 
-	private static OurAkkaOSGiActivator getAkkaActivSingle() {
-		if (ourAkkaActivator == null) {
-
-			Logger ourActivLogger = getLoggerForClass(OurAkkaOSGiActivator.class);
-			ourAkkaActivator = new OurAkkaOSGiActivator(ourAkkaSysName, ourActivLogger);
-		}
-		return ourAkkaActivator;
-	}
-	private ActorSystem myAkkaSys = null;
-	public void startAkkaOSGi(BundleContext bctx) {
-		OurAkkaOSGiActivator akkaActiv = getAkkaActivSingle();
-		String actorSysName = akkaActiv.getActorSystemName(bctx);
-		getLogger().info("OurAkkaActivator singleton = {}, actorSysName={}, now calling start() on it", akkaActiv, actorSysName);
-		try {
-			akkaActiv.start(bctx);
-			myAkkaSys = akkaActiv.getActorSys();
-			getLogger().info("OurAkkaActivator.start completed without exceptions, myAkkaSys={}", myAkkaSys);
-		} catch (Throwable t) {
-			logError("Problem starting akka: {}", t);
-		}
+	public CCMIO_CPumpHelper() {
+		super(ourAkkaSysName);
 	}
 
+	/*
+		private static OurAkkaOSGiActivator getAkkaActivSingle() {
+			if (ourAkkaActivator == null) {
+
+				Logger ourActivLogger = getLoggerForClass(OurAkkaOSGiActivator.class);
+				ourAkkaActivator = new OurAkkaOSGiActivator(ourAkkaSysName, ourActivLogger);
+			}
+			return ourAkkaActivator;
+		}
+		private ActorSystem myAkkaSys = null;
+		public void startAkkaOSGi(BundleContext bctx) {
+			OurAkkaOSGiActivator akkaActiv = getAkkaActivSingle();
+			String actorSysName = akkaActiv.getActorSystemName(bctx);
+			getLogger().info("OurAkkaActivator singleton = {}, actorSysName={}, now calling start() on it", akkaActiv, actorSysName);
+			try {
+				akkaActiv.start(bctx);
+				myAkkaSys = akkaActiv.getActorSys();
+				getLogger().info("OurAkkaActivator.start completed without exceptions, myAkkaSys={}", myAkkaSys);
+			} catch (Throwable t) {
+				logError("Problem starting akka: {}", t);
+			}
+		}
+	*/
 	public boolean launchCPump(BundleContext bctx) {
-		getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^  CCMIO_CPumpHelper.launchCPump()-START");
-		if (myAkkaSys == null) {
+		info0("^^^^^^^^^^^^^^^^^^^^^^^^  CCMIO_CPumpHelper.launchCPump()-START");
+		ActorSystem akkaSys_orNull = getAkkaSys_orNull();
+		if (akkaSys_orNull == null) {
 			getLogger().info("No akka sys found, aborting CPump launch");
 			return false;
 		}
-		myDCPM = new PluginDemoCPumpMgr(myAkkaSys, ourPumpName);
+		myDCPM = new PluginDemoCPumpMgr(akkaSys_orNull, ourPumpName);
 		// val cpumpActorRef : ActorRef = myDCPM.getCPumpActRef
 		// Typical result dumps as   Actor[akka://demoCPAS/user/demoCPump01#618243248]
 		// info1("^^^^^^^^^^^^^^^^^^^^^^^^  TestCPumpServer. main() - got initial cpumpActorRef: {}", cpumpActorRef);
@@ -92,8 +102,9 @@ public class CCMIO_CPumpHelper extends BasicDebugger {
 		return true;
 	}
 	public ActorSystem dangerActorSysExposed() {
-		return myAkkaSys;
+		return getAkkaSys_orNull();
 	}
+/*
 	// TODO:  Implement an interface used by CPump to access OSGi-akka hooks as needed.
 	private static class OurAkkaOSGiActivator extends ActorSystemActivator {
 		private Logger myLogger;
@@ -126,5 +137,6 @@ public class CCMIO_CPumpHelper extends BasicDebugger {
 		}
 
 	}
+*/
 }
 

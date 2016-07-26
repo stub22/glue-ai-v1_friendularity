@@ -24,6 +24,11 @@
             <groupId>org.mechio</groupId>
             <artifactId>org.mechio.impl.speech</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.appdapter</groupId>
+            <artifactId>org.appdapter.bundle.core</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>

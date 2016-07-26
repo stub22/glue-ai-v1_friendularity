@@ -21,6 +21,11 @@
             <groupId>org.jflux</groupId>
             <artifactId>org.jflux.impl.messaging.rk</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.appdapter</groupId>
+            <artifactId>org.appdapter.bundle.core</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>

@@ -2,6 +2,8 @@ package org.friendularity.bundle.headless.animation;
 
 import java.util.logging.Logger;
 import javax.jms.Connection;
+
+import org.appdapter.osgi.core.BundleActivatorBase;
 import org.jflux.impl.messaging.rk.lifecycle.JMSAvroAsyncReceiverLifecycle;
 import org.jflux.impl.messaging.rk.lifecycle.JMSAvroMessageSenderLifecycle;
 import org.jflux.impl.messaging.rk.utils.ConnectionManager;
@@ -22,7 +24,7 @@ import org.mechio.impl.animation.messaging.AnimationSignallingRecord;
 import org.mechio.impl.animation.messaging.PortableAnimationEvent;
 import org.mechio.impl.animation.messaging.PortableAnimationSignal;
 
-public class Activator implements BundleActivator {
+public class Activator extends BundleActivatorBase {
     private final static Logger theLogger = 
             Logger.getLogger(Activator.class.getName());
     public final static String PLAYER_ID = "myRobot";
@@ -36,6 +38,11 @@ public class Activator implements BundleActivator {
     
     @Override
     public void start(BundleContext context) throws Exception {
+		super.start(context);
+		getLogger().warn("o.f.b.headless.animation Activator.start() no longer does any service launching.");
+	}
+
+	public void doLaunchServices(BundleContext context) throws Exception {
         connectAnimation(context);
         launchRemotePlayer(context, PLAYER_ID, ANIM_RECEIVER_ID,
                 SIGNAL_SENDER_ID, CONNECTION_ID, ANIM_DEST_ID);
@@ -99,7 +106,7 @@ public class Activator implements BundleActivator {
 
     @Override
     public void stop(BundleContext context) throws Exception {
-        // TODO add deactivation code here
+        super.stop(context);
     }
 
 }
