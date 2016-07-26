@@ -2,6 +2,8 @@ package org.friendularity.bundle.headless.messaging;
 
 import java.util.logging.Logger;
 import javax.jms.Connection;
+
+import org.appdapter.osgi.core.BundleActivatorBase;
 import org.jflux.api.messaging.rk.services.ServiceCommandFactory;
 import org.jflux.impl.messaging.rk.utils.ConnectionManager;
 import org.jflux.impl.messaging.rk.utils.ConnectionUtils;
@@ -13,13 +15,18 @@ import org.osgi.framework.BundleContext;
 
 import static org.jflux.impl.messaging.rk.utils.ConnectionUtils.*;
 
-public class Activator implements BundleActivator {
+public class Activator extends BundleActivatorBase {
     private final static Logger theLogger = 
             Logger.getLogger(Activator.class.getName());
-    
-    @Override
-    public void start(BundleContext context) throws Exception {
-        //connectMotion(context);
+
+	@Override
+	public void start(BundleContext context) throws Exception {
+		super.start(context);
+		getLogger().warn("o.f.b.headless.messaging Activator.start() no longer does any service launching.");
+	}
+
+	public void doLaunchServices(BundleContext context) throws Exception {
+        //connectMotion_UNUSED(context);
         connectSpeech(context);
         connectAnimation(context);
         connectVision(context);
@@ -28,7 +35,7 @@ public class Activator implements BundleActivator {
                         ServiceCommandFactory.class)).start();
     }
     
-    private void connectMotion(BundleContext context) throws Exception {
+    private void connectMotion_UNUSED(BundleContext context) throws Exception {
         theLogger.info("Registering Motion Connection and Destinations");
         Connection con = ConnectionManager.createConnection(
                 getUsername(), getPassword(), "client1", "test", 

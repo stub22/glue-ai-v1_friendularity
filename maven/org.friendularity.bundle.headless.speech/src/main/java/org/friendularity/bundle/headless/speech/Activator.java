@@ -2,6 +2,8 @@ package org.friendularity.bundle.headless.speech;
 
 import java.util.Properties;
 import java.util.logging.Logger;
+
+import org.appdapter.osgi.core.BundleActivatorBase;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.jflux.api.core.Adapter;
@@ -27,7 +29,7 @@ import org.mechio.impl.speech.SpeechEventListRecord;
 import org.mechio.impl.speech.SpeechRequestRecord;
 import org.mechio.impl.speech.PortableSpeechRequest;
 
-public class Activator implements BundleActivator {
+public class Activator extends BundleActivatorBase {
     private final static Logger theLogger = 
             Logger.getLogger(Activator.class.getName());
     
@@ -43,10 +45,14 @@ public class Activator implements BundleActivator {
     private final static String ERROR_RECEIVER_ID = "speechError";
     private final static String REQUEST_SENDER_ID = "speechRequest";
     private final static String EVENT_RECEIVER_ID = "speechEvent";
-    
 
-    @Override
-    public void start(BundleContext context) throws Exception {
+	@Override
+	public void start(BundleContext context) throws Exception {
+		super.start(context);
+		getLogger().warn("o.f.b.headless.speech Activator.start() no longer does any service launching.");
+	}
+
+	public void doLaunchServices(BundleContext context) throws Exception {
         theLogger.info("Launching JMS SpeechService Provider.");
         launchVisemeNotifier(context, SPEECH_SERVICE_ID);
         launchRemoteClient(context, 
@@ -161,6 +167,6 @@ public class Activator implements BundleActivator {
 
     @Override
     public void stop(BundleContext context) throws Exception {
-        // TODO add deactivation code here
+        super.stop(context);
     }
 }
