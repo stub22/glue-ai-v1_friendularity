@@ -16,9 +16,11 @@
 
 package org.friendularity.wbrst
 
+import akka.actor.{Props, ActorSystem, ActorRef}
 import org.appdapter.core.name.{Ident, FreeIdent}
 import org.appdapter.fancy.log.VarargsLogging
 
+// https://github.com/spray/spray/tree/release/1.3
 
 object WbrstServerTest  extends VarargsLogging {
 	def main(args: Array[String]) : Unit = {
@@ -29,23 +31,50 @@ object WbrstServerTest  extends VarargsLogging {
 		// org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.ALL);
 		
 		info0("^^^^^^^^^^^^^^^^^^^^^^^^  WbrstServerTest main().START");
-
-
+		val wbrstAkkaSysName = "wbrstSys"
+		val wbrstAkkaSys = ActorSystem(wbrstAkkaSysName)
+		val svcAkkaProps = Props[FirstHttpService]
+		val wbrstAkkaSvcName = "wbrstSvc"
+		val svcAkkaRef = wbrstAkkaSys.actorOf(svcAkkaProps, "wbrstSvc")
+		val launcher = new SprayCanLauncher {}
+		val wbrstPort = 8080
+		launcher.launchForListener(wbrstAkkaSys,  svcAkkaRef, wbrstPort)
 		info0("^^^^^^^^^^^^^^^^^^^^^^^^  WbrstServerTest main().END");
 	}
 
 }
-
-import spray.routing._
+// https://github.com/spray/spray/tree/release/1.3
+import spray.routing.HttpServiceActor
 
 class FirstHttpService extends HttpServiceActor {
-	def receive = runRoute {
-		path("swing") {
-			get {
+	// import spray.routing._
+
+	override def receive = runRoute {
+		get {
+			path("swing") {
 				complete("ALONG")
-			}
+			} ~ path("swang") {
+				complete("ABOUT")
+			} ~ path("swung") {
+				complete("AROUND")
+			} ~	complete("GET Request not understood")
+		} ~ post {
+			complete("POST Request not understood")
+		} ~ put {
+			complete("PUT Request not understood")
 		}
 	}
 }
 
+trait SprayCanLauncher {
+
+	import akka.io.IO
+	import spray.can.Http
+
+//	val myListener: ActorRef = // ...
+	def launchForListener(actorSys : ActorSystem, aListener : ActorRef, portNum : Int) : Unit = {
+		implicit val system = actorSys
+		IO(Http) ! Http.Bind(aListener,  interface = "localhost", port = portNum)
+	}
+}
 

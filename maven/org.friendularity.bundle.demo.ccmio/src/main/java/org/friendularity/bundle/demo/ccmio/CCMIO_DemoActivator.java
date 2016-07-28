@@ -108,7 +108,7 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 		super.stop(context);
 	}
 
-	// This callback after OSGi bundles loaded handles the main init process
+	// This callback is invoked after all OSGi bundles have loaded and .start()-ed.
 	@Override protected void handleFrameworkStartedEvent(BundleContext bundleCtx) {
 		launchCcmioDemo(bundleCtx);
 	}
@@ -137,6 +137,10 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 		}
 		getLogger().info("============ Calling launchCPumpService() ==========");
 		launchCPumpService(bundleCtx);
+		getLogger().info("============ Calling launchQPidBroker() ==========");
+		launchQPidBroker(bundleCtx);
+		getLogger().info("============ Calling launchMechioServiceConns() ==========");
+		launchMechioServiceConns(bundleCtx);
 		getLogger().info("============ Calling launchOtherStuffLate() ==========");
 		launchOtherStuffLate();
 		getLogger().info("============ launchCcmioDemo END  ==========");
@@ -208,10 +212,16 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 	}
 
 	private void launchCPumpService(BundleContext bundleCtx) {
-
 		myCPumpHelper.launchCPump(bundleCtx);
 	}
-
+	private void launchQPidBroker(BundleContext bundleCtx) {
+		QpidBrokerHelper qbh = new QpidBrokerHelper();
+		qbh.startBroker(bundleCtx);
+	}
+	private void launchMechioServiceConns(BundleContext bundleCtx) {
+		MechioServiceHelper msh = new MechioServiceHelper();
+		msh.startEmUp(bundleCtx);
+	}
 
 	private void launchOtherStuffLate()  {
 	

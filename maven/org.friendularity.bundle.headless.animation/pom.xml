@@ -40,6 +40,9 @@
                 <configuration>
                     <instructions>
                         <Bundle-Activator>org.friendularity.bundle.headless.animation.Activator</Bundle-Activator>
+                        <Export-Package>
+                            org.friendularity.bundle.headless.animation
+                        </Export-Package>
                     </instructions>
                 </configuration>
             </plugin>

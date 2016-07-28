@@ -37,6 +37,9 @@
                 <configuration>
                     <instructions>
                         <Bundle-Activator>org.friendularity.bundle.headless.messaging.Activator</Bundle-Activator>
+                        <Export-Package>
+                            org.friendularity.bundle.headless.messaging
+                        </Export-Package>
                     </instructions>
                 </configuration>
             </plugin>

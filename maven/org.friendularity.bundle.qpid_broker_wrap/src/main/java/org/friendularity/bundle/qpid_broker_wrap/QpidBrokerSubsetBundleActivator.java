@@ -16,54 +16,21 @@
 
 package org.friendularity.bundle.qpid_broker_wrap;
 
+import org.appdapter.osgi.core.BundleActivatorBase;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
 // Our goal is to activate just as much of a QPid broker as needed, which to do is perhaps a bit
 // harder than we would like.  Note that when all running network svcs can use netty based
 // transport such as QPid Proton and Akka, then QPid broker is not needed.
-public class QpidBrokerSubsetBundleActivator implements BundleActivator {
+public class QpidBrokerSubsetBundleActivator extends BundleActivatorBase {
 
-    public void start(BundleContext context) throws Exception {
-		String[] pseudoArgs = {
-				"-prop", "qpid.home_dir=qpid_broker_home/",
-				"-prop", "qpid.work_dir=qpid_broker_work/",
-				"-prop", "qpid.initial_config_virtualhost_config={ \"type\" : \"Memory\" }"
-
-		};
-		ClassLoader savedCL = Thread.currentThread().getContextClassLoader();
-		ClassLoader bundleCL = org.apache.qpid.server.Broker.class.getClassLoader();
-		try {
-			if (bundleCL != null) {
-				System.out.println("\n====\nSaved old classloader=" + savedCL + "\nSetting contextClassLoader to: " + bundleCL);
-				Thread.currentThread().setContextClassLoader(bundleCL);
-			}
-			for (int i = 0; i< pseudoArgs.length ; i++) {
-				System.out.println("Arg[" + i + "]=" + pseudoArgs[i]);
-			}
-			System.out.println("Launching broker main, which may catch exceptions and call shutdown(), which stops our log output!");
-			launchBrokerMain(pseudoArgs);
-			System.out.println("\n==========\nFinished launching broker main");
-		} catch (Throwable th) {
-			System.out.println(".start() caught exception: " + th);
-			th.printStackTrace();
-		} finally {
-			System.out.println("\n==========\nSetting contextClassLoader back to: " + savedCL);
-			Thread.currentThread().setContextClassLoader(savedCL);
-		}
-		System.out.println("\n==========\n.start() is returning");
-
-    }
-
-    public void stop(BundleContext context) throws Exception {
-        // TODO add deactivation code here
-    }
-
-	static void launchBrokerMain(String[] args) throws Exception {
-		// One big issue is that if this method catches a startup exception, it calls:
-		//  shutdown(1);
-		org.apache.qpid.server.Main.main(args);
+    public void start(BundleContext bunCtx) throws Exception {
+		super.start(bunCtx);
 	}
+    public void stop(BundleContext bunCtx) throws Exception {
+ 		super.stop(bunCtx);
+    }
 
 }
 
