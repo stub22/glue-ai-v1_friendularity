@@ -8,7 +8,7 @@ import org.friendularity.vwimpl.VWorldActorFactoryFuncs
 import org.friendularity.vwmsg.VWARM_GreetFromPumpAdmin
 
 /**
-  * Created by Owner on 4/13/2016.
+  * Created by Stub22 on 4/13/2016.
   */
 object TestDullServer extends VarargsLogging {
 	val akkaSysName = "DullStandSys_4719"

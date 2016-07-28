@@ -40,6 +40,9 @@
                 <configuration>
                     <instructions>
                         <Bundle-Activator>org.friendularity.bundle.headless.speech.Activator</Bundle-Activator>
+                        <Export-Package>
+                            org.friendularity.bundle.headless.speech
+                        </Export-Package>
                     </instructions>
                 </configuration>
             </plugin>

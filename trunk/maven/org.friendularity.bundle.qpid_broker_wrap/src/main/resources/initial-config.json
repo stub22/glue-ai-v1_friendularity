@@ -61,7 +61,11 @@
     "name" : "friendu-vhn",
     "type" : "JSON",
     "virtualHostInitialConfiguration" : "${qpid.initial_config_virtualhost_config}"
-  } ],
+  }, {
+      "name" : "test",
+      "type" : "JSON",
+      "virtualHostInitialConfiguration" : "${qpid.initial_config_virtualhost_config}"
+    }],
   "plugins" : [ {
     "type" : "MANAGEMENT-JMX",
     "name" : "jmxManagement"
