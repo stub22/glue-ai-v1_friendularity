@@ -46,6 +46,9 @@ trait FriendUVizappTestRootNames {
 	val vzpLegCnfBrkrRcpUriTxt : String = vizappRecipeNS + "vizapp_legConf_brokerRecipe"
 	val pathToProfileFolder : String = "org/friendu/tchunk/vizapp_profile" // relative to profile eHost
 }
+class VizappRaizNamesImpl(profileFolder : String ) extends FriendUVizappTestRootNames {
+	override val pathToProfileFolder = profileFolder
+}
 class TestSetupLoader(val rootNames : FriendUVizappTestRootNames) extends LegacyRepoFuncs with  VarargsLogging {
 
 	def getMergedProfileGraph_RegularDesktop (profDataEntryHost : EntryHost) : JenaModel = {
