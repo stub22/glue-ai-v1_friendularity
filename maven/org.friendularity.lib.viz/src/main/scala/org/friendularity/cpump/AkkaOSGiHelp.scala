@@ -36,6 +36,30 @@ trait AkkaOSGiHelp extends VarargsLogging {
 		myAkkaSys_opt = ourAkkaActivator.launchAkkaActorSys(bctx)
 	}
 
+	def startAkkaOSGi(bctx: BundleContext, configMarkerClz : Class[_]): Unit = {
+		val savedCL: ClassLoader = Thread.currentThread.getContextClassLoader
+		val configBundleCL: ClassLoader = configMarkerClz.getClassLoader
+		try {
+			if (configBundleCL != null) {
+				info2("\n====\nSaved old classloader={}\nSetting contextClassLoader to: {}", savedCL, configBundleCL)
+				Thread.currentThread.setContextClassLoader(configBundleCL)
+			}
+			info0("Launching akka")
+			startAkkaOSGi(bctx)
+
+			info0("\n==========\nFinished launching akka")
+		}
+		catch {
+			case th: Throwable => {
+				error1(".startAkkaOSGi() caught exception: ", th)
+				th.printStackTrace
+			}
+		} finally {
+			info1("\n==========\nSetting contextClassLoader back to: {} ", savedCL)
+			Thread.currentThread.setContextClassLoader(savedCL)
+		}
+	}
+
 	private def makeAkkaActivSingleton: OurAkkaOSGiActivator = {
 		val ourActivLogger: Logger = BasicDebugger.getLoggerForClass(classOf[OurAkkaOSGiActivator])
 		val ourActivVL = new VarargsLogging {

@@ -59,7 +59,14 @@
                 <configuration>
                     <instructions>
                         <Bundle-Activator>org.friendularity.bundle.wbrst.Activator</Bundle-Activator>
-                        <Export-Package/>
+                        <!-- The spray.io jars are proper bundles, but they need the
+                                org.parboiled and shapeless packages, which are not bundled.
+                         -->
+                        <Export-Package>
+                            org.friendularity.wbrst,
+                            org.parboiled.*,
+                            shapeless.*
+                        </Export-Package>
                     </instructions>
                 </configuration>
             </plugin>
