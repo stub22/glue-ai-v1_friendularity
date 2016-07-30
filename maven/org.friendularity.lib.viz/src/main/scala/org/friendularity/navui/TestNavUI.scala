@@ -36,7 +36,7 @@ import org.cogchar.render.goody.basic.BasicGoodyCtx
 import org.cogchar.render.model.humanoid.{VWorldHumanoidFigureEntity, HumanoidFigure}
 import org.cogchar.render.rendtest.{GoodyTestMsgMaker, GoodyRenderTestApp}
 import org.cogchar.render.sys.goody.GoodyRenderRegistryClient
-import org.friendularity.raiz.TestRaizLoad
+import org.friendularity.raiz.{VizappLegacyLoaderFactory, VizappProfileLoaderFactory, TestRaizLoad}
 
 import org.friendularity.cpump.{CPStrongTeller, CPumpMsg, CPMsgTeller, ActorRefCPMsgTeller}
 import org.friendularity.dull.SpecialAppPumpSpace
@@ -121,17 +121,24 @@ class StandaloneNavAppSys() {
 
 	def findOrMakeNavUiApp: NavUiAppImpl = myNavUiApp
 
-	lazy private val myLegacyELRC: EnhancedLocalRepoClient = {
+	lazy private val myProfileLoader = VizappProfileLoaderFactory.makeUnitTestProfileLoader()
 
+	lazy private val myMergedProfileGraph : JenaModel = myProfileLoader.makeMergedProfileGraph
+
+	lazy private val myLegacyLoader = VizappLegacyLoaderFactory.makeUnitTestLegacyLoader()
+
+	lazy private val myLegacyELRC: EnhancedLocalRepoClient = myLegacyLoader.makeLegacyELRC(myMergedProfileGraph)
+	/*
+	{
 		// Note that TestRaizLoad extends AvatarLegacySetupFuncs, and is also currently used from CCMIO_DemoActivator
 		val setupLoader = TestRaizLoad.getDfltSetupLoader
 		val unitTestConfEHost: EntryHost = setupLoader.getUnitTestResourceEntryHost
 		val mergedProfileGraph: JenaModel = setupLoader.getMergedProfileGraph_RegularDesktop(unitTestConfEHost)
 		val legConfEHost: EntryHost = unitTestConfEHost // just emphasizing this is a separate choice
-		val vzBrkRcpUriTxt: String = setupLoader.rootNames.vzpLegCnfBrkrRcpUriTxt
+		val vzBrkRcpUriTxt: String = setupLoader.myRootNames.vzpLegCnfBrkrRcpUriTxt
 		setupLoader.makeLegacyConfigELRC_fromJena(mergedProfileGraph, vzBrkRcpUriTxt, legConfEHost)
 	}
-
+	*/
 	def getLegacyELRC: EnhancedLocalRepoClient = myLegacyELRC
 
 	def sendStart_SemiLegacySinbad(ebul: ExoBodyUserLogic): Unit = {

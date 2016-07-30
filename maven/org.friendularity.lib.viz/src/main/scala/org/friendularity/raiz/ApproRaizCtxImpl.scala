@@ -14,13 +14,16 @@
  *  limitations under the License.
  */
 
-
 package org.friendularity.raiz
 
 import com.hp.hpl.jena
 import jena.rdf.model.{ Model => JenaModel, ModelFactory => JenaModelFactory }
 import jena.ontology.Individual
 import org.cogchar.blob.entry.{EntryHost}
+
+/*
+As of 2016-07-29, the ApproRaizCtx stuff is not used.
+ */
 
 trait ApproRaizCtx {
 	def getInRootRecipeModel: JenaModel

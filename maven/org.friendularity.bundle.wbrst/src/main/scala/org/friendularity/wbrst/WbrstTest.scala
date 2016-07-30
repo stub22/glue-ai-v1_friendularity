@@ -38,7 +38,7 @@ object WbrstServerTest  extends VarargsLogging {
 		val wbrstRoutedActorName = "wbrstRouted"
 		val routedSvcAkkaRef = wbrstAkkaSys.actorOf(routingExampleActorProps, "wbrstRoutedActorName")
 		val launcher = new SprayCanLauncher {}
-		val wbrstRoutedPort = 8080
+		val wbrstRoutedPort = 8082
 		launcher.launchForListener(wbrstAkkaSys,  routedSvcAkkaRef, wbrstRoutedPort)
 		info2("Finished launch routing-based service on port={}, svc={}", wbrstRoutedPort : Integer, routedSvcAkkaRef)
 		val wbrstDirectPort = 8081
@@ -73,7 +73,8 @@ class TrialRoutingHttpSvcActor extends spray.routing.HttpServiceActor {
 					complete("AROUND")
 				} ~	noop {
 					val rqstInst = requestInstance
-					complete(s"GET Request not understood, rq=${rqstInst}")
+					// GET Request not understood, rq=spray.routing.directives.BasicDirectives$$anon$3@45063171
+					complete(s"GET Request not understood, rqRoute=${rqstInst}")
 				}
 			} ~ post {
 				complete("POST Request not understood")
@@ -147,14 +148,24 @@ class TrialDirectHttpSvcActor extends Actor with ActorLogging {
 
 	override def receive  : PartialFunction[Any, Unit] = {
 		// when a new connection comes in we register ourselves as the connection handler
-		case _: Http.Connected => sender() ! Http.Register(self)
+		case connNot : Http.Connected => {
+			log.info("Received Http.Connected, will now register self")
+			sender() ! Http.Register(self)
+		}
 
-		case HttpRequest(HttpMethods.GET, Uri.Path("/"), _, _, _) =>
+		case HttpRequest(HttpMethods.GET, Uri.Path("/"), _, _, _) => {
+			log.info("Handling request for indexPage")
 			sender() ! indexPageResponse
-
+		}
 		case HttpRequest(HttpMethods.GET, Uri.Path("/zing"), _, _, _) =>
 			sender() ! HttpResponse(entity = "BANG!")
 
+		case otherReq : HttpRequest =>
+			sender() ! HttpResponse(entity = s"Ignoring your weird request: ${otherReq}")
+
+		case otherMsg => {
+			log.info("DirectSvc got some other message", otherMsg)
+		}
 	}
 }
 /*
