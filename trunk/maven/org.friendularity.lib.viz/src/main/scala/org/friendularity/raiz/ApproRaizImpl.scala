@@ -17,6 +17,10 @@
 
 package org.friendularity.raiz
 
+/*
+As of 2016-07-29, the ApproRaiz stuff is not used.
+ */
+
 
 trait ApproRaiz {
 

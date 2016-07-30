@@ -10,7 +10,11 @@ import org.friendularity.navui.ExoBodyUserLogic;
 import org.friendularity.navui.NavUiAppImpl;
 import org.friendularity.navui.NavUiAppSvc;
 import org.friendularity.old.ccmio.OldLaunchHelper;
-import org.friendularity.raiz.TestSetupLoader;
+// import org.friendularity.raiz.TestSetupLoader;
+import org.friendularity.raiz.VizappLegacyLoader;
+import org.friendularity.raiz.VizappLegacyLoaderFactory;
+import org.friendularity.raiz.VizappProfileLoader;
+import org.friendularity.raiz.VizappProfileLoaderFactory;
 import org.friendularity.vsim.vworld.UnusedNetworkVisionDataFeed;
 import org.osgi.framework.BundleContext;
 import org.rwshop.swing.common.lifecycle.ServicesFrame;
@@ -115,25 +119,43 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 
 	private void launchCcmioDemo(BundleContext bundleCtx) {
 		getLogger().info("============ launchCcmioDemo BEGIN  ==========");
+
+		VizappProfileLoader profileLoader = VizappProfileLoaderFactory.makeOSGiCompatProfileLoader(myProfileMarkerClz,
+				VizappProfileLoaderFactory.vizDlftProfilePath(), VizappProfileLoaderFactory.regDesktopTokens());
+		Model mergedProfileJM = profileLoader.makeMergedProfileGraph();
+		/*
 		TestSetupLoader setupLoader = TestRaizLoad.getDfltSetupLoader();
 		EntryHost	profileEHost = setupLoader.makeBundleEntryHost(myProfileMarkerClz);
 		Model mergedProfileJM = loadMergedProfileGraph(profileEHost);
+		*/
 		if (mergedProfileJM == null) {
 			throw new RuntimeException("launchCcmioDemo cannot read profile from classpath containing " + myProfileMarkerClz);
 		}
+		/*
 		EntryHost	legConfEHost = setupLoader.makeBundleEntryHost(myLegConfMarkerClz);
+		*/
+
+		VizappLegacyLoader legacyLoader = VizappLegacyLoaderFactory.makeDlftOSGiLegacyLoader(myLegConfMarkerClz);
+
+
+
 		if (myFlag_useOldLaunchStyle2014) {
 			if (myFlag_attachVizappTChunkRepo) {
 				// OLD launch mechanism, which we keep working for comparative testing
 				getLogger().info("============= 2014-style launch is calling attachVizTChunkLegConfRepo() ======");
+
+				legacyLoader.makeAndRegisterELRC(mergedProfileJM, bundleCtx);
+				/*
 				attachVizTChunkLegConfRepo(bundleCtx, mergedProfileJM, legConfEHost);
+				*/
 			} // else we would be seeing fallback injected mediator in control
 
 			myOldLaunchHelper.startOldPumaThenVWorld(bundleCtx);
 		} else {
 			// 2016 way:
 			ActorSystem akkaSys = myCPumpHelper.dangerActorSysExposed();  // Should be avail because startAkkaOSGi was called during .start().
-			launchVWorldWithSinbad_2016(bundleCtx, akkaSys, mergedProfileJM, legConfEHost);
+			EnhancedLocalRepoClient elrc = legacyLoader.makeLegacyELRC(mergedProfileJM);
+			launchVWorldWithSinbad_2016(bundleCtx, akkaSys, elrc); //  mergedProfileJM, legConfEHost);
 		}
 		getLogger().info("============ Calling launchCPumpService() ==========");
 		launchCPumpService(bundleCtx);
@@ -148,8 +170,8 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 		// PUMA  behavior system.  However, the Cogchar config system is intended to be sufficiently general to
 		// handle most initialization cases without help from bundle activators.
 	}
-	public void launchVWorldWithSinbad_2016(BundleContext bundleCtx, ActorSystem akkaSys,
-											Model mergedProfileJM,	EntryHost legConfEHost) {
+	public void launchVWorldWithSinbad_2016(BundleContext bundleCtx, ActorSystem akkaSys, EnhancedLocalRepoClient elrc) {
+				//							Model mergedProfileJM,	EntryHost legConfEHost) {
 		// Launches OpenGL world and actors for talking to it.
 		// Can be tested separately using the TestNavUI.main() launcher.
 
@@ -162,8 +184,10 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 		// are unused.  We really just want the bone mappngs + body mesh-names,
 		// which occupy just a few of these loaded graphs.
 
+		/*
 		getLogger().info("============= 2016 semi-legacy launcher calling makeLegacyELRC() ======");
 		EnhancedLocalRepoClient elrc = makeLegacyELRC(mergedProfileJM, legConfEHost);
+		*/
 
 		getLogger().info("============= 2016 semi-legacy launcher calling startSemiLegacyBodyConn_OSGi_Sinbad() ======");
 		// This method instantiates necessary config objects and outer callback ("bodyNoticer"),
@@ -179,14 +203,17 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 		nuiApp.sendSetupMsgs_Async();
 		return nuiApp;
 	}
-
+/*
 	// profileDataMarkerClz should have same classpath (i.e. same OSGi bundle) as the profile data.
 	private Model loadMergedProfileGraph(EntryHost	 profileEHost) {
 		TestSetupLoader setupLoader = TestRaizLoad.getDfltSetupLoader();
 		Model mergedProfileGraph = setupLoader.getMergedProfileGraph_RegularDesktop(profileEHost);
 		return mergedProfileGraph;
 	}
+*/
+
 	// When active this VizTChunk removes the need for DemoMediator setup at bottom of this file.
+	/*
 	private void attachVizTChunkLegConfRepo(final BundleContext bunCtx, Model mergedProfileGraph, EntryHost legConfEHost) {
 		TestSetupLoader setupLoader = TestRaizLoad.getDfltSetupLoader();
 		// Same eHost is used here for profile and config data, but separate eHosts is also OK.
@@ -197,13 +224,13 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 	}
 	private EnhancedLocalRepoClient makeLegacyELRC(Model mergedProfileGraph, EntryHost legConfEHost) {
 		TestSetupLoader setupLoader = TestRaizLoad.getDfltSetupLoader();
-		String vzBrkRcpUriTxt = setupLoader.rootNames().vzpLegCnfBrkrRcpUriTxt();
+		String vzBrkRcpUriTxt = setupLoader.myRootNames().vzpLegCnfBrkrRcpUriTxt();
 		EnhancedLocalRepoClient legacyConfERC = setupLoader.makeLegacyConfigELRC_fromJena(mergedProfileGraph,
 					vzBrkRcpUriTxt, legConfEHost);
 		getLogger().info("legConfEnhRepoCli={}", legacyConfERC);
 		return legacyConfERC;
 	}
-
+	*/
 	private CCMIO_CPumpHelper myCPumpHelper = new CCMIO_CPumpHelper();
 
 	private void startAkkaOSGi(BundleContext bundleCtx) {

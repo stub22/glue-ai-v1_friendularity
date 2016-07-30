@@ -21,6 +21,7 @@ import java.lang.{Long => JLong}
 import com.hp.hpl.jena
 import jena.reasoner.{Reasoner, ReasonerRegistry}
 import jena.rdf.model.{Model => JenaModel, ModelFactory => JenaModelFactory, InfModel}
+import org.appdapter.fancy.rclient.EnhancedLocalRepoClient
 import org.cogchar.impl.appro.ApproProfileGraphMaker
 
 import org.ontoware.rdf2go
@@ -41,15 +42,8 @@ import org.cogchar.blob.entry.{EntryHost, PlainEntry, FolderEntry, DiskEntryHost
 import org.cogchar.api.owrap.crcp.{BRFeature => CC_BRFeature}
 import org.cogchar.api.owrap.appro.AFBRLegacyConfig
 
-trait FriendUVizappTestRootNames {
-	val vizappRecipeNS : String = "http://onto.friendularity.org/indiv/vizappRecipes_reg_desk_2016Q1#"
-	val vzpLegCnfBrkrRcpUriTxt : String = vizappRecipeNS + "vizapp_legConf_brokerRecipe"
-	val pathToProfileFolder : String = "org/friendu/tchunk/vizapp_profile" // relative to profile eHost
-}
-class VizappRaizNamesImpl(profileFolder : String ) extends FriendUVizappTestRootNames {
-	override val pathToProfileFolder = profileFolder
-}
-class TestSetupLoader(val rootNames : FriendUVizappTestRootNames) extends LegacyRepoFuncs with  VarargsLogging {
+/*
+class TestSetupLoader(val myRootNames : VizappTestRootNames) extends LegacyRepoFuncs with  VarargsLogging {
 
 	def getMergedProfileGraph_RegularDesktop (profDataEntryHost : EntryHost) : JenaModel = {
 
@@ -58,7 +52,7 @@ class TestSetupLoader(val rootNames : FriendUVizappTestRootNames) extends Legacy
 	}
 	def getMergedProfileGraph(activeTokens : Array[String], profDataEntryHost : EntryHost) : JenaModel = {
 
-		val pgm = new ApproProfileGraphMaker(profDataEntryHost, rootNames.pathToProfileFolder,  activeTokens)
+		val pgm = new ApproProfileGraphMaker(profDataEntryHost, myRootNames.pathToProfileFolder,  activeTokens)
 
 		val mergedProfileGraph : JenaModel = pgm.makeMergedProfileGraph
 		mergedProfileGraph
@@ -72,7 +66,7 @@ class TestSetupLoader(val rootNames : FriendUVizappTestRootNames) extends Legacy
 
 	def testLegConfLoad(profileJM : JenaModel, cdatEH : EntryHost) : Unit = {
 
-		val cwRepoSpec = makeLegacyConfRepoSpec(profileJM, rootNames.vzpLegCnfBrkrRcpUriTxt, cdatEH)
+		val cwRepoSpec = makeLegacyConfRepoSpec(profileJM, myRootNames.vzpLegCnfBrkrRcpUriTxt, cdatEH)
 
 		val cwRepo = cwRepoSpec.getOrMakeRepo.asInstanceOf[ChnkrWrapRepo]
 
@@ -84,21 +78,14 @@ class TestSetupLoader(val rootNames : FriendUVizappTestRootNames) extends Legacy
 		info0("That was a good test!")
 	}
 
-	def appendOntoAndInfer(inModel : JenaModel) : Unit = {
-		val rdfsReasoner : Reasoner =  ReasonerRegistry.getRDFSReasoner
-		val infModelWithRDFS : InfModel = JenaModelFactory.createInfModel(rdfsReasoner, inModel)
-		val deductionsModel : JenaModel = infModelWithRDFS.getDeductionsModel
-
-		info3("model sizes: inputWithOnto={}, deductions={}, inferred={}", inModel.size : JLong,
-					deductionsModel.size : JLong,  infModelWithRDFS.size : JLong)
-
-	}
 }
+*/
 object TestRaizLoad extends  VarargsLogging {
-	lazy val dfltRootNames = new FriendUVizappTestRootNames {}
+	/*
+	lazy val dfltRootNames = new VizappTestRootNames {}
 	lazy val dfltSetupLoader = new TestSetupLoader(dfltRootNames)
 	def getDfltSetupLoader : TestSetupLoader = dfltSetupLoader
-
+	*/
 	def main(args: Array[String]): Unit = {
 
 		// These two lines activate Log4J (at max verbosity!) without requiring a log4j.properties file.
@@ -113,14 +100,44 @@ object TestRaizLoad extends  VarargsLogging {
 		// GraphScanTest.setupScanTestLogging
 		info0("Starting TestProfileLoad")
 
-		val setupLoader = getDfltSetupLoader
-		val profDataEntryHost: EntryHost = setupLoader.getUnitTestResourceEntryHost
+		/*
+val setupLoader = getDfltSetupLoader
 
-		val mergedProfileGraph = setupLoader.getMergedProfileGraph_RegularDesktop(profDataEntryHost)
+val profDataEntryHost: EntryHost = setupLoader.getUnitTestResourceEntryHost
+
+val mergedProfileGraph = setupLoader.getMergedProfileGraph_RegularDesktop(profDataEntryHost)
+*/
+
+		val profileLoader = VizappProfileLoaderFactory.makeUnitTestProfileLoader
+		val mergedProfileGraph = profileLoader.makeMergedProfileGraph
 		info1("Fetched mergedProfileGraph of size {}", mergedProfileGraph.size: java.lang.Long)
 		debug1("mergedProfileGraph dump:\n{}", mergedProfileGraph)
 
+		val legacyLoader = VizappLegacyLoaderFactory.makeUnitTestLegacyLoader()
+		val legacyELRC : EnhancedLocalRepoClient = legacyLoader.makeLegacyELRC(mergedProfileGraph)
+
+		info1("Got legacy enhanced repo client: {}", legacyELRC)
+		val repo = legacyELRC
+//		val cwRepo = ???
+//		val dirModel = cwRepo.getDirectoryModel()
+//		info1("testLegConfLoad: Fetched repo dir model: {}", dirModel)
+
+		java.lang.Thread.sleep(3000)
+		info0("That was a good test!")
+
+		/*
 		val cdatEntryHost = profDataEntryHost // This could easily be a *different* eHost, instead!
 		setupLoader.testLegConfLoad(mergedProfileGraph, cdatEntryHost)
+		*/
 	}
+	def appendOntoAndInfer(inModel : JenaModel) : Unit = {
+		val rdfsReasoner : Reasoner =  ReasonerRegistry.getRDFSReasoner
+		val infModelWithRDFS : InfModel = JenaModelFactory.createInfModel(rdfsReasoner, inModel)
+		val deductionsModel : JenaModel = infModelWithRDFS.getDeductionsModel
+
+		info3("model sizes: inputWithOnto={}, deductions={}, inferred={}", inModel.size : JLong,
+			deductionsModel.size : JLong,  infModelWithRDFS.size : JLong)
+
+	}
+
 }

@@ -29,6 +29,9 @@ import org.cogchar.blob.entry.EntryHost
 
 import scala.collection.JavaConverters._
 
+/*
+As of 2016-07-29, the ApproRaizLifecycle stuff is not used.
+ */
 class ApproRaizLifecycle extends ServiceLifecycle[ApproRaiz] with VarargsLogging with DepSpecMaker {
 	// These names are used as *local* depdendency keys within this lifecycle.
 	// These are *not* the keys for properties on the services we consume.

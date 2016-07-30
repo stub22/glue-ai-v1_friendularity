@@ -27,48 +27,7 @@ import com.hp.hpl.jena.rdf.model.{Model => JenaModel}
 /**
   * Created by Owner on 6/16/2016.
   */
-trait VWUnusedSketches extends VarargsLogging {
-	protected def unused_FakeloadConf(vwConfMsg : VWSetupRq_Conf, localActorCtx : ActorContext): Unit = {
-		// This is loading a complete copy of the legacy avatar config, but ...
-		// it is not used in the current load of the vw-bodies/avatars, which is being
-		// done under OSGi under direct control of the CCMIO_DemoActivator.
-		val cnfMgr = new UnusedSketch_VWCnfMgr {}
-		val profileGraph = cnfMgr.getProfileGraph
-		info1("Got profileGraph: {}", profileGraph)
-		val legConf_opt = cnfMgr.getLegConfERC_opt
-	}
-}
-trait UnusedSketch_VWCnfMgr extends VarargsLogging {
-	val mySetupLoader = TestRaizLoad.getDfltSetupLoader
-	lazy private val myMergedProfileJM : JenaModel = makeMergedProfileGraph("Temporarily unused selector args")
-	private val loadLegacyConf = true
-	lazy private val legConfERC_opt: Option[EnhancedLocalRepoClient] = {
-		if (loadLegacyConf) Option(buildLegacyConfERC_assumesUnitTest(myMergedProfileJM)) else None
-	}
-	def getProfileGraph = myMergedProfileJM
-	def getLegConfERC_opt = legConfERC_opt
-	protected def makeMergedProfileGraph(profileSelectorArgs : String) : JenaModel = {
-		val tchunkEHost: EntryHost = mySetupLoader.getUnitTestResourceEntryHost
-		// TODO - Process the profileSelectorArgs
-		val mergedProfileGraph: JenaModel = mySetupLoader.getMergedProfileGraph_RegularDesktop(tchunkEHost)
-		mergedProfileGraph
-	}
-	protected def buildLegacyConfERC_assumesUnitTest(mergedProfGraph : JenaModel) : EnhancedLocalRepoClient = {
-		// Legacy config load section, gradually becoming obsolete:
-		// Under OSGi (e.g. CCMIO), old PumaBoot process is set up by attachVizTChunkLegConfRepo(BundleContext bunCtx).
-		//val tchunkEHost: EntryHost = TestRaizLoad.makeBundleEntryHost(TestRaizLoad.getClass)
 
-		val tchunkEHost: EntryHost = mySetupLoader.getUnitTestResourceEntryHost
-
-		// TODO: Find this URI from either a query or an onto-constant
-		val vzBrkRcpUriTxt: String = mySetupLoader.rootNames.vzpLegCnfBrkrRcpUriTxt
-
-		val legConfERC = mySetupLoader.makeLegacyConfigELRC_fromJena(mergedProfGraph, vzBrkRcpUriTxt, tchunkEHost)
-		getLogger.info("legConfERC={}", legConfERC)
-		legConfERC
-	}
-
-}
 trait EmulateVintageLaunch extends VarargsLogging {
 	// Keys from   org.cogchar.bundle.app.vworld.central.VWorldMapperLifecycle
 	val DEPKEY_Mediator = "puma-mediator";

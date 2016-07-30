@@ -16,10 +16,15 @@
 
 	<dependencies>
 
-
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>org.friendularity.bundle.qpid_broker_wrap</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>org.friendularity.bundle.wbrst</artifactId>
             <version>${project.version}</version>
         </dependency>
 
