@@ -137,8 +137,6 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 
 		VizappLegacyLoader legacyLoader = VizappLegacyLoaderFactory.makeDlftOSGiLegacyLoader(myLegConfMarkerClz);
 
-
-
 		if (myFlag_useOldLaunchStyle2014) {
 			if (myFlag_attachVizappTChunkRepo) {
 				// OLD launch mechanism, which we keep working for comparative testing
@@ -234,7 +232,8 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 	private CCMIO_CPumpHelper myCPumpHelper = new CCMIO_CPumpHelper();
 
 	private void startAkkaOSGi(BundleContext bundleCtx) {
-		myCPumpHelper.startAkkaOSGi(bundleCtx);
+		Class<?> bundleMarkerClazzForAkkaConfig = getClass();
+		myCPumpHelper.startAkkaOSGi(bundleCtx, bundleMarkerClazzForAkkaConfig);
 		// Now the actorSystem should be available via myCPumpHelper.dangerExposedActorSys
 	}
 
