@@ -60,17 +60,24 @@ trait NavUiAppSvc extends VarargsLogging {
 	}
 
 	val sinbadBodyID : Ident = new FreeIdent("urn:ftd:cogchar.org:2012:runtime#char_sinbad_88")
-	val hmdGraphID: Ident = new FreeIdent("urn:ftd:cogchar.org:2012:runtime#hmd_sheet_22")
-	val bonyGraphID: Ident = new FreeIdent("urn:ftd:cogchar.org:2012:runtime#bony_sheet_sinbad")
+	val sinbadHmdGraphID: Ident = new FreeIdent("urn:ftd:cogchar.org:2012:runtime#hmd_sheet_22")
+	val sinbadBonyGraphID: Ident = new FreeIdent("urn:ftd:cogchar.org:2012:runtime#bony_sheet_sinbad")
 
 	// Includes MechIO anim connections, requires bundleCtx.
 	// TODO:  If we were sending to an actor that knew how to discover the MechIOBody connection,
 	// possibly by waiting for a lifecycle update, then this impl could be same as the "Standy" method below.
 	def requestSemiLegacyBodyConn_OSGi_Sinbad(bundleCtx: BundleContext, akkaSys: ActorSystem,
 					 legacyELRC: EnhancedLocalRepoClient, exoBodyUserLogic : ExoBodyUserLogic): Unit = {
+		requestSemiLegacyBodyConn_OSGi(bundleCtx, akkaSys, legacyELRC, sinbadBodyID,
+					sinbadHmdGraphID, sinbadBonyGraphID, exoBodyUserLogic)
+	}
+	def requestSemiLegacyBodyConn_OSGi(bundleCtx: BundleContext, akkaSys: ActorSystem,
+						legacyELRC: EnhancedLocalRepoClient, charBodyID : Ident,
+						hmdGraphID : Ident, bonyGraphID : Ident,
+						exoBodyUserLogic : ExoBodyUserLogic): Unit = {
 
 		val legBodyLdr = new LegacyBodyLoader_Stateless
-		val fullHumaCfg : HumanoidFigureConfig = legBodyLdr.loadFullHumaConfig_SemiLegacy(legacyELRC, sinbadBodyID, hmdGraphID, bonyGraphID)
+		val fullHumaCfg : HumanoidFigureConfig = legBodyLdr.loadFullHumaConfig_SemiLegacy(legacyELRC, charBodyID, hmdGraphID, bonyGraphID)
 		val mbrsc: ModelBlendingRobotServiceContext = legBodyLdr.connectMechIOBody(legacyELRC, bundleCtx, fullHumaCfg, bonyGraphID)
 
 		// Before we create the body itself, create an external client actor, with ability to
@@ -88,9 +95,10 @@ trait NavUiAppSvc extends VarargsLogging {
 	}
 	// Creates a posable VW character, but does not ask for or assume any MechIO (or other OSGi) infrastructure.
 	def requestStandySemiLegacyBody_Sinbad(akkaSys: ActorSystem,
-										   legacyELRC: EnhancedLocalRepoClient, exoBodyUserLogic : ExoBodyUserLogic): Unit = {
+										   legacyELRC: EnhancedLocalRepoClient,
+										   exoBodyUserLogic : ExoBodyUserLogic): Unit = {
 		val legBodyLdr = new LegacyBodyLoader_Stateless
-		val fullHumaCfg : HumanoidFigureConfig = legBodyLdr.loadFullHumaConfig_SemiLegacy(legacyELRC, sinbadBodyID, hmdGraphID, bonyGraphID)
+		val fullHumaCfg : HumanoidFigureConfig = legBodyLdr.loadFullHumaConfig_SemiLegacy(legacyELRC, sinbadBodyID, sinbadHmdGraphID, sinbadBonyGraphID)
 
 		// Before we create the body itself, create an external client actor, with ability to
 		// talk to VW body, and also to receive schedule ticks
