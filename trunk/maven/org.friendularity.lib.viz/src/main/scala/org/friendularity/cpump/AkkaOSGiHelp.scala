@@ -37,6 +37,9 @@ trait AkkaOSGiHelp extends VarargsLogging {
 	}
 
 	def startAkkaOSGi(bctx: BundleContext, configMarkerClz : Class[_]): Unit = {
+
+		// Weird, setting the context classloader doesn't seem to help, whereas calling this
+		// from bundle .start *does* help.
 		val savedCL: ClassLoader = Thread.currentThread.getContextClassLoader
 		val configBundleCL: ClassLoader = configMarkerClz.getClassLoader
 		try {
@@ -78,7 +81,11 @@ class AkkaOSGiLaunchHelper(fixedAkkaSysName : String) extends AkkaOSGiHelp {
 
 // Note that this activator extends an akka class which implements  org.osgi.framework.BundleActivator,
 // but we do *not* use it as a bundle activator, presently.  Instead we manually call .start() on
-// it.  See its complete method list at bottom
+// it.  See its complete method list at bottom.
+
+// To get bundle-classloaders to line up it seems necessary to call .start() here from an
+// actual bundle.start(), but the reason for that is not obvious from reading akka code.
+
 class OurAkkaOSGiActivator(myAkkaSysName : String, myVLog : VarargsLogging)
 			extends ActorSystemActivator {
 
