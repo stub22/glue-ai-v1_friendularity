@@ -82,7 +82,8 @@ trait NavUiAppSvc extends VarargsLogging {
 
 		// Before we create the body itself, create an external client actor, with ability to
 		// talk to VW body, and also to receive schedule ticks
-		val bodyNoticer : CPStrongTeller[VWBodyNotice] = makeExoBodyUserTeller_withTicks(akkaSys, "sinbad_ccmio_body_user", exoBodyUserLogic)
+		val noticerName = "bodyNoticer_" + charBodyID.getLocalName
+		val bodyNoticer : CPStrongTeller[VWBodyNotice] = makeExoBodyUserTeller_withTicks(akkaSys, noticerName, exoBodyUserLogic)
 
 		// Now we've done all the "outer" setup that requires assumptions, and we can
 		// send off a tidy async request to the v-world actors, requesting them to
