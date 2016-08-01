@@ -91,7 +91,7 @@ trait NavUiAppSvc extends VarargsLogging {
 		// THEN our bodyNoticer can send more requests do any additional manipulation on the body
 		// such as move its v-world position and orientation, attach a camera, launch an animation.
 
-		postPatientCharCreateRq(sinbadBodyID, fullHumaCfg, Option(mbrsc), bodyNoticer)
+		postPatientCharCreateRq(charBodyID, fullHumaCfg, Option(mbrsc), bodyNoticer)
 
 	}
 	// Creates a posable VW character, but does not ask for or assume any MechIO (or other OSGi) infrastructure.
