@@ -21,8 +21,10 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
 // Our goal is to activate just as much of a QPid broker as needed, which to do is perhaps a bit
-// harder than we would like.  Note that when all running network svcs can use netty based
-// transport such as QPid Proton and Akka, then QPid broker is not needed.
+// harder than we would like.  We currently allow the broker launch to happen under superior
+// bundle control, so this activator has no responsibilities.
+// All the juice is in the QPidBrokerLauncher class, which can be used from any top bundle.
+
 public class QpidBrokerSubsetBundleActivator extends BundleActivatorBase {
 
     public void start(BundleContext bunCtx) throws Exception {
