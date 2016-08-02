@@ -28,7 +28,7 @@ import org.friendularity.rbody.DualBodyRecord
 import org.friendularity.vwmsg.VWorldPublicTellers
 
 /**
-  * Created by Owner on 4/14/2016.
+  * Created by Stub22 on 4/14/2016.
   */
 
 // Legit state of a running VWorld system is managed by an instance of VWorldSysMgr.
