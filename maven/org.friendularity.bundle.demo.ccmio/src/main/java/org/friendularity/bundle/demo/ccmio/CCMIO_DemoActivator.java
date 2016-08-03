@@ -124,17 +124,10 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 		VizappProfileLoader profileLoader = VizappProfileLoaderFactory.makeOSGiCompatProfileLoader(myProfileMarkerClz,
 				VizappProfileLoaderFactory.vizDlftProfilePath(), VizappProfileLoaderFactory.regDesktopTokens());
 		Model mergedProfileJM = profileLoader.makeMergedProfileGraph();
-		/*
-		TestSetupLoader setupLoader = TestRaizLoad.getDfltSetupLoader();
-		EntryHost	profileEHost = setupLoader.makeBundleEntryHost(myProfileMarkerClz);
-		Model mergedProfileJM = loadMergedProfileGraph(profileEHost);
-		*/
+
 		if (mergedProfileJM == null) {
 			throw new RuntimeException("launchCcmioDemo cannot read profile from classpath containing " + myProfileMarkerClz);
 		}
-		/*
-		EntryHost	legConfEHost = setupLoader.makeBundleEntryHost(myLegConfMarkerClz);
-		*/
 
 		VizappLegacyLoader legacyLoader = VizappLegacyLoaderFactory.makeDlftOSGiLegacyLoader(myLegConfMarkerClz);
 
@@ -144,9 +137,7 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 				getLogger().info("============= 2014-style launch is calling attachVizTChunkLegConfRepo() ======");
 
 				legacyLoader.makeAndRegisterELRC(mergedProfileJM, bundleCtx);
-				/*
-				attachVizTChunkLegConfRepo(bundleCtx, mergedProfileJM, legConfEHost);
-				*/
+
 			} // else we would be seeing fallback injected mediator in control
 
 			myOldLaunchHelper.startOldPumaThenVWorld(bundleCtx);
@@ -170,7 +161,6 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 		// handle most initialization cases without help from bundle activators.
 	}
 	public void launchVWorldWithSinbad_2016(BundleContext bundleCtx, ActorSystem akkaSys, EnhancedLocalRepoClient elrc) {
-				//							Model mergedProfileJM,	EntryHost legConfEHost) {
 		// Launches OpenGL world and actors for talking to it.
 		// Can be tested separately using the TestNavUI.main() launcher.
 
@@ -182,11 +172,6 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 		// So we now load an old config chunk of ~30 turtle files, most of which
 		// are unused.  We really just want the bone mappngs + body mesh-names,
 		// which occupy just a few of these loaded graphs.
-
-		/*
-		getLogger().info("============= 2016 semi-legacy launcher calling makeLegacyELRC() ======");
-		EnhancedLocalRepoClient elrc = makeLegacyELRC(mergedProfileJM, legConfEHost);
-		*/
 
 		getLogger().info("============= 2016 semi-legacy launcher calling startSemiLegacyBodyConn_OSGi_Sinbad() ======");
 		// This method instantiates necessary config objects and outer callback ("bodyNoticer"),
@@ -202,34 +187,7 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 		nuiApp.sendSetupMsgs_Async();
 		return nuiApp;
 	}
-/*
-	// profileDataMarkerClz should have same classpath (i.e. same OSGi bundle) as the profile data.
-	private Model loadMergedProfileGraph(EntryHost	 profileEHost) {
-		TestSetupLoader setupLoader = TestRaizLoad.getDfltSetupLoader();
-		Model mergedProfileGraph = setupLoader.getMergedProfileGraph_RegularDesktop(profileEHost);
-		return mergedProfileGraph;
-	}
-*/
 
-	// When active this VizTChunk removes the need for DemoMediator setup at bottom of this file.
-	/*
-	private void attachVizTChunkLegConfRepo(final BundleContext bunCtx, Model mergedProfileGraph, EntryHost legConfEHost) {
-		TestSetupLoader setupLoader = TestRaizLoad.getDfltSetupLoader();
-		// Same eHost is used here for profile and config data, but separate eHosts is also OK.
-		// Easiest way to identify an bundleEHost is to specify a class from same bundle.
-		EnhancedLocalRepoClient legacyConfERC = makeLegacyELRC(mergedProfileGraph, legConfEHost);
-
-		setupLoader.registerOSGiServiceForEnhRC(bunCtx, legacyConfERC);
-	}
-	private EnhancedLocalRepoClient makeLegacyELRC(Model mergedProfileGraph, EntryHost legConfEHost) {
-		TestSetupLoader setupLoader = TestRaizLoad.getDfltSetupLoader();
-		String vzBrkRcpUriTxt = setupLoader.myRootNames().vzpLegCnfBrkrRcpUriTxt();
-		EnhancedLocalRepoClient legacyConfERC = setupLoader.makeLegacyConfigELRC_fromJena(mergedProfileGraph,
-					vzBrkRcpUriTxt, legConfEHost);
-		getLogger().info("legConfEnhRepoCli={}", legacyConfERC);
-		return legacyConfERC;
-	}
-	*/
 	private CCMIO_CPumpHelper myCPumpHelper = new CCMIO_CPumpHelper();
 
 	private void startAkkaOSGi(BundleContext bundleCtx) {
