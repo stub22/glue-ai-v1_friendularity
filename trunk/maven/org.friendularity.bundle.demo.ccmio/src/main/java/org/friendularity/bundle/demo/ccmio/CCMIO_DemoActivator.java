@@ -6,6 +6,7 @@ import org.appdapter.osgi.core.BundleActivatorBase;
 import org.cogchar.bind.symja.MathGate;
 import org.cogchar.blob.entry.EntryHost;
 import org.friendularity.api.west.WorldEstimate;
+import org.friendularity.bundle.qpid_broker_wrap.QPidBrokerLauncher;
 import org.friendularity.navui.ExoBodyUserLogic;
 import org.friendularity.navui.NavUiAppImpl;
 import org.friendularity.navui.NavUiAppSvc;
@@ -240,9 +241,8 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 	private void launchCPumpService(BundleContext bundleCtx) {
 		myCPumpHelper.launchCPump(bundleCtx);
 	}
-	private void launchQPidBroker(BundleContext bundleCtx) {
-		QpidBrokerHelper qbh = new QpidBrokerHelper();
-		qbh.startBroker(bundleCtx);
+	private void launchQPidBroker(BundleContext bunCtx) {
+		QPidBrokerLauncher.launchBrokerWithDfltArgs(bunCtx);
 	}
 	private void launchMechioServiceConns(BundleContext bundleCtx) {
 		MechioServiceHelper msh = new MechioServiceHelper();
