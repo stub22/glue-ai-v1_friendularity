@@ -16,7 +16,9 @@
 
 package org.friendularity.bundle.qpid_broker_wrap;
 
+import org.appdapter.core.log.BasicDebugger;
 import org.osgi.framework.BundleContext;
+import org.slf4j.Logger;
 
 /**
  * Created by Stub22 on 7/27/2016.
@@ -47,7 +49,8 @@ import org.osgi.framework.BundleContext;
  * the Java VM.
  *
  */
-public class QPidBrokerLauncher {
+public class QPidBrokerLauncher extends BasicDebugger {
+	private static Logger theLog = getLoggerForClass(QPidBrokerLauncher.class);
 
 	static public String DEFAULT_HOME_DIR_PATH = "qpid_broker_home/";
 	static public String DEFAULT_WORK_DIR_PATH = "qpid_broker_work/";
@@ -65,35 +68,37 @@ public class QPidBrokerLauncher {
 				"-prop", "qpid.initial_config_virtualhost_config={ \"type\" : \"Memory\" }"
 
 		};
+
 		ClassLoader savedCL = Thread.currentThread().getContextClassLoader();
 		ClassLoader bundleCL = org.apache.qpid.server.Broker.class.getClassLoader();
 		try {
 			if (bundleCL != null) {
-				System.out.println("\n====\nSaved old classloader=" + savedCL + "\nSetting contextClassLoader to: " + bundleCL);
+				theLog.info("\n====\nSaved old classloader={}\nSetting contextClassLoader to: {}", savedCL, bundleCL);
 				Thread.currentThread().setContextClassLoader(bundleCL);
 			}
 			for (int i = 0; i< pseudoArgs.length ; i++) {
-				System.out.println("Arg[" + i + "]=" + pseudoArgs[i]);
+				theLog.info("Arg[{}]={}", i, pseudoArgs[i]);
 			}
-			System.out.println("Launching broker main, which may catch exceptions and call shutdown(), which stops our log output!");
+			theLog.info("Launching broker main");
 			launchBrokerMain(pseudoArgs);
-			System.out.println("\n==========\nFinished launching broker main");
+			theLog.info("\n==========\nFinished launching broker main");
 		} catch (Throwable th) {
-			System.out.println(".start() caught exception: " + th);
+			theLog.error(".start() caught exception: ", th);
 			th.printStackTrace();
 		} finally {
-			System.out.println("\n==========\nSetting contextClassLoader back to: " + savedCL);
+			theLog.info("\n==========\nSetting contextClassLoader back to: {}", savedCL);
 			Thread.currentThread().setContextClassLoader(savedCL);
 		}
-		System.out.println("\n==========\n.start() is returning");
+		theLog.debug("\n==========\n.launchBrokerWithDirpaths() is returning");
 
 	}
 	static public void launchBrokerMain(String[] args) throws Throwable {
-		// Our class derived from Main addresses issue #2 in comments at top, shutting off
+		// Our class derived from Main addresses issue #3 in comments at top, shutting off
 		// QPid's configuration of Log4J.  Also addresses #4, by making process-shutdown optional
 		// on failure.
 
-		QPidBrokerMain.ourMainMethod(args);
+		Logger brokerLogger = getLoggerForClass(QPidBrokerMain.class);
+		QPidBrokerMain.ourMainMethod(brokerLogger, args);
 
 		// Source of Main.java is here in the top qpid-broker project.
 		// http://grepcode.com/file/repo1.maven.org/maven2/org.apache.qpid/qpid-broker/0.32/org/apache/qpid/server/Main.java?av=f

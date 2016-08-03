@@ -20,10 +20,10 @@ import org.appdapter.osgi.core.BundleActivatorBase;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
-// Our goal is to activate just as much of a QPid broker as needed, which to do is perhaps a bit
-// harder than we would like.  We currently allow the broker launch to happen under superior
+// We currently allow the broker launch to happen under superior
 // bundle control, so this activator has no responsibilities.
 // All the juice is in the QPidBrokerLauncher class, which can be used from any top bundle.
+// TODO: Consider making launch configurable from here.
 
 public class QpidBrokerSubsetBundleActivator extends BundleActivatorBase {
 
