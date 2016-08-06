@@ -2,7 +2,7 @@ package org.friendularity.navui
 
 import com.jme3.math.{Quaternion, Vector3f}
 import org.appdapter.fancy.log.VarargsLogging
-import org.friendularity.cpump.CPStrongTeller
+import org.friendularity.cpmsg.CPStrongTeller
 import org.friendularity.vwmsg.{VWBodyManipRq, AbruptManipAbsImpl, TransformParams3D, VWExoBodyChance, VWBodyRq, VWBodyNotice}
 
 /**

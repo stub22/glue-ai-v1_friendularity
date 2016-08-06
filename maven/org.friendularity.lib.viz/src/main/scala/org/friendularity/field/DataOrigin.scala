@@ -17,8 +17,8 @@ package org.friendularity.field
 
 import org.appdapter.core.name.{FreeIdent, Ident}
 import org.appdapter.fancy.log.VarargsLogging
-import org.friendularity.cpump.{CPumpMsg, CPStrongTeller, CPMsgTeller}
-import org.friendularity.dull.FrienduActor
+
+import org.friendularity.qpc.FrienduActor
 import org.friendularity.vwimpl.IdentHlp
 
 import scala.collection.mutable.{HashMap => MutableHashMap}

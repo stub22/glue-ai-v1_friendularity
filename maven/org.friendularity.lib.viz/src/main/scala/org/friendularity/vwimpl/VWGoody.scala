@@ -5,7 +5,7 @@ import com.hp.hpl.jena.rdf.model.{Model => JenaModel, ModelFactory => JenaModelF
 import org.appdapter.fancy.log.VarargsLogging
 import org.cogchar.api.thing.ThingActionSpec
 import org.cogchar.render.goody.basic.BasicGoodyCtx
-import org.friendularity.dull.ThingActExposer
+import org.friendularity.thact.ThingActExposer
 import org.friendularity.vwmsg.{VWGoodyRqActionSpec, VWGoodyRqRdf, VWGoodyRqTAS, VWorldRequest}
 
 /**

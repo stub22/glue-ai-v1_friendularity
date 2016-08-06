@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit
 import akka.actor.{Scheduler => AkkaSched, Cancellable, ActorSystem, Props, ActorRef, ActorRefFactory, Actor}
 
 import org.appdapter.fancy.log.VarargsLogging
-import org.friendularity.cpump.{CPStrongTeller, CPumpMsg}
+import org.friendularity.cpmsg.{CPStrongTeller, CPumpMsg}
 
 import scala.collection.mutable.ListBuffer
 import scala.concurrent.ExecutionContextExecutor

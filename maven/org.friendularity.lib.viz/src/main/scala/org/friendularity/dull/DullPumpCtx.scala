@@ -3,7 +3,10 @@ package org.friendularity.dull
 import akka.actor._
 import org.appdapter.core.name.{FreeIdent, Ident}
 import org.appdapter.fancy.log.VarargsLogging
-import org.friendularity.cpump._
+import org.friendularity.akact.{KnowsActorSystem, CachingMakingTopActorFinder}
+import org.friendularity.cpmsg.{CPMsgTeller, CPumpMsg}
+import org.friendularity.cpump.{BoundedForwardPostChan, MutaBoundedCPumpCtxImpl, EZForwardPostChan, EZDispatchPostChan, BoundedDispatchPostChan, EZListenChan, BoundedCPChanListen, CPumpAdptr, CPChanPost, CPChanListen, BoundaryTellerFinder, CPumpChan, CPumpListChanFinder, CPumpCtx, CPAdminRequestMsg}
+
 
 import scala.collection.mutable
 

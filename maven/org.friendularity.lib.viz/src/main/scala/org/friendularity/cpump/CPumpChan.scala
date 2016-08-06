@@ -21,6 +21,8 @@ import org.appdapter.core.name.{FreeIdent, Ident}
 import org.appdapter.fancy.log.VarargsLogging
 import java.io.{Serializable => JSerializable}
 
+import org.friendularity.cpmsg.{ActorRefCPMsgTeller, CPMsgTeller, CPumpMsg}
+
 import scala.collection.mutable
 
 // case class SetChanMsg()

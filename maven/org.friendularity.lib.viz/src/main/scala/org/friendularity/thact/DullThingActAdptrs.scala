@@ -1,9 +1,10 @@
-package org.friendularity.dull
+package org.friendularity.thact
 
 import org.appdapter.core.name.Ident
 import org.cogchar.api.thing.WantsThingAction
 import org.cogchar.impl.thing.route.BasicThingActionRouter
-import org.friendularity.cpump.{TACPFilterAdptr, CPMsgTeller, CPRepliableThingActionMsg, CPThingActionMsg}
+import org.friendularity.cpmsg.CPMsgTeller
+import org.friendularity.dull.{DullFilterAdptr, DullPumpCtx}
 
 /**
   * Created by Stu on 4/13/2016.

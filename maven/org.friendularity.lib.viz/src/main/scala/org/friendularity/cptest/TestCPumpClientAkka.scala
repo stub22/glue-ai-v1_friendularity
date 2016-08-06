@@ -1,9 +1,12 @@
-package org.friendularity.cpump
+package org.friendularity.cptest
 
 import akka.actor._
 import org.appdapter.fancy.log.VarargsLogging
+import org.friendularity.cpmsg.{ActorSelCPMsgTeller, ActorRefCPMsgTeller, RepliableTxtSymMsg, TxtSymMsg}
+
 import org.friendularity.dull.TestDullServer
 import org.friendularity.navui.NavUiTestPublicNames
+import org.friendularity.thact.CPTAWrapMsg
 
 /**
   * Goal here is to post ThingActions over akka-remote so they are seen in TestCPumpServer process,
@@ -57,12 +60,12 @@ object TestCPumpClientAkka extends VarargsLogging {
 		info2("Sending rq4RespMsg={} to tellser={}", requestForResponseMsg, selTeller)
 		selTeller.tellCPMsg(requestForResponseMsg)
 
-		import org.friendularity.ignore.nexjen.ThingActionFlow
+		import org.friendularity.qpc.ThingActionFlow
 		val taflow = new ThingActionFlow
 		val ta = taflow.makeThingActionSpec()
 		val tamsg = new CPTAWrapMsg(ta, Some(respConsTeller))
 
-		info2("Sending tamsg={} to tellser={}", tamsg, selTeller)
+		info2("Sending tamsg={} to  tellser={}", tamsg, selTeller)
 		selTeller.tellCPMsg(tamsg)
 
 		val one = AddressFromURIString("akka.tcp://sys@host:1234")

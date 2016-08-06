@@ -2,7 +2,7 @@ package org.friendularity.mjob
 
 import akka.actor.{Props, ActorRefFactory, ActorLogging, Actor, ActorContext, ActorRef}
 import org.appdapter.fancy.log.VarargsLogging
-import org.friendularity.cpump.CPumpMsg
+import org.friendularity.cpmsg.CPumpMsg
 
 
 /**

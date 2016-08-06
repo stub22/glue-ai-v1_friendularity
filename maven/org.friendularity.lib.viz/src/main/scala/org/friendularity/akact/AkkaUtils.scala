@@ -1,6 +1,6 @@
-package org.friendularity.cpump
+package org.friendularity.akact
 
-import akka.actor.{Terminated, ActorLogging, Actor, ActorRef}
+import akka.actor.{Actor, ActorLogging, ActorRef, Terminated}
 
 /**
   * Created by Owner on 3/24/2016.

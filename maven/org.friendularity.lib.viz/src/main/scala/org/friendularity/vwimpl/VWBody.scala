@@ -24,7 +24,8 @@ import org.cogchar.bind.mio.robot.svc.ModelBlendingRobotServiceContext
 import org.cogchar.render.model.humanoid.HumanoidFigureManager
 import org.cogchar.render.sys.context.PhysicalModularRenderContext
 import org.cogchar.render.sys.registry.RenderRegistryClient
-import org.friendularity.cpump.{ActorRefCPMsgTeller, CPStrongTeller}
+import org.friendularity.cpmsg.{ActorRefCPMsgTeller, CPStrongTeller}
+
 import org.friendularity.rbody.{DualBodyHelper, DualBodyRecord}
 import org.friendularity.vwmsg.{ManipDesc, VWBodyManipRq, VWBroadcastToAllBodies, VWBodySkeletonDisplayToggle, VWBodyLifeRq, VWBodyMakeRq,  VWBodyNotice, VWBodyRq}
 

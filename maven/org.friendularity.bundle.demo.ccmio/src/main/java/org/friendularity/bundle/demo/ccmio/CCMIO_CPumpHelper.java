@@ -18,16 +18,13 @@ package org.friendularity.bundle.demo.ccmio;
 
 // import akka.actor.Props;
 import akka.actor.ActorSystem;
-import akka.osgi.ActorSystemActivator;
-import org.appdapter.core.log.BasicDebugger;
-import org.friendularity.cpump.AkkaOSGiHelp;
-import org.friendularity.cpump.AkkaOSGiLaunchHelper;
-import org.friendularity.cpump.CPMsgTeller;
-import org.friendularity.cpump.DemoCPumpMgr;
-import org.friendularity.cpump.PluginDemoCPumpMgr;
-import org.friendularity.cpump.TxtSymMsg;
+import org.friendularity.akact.AkkaOSGiLaunchHelper;
+import org.friendularity.cpmsg.CPMsgTeller;
+
+import org.friendularity.cpmsg.TxtSymMsg;
+import org.friendularity.cptest.DemoCPumpMgr;
+import org.friendularity.cptest.PluginDemoCPumpMgr;
 import org.osgi.framework.BundleContext;
-import org.slf4j.Logger;
 
 /**
  * Created by Owner on 3/29/2016.

@@ -16,9 +16,11 @@
 
 package org.friendularity.cpump
 
-import akka.actor.{ActorRef, ActorLogging, Actor}
+import akka.actor.{ActorContext, ActorRef, ActorLogging, Actor}
 import org.appdapter.core.name.{FreeIdent, Ident}
-import org.appdapter.fancy.log.VarargsLogging;
+import org.appdapter.fancy.log.VarargsLogging
+import org.friendularity.cpmsg.{CPSymbolMsg, ActorRefCPMsgTeller, CPMsgTeller, CPumpMsg}
+;
 
 trait CPumpListChanFinder[CtxType <: CPumpCtx] {
 	// The PumpCtx is responsible for mapping any input msg to a set of possible listeners.
@@ -37,6 +39,11 @@ trait CPumpCtx {
 	// }
 
 }
+// This trait is a bad idea, but we
+trait CPAdminRequestMsg[CtxBound <: CPumpCtx] extends CPSymbolMsg {
+	def processInCtx(ctx : CtxBound, actCtx : ActorContext)
+}
+
 // Use of this trait implies actor awareness
 trait BoundedCPumpCtx extends CPumpCtx {
 	protected def getBoundaryActorRef_opt : Option[ActorRef] = None

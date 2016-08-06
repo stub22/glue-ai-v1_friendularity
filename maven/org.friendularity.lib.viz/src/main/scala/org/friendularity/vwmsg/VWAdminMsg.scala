@@ -2,7 +2,8 @@ package org.friendularity.vwmsg
 
 import org.appdapter.fancy.log.VarargsLogging
 import org.cogchar.bind.midi.in.TempMidiBridge
-import org.friendularity.cpump.{CPStrongTeller, CPMsgTeller}
+import org.friendularity.cpmsg.{CPStrongTeller, CPMsgTeller}
+
 import org.friendularity.vwimpl.{UpdateAttacher}
 
 

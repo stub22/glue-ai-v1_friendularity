@@ -1,9 +1,5 @@
-package org.friendularity.dull
+package org.friendularity.field
 
-import org.appdapter.core.name.Ident
-import org.appdapter.fancy.log.VarargsLogging
-import org.friendularity.cpump.{CPMsgTeller, CPStrongTeller, CPumpMsg}
-import org.friendularity.field.{ItemFieldDataMsg, FieldInterestRegMsg, FieldDataBag, FieldDataLeaf, ItemFieldData, ItemFieldSpecDirectImpl, ItemFieldSpec}
 import scala.collection.mutable.{HashMap => MutableHashMap}
 /**
   * Created by Owner on 7/10/2016.

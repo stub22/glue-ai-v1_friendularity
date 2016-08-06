@@ -16,7 +16,9 @@
 
 package org.friendularity.cpump
 import org.appdapter.core.name.{FreeIdent, Ident}
-import org.appdapter.fancy.log.VarargsLogging;
+import org.appdapter.fancy.log.VarargsLogging
+import org.friendularity.cpmsg.{CPMsgTeller, CPumpMsg}
+;
 
 
 trait DispatchPostChan[MsgKind <: CPumpMsg, CtxType <: CPumpCtx]  extends CPChanPost[MsgKind, CtxType] {

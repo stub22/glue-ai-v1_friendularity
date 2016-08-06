@@ -17,7 +17,9 @@
 package org.friendularity.cpump
 
 import org.appdapter.core.name.{FreeIdent, Ident}
-import org.appdapter.fancy.log.VarargsLogging;
+import org.appdapter.fancy.log.VarargsLogging
+import org.friendularity.cpmsg.CPumpMsg
+;
 
 class EZCPumpChan[CtxType <: CPumpCtx](myChanID : Ident, myCtx : CtxType, myBTF_opt : Option[BoundaryTellerFinder])
 			extends  CPumpChan[CtxType] with BoundedCPumpChan[CtxType] with VarargsLogging {

@@ -24,7 +24,8 @@ import org.appdapter.core.name.Ident
 import org.appdapter.fancy.log.VarargsLogging
 import org.cogchar.api.fancy.FancyThingModelWriter
 import org.cogchar.render.rendtest.GoodyTestMsgMaker
-import org.friendularity.cpump.{CPumpMsg, ActorRefCPMsgTeller, CPStrongTeller, CPMsgTeller}
+import org.friendularity.cpmsg.{ActorRefCPMsgTeller, CPStrongTeller, CPMsgTeller}
+
 import org.friendularity.field.{ReportingPolicy, ReportSrcOpen, SourceDataMsg, MsgToStatusSrc, StatusTickActorFactory, ReportingTickChance, StatusTickDistributor, StatusTickScheduler, FieldActorFactory}
 import org.friendularity.mjob.{MsgJobLogicFactory, MsgJobLogic}
 

@@ -22,7 +22,7 @@ import com.jme3.scene.{Node => JmeNode, Spatial}
 import org.appdapter.core.name.Ident
 import org.appdapter.fancy.log.VarargsLogging
 import org.cogchar.render.sys.registry.RenderRegistryClient
-import org.friendularity.cpump.{CPStrongTeller, CPumpMsg}
+import org.friendularity.cpmsg.CPStrongTeller
 import org.friendularity.field.{SourceDataMsg, ReportingPolicy, SchedTaskRepeating, ScheduleHelper}
 import org.friendularity.vwmsg.VWExoBodyChance
 

@@ -1,6 +1,6 @@
-package org.friendularity.cpump
+package org.friendularity.akact
 
-import akka.actor.{ActorSystem, ActorRef}
+import akka.actor.{ActorRef, ActorSystem}
 
 import scala.collection.mutable
 

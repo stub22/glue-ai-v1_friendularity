@@ -21,7 +21,8 @@ import org.appdapter.fancy.log.VarargsLogging
 import org.appdapter.fancy.rclient.EnhancedLocalRepoClient
 import org.cogchar.api.humanoid.HumanoidFigureConfig
 import org.cogchar.bind.mio.robot.svc.ModelBlendingRobotServiceContext
-import org.friendularity.cpump.{CPumpMsg, CPMsgTeller, ActorRefCPMsgTeller, CPStrongTeller}
+import org.friendularity.cpmsg.{ActorRefCPMsgTeller, CPStrongTeller, CPMsgTeller, CPumpMsg}
+
 import org.friendularity.dull.SpecialAppPumpSpace
 import org.friendularity.field.ScheduleHelper
 import org.friendularity.respire._

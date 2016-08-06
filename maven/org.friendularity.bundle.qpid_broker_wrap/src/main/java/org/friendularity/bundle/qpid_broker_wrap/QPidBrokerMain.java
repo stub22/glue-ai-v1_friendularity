@@ -49,26 +49,29 @@ public class QPidBrokerMain extends org.apache.qpid.server.Main {
 
 	private void ourBetterLauncherModifiedFromSuperConstructor(final String[] args) {
 		theLog.info("In QPidBrokerMain.ourBetterLauncherModifiedFromSuperConstructor, hooray!");
-		// We do *not* call superclass constructor, because it contains the hard-shutdown hook.
-		// Instead we use a modified impl here.
+		// We do allow superclass constructor to get past the first line, because it contains
+		// the hard-shutdown exception handler.   Instead we use a modified impl here.
 		if (parseCommandline(args))
 		{
 			try	{
 				execute(); // Note that this calls the startBroker method, which we override below.
 			}
-			catch(Exception e)
-			{
+			catch(Exception e)	{
 				theLog.error("QPidBrokerMain caught exception during startup", e);
-				if (doExitOnLaunchFailure) {
-					// Superclass does this, which we do not generally want.
-					theLog.warn("Exiting VM because doExitOnLaunchFailure == true !!!");
-					shutdown(1);
-				}
+				weFailedSoMaybeExitJVM();
 			}
 		} else {
 			theLog.error("parseCommandline failed for args={}", (Object) args);
+			weFailedSoMaybeExitJVM();
 		}
 		theLog.info("Finished QPidBrokerMain.ourBetterLauncherModifiedFromSuperConstructor.");
+	}
+	private void weFailedSoMaybeExitJVM() {
+		// Superclass always does this shutdown on launch failure, but we make it optional.
+		if (doExitOnLaunchFailure) {
+			theLog.warn("Exiting VM because doExitOnLaunchFailure == true !!!");
+			shutdown(1);
+		}
 	}
 	@Override protected void startBroker(final BrokerOptions options) throws Exception {
 		theLog.info("In our special startBroker method, tee hee!");

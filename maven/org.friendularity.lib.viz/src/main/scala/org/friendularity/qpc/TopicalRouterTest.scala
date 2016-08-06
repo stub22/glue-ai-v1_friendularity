@@ -1,12 +1,12 @@
 /*
  *  Copyright 2014 by The Friendularity Project (www.friendularity.org).
- * 
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- * 
+ *
  *       http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.friendularity.ignore.nexjen
+package org.friendularity.qpc
 
 import org.appdapter.fancy.log.VarargsLogging
 
@@ -54,14 +54,9 @@ object TopicalRouterTest extends VarargsLogging {
 		info0("This conversation is FINISHED.")
 	}
 }
-import javax.jms.{ConnectionFactory, Connection, Session, Destination}
-import javax.jms.{MessageConsumer, MessageProducer}
-import javax.jms.{Message, BytesMessage, TextMessage}
-import javax.jms.JMSException;
-
-import javax.naming.Context;
+import java.util.Properties
+import javax.jms.{ConnectionFactory, Destination, MessageConsumer, MessageProducer, Session, TextMessage}
 import javax.naming.InitialContext;
-import java.util.Properties;
 
 object QPid_010_Names {
 	// These values are taken from the QPid 0.10 "hello.properties"

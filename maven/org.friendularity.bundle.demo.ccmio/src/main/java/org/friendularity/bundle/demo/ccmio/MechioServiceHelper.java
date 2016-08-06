@@ -4,6 +4,7 @@ import org.appdapter.core.log.BasicDebugger;
 import org.friendularity.bundle.headless.messaging.MessagingServiceLauncher;
 import org.friendularity.bundle.headless.animation.AnimServiceLauncher;
 import org.friendularity.bundle.headless.speech.SpeechServiceLauncher;
+import org.friendularity.qpc.QPidConnHelp;
 import org.jflux.impl.messaging.rk.utils.ConnectionManager;
 import org.osgi.framework.BundleContext;
 
@@ -14,7 +15,8 @@ import javax.jms.Connection;
  */
 public class MechioServiceHelper extends BasicDebugger {
 	public void startEmUp(BundleContext bunCtx) {
-		Connection qpidConn = makeOldeTestQpidConn();
+		QPidConnHelp qch = new QPidConnHelp();
+		Connection qpidConn = qch.makeOldeDfltLocalTestQpidConn();
 		String animPlayerID = "Avatar_Sinbad";	//  "Avatar_ZenoR50";
 		getLogger().info("Got qpidConn={}\n\"======================================\n, launching messaging services");
 		MessagingServiceLauncher.launchServices(bunCtx, qpidConn);
@@ -24,17 +26,22 @@ public class MechioServiceHelper extends BasicDebugger {
 		SpeechServiceLauncher.launchServices(bunCtx);
 		getLogger().info("====================================== Finished MechIO QPid service launches");
 	}
-	private Connection makeOldeTestQpidConn() {
+	/*
+	private Connection makeOldeDfltLocalTestQpidConn() {
 		Connection qpidConn = null;
+		String qpidUsr = "admin";
+		String qpidPsw = "admin";
+		String qpidCliName = "client1";  // TODO:  Randomize?
+		String qpidVHostName = "test"; // == default from QPid 0.26 and previous
+		String qpidTcpUrl = "tcp://127.0.0.1:5672";
 		try {
-			qpidConn = ConnectionManager.createConnection(
-					"admin", "admin", "client1", "test",
-					"tcp://127.0.0.1:5672");
+			qpidConn = ConnectionManager.createConnection(qpidUsr, qpidPsw, qpidCliName, qpidVHostName, qpidTcpUrl);
 			qpidConn.start();
 		} catch (Throwable t) {
-			getLogger().error("makeOldeTestQpidConn caught exception: {}", t);
+			getLogger().error("makeOldeDfltLocalTestQpidConn caught exception: {}", t);
 		}
 		return qpidConn;
 	}
+	*/
 
 }

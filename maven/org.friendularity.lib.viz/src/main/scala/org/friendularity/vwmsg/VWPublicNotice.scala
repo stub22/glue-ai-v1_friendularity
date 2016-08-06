@@ -1,6 +1,6 @@
 package org.friendularity.vwmsg
 
-import org.friendularity.cpump.CPStrongTeller
+import org.friendularity.cpmsg.CPStrongTeller
 
 
 // The vworldBoss supplies this serializable directory of its actors to any client who asks.

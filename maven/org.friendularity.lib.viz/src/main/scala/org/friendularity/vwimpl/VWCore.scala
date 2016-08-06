@@ -25,7 +25,7 @@ import org.cogchar.render.sys.context.{CogcharRenderContext, FramedRenderContext
 import org.cogchar.render.sys.registry.RenderRegistryClient
 import org.cogchar.render.sys.window.WindowStatusMonitor
 import org.cogchar.render.trial.{TrialBalloon, TrialUpdater}
-import org.friendularity.cpump.CPMsgTeller
+import org.friendularity.cpmsg.CPMsgTeller
 import org.friendularity.respire.SweetDynaSpace
 import org.friendularity.vwmsg.{FullIngredMsgImpl, VWSceneCoreRq, VWSetupResultsNotice}
 
@@ -33,6 +33,7 @@ import org.friendularity.vwmsg.{FullIngredMsgImpl, VWSceneCoreRq, VWSetupResults
 trait VWCore {
 
 }
+/*
 trait VWSceneGraphMgr extends VWorldJobLogic[VWSceneCoreRq] {
 	protected def getRootNode
 	// "Unsafe" means we are allowed to throw any exceptions, whee!
@@ -43,6 +44,7 @@ trait VWSceneGraphMgr extends VWorldJobLogic[VWSceneCoreRq] {
 	}
 
 }
+*/
 trait SimBalloonAppLauncher extends VarargsLogging {
 	lazy val mySBApp: SimBalloonJmeApp = new SimBalloonJmeApp
 	// Generally called on main() thread to do initial app setup.

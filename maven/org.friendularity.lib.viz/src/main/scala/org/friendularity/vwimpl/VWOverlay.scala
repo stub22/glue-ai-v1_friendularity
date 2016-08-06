@@ -25,8 +25,7 @@ import org.appdapter.core.name.Ident
 import org.appdapter.fancy.log.VarargsLogging
 import org.cogchar.render.sys.registry.RenderRegistryClient
 import org.cogchar.render.trial.TextSpatialFactory
-import org.friendularity.dull.RemoteItemField
-import org.friendularity.field.{VWTestFieldIdents, BoundToDataSrc}
+import org.friendularity.field.{RemoteItemField, VWTestFieldIdents, BoundToDataSrc}
 
 
 // import org.friendularity.navui.NavPage_Bodies

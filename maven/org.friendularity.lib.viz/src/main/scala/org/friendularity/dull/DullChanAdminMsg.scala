@@ -3,7 +3,9 @@ package org.friendularity.dull
 import akka.actor.{ActorRef, Props, ActorContext}
 import org.appdapter.core.name.Ident
 import org.appdapter.fancy.log.VarargsLogging
-import org.friendularity.cpump._
+import org.friendularity.cpmsg.{CPStrongTeller, CPMsgTeller, CreatedChanTellerMsg, FoundOuterTellerMsg, CPumpMsg}
+import org.friendularity.cpump.{CPumpChan, CPumpAdptr, ListenChanDirectActor, BoundedCPChanListen, PostChanDirectActor, BoundedCPChanPost, CPAdminRequestMsg}
+
 
 /**
   * Created by Owner on 4/10/2016.
