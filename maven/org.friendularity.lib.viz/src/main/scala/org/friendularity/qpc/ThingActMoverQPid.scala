@@ -26,7 +26,7 @@ import org.cogchar.api.thing.ThingActionSpec
 import org.cogchar.render.rendtest.GoodyTestMsgMaker
 import org.friendularity.cpmsg.{ActorRefCPMsgTeller, CPStrongTeller}
 
-import org.friendularity.thact.ThingActTurtleEncoder
+import org.friendularity.thact.{ThingActReceiverBinary, ThingActReceiverTxt, ThingActSender, ThingActTurtleEncoder}
 import org.friendularity.vwmsg.{VWGoodyRqActionSpec, VWGoodyRqRdf, VWGoodyRqTAS, VWGoodyRqTurtle}
 
 /**
@@ -50,36 +50,7 @@ import org.friendularity.vwmsg.{VWGoodyRqActionSpec, VWGoodyRqRdf, VWGoodyRqTAS,
   */
 
 
-// To be used on client side where they may not have CPump awareness
-trait ThingActSender extends VarargsLogging {
-	val NO_PREFERENCE : Integer = 0
-	val PREFER_JAVA_SER : Integer = 1
-	val PREFER_TURTLE_SER : Integer = 2
 
-	def supportsJavaSer : Boolean = false
-	def supportsTurtleSer : Boolean = false
-	def postThingAct(taSpec : ThingActionSpec, encodePref : Integer): Unit = {
-		var sent = false
-		if ((encodePref == PREFER_JAVA_SER) || (!supportsTurtleSer)) {
-			if (supportsJavaSer) {
-				postThingActViaJavaSer(taSpec)
-				sent=true
-			}
-		}
-		if (!sent) {
-			if (supportsTurtleSer) {
-				postThingActViaTurtleSer(taSpec)
-				sent=true
-			}
-		}
-		if (!sent) {
-			error0("TA-Message not sent, no serialization pathways supported")
-		}
-	}
-
-	def postThingActViaJavaSer(taSpec : ThingActionSpec): Unit = ???
-	def postThingActViaTurtleSer(taSpec : ThingActionSpec): Unit = ???
-}
 
 trait SenderQPid extends VarargsLogging {
 	protected def getJmsSession : JMSSession
@@ -138,64 +109,6 @@ class ThingActSenderQPid(myJmsSess : JMSSession, myJmsProd_JSer : JMSMsgProducer
 		msg.setStringProperty("wackyName", "Widget");
 		msg.setDoubleProperty("wackyPrice", 0.99);
 	}
-}
-// JMS spec requires Listener's onMessage method to only be called serially [...although if we attach same listener to
-// multiple consumers, probably can be called concurrently, eh?].   We don't really need that invariant
-// here, cince we just statelessly forward the message to an actor destination.
-// Impl Notes:
-// This listener sniffs at the inbound JMS message to find type, and dispatches to Receiver code.
-// Receiver code wraps and sends an appropriate actor msg to enqueue further work on the message.
-
-class ThingActReceiverTxt(goodyTATurtleTeller : CPStrongTeller[VWGoodyRqRdf]) extends VarargsLogging {
-	def receiveTextMsg(txtMsg : JMSTextMsg) : Unit = {
-		val txtCont = txtMsg.getText
-		// We assume it is a turtle encoding of ThingActSpec(s), targeting VW-Goodies.
-		val goodyTATurtleRq = new VWGoodyRqTurtle(txtCont)
-		goodyTATurtleTeller.tellStrongCPMsg(goodyTATurtleRq)
-	}
-	def makeListener : JMSMsgListener = {
-		new JMSMsgListener() {
-			override def onMessage(msg: JMSMsg): Unit = {
-				info2("ThingActReceiverTxt-JMSListener msgID={} timestamp={}", msg.getJMSMessageID, msg.getJMSTimestamp : JLong)
-				debug1("ThingActReceiverTxt-JMSListener - received msg, dumping to see if 'wacky' headers show up:\n{}", msg)
-				msg match {
-					case txtMsg: JMSTextMsg => {
-						info1("Listener processing received txtMsg with tstamp={}", txtMsg.getJMSTimestamp: JLong)
-						receiveTextMsg(txtMsg)
-					}
-					case other => {
-						error2("Received unexpected  (not JMS-TextMessage) message class={}, dump=\n{}", other.getClass, other)
-					}
-				}
-			}
-		}
-	}
-}
-class ThingActReceiverBinary(goodyTADirectTeller : CPStrongTeller[VWGoodyRqActionSpec]) extends VarargsLogging  {
-	def receiveJSerBinaryMsg(objMsg : JMSObjMsg) : Unit = {
-		val objCont = objMsg.getObject
-		val taSpec : ThingActionSpec = objCont.asInstanceOf[ThingActionSpec]
-		val goodyTADirectRq = new VWGoodyRqTAS(taSpec)
-		goodyTADirectTeller.tellStrongCPMsg(goodyTADirectRq)
-	}
-	def makeListener : JMSMsgListener = {
-		new JMSMsgListener() {
-			override def onMessage(msg: JMSMsg): Unit = {
-				info2("ThingActReceiverBinary-JMSListener msgID={} timestamp={}", msg.getJMSMessageID, msg.getJMSTimestamp : JLong)
-				debug1("ThingActReceiverBinary-JMSListener - received msg, dumping to see if 'wacky' headers show up:\n{}", msg)
-				msg match {
-					case objMsg: JMSObjMsg => {
-						info1("Listener processing received objMsg with tstamp={}", objMsg.getJMSTimestamp: JLong)
-						receiveJSerBinaryMsg(objMsg)
-					}
-					case other => {
-						error2("Received unexpected (not JMS-ObjectMessage) message, class={}, dump=\n{}", other.getClass,  other)
-					}
-				}
-			}
-		}
-	}
-
 }
 
 class QPidTopicConn_032(myTopicExchangeNameList : List[String]) extends VarargsLogging {
