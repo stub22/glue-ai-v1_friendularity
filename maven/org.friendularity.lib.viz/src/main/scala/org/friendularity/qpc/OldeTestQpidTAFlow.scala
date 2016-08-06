@@ -20,18 +20,16 @@ package org.friendularity.qpc
  * @author Stu B. <www.texpedient.com>
  */
 
-trait Dummy99
-
 import org.appdapter.core.name.{FreeIdent, Ident}
 import org.appdapter.fancy.log.VarargsLogging
 import org.cogchar.api.vworld.GoodyActionParamWriter
 import org.cogchar.impl.thing.basic.{BasicThingActionSpec, BasicTypedValueMap, BasicTypedValueMapWithConversion}
 import org.cogchar.name.goody.GoodyNames
-import org.friendularity.thact.ThingActionFlow
-;
-
+import org.friendularity.thact.DummyThingActionMaker
 
 /**
+  * OLDE 2014 prototype test
+  *
  * Demonstration of ThingAction sent as a serialized Java object through JMS interface to QPid.
  * This approach is interoperable with other Java agents, but not with general non-Java AMQP agents.
  * For platform-independent sharing of ThingActions, general agents can use HTTP-SPARQL mechanisms, but those
@@ -46,8 +44,8 @@ import org.friendularity.thact.ThingActionFlow
  */
 import javax.jms.{MapMessage, MessageConsumer, MessageProducer, ObjectMessage, Session};
 
-class TAFlow_QPid extends ThingActionFlow {
-		def sendAndConsumeTAMsg(jmsSession : Session, jmsMsgProducer : MessageProducer, jmsMsgConsumer : MessageConsumer ) {
+class OldeTestQpidTAFlow extends DummyThingActionMaker {
+	def sendAndConsumeTAMsg(jmsSession : Session, jmsMsgProducer : MessageProducer, jmsMsgConsumer : MessageConsumer ) {
 		info0("================= Creating ObjectMessage to hold TA")
 
 		val thingActionKey = "thingAction"
@@ -59,7 +57,7 @@ class TAFlow_QPid extends ThingActionFlow {
 		objMsg_toSend.setStringProperty("wackyName", "Widget");
 		objMsg_toSend.setDoubleProperty("wackyPrice", 0.99);
 		val thingActionSpec = makeThingActionSpec
-		// Wecannot nest arbitrary serializable objects into MapMessages, apparently.
+		// We cannot nest arbitrary serializable objects into MapMessages, apparently.
 		// In QPid 0.10, we get: javax.jms.MessageFormatException: Cannot set property thingAction to value BasicThingActionSpec[]
 		// 	at org.apache.qpid.client.message.AMQPEncodedMapMessage.setObject(AMQPEncodedMapMessage.java:75)
 		// mapMsg_toSend.setObject(thingActionKey, thingActionSpec)

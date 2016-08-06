@@ -227,7 +227,7 @@ class QpidHelloWorld extends VarargsLogging {
 			info0("*********************\n********************* Calling send-and-consume")
 			sendAndConsumeTestMsg(jmsSession, jmsProducer_001, jmsConsumer_001)
 			
-			val taf = new TAFlow_QPid
+			val taf = new OldeTestQpidTAFlow
 			// val btas = taf.makeThingActionSpec()
 			// info1("Made ThingActionSpec: {}", btas)
 			info0("*********************\n********************* Calling send-and-consume-TAMsg")

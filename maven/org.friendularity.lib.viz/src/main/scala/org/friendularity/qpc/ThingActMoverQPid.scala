@@ -24,6 +24,7 @@ import akka.actor.{Actor, ActorRef, ActorRefFactory, ActorSystem, Props}
 import org.appdapter.fancy.log.VarargsLogging
 import org.cogchar.api.thing.ThingActionSpec
 import org.cogchar.render.rendtest.GoodyTestMsgMaker
+import org.friendularity.akact.DummyActorMaker
 import org.friendularity.cpmsg.{ActorRefCPMsgTeller, CPStrongTeller}
 
 import org.friendularity.thact.{ThingActReceiverBinary, ThingActReceiverTxt, ThingActSender, ThingActTurtleEncoder}
@@ -137,18 +138,6 @@ object TestAppNames {
 	val allTopics = List(topicName_forJSerBinTA, topicName_forTurtleTxtTA)
 
 }
-abstract class FrienduActor() extends Actor with VarargsLogging
-// Seems that using "with ActorLogging" here leads
-class TATestDummyActor(argGoesHere : String) extends FrienduActor {
-	getLogger.info("In dummy actor constructor, arg={}", argGoesHere)
-	def receive = {
-		case msg: AnyRef => {
-			val msgDump = msg.toString()
-			getLogger.info("TATDA received msg of clazz={} and dump-len={}", msg.getClass, msgDump.length)
-			getLogger.debug("Received message dump:\n{}", msgDump)
-		}
-	}
-}
 
 class QPidTestEndpoint(myQPidConnMgr : QPidTopicConn_032) {
 	lazy val myJmsSession = myQPidConnMgr.makeSession
@@ -158,7 +147,7 @@ class QPidTestEndpoint(myQPidConnMgr : QPidTopicConn_032) {
 }
 
 class TestTAQpidServer(myParentARF : ActorRefFactory, qpidConnMgr : QPidTopicConn_032)
-			extends QPidTestEndpoint(qpidConnMgr) {
+			extends QPidTestEndpoint(qpidConnMgr) with DummyActorMaker {
 
 	lazy val myConsumer_forTurtleTxt : JMSMsgConsumer = myJmsSession.createConsumer(destForTATxtMSg)
 	lazy val myConsumer_forJSerBin : JMSMsgConsumer = myJmsSession.createConsumer(destForTABinMSg)
@@ -174,14 +163,6 @@ class TestTAQpidServer(myParentARF : ActorRefFactory, qpidConnMgr : QPidTopicCon
 
 	myConsumer_forTurtleTxt.setMessageListener(rcvrTxt.makeListener)
 	myConsumer_forJSerBin.setMessageListener(rcvrBin.makeListener)
-
-	def makeTestDummyActor(parentARF : ActorRefFactory, dummyActorName : String) : ActorRef = {
-		val argInstruct = """This constructor arg could be any java object,
-				but should be java-serializable if used in dynamic network context (see akka docs)."""
-		val dummyActorProps = Props(classOf[TATestDummyActor], argInstruct)
-		val dummyActorRef : ActorRef = parentARF.actorOf(dummyActorProps, dummyActorName)
-		dummyActorRef
-	}
 
 }
 import scala.collection.JavaConverters._

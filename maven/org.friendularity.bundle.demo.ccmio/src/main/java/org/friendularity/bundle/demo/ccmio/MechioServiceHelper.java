@@ -4,8 +4,7 @@ import org.appdapter.core.log.BasicDebugger;
 import org.friendularity.bundle.headless.messaging.MessagingServiceLauncher;
 import org.friendularity.bundle.headless.animation.AnimServiceLauncher;
 import org.friendularity.bundle.headless.speech.SpeechServiceLauncher;
-import org.friendularity.qpc.QPidConnHelp;
-import org.jflux.impl.messaging.rk.utils.ConnectionManager;
+import org.friendularity.qpc.JFluxQpidConnHelp;
 import org.osgi.framework.BundleContext;
 
 import javax.jms.Connection;
@@ -15,7 +14,7 @@ import javax.jms.Connection;
  */
 public class MechioServiceHelper extends BasicDebugger {
 	public void startEmUp(BundleContext bunCtx) {
-		QPidConnHelp qch = new QPidConnHelp();
+		JFluxQpidConnHelp qch = new JFluxQpidConnHelp();
 		Connection qpidConn = qch.makeOldeDfltLocalTestQpidConn();
 		String animPlayerID = "Avatar_Sinbad";	//  "Avatar_ZenoR50";
 		getLogger().info("Got qpidConn={}\n\"======================================\n, launching messaging services");
