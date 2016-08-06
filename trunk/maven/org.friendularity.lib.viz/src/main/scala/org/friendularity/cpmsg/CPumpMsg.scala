@@ -22,35 +22,26 @@ import akka.actor.ActorContext
 import org.appdapter.core.name.Ident
 
 // Empty (so far) marker trait for all msgs.
-trait CPumpMsg extends JSerializable {
+trait CPumpMsg extends JSerializable
 
-}
-
+// Not actually necessary and not actually used very much, is too broad a concept in most cases
 trait CPRepliableMsg extends CPumpMsg {
 	def getReplyTeller_opt : Option[CPMsgTeller] = None
 }
 
 // Contains regular-shaped buffer streams of data as opaque binary or text
-trait CPSignalMsg extends CPumpMsg {
-
-}
+trait CPSignalMsg extends CPumpMsg
 
 // Contains graph metadata, as text or tuples, and possibly system wiring info.
-trait CPSymbolMsg extends CPumpMsg {
-
-}
+trait CPSymbolMsg extends CPumpMsg
 
 // Q:  How well does logging play with serializable?
 
+case class TxtSymMsg(mySymTxt : String) extends CPSymbolMsg
 
-
-case class TxtSymMsg(mySymTxt : String) extends CPSymbolMsg {
-
-}
 case class RepliableTxtSymMsg(mySymTxt : String, myReplyTeller_opt : Option[CPMsgTeller])
 			extends CPSymbolMsg with CPRepliableMsg {
 	override def getReplyTeller_opt : Option[CPMsgTeller] = myReplyTeller_opt
-
 }
 
 // teller_opt eq None => "The channel was found, but we cannot give you a direct teller to it"

@@ -8,6 +8,7 @@ import org.appdapter.fancy.log.VarargsLogging
 /**
   * Created by Owner on 4/10/2016.
   */
+/*
 trait Teller[TargetKind, MsgKind <: AnyRef] extends JSerializable {
 	protected def getKnownActRef_opt : Option[ActorRef]
 	// If invoked in actor context, sender will be implicitly hooked up.
@@ -38,3 +39,4 @@ class ZoomTeller[MsgKind <: AnyRef] {
 
 }
 
+*/

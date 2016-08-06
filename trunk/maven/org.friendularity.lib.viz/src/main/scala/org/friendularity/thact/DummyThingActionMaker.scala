@@ -9,7 +9,7 @@ import org.cogchar.name.goody.GoodyNames
 /**
   * Created by Stub22 on 8/6/2016.
   */
-class ThingActionFlow extends VarargsLogging {
+trait DummyThingActionMaker extends VarargsLogging {
 	val TEST_INIT_X = 30.0f;
 	val TEST_INIT_Y = 15.0f;
 	val TEST_INIT_Z = 10.0f;

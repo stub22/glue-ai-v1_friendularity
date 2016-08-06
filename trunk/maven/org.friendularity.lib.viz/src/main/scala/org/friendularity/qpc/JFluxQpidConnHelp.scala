@@ -8,7 +8,7 @@ import org.jflux.impl.messaging.rk.utils.ConnectionManager
 /**
   * Created by Owner on 8/5/2016.
   */
-class QPidConnHelp extends VarargsLogging {
+class JFluxQpidConnHelp extends VarargsLogging {
 
 	def makeOldeDfltLocalTestQpidConn: Connection = {
 		var qpidConn: Connection = null
