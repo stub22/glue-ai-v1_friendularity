@@ -38,11 +38,6 @@ import org.cogchar.render.rendtest.{GoodyTestMsgMaker, GoodyRenderTestApp}
 import org.cogchar.render.sys.goody.GoodyRenderRegistryClient
 import org.friendularity.raiz.{VizappLegacyLoaderFactory, VizappProfileLoaderFactory, TestRaizLoad}
 
-import org.friendularity.cpump.{CPStrongTeller, CPumpMsg, CPMsgTeller, ActorRefCPMsgTeller}
-import org.friendularity.dull.SpecialAppPumpSpace
-
-import org.friendularity.respire._
-
 /**
   * Created by Owner on 4/1/2016.
   */

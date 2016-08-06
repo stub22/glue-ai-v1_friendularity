@@ -19,8 +19,9 @@ package org.friendularity.field
 import akka.actor.{ActorRef, Props, ActorRefFactory}
 import org.appdapter.core.name.Ident
 import org.appdapter.fancy.log.VarargsLogging
-import org.friendularity.cpump.{CPumpMsg, CPStrongTeller, ActorRefCPMsgTeller, CPMsgTeller}
-import org.friendularity.dull.FrienduActor
+import org.friendularity.cpmsg.{ActorRefCPMsgTeller, CPStrongTeller, CPMsgTeller, CPumpMsg}
+
+import org.friendularity.qpc.FrienduActor
 import org.friendularity.vwimpl.IdentHlp
 
 import scala.collection.mutable.{HashMap => MutableHashMap, ListBuffer}

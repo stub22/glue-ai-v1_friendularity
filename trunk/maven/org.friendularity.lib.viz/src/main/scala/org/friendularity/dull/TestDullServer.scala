@@ -3,6 +3,7 @@ package org.friendularity.dull
 import akka.actor._
 import org.appdapter.core.name.{FreeIdent, Ident}
 import org.appdapter.fancy.log.VarargsLogging
+import org.friendularity.cpmsg.{ActorRefCPMsgTeller, CreatedChanTellerMsg, CPumpMsg}
 import org.friendularity.cpump._
 import org.friendularity.vwimpl.VWorldActorFactoryFuncs
 import org.friendularity.vwmsg.VWARM_GreetFromPumpAdmin

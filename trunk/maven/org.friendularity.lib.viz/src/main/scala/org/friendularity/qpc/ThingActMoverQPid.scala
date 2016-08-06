@@ -14,28 +14,20 @@
  *  limitations under the License.
  */
 
-package org.friendularity.dull
+package org.friendularity.qpc
 
-import javax.jms.{Session => JMSSession, Message => JMSMsg, ObjectMessage => JMSObjMsg, TextMessage => JMSTextMsg,
-		MessageProducer => JMSMsgProducer, Destination => JMSDestination, MessageConsumer => JMSMsgConsumer,
-		MessageListener => JMSMsgListener}
-
-import java.lang.{Long => JLong}
 import java.io.{Serializable => JSerializable}
+import java.lang.{Long => JLong}
+import javax.jms.{Destination => JMSDestination, Message => JMSMsg, MessageConsumer => JMSMsgConsumer, MessageListener => JMSMsgListener, MessageProducer => JMSMsgProducer, ObjectMessage => JMSObjMsg, Session => JMSSession, TextMessage => JMSTextMsg}
 
-import akka.actor.{ActorSystem, Actor, ActorLogging, Props, ActorRef, ActorRefFactory}
+import akka.actor.{Actor, ActorRef, ActorRefFactory, ActorSystem, Props}
 import org.appdapter.fancy.log.VarargsLogging
 import org.cogchar.api.thing.ThingActionSpec
-
-
-import org.cogchar.render.goody.basic.BasicGoodyCtx
 import org.cogchar.render.rendtest.GoodyTestMsgMaker
-import org.friendularity.cpump.{ActorRefCPMsgTeller, CPMsgTeller, CPStrongTeller}
-import org.friendularity.ignore.nexjen.{QPidConnector, QPid_032_NameManager}
-import org.friendularity.vwmsg.{VWGoodyRqTurtle, VWGoodyRqRdf, VWGoodyRqTAS, VWGoodyRqActionSpec}
+import org.friendularity.cpmsg.{ActorRefCPMsgTeller, CPStrongTeller}
 
-
-import scala.collection.immutable.HashMap
+import org.friendularity.thact.ThingActTurtleEncoder
+import org.friendularity.vwmsg.{VWGoodyRqActionSpec, VWGoodyRqRdf, VWGoodyRqTAS, VWGoodyRqTurtle}
 
 /**
   * Created by StuB22 on 6/13/2016.

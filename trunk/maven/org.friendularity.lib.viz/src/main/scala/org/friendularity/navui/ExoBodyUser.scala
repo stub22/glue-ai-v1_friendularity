@@ -18,8 +18,9 @@ package org.friendularity.navui
 import java.util.concurrent.TimeUnit
 
 import akka.actor.{Props, ActorRef, ActorRefFactory, Actor}
+import org.friendularity.cpmsg.CPStrongTeller
+
 // import akka.dispatch.{Dispatcher => AkkaDisp}
-import org.friendularity.cpump.{CPStrongTeller, CPumpMsg}
 import org.friendularity.field.{ScheduleHelper, SchedTaskRepeating}
 // import scala.concurrent.ExecutionContextExecutor
 // import akka.dispatch.Dispatcher

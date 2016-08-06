@@ -19,8 +19,7 @@ import com.jme3.scene.shape.Quad
 import org.appdapter.core.name.{FreeIdent, Ident}
 import org.cogchar.render.sys.registry.RenderRegistryClient
 import org.cogchar.render.trial.TextSpatialFactory
-import org.friendularity.dull.RemoteItemField
-import org.friendularity.field.{BoundToFieldOfVariableItem, BoundToDataSrc}
+import org.friendularity.field.{RemoteItemField, BoundToFieldOfVariableItem, BoundToDataSrc}
 import org.friendularity.vwimpl.{BoundPage, OvlPageBook, GadgetMaker, OverlayPage, SvcGate, AttachHlp, FullEnqHlp, TextSpatMaker, MeshGeoMaker, BrushJar, MatPallete, TextLine, UpdatingTextLineGadget, UpdatingTextLine, IdentHlp, FixedFlatGadgetTxtLine, FlatGadget, FinishedFlatWidget, FlatWidget}
 import com.jme3.scene.{Node => JmeNode, Mesh}
 

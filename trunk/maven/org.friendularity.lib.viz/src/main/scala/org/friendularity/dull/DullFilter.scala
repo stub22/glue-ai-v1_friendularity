@@ -1,6 +1,7 @@
 package org.friendularity.dull
 
 import org.appdapter.fancy.log.VarargsLogging
+import org.friendularity.cpmsg.{TxtSymMsg, CPumpMsg}
 import org.friendularity.cpump._
 
 /**

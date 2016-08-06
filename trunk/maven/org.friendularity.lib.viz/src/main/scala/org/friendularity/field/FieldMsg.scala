@@ -17,7 +17,8 @@ package org.friendularity.field
 
 import org.appdapter.core.name.Ident
 import org.appdapter.fancy.log.VarargsLogging
-import org.friendularity.cpump.{CPMsgTeller, CPStrongTeller, CPumpMsg}
+import org.friendularity.cpmsg.{CPStrongTeller, CPumpMsg}
+
 
 /**
   * Created by Stub22 on 7/11/2016.

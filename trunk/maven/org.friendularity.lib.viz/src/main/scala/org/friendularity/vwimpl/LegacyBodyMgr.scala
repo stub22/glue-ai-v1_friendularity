@@ -7,7 +7,7 @@ import org.appdapter.fancy.rclient.{EnhancedLocalRepoClient, RepoClient}
 import org.cogchar.api.humanoid.{HumanoidFigureConfig, FigureConfig}
 import org.cogchar.bind.mio.robot.svc.ModelBlendingRobotServiceContext
 import org.cogchar.blob.emit.RenderConfigEmitter
-import org.friendularity.cpump.CPStrongTeller
+import org.friendularity.cpmsg.CPStrongTeller
 import org.friendularity.navui.{NavUiAppSvc, ExoBodyUserLogic}
 import org.friendularity.rbody.{HumaConfHelper, BodyConnImpl}
 import org.friendularity.vwmsg.{VWBodyNotice, VWBodyRq}

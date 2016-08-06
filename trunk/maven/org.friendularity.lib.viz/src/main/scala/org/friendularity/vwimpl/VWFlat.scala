@@ -23,7 +23,7 @@ import org.appdapter.core.name.{FreeIdent, Ident}
 import org.cogchar.render.sys.registry.RenderRegistryClient
 import org.cogchar.render.sys.task.Queuer
 import org.cogchar.render.trial.TextBox2D
-import org.friendularity.cpump.{CPStrongTeller, CPumpMsg, CPMsgTeller}
+
 import org.friendularity.field.{BoundToDataSrc, ItemFieldSpec}
 
 // import scala.collection.mutable

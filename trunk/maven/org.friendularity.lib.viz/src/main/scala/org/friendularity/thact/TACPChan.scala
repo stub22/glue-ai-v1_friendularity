@@ -1,6 +1,6 @@
-package org.friendularity.cpump
+package org.friendularity.thact
 
-import org.appdapter.core.name.Ident
+import org.friendularity.cpump.{CPumpAdptr, CPChanPost, CPChanListen, CPumpCtx}
 
 /**
   * Created by Owner on 4/7/2016.

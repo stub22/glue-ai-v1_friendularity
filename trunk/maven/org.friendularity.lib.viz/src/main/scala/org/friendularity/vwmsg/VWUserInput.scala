@@ -1,6 +1,6 @@
 package org.friendularity.vwmsg
 
-import org.friendularity.cpump.{CPMsgTeller, CPumpMsg}
+import org.friendularity.cpmsg.CPMsgTeller
 import org.friendularity.vwmsg
 
 

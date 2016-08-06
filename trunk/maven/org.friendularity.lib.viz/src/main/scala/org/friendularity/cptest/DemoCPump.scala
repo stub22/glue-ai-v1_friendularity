@@ -1,12 +1,12 @@
 /*
  *  Copyright 2016 by The Friendularity Project (www.friendularity.org).
- * 
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- * 
+ *
  *       http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,19 +14,13 @@
  *  limitations under the License.
  */
 
-package org.friendularity.cpump
+package org.friendularity.cptest
 
-import akka.actor.ActorSystem
-import akka.actor.Props
-import akka.actor.ActorRef
-import akka.actor.Actor
-import akka.actor.ActorLogging
-import akka.actor.Terminated
-
-import org.appdapter.core.log.BasicDebugger;
-import org.appdapter.fancy.log.VarargsLogging;
-import org.appdapter.core.name.{FreeIdent, Ident}
-
+import akka.actor.{Actor, ActorLogging, ActorRef, ActorSystem, Props}
+import org.appdapter.fancy.log.VarargsLogging
+import org.friendularity.akact.AkkaSysTerminator
+import org.friendularity.cpmsg.{ActorRefCPMsgTeller, RepliableTxtSymMsg, TxtSymMsg}
+import org.friendularity.thact.CPRepliableThingActionMsg
 
 
 object DemoCPump extends VarargsLogging {
@@ -74,7 +68,7 @@ trait DemoCPumpMgr extends VarargsLogging {
 	private val cpumpEndListenerName = "demoCPASTerm"
 
 	protected def getTestCPumpName : String
-	protected[cpump] def getActorSys : ActorSystem
+	protected[cptest] def getActorSys : ActorSystem
 
 	lazy private val myCPumpActRef : ActorRef = getActorSys.actorOf(Props[DemoCPumpActor], getTestCPumpName)
 	private def getCPumpActRef : ActorRef = myCPumpActRef
@@ -98,11 +92,11 @@ class StandaloneDemoCPumpMgr(akkaSysName : String, testCPumpName: String) extend
 
 	override protected def getTestCPumpName : String = testCPumpName
 	lazy private val myAkkaSys = ActorSystem(akkaSysName)  // Using case-class cons
-	override protected[cpump] def getActorSys : ActorSystem = myAkkaSys
+	override protected[cptest] def getActorSys : ActorSystem = myAkkaSys
 }
 
 class PluginDemoCPumpMgr(myAkkaSys: ActorSystem, testCPumpName: String) extends  DemoCPumpMgr {
-	override protected[cpump] def getActorSys : ActorSystem = myAkkaSys
+	override protected[cptest] def getActorSys : ActorSystem = myAkkaSys
 	override protected def getTestCPumpName : String = testCPumpName
 }
 

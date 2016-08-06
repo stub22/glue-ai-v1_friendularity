@@ -2,7 +2,7 @@ package org.friendularity.field
 
 import org.appdapter.core.name.Ident
 import org.appdapter.fancy.log.VarargsLogging
-import org.friendularity.cpump.CPStrongTeller
+import org.friendularity.cpmsg.CPStrongTeller
 
 import scala.collection.mutable.{HashMap => MutableHashMap}
 

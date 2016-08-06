@@ -2,7 +2,7 @@ package org.friendularity.vwmsg
 
 import com.jme3.math.ColorRGBA
 import org.appdapter.core.name.Ident
-import org.friendularity.cpump.CPMsgTeller
+import org.friendularity.cpmsg.CPMsgTeller
 import org.friendularity.vwimpl.OverlayPage
 
 /**

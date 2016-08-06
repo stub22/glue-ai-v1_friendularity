@@ -1,26 +1,21 @@
-package org.friendularity.dull
+package org.friendularity.thact
 
-import com.hp.hpl.jena
-import com.hp.hpl.jena.rdf.model.{Model => JenaModel, ModelFactory => JenaModelFactory, Resource, ResIterator, Literal}
-
-import java.util.{List => JList, ArrayList => JArrayList, Set => JSet, Random}
 import java.lang.{Long => JLong}
+import java.util.{ArrayList => JArrayList, List => JList, Random, Set => JSet}
 
-import org.slf4j.Logger
-
-import org.appdapter.bind.rdf.jena.assembly.ItemAssemblyReader
-import org.appdapter.core.item.{JenaResourceItem, Item}
+import com.hp.hpl.jena.rdf.model.{Literal, Model => JenaModel, ModelFactory => JenaModelFactory, ResIterator, Resource}
 import org.appdapter.core.item.Item.LinkDirection
+import org.appdapter.core.item.{Item, JenaResourceItem}
 import org.appdapter.core.name.{FreeIdent, Ident}
 import org.appdapter.fancy.log.VarargsLogging
-import org.appdapter.fancy.query.{SolutionList, Solution, SolutionHelper}
+import org.appdapter.fancy.query.{Solution, SolutionHelper, SolutionList}
 import org.appdapter.fancy.rclient.RepoClient
 import org.cogchar.api.fancy.FancyThingModelWriter
 import org.cogchar.api.thing.{SerTypedValueMap, ThingActionSpec}
-import org.cogchar.impl.thing.basic.{BasicTypedValueMapWithConversion, BasicTypedValueMap, BasicThingActionSpec}
+import org.cogchar.impl.thing.basic.{BasicThingActionSpec, BasicTypedValueMap, BasicTypedValueMapWithConversion}
 import org.cogchar.name.dir.NamespaceDir
 import org.cogchar.name.thing.ThingCN
-
+import org.slf4j.Logger
 
 import scala.collection.mutable.ListBuffer
 

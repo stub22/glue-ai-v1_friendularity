@@ -22,8 +22,8 @@ import org.appdapter.fancy.log.VarargsLogging
 import org.appdapter.fancy.rclient.EnhancedLocalRepoClient
 import org.cogchar.blob.entry.EntryHost
 import org.cogchar.render.goody.basic.BasicGoodyCtx
+import org.friendularity.cpmsg.CPStrongTeller
 import org.friendularity.raiz.TestRaizLoad
-import org.friendularity.cpump.CPStrongTeller
 import org.friendularity.rbody.DualBodyRecord
 import org.friendularity.vwmsg.VWorldPublicTellers
 

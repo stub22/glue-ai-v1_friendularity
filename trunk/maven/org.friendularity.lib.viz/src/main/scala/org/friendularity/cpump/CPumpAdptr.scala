@@ -16,6 +16,8 @@
 
 package org.friendularity.cpump
 
+import org.friendularity.cpmsg.CPumpMsg
+
 trait WritingCtx 
 
 trait WritableRecord

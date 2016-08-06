@@ -1,9 +1,6 @@
-package org.friendularity.cpump
+package org.friendularity.cptest
 
-import akka.actor.ActorRef
-import org.appdapter.core.log.BasicDebugger
 import org.appdapter.fancy.log.VarargsLogging
-import org.friendularity.cpump.DemoCPump._
 
 /**
   * Created by Owner on 3/22/2016.

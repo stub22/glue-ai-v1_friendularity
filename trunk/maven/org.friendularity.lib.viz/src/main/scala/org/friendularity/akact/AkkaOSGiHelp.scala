@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.friendularity.cpump
+package org.friendularity.akact
 
 import akka.actor.ActorSystem
 import akka.osgi.ActorSystemActivator

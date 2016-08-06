@@ -1,12 +1,12 @@
 /*
  *  Copyright 2014 by The Friendularity Project (www.friendularity.org).
- * 
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- * 
+ *
  *       http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.friendularity.ignore.nexjen
+package org.friendularity.qpc
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -22,15 +22,10 @@ package org.friendularity.ignore.nexjen
 
 trait Dummy99
 
+import org.appdapter.core.name.{FreeIdent, Ident}
 import org.appdapter.fancy.log.VarargsLogging
-
-import org.appdapter.core.name.{Ident, SerIdent, FreeIdent}
-import org.cogchar.api.thing.ThingActionSpec
-import org.cogchar.impl.thing.basic.{BasicTypedValueMap, BasicTypedValueMapWithConversion}
-import org.cogchar.impl.thing.basic.BasicThingActionSpec;
-
-
-import org.cogchar.api.vworld.GoodyActionParamWriter;
+import org.cogchar.api.vworld.GoodyActionParamWriter
+import org.cogchar.impl.thing.basic.{BasicThingActionSpec, BasicTypedValueMap, BasicTypedValueMapWithConversion}
 import org.cogchar.name.goody.GoodyNames;
 
 
@@ -86,14 +81,7 @@ import java.util.Random;
 	}
 }
 
-import javax.jms.{ConnectionFactory, Session, Destination}
-import javax.jms.{MessageConsumer, MessageProducer}
-import javax.jms.{Message, BytesMessage, TextMessage, MapMessage, ObjectMessage}
-import javax.jms.JMSException;
-
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import java.util.Properties;
+import javax.jms.{MapMessage, MessageConsumer, MessageProducer, ObjectMessage, Session};
 
 class TAFlow_QPid extends ThingActionFlow {
 		def sendAndConsumeTAMsg(jmsSession : Session, jmsMsgProducer : MessageProducer, jmsMsgConsumer : MessageConsumer ) {

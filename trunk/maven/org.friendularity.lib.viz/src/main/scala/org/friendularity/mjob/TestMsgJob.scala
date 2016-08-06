@@ -1,7 +1,7 @@
 package org.friendularity.mjob
 
 import akka.actor.{ActorContext, ActorRef}
-import org.friendularity.cpump.CPumpMsg
+import org.friendularity.cpmsg.CPumpMsg
 
 
 /**

@@ -8,7 +8,7 @@ import com.hp.hpl.jena.rdf.model.{Model => JenaModel, ModelFactory => JenaModelF
 import org.apache.jena.riot.RDFFormat
 import org.appdapter.fancy.log.VarargsLogging
 import org.cogchar.api.thing.ThingActionSpec
-import org.friendularity.dull.RdfMsg
+import org.friendularity.thact.RdfMsg
 
 
 /**

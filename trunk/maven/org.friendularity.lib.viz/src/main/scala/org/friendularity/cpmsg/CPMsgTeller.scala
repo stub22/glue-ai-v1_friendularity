@@ -13,11 +13,11 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.friendularity.cpump
+package org.friendularity.cpmsg
 
 import java.io.{Serializable => JSerializable}
 
-import akka.actor.{Cancellable, ActorLogging, Actor, ActorSelection, ActorRef}
+import akka.actor.{ActorRef, ActorSelection}
 
 /**
   * Created by Owner on 4/10/2016.

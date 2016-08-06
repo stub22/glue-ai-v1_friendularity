@@ -3,8 +3,10 @@ package org.friendularity.vwmsg
 import com.jme3.renderer.Camera
 import org.appdapter.core.name.Ident
 import org.cogchar.api.humanoid.HumanoidFigureConfig
-import org.friendularity.cpump.CPStrongTeller
-import org.cogchar.bind.mio.robot.svc.ModelBlendingRobotServiceContext // Nonserializable - See further notes below.
+import org.cogchar.bind.mio.robot.svc.ModelBlendingRobotServiceContext
+import org.friendularity.cpmsg.CPStrongTeller
+
+// Nonserializable - See further notes below.
 
 trait VWBodyLifeRq extends VWorldRequest // disjoint from VWBodyRq
 
