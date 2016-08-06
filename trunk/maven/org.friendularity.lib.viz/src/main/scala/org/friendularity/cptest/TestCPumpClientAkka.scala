@@ -60,7 +60,7 @@ object TestCPumpClientAkka extends VarargsLogging {
 		info2("Sending rq4RespMsg={} to tellser={}", requestForResponseMsg, selTeller)
 		selTeller.tellCPMsg(requestForResponseMsg)
 
-		import org.friendularity.qpc.ThingActionFlow
+		import org.friendularity.thact.ThingActionFlow
 		val taflow = new ThingActionFlow
 		val ta = taflow.makeThingActionSpec()
 		val tamsg = new CPTAWrapMsg(ta, Some(respConsTeller))
