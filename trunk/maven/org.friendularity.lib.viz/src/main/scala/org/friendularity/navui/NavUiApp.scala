@@ -27,7 +27,7 @@ import org.friendularity.dull.SpecialAppPumpSpace
 import org.friendularity.field.ScheduleHelper
 import org.friendularity.respire._
 import org.friendularity.vwimpl.{VWorldActorFactoryFuncs, LegacyBodyLoader_Stateless}
-import org.friendularity.vwmsg.{VWorldPublicTellers, VWBodyRq, VWBodyMakeRq, VWBodyLifeRq, VWARM_FindPublicTellers, VWSetupRq_Lnch, VWSetupRq_Conf, VWARM_GreetFromPumpAdmin, VWBodyNotice}
+import org.friendularity.vwmsg.{VWorldRequest, VWorldPublicTellers, VWBodyRq, VWBodyMakeRq, VWBodyLifeRq, VWARM_FindPublicTellers, VWSetupRq_Lnch, VWSetupRq_Conf, VWARM_GreetFromPumpAdmin, VWBodyNotice}
 import org.osgi.framework.BundleContext
 
 /**
@@ -110,9 +110,11 @@ trait NavUiAppSvc extends VarargsLogging {
 
 	}
 }
-
-trait NavPumpSpaceOwner extends VarargsLogging {
+trait KnowsAkkaSys {
 	protected def getAkkaSys : ActorSystem
+}
+trait NavPumpSpaceOwner extends KnowsAkkaSys with VarargsLogging {
+
 	lazy private val myPumpSpace = new SpecialAppPumpSpace(getAkkaSys)
 	lazy private val standPumpTestCtxName = NavUiTestPublicNames.cpumpName
 	lazy private val standPumpCtxActorRef : ActorRef = myPumpSpace.findTopActorRef(standPumpTestCtxName)
@@ -129,81 +131,94 @@ trait NavPumpSpaceOwner extends VarargsLogging {
 // "App" here means FriendU app, not a JME3 "app".  (This instance is several layers further out)
 // The latter is made during launchSimRenderSpace in VWCore.scala.
 
-class NavUiAppImpl(myAkkaSys : ActorSystem) extends NavUiAppSvc with NavPumpSpaceOwner {
-
-	override protected def getAkkaSys : ActorSystem = myAkkaSys
-
-	lazy private val myVWBossAR: ActorRef = VWorldActorFactoryFuncs.makeVWorldBoss(myAkkaSys, "vworldBoss_818")
-	lazy private val myVWBossTeller = new ActorRefCPMsgTeller(myVWBossAR)
-
+trait AppServiceHandleGroup extends KnowsAkkaSys with VarargsLogging {
+	lazy val akkaSys = getAkkaSys
 	// Jobby approach to actor launch is used here for our outer actors, experimentally.
 	lazy private val goodyTestSenderLogic = new PatientSender_GoodyTest {}
-	lazy private val goodyTestSenderTrigTeller  = OuterJobbyLogic_MasterFactory.makeOoLogicAndTeller(goodyTestSenderLogic, myAkkaSys, "goodyTstSndr")
+	lazy private val goodyTestSenderTrigTeller  = OuterJobbyLogic_MasterFactory.makeOoLogicAndTeller(goodyTestSenderLogic, akkaSys, "goodyTstSndr")
 
 	lazy private val charAdmForwarderLogic = new PatientForwarder_CharAdminTest {}
-	lazy private val charAdmSenderTrigTeller  = OuterJobbyLogic_MasterFactory.makeOoLogicAndTeller(charAdmForwarderLogic, myAkkaSys, "charAdmForwarder")
+	lazy private val charAdmSenderTrigTeller  = OuterJobbyLogic_MasterFactory.makeOoLogicAndTeller(charAdmForwarderLogic, akkaSys, "charAdmForwarder")
 
 	lazy private val bonusStagingLogic = new PatientSender_BonusStaging {}
-	lazy private val bonusStagingTrigTeller  = OuterJobbyLogic_MasterFactory.makeOoLogicAndTeller(bonusStagingLogic, myAkkaSys, "bonusStagingRequester")
+	lazy private val bonusStagingTrigTeller  = OuterJobbyLogic_MasterFactory.makeOoLogicAndTeller(bonusStagingLogic, akkaSys, "bonusStagingRequester")
 
 	lazy private val statusTickPumpLogic = new OuterAppPumpSetupLogic {
 		override protected def getAkkaSystem : ActorSystem = getAkkaSys
 	}
+	lazy private val statusTickTrigTeller  = OuterJobbyLogic_MasterFactory.makeOoLogicAndTeller(statusTickPumpLogic, akkaSys, "statusTickPumpSetup")
+	def registerPostInitWaiters(vbt : CPStrongTeller[VWorldRequest]) : Unit = {
 
-	lazy private val statusTickTrigTeller  = OuterJobbyLogic_MasterFactory.makeOoLogicAndTeller(statusTickPumpLogic, myAkkaSys, "statusTickPumpSetup")
+		// Each of these the results of happy startup, to trigger further ops.
+		// The VWPTRendezvous logic makes sure that each such waiter gets notified regardless of message order,
+		// so it is OK to send them after init is already complete (although usually it won't be).
+		val goodyTstRegMsg = new VWARM_FindPublicTellers(goodyTestSenderTrigTeller)
+		debug2("Sending goody-listener--reg={} to VWBossTeller : {}", goodyTstRegMsg, vbt)
+		vbt.tellCPMsg(goodyTstRegMsg)
+
+		val charAdmRegMsg = new VWARM_FindPublicTellers(charAdmSenderTrigTeller)
+		debug2("Sending char-admin-listener-reg={} to VWBossTeller : {}", charAdmRegMsg, vbt)
+		vbt.tellCPMsg(charAdmRegMsg)
+
+		val bonusStageRegMsg = new VWARM_FindPublicTellers(bonusStagingTrigTeller)
+		debug2("Sending bonusStage-listener-reg={} to VWBossTeller : {}", bonusStageRegMsg, vbt)
+		vbt.tellCPMsg(bonusStageRegMsg)
+
+		val tickPumpRegMsg = new VWARM_FindPublicTellers(statusTickTrigTeller)
+		debug2("Sending tickPump-listener-reg={} to VWBossTeller : {}", tickPumpRegMsg, vbt)
+		vbt.tellCPMsg(tickPumpRegMsg)
+	}
+	// Can't so directly send this yet as  actor msg.  There is a kind of implicit rendezvous going on here
+	// between  the optional MechIO connection, the legacy-repo-based humaConfig, and the launched VWorld actors.
+	def appendCharAdmRq(chrAdmRq : VWBodyLifeRq) : Unit = charAdmForwarderLogic.appendInboundRq(chrAdmRq)
+
+}
+trait KnowsVWBoss {
+	def getVWBossTeller : CPStrongTeller[VWorldRequest]
+}
+trait MakesVWBoss extends KnowsVWBoss with KnowsAkkaSys {
+	// lazy val akkaSys = getAkkaSys
+
+	def getVWBossActrName = "vworldBoss_818"
+
+	lazy private val myVWBossAR: ActorRef = VWorldActorFactoryFuncs.makeVWorldBoss(getAkkaSys, getVWBossActrName)
+	lazy private val myVWBossTeller : CPStrongTeller[VWorldRequest] = new ActorRefCPMsgTeller(myVWBossAR)
+
+	override def getVWBossTeller : CPStrongTeller[VWorldRequest] = myVWBossTeller
+}
+class NavUiAppImpl(myAkkaSys : ActorSystem) extends NavUiAppSvc with NavPumpSpaceOwner with AppServiceHandleGroup with MakesVWBoss {
+
+	override protected def getAkkaSys : ActorSystem = myAkkaSys
 
 
 	// Desired effect of these messages is to launch a running OpenGL v-world, ready for characters and other content
 	// to be inserted into it.  Those facilities are available via actors defined in PubTeller replies sent to the
 	// postInitWaiters.
 	def sendSetupMsgs_Async {
+		val vbt = getVWBossTeller // triggers creation of Boss Actor + teller
+		sendGreetMsgs_Async(vbt)  // Validates actor messaging, otherwise no significant effect as of 2016-06-16
 
-		sendGreetMsgs_Async(myVWBossTeller)  // No concrete effect as of 2016-06-16
-
-		// As of 2016-06-16 "Conf" is disabled, and we proceed directly to launch.
+		// As of 2016-06-16 an earlier experiment with "VWSetup_Conf" is disabled, and we proceed directly to launch.
 		// When active, this conf step causes a duplicate copy of legacy config repo to be
 		// loaded, which we don't have any actual use for presently.   Under
 		// OSGi there is an outer copy of that same config repo, used for launching
 		// the avatar bodies.
 		// sendVWSetup_Conf()
 
-		sendVWSetup_Lnch() // First and only call that really makes async launch happen, as of 206-06-17
+		sendVWSetup_Lnch() // First and only call that really makes async launch happen, as of 2016-06-17
 
-		registerPostInitWaiters() // Setup listeners to do more stuff at appropriate times, as VWorld init completes.
+		registerPostInitWaiters(vbt) // Setup listeners to do more stuff at appropriate times, as VWorld init completes.
 	}
 	def sendVWSetup_Conf() : Unit = {
 		val msg = new VWSetupRq_Conf
-		myVWBossTeller.tellCPMsg(msg)
+		getVWBossTeller.tellCPMsg(msg)
 	}
 
 	def sendVWSetup_Lnch() : Unit = {
 		val msg = new VWSetupRq_Lnch
-		myVWBossTeller.tellCPMsg(msg)
+		getVWBossTeller.tellCPMsg(msg)
 	}
-	def registerPostInitWaiters() : Unit = {
-		// Each of these the results of happy startup, to trigger further ops.
-		// The VWPTRendezvous logic makes sure that each such waiter gets notified regardless of message order,
-		// so it is OK to send them after init is already complete (although usually it won't be).
-		val goodyTstRegMsg = new VWARM_FindPublicTellers(goodyTestSenderTrigTeller)
-		debug2("Sending goody-listener--reg={} to VWBossTeller : {}", goodyTstRegMsg, myVWBossTeller)
-		myVWBossTeller.tellCPMsg(goodyTstRegMsg)
 
-		val charAdmRegMsg = new VWARM_FindPublicTellers(charAdmSenderTrigTeller)
-		debug2("Sending char-admin-listener-reg={} to VWBossTeller : {}", charAdmRegMsg, myVWBossTeller)
-		myVWBossTeller.tellCPMsg(charAdmRegMsg)
-
-		val bonusStageRegMsg = new VWARM_FindPublicTellers(bonusStagingTrigTeller)
-		debug2("Sending bonusStage-listener-reg={} to VWBossTeller : {}", bonusStageRegMsg, myVWBossTeller)
-		myVWBossTeller.tellCPMsg(bonusStageRegMsg)
-
-		val tickPumpRegMsg = new VWARM_FindPublicTellers(statusTickTrigTeller)
-		debug2("Sending tickPump-listener-reg={} to VWBossTeller : {}", tickPumpRegMsg, myVWBossTeller)
-		myVWBossTeller.tellCPMsg(tickPumpRegMsg)
-
-	}
-	// Can't so directly send this yet as  actor msg.  There is a kind of implicit rendezvous going on here
-	// between  the optional MechIO connection, the legacy-repo-based humaConfig, and the launched VWorld actors.
-	def appendCharAdmRq(chrAdmRq : VWBodyLifeRq) : Unit = charAdmForwarderLogic.appendInboundRq(chrAdmRq)
 
 	override def postPatientCharCreateRq(dualBodyID : Ident, fullHumaCfg : HumanoidFigureConfig,
 										 mbrsc_opt : Option[ModelBlendingRobotServiceContext], answerTeller : CPStrongTeller[VWBodyNotice]) : Unit = {
