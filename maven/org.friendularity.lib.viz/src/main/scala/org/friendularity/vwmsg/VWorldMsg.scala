@@ -12,7 +12,8 @@ trait VWorldRequest  extends VWorldMsg
 // Notice => Outbound from something
 trait VWorldNotice extends VWorldMsg
 
-// Outbound from VWorld core
+// Outbound from VWorld inner core, i.e. the magic launch state.
+// "Internal" => Does not go out to app logic or over QPid topics, usually.
 trait VWorldInternalNotice extends  VWorldNotice
 
 trait VWContentRq extends VWorldRequest

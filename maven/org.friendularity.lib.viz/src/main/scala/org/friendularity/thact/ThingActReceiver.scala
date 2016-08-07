@@ -6,7 +6,7 @@ import javax.jms.{Destination => JMSDestination, Message => JMSMsg, MessageConsu
 import org.appdapter.fancy.log.VarargsLogging
 import org.cogchar.api.thing.ThingActionSpec
 import org.friendularity.cpmsg.CPStrongTeller
-import org.friendularity.vwmsg.{VWGoodyRqTAS, VWGoodyRqActionSpec, VWGoodyRqTurtle, VWGoodyRqRdf}
+import org.friendularity.vwmsg.{VWorldNotice, VWGoodyRqTAS, VWGoodyRqActionSpec, VWGoodyRqTurtle, VWGoodyRqRdf}
 
 /**
   * Created by Stub22 on 8/6/2016.
@@ -67,5 +67,28 @@ class ThingActReceiverBinary(goodyTADirectTeller : CPStrongTeller[VWGoodyRqActio
 			}
 		}
 	}
-
+}
+class VWStatReceiverBinary(statusTeller : CPStrongTeller[VWorldNotice]) extends VarargsLogging  {
+	def receiveJSerBinaryMsg(objMsg : JMSObjMsg) : Unit = {
+		val objCont = objMsg.getObject
+		val statNotice : VWorldNotice = objCont.asInstanceOf[VWorldNotice]
+		statusTeller.tellStrongCPMsg(statNotice)
+	}
+	def makeListener : JMSMsgListener = {
+		new JMSMsgListener() {
+			override def onMessage(msg: JMSMsg): Unit = {
+				info2("ThingActReceiverBinary-JMSListener msgID={} timestamp={}", msg.getJMSMessageID, msg.getJMSTimestamp : JLong)
+				debug1("ThingActReceiverBinary-JMSListener - received msg, dumping to see if 'wacky' headers show up:\n{}", msg)
+				msg match {
+					case objMsg: JMSObjMsg => {
+						info1("Listener processing received objMsg with tstamp={}", objMsg.getJMSTimestamp: JLong)
+						receiveJSerBinaryMsg(objMsg)
+					}
+					case other => {
+						error2("Received unexpected (not JMS-ObjectMessage) message, class={}, dump=\n{}", other.getClass,  other)
+					}
+				}
+			}
+		}
+	}
 }

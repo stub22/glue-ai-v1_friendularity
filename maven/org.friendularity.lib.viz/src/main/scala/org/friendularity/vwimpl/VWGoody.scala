@@ -27,6 +27,8 @@ trait VWGoodyJobLogic extends VarargsLogging {
 		info4("VWGoodyJobLogic is processing received actSpec of class={}, verb={}, tgtType={} tgtID={}",
 					actSpec.getClass, actSpec.getVerbID, actSpec.getTargetThingTypeID, actSpec.getTargetThingID)
 		val goodyCtx = getGoodyCtx
+
+
 		goodyCtx.consumeAction(actSpec)
 	}
 
@@ -49,6 +51,7 @@ trait VWGoodyJobLogic extends VarargsLogging {
 
 	}
 }
+
 class VWGoodyActor(myGoodyCtx : BasicGoodyCtx) extends Actor with VWGoodyJobLogic {
 	override protected def getGoodyCtx : BasicGoodyCtx = myGoodyCtx
 	def receive = {
@@ -56,4 +59,14 @@ class VWGoodyActor(myGoodyCtx : BasicGoodyCtx) extends Actor with VWGoodyJobLogi
 			processVWGoodyRequest(vwrq, self, context)
 		}
 	}
+}
+
+trait MoveBodiesLogic {
+
+}
+trait MoveCamerasLogic {
+
+}
+trait PublishStatsLogic {
+
 }

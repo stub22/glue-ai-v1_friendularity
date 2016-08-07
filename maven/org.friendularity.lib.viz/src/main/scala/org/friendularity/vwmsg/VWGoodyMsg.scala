@@ -39,3 +39,8 @@ trait VWGoodyRqActionSpec extends VWContentRq {
 case class VWGoodyRqTAS(myBTAS : ThingActionSpec) extends  VWGoodyRqActionSpec {
 	override def getActionSpec : ThingActionSpec = myBTAS
 }
+
+
+trait VWStatMsg extends VWorldNotice
+
+
