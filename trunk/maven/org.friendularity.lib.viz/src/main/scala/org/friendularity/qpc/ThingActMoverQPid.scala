@@ -66,11 +66,6 @@ trait JmsMsgSenderChan extends KnowsJmsSession with VarargsLogging {
 		jmsProd.send(completeMsgHasHeadersAlready)
 
 	}
-	/*
-	def sendMsgPlusHeaders(jmsProd : JMSMsgProducer, msgStillNeedsHeaders : JMSMsg, contentToSend : AnyRef,
-						   headerWriter_opt : Option[WritesJmsHeaders]) : Unit = {
-		headerWriter_opt.map(_.putHeadersOnMsg(objMsg_toSend, objToSend))
-	}*/
 	def sendJmsObjMsgPlusHeaders(jmsProd : JMSMsgProducer, objToSend : JSerializable, headerWriter_opt : Option[WritesJmsHeaders]): Unit = {
 		val jmsSession = getJmsSession
 		val objMsg_toSend : JMSObjMsg = jmsSession.createObjectMessage
@@ -83,11 +78,6 @@ trait JmsMsgSenderChan extends KnowsJmsSession with VarargsLogging {
 		val txtMsg_toSend : JMSTextMsg = jmsSession.createTextMessage(txtToSend)
 		headerWriter_opt.map(_.putHeadersOnMsg(txtMsg_toSend, txtToSend))
 		sendCompleteMsg(jmsProd, txtMsg_toSend)
-		/*
-		val dest = jmsProd.getDestination
-		info2("ThingAct-TurtleTxt destination clz={}, dump={}", dest.getClass, dest)
-		jmsProd.send(txtMsg_toSend)
-		*/
 	}
 
 }
@@ -112,45 +102,6 @@ class JmsSenderChanImpl(myJmsSess : JMSSession, myJmsProd: JMSMsgProducer, myHdW
 
 }
 
-//trait TASenderQPid extends VarargsLogging {
-	//def getDefinedSendChan_TATurtle : DefinedJmsSenderChan
-	//def getDefinedSendChan_TAJSer : DefinedJmsSenderChan
-	/*
-	protected def getJmsProducer_TATurtle : JMSMsgProducer
-	protected def getJmsProducer_TAJSer : JMSMsgProducer
-*/
-//	def sendTAJSerMsg(objToSend : JSerializable): Unit = {
-//		val sender = getDefinedSendChan_TAJSer
-//		sender.sendJmsObjMsg(objToSend)
-		/*
-		val jmsProd = getJmsProducer_TAJSer
-		sendJmsObjMsg(jmsProd, objToSend)
-		val jmsSession = getJmsSession
-		val objMsg_toSend : JMSObjMsg = jmsSession.createObjectMessage
-		objMsg_toSend.setObject(objToSend)
-		putHeadersOnMsg(objMsg_toSend)
-		val dest = jmsProd.getDestination
-		// Earlier we had an error causing the destination to be too general, displaying as:  'amq.topic'/'#'; None
-		info2("ThingAct-JavaSer destination clz={}, dump={}", dest.getClass, dest)
-		jmsProd.send(objMsg_toSend)
-		*/
-//	}
-
-//	def sendTxtMsg(txtToSend : String) : Unit = {
-//		val sender = getDefinedSendChan_TATurtle
-//		sender.sendJmsTxtMsg(txtToSend)
-		/*
-		val jmsSession = getJmsSession
-		val txtMsg_toSend : JMSTextMsg = jmsSession.createTextMessage(strToSend)
-		putHeadersOnMsg(txtMsg_toSend)
-		val jmsProd = getJmsProducer_TATurtle
-		val dest = jmsProd.getDestination
-		info2("ThingAct-TurtleTxt destination clz={}, dump={}", dest.getClass, dest)
-		jmsProd.send(txtMsg_toSend)
-		*/
-//	}
-//
-//}
 
 class ThingActSenderQPid(myJmsSess : JMSSession, myJmsProd_JSer : JMSMsgProducer, serHdrWrtr : Option[WritesJmsHeaders],
 						 myJmsProd_Turtle : JMSMsgProducer, trtHdrWrtr : Option[WritesJmsHeaders])
@@ -267,11 +218,15 @@ class TestTAQpidServer(myParentARF : ActorRefFactory, qpidConnMgr : QPidTopicCon
 
 	//	def sendNotice(notice : VWorldNotice): Unit = mySender.postThingAct(taSpec, encodePref)
 
+	def sendPingNotice(txt : String): Unit = {
+		val pingNotice = new FunVWNoticeImpl("VW Pub Stat Ping Notice: " + txt)
+		mySenderForVWPubNoticeBin.sendVWNotice(pingNotice)
+
+	}
 	def sendSomeVWNotices : Unit = {
 		var msgCount = 0
-		while (msgCount < 60) {
-			val someNotice = new FunVWNoticeImpl("VW Pub Stat notice number = " + msgCount)
-			mySenderForVWPubNoticeBin.sendVWNotice(someNotice)
+		while (msgCount < 50) {
+			sendPingNotice("number = " + msgCount)
 			msgCount += 1
 			Thread.sleep(900)
 		}
@@ -289,13 +244,12 @@ trait VWPubStatListenerMaker extends VarargsLogging {
 	def makePubStatNoticeListener : JMSMsgListener = {
 		new JMSMsgListener() {
 			override def onMessage(msg: JMSMsg): Unit = {
-				info2("ThingActReceiverBinary-JMSListener msgID={} timestamp={}", msg.getJMSMessageID, msg.getJMSTimestamp : JLong)
-				debug1("ThingActReceiverBinary-JMSListener - received msg, dumping to see if 'wacky' headers show up:\n{}", msg)
+				info2("VWPubStatListener-JMSListener msgID={} timestamp={}", msg.getJMSMessageID, msg.getJMSTimestamp : JLong)
+				debug1("VWPubStatListener-JMSListener - received msg, dumping to see if 'wacky' headers show up:\n{}", msg)
 				msg match {
 					case objMsg: JMSObjMsg => {
 						val objCont : JSerializable = objMsg.getObject
 						info2("VWPubStatListener received objMsg with tstamp={}, notice={}", objMsg.getJMSTimestamp: JLong, objCont.toString)
-	//					receiveJSerBinaryMsg(objMsg)
 					}
 					case otherMsg => {
 						error2("Received unexpected (not JMS-ObjectMessage) message, class={}, dump=\n{}", otherMsg.getClass,  otherMsg)
@@ -306,7 +260,7 @@ trait VWPubStatListenerMaker extends VarargsLogging {
 	}
 }
 import scala.collection.JavaConverters._
-class TestTAQPidClient(myParentARF : ActorRefFactory, qpidConnMgr : QPidTopicConn_032)
+class TestTAQPidClient(qpidConnMgr : QPidTopicConn_032)
 			extends QPidTestEndpoint(qpidConnMgr) with VWPubStatListenerMaker {
 
 	val myProdForTurtle : JMSMsgProducer = myJmsSession.createProducer(destForVWRqTATxt)
@@ -329,21 +283,13 @@ class TestTAQPidClient(myParentARF : ActorRefFactory, qpidConnMgr : QPidTopicCon
 			msgCount += 1
 			Thread.sleep(1200)
 		}
-
 	}
-
-
-
-
-
 }
 object ThingActMoverQPid_UnitTest extends VarargsLogging {
 	val srvrAkkaSysName = "unit-test-ta-qpid-vwSrvr"
 	lazy private val myServerAkkaSys = ActorSystem(srvrAkkaSysName)
-
-	// When using akka-remote, this sys would need to have a separate port number.
-	// val cliAkkaSysName = "unit-test-ta-qpid-vwCli"
-	// lazy private val myCliAkkaSys = ActorSystem(cliAkkaSysName)
+	// To have any more akka-sys instances, we would need separate akka-remote port numbers.
+	// Our client test does *not* use akka, it is a simple JVM client listening to JMS
 
 	def main(args: Array[String]) : Unit = {
 		info1("TAMover test started with cmd-line-args array={}", args)
@@ -355,8 +301,7 @@ object ThingActMoverQPid_UnitTest extends VarargsLogging {
 		// server and client are in same Java process, same qpid-conn, but separate JMSSessions.
 		val server = new TestTAQpidServer(myServerAkkaSys, qpidConnMgr)
 
-		// Uses same akka-sys, otherwise we would need a separate akka-remote port number.
-		val client = new TestTAQPidClient(myServerAkkaSys, qpidConnMgr)
+		val client = new TestTAQPidClient(qpidConnMgr)
 
 		client.sendSomeVWRqs
 

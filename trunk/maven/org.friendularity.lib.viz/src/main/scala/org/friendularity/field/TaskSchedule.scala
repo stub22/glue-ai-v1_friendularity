@@ -35,7 +35,7 @@ case class SchedTaskRepeating(myTickMsg : CPumpMsg, initDelayDur : FiniteDuratio
 				   tgtActor: ActorRef, senderActor : ActorRef): Cancellable = {
 		// Note second pair of args supplying  ExecutionContext and sender
 		val cnclbl = sched.schedule(initDelayDur, periodDur, tgtActor, myTickMsg)(cutionCtxCutor, senderActor)
-		info1("scheduling complere, handle={}", cnclbl)
+		info2("scheduling complete for tgt={}, handle={}", tgtActor, cnclbl)
 		cnclbl
 	}
 	def addToSchedForSys(akkaSys: ActorSystem, tgtActor: ActorRef, senderActor : ActorRef) : Cancellable = {
@@ -51,11 +51,12 @@ trait ScheduleHelper extends VarargsLogging {
 	}
 }
 trait StatusTickScheduler extends ScheduleHelper with VarargsLogging {
-	def getTickPeriodMillis: Int = 600
+	def getTickInitDelayMillis = 3000
+	def getTickPeriodMillis: Int = 750
 
 	def makeReportingTickSchedTskRep(): SchedTaskRepeating = {
 		val msg = new ReportingTickChance()
-		val schedItemRep = makeSchedItemRepeating(msg, 0, getTickPeriodMillis)
+		val schedItemRep = makeSchedItemRepeating(msg, getTickInitDelayMillis, getTickPeriodMillis)
 		schedItemRep
 	}
 

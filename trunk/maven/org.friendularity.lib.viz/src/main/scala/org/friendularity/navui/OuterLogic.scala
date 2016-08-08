@@ -269,30 +269,39 @@ trait PatientSender_BonusStaging extends OuterLogic with IdentHlp {
 trait OuterAppPumpSetupLogic extends OuterLogic with IdentHlp with StatusTickScheduler {
 	protected def getAkkaSystem : ActorSystem
 
-	def setupDownstreamActors(ovlTeller : CPStrongTeller[VWOverlayRq]) : CPMsgTeller = {
+	// Bypasses the whole Distrib thing, encoding its own gathering+publishing chain out to AMQP topic
+	protected def makePubStatTempBypassTeller_opt(vwpt: VWorldPublicTellers) : Option[CPStrongTeller[MsgToStatusSrc]] = None
+
+	def setupDownstreamActors_UnusedRightNow(ovlTeller : CPStrongTeller[VWOverlayRq]) : CPMsgTeller = {
+		warn1("No setup is done yet to actually route mesages to ovlTeller: {}", ovlTeller)
 		val downstreamTeller = FieldActorFactory.makeDistribIndep(getAkkaSystem, "downstreamFieldDistrib")
 		downstreamTeller
 	}
-	def setupOuterPumpActors(stageTeller : CPStrongTeller[ReportingTickChance]) : Unit = {
+	def setupOuterPumpActors(tickLovinTellers : List[CPStrongTeller[ReportingTickChance]]) : Unit = {
 		val statusTickHandler = new StatusTickDistributor{}
-		statusTickHandler.registerTickLover(stageTeller)
+		tickLovinTellers.map(statusTickHandler.registerTickLover(_))
 		val akkaSys = getAkkaSystem
 		val statusTickActorRef = StatusTickActorFactory.makeStatusTickDistribActor(akkaSys, "statusTickHandler", statusTickHandler)
 		info1("Made statusTickHandler-Actor: {}", statusTickActorRef)
 		scheduleReportingTicks(akkaSys, statusTickActorRef, statusTickActorRef)
-
 	}
+
 	override def rcvPubTellers(vwpt: VWorldPublicTellers): Unit = {
 		info0("OuterAppPumpSetup received pubTellers")
-		val downstreamTeller = setupDownstreamActors(vwpt.getOverlayTeller.get)
 		val stageTeller = vwpt.getStageTeller.get
-		val chanID = makeStampyRandyIdent()
-		val wrong = downstreamTeller
-		val toWhom : CPStrongTeller[SourceDataMsg] = ???
-		val blankPolicy = new ReportingPolicy{}
-		val chanOpenMsg = new ReportSrcOpen(chanID, toWhom,  blankPolicy)
-		setupOuterPumpActors(vwpt.getStageTeller.get.asInstanceOf[CPStrongTeller[MsgToStatusSrc]])
-
+		val stageTickLover = vwpt.getStageTeller.get.asInstanceOf[CPStrongTeller[MsgToStatusSrc]]
+		val pubStatTmpTellers = makePubStatTempBypassTeller_opt(vwpt).toList
+		val tickLovers : List[CPStrongTeller[ReportingTickChance]] = List(stageTickLover) ++ pubStatTmpTellers
+		setupOuterPumpActors(tickLovers)
+		val nope = false
+		if (nope) {
+			val downstreamTeller = setupDownstreamActors_UnusedRightNow(vwpt.getOverlayTeller.get)
+			val chanID = makeStampyRandyIdent()
+			val wrong = downstreamTeller
+			val toWhom: CPStrongTeller[SourceDataMsg] = ???
+			val blankPolicy = new ReportingPolicy {}
+			val chanOpenMsg = new ReportSrcOpen(chanID, toWhom, blankPolicy)
+		}
 	}
 }
 // Unnecessary to use the Jobby approach here, but working through it anyway as a comparative exercise.
