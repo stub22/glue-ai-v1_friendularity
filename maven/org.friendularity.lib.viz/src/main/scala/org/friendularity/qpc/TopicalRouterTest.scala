@@ -17,8 +17,10 @@
 package org.friendularity.qpc
 
 import org.appdapter.fancy.log.VarargsLogging
+import java.util.Properties
+import javax.jms.{ConnectionFactory, Destination, MessageConsumer, MessageProducer, Session, TextMessage}
+import javax.naming.InitialContext;
 
-trait Dummy66
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -54,150 +56,7 @@ object TopicalRouterTest extends VarargsLogging {
 		info0("This conversation is FINISHED.")
 	}
 }
-import java.util.Properties
-import javax.jms.{ConnectionFactory, Destination, MessageConsumer, MessageProducer, Session, TextMessage}
-import javax.naming.InitialContext;
 
-object QPid_010_Names {
-	// These values are taken from the QPid 0.10 "hello.properties"
-	// Later versions of QPid use different values.
-
-	val qpConnFactoryKey_tail = "qpidConnectionfactory";
-	val qpConnFactoryKey_full = "connectionfactory" + "." + qpConnFactoryKey_tail;
-	val qpConnFactoryURL = "amqp://guest:guest@clientid/test?brokerlist='tcp://localhost:5672'"
-	val jndiNamingFactory_key = "java.naming.factory.initial"
-	val jndiNamingFactory_val =  "org.apache.qpid.jndi.PropertiesFileInitialContextFactory"
-	val destName_key_prefix =  "destination";
-
-	val topicExchangeDestName_value = "amq.topic";		
-			//// Changing the above from amq.topic yields, with QPid client 0.10 running against broker 0.12
-			//	The name 'niceTopic001' supplied in the address doesn't resolve to an exchange or a queue
-			/*
-	Caused by: org.apache.qpid.AMQException: The name 'niceTopic001' supplied in the address doesn't resolve to an exchange or a queue
-	at org.apache.qpid.client.AMQSession_0_10.handleAddressBasedDestination(AMQSession_0_10.java:1239)
-	at org.apache.qpid.client.BasicMessageProducer_0_10.declareDestination(BasicMessageProducer_0_10.java:86)
-			 */
-}
-
-
-class QPid_010_NameManager extends VarargsLogging {
-	def makeJndiPropsForTopicSetup(topicExchangeNames : List[String]) : Properties = {
-		// properties.load(this.getClass().getResourceAsStream("hello.properties"));
-		val jndiProps = new Properties();
-		jndiProps.put(QPid_010_Names.jndiNamingFactory_key, QPid_010_Names.jndiNamingFactory_val)
-		// connectionfactory.[jndiname] = [ConnectionURL]
-		jndiProps.put(QPid_010_Names.qpConnFactoryKey_full, QPid_010_Names.qpConnFactoryURL); 
-		// "connectionfactory.qpidConnectionfactory", "amqp://guest:guest@clientid/test?brokerlist='tcp://localhost:5672'")
-		for (topicExchName <- topicExchangeNames) {
-			// Register an AMQP destination in JNDI
-			// destination.[jniName] = [Address Format]
-			val destName_full = QPid_010_Names.destName_key_prefix + "." + topicExchName
-			jndiProps.put(destName_full, QPid_010_Names.topicExchangeDestName_value)
-		}
-		jndiProps
-	}
-}
-object QPid_032_Names {
-
-	val qpConnFactoryKey_tail = "qpidConnectionfactory";
-	val qpConnFactoryKey_full = "connectionfactory" + "." + qpConnFactoryKey_tail;
-	// Update for 0.32:  Changed to use virtual host 'default' instead of 'test'.
-	// (which should give same result as omitting virutalhost).
-	// Determined the name 'default' by using broker web mgmt interface.
-	val useBroker026 : Boolean = true
-	val useMemNode : Boolean = false
-	val useFrvhn : Boolean = false
-	val useRkvhn : Boolean = false
-
-	val virtualHostName = if (useFrvhn) "friendu-vhn" else if (useRkvhn) "rkvhn" else if(useMemNode) "stu_mem_node" else if (useBroker026) "test" else "default"  // 'test' for broker v0.26, 'default' for broker v0.32
-	val qpConnFactoryURL = "amqp://guest:guest@clientid/" + virtualHostName + "?brokerlist='tcp://localhost:5672'"
-	val jndiNamingFactory_key = "java.naming.factory.initial"
-	val jndiNamingFactory_val =  "org.apache.qpid.jndi.PropertiesFileInitialContextFactory"
-	private val destName_key_prefix =  "destination";
-
-	private val topicUrlPrefix = "amq.topic";
-
-	def destKeyNameForTail(tail : String) = destName_key_prefix + "." + tail
-
-	def topicUrlForTail(tail : String) = topicUrlPrefix + "/" + tail
-}
-class QPid_032_NameManager extends VarargsLogging {
-	def makeJndiPropsForTopicSetup(topicExchangeNames : List[String]) : Properties = {
-		// properties.load(this.getClass().getResourceAsStream("hello.properties"));
-		val jndiProps = new Properties();
-		jndiProps.put(QPid_010_Names.jndiNamingFactory_key, QPid_032_Names.jndiNamingFactory_val)
-		// connectionfactory.[jndiname] = [ConnectionURL]
-		jndiProps.put(QPid_010_Names.qpConnFactoryKey_full, QPid_032_Names.qpConnFactoryURL); 
-		// "connectionfactory.qpidConnectionfactory", "amqp://guest:guest@clientid/test?brokerlist='tcp://localhost:5672'")
-		for (topicExchName <- topicExchangeNames) {
-			// Register an AMQP destination in JNDI
-			// destination.[jniName] = [Address Format]
-			val destName_full = QPid_032_Names.destKeyNameForTail(topicExchName)
-			val jndiVal : String = QPid_032_Names.topicUrlForTail(topicExchName)
-			jndiProps.put(destName_full, jndiVal)
-		}
-		jndiProps
-	}
-}
-class QPidConnector(val myJndiProps : Properties) extends VarargsLogging  {
-	// The supplied jndiProps are used to define the available destinations, so this current impl
-	// does not support dynamically adding topics after the QPidConnector is created.
-
-	val myJndiCtx = new InitialContext(myJndiProps);
-	
-	// val myJmsConn : javax.jms.Connection = makeConn_010();
-	val myJmsConn : javax.jms.Connection = makeConn_032();
-	
-	def makeConn_010() : javax.jms.Connection = {
-		info0("================= Creating InitialContext")
-		
-		val connFactoryKeyTail = QPid_010_Names.qpConnFactoryKey_tail
-		info1("================= Looking up ConnFactory at key_tail: {}", connFactoryKeyTail)
-		val jmsConnFactory = myJndiCtx.lookup(connFactoryKeyTail).asInstanceOf[ConnectionFactory];
-		info0("================= Creating Connection")
-		val jmsConn  = jmsConnFactory.createConnection();
-		jmsConn
-	}
-	def makeConn_032() : javax.jms.Connection = {
-		info0("================= Creating InitialContext")
-		
-		val connFactoryKeyTail = QPid_032_Names.qpConnFactoryKey_tail
-		info1("================= Looking up ConnFactory at key_tail: {}", connFactoryKeyTail)
-		val jmsConnFactory = myJndiCtx.lookup(connFactoryKeyTail).asInstanceOf[ConnectionFactory];
-		info0("================= Creating Connection")
-		val jmsConn  = jmsConnFactory.createConnection();
-		jmsConn
-	}	
-	def startConn() = {
-		info1("================= Starting Connection : {}", myJmsConn)
-		myJmsConn.start();		
-	}
-
-	def makeSessionAutoAck() = {
-		// Creates a session. This session is not transactional (transactions='false'), 
-		// and messages are automatically acknowledged.
-		// QPid HelloWorld uses AUTO_ACKNOWLEDGE,  // R25 uses   CLIENT_ACKNOWLEDGE
-		info0("================= Creating Session")
-		myJmsConn.createSession(false, Session.AUTO_ACKNOWLEDGE);
-	}
-	
-	def makeDestination(destNameTail : String) : Destination = {
-		// Creates a destination for the topic exchange, so senders and receivers can use it.
-		info1("================= Creating Destination for nameTail={}", destNameTail)
-		// val fullName = QPid_032_Names.destKeyNameForTail(destNameTail)
-		// jndiCtx wants just the name tail, rather than the "full name" we specified in jndiProps key (with prefix "destination.").
-		val dest : Destination = myJndiCtx.lookup(destNameTail).asInstanceOf[Destination];
-		info3("Resolved nameTail={} to destination clz={}, dump={}", destNameTail, dest.getClass, dest)
-		dest
-	}
-	
-	def close() = {
-		info0("================= Closing JMS Connection : {}")
-		myJmsConn.close();
-		info0("================= Closing JNDI context")
-		myJndiCtx.close();
-	}
-}
 class QpidHelloWorld extends VarargsLogging {
 	def chopWood() = {
 		try {
@@ -211,7 +70,7 @@ class QpidHelloWorld extends VarargsLogging {
 			
 			val jndiProps = nameMgr.makeJndiPropsForTopicSetup(topicExchangeNames)
 			info1("jndiProps={}", jndiProps)
-			val qpidConn = new QPidConnector(jndiProps) 
+			val qpidConn = new QpidConnMgrJndi(jndiProps)
 			qpidConn.startConn()
 			
 			val jmsSession =  qpidConn.makeSessionAutoAck() //   jmsConn.createSession(false, Session.AUTO_ACKNOWLEDGE); 

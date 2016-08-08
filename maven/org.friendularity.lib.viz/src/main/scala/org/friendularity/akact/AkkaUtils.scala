@@ -1,6 +1,6 @@
 package org.friendularity.akact
 
-import akka.actor.{Actor, ActorLogging, ActorRef, Terminated}
+import akka.actor.{ActorSystem, Actor, ActorLogging, ActorRef, Terminated}
 
 /**
   * Created by Owner on 3/24/2016.
@@ -20,6 +20,10 @@ class AkkaSysTerminator(ref: ActorRef) extends Actor with ActorLogging {
 			context.system.shutdown()
 		}
 	}
+}
+
+trait KnowsAkkaSys {
+	protected def getAkkaSys : ActorSystem
 }
 
 /*

@@ -4,14 +4,15 @@ import akka.actor.ActorSystem;
 import org.appdapter.fancy.rclient.EnhancedLocalRepoClient;
 import org.appdapter.osgi.core.BundleActivatorBase;
 import org.cogchar.bind.symja.MathGate;
-import org.cogchar.blob.entry.EntryHost;
 import org.friendularity.api.west.WorldEstimate;
 import org.friendularity.bundle.qpid_broker_wrap.QPidBrokerLauncher;
 import org.friendularity.navui.ExoBodyUserLogic;
 import org.friendularity.navui.NavUiAppImpl;
 import org.friendularity.navui.NavUiAppSvc;
+
 import org.friendularity.old.ccmio.OldLaunchHelper;
 // import org.friendularity.raiz.TestSetupLoader;
+import org.friendularity.qpc.OffersQpidSvcs;
 import org.friendularity.raiz.VizappLegacyLoader;
 import org.friendularity.raiz.VizappLegacyLoaderFactory;
 import org.friendularity.raiz.VizappProfileLoader;
@@ -77,6 +78,9 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 	// attach... flag now used only during old launch style 2014
 	public static	boolean		myFlag_attachVizappTChunkRepo = true; // false => uses old vanilla mediator backup
 
+	public static boolean  myFlag_launchQpidBroker = true;
+	public static boolean  myFlag_launchQpidTopics = true;
+
 	private Class 		myProfileMarkerClz = TestRaizLoad.class;
 	private Class 		myLegConfMarkerClz = TestRaizLoad.class;
 
@@ -131,6 +135,10 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 
 		VizappLegacyLoader legacyLoader = VizappLegacyLoaderFactory.makeDlftOSGiLegacyLoader(myLegConfMarkerClz);
 
+		if (myFlag_launchQpidBroker) {
+			getLogger().info("============ Calling launchQPidBroker() ==========");
+			launchQPidBroker(bundleCtx);
+		}
 		if (myFlag_useOldLaunchStyle2014) {
 			if (myFlag_attachVizappTChunkRepo) {
 				// OLD launch mechanism, which we keep working for comparative testing
@@ -149,8 +157,6 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 		}
 		getLogger().info("============ Calling launchCPumpService() ==========");
 		launchCPumpService(bundleCtx);
-		getLogger().info("============ Calling launchQPidBroker() ==========");
-		launchQPidBroker(bundleCtx);
 		getLogger().info("============ Calling launchMechioServiceConns() ==========");
 		launchMechioServiceConns(bundleCtx);
 		getLogger().info("============ Calling launchOtherStuffLate() ==========");
@@ -165,6 +171,11 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 		// Can be tested separately using the TestNavUI.main() launcher.
 
 		NavUiAppSvc appSvc = startVWorldNavUI_2016(bundleCtx, akkaSys);
+
+		if (myFlag_launchQpidTopics) {
+			getLogger().info("============ Calling pingQpidSvcs() ==========");
+			((OffersQpidSvcs) appSvc).pingQpidSvcs();
+		}
 
 		// Now the VWorld is up and accepting messages, but there is no char in it yet.
 		// Temporary revised compromise here - keep using the old ("legacy") data known to work until we

@@ -55,85 +55,9 @@ import org.friendularity.vwmsg.{VWorldNotice, VWGoodyRqActionSpec, VWGoodyRqRdf,
 trait KnowsJmsSession {
 	protected def getJmsSession : JMSSession
 }
-trait WritesJmsHeaders {
-	def putHeadersOnMsg(msg : JMSMsg, containedData : Any): Unit
-}
-trait JmsMsgSenderChan extends KnowsJmsSession with VarargsLogging {
-	def sendCompleteMsg(jmsProd : JMSMsgProducer, completeMsgHasHeadersAlready : JMSMsg): Unit = {
-		val destJustForLogging = jmsProd.getDestination
-		// Earlier we had an error causing the destination to be too general, displaying as:  'amq.topic'/'#'; None
-		info2("JmsMsgSenderChan destination clz={}, dump={}", destJustForLogging.getClass, destJustForLogging)
-		jmsProd.send(completeMsgHasHeadersAlready)
-
-	}
-	def sendJmsObjMsgPlusHeaders(jmsProd : JMSMsgProducer, objToSend : JSerializable, headerWriter_opt : Option[WritesJmsHeaders]): Unit = {
-		val jmsSession = getJmsSession
-		val objMsg_toSend : JMSObjMsg = jmsSession.createObjectMessage
-		objMsg_toSend.setObject(objToSend)
-		headerWriter_opt.map(_.putHeadersOnMsg(objMsg_toSend, objToSend))
-		sendCompleteMsg(jmsProd, objMsg_toSend)
-	}
-	def sendJmsTxtMsgPlusHeaders(jmsProd : JMSMsgProducer, txtToSend : String, headerWriter_opt : Option[WritesJmsHeaders]): Unit = {
-		val jmsSession = getJmsSession
-		val txtMsg_toSend : JMSTextMsg = jmsSession.createTextMessage(txtToSend)
-		headerWriter_opt.map(_.putHeadersOnMsg(txtMsg_toSend, txtToSend))
-		sendCompleteMsg(jmsProd, txtMsg_toSend)
-	}
-
-}
-
-trait DefinedJmsSenderChan extends JmsMsgSenderChan {
-	def getJmsProducer : JMSMsgProducer
-	def getHeaderWriter_opt : Option[WritesJmsHeaders]
-
-	def sendJmsObjMsg(objToSend : JSerializable): Unit = {
-		sendJmsObjMsgPlusHeaders(getJmsProducer, objToSend, getHeaderWriter_opt)
-	}
-	def sendJmsTxtMsg(txtToSend : String) : Unit = {
-		sendJmsTxtMsgPlusHeaders(getJmsProducer, txtToSend, getHeaderWriter_opt)
-	}
-}
-class JmsSenderChanImpl(myJmsSess : JMSSession, myJmsProd: JMSMsgProducer, myHdWrtrOpt : Option[WritesJmsHeaders])
-		extends  DefinedJmsSenderChan  with KnowsJmsSession {
-	override def getJmsSession : JMSSession = myJmsSess
-
-	override def getJmsProducer : JMSMsgProducer = myJmsProd
-	override def getHeaderWriter_opt : Option[WritesJmsHeaders] = myHdWrtrOpt
-
-}
 
 
-class ThingActSenderQPid(myJmsSess : JMSSession, myJmsProd_JSer : JMSMsgProducer, serHdrWrtr : Option[WritesJmsHeaders],
-						 myJmsProd_Turtle : JMSMsgProducer, trtHdrWrtr : Option[WritesJmsHeaders])
-					extends ThingActSender  with KnowsJmsSession {
 
-	override protected def getJmsSession : JMSSession = myJmsSess
-
-	lazy val mySendChan_TAJSer : DefinedJmsSenderChan = new JmsSenderChanImpl(myJmsSess, myJmsProd_JSer, serHdrWrtr)
-	lazy val mySendChan_TATurtle : DefinedJmsSenderChan = new JmsSenderChanImpl(myJmsSess, myJmsProd_Turtle, trtHdrWrtr)
-
-	// lavy val mySendChan
-	// override protected def getJmsProducer_TAJSer : JMSMsgProducer = myJmsProd_JSer
-	// override protected def getJmsProducer_TATurtle : JMSMsgProducer = myJmsProd_Turtle
-
-	lazy val myTurtleEncoder = new ThingActTurtleEncoder{}
-
-	override def supportsJavaSer : Boolean = true
-	override def supportsTurtleSer : Boolean = true
-
-	override def postThingActViaJavaSer(srlzblTASpec : ThingActionSpec): Unit = {
-		info1("Sending java-ser TA msg for action={}", srlzblTASpec.getActionSpecID)
-		mySendChan_TAJSer.sendJmsObjMsg(srlzblTASpec.asInstanceOf[JSerializable])
-		// sendJavaSerMsg(taSpec.asInstanceOf[JSerializable])
-	}
-	override def postThingActViaTurtleSer(taSpec : ThingActionSpec): Unit = {
-		info1("Sending turtle-txt TA msg for action={}", taSpec.getActionSpecID)
-		val taAsTurtleTxt : String  = myTurtleEncoder.encodeAsTurtleMsg(taSpec)
-		mySendChan_TATurtle.sendJmsTxtMsg(taAsTurtleTxt)
-		// sendTxtMsg(taAsTurtleTxt)
-	}
-
-}
 class DummyTestHeaderWriter() extends WritesJmsHeaders {
 	override def putHeadersOnMsg(msg : JMSMsg, dataInside : Any): Unit = {
 		msg.setIntProperty("wackyInt", 987654321);
@@ -142,98 +66,9 @@ class DummyTestHeaderWriter() extends WritesJmsHeaders {
 	}
 }
 
-trait VWNoticeSender {
-	def sendVWNotice(vwNotice : VWorldNotice)
-}
-class VWNoticeSenderJmsImpl(myJmsSess : JMSSession, myJmsProd_JSer : JMSMsgProducer) extends VWNoticeSender with KnowsJmsSession {
-	override protected def getJmsSession : JMSSession = myJmsSess
-	val myHdrWriter : Option[WritesJmsHeaders] = None
-	lazy val myNoticeSendChan : DefinedJmsSenderChan = new JmsSenderChanImpl(myJmsSess, myJmsProd_JSer, myHdrWriter)
-	override def sendVWNotice(vwNotice : VWorldNotice) : Unit = {
-		myNoticeSendChan.sendJmsObjMsg(vwNotice)
-	}
-}
 
 
-class QPidTopicConn_032(myTopicExchangeNameList : List[String]) extends VarargsLogging {
-	lazy val myNameMgr = new QPid_032_NameManager()
 
-	lazy val myJndiProps = myNameMgr.makeJndiPropsForTopicSetup(myTopicExchangeNameList)
-
-	lazy val myQPidConn : QPidConnector = {
-		info1("QPidConn jndiProps={}", myJndiProps)
-		val qc = new QPidConnector(myJndiProps)
-		qc.startConn()
-		qc
-	}
-
-	def makeSession : JMSSession = myQPidConn.makeSessionAutoAck()
-
-	lazy val myDestsByNameTail : Map[String, JMSDestination] = myTopicExchangeNameList.map(n => n -> myQPidConn.makeDestination(n)).toMap
-
-}
-object TestAppNames {
-	// Nothing stops us from making these names the same, combining destinations, etc, if that's what we wanted.
-	// But separate queues for separate formats is a decent approach.
-	val topicName_forJSerBinTA = "vwRqTA_jserBin"
-	val topicName_forTurtleTxtTA = "vwRqTA_turtleTxt"
-
-	val topicName_forVWPubStatJSerBin = "vwPubStat_jserBin"
-
-	val allTopics = List(topicName_forJSerBinTA, topicName_forTurtleTxtTA, topicName_forVWPubStatJSerBin)
-
-}
-
-class QPidTestEndpoint(myQPidConnMgr : QPidTopicConn_032) {
-	lazy val myJmsSession = myQPidConnMgr.makeSession
-
-	lazy val destForVWRqTATxt : JMSDestination = myQPidConnMgr.myDestsByNameTail.get(TestAppNames.topicName_forTurtleTxtTA).get
-	lazy val destForVWRqTABin : JMSDestination = myQPidConnMgr.myDestsByNameTail.get(TestAppNames.topicName_forJSerBinTA).get
-
-	lazy val destForVWPubStatsBin : JMSDestination = myQPidConnMgr.myDestsByNameTail.get(TestAppNames.topicName_forVWPubStatJSerBin).get
-}
-
-case class FunVWNoticeImpl(funTxt : String) extends VWorldNotice
-
-class TestTAQpidServer(myParentARF : ActorRefFactory, qpidConnMgr : QPidTopicConn_032)
-			extends QPidTestEndpoint(qpidConnMgr) with DummyActorMaker {
-
-	lazy val myConsumer_forTurtleTxt : JMSMsgConsumer = myJmsSession.createConsumer(destForVWRqTATxt)
-	lazy val myConsumer_forJSerBin : JMSMsgConsumer = myJmsSession.createConsumer(destForVWRqTABin)
-
-	val rcvActor = makeTestDummyActor(myParentARF, "dummy-goody-rq-rcvr")
-	val rcvWeakTeller = new ActorRefCPMsgTeller(rcvActor)
-
-//	val rcvrFactory = new RecvrFactory
-//	val allPurposeListener = rcvrFactory.makeItWeakerButEasier(rcvWeakTeller)
-
-	val rcvrTxt : ThingActReceiverTxt = new ThingActReceiverTxt(rcvWeakTeller.asInstanceOf[CPStrongTeller[VWGoodyRqRdf]])
-	val rcvrBin : ThingActReceiverBinary = new ThingActReceiverBinary(rcvWeakTeller.asInstanceOf[CPStrongTeller[VWGoodyRqActionSpec]])
-
-	myConsumer_forTurtleTxt.setMessageListener(rcvrTxt.makeListener)
-	myConsumer_forJSerBin.setMessageListener(rcvrBin.makeListener)
-
-	val myJmsProdForVWPubNoticeBin : JMSMsgProducer = myJmsSession.createProducer(destForVWPubStatsBin)
-	val mySenderForVWPubNoticeBin :  VWNoticeSender = new VWNoticeSenderJmsImpl(myJmsSession, myJmsProdForVWPubNoticeBin)
-
-	//	def sendNotice(notice : VWorldNotice): Unit = mySender.postThingAct(taSpec, encodePref)
-
-	def sendPingNotice(txt : String): Unit = {
-		val pingNotice = new FunVWNoticeImpl("VW Pub Stat Ping Notice: " + txt)
-		mySenderForVWPubNoticeBin.sendVWNotice(pingNotice)
-
-	}
-	def sendSomeVWNotices : Unit = {
-		var msgCount = 0
-		while (msgCount < 50) {
-			sendPingNotice("number = " + msgCount)
-			msgCount += 1
-			Thread.sleep(900)
-		}
-
-	}
-
-}
 trait ClientStatListenerCouldUseAkkaButThatWouldBeWeird extends  DummyActorMaker {
 	val myParentARF : ActorRefFactory = ???
 	val wwStatRcvActor = makeTestDummyActor(myParentARF, "vwStatRcvr")
@@ -259,32 +94,7 @@ trait VWPubStatListenerMaker extends VarargsLogging {
 		}
 	}
 }
-import scala.collection.JavaConverters._
-class TestTAQPidClient(qpidConnMgr : QPidTopicConn_032)
-			extends QPidTestEndpoint(qpidConnMgr) with VWPubStatListenerMaker {
 
-	val myProdForTurtle : JMSMsgProducer = myJmsSession.createProducer(destForVWRqTATxt)
-	val myProdForJSer : JMSMsgProducer = myJmsSession.createProducer(destForVWRqTABin)
-
-	val mySender = new ThingActSenderQPid(myJmsSession, myProdForJSer, None, myProdForTurtle, None)
-	lazy val myConsumer_forVWPubStatBin : JMSMsgConsumer = myJmsSession.createConsumer(destForVWPubStatsBin)
-
-	myConsumer_forVWPubStatBin.setMessageListener(makePubStatNoticeListener)
-
-	def sendVWRqThingAct(taSpec : ThingActionSpec, encodePref : Integer): Unit = mySender.postThingAct(taSpec, encodePref)
-
-	def sendSomeVWRqs : Unit = {
-		val gtmm: GoodyTestMsgMaker = new GoodyTestMsgMaker
-		val msgsJList = gtmm.makeGoodyCreationMsgs
-		var msgCount = 0
-		val msgSList : List[ThingActionSpec] = msgsJList.asScala.toList
-		for (msg <- msgSList) {
-			sendVWRqThingAct(msg, msgCount % 3)
-			msgCount += 1
-			Thread.sleep(1200)
-		}
-	}
-}
 object ThingActMoverQPid_UnitTest extends VarargsLogging {
 	val srvrAkkaSysName = "unit-test-ta-qpid-vwSrvr"
 	lazy private val myServerAkkaSys = ActorSystem(srvrAkkaSysName)
@@ -294,9 +104,9 @@ object ThingActMoverQPid_UnitTest extends VarargsLogging {
 	def main(args: Array[String]) : Unit = {
 		info1("TAMover test started with cmd-line-args array={}", args)
 
-		val qpidConnMgr = new QPidTopicConn_032(TestAppNames.allTopics)
+		val qpidConnMgr = new QPidTopicConn_JNDI_032(TestAppNames.allTopics)
 
-		info1("QPidConnMgr.DestMap={}", qpidConnMgr.myDestsByNameTail)
+		info1("QPidConnMgr.DestMap={}", qpidConnMgr.getDestsByNameTail)
 
 		// server and client are in same Java process, same qpid-conn, but separate JMSSessions.
 		val server = new TestTAQpidServer(myServerAkkaSys, qpidConnMgr)
