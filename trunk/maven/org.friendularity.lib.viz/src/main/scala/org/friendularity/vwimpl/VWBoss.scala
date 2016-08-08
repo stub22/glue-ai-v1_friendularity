@@ -6,11 +6,12 @@ import org.cogchar.bind.midi.in.TempMidiBridge
 import org.cogchar.render.goody.basic.{BasicGoodyCtxImpl, BasicGoodyCtx}
 import org.cogchar.render.sys.registry.RenderRegistryClient
 import org.cogchar.render.sys.window.WindowStatusMonitor
-import org.friendularity.cpmsg.ActorRefCPMsgTeller
+import org.friendularity.akact.KnowsAkkaSys
+import org.friendularity.cpmsg.{CPStrongTeller, ActorRefCPMsgTeller}
 import org.friendularity.vwmsg.{VWOverlayRq, VWStageRqMsg, VWShapeCreateRq, VWorldInternalNotice, VWBodyLifeRq, VWPubTellersMsgImpl, VWGoodyRqActionSpec, LesserIngred, BodyMgrIngred, VWorldNotice, VWSetupResultsNotice, VWARM_GreetFromPumpAdmin, VWARM_FindPublicTellers, VWAdminRqMsg, VWSetupRq_Lnch, VWSetupRq_Conf, VWorldRequest}
 
 /**
-  * Created by Owner on 6/15/2016.
+  * Created by Stub22 on 6/15/2016.
   */
 trait VWorldBossLogic [VWSM <: VWorldSysMgr] extends VarargsLogging with VWPTRendezvous {
 	protected def getSysMgr : VWSM
@@ -132,3 +133,19 @@ class VWorldBossActor[VWSM <: VWorldSysMgr](sysMgr : VWSM, hackStrap : VWorldStr
 
 	override protected def getSysMgr : VWSM = sysMgr
 }
+
+
+trait KnowsVWBoss {
+	def getVWBossTeller : CPStrongTeller[VWorldRequest]
+}
+trait MakesVWBoss extends KnowsVWBoss with KnowsAkkaSys {
+	// lazy val akkaSys = getAkkaSys
+
+	def getVWBossActrName = "vworldBoss_818"
+
+	lazy private val myVWBossAR: ActorRef = VWorldActorFactoryFuncs.makeVWorldBoss(getAkkaSys, getVWBossActrName)
+	lazy private val myVWBossTeller : CPStrongTeller[VWorldRequest] = new ActorRefCPMsgTeller(myVWBossAR)
+
+	override def getVWBossTeller : CPStrongTeller[VWorldRequest] = myVWBossTeller
+}
+

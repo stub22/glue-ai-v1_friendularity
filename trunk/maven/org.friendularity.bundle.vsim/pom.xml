@@ -54,6 +54,13 @@
             <groupId>org.mechio</groupId>
             <artifactId>org.mechio.impl.vision</artifactId>
         </dependency>
+
+        <!-- Qpid API wiring is needed when we want to send+rcv AMQP within V-world code, under OSGi -->
+        <dependency>
+            <groupId>org.appdapter</groupId>
+            <artifactId>ext.bundle.apache_qpid_032</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>
