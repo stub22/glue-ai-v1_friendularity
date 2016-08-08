@@ -15,7 +15,7 @@
  */
 package org.friendularity.navui
 
-import akka.actor.{ActorRef, ActorSystem, ActorRefFactory}
+import akka.actor.{Props, Actor, ActorRef, ActorSystem, ActorRefFactory}
 import org.appdapter.core.name.{FreeIdent, Ident}
 import org.appdapter.fancy.log.VarargsLogging
 import org.appdapter.fancy.rclient.EnhancedLocalRepoClient
@@ -24,10 +24,12 @@ import org.cogchar.bind.mio.robot.svc.ModelBlendingRobotServiceContext
 import org.friendularity.cpmsg.{ActorRefCPMsgTeller, CPStrongTeller, CPMsgTeller, CPumpMsg}
 
 import org.friendularity.dull.SpecialAppPumpSpace
-import org.friendularity.field.ScheduleHelper
+import org.friendularity.field.{StatusTickMsg, MsgToStatusSrc, ScheduleHelper}
+import org.friendularity.qpc.{TestTAQPidClient, TestTAQpidServer, TestAppNames, QPidTopicConn_032}
+import org.friendularity.qpc.ThingActMoverQPid_UnitTest.info1
 import org.friendularity.respire._
 import org.friendularity.vwimpl.{VWorldActorFactoryFuncs, LegacyBodyLoader_Stateless}
-import org.friendularity.vwmsg.{VWorldRequest, VWorldPublicTellers, VWBodyRq, VWBodyMakeRq, VWBodyLifeRq, VWARM_FindPublicTellers, VWSetupRq_Lnch, VWSetupRq_Conf, VWARM_GreetFromPumpAdmin, VWBodyNotice}
+import org.friendularity.vwmsg.{VWExoBodyChance, VWorldPublicTellers, VWorldRequest, VWBodyRq, VWBodyMakeRq, VWBodyLifeRq, VWARM_FindPublicTellers, VWSetupRq_Lnch, VWSetupRq_Conf, VWARM_GreetFromPumpAdmin, VWBodyNotice}
 import org.osgi.framework.BundleContext
 
 /**
@@ -131,6 +133,22 @@ trait NavPumpSpaceOwner extends KnowsAkkaSys with VarargsLogging {
 // "App" here means FriendU app, not a JME3 "app".  (This instance is several layers further out)
 // The latter is made during launchSimRenderSpace in VWCore.scala.
 
+trait VWStatPubLogic extends VarargsLogging {
+	def getPubTellers : VWorldPublicTellers
+	def gatherStatusAndSendHelpfulNotices : Unit = {
+		info0("Time to gather some awesome status and publish it out for exo-client use")
+	}
+	def handleOtherStatusCtrlMsg(msgToStatSrc : MsgToStatusSrc) : Unit = {
+		warn1("Ignoring status ctrl msg: {}", msgToStatSrc)
+	}
+}
+class VWStatPubActor(statPubLogic : VWStatPubLogic)  extends Actor {
+	def receive = {
+		case stm: StatusTickMsg => statPubLogic.gatherStatusAndSendHelpfulNotices
+		case otherMsg : MsgToStatusSrc =>
+	}
+}
+
 trait AppServiceHandleGroup extends KnowsAkkaSys with VarargsLogging {
 	lazy val akkaSys = getAkkaSys
 	// Jobby approach to actor launch is used here for our outer actors, experimentally.
@@ -145,6 +163,15 @@ trait AppServiceHandleGroup extends KnowsAkkaSys with VarargsLogging {
 
 	lazy private val statusTickPumpLogic = new OuterAppPumpSetupLogic {
 		override protected def getAkkaSystem : ActorSystem = getAkkaSys
+		override protected def makePubStatTempBypassTeller_opt(vwpt: VWorldPublicTellers) : Option[CPStrongTeller[MsgToStatusSrc]] = {
+			val statPubLogic = new VWStatPubLogic {
+				override def getPubTellers : VWorldPublicTellers = vwpt
+			}
+			val statPubActorProps = Props(classOf[VWStatPubActor], statPubLogic)
+			val statPubActorRef : ActorRef = getAkkaSystem.actorOf(statPubActorProps, "statPubActr")
+			val statPubTeller = new ActorRefCPMsgTeller[MsgToStatusSrc](statPubActorRef)
+			Option(statPubTeller)
+		}
 	}
 	lazy private val statusTickTrigTeller  = OuterJobbyLogic_MasterFactory.makeOoLogicAndTeller(statusTickPumpLogic, akkaSys, "statusTickPumpSetup")
 	def registerPostInitWaiters(vbt : CPStrongTeller[VWorldRequest]) : Unit = {
@@ -186,10 +213,30 @@ trait MakesVWBoss extends KnowsVWBoss with KnowsAkkaSys {
 
 	override def getVWBossTeller : CPStrongTeller[VWorldRequest] = myVWBossTeller
 }
-class NavUiAppImpl(myAkkaSys : ActorSystem) extends NavUiAppSvc with NavPumpSpaceOwner with AppServiceHandleGroup with MakesVWBoss {
+trait OffersQpidSvcs extends KnowsAkkaSys with VarargsLogging {
+	lazy val qpidConnMgr = new QPidTopicConn_032(TestAppNames.allTopics)
+
+	lazy val myServer = {
+		info1("QPidConnMgr.DestMap={}", qpidConnMgr.myDestsByNameTail)
+
+		val server = new TestTAQpidServer(getAkkaSys, qpidConnMgr)
+		server
+	}
+	lazy val myTestClient = {
+		val client = new TestTAQPidClient(qpidConnMgr)
+		client
+	}
+	def setupAndPingQpidSvcs : Unit = {
+		info1("My Qpid server: {}", myServer)
+		info1("My Qpid test client: {}", myTestClient)
+		myServer.sendPingNotice("NavUiApp testing VW Notice send")
+	}
+
+}
+class NavUiAppImpl(myAkkaSys : ActorSystem) extends NavUiAppSvc with NavPumpSpaceOwner
+			with AppServiceHandleGroup with MakesVWBoss with OffersQpidSvcs {
 
 	override protected def getAkkaSys : ActorSystem = myAkkaSys
-
 
 	// Desired effect of these messages is to launch a running OpenGL v-world, ready for characters and other content
 	// to be inserted into it.  Those facilities are available via actors defined in PubTeller replies sent to the
@@ -208,8 +255,10 @@ class NavUiAppImpl(myAkkaSys : ActorSystem) extends NavUiAppSvc with NavPumpSpac
 		sendVWSetup_Lnch() // First and only call that really makes async launch happen, as of 2016-06-17
 
 		registerPostInitWaiters(vbt) // Setup listeners to do more stuff at appropriate times, as VWorld init completes.
+
+		setupAndPingQpidSvcs
 	}
-	def sendVWSetup_Conf() : Unit = {
+	def sendVWSetup_Conf_IsUnused() : Unit = {
 		val msg = new VWSetupRq_Conf
 		getVWBossTeller.tellCPMsg(msg)
 	}
