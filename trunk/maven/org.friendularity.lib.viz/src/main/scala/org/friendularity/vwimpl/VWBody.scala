@@ -102,9 +102,12 @@ trait VWBodyLogic extends FullEnqHlp with VarargsLogging {
 	protected def getBodyRec : DualBodyRecord
 	override protected def getRRC: RenderRegistryClient = getBodyRec.rrc
 
+	var myBodyManipRqCnt : Int = 0
+	protected def getManipDumpPeriod : Int = 7
+
 	protected def processBodyRq(bodyRq : VWBodyRq, slfActr : ActorRef, localActorCtx : ActorContext): Unit = {
 		val bodyRec = getBodyRec
-		info2("Received bodyRq {} for bodyID={}", bodyRq, bodyRec.dualBodyID)
+
 
 		bodyRq match {
 			// case moverq : VWBodyMoveRq => {
@@ -118,6 +121,12 @@ trait VWBodyLogic extends FullEnqHlp with VarargsLogging {
 				enqueueJmeCallable(func)
 			}
 			case manipWrap : VWBodyManipRq => {
+				myBodyManipRqCnt += 1
+				if ((myBodyManipRqCnt % getManipDumpPeriod) == 0) {
+					info3("Received {}th bodyManipRq {} for bodyID={}", myBodyManipRqCnt : Integer, bodyRq, bodyRec.dualBodyID)
+				} else {
+					debug3("Received {}th bodyManipRq {} for bodyID={}", myBodyManipRqCnt : Integer, bodyRq, bodyRec.dualBodyID)
+				}
 				val manipGuts : ManipDesc = manipWrap.manipGuts
 				bodyRec.applyManipDesc(manipGuts, this)
 

@@ -23,6 +23,7 @@ import com.jme3.math.{Quaternion, Vector3f, ColorRGBA}
 import org.appdapter.core.name.Ident
 import org.appdapter.fancy.log.VarargsLogging
 import org.cogchar.api.fancy.FancyThingModelWriter
+import org.cogchar.impl.thing.basic.BasicThingActionSpec
 import org.cogchar.render.rendtest.GoodyTestMsgMaker
 import org.friendularity.cpmsg.{ActorRefCPMsgTeller, CPStrongTeller, CPMsgTeller}
 
@@ -41,64 +42,90 @@ import org.friendularity.vwmsg.{VWOverlayRq, VWSetupOvlBookRq, NavCmdImpl, NavCm
   * Created by Stu B22 - June 2016
   */
 trait OuterLogic extends VarargsLogging {
+	// Tells the OuterLogic that the main public services (setup by VWorld boss) are now ready.
 	def rcvPubTellers (vwpt : VWorldPublicTellers): Unit
 
+	// Normally an OuterLogic will call doAllExtraSetup at the end of its rcvPubTellers impl.
+	// Adding setup tasks onto
 	protected def doAllExtraSetup(vwpt : VWorldPublicTellers) : Unit = {
 		val extraSetupTasks = getExtraSetupTasks
 		extraSetupTasks.map(
 			_.doExtraSetup(vwpt)
 		)
 	}
+
+	// Subclasses can effectively add tasks to be executed by overriding getExtraSetupTasks.
 	protected def getExtraSetupTasks() : List[ExtraSetupLogic] = Nil
 }
-trait PatientSender_GoodyTest extends OuterLogic with IdentHlp {
+trait TurtleSerHlp extends VarargsLogging {
+	def serlzOneTAMsgToTurtleTxt(actSpec : BasicThingActionSpec, rand : JRandom) : String = {
+		val ftmw = new FancyThingModelWriter
+		val specModelWithPrefixes : JenaModel  = ftmw.writeTASpecAndPrefixesToNewModel(actSpec, rand)
+
+		val triplesTurtleTxt : String = ftmw.serializeSpecModelToTurtleString(specModelWithPrefixes)
+		info2("Serialized turtle message FROM model of size {} triples TO string of length {} chars",
+			specModelWithPrefixes.size() : JLong, triplesTurtleTxt.length : Integer)
+		debug1("Dumping serialized turtle message before send:\n {}", triplesTurtleTxt)
+		triplesTurtleTxt
+	}
+
+}
+trait PatientSender_GoodyTest extends OuterLogic with IdentHlp with TurtleSerHlp {
 	import scala.collection.JavaConverters._
 
 	lazy val myRandomizer: JRandom = new JRandom
 
-	def finallySendFunShapeRqs(shapeTeller : CPMsgTeller) : Unit = {
+	def sendBigGridRq(shapeTeller : CPMsgTeller): Unit = {
 		val rq_makeBigGrid = new VWSCR_CellGrid{}
-		val sphereCol = new ColorRGBA(0.1f,1.0f,0.5f, 0.65f)
-		val spherePos = new Vector3f(-15.0f, 12.0f, 4.0f)
+		shapeTeller.tellCPMsg(rq_makeBigGrid)
+	}
+
+	def sendOvalRq_MAKE(shapeTeller : CPMsgTeller) : Ident = {
+		val sphereCol = new ColorRGBA(0.1f,1.0f,0.5f, 0.65f) // aqua
+		val spherePos = new Vector3f(-15.0f, 12.0f, 4.0f) // biggish dirigible
 		val sphereRot = Quaternion.IDENTITY
 		val sphereParams = new OrdinaryParams3D(spherePos, sphereRot, Vector3f.UNIT_XYZ, sphereCol)
 		val knownSphereID_opt : Option[Ident] = Some(makeStampyRandyIdent())
 		val rq_makeSphere = new VWSCR_Sphere(9.0f, sphereParams, knownSphereID_opt)
 		shapeTeller.tellCPMsg(rq_makeSphere)
-		shapeTeller.tellCPMsg(rq_makeBigGrid)
-
+		knownSphereID_opt.get
+	}
+	def makeArbXform() : TransformParams3D = {
 		val tgtPos = new Vector3f(-25.0f, 45.0f, 6.0f)
 		val tgtRot = Quaternion.IDENTITY
 		val tgtScale = new Vector3f(1.0f, 0.5f, 4.0f)
 		val tgtXform = new TransformParams3D(tgtPos, tgtRot, tgtScale)
-		val endingManip = new SmooveManipEndingImpl(tgtXform, 40.0f)
-		val sphereManipMsg = new ShapeManipRqImpl(knownSphereID_opt.get, endingManip)
+		tgtXform
+	}
+	def sendShpSmooveRq(shapeTeller : CPMsgTeller, shapeID : Ident,
+						tgtXform : TransformParams3D, durSec : Float) : Unit = {
+		val endingManip = new SmooveManipEndingImpl(tgtXform, durSec)
+		val sphereManipMsg = new ShapeManipRqImpl(shapeID, endingManip)
 		shapeTeller.tellCPMsg(sphereManipMsg)
-
-		// chose your fate
-		//   repeat
-		//   reshuffle
-		//   exit
+	}
+	def finallySendFunShapeRqs(shapeTeller : CPMsgTeller) : Unit = {
+		sendBigGridRq(shapeTeller)
+		val bigOvalID = sendOvalRq_MAKE(shapeTeller)
+		val tgtXform = makeArbXform()
+		sendShpSmooveRq(shapeTeller, bigOvalID, tgtXform, 40.0f)
 	}
 
 	def finallySendGoodyTstMsgs(goodyTeller : CPMsgTeller, flag_serToTurtle : Boolean): Unit = {
-
 		val gtmm: GoodyTestMsgMaker = new GoodyTestMsgMaker
 		val msgsJList = gtmm.makeGoodyCreationMsgs
-		val msgsScbuf = msgsJList.asScala
+
+		val msgsScbuf : List[BasicThingActionSpec] = msgsJList.asScala.toList // BTAS is known to be serializable
 
 		for (actSpec <- msgsScbuf) {
 			if (flag_serToTurtle) {
-				val ftmw = new FancyThingModelWriter
-				val specModelWithPrefixes : JenaModel  = ftmw.writeTASpecAndPrefixesToNewModel(actSpec, myRandomizer)
-
-				val turtleTriplesString : String = ftmw.serializeSpecModelToTurtleString(specModelWithPrefixes)
-				info2("Serialized turtle message FROM model of size {} triples TO string of length {} chars", specModelWithPrefixes.size() : JLong, turtleTriplesString.length : Integer)
-				debug1("Dumping serialized turtle message before send:\n {}", turtleTriplesString)
-				val turtleMsg = new VWGoodyRqTurtle(turtleTriplesString)
+//				val ftmw = new FancyThingModelWriter
+//				val specModelWithPrefixes : JenaModel  = ftmw.writeTASpecAndPrefixesToNewModel(actSpec, myRandomizer)
+//				val turtleTriplesString : String = ftmw.serializeSpecModelToTurtleString(specModelWithPrefixes)
+				val turtleTxt = serlzOneTAMsgToTurtleTxt(actSpec, myRandomizer)
+				val turtleMsg = new VWGoodyRqTurtle(turtleTxt)
 				goodyTeller.tellCPMsg(turtleMsg)
 			} else {
-				getLogger.info("Wrapping java-serializable message: {}", actSpec)
+				getLogger.info("Sending java-serializable TA message: {}", actSpec)
 				val vwMsgWrap = new VWGoodyRqTAS(actSpec)
 				goodyTeller.tellCPMsg(vwMsgWrap)
 			}
@@ -215,9 +242,7 @@ trait PatientSender_BonusStaging extends OuterLogic with IdentHlp {
 		ovlTeller.tellStrongCPMsg(ovlSetupMsg)
 	}
 
-	def setupStatusPumps(vwpt: VWorldPublicTellers) : Unit = {
-
-	}
+	def setupStatusPumps(vwpt: VWorldPublicTellers) : Unit = {}
 
 	def setupKeysAndClicks(vwpt: VWorldPublicTellers) : Unit = {
 
@@ -305,14 +330,19 @@ trait OuterAppPumpSetupLogic extends OuterLogic with IdentHlp with StatusTickSch
 		setupOuterPumpActors(tickLovers)
 		val nope = false
 		if (nope) {
-			val downstreamTeller = setupDownstreamActors_UnusedRightNow(vwpt.getOverlayTeller.get)
-			val chanID = makeStampyRandyIdent()
-			val wrong = downstreamTeller
-			val toWhom: CPStrongTeller[SourceDataMsg] = ???
-			val blankPolicy = new ReportingPolicy {}
-			val chanOpenMsg = new ReportSrcOpen(chanID, toWhom, blankPolicy)
+			setupDynamicStatusFlow(vwpt)
 		}
+
 		doAllExtraSetup(vwpt)
+	}
+	def setupDynamicStatusFlow(vwpt: VWorldPublicTellers): Unit = {
+		val downstreamTeller = setupDownstreamActors_UnusedRightNow(vwpt.getOverlayTeller.get)
+		val chanID = makeStampyRandyIdent()
+		val wrong = downstreamTeller
+		val toWhom: CPStrongTeller[SourceDataMsg] = ???
+		val blankPolicy = new ReportingPolicy {}
+		val chanOpenMsg = new ReportSrcOpen(chanID, toWhom, blankPolicy)
+
 	}
 }
 // Unnecessary to use the Jobby approach here, but working through it anyway as a comparative exercise.
@@ -332,9 +362,11 @@ class OuterJobbyWrapper(outerLogic : OuterLogic) extends MsgJobLogic[VWorldPubli
 
 	}
 }
-// Now we would make the factories needed to construct our logic + actor instances.
-// Question is:  When is this less bother than making an actor wrapper by hand, as in OuterDirectActor above?
-
+// Now we add the factories needed to construct our logic + actor instances.
+// Question is:  When is this structure "better" than making an actor wrapper by hand, as done in DummyActorMaker, et al?
+// Tentative answer:  When we expect to make a "bunch" of somewhat similar actors to do smaller tasks, then a coherent
+// factory structure pays off more, as it yields stronger typing of a more regular set of objects, useful for monitoring
+// and managing them.
 object OuterJobbyLogic_MasterFactory extends VWorldMasterFactory {
 	// val thatOtherParam : Int = 22
 	val oolFactory = new MsgJobLogicFactory[VWorldPublicTellers, OuterLogic]() {
@@ -352,3 +384,8 @@ object OuterJobbyLogic_MasterFactory extends VWorldMasterFactory {
 		new ActorRefCPMsgTeller[VWorldPublicTellers](aref)
 	}
 }
+
+// chose your fate
+//   repeat
+//   shuffle
+//   exit

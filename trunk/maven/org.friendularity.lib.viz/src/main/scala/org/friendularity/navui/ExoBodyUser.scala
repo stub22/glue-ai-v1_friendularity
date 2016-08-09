@@ -34,8 +34,8 @@ import org.friendularity.vwmsg.{VWBodyRq, VWExoBodyChance, VWBodyNotice}
   */
 // Even further out, beyond all the Outer stuff, we have Exo stuff, which is primarily client-standin test logic.
 
+// We expect to usually have at least one such UserLogic (independent or shared) for each separate VWBody-char created.
 
-// We expect to have one such UserLogic for *each* separate VWBody created.
 trait ExoBodyUserLogic extends ScheduleHelper with VarargsLogging {
 	var myBodyTeller_opt : Option[CPStrongTeller[VWBodyRq]] = None
 	def rcvBodyNotice(bodyNotice : VWBodyNotice): Unit = {
@@ -45,9 +45,9 @@ trait ExoBodyUserLogic extends ScheduleHelper with VarargsLogging {
 	}
 
 	def rcvUpdtick(exoBodyUpChance : VWExoBodyChance) : Unit = {
-		info1("Exo body up chance received: {}", exoBodyUpChance)
+		debug1("Exo body up chance received: {}", exoBodyUpChance)
 		if (myBodyTeller_opt.isDefined) {
-			// It is time to move my guy around, or whatever!
+			// It is my turn to move my guy around, or whatever!
 			rcvUpdtickForBody(exoBodyUpChance, myBodyTeller_opt.get)
 		}
 	}
