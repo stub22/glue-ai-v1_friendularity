@@ -30,17 +30,18 @@ object TestAppNames {
 	val allTopics = List(topicName_forJSerBinTA, topicName_forTurtleTxtTA, topicName_forVWPubStatJSerBin)
 }
 
-class QPidTestEndpoint(myQPidConnMgr : QpidTopicConn) {
-	lazy val myJmsSession = myQPidConnMgr.makeSession
+class QPidTestEndpoint(myQpidTopicMgr : QpidTopicConn) {
+	lazy val myJmsSession = myQpidTopicMgr.makeSession
 
-	lazy val destForVWRqTATxt : JMSDestination = myQPidConnMgr.getDestsByNameTail.get(TestAppNames.topicName_forTurtleTxtTA).get
-	lazy val destForVWRqTABin : JMSDestination = myQPidConnMgr.getDestsByNameTail.get(TestAppNames.topicName_forJSerBinTA).get
+	lazy val destForVWRqTATxt : JMSDestination = myQpidTopicMgr.getDestForTopicName(TestAppNames.topicName_forTurtleTxtTA)
+	lazy val destForVWRqTABin : JMSDestination = myQpidTopicMgr.getDestForTopicName(TestAppNames.topicName_forJSerBinTA)
 
-	lazy val destForVWPubStatsBin : JMSDestination = myQPidConnMgr.getDestsByNameTail.get(TestAppNames.topicName_forVWPubStatJSerBin).get
+	lazy val destForVWPubStatsBin : JMSDestination = myQpidTopicMgr.getDestForTopicName(TestAppNames.topicName_forVWPubStatJSerBin)
 }
 
-class TestTAQpidServer(myParentARF : ActorRefFactory, qpidConnMgr : QpidTopicConn)
-			extends QPidTestEndpoint(qpidConnMgr) with DummyActorMaker {
+// Receives vw-requests in any ta-format, and publishes vw-notices as binary only.
+class TestTAQpidServer(myParentARF : ActorRefFactory, myQpidTopicMgr : QpidTopicConn)
+			extends QPidTestEndpoint(myQpidTopicMgr) with DummyActorMaker {
 
 	lazy val myConsumer_forTurtleTxt : JMSMsgConsumer = myJmsSession.createConsumer(destForVWRqTATxt)
 	lazy val myConsumer_forJSerBin : JMSMsgConsumer = myJmsSession.createConsumer(destForVWRqTABin)
@@ -78,8 +79,8 @@ class TestTAQpidServer(myParentARF : ActorRefFactory, qpidConnMgr : QpidTopicCon
 	}
 }
 import scala.collection.JavaConverters._
-class TestTAQPidClient(qpidConnMgr : QpidTopicConn)
-			extends QPidTestEndpoint(qpidConnMgr) with VWPubStatListenerMaker {
+class TestTAQPidClient(ppidTopicMgr : QpidTopicConn)
+			extends QPidTestEndpoint(ppidTopicMgr) with VWPubStatListenerMaker {
 
 	val myProdForTurtle : JMSMsgProducer = myJmsSession.createProducer(destForVWRqTATxt)
 	val myProdForJSer : JMSMsgProducer = myJmsSession.createProducer(destForVWRqTABin)
@@ -105,16 +106,18 @@ class TestTAQPidClient(qpidConnMgr : QpidTopicConn)
 }
 
 trait OffersQpidSvcs extends KnowsAkkaSys with VarargsLogging {
-	lazy val qpidConnMgr : QpidTopicConn = new QPidTopicConn_JNDI_032(TestAppNames.allTopics)
+	// lazy val qpidTopicMgr : QpidTopicConn = new QPidTopicConn_JNDI_032(TestAppNames.allTopics)
+
+	lazy val qpidConnMgr : QpidConnMgr = new QpidConnMgrJFlux
+	lazy val qpidTopicMgr : QpidTopicConn = new QPidTopicConnJFlux(qpidConnMgr)
+
 
 	lazy val myServer = {
-		info1("QPidConnMgr.DestMap={}", qpidConnMgr.getDestsByNameTail)
-
-		val server = new TestTAQpidServer(getAkkaSys, qpidConnMgr)
+		val server = new TestTAQpidServer(getAkkaSys, qpidTopicMgr)
 		server
 	}
 	lazy val myTestClient = {
-		val client = new TestTAQPidClient(qpidConnMgr)
+		val client = new TestTAQPidClient(qpidTopicMgr)
 		client
 	}
 	def pingQpidSvcs : Unit = {

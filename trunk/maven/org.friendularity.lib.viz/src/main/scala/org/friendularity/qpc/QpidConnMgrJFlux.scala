@@ -41,6 +41,7 @@ class QpidConnMgrJFlux extends QpidConnMgr with VarargsLogging {
 
 	private def makeTopicDestination(destNameTail: String): JMSDestination = {
 		val destStr = destNameTail + TOPIC_PROPS_SUFFIX
+		info1("Making destination with address: {}", destStr);
 		val dest : JMSDestination = JfluxQpidConnMgr.createDestination(destStr);
 		dest
 	}
@@ -48,4 +49,10 @@ class QpidConnMgrJFlux extends QpidConnMgr with VarargsLogging {
 	override def makeDestination(destNameTail : String) : JMSDestination = {
 		makeTopicDestination(destNameTail)
 	}
+}
+
+class QPidTopicConnJFlux(myConnMgr : QpidConnMgr) extends QpidTopicConn with VarargsLogging {
+	override protected def getConnMgr: QpidConnMgr = myConnMgr
+
+	override def getDestForTopicName(topicName: String): JMSDestination = getConnMgr.makeDestination(topicName)
 }
