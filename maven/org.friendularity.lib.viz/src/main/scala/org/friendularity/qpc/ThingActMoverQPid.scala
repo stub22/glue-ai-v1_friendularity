@@ -104,14 +104,18 @@ object ThingActMoverQPid_UnitTest extends VarargsLogging {
 	def main(args: Array[String]) : Unit = {
 		info1("TAMover test started with cmd-line-args array={}", args)
 
-		val qpidConnMgr = new QPidTopicConn_JNDI_032(TestAppNames.allTopics)
+		//  JNDI works in standalone unit tests, but not so well under OSGi
+		// val qpidTopicMgr : QpidTopicConn = new QPidTopicConn_JNDI_032(TestAppNames.allTopics)
 
-		info1("QPidConnMgr.DestMap={}", qpidConnMgr.getDestsByNameTail)
+		val qpidConnMgr : QpidConnMgr = new QpidConnMgrJFlux
+		val qpidTopicMgr : QpidTopicConn = new QPidTopicConnJFlux(qpidConnMgr)
+
+		// info1("QPidConnMgr.DestMap={}", qpidConnMgr.getDestsByNameTail)
 
 		// server and client are in same Java process, same qpid-conn, but separate JMSSessions.
-		val server = new TestTAQpidServer(myServerAkkaSys, qpidConnMgr)
+		val server = new TestTAQpidServer(myServerAkkaSys, qpidTopicMgr)
 
-		val client = new TestTAQPidClient(qpidConnMgr)
+		val client = new TestTAQPidClient(qpidTopicMgr)
 
 		client.sendSomeVWRqs
 
