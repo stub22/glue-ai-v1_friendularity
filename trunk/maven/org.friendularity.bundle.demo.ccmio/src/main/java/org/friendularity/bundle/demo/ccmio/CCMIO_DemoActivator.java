@@ -174,7 +174,8 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 
 		if (myFlag_launchQpidTopics) {
 			getLogger().info("============ Calling pingQpidSvcs() ==========");
-			((OffersQpidSvcs) appSvc).pingQpidSvcs();
+			boolean includeDummyClient = false;
+			((OffersQpidSvcs) appSvc).pingQpidSvcs(includeDummyClient);
 		}
 
 		// Now the VWorld is up and accepting messages, but there is no char in it yet.

@@ -18,8 +18,8 @@ trait VWStatPubLogic extends VarargsLogging {
 		info0("Time to gather some awesome status and publish it out for exo-client use")
 		val qpidOffering_opt = getQpidSvcOffering_opt
 		qpidOffering_opt.map(qpo => {
-			val srvr = qpo.myServer
-			srvr.sendPingNotice("Helpful stat notice from VWStatPubLogic")
+			val vwPubNoticeSender = qpo.getVWPubNoticeSender
+			vwPubNoticeSender.sendPingNotice("Helpful stat notice from VWStatPubLogic")
 		})
 	}
 	def handleOtherStatusCtrlMsg(msgToStatSrc : MsgToStatusSrc) : Unit = {

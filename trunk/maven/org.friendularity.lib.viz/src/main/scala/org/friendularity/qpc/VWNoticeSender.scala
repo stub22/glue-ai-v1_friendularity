@@ -14,6 +14,10 @@ case class FunVWNoticeImpl(funTxt : String) extends VWorldNotice
 
 trait VWNoticeSender {
 	def sendVWNotice(vwNotice : VWorldNotice)
+	def sendPingNotice(txt : String): Unit = {
+		val pingNotice = new FunVWNoticeImpl(getClass.getName + " sends Ping Notice: " + txt)
+		sendVWNotice(pingNotice)
+	}
 }
 class VWNoticeSenderJmsImpl(myJmsSess : JMSSession, myJmsProd_JSer : JMSMsgProducer) extends VWNoticeSender with KnowsJmsSession {
 	override protected def getJmsSession : JMSSession = myJmsSess
