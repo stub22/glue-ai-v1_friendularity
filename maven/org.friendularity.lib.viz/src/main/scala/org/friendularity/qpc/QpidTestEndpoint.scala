@@ -39,39 +39,40 @@ class QPidTestEndpoint(myQpidTopicMgr : QpidTopicConn) {
 	lazy val destForVWPubStatsBin : JMSDestination = myQpidTopicMgr.getDestForTopicName(TestAppNames.topicName_forVWPubStatJSerBin)
 }
 
+trait ServerFeatureAccess {
+
+	def getVWPubNoticeSender : VWNoticeSender
+}
 // Receives vw-requests in any ta-format, and publishes vw-notices as binary only.
 class TestTAQpidServer(myParentARF : ActorRefFactory, myQpidTopicMgr : QpidTopicConn)
-			extends QPidTestEndpoint(myQpidTopicMgr) with DummyActorMaker {
+			extends QPidTestEndpoint(myQpidTopicMgr) with ServerFeatureAccess with DummyActorMaker {
 
-	lazy val myConsumer_forTurtleTxt : JMSMsgConsumer = myJmsSession.createConsumer(destForVWRqTATxt)
-	lazy val myConsumer_forJSerBin : JMSMsgConsumer = myJmsSession.createConsumer(destForVWRqTABin)
+	private lazy val myConsumer_forTurtleTxt : JMSMsgConsumer = myJmsSession.createConsumer(destForVWRqTATxt)
+	private lazy val myConsumer_forJSerBin : JMSMsgConsumer = myJmsSession.createConsumer(destForVWRqTABin)
 
-	val rcvActor = makeTestDummyActor(myParentARF, "dummy-goody-rq-rcvr")
-	val rcvWeakTeller = new ActorRefCPMsgTeller(rcvActor)
+	private val rcvActor = makeTestDummyActor(myParentARF, "dummy-goody-rq-rcvr")
+	private val rcvWeakTeller = new ActorRefCPMsgTeller(rcvActor)
 
 	//	val rcvrFactory = new RecvrFactory
 	//	val allPurposeListener = rcvrFactory.makeItWeakerButEasier(rcvWeakTeller)
 
-	val rcvrTxt : ThingActReceiverTxt = new ThingActReceiverTxt(rcvWeakTeller.asInstanceOf[CPStrongTeller[VWGoodyRqRdf]])
-	val rcvrBin : ThingActReceiverBinary = new ThingActReceiverBinary(rcvWeakTeller.asInstanceOf[CPStrongTeller[VWGoodyRqActionSpec]])
+	private  val rcvrTxt : ThingActReceiverTxt = new ThingActReceiverTxt(rcvWeakTeller.asInstanceOf[CPStrongTeller[VWGoodyRqRdf]])
+	private val rcvrBin : ThingActReceiverBinary = new ThingActReceiverBinary(rcvWeakTeller.asInstanceOf[CPStrongTeller[VWGoodyRqActionSpec]])
 
 	myConsumer_forTurtleTxt.setMessageListener(rcvrTxt.makeListener)
 	myConsumer_forJSerBin.setMessageListener(rcvrBin.makeListener)
 
-	val myJmsProdForVWPubNoticeBin : JMSMsgProducer = myJmsSession.createProducer(destForVWPubStatsBin)
-	val mySenderForVWPubNoticeBin :  VWNoticeSender = new VWNoticeSenderJmsImpl(myJmsSession, myJmsProdForVWPubNoticeBin)
+	private val myJmsProdForVWPubNoticeBin : JMSMsgProducer = myJmsSession.createProducer(destForVWPubStatsBin)
+	private val mySenderForVWPubNoticeBin :  VWNoticeSender = new VWNoticeSenderJmsImpl(myJmsSession, myJmsProdForVWPubNoticeBin)
 
+	override def getVWPubNoticeSender : VWNoticeSender = mySenderForVWPubNoticeBin
 	//	def sendNotice(notice : VWorldNotice): Unit = mySender.postThingAct(taSpec, encodePref)
 
-	def sendPingNotice(txt : String): Unit = {
-		val pingNotice = new FunVWNoticeImpl("VW Pub Stat Ping Notice: " + txt)
-		mySenderForVWPubNoticeBin.sendVWNotice(pingNotice)
 
-	}
 	def sendSomeVWNotices : Unit = {
 		var msgCount = 0
 		while (msgCount < 50) {
-			sendPingNotice("number = " + msgCount)
+			mySenderForVWPubNoticeBin.sendPingNotice("number = " + msgCount)
 			msgCount += 1
 			Thread.sleep(900)
 		}
@@ -111,18 +112,39 @@ trait OffersQpidSvcs extends KnowsAkkaSys with VarargsLogging {
 	lazy val qpidConnMgr : QpidConnMgr = new QpidConnMgrJFlux
 	lazy val qpidTopicMgr : QpidTopicConn = new QPidTopicConnJFlux(qpidConnMgr)
 
+	// Under OSGi the server and client cannot easily deserialize messages with JMSMessage.getObject
+	// (Needs classpath wiring help - would it help to set context-cl during onMessage handler?).
+	// However they can *make* serialized messages OK, and send them out for consumption by
+	// simpler Java clients1.  Inside OSGi we can also read turtle-text messages, avro messages,
+	// JMSText message, JMSMap messages, etc.
+/*
+     [java] 30399   INFO [Dispatcher-1-Conn-1] org.friendularity.qpc.TestTAQPidClient (HasLogger.scala:31) info2 - VWPubStatListener-JMSListener msgID=ID:866e1fa5-e6c2-33f4-9770-4f3e8bffecfd timestamp=1470709600728
+     [java] 30400  ERROR [Dispatcher-1-Conn-1] org.apache.qpid.client.BasicMessageConsumer (BasicMessageConsumer.java:795) notifyMessage - reNotification : Caught exception (dump follows) - ignoring...
+     [java] javax.jms.MessageFormatException: Unable to deserialize message
+     [java] 	at org.apache.qpid.client.message.JMSObjectMessage.getObject(JMSObjectMessage.java:160)
+     [java] 	at org.friendularity.qpc.VWPubStatListenerMaker$$anon$1.onMessage(ThingActMoverQPid.scala:86)
+     [java] 	at org.apache.qpid.client.BasicMessageConsumer.notifyMessage(BasicMessageConsumer.java:777)
+*/
+	private lazy val myServer : ServerFeatureAccess = {
 
-	lazy val myServer = {
 		val server = new TestTAQpidServer(getAkkaSys, qpidTopicMgr)
 		server
 	}
-	lazy val myTestClient = {
+
+	private lazy val myTestClient = {
 		val client = new TestTAQPidClient(qpidTopicMgr)
 		client
 	}
-	def pingQpidSvcs : Unit = {
-		info1("My Qpid server: {}", myServer)
-		info1("My Qpid test client: {}", myTestClient)
-		myServer.sendPingNotice("NavUiApp testing VWNotice send")
+
+	def getVWPubNoticeSender : VWNoticeSender = myServer.getVWPubNoticeSender
+
+	def pingQpidSvcs(includeDummyClient : Boolean) : Unit = {
+		val noticeSender = myServer.getVWPubNoticeSender
+		info2("My Qpid server: {}, noticeSender={}", myServer, noticeSender)
+		if (includeDummyClient) {
+			info1("My Qpid dummy client: {}", myTestClient)
+		}
+
+		noticeSender.sendPingNotice("NavUiApp testing VWNotice send")
 	}
 }
