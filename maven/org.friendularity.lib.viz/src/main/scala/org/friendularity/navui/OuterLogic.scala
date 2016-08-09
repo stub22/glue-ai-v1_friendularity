@@ -42,6 +42,14 @@ import org.friendularity.vwmsg.{VWOverlayRq, VWSetupOvlBookRq, NavCmdImpl, NavCm
   */
 trait OuterLogic extends VarargsLogging {
 	def rcvPubTellers (vwpt : VWorldPublicTellers): Unit
+
+	protected def doAllExtraSetup(vwpt : VWorldPublicTellers) : Unit = {
+		val extraSetupTasks = getExtraSetupTasks
+		extraSetupTasks.map(
+			_.doExtraSetup(vwpt)
+		)
+	}
+	protected def getExtraSetupTasks() : List[ExtraSetupLogic] = Nil
 }
 trait PatientSender_GoodyTest extends OuterLogic with IdentHlp {
 	import scala.collection.JavaConverters._
@@ -114,7 +122,7 @@ trait PatientSender_GoodyTest extends OuterLogic with IdentHlp {
 		if (shapeTeller.isDefined) {
 			finallySendFunShapeRqs(shapeTeller.get)
 		}
-
+		doAllExtraSetup(vwpt)
 	}
 }
 
@@ -125,6 +133,7 @@ trait PatientForwarder_CharAdminTest extends OuterLogic {
 	override def rcvPubTellers(vwpt: VWorldPublicTellers): Unit = {
 		myStoredTellers_opt = Option(vwpt)
 		propagateMessages(myStoredTellers_opt)
+		doAllExtraSetup(vwpt)
 	}
 
 	def appendInboundRq(rqMsg : VWBodyLifeRq) : Unit = {
@@ -176,6 +185,7 @@ trait PatientSender_BonusStaging extends OuterLogic with IdentHlp {
 
 		sendExtraCameraRqs(stageTeller, vwpt.getShaperTeller.get)
 
+		doAllExtraSetup(vwpt)
 	}
 	//
 	def sendStageReset(stageTeller : CPMsgTeller) : Unit = {
@@ -302,6 +312,7 @@ trait OuterAppPumpSetupLogic extends OuterLogic with IdentHlp with StatusTickSch
 			val blankPolicy = new ReportingPolicy {}
 			val chanOpenMsg = new ReportSrcOpen(chanID, toWhom, blankPolicy)
 		}
+		doAllExtraSetup(vwpt)
 	}
 }
 // Unnecessary to use the Jobby approach here, but working through it anyway as a comparative exercise.

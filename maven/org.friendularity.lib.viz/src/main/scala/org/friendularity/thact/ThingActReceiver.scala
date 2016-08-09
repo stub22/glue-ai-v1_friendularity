@@ -67,6 +67,7 @@ class ThingActReceiverBinary(goodyTADirectTeller : CPStrongTeller[VWGoodyRqActio
 			}
 		}
 	}
+	// TODO:    makeConversionListenTeller
 }
 class VWStatReceiverBinary(statusTeller : CPStrongTeller[VWorldNotice]) extends VarargsLogging  {
 	def receiveJSerBinaryMsg(objMsg : JMSObjMsg) : Unit = {
