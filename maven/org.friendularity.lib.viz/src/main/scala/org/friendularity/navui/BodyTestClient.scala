@@ -27,7 +27,7 @@ trait BodyTestClient extends VarargsLogging {
 		val xform = new TransformParams3D(tgtPosVec, Quaternion.IDENTITY, Vector3f.UNIT_XYZ)
 		val manip = new AbruptManipAbsImpl(xform)
 		val manipRq = new VWBodyManipRq(manip)
-		info2("Moving body via teller={}.   Sending manipRq={}", bodyTeller, manipRq)
+		debug2("Moving body via teller={}.   Sending manipRq={}", bodyTeller, manipRq)
 		bodyTeller.tellStrongCPMsg(manipRq)
 
 		myMoveCounter = if (myMoveCounter == 9) 0 else myMoveCounter + 1

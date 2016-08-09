@@ -17,7 +17,7 @@
 package org.friendularity.qpc
 
 import java.io.{Serializable => JSerializable}
-import java.lang.{Long => JLong}
+import java.lang.{Long => JLong, Integer => JInt}
 import javax.jms.{Destination => JMSDestination, Message => JMSMsg, MessageConsumer => JMSMsgConsumer,
 		MessageListener => JMSMsgListener, MessageProducer => JMSMsgProducer, ObjectMessage => JMSObjMsg,
 		Session => JMSSession, TextMessage => JMSTextMsg}
@@ -76,15 +76,21 @@ trait ClientStatListenerCouldUseAkkaButThatWouldBeWeird extends  DummyActorMaker
 }
 
 trait VWPubStatListenerMaker extends VarargsLogging {
+	def getStatDumpPeriod = 5
 	def makePubStatNoticeListener : JMSMsgListener = {
 		new JMSMsgListener() {
+			var myStatusRcvdCnt = 0
 			override def onMessage(msg: JMSMsg): Unit = {
-				info2("VWPubStatListener-JMSListener msgID={} timestamp={}", msg.getJMSMessageID, msg.getJMSTimestamp : JLong)
-				debug1("VWPubStatListener-JMSListener - received msg, dumping to see if 'wacky' headers show up:\n{}", msg)
+				debug2("VWPubStatListener-JMSListener msgID={} timestamp={}", msg.getJMSMessageID, msg.getJMSTimestamp : JLong)
+				debug1("VWPubStatListener-JMSListener - dumping rcvd msg, to see if 'wacky' headers show up:\n{}", msg)
 				msg match {
 					case objMsg: JMSObjMsg => {
-						val objCont : JSerializable = objMsg.getObject
-						info2("VWPubStatListener received objMsg with tstamp={}, notice={}", objMsg.getJMSTimestamp: JLong, objCont.toString)
+						myStatusRcvdCnt += 1
+						if ((myStatusRcvdCnt % getStatDumpPeriod) == 0) {
+							val objCont: JSerializable = objMsg.getObject
+							info4("VWPubStatListener received {}th update, msgID={}, tstamp={}, notice={}", myStatusRcvdCnt : JInt,
+								objMsg.getJMSMessageID, objMsg.getJMSTimestamp: JLong, objCont.asInstanceOf[AnyRef])
+						}
 					}
 					case otherMsg => {
 						error2("Received unexpected (not JMS-ObjectMessage) message, class={}, dump=\n{}", otherMsg.getClass,  otherMsg)

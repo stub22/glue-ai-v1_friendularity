@@ -16,7 +16,7 @@ trait VWStatPubLogic extends VarargsLogging {
 
 	def gatherStatusAndSendHelpfulNotices : Unit = {
 		val pubTellers = getPubTellers
-		info1("Time to gather some awesome status from pubTellers={}, and publish it out for exo-client use", pubTellers)
+		debug1("Time to gather some awesome status from pubTellers={}, and publish it out for exo-client use", pubTellers)
 		val qpidOffering_opt = getQpidSvcOffering_opt
 		qpidOffering_opt.map(qpo => {
 			val vwPubNoticeSender = qpo.getVWPubNoticeSender

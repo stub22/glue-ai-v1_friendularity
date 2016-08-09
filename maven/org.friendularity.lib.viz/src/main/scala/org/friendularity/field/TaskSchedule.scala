@@ -74,7 +74,7 @@ trait StatusTickDistributor extends VarargsLogging {
 		myCrudeTgts.append(srcTeller)
 	}
 	def handleReceivedTick(rcvdTick : ReportingTickChance) : Unit = {
-		info1("Distributing status tick to {} targets", myCrudeTgts.length : Integer)
+		debug1("Distributing status tick to {} targets", myCrudeTgts.length : Integer)
 		for (tickLover <- myCrudeTgts) {
 			tickLover.tellStrongCPMsg(rcvdTick)
 		}

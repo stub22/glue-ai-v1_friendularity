@@ -57,6 +57,7 @@ trait TARqRouterSetupLogic extends ExtraSetupLogic with KnowsAkkaSys with Vararg
 		routerTeller
 	}
 }
+// Extend this trait in an app specific method
 trait AppServiceHandleGroup extends KnowsAkkaSys with VarargsLogging {
 	lazy val akkaSys = getAkkaSys
 
@@ -67,7 +68,9 @@ trait AppServiceHandleGroup extends KnowsAkkaSys with VarargsLogging {
 	}
 
 	// Jobby approach to actor launch is used here for our outer actors, experimentally.
+	// Each jobby can subordinately choose to define extraSetupTasks.
 	lazy private val goodyTestSenderLogic = new PatientSender_GoodyTest {
+		// Notice how more extra setup tasks could be used in place of some of the OuterJobbyLogics below.
 		override protected def getExtraSetupTasks() : List[ExtraSetupLogic] = List(taRouterSetupLogic)
 	}
 	lazy private val goodyTestSenderTrigTeller  = OuterJobbyLogic_MasterFactory.makeOoLogicAndTeller(goodyTestSenderLogic, akkaSys, "goodyTstSndr")
@@ -78,6 +81,7 @@ trait AppServiceHandleGroup extends KnowsAkkaSys with VarargsLogging {
 	lazy private val bonusStagingLogic = new PatientSender_BonusStaging {}
 	lazy private val bonusStagingTrigTeller  = OuterJobbyLogic_MasterFactory.makeOoLogicAndTeller(bonusStagingLogic, akkaSys, "bonusStagingRequester")
 
+	// When this method is overridden by the app class, it is seen in nested our subclass of VWStatPubLogic.
 	protected def findQpidSvcOffering_opt : Option[OffersQpidSvcs] = None
 
 	lazy private val statusTickPumpLogic = new OuterAppPumpSetupLogic {

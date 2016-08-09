@@ -20,7 +20,7 @@ trait JmsMsgSenderChan extends KnowsJmsSession with VarargsLogging {
 	def sendCompleteMsg(jmsProd : JMSMsgProducer, completeMsgHasHeadersAlready : JMSMsg): Unit = {
 		val destJustForLogging = jmsProd.getDestination
 		// Earlier we had an error causing the destination to be too general, displaying as:  'amq.topic'/'#'; None
-		info2("JmsMsgSenderChan destination clz={}, dump={}", destJustForLogging.getClass, destJustForLogging)
+		debug2("JmsMsgSenderChan destination clz={}, dump={}", destJustForLogging.getClass, destJustForLogging)
 		jmsProd.send(completeMsgHasHeadersAlready)
 
 	}
