@@ -15,7 +15,8 @@ trait VWStatPubLogic extends VarargsLogging {
 	protected def getQpidSvcOffering_opt : Option[OffersQpidSvcs] = None
 
 	def gatherStatusAndSendHelpfulNotices : Unit = {
-		info0("Time to gather some awesome status and publish it out for exo-client use")
+		val pubTellers = getPubTellers
+		info1("Time to gather some awesome status from pubTellers={}, and publish it out for exo-client use", pubTellers)
 		val qpidOffering_opt = getQpidSvcOffering_opt
 		qpidOffering_opt.map(qpo => {
 			val vwPubNoticeSender = qpo.getVWPubNoticeSender
@@ -29,6 +30,6 @@ trait VWStatPubLogic extends VarargsLogging {
 class VWStatPubActor(statPubLogic : VWStatPubLogic)  extends Actor {
 	def receive = {
 		case stm: StatusTickMsg => statPubLogic.gatherStatusAndSendHelpfulNotices
-		case otherMsg : MsgToStatusSrc =>
+		case otherMsg : MsgToStatusSrc => statPubLogic.handleOtherStatusCtrlMsg(otherMsg)
 	}
 }

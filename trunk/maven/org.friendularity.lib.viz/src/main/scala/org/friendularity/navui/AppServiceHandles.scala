@@ -2,19 +2,74 @@ package org.friendularity.navui
 
 import akka.actor.{ActorRef, Props, ActorSystem}
 import org.appdapter.fancy.log.VarargsLogging
-import org.friendularity.akact.KnowsAkkaSys
+import org.friendularity.akact.{FrienduActor, KnowsAkkaSys}
 import org.friendularity.cpmsg.{ActorRefCPMsgTeller, CPStrongTeller}
 import org.friendularity.field.MsgToStatusSrc
 import org.friendularity.qpc.OffersQpidSvcs
-import org.friendularity.vwmsg.{VWBodyLifeRq, VWARM_FindPublicTellers, VWorldRequest, VWorldPublicTellers}
+import org.friendularity.vwmsg.{VWGoodyRqActionSpec, VWorldPublicTellers, VWBodyLifeRq, VWARM_FindPublicTellers, VWorldRequest}
 
 /**
   * Created by Stub22 on 8/8/2016.
   */
+trait ThingActReqRouterLogic extends VarargsLogging {
+	def routeRq(vwgrq: VWGoodyRqActionSpec) : Unit = {
+		val tellers = getVWPubTellers
+		info1("Router handling: {}", vwgrq)
+	}
+	def getVWPubTellers : VWorldPublicTellers
+}
+class ThingActReqRouterActor(routerLogic : ThingActReqRouterLogic) extends FrienduActor {
+	override def receive = {
+		case vwgrq: VWGoodyRqActionSpec => {
+			routerLogic.routeRq(vwgrq)
+		}
+		case other => {
+			getLogger().warn("Received unexpected message: {}", other)
+		}
+	}
+}
+trait ExtraSetupLogic {
+	def doExtraSetup(vwpt : VWorldPublicTellers) : Unit
+}
+trait TARqRouterSetupLogic extends ExtraSetupLogic with KnowsAkkaSys with VarargsLogging {
+	protected def findQpidSvcOffering_opt : Option[OffersQpidSvcs] = None
+
+	override def doExtraSetup(vwpt : VWorldPublicTellers) : Unit = {
+		setupRouting(vwpt)
+	}
+	private def setupRouting(vwpt : VWorldPublicTellers) : Unit = {
+		val qpidSvcOffer_opt = findQpidSvcOffering_opt
+		if (qpidSvcOffer_opt.isDefined) {
+			val qso = qpidSvcOffer_opt.get
+			val srvFeatAcc = qso.getServerFeatureAccess
+			val routingTeller = makeRoutingTeller(vwpt)
+			srvFeatAcc.setSerBinListenTeller(routingTeller)
+		}
+	}
+	private def makeRoutingTeller(vwpt : VWorldPublicTellers) : CPStrongTeller[VWGoodyRqActionSpec] = {
+		val akkaSys = getAkkaSys
+		val routerLogic = new ThingActReqRouterLogic {
+			def getVWPubTellers : VWorldPublicTellers = vwpt
+		}
+		val routerActorProps = Props(classOf[VWStatPubActor], routerLogic)
+		val routerActorRef : ActorRef = akkaSys.actorOf(routerActorProps, "taRouterActr")
+		val routerTeller = new ActorRefCPMsgTeller[VWGoodyRqActionSpec](routerActorRef)
+		routerTeller
+	}
+}
 trait AppServiceHandleGroup extends KnowsAkkaSys with VarargsLogging {
 	lazy val akkaSys = getAkkaSys
+
+	lazy private val taRouterSetupLogic = new TARqRouterSetupLogic {
+		override protected def findQpidSvcOffering_opt : Option[OffersQpidSvcs] = findQpidSvcOffering_opt
+
+		override protected def getAkkaSys: ActorSystem = getAkkaSys
+	}
+
 	// Jobby approach to actor launch is used here for our outer actors, experimentally.
-	lazy private val goodyTestSenderLogic = new PatientSender_GoodyTest {}
+	lazy private val goodyTestSenderLogic = new PatientSender_GoodyTest {
+		override protected def getExtraSetupTasks() : List[ExtraSetupLogic] = List(taRouterSetupLogic)
+	}
 	lazy private val goodyTestSenderTrigTeller  = OuterJobbyLogic_MasterFactory.makeOoLogicAndTeller(goodyTestSenderLogic, akkaSys, "goodyTstSndr")
 
 	lazy private val charAdmForwarderLogic = new PatientForwarder_CharAdminTest {}
@@ -40,6 +95,7 @@ trait AppServiceHandleGroup extends KnowsAkkaSys with VarargsLogging {
 		}
 	}
 	lazy private val statusTickTrigTeller  = OuterJobbyLogic_MasterFactory.makeOoLogicAndTeller(statusTickPumpLogic, akkaSys, "statusTickPumpSetup")
+
 	def registerPostInitWaiters(vbt : CPStrongTeller[VWorldRequest]) : Unit = {
 
 		// Each of these the results of happy startup, to trigger further ops.

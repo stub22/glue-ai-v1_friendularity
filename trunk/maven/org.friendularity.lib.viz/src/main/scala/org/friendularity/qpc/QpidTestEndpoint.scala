@@ -14,7 +14,7 @@ import org.cogchar.render.rendtest.GoodyTestMsgMaker
 import org.friendularity.akact.{KnowsAkkaSys, DummyActorMaker}
 import org.friendularity.cpmsg.{CPStrongTeller, ActorRefCPMsgTeller}
 import org.friendularity.thact.{ThingActReceiverBinary, ThingActReceiverTxt}
-import org.friendularity.vwmsg.{VWGoodyRqActionSpec, VWGoodyRqRdf, VWorldNotice}
+import org.friendularity.vwmsg.{VWGoodyRqRdf, VWGoodyRqActionSpec, VWorldNotice}
 
 /**
   * Created by Owner on 8/8/2016.
@@ -42,6 +42,12 @@ class QPidTestEndpoint(myQpidTopicMgr : QpidTopicConn) {
 trait ServerFeatureAccess {
 
 	def getVWPubNoticeSender : VWNoticeSender
+
+	def setSerBinListenTeller(tellerLikesSerBin : CPStrongTeller[VWGoodyRqActionSpec])
+
+	// Should be unnecessary, unless we decide to process more in RDF space with inference+onto.
+	// def setTurtleTxtListenTeller (tellerLikesGoodyRdf : CPStrongTeller[VWGoodyRqRdf])
+
 }
 // Receives vw-requests in any ta-format, and publishes vw-notices as binary only.
 class TestTAQpidServer(myParentARF : ActorRefFactory, myQpidTopicMgr : QpidTopicConn)
@@ -50,18 +56,31 @@ class TestTAQpidServer(myParentARF : ActorRefFactory, myQpidTopicMgr : QpidTopic
 	private lazy val myConsumer_forTurtleTxt : JMSMsgConsumer = myJmsSession.createConsumer(destForVWRqTATxt)
 	private lazy val myConsumer_forJSerBin : JMSMsgConsumer = myJmsSession.createConsumer(destForVWRqTABin)
 
+	// Dummy actor+teller to receive thingActions, of both kinds.
+	// TODO:  The text-to-binary route can be built in.
 	private val rcvActor = makeTestDummyActor(myParentARF, "dummy-goody-rq-rcvr")
 	private val rcvWeakTeller = new ActorRefCPMsgTeller(rcvActor)
 
 	//	val rcvrFactory = new RecvrFactory
 	//	val allPurposeListener = rcvrFactory.makeItWeakerButEasier(rcvWeakTeller)
 
+	// Receiver wrappers know how to extract contents from JmsMessages
 	private  val rcvrTxt : ThingActReceiverTxt = new ThingActReceiverTxt(rcvWeakTeller.asInstanceOf[CPStrongTeller[VWGoodyRqRdf]])
-	private val rcvrBin : ThingActReceiverBinary = new ThingActReceiverBinary(rcvWeakTeller.asInstanceOf[CPStrongTeller[VWGoodyRqActionSpec]])
+//	private val rcvrBin : ThingActReceiverBinary = new ThingActReceiverBinary(rcvWeakTeller.asInstanceOf[CPStrongTeller[VWGoodyRqActionSpec]])
 
+	// Ask the wrappers to make listeners, and attach those to our JmsCosumers
 	myConsumer_forTurtleTxt.setMessageListener(rcvrTxt.makeListener)
-	myConsumer_forJSerBin.setMessageListener(rcvrBin.makeListener)
+//	myConsumer_forJSerBin.setMessageListener(rcvrBin.makeListener)
 
+	setSerBinListenTeller(rcvWeakTeller.asInstanceOf[CPStrongTeller[VWGoodyRqActionSpec]])
+
+	override def setSerBinListenTeller(tellerLikesSerBin : CPStrongTeller[VWGoodyRqActionSpec]) : Unit = {
+		val taRcvrBin = new ThingActReceiverBinary(tellerLikesSerBin)
+		val listener : JMSMsgListener = taRcvrBin.makeListener
+		myConsumer_forJSerBin.setMessageListener(listener)
+	}
+
+	// ----------------------------------------------------------------
 	private val myJmsProdForVWPubNoticeBin : JMSMsgProducer = myJmsSession.createProducer(destForVWPubStatsBin)
 	private val mySenderForVWPubNoticeBin :  VWNoticeSender = new VWNoticeSenderJmsImpl(myJmsSession, myJmsProdForVWPubNoticeBin)
 
@@ -137,6 +156,8 @@ trait OffersQpidSvcs extends KnowsAkkaSys with VarargsLogging {
 	}
 
 	def getVWPubNoticeSender : VWNoticeSender = myServer.getVWPubNoticeSender
+
+	def getServerFeatureAccess : ServerFeatureAccess = myServer
 
 	def pingQpidSvcs(includeDummyClient : Boolean) : Unit = {
 		val noticeSender = myServer.getVWPubNoticeSender
