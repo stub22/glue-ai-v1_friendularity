@@ -1,6 +1,6 @@
 package org.friendularity.thact
 
-import java.lang.{Long => JLong}
+import java.lang.{Long => JLong, Integer => JInt}
 import javax.jms.{Destination => JMSDestination, Message => JMSMsg, MessageConsumer => JMSMsgConsumer, MessageListener => JMSMsgListener, MessageProducer => JMSMsgProducer, ObjectMessage => JMSObjMsg, Session => JMSSession, TextMessage => JMSTextMsg}
 
 import org.appdapter.fancy.log.VarargsLogging
@@ -22,17 +22,18 @@ class ThingActReceiverTxt(goodyTATurtleTeller : CPStrongTeller[VWGoodyRqRdf]) ex
 	def receiveTextMsg(txtMsg : JMSTextMsg) : Unit = {
 		val txtCont = txtMsg.getText
 		// We assume it is a turtle encoding of ThingActSpec(s), targeting VW-Goodies.
+		// But what if it is a body-manip or cam-manip request?
 		val goodyTATurtleRq = new VWGoodyRqTurtle(txtCont)
 		goodyTATurtleTeller.tellStrongCPMsg(goodyTATurtleRq)
 	}
 	def makeListener : JMSMsgListener = {
 		new JMSMsgListener() {
 			override def onMessage(msg: JMSMsg): Unit = {
-				info2("ThingActReceiverTxt-JMSListener msgID={} timestamp={}", msg.getJMSMessageID, msg.getJMSTimestamp : JLong)
+				debug2("ThingActReceiverTxt-JMSListener msgID={} timestamp={}", msg.getJMSMessageID, msg.getJMSTimestamp : JLong)
 				debug1("ThingActReceiverTxt-JMSListener - received msg, dumping to see if 'wacky' headers show up:\n{}", msg)
 				msg match {
 					case txtMsg: JMSTextMsg => {
-						info1("Listener processing received txtMsg with tstamp={}", txtMsg.getJMSTimestamp: JLong)
+						info2("JMSListener processing received txtMsg with length={} and tstamp={}", txtMsg.getText.length : JInt,  txtMsg.getJMSTimestamp: JLong)
 						receiveTextMsg(txtMsg)
 					}
 					case other => {
@@ -43,11 +44,12 @@ class ThingActReceiverTxt(goodyTATurtleTeller : CPStrongTeller[VWGoodyRqRdf]) ex
 		}
 	}
 }
+// Note that if this receiver is running under OSGi, it must have correct classpath in scope (thrdCtx?) during deserial.
 class ThingActReceiverBinary(goodyTADirectTeller : CPStrongTeller[VWGoodyRqActionSpec]) extends VarargsLogging  {
 	def receiveJSerBinaryMsg(objMsg : JMSObjMsg) : Unit = {
-		val objCont = objMsg.getObject
-		val taSpec : ThingActionSpec = objCont.asInstanceOf[ThingActionSpec]
-		val goodyTADirectRq = new VWGoodyRqTAS(taSpec)
+		val objCont = objMsg.getObject // This call does the deserial, will fail if classpath not correct.
+		val taSpec : ThingActionSpec = objCont.asInstanceOf[ThingActionSpec] // will fail if class not as expected
+		val goodyTADirectRq = new VWGoodyRqTAS(taSpec) // make a new wrapper message to pass along
 		goodyTADirectTeller.tellStrongCPMsg(goodyTADirectRq)
 	}
 	def makeListener : JMSMsgListener = {
@@ -69,10 +71,12 @@ class ThingActReceiverBinary(goodyTADirectTeller : CPStrongTeller[VWGoodyRqActio
 	}
 	// TODO:    makeConversionListenTeller
 }
+
+// Note that if this receiver is running under OSGi, it must have correct classpath in scope (thrdCtx?) during deserial.
 class VWStatReceiverBinary(statusTeller : CPStrongTeller[VWorldNotice]) extends VarargsLogging  {
 	def receiveJSerBinaryMsg(objMsg : JMSObjMsg) : Unit = {
-		val objCont = objMsg.getObject
-		val statNotice : VWorldNotice = objCont.asInstanceOf[VWorldNotice]
+		val objCont = objMsg.getObject // does deserial, requiring correct classpath
+		val statNotice : VWorldNotice = objCont.asInstanceOf[VWorldNotice] // strong type assumption applied, could fail
 		statusTeller.tellStrongCPMsg(statNotice)
 	}
 	def makeListener : JMSMsgListener = {

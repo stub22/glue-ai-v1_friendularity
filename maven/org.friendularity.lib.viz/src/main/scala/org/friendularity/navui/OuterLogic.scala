@@ -27,7 +27,7 @@ import org.cogchar.impl.thing.basic.BasicThingActionSpec
 import org.cogchar.render.rendtest.GoodyTestMsgMaker
 import org.friendularity.cpmsg.{ActorRefCPMsgTeller, CPStrongTeller, CPMsgTeller}
 
-import org.friendularity.field.{ReportingPolicy, ReportSrcOpen, SourceDataMsg, MsgToStatusSrc, StatusTickActorFactory, ReportingTickChance, StatusTickDistributor, StatusTickScheduler, FieldActorFactory}
+import org.friendularity.field.{StatusTickActorFactory, StatusTickDistributor, StatusTickScheduler, ReportingPolicy, ReportSrcOpen, SourceDataMsg, MsgToStatusSrc, ReportingTickChance, FieldActorFactory}
 import org.friendularity.mjob.{MsgJobLogicFactory, MsgJobLogic}
 
 import com.hp.hpl.jena.rdf.model.{Model => JenaModel, ModelFactory => JenaModelFactory, Literal}

@@ -56,8 +56,6 @@ trait KnowsJmsSession {
 	protected def getJmsSession : JMSSession
 }
 
-
-
 class DummyTestHeaderWriter() extends WritesJmsHeaders {
 	override def putHeadersOnMsg(msg : JMSMsg, dataInside : Any): Unit = {
 		msg.setIntProperty("wackyInt", 987654321);
@@ -67,17 +65,17 @@ class DummyTestHeaderWriter() extends WritesJmsHeaders {
 }
 
 
-
-
 trait ClientStatListenerCouldUseAkkaButThatWouldBeWeird extends  DummyActorMaker {
 	val myParentARF : ActorRefFactory = ???
 	val wwStatRcvActor = makeTestDummyActor(myParentARF, "vwStatRcvr")
 	val vwStatWeakTeller = new ActorRefCPMsgTeller(wwStatRcvActor)
 }
 
-trait VWPubStatListenerMaker extends VarargsLogging {
-	def getStatDumpPeriod = 5
-	def makePubStatNoticeListener : JMSMsgListener = {
+// Test far-outer client ability to receive VWorld status and dump the message contents.
+// A real external client can do something more fun or useful with this data.
+trait ExoPubStatDumpingListenerMaker extends VarargsLogging {
+	// statDumpPeriod <= 0   means no stat dumps
+	def makePubStatDumpingListener(statDumpPeriod : Int) : JMSMsgListener = {
 		new JMSMsgListener() {
 			var myStatusRcvdCnt = 0
 			override def onMessage(msg: JMSMsg): Unit = {
@@ -86,7 +84,7 @@ trait VWPubStatListenerMaker extends VarargsLogging {
 				msg match {
 					case objMsg: JMSObjMsg => {
 						myStatusRcvdCnt += 1
-						if ((myStatusRcvdCnt % getStatDumpPeriod) == 0) {
+						if ((statDumpPeriod > 0) && ((myStatusRcvdCnt % statDumpPeriod) == 0)) {
 							val objCont: JSerializable = objMsg.getObject
 							info4("VWPubStatListener received {}th update, msgID={}, tstamp={}, notice={}", myStatusRcvdCnt : JInt,
 								objMsg.getJMSMessageID, objMsg.getJMSTimestamp: JLong, objCont.asInstanceOf[AnyRef])
@@ -101,6 +99,8 @@ trait VWPubStatListenerMaker extends VarargsLogging {
 	}
 }
 
+// Runs both a "server" and a "client" in one process, to verify that basic duplex message flow works.
+// This would get deserialization errors in both directions, if run under OSGi.
 object ThingActMoverQPid_UnitTest extends VarargsLogging {
 	val srvrAkkaSysName = "unit-test-ta-qpid-vwSrvr"
 	lazy private val myServerAkkaSys = ActorSystem(srvrAkkaSysName)
@@ -114,7 +114,7 @@ object ThingActMoverQPid_UnitTest extends VarargsLogging {
 		// val qpidTopicMgr : QpidTopicConn = new QPidTopicConn_JNDI_032(TestAppNames.allTopics)
 
 		val qpidConnMgr : QpidConnMgr = new QpidConnMgrJFlux
-		val qpidTopicMgr : QpidTopicConn = new QPidTopicConnJFlux(qpidConnMgr)
+		val qpidTopicMgr : QpidDestMgr = new QPidDestMgrJFlux(qpidConnMgr)
 
 		// info1("QPidConnMgr.DestMap={}", qpidConnMgr.getDestsByNameTail)
 
@@ -123,9 +123,9 @@ object ThingActMoverQPid_UnitTest extends VarargsLogging {
 
 		val client = new TestTAQPidClient(qpidTopicMgr)
 
-		client.sendSomeVWRqs
+		client.sendSomeVWRqs(1100) // sends a mixture of bin-serial and turtle-txt TAs, which we see receieved in server
 
-		server.sendSomeVWNotices
+		server.sendSomeVWNotices_Blocking(50, 850) // Sends bin-serial notices out, which we see received in client
 	}
 
 }

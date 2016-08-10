@@ -36,23 +36,19 @@ class QpidConnMgrJFlux extends QpidConnMgr with VarargsLogging {
 	/*  Copied and modified from JFlux ConnectionUtils
 		private static String buildNameString(String destName, int type) */
 
-	val QUEUE_PROPS_SUFFIX = "; {create: always, node: {type: queue}}";
-	val TOPIC_PROPS_SUFFIX = "; {create: always, node: {type: topic}}";
 
-	private def makeTopicDestination(destNameTail: String): JMSDestination = {
-		val destStr = destNameTail + TOPIC_PROPS_SUFFIX
-		info1("Making destination with address: {}", destStr);
-		val dest : JMSDestination = JfluxQpidConnMgr.createDestination(destStr);
+	override def makeFullySpecifiedDestination(destNameTailFull : String) : JMSDestination = {
+		info1("Making destination with full address: {}", destNameTailFull);
+		val dest : JMSDestination = JfluxQpidConnMgr.createDestination(destNameTailFull);
 		dest
-	}
 
-	override def makeDestination(destNameTail : String) : JMSDestination = {
-		makeTopicDestination(destNameTail)
 	}
 }
 
-class QPidTopicConnJFlux(myConnMgr : QpidConnMgr) extends QpidTopicConn with VarargsLogging {
+class QPidDestMgrJFlux(myConnMgr : QpidConnMgr) extends QpidDestMgr with VarargsLogging {
 	override protected def getConnMgr: QpidConnMgr = myConnMgr
 
-	override def getDestForTopicName(topicName: String): JMSDestination = getConnMgr.makeDestination(topicName)
+	override def getDestForTopicName(topicName: String): JMSDestination = {
+		makeTopicDestination(topicName)
+	}
 }

@@ -23,10 +23,11 @@ import org.cogchar.api.humanoid.HumanoidFigureConfig
 import org.cogchar.bind.mio.robot.svc.ModelBlendingRobotServiceContext
 import org.friendularity.akact.KnowsAkkaSys
 import org.friendularity.cpmsg.{ActorRefCPMsgTeller, CPStrongTeller, CPMsgTeller, CPumpMsg}
+import org.friendularity.cpump.ScheduleHelper
 
 import org.friendularity.dull.SpecialAppPumpSpace
-import org.friendularity.field.{StatusTickMsg, MsgToStatusSrc, ScheduleHelper}
-import org.friendularity.qpc.{TestTAQPidClient, TestTAQpidServer, TestAppNames, QPidTopicConn_JNDI_032}
+import org.friendularity.field.{StatusTickMsg, MsgToStatusSrc}
+import org.friendularity.qpc.{TestTAQPidClient, TestTAQpidServer, TestAppNames, QPidDestMgr_JNDI_032}
 import org.friendularity.qpc.ThingActMoverQPid_UnitTest.info1
 import org.friendularity.respire._
 import org.friendularity.vwimpl.{VWorldActorFactoryFuncs, LegacyBodyLoader_Stateless}

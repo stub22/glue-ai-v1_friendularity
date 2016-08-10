@@ -5,6 +5,7 @@ import javax.jms.{Session => JMSSession, Destination => JMSDestination, Connecti
 import javax.naming.InitialContext
 
 import org.appdapter.fancy.log.VarargsLogging
+import org.jflux.impl.messaging.rk.utils.ConnectionManager
 
 /**
   * Created by Stub22 on 8/8/2016.
@@ -15,11 +16,11 @@ trait QpidConnMgr extends VarargsLogging {
 		// Creates a session. This session is not transactional (transactions='false'),
 		// and messages are automatically acknowledged.
 		// QPid HelloWorld uses AUTO_ACKNOWLEDGE,  // R25 uses   CLIENT_ACKNOWLEDGE
-		info0("================= Creating Session")
 		val conn = getConn
+		info2("================= Creating JMS Session in AUTO_ACK mode, for connMgr={}, conn={}", this, conn)
 		conn.createSession(false, JMSSession.AUTO_ACKNOWLEDGE);
 	}
-	def makeDestination(destNameTail : String) : JMSDestination
+	def makeFullySpecifiedDestination(destNameTailFull : String) : JMSDestination
 
 	def getConn : JMSConnection
 }
@@ -53,13 +54,13 @@ class QpidConnMgrJndi(val myJndiProps : Properties) extends QpidConnMgr with Var
 		jmsConn
 	}
 
-	override def makeDestination(destNameTail : String) : JMSDestination = {
+	override def makeFullySpecifiedDestination(destNameTailFull : String) : JMSDestination = {
 		// Creates a destination for the topic exchange, so senders and receivers can use it.
-		info1("================= Creating Destination for nameTail={}", destNameTail)
+		info1("================= Creating Destination for nameTail={}", destNameTailFull)
 		// val fullName = QPid_032_Names.destKeyNameForTail(destNameTail)
 		// jndiCtx wants just the name tail, rather than the "full name" we specified in jndiProps key (with prefix "destination.").
-		val dest : JMSDestination = myJndiCtx.lookup(destNameTail).asInstanceOf[JMSDestination];
-		info3("Resolved nameTail={} to destination clz={}, dump={}", destNameTail, dest.getClass, dest)
+		val dest : JMSDestination = myJndiCtx.lookup(destNameTailFull).asInstanceOf[JMSDestination];
+		info3("Resolved nameTailFull={} to destination clz={}, dump={}", destNameTailFull, dest.getClass, dest)
 		dest
 	}
 	override def getConn : JMSConnection = {
