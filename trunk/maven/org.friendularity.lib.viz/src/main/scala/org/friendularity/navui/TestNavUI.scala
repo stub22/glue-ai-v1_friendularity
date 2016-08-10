@@ -81,6 +81,7 @@ object TestNavUI extends VarargsLogging {
 		// info1("^^^^^^^^^^^^^^^^^^^^^^^^  TestNavUI.main() got legConfERC_opt={}", legConfERC_opt)
 		navUiAppImpl.sendSetupMsgs_Async
 
+		navUiAppImpl.startQpidConn
 		navUiAppImpl.pingQpidSvcs(true)
 
 		val bodyUserLogic = navUiAppSvc.makeFunUserLogic()

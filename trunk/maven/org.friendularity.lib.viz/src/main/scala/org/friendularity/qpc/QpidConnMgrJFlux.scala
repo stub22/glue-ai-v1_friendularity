@@ -23,7 +23,6 @@ class QpidConnMgrJFlux extends QpidConnMgr with VarargsLogging {
 		val qpidTcpUrl: String = "tcp://127.0.0.1:5672"
 		try {
 			qpidConn = JfluxQpidConnMgr.createConnection(qpidUsr, qpidPsw, qpidCliName, qpidVHostName, qpidTcpUrl)
-			qpidConn.start
 		}
 		catch {
 			case t: Throwable => {
@@ -42,13 +41,5 @@ class QpidConnMgrJFlux extends QpidConnMgr with VarargsLogging {
 		val dest : JMSDestination = JfluxQpidConnMgr.createDestination(destNameTailFull);
 		dest
 
-	}
-}
-
-class QPidDestMgrJFlux(myConnMgr : QpidConnMgr) extends QpidDestMgr with VarargsLogging {
-	override protected def getConnMgr: QpidConnMgr = myConnMgr
-
-	override def getDestForTopicName(topicName: String): JMSDestination = {
-		makeTopicDestination(topicName)
 	}
 }

@@ -114,18 +114,33 @@ object ThingActMoverQPid_UnitTest extends VarargsLogging {
 		// val qpidTopicMgr : QpidTopicConn = new QPidTopicConn_JNDI_032(TestAppNames.allTopics)
 
 		val qpidConnMgr : QpidConnMgr = new QpidConnMgrJFlux
-		val qpidTopicMgr : QpidDestMgr = new QPidDestMgrJFlux(qpidConnMgr)
 
 		// info1("QPidConnMgr.DestMap={}", qpidConnMgr.getDestsByNameTail)
 
 		// server and client are in same Java process, same qpid-conn, but separate JMSSessions.
-		val server = new TestTAQpidServer(myServerAkkaSys, qpidTopicMgr)
+		val server = new TestTAQpidServer(myServerAkkaSys, qpidConnMgr)
 
-		val client = new TestTAQPidClient(qpidTopicMgr)
+		val clientDestMgr : QpidDestMgr = new QPidDestMgrJFlux(qpidConnMgr)
 
-		client.sendSomeVWRqs(1100) // sends a mixture of bin-serial and turtle-txt TAs, which we see receieved in server
+		val client = new TestTAQPidClient(clientDestMgr)
 
-		server.sendSomeVWNotices_Blocking(50, 850) // Sends bin-serial notices out, which we see received in client
+		qpidConnMgr.startConn
+
+		client.sendSomeVWRqs(500) // sends a mixture of bin-serial and turtle-txt TAs, which we see receieved in server
+
+		val vwNoticeSender = server.getServerPublishFeature.getVWPubNoticeSender
+		sendSomeVWNotices_Blocking(vwNoticeSender, 25, 450) // Sends bin-serial notices out, which we see received in client
+
+		server.installDumpingListeners()
+
+	}
+	def sendSomeVWNotices_Blocking(sender : VWNoticeSender, numNotices : Int, sleepIntervMsec : Int) : Unit = {
+		var msgCount = 0
+		while (msgCount < numNotices) {
+			msgCount += 1
+			sender.sendPingNotice("number = " + msgCount)
+			Thread.sleep(sleepIntervMsec)
+		}
 	}
 
 }

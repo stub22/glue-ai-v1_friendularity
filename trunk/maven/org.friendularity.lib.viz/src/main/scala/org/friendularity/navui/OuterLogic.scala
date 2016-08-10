@@ -17,7 +17,7 @@
 package org.friendularity.navui
 
 import java.util.{Random => JRandom}
-import java.lang.{Long => JLong}
+import java.lang.{Long => JLong, Integer => JInt}
 import akka.actor.{ActorSystem, ActorRefFactory, ActorContext, ActorRef}
 import com.jme3.math.{Quaternion, Vector3f, ColorRGBA}
 import org.appdapter.core.name.Ident
@@ -49,6 +49,9 @@ trait OuterLogic extends VarargsLogging {
 	// Adding setup tasks onto
 	protected def doAllExtraSetup(vwpt : VWorldPublicTellers) : Unit = {
 		val extraSetupTasks = getExtraSetupTasks
+		if (extraSetupTasks.length > 0) {
+			info3("{} is processing {} extra setup tasks: {}", this, extraSetupTasks.length : JInt, extraSetupTasks)
+		}
 		extraSetupTasks.map(
 			_.doExtraSetup(vwpt)
 		)

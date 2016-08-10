@@ -30,104 +30,31 @@ object TestAppNames {
 	val allTopics = List(topicName_forJSerBinTA, topicName_forTurtleTxtTA, topicName_forVWPubStatJSerBin)
 }
 
-trait KnowsTopicConn extends KnowsJmsSession {
-	def getTopicConn : QpidDestMgr
+trait KnowsDestMgr extends KnowsJmsSession {
+	def getDestMgr : QpidDestMgr
 }
-class QPidTestEndpoint(myQpidTopicMgr : QpidDestMgr) extends KnowsJmsSession with KnowsTopicConn{
-	lazy val myJmsSession = myQpidTopicMgr.makeSession
+class QPidFeatureEndpoint(myJmsDestMgr : QpidDestMgr) extends KnowsJmsSession with KnowsDestMgr {
+	lazy val myJmsSession = myJmsDestMgr.makeSession
 
 	override protected def getJmsSession : JMSSession = myJmsSession
 
-	override def getTopicConn : QpidDestMgr = myQpidTopicMgr
+	override def getDestMgr : QpidDestMgr = myJmsDestMgr
 
 }
 
-trait ServerFeatureAccess {
-
-	def getVWPubNoticeSender : VWNoticeSender
-
-	def setSerBinListenTeller(tellerLikesSerBin : CPStrongTeller[VWGoodyRqActionSpec])
-
-	def setTurtleTxtListenTeller(tellerLikesSerBin : CPStrongTeller[VWGoodyRqRdf])
-
-	// Should be unnecessary, unless we decide to process more in RDF space with inference+onto.
-	// def setTurtleTxtListenTeller (tellerLikesGoodyRdf : CPStrongTeller[VWGoodyRqRdf])
+// This trait can be used on both server and client sides
+trait KnowsTARqDestinations extends KnowsDestMgr  {
+	lazy val destForVWRqTATxt : JMSDestination = getDestMgr.makeQueueDestination(TestAppNames.topicName_forTurtleTxtTA)
+	lazy val destForVWRqTABin : JMSDestination = getDestMgr.makeQueueDestination(TestAppNames.topicName_forJSerBinTA)
 
 }
-trait KnowsOurDestinations extends KnowsTopicConn {
-	lazy val destForVWRqTATxt : JMSDestination = getTopicConn.makeQueueDestination(TestAppNames.topicName_forTurtleTxtTA)
-	lazy val destForVWRqTABin : JMSDestination = getTopicConn.makeQueueDestination(TestAppNames.topicName_forJSerBinTA)
-
-	lazy val destForVWPubStatsBin : JMSDestination = getTopicConn.getDestForTopicName(TestAppNames.topicName_forVWPubStatJSerBin)
-
-}
-trait ServerReceiveFeatureImpl extends ServerFeatureAccess with  KnowsOurDestinations {
-
-	// TODO: These consumers should be for queues (not topics) and in fact often just for a single queue.
-	private lazy val myConsumer_forTurtleTxt : JMSMsgConsumer = getJmsSession.createConsumer(destForVWRqTATxt)
-	private lazy val myConsumer_forJSerBin : JMSMsgConsumer = getJmsSession.createConsumer(destForVWRqTABin)
-
-	override def setSerBinListenTeller(tellerLikesSerBin : CPStrongTeller[VWGoodyRqActionSpec]) : Unit = {
-		val taRcvrBin = new ThingActReceiverBinary(tellerLikesSerBin)
-		val listener : JMSMsgListener = taRcvrBin.makeListener
-		myConsumer_forJSerBin.setMessageListener(listener)
-	}
-
-	override def setTurtleTxtListenTeller(tellerLikesTrtlTxt : CPStrongTeller[VWGoodyRqRdf]) : Unit = {
-		val taRcvrTxt : ThingActReceiverTxt = new ThingActReceiverTxt(tellerLikesTrtlTxt)
-		val listener : JMSMsgListener = taRcvrTxt.makeListener
-		myConsumer_forTurtleTxt.setMessageListener(listener)
-	}
-
-}
-trait ServerPublishFeatureImpl extends ServerFeatureAccess with  KnowsOurDestinations {
-	private val myJmsProdForVWPubNoticeBin : JMSMsgProducer = getJmsSession.createProducer(destForVWPubStatsBin)
-	private val mySenderForVWPubNoticeBin :  VWNoticeSender = new VWNoticeSenderJmsImpl(getJmsSession, myJmsProdForVWPubNoticeBin)
-
-	override def getVWPubNoticeSender : VWNoticeSender = mySenderForVWPubNoticeBin
-	//	def sendNotice(notice : VWorldNotice): Unit = mySender.postThingAct(taSpec, encodePref)
-
-
-	def sendSomeVWNotices_Blocking(numNotices : Int, sleepIntervMsec : Int) : Unit = {
-		var msgCount = 0
-		while (msgCount < numNotices) {
-			msgCount += 1
-			mySenderForVWPubNoticeBin.sendPingNotice("number = " + msgCount)
-			Thread.sleep(sleepIntervMsec)
-		}
-
-	}
-
+trait KnowsPubStatDestinations extends KnowsDestMgr  {
+	lazy val destForVWPubStatsBin : JMSDestination = getDestMgr.getDestForTopicName(TestAppNames.topicName_forVWPubStatJSerBin)
 }
 
-// Receives vw-requests in any ta-format, and publishes vw-notices as binary only.
-class TestTAQpidServer(myParentARF : ActorRefFactory, myQpidTopicMgr : QpidDestMgr)
-			extends QPidTestEndpoint(myQpidTopicMgr) with ServerFeatureAccess
-						with ServerReceiveFeatureImpl with ServerPublishFeatureImpl with DummyActorMaker {
-
-
-	// Dummy actor+teller to receive thingActions, of both kinds.
-	// TODO:  The text-to-binary route can be built in.
-	private val dummyRcvActor = makeTestDummyActor(myParentARF, "dummy-goody-rq-rcvr")
-	private val dummyRcvWeakTeller = new ActorRefCPMsgTeller(dummyRcvActor)
-	// Make extractor wrappers, ask them to make listeners, and attach those listeners to our JmsConsumers
-	setSerBinListenTeller(dummyRcvWeakTeller.asInstanceOf[CPStrongTeller[VWGoodyRqActionSpec]])
-	setTurtleTxtListenTeller(dummyRcvWeakTeller.asInstanceOf[CPStrongTeller[VWGoodyRqRdf]])
-
-	//	val rcvrFactory = new RecvrFactory
-	//	val allPurposeListener = rcvrFactory.makeItWeakerButEasier(rcvWeakTeller)
-
-	// Receiver wrappers know how to extract contents from JmsMessages
-	// private  val rcvrTxt : ThingActReceiverTxt = new ThingActReceiverTxt(rcvWeakTeller.asInstanceOf[CPStrongTeller[VWGoodyRqRdf]])
-	//private val rcvrBin : ThingActReceiverBinary = new ThingActReceiverBinary(rcvWeakTeller.asInstanceOf[CPStrongTeller[VWGoodyRqActionSpec]])
-	//	myConsumer_forTurtleTxt.setMessageListener(rcvrTxt.makeListener)
-	//	myConsumer_forJSerBin.setMessageListener(rcvrBin.makeListener)
-
-	// ----------------------------------------------------------------
-}
 import scala.collection.JavaConverters._
-class TestTAQPidClient(ppidTopicMgr : QpidDestMgr)
-			extends QPidTestEndpoint(ppidTopicMgr) with KnowsOurDestinations with ExoPubStatDumpingListenerMaker {
+class TestTAQPidClient(qpidDestMgr : QpidDestMgr) extends QPidFeatureEndpoint(qpidDestMgr)
+			with KnowsTARqDestinations with KnowsPubStatDestinations with  ExoPubStatDumpingListenerMaker {
 
 	val myProdForTurtle : JMSMsgProducer = myJmsSession.createProducer(destForVWRqTATxt)
 	val myProdForJSer : JMSMsgProducer = myJmsSession.createProducer(destForVWRqTABin)
@@ -157,9 +84,17 @@ class TestTAQPidClient(ppidTopicMgr : QpidDestMgr)
 trait OffersQpidSvcs extends KnowsAkkaSys with VarargsLogging {
 	// lazy val qpidTopicMgr : QpidTopicConn = new QPidTopicConn_JNDI_032(TestAppNames.allTopics)
 
-	lazy val qpidConnMgr : QpidConnMgr = new QpidConnMgrJFlux
-	lazy val qpidTopicMgr : QpidDestMgr = new QPidDestMgrJFlux(qpidConnMgr)
+	private lazy val myQpidConnMgr : QpidConnMgr = new QpidConnMgrJFlux
 
+	var myConnStartedFlag : Boolean = false
+
+	def startQpidConn : Unit = {
+		if (!myConnStartedFlag) {
+			myQpidConnMgr.startConn
+		} else {
+			warn1("Qpid connection was already started for {}, ignoring extra request to do so", this)
+		}
+	}
 	// Under OSGi the server and client cannot easily deserialize messages with JMSMessage.getObject
 	// (Needs classpath wiring help - would it help to set context-cl during onMessage handler?).
 	// However they can *make* serialized messages OK, and send them out for consumption by
@@ -175,21 +110,23 @@ trait OffersQpidSvcs extends KnowsAkkaSys with VarargsLogging {
 */
 	private lazy val myServer : ServerFeatureAccess = {
 
-		val server = new TestTAQpidServer(getAkkaSys, qpidTopicMgr)
+		val server = new TestTAQpidServer(getAkkaSys, myQpidConnMgr)
 		server
 	}
 
+	def getServerReceiveFeature : ServerReceiveFeature = myServer.getServerRecieveFeature
+
+	def getVWPubNoticeSender : VWNoticeSender = myServer.getServerPublishFeature.getVWPubNoticeSender
+
 	private lazy val myTestClient = {
-		val client = new TestTAQPidClient(qpidTopicMgr)
+		val clientDestMgr : QpidDestMgr = new QPidDestMgrJFlux(myQpidConnMgr)
+		val client = new TestTAQPidClient(clientDestMgr)
 		client
 	}
 
-	def getVWPubNoticeSender : VWNoticeSender = myServer.getVWPubNoticeSender
-
-	def getServerFeatureAccess : ServerFeatureAccess = myServer
 
 	def pingQpidSvcs(includeDummyClient : Boolean) : Unit = {
-		val noticeSender = myServer.getVWPubNoticeSender
+		val noticeSender = getVWPubNoticeSender
 		info2("My Qpid server: {}, noticeSender={}", myServer, noticeSender)
 		if (includeDummyClient) {
 			info1("My Qpid dummy client: {}", myTestClient)
