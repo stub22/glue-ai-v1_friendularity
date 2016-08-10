@@ -74,7 +74,7 @@ class QpidHelloWorld extends VarargsLogging {
 			qpidConn.startConn()
 			
 			val jmsSession =  qpidConn.makeSessionAutoAck() //   jmsConn.createSession(false, Session.AUTO_ACKNOWLEDGE); 
-			val jmsDest_001 = qpidConn.makeDestination(topic001_name_tail) // connector.myJndiCtx.lookup(topic001_name_tail).asInstanceOf[Destination];
+			val jmsDest_001 = qpidConn.makeFullySpecifiedDestination(topic001_name_tail) // connector.myJndiCtx.lookup(topic001_name_tail).asInstanceOf[Destination];
 			
 			info0("================= Creating Producer")
 			val jmsProducer_001 = jmsSession.createProducer(jmsDest_001);

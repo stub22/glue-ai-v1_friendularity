@@ -30,13 +30,16 @@ object TestAppNames {
 	val allTopics = List(topicName_forJSerBinTA, topicName_forTurtleTxtTA, topicName_forVWPubStatJSerBin)
 }
 
-class QPidTestEndpoint(myQpidTopicMgr : QpidTopicConn) {
+trait KnowsTopicConn extends KnowsJmsSession {
+	def getTopicConn : QpidDestMgr
+}
+class QPidTestEndpoint(myQpidTopicMgr : QpidDestMgr) extends KnowsJmsSession with KnowsTopicConn{
 	lazy val myJmsSession = myQpidTopicMgr.makeSession
 
-	lazy val destForVWRqTATxt : JMSDestination = myQpidTopicMgr.getDestForTopicName(TestAppNames.topicName_forTurtleTxtTA)
-	lazy val destForVWRqTABin : JMSDestination = myQpidTopicMgr.getDestForTopicName(TestAppNames.topicName_forJSerBinTA)
+	override protected def getJmsSession : JMSSession = myJmsSession
 
-	lazy val destForVWPubStatsBin : JMSDestination = myQpidTopicMgr.getDestForTopicName(TestAppNames.topicName_forVWPubStatJSerBin)
+	override def getTopicConn : QpidDestMgr = myQpidTopicMgr
+
 }
 
 trait ServerFeatureAccess {
@@ -45,34 +48,24 @@ trait ServerFeatureAccess {
 
 	def setSerBinListenTeller(tellerLikesSerBin : CPStrongTeller[VWGoodyRqActionSpec])
 
+	def setTurtleTxtListenTeller(tellerLikesSerBin : CPStrongTeller[VWGoodyRqRdf])
+
 	// Should be unnecessary, unless we decide to process more in RDF space with inference+onto.
 	// def setTurtleTxtListenTeller (tellerLikesGoodyRdf : CPStrongTeller[VWGoodyRqRdf])
 
 }
-// Receives vw-requests in any ta-format, and publishes vw-notices as binary only.
-class TestTAQpidServer(myParentARF : ActorRefFactory, myQpidTopicMgr : QpidTopicConn)
-			extends QPidTestEndpoint(myQpidTopicMgr) with ServerFeatureAccess with DummyActorMaker {
+trait KnowsOurDestinations extends KnowsTopicConn {
+	lazy val destForVWRqTATxt : JMSDestination = getTopicConn.makeQueueDestination(TestAppNames.topicName_forTurtleTxtTA)
+	lazy val destForVWRqTABin : JMSDestination = getTopicConn.makeQueueDestination(TestAppNames.topicName_forJSerBinTA)
 
-	private lazy val myConsumer_forTurtleTxt : JMSMsgConsumer = myJmsSession.createConsumer(destForVWRqTATxt)
-	private lazy val myConsumer_forJSerBin : JMSMsgConsumer = myJmsSession.createConsumer(destForVWRqTABin)
+	lazy val destForVWPubStatsBin : JMSDestination = getTopicConn.getDestForTopicName(TestAppNames.topicName_forVWPubStatJSerBin)
 
-	// Dummy actor+teller to receive thingActions, of both kinds.
-	// TODO:  The text-to-binary route can be built in.
-	private val rcvActor = makeTestDummyActor(myParentARF, "dummy-goody-rq-rcvr")
-	private val rcvWeakTeller = new ActorRefCPMsgTeller(rcvActor)
+}
+trait ServerReceiveFeatureImpl extends ServerFeatureAccess with  KnowsOurDestinations {
 
-	//	val rcvrFactory = new RecvrFactory
-	//	val allPurposeListener = rcvrFactory.makeItWeakerButEasier(rcvWeakTeller)
-
-	// Receiver wrappers know how to extract contents from JmsMessages
-	private  val rcvrTxt : ThingActReceiverTxt = new ThingActReceiverTxt(rcvWeakTeller.asInstanceOf[CPStrongTeller[VWGoodyRqRdf]])
-//	private val rcvrBin : ThingActReceiverBinary = new ThingActReceiverBinary(rcvWeakTeller.asInstanceOf[CPStrongTeller[VWGoodyRqActionSpec]])
-
-	// Ask the wrappers to make listeners, and attach those to our JmsCosumers
-	myConsumer_forTurtleTxt.setMessageListener(rcvrTxt.makeListener)
-//	myConsumer_forJSerBin.setMessageListener(rcvrBin.makeListener)
-
-	setSerBinListenTeller(rcvWeakTeller.asInstanceOf[CPStrongTeller[VWGoodyRqActionSpec]])
+	// TODO: These consumers should be for queues (not topics) and in fact often just for a single queue.
+	private lazy val myConsumer_forTurtleTxt : JMSMsgConsumer = getJmsSession.createConsumer(destForVWRqTATxt)
+	private lazy val myConsumer_forJSerBin : JMSMsgConsumer = getJmsSession.createConsumer(destForVWRqTABin)
 
 	override def setSerBinListenTeller(tellerLikesSerBin : CPStrongTeller[VWGoodyRqActionSpec]) : Unit = {
 		val taRcvrBin = new ThingActReceiverBinary(tellerLikesSerBin)
@@ -80,27 +73,61 @@ class TestTAQpidServer(myParentARF : ActorRefFactory, myQpidTopicMgr : QpidTopic
 		myConsumer_forJSerBin.setMessageListener(listener)
 	}
 
-	// ----------------------------------------------------------------
-	private val myJmsProdForVWPubNoticeBin : JMSMsgProducer = myJmsSession.createProducer(destForVWPubStatsBin)
-	private val mySenderForVWPubNoticeBin :  VWNoticeSender = new VWNoticeSenderJmsImpl(myJmsSession, myJmsProdForVWPubNoticeBin)
+	override def setTurtleTxtListenTeller(tellerLikesTrtlTxt : CPStrongTeller[VWGoodyRqRdf]) : Unit = {
+		val taRcvrTxt : ThingActReceiverTxt = new ThingActReceiverTxt(tellerLikesTrtlTxt)
+		val listener : JMSMsgListener = taRcvrTxt.makeListener
+		myConsumer_forTurtleTxt.setMessageListener(listener)
+	}
+
+}
+trait ServerPublishFeatureImpl extends ServerFeatureAccess with  KnowsOurDestinations {
+	private val myJmsProdForVWPubNoticeBin : JMSMsgProducer = getJmsSession.createProducer(destForVWPubStatsBin)
+	private val mySenderForVWPubNoticeBin :  VWNoticeSender = new VWNoticeSenderJmsImpl(getJmsSession, myJmsProdForVWPubNoticeBin)
 
 	override def getVWPubNoticeSender : VWNoticeSender = mySenderForVWPubNoticeBin
 	//	def sendNotice(notice : VWorldNotice): Unit = mySender.postThingAct(taSpec, encodePref)
 
 
-	def sendSomeVWNotices : Unit = {
+	def sendSomeVWNotices_Blocking(numNotices : Int, sleepIntervMsec : Int) : Unit = {
 		var msgCount = 0
-		while (msgCount < 50) {
-			mySenderForVWPubNoticeBin.sendPingNotice("number = " + msgCount)
+		while (msgCount < numNotices) {
 			msgCount += 1
-			Thread.sleep(900)
+			mySenderForVWPubNoticeBin.sendPingNotice("number = " + msgCount)
+			Thread.sleep(sleepIntervMsec)
 		}
 
 	}
+
+}
+
+// Receives vw-requests in any ta-format, and publishes vw-notices as binary only.
+class TestTAQpidServer(myParentARF : ActorRefFactory, myQpidTopicMgr : QpidDestMgr)
+			extends QPidTestEndpoint(myQpidTopicMgr) with ServerFeatureAccess
+						with ServerReceiveFeatureImpl with ServerPublishFeatureImpl with DummyActorMaker {
+
+
+	// Dummy actor+teller to receive thingActions, of both kinds.
+	// TODO:  The text-to-binary route can be built in.
+	private val dummyRcvActor = makeTestDummyActor(myParentARF, "dummy-goody-rq-rcvr")
+	private val dummyRcvWeakTeller = new ActorRefCPMsgTeller(dummyRcvActor)
+	// Make extractor wrappers, ask them to make listeners, and attach those listeners to our JmsConsumers
+	setSerBinListenTeller(dummyRcvWeakTeller.asInstanceOf[CPStrongTeller[VWGoodyRqActionSpec]])
+	setTurtleTxtListenTeller(dummyRcvWeakTeller.asInstanceOf[CPStrongTeller[VWGoodyRqRdf]])
+
+	//	val rcvrFactory = new RecvrFactory
+	//	val allPurposeListener = rcvrFactory.makeItWeakerButEasier(rcvWeakTeller)
+
+	// Receiver wrappers know how to extract contents from JmsMessages
+	// private  val rcvrTxt : ThingActReceiverTxt = new ThingActReceiverTxt(rcvWeakTeller.asInstanceOf[CPStrongTeller[VWGoodyRqRdf]])
+	//private val rcvrBin : ThingActReceiverBinary = new ThingActReceiverBinary(rcvWeakTeller.asInstanceOf[CPStrongTeller[VWGoodyRqActionSpec]])
+	//	myConsumer_forTurtleTxt.setMessageListener(rcvrTxt.makeListener)
+	//	myConsumer_forJSerBin.setMessageListener(rcvrBin.makeListener)
+
+	// ----------------------------------------------------------------
 }
 import scala.collection.JavaConverters._
-class TestTAQPidClient(ppidTopicMgr : QpidTopicConn)
-			extends QPidTestEndpoint(ppidTopicMgr) with VWPubStatListenerMaker {
+class TestTAQPidClient(ppidTopicMgr : QpidDestMgr)
+			extends QPidTestEndpoint(ppidTopicMgr) with KnowsOurDestinations with ExoPubStatDumpingListenerMaker {
 
 	val myProdForTurtle : JMSMsgProducer = myJmsSession.createProducer(destForVWRqTATxt)
 	val myProdForJSer : JMSMsgProducer = myJmsSession.createProducer(destForVWRqTABin)
@@ -108,19 +135,21 @@ class TestTAQPidClient(ppidTopicMgr : QpidTopicConn)
 	val mySender = new ThingActSenderQPid(myJmsSession, myProdForJSer, None, myProdForTurtle, None)
 	lazy val myConsumer_forVWPubStatBin : JMSMsgConsumer = myJmsSession.createConsumer(destForVWPubStatsBin)
 
-	myConsumer_forVWPubStatBin.setMessageListener(makePubStatNoticeListener)
+	val statDumpPeriod : Int = 5
+	myConsumer_forVWPubStatBin.setMessageListener(makePubStatDumpingListener(statDumpPeriod))
 
 	def sendVWRqThingAct(taSpec : ThingActionSpec, encodePref : Integer): Unit = mySender.postThingAct(taSpec, encodePref)
 
-	def sendSomeVWRqs : Unit = {
+	def sendSomeVWRqs(delayMsec : Int) : Unit = {
 		val gtmm: GoodyTestMsgMaker = new GoodyTestMsgMaker
 		val msgsJList = gtmm.makeGoodyCreationMsgs
 		var msgCount = 0
 		val msgSList : List[ThingActionSpec] = msgsJList.asScala.toList
 		for (msg <- msgSList) {
-			sendVWRqThingAct(msg, msgCount % 3)
+			val preferredEncoding : Int = msgCount % 3 // Cycles through 0=no-pref, 1=prefer-bin-ser, 2=prefer-turtle-txt
+			sendVWRqThingAct(msg, preferredEncoding)
 			msgCount += 1
-			Thread.sleep(1200)
+			Thread.sleep(delayMsec)
 		}
 	}
 }
@@ -129,7 +158,7 @@ trait OffersQpidSvcs extends KnowsAkkaSys with VarargsLogging {
 	// lazy val qpidTopicMgr : QpidTopicConn = new QPidTopicConn_JNDI_032(TestAppNames.allTopics)
 
 	lazy val qpidConnMgr : QpidConnMgr = new QpidConnMgrJFlux
-	lazy val qpidTopicMgr : QpidTopicConn = new QPidTopicConnJFlux(qpidConnMgr)
+	lazy val qpidTopicMgr : QpidDestMgr = new QPidDestMgrJFlux(qpidConnMgr)
 
 	// Under OSGi the server and client cannot easily deserialize messages with JMSMessage.getObject
 	// (Needs classpath wiring help - would it help to set context-cl during onMessage handler?).

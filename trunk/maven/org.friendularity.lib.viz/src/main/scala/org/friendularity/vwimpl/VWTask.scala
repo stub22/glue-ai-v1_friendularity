@@ -23,7 +23,7 @@ import org.appdapter.core.name.Ident
 import org.appdapter.fancy.log.VarargsLogging
 import org.cogchar.render.sys.registry.RenderRegistryClient
 import org.friendularity.cpmsg.CPStrongTeller
-import org.friendularity.field.{SourceDataMsg, ReportingPolicy, SchedTaskRepeating, ScheduleHelper}
+import org.friendularity.field.{SourceDataMsg, ReportingPolicy}
 import org.friendularity.vwmsg.VWExoBodyChance
 
 /**

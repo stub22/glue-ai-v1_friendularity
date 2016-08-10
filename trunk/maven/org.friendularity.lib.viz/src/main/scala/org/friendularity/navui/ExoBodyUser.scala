@@ -19,9 +19,10 @@ import java.util.concurrent.TimeUnit
 
 import akka.actor.{Props, ActorRef, ActorRefFactory, Actor}
 import org.friendularity.cpmsg.CPStrongTeller
+import org.friendularity.cpump.{ScheduleHelper, SchedTaskRepeating}
 
 // import akka.dispatch.{Dispatcher => AkkaDisp}
-import org.friendularity.field.{ScheduleHelper, SchedTaskRepeating}
+
 // import scala.concurrent.ExecutionContextExecutor
 // import akka.dispatch.Dispatcher
 import org.appdapter.fancy.log.VarargsLogging
