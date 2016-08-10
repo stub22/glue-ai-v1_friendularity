@@ -17,6 +17,7 @@ class NavUiAppImpl(myAkkaSys : ActorSystem) extends NavUiAppSvc with NavPumpSpac
 			with AppServiceHandleGroup with MakesVWBoss with OffersQpidSvcs {
 
 	override protected def getAkkaSys : ActorSystem = myAkkaSys
+	override protected def findAppQpidSvcOffering_opt : Option[OffersQpidSvcs] = Some(this)
 
 	// Desired effect of these messages is to launch a running OpenGL v-world, ready for characters and other content
 	// to be inserted into it.  Those facilities are available via actors defined in PubTeller replies sent to the
@@ -37,7 +38,6 @@ class NavUiAppImpl(myAkkaSys : ActorSystem) extends NavUiAppSvc with NavPumpSpac
 		registerPostInitWaiters(vbt) // Setup listeners to do more stuff at appropriate times, as VWorld init completes.
 
 	}
-	override protected def findQpidSvcOffering_opt : Option[OffersQpidSvcs] = Some(this)
 
 	def sendVWSetup_Conf_IsUnused() : Unit = {
 		val msg = new VWSetupRq_Conf
@@ -48,7 +48,6 @@ class NavUiAppImpl(myAkkaSys : ActorSystem) extends NavUiAppSvc with NavPumpSpac
 		val msg = new VWSetupRq_Lnch
 		getVWBossTeller.tellCPMsg(msg)
 	}
-
 
 	override def postPatientCharCreateRq(dualBodyID : Ident, fullHumaCfg : HumanoidFigureConfig,
 										 mbrsc_opt : Option[ModelBlendingRobotServiceContext], answerTeller : CPStrongTeller[VWBodyNotice]) : Unit = {

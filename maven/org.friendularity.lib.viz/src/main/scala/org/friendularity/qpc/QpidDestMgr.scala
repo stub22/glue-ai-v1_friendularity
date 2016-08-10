@@ -39,7 +39,17 @@ trait QpidDestMgr {
 		val dest : JMSDestination = connMgr.makeFullySpecifiedDestination(destNameTailFull)
 		dest
 	}
+}
+abstract class DestMgrImpl(myConnMgr : QpidConnMgr) extends QpidDestMgr {
+	override protected def getConnMgr: QpidConnMgr = myConnMgr
 
+	override def getDestForTopicName(topicName: String): JMSDestination = ???
+}
+class QPidDestMgrJFlux(connMgr : QpidConnMgr) extends DestMgrImpl(connMgr) with VarargsLogging {
+
+	override def getDestForTopicName(topicName: String): JMSDestination = {
+		makeTopicDestination(topicName)
+	}
 }
 
 // Qpid example code often uses this Jndi approach.
@@ -58,7 +68,7 @@ class QPidDestMgr_JNDI_032(myTopicExchangeNameList : List[String]) extends QpidD
 		// Notice how in this form, the topicNames are put in Jndi props before the connection is created.
 		info1("QPidConn jndiProps={}", myJndiProps)
 		val qc = new QpidConnMgrJndi(myJndiProps)
-		qc.startConn()
+		qc.startConn
 		qc
 	}
 

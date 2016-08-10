@@ -175,6 +175,7 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 		if (myFlag_launchQpidTopics) {
 			getLogger().info("============ Calling pingQpidSvcs() ==========");
 			boolean includeDummyClient = false;
+			((OffersQpidSvcs) appSvc).startQpidConn();
 			((OffersQpidSvcs) appSvc).pingQpidSvcs(includeDummyClient);
 		}
 
