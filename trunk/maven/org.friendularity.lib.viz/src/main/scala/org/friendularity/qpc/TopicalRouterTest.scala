@@ -71,7 +71,7 @@ class QpidHelloWorld extends VarargsLogging {
 			val jndiProps = nameMgr.makeJndiPropsForTopicSetup(topicExchangeNames)
 			info1("jndiProps={}", jndiProps)
 			val qpidConn = new QpidConnMgrJndi(jndiProps)
-			qpidConn.startConn()
+			qpidConn.startConn
 			
 			val jmsSession =  qpidConn.makeSessionAutoAck() //   jmsConn.createSession(false, Session.AUTO_ACKNOWLEDGE); 
 			val jmsDest_001 = qpidConn.makeFullySpecifiedDestination(topic001_name_tail) // connector.myJndiCtx.lookup(topic001_name_tail).asInstanceOf[Destination];
