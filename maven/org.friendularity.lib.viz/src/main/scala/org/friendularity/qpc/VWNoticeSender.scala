@@ -20,7 +20,7 @@ trait VWNoticeSender {
 	}
 }
 class VWNoticeSenderJmsImpl(myJmsSess : JMSSession, myJmsProd_JSer : JMSMsgProducer) extends VWNoticeSender with KnowsJmsSession {
-	override protected def getJmsSession : JMSSession = myJmsSess
+	override def getJmsSession : JMSSession = myJmsSess
 	val myHdrWriter : Option[WritesJmsHeaders] = None
 	lazy val myNoticeSendChan : DefinedJmsSenderChan = new JmsSenderChanImpl(myJmsSess, myJmsProd_JSer, myHdrWriter)
 	override def sendVWNotice(vwNotice : VWorldNotice) : Unit = {

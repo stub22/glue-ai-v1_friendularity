@@ -107,6 +107,9 @@
                             org.friendularity.thact,
                             org.friendularity.akact
                         </Export-Package>
+                        <Private-Package>
+                            org.friendularity.netcli.*
+                        </Private-Package>
 						<!-- org.parboiled,  shapeless,  org.uncommons.maths  are used by spray-http -->
                     </instructions>
                 </configuration>

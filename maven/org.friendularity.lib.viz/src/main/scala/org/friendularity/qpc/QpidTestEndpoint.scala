@@ -30,91 +30,22 @@ import org.cogchar.api.thing.ThingActionSpec
 import org.cogchar.render.rendtest.GoodyTestMsgMaker
 import org.friendularity.akact.{KnowsAkkaSys, DummyActorMaker}
 import org.friendularity.cpmsg.{CPStrongTeller, ActorRefCPMsgTeller}
-import org.friendularity.thact.{ThingActReceiverBinary, ThingActReceiverTxt}
+import org.friendularity.netcli.vwta.TestTAQPidClient
+import org.friendularity.thact.{ThingActSender, ThingActReceiverBinary, ThingActReceiverTxt}
 import org.friendularity.vwmsg.{VWGoodyRqRdf, VWGoodyRqActionSpec, VWorldNotice}
 
 /**
   * Created by Stub22 on 8/8/2016.
   */
-object VWorldAmqpDestNames {
-	// Nothing stops us from making these names the same, combining destinations, etc, if that's what we wanted.
-	// But separate queues for separate formats is a decent approach.
-	val queueName_forJSerBinTA = "vwRqTA_jserBin"
-	val queueName_forTurtleTxtTA = "vwRqTA_turtleTxt"
-	val queueName_forUnifiedTA = "vwRqTA_unified" // accepts both serBin and turtleTxt messages
-
-	val topicName_forVWPubStatJSerBin = "vwPubStat_jserBin"
-
-	val allDestinNames : List[String] = List(queueName_forUnifiedTA, queueName_forJSerBinTA, queueName_forTurtleTxtTA, topicName_forVWPubStatJSerBin)
-}
-trait KnowsJmsSession {
-	def getJmsSession : JMSSession
-}
-
-trait KnowsDestMgr { // extends KnowsJmsSession {
-	def getDestMgr : QpidDestMgr
-
-//	override def getJmsSession : JMSSession = getDestMgr.getJmsSession
-}
 
 // KnowsJmsSession with
 class QPidFeatureEndpoint(myJmsDestMgr : QpidDestMgr) extends  KnowsDestMgr {
 	// lazy val myJmsSession = myJmsDestMgr.makeSession
 
 	override def getDestMgr : QpidDestMgr = myJmsDestMgr
-
 }
 
-// This trait can be used on both server and client sides
-trait KnowsTARqDestinations extends KnowsDestMgr  {
-	lazy val destVWRqTATxt : JMSDestination = getDestMgr.makeQueueDestination(VWorldAmqpDestNames.queueName_forTurtleTxtTA)
-	lazy val destVWRqTABin : JMSDestination = getDestMgr.makeQueueDestination(VWorldAmqpDestNames.queueName_forJSerBinTA)
-	lazy val destVWRqTAUni : JMSDestination = getDestMgr.makeQueueDestination(VWorldAmqpDestNames.queueName_forUnifiedTA)
 
-}
-trait KnowsPubStatDestinations extends KnowsDestMgr  {
-	lazy val destForVWPubStatsBin : JMSDestination = getDestMgr.getDestForTopicName(VWorldAmqpDestNames.topicName_forVWPubStatJSerBin)
-}
-
-trait MakesRqProducers extends KnowsTARqDestinations {
-	private lazy val myJmsSession = getDestMgr.getJmsSession
-	val myProdForTurtle : JMSMsgProducer = myJmsSession.createProducer(destVWRqTATxt)
-	val myProdForJSer : JMSMsgProducer = myJmsSession.createProducer(destVWRqTABin)
-
-	val mySender = new ThingActSenderQPid(myJmsSession, myProdForJSer, None, myProdForTurtle, None)
-
-}
-
-trait MakesPubStatConsumers extends KnowsPubStatDestinations {
-	private lazy val myJmsSession = getDestMgr.getJmsSession
-
-	lazy val myConsumer_forVWPubStatBin : JMSMsgConsumer = myJmsSession.createConsumer(destForVWPubStatsBin)
-
-}
-
-import scala.collection.JavaConverters._
-class TestTAQPidClient(qpidDestMgr : QpidDestMgr) extends QPidFeatureEndpoint(qpidDestMgr)
-			with MakesRqProducers with MakesPubStatConsumers with  ExoPubStatDumpingListenerMaker {
-
-
-	val statDumpPeriod : Int = 5
-	myConsumer_forVWPubStatBin.setMessageListener(makePubStatDumpingListener(statDumpPeriod))
-
-	def sendVWRqThingAct(taSpec : ThingActionSpec, encodePref : Integer): Unit = mySender.postThingAct(taSpec, encodePref)
-
-	def sendSomeVWRqs(delayMsec : Int) : Unit = {
-		val gtmm: GoodyTestMsgMaker = new GoodyTestMsgMaker
-		val msgsJList = gtmm.makeGoodyCreationMsgs
-		var msgCount = 0
-		val msgSList : List[ThingActionSpec] = msgsJList.asScala.toList
-		for (msg <- msgSList) {
-			val preferredEncoding : Int = msgCount % 3 // Cycles through 0=no-pref, 1=prefer-bin-ser, 2=prefer-turtle-txt
-			sendVWRqThingAct(msg, preferredEncoding)
-			msgCount += 1
-			Thread.sleep(delayMsec)
-		}
-	}
-}
 
 trait OffersQpidSvcs extends KnowsAkkaSys with VarargsLogging {
 	// lazy val qpidTopicMgr : QpidTopicConn = new QPidTopicConn_JNDI_032(TestAppNames.allTopics)
@@ -171,10 +102,3 @@ trait OffersQpidSvcs extends KnowsAkkaSys with VarargsLogging {
 	}
 }
 
-class DummyTestHeaderWriter() extends WritesJmsHeaders {
-	override def putHeadersOnMsg(msg : JMSMsg, dataInside : Any): Unit = {
-		msg.setIntProperty("wackyInt", 987654321);
-		msg.setStringProperty("wackyName", "Widget");
-		msg.setDoubleProperty("wackyPrice", 0.99);
-	}
-}
