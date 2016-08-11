@@ -65,26 +65,7 @@ case class StageCtxImpl(crc: CogcharRenderContext, upAtchr : UpdateAttacher, tmb
 	override def getTempMidiBridge_opt : Option[TempMidiBridge] = tmb_opt
 
 }
-
-trait VWStageLogic extends VarargsLogging with EnqHlp {
-
-	def prepareIndependentOptics_onRendThrd(flyCam: FlyByCamera, mainViewPort: ViewPort,
-											moveSpeed : Int, bgColor: ColorRGBA): Unit = {
-
-		info2("prepareOpticsStage1: setting flyCam speed to {}, and background color to {}",
-					moveSpeed : Integer, bgColor)
-		// Sets the speed of our POV camera movement.  The default is pretty slow.
-		flyCam.setMoveSpeed(moveSpeed)
-
-		mainViewPort.setBackgroundColor(bgColor)
-	}
-	def prepareCoupledOptics_onRendThrd(crc: CogcharRenderContext, someContent : TrialContent, tcam: TrialCameras) : Unit = {
-		someContent.shedLight_onRendThread(crc)
-		val rrc: RenderRegistryClient = crc.getRenderRegistryClient
-		val crc_orNull_notUsed : CogcharRenderContext = null
-		tcam.setupCamerasAndViews(rrc, crc_orNull_notUsed, someContent)
-	}
-
+trait DummyContentLogic extends VarargsLogging with EnqHlp {
 	def makeOldDummyContent() : TrialContent = {
 		// Visually this includes the dense purple+green+white grid-forest that Sinbad is standing in,
 		// and the overlay 2D text boxes used to display camera positions, also some orangey pointer cones.
@@ -110,7 +91,6 @@ trait VWStageLogic extends VarargsLogging with EnqHlp {
 
 	}
 
-
 	def wireDummyContentToCamsAndMidi(someContent : TrialContent, someCameras : TrialCameras,
 									  updAtchr: UpdateAttacher, tmb_opt: Option[TempMidiBridge]) : Unit = {
 		updAtchr.attachUpdater(someContent) // Adds someContent to list of V-world updaters that get regular ticks
@@ -120,7 +100,12 @@ trait VWStageLogic extends VarargsLogging with EnqHlp {
 			// Hand the MIDI bindings to the camera-aware app.
 			someCameras.attachMidiCCs(ccpr)
 		}
+	}
+	def prepareCoupledOptics_onRendThrd(crc: CogcharRenderContext, someContent : TrialContent, tcam: TrialCameras) : Unit = {
 
+		val rrc: RenderRegistryClient = crc.getRenderRegistryClient
+		val crc_orNull_notUsed : CogcharRenderContext = null
+		tcam.setupCamerasAndViews(rrc, crc_orNull_notUsed, someContent)
 	}
 
 	def setupDummyCamsAndWiring(tcont : TrialContent, tcam: TrialCameras, crc: CogcharRenderContext, updAtchr: UpdateAttacher,
@@ -133,18 +118,21 @@ trait VWStageLogic extends VarargsLogging with EnqHlp {
 	}
 	def prepareDummyFeatures_onRendThrd(crc: CogcharRenderContext, parentDeepNode: JmeNode, parentFlatGuiNode: JmeNode,
 										assetManager: AssetManager, updAtchr: UpdateAttacher, tmb_opt: Option[TempMidiBridge]): Unit = {
-
+		getLogger.info("************** prepareDummyFeatures_onRendThrd - START")
 		// Code for this method originally copied from cogchar.TrialBalloon.doMoreSimpleInit
 		val rrc: RenderRegistryClient = crc.getRenderRegistryClient
 
 		val tcont = makeOldDummyContent()
-		val tcam: TrialCameras = new TrialCameras
 
-		// TODO:  Look for which parts of this need to happen before the "wire" step
-		displayDummyContent_onRendThrd(tcont, rrc, parentDeepNode, parentFlatGuiNode, assetManager)
-		setupDummyCamsAndWiring(tcont, tcam, crc, updAtchr, tmb_opt)
+		tcont.shedLight_onRendThread(crc)
 
-		getLogger.info("********************prepareStage is done!");
+		// Disabled 2016-08-11	 val tcam: TrialCameras = new TrialCameras
+
+		// Disabled 2016-08-11   displayDummyContent_onRendThrd(tcont, rrc, parentDeepNode, parentFlatGuiNode, assetManager)
+
+		// Disabled 2016-08-11   setupDummyCamsAndWiring(tcont, tcam, crc, updAtchr, tmb_opt)
+
+		getLogger.info("********************prepareDummyFeatures_onRendThrd - END");
 	}
 	def sendRendTaskForDummyFeatures(crc : CogcharRenderContext, updAtchr : UpdateAttacher,
 									 tmb_opt : Option[TempMidiBridge]) : Unit = {
@@ -160,16 +148,33 @@ trait VWStageLogic extends VarargsLogging with EnqHlp {
 		}
 		enqueueJmeCallable(rrc, senderCallable)
 	}
+
+}
+trait BasicOpticsLogic extends VarargsLogging with EnqHlp {
+	def prepareIndependentOptics_onRendThrd(flyCam: FlyByCamera, mainViewPort: ViewPort,
+											moveSpeed : Int, bgColor: ColorRGBA): Unit = {
+
+		info2("prepareOpticsStage1: setting flyCam speed to {}, and background color to {}",
+			moveSpeed : Integer, bgColor)
+		// Sets the speed of our POV camera movement.  The default is pretty slow.
+		flyCam.setMoveSpeed(moveSpeed)
+
+		mainViewPort.setBackgroundColor(bgColor)
+	}
 	def sendRendTaskForOpticsBasic(rq : VWStageOpticsBasic, rrc: RenderRegistryClient) : Unit = {
 		val workaroundStub = rrc.getWorkaroundAppStub
 		val fbCam = workaroundStub.getFlyByCamera
 
 		val mvp = workaroundStub.getPrimaryAppViewPort
 		val senderCallable : Function0[Unit] = () => {
-				prepareIndependentOptics_onRendThrd(fbCam, mvp, rq.moveSpeed, rq.bgColor)
+			prepareIndependentOptics_onRendThrd(fbCam, mvp, rq.moveSpeed, rq.bgColor)
 		}
 		enqueueJmeCallable(rrc, senderCallable)
 	}
+}
+trait VWStageLogic extends DummyContentLogic with BasicOpticsLogic with VarargsLogging with EnqHlp {
+
+
 }
 
 class VWStageActor(myStageCtx : VWStageCtx) extends Actor with VWStageLogic with VWCamLogic

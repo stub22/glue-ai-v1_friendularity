@@ -205,7 +205,7 @@ trait PatientSender_BonusStaging extends OuterLogic with IdentHlp {
 		stageTeller.tellCPMsg(opticsBasicRq)
 
 		val emuBonusRq = new VWStageEmulateBonusContentAndCams()
-		stageTeller.tellStrongCPMsg(emuBonusRq)
+	 	stageTeller.tellStrongCPMsg(emuBonusRq)
 
 		setupStatusPumps(vwpt)
 
