@@ -1,3 +1,20 @@
+/*
+ *  Copyright 2016 by The Friendularity Project (www.friendularity.org).
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
+
 package org.friendularity.thact
 
 import java.lang.{Long => JLong, Integer => JInt}
@@ -18,15 +35,21 @@ import org.friendularity.vwmsg.{VWorldNotice, VWGoodyRqTAS, VWGoodyRqActionSpec,
 // This listener sniffs at the inbound JMS message to find type, and dispatches to Receiver code.
 // Receiver code wraps and sends an appropriate actor msg to enqueue further work on the message.
 
-class ThingActReceiverTxt(goodyTATurtleTeller : CPStrongTeller[VWGoodyRqRdf]) extends VarargsLogging {
-	def receiveTextMsg(txtMsg : JMSTextMsg) : Unit = {
+trait JmsListenerMaker {
+	def makeListener : JMSMsgListener
+}
+class ThingActReceiverTxt(goodyTATurtleTeller : CPStrongTeller[VWGoodyRqRdf]) extends
+			JmsListenerMaker with VarargsLogging {
+
+
+	private def forwardUndecodedGoodyTxtMsg(txtMsg : JMSTextMsg) : Unit = {
 		val txtCont = txtMsg.getText
 		// We assume it is a turtle encoding of ThingActSpec(s), targeting VW-Goodies.
 		// But what if it is a body-manip or cam-manip request?
 		val goodyTATurtleRq = new VWGoodyRqTurtle(txtCont)
 		goodyTATurtleTeller.tellStrongCPMsg(goodyTATurtleRq)
 	}
-	def makeListener : JMSMsgListener = {
+	override def makeListener : JMSMsgListener = {
 		new JMSMsgListener() {
 			override def onMessage(msg: JMSMsg): Unit = {
 				debug2("ThingActReceiverTxt-JMSListener msgID={} timestamp={}", msg.getJMSMessageID, msg.getJMSTimestamp : JLong)
@@ -34,7 +57,7 @@ class ThingActReceiverTxt(goodyTATurtleTeller : CPStrongTeller[VWGoodyRqRdf]) ex
 				msg match {
 					case txtMsg: JMSTextMsg => {
 						info2("JMSListener processing received txtMsg with length={} and tstamp={}", txtMsg.getText.length : JInt,  txtMsg.getJMSTimestamp: JLong)
-						receiveTextMsg(txtMsg)
+						forwardUndecodedGoodyTxtMsg(txtMsg)
 					}
 					case other => {
 						error2("Received unexpected  (not JMS-TextMessage) message class={}, dump=\n{}", other.getClass, other)
@@ -45,14 +68,26 @@ class ThingActReceiverTxt(goodyTATurtleTeller : CPStrongTeller[VWGoodyRqRdf]) ex
 	}
 }
 // Note that if this receiver is running under OSGi, it must have correct classpath in scope (thrdCtx?) during deserial.
-class ThingActReceiverBinary(goodyTADirectTeller : CPStrongTeller[VWGoodyRqActionSpec]) extends VarargsLogging  {
+class ThingActReceiverBinary(goodyTADirectTeller : CPStrongTeller[VWGoodyRqActionSpec])
+			extends JmsListenerMaker with VarargsLogging {
+
 	def receiveJSerBinaryMsg(objMsg : JMSObjMsg) : Unit = {
 		val objCont = objMsg.getObject // This call does the deserial, will fail if classpath not correct.
-		val taSpec : ThingActionSpec = objCont.asInstanceOf[ThingActionSpec] // will fail if class not as expected
+		val taSpec: ThingActionSpec = objCont.asInstanceOf[ThingActionSpec] // will fail if class not as expected
+		receiveThingAction(taSpec)
+	}
+	def receiveThingAction(taSpec: ThingActionSpec) {
+		val verbID = taSpec.getVerbID
+		val targetID = taSpec.getTargetThingID
+		val targetTypeID = taSpec.getTargetThingTypeID
+		info3("Naively forwarding TA to goody-teller for target={}, targetType={}, verb={}", targetID, targetTypeID, verbID)
+		forwardMsgToGoodyActor(taSpec)
+	}
+	def forwardMsgToGoodyActor(taSpec: ThingActionSpec) : Unit = {
 		val goodyTADirectRq = new VWGoodyRqTAS(taSpec) // make a new wrapper message to pass along
 		goodyTADirectTeller.tellStrongCPMsg(goodyTADirectRq)
 	}
-	def makeListener : JMSMsgListener = {
+	override def makeListener : JMSMsgListener = {
 		new JMSMsgListener() {
 			override def onMessage(msg: JMSMsg): Unit = {
 				info2("ThingActReceiverBinary-JMSListener msgID={} timestamp={}", msg.getJMSMessageID, msg.getJMSTimestamp : JLong)
@@ -70,6 +105,61 @@ class ThingActReceiverBinary(goodyTADirectTeller : CPStrongTeller[VWGoodyRqActio
 		}
 	}
 	// TODO:    makeConversionListenTeller
+}
+
+class ThingActReceiverDual(myTARcvBin : ThingActReceiverBinary) extends JmsListenerMaker
+				with JenaModelReader with VarargsLogging {
+
+	private def receiveTAJmsTurtleMsg(jmsTxtMsg : JMSTextMsg) : Int = {
+		val thingActs = decodeTAJmsTurtleMsg(jmsTxtMsg)
+		for (thAct <- thingActs) {
+			myTARcvBin.receiveThingAction(thAct)
+		}
+		thingActs.size
+	}
+	private def decodeTAJmsTurtleMsg(jmsTxtMsg : JMSTextMsg) : Traversable[ThingActionSpec] = {
+		val txtCont: String = jmsTxtMsg.getText
+		decodeTATurtleTxtModel(txtCont)
+	}
+	private def decodeTATurtleTxtModel(modelTxt : String) : Traversable[ThingActionSpec] = {
+
+		val decodeFlags_opt = None
+		val jenaModel = readModelFromTurtleTxt(modelTxt, decodeFlags_opt)
+		val exposer = new ThingActExposer {}
+		val thingActs: List[ThingActionSpec] = exposer.extractThingActsFromModel(jenaModel)
+
+		if (thingActs.isEmpty) {
+			warn1("Found 0 ThingActs in inbound jmsTxt-message, dumping model:\n {}", jenaModel)
+		}
+		if (thingActs.length > 1) {
+			warn1("Found {} ThingActs in inbound jmsTxt-message, processing in arbitrary order (TODO: sort by timestamp)", thingActs.length: Integer)
+		}
+		thingActs
+	}
+
+	override def makeListener: JMSMsgListener = {
+		new JMSMsgListener() {
+			override def onMessage(msg: JMSMsg): Unit = {
+				info2("ThingActReceiverDual-JMSListener rcvd msgID={} timestamp={}", msg.getJMSMessageID, msg.getJMSTimestamp: JLong)
+				msg match {
+					case txtMsg: JMSTextMsg => {
+						val taCount = receiveTAJmsTurtleMsg(txtMsg)
+						info2("Processed {} taMsgs from turtle blob of length={}, onMessage is now finished!",
+									taCount : JInt, txtMsg.getText.length : JInt)
+					}
+					case objMsg: JMSObjMsg => {
+						info1("Dual-Listener processing received objMsg with tstamp={}", objMsg.getJMSTimestamp: JLong)
+						myTARcvBin.receiveJSerBinaryMsg(objMsg)
+					}
+					case other => {
+						error2("Received unexpected (not JMS-ObjectMessage) message, class={}, dump=\n{}", other.getClass,  other)
+					}
+				}
+
+
+			}
+		}
+	}
 }
 
 // Note that if this receiver is running under OSGi, it must have correct classpath in scope (thrdCtx?) during deserial.

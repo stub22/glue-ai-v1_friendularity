@@ -1,3 +1,20 @@
+/*
+ *  Copyright 2016 by The Friendularity Project (www.friendularity.org).
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
+
 package org.friendularity.thact
 
 import java.lang.{Long => JLong}
@@ -20,7 +37,7 @@ import org.slf4j.Logger
 import scala.collection.mutable.ListBuffer
 
 /**
-  * Created by Owner on 6/11/2016.
+  * Created by Stub22 on 6/11/2016.
   */
 
 trait ThingActExposer extends VarargsLogging {
@@ -134,20 +151,6 @@ trait ThingActExposer extends VarargsLogging {
 			specBuffer.append(actSpec)
 		}
 		specBuffer.toList
-	}
-}
-
-trait ThingActTurtleEncoder extends VarargsLogging {
-	lazy val myRandomizer: Random = new Random
-
-	def encodeAsTurtleMsg(actSpec : ThingActionSpec) : String = {
-		val ftmw = new FancyThingModelWriter
-		val specModelWithPrefixes : JenaModel  = ftmw.writeTASpecAndPrefixesToNewModel(actSpec, myRandomizer)
-
-		val turtleTriplesString : String = ftmw.serializeSpecModelToTurtleString(specModelWithPrefixes)
-		info2("Serialized turtle message FROM model of size {} triples TO string of length {} chars", specModelWithPrefixes.size() : JLong, turtleTriplesString.length : Integer)
-		debug1("Debug-Dumping encoded turtle message:\n {}", turtleTriplesString)
-		turtleTriplesString
 	}
 }
 

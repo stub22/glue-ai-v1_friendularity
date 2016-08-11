@@ -14,42 +14,33 @@
  *  limitations under the License.
  */
 
-package org.friendularity.vwmsg
+package org.friendularity.thact
 
 import java.io.ByteArrayInputStream
 import java.nio.charset.StandardCharsets
 
-
 import com.hp.hpl.jena.rdf.model.{Model => JenaModel, ModelFactory => JenaModelFactory, Resource, ResIterator}
 import org.apache.jena.riot.RDFFormat
 import org.appdapter.fancy.log.VarargsLogging
-import org.cogchar.api.thing.ThingActionSpec
-import org.friendularity.thact.{JenaModelReader, RdfMsg}
-
 
 /**
-  * Created by Stub22 on 6/16/2016.
+  * Created by Stub22 on 8/11/2016.
   */
 
+trait JenaModelReader extends VarargsLogging {
+	def readModelFromTurtleTxt(turtleTxt : String, flags_opt: Option[AnyRef]) : JenaModel = {
+		// val modelReader = new StringReader(modelTurtleTxt)
+		// Jena docs recommend reading from bytes rather than higher level Java chars.
+		val modelBytes = turtleTxt.getBytes(StandardCharsets.UTF_8)
 
-trait VWGoodyRqRdf extends VWContentRq  with RdfMsg {
-}
-case class VWGoodyRqTurtle(myTurtleTxt : String) extends VWGoodyRqRdf with JenaModelReader with VarargsLogging{
-	override def asTurtleString : String = myTurtleTxt
-
-	override def asJenaModel(flags_opt: Option[AnyRef]) : JenaModel = {
-		val modelTurtleTxt : String = asTurtleString
-		readModelFromTurtleTxt(modelTurtleTxt, flags_opt)
+		val modelByteStream = new ByteArrayInputStream(modelBytes);
+		val model = JenaModelFactory.createDefaultModel() ;
+		val baseURI_orNull : String = null
+		val lang : String = RDFFormat.TURTLE.getLang.getName //  "TURTLE"
+		model.read(modelByteStream, baseURI_orNull, lang)
+		info1("After read, model size is (at least) {} stmts", model.size() : java.lang.Long)
+		debug1("Model contentDump:\n{}", model)
+		model
 	}
 }
-trait VWGoodyRqActionSpec extends VWContentRq {
-	def getActionSpec : ThingActionSpec
-}
-case class VWGoodyRqTAS(myBTAS : ThingActionSpec) extends  VWGoodyRqActionSpec {
-	override def getActionSpec : ThingActionSpec = myBTAS
-}
-
-
-trait VWStatMsg extends VWorldNotice
-
 

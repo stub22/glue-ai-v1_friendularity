@@ -52,56 +52,10 @@ import org.friendularity.vwmsg.{VWorldNotice, VWGoodyRqActionSpec, VWGoodyRqRdf,
   * (Again, question of string vs. binary payload remains orthogonal).
   */
 
-trait KnowsJmsSession {
-	protected def getJmsSession : JMSSession
-}
-
-class DummyTestHeaderWriter() extends WritesJmsHeaders {
-	override def putHeadersOnMsg(msg : JMSMsg, dataInside : Any): Unit = {
-		msg.setIntProperty("wackyInt", 987654321);
-		msg.setStringProperty("wackyName", "Widget");
-		msg.setDoubleProperty("wackyPrice", 0.99);
-	}
-}
-
-
-trait ClientStatListenerCouldUseAkkaButThatWouldBeWeird extends  DummyActorMaker {
-	val myParentARF : ActorRefFactory = ???
-	val wwStatRcvActor = makeTestDummyActor(myParentARF, "vwStatRcvr")
-	val vwStatWeakTeller = new ActorRefCPMsgTeller(wwStatRcvActor)
-}
-
-// Test far-outer client ability to receive VWorld status and dump the message contents.
-// A real external client can do something more fun or useful with this data.
-trait ExoPubStatDumpingListenerMaker extends VarargsLogging {
-	// statDumpPeriod <= 0   means no stat dumps
-	def makePubStatDumpingListener(statDumpPeriod : Int) : JMSMsgListener = {
-		new JMSMsgListener() {
-			var myStatusRcvdCnt = 0
-			override def onMessage(msg: JMSMsg): Unit = {
-				debug2("VWPubStatListener-JMSListener msgID={} timestamp={}", msg.getJMSMessageID, msg.getJMSTimestamp : JLong)
-				debug1("VWPubStatListener-JMSListener - dumping rcvd msg, to see if 'wacky' headers show up:\n{}", msg)
-				msg match {
-					case objMsg: JMSObjMsg => {
-						myStatusRcvdCnt += 1
-						if ((statDumpPeriod > 0) && ((myStatusRcvdCnt % statDumpPeriod) == 0)) {
-							val objCont: JSerializable = objMsg.getObject
-							info4("VWPubStatListener received {}th update, msgID={}, tstamp={}, notice={}", myStatusRcvdCnt : JInt,
-								objMsg.getJMSMessageID, objMsg.getJMSTimestamp: JLong, objCont.asInstanceOf[AnyRef])
-						}
-					}
-					case otherMsg => {
-						error2("Received unexpected (not JMS-ObjectMessage) message, class={}, dump=\n{}", otherMsg.getClass,  otherMsg)
-					}
-				}
-			}
-		}
-	}
-}
 
 // Runs both a "server" and a "client" in one process, to verify that basic duplex message flow works.
 // This would get deserialization errors in both directions, if run under OSGi.
-object ThingActMoverQPid_UnitTest extends VarargsLogging {
+object TestQpidThingActMover extends VarargsLogging {
 	val srvrAkkaSysName = "unit-test-ta-qpid-vwSrvr"
 	lazy private val myServerAkkaSys = ActorSystem(srvrAkkaSysName)
 	// To have any more akka-sys instances, we would need separate akka-remote port numbers.
@@ -143,5 +97,39 @@ object ThingActMoverQPid_UnitTest extends VarargsLogging {
 		}
 	}
 
+}
+
+trait ClientStatListenerCouldUseAkkaButThatWouldBeWeird extends  DummyActorMaker {
+	val myParentARF : ActorRefFactory = ???
+	val wwStatRcvActor = makeTestDummyActor(myParentARF, "vwStatRcvr")
+	val vwStatWeakTeller = new ActorRefCPMsgTeller(wwStatRcvActor)
+}
+
+// Test far-outer client ability to receive VWorld status and dump the message contents.
+// A real external client can do something more fun or useful with this data.
+trait ExoPubStatDumpingListenerMaker extends VarargsLogging {
+	// statDumpPeriod <= 0   means no stat dumps
+	def makePubStatDumpingListener(statDumpPeriod : Int) : JMSMsgListener = {
+		new JMSMsgListener() {
+			var myStatusRcvdCnt = 0
+			override def onMessage(msg: JMSMsg): Unit = {
+				debug2("VWPubStatListener-JMSListener msgID={} timestamp={}", msg.getJMSMessageID, msg.getJMSTimestamp : JLong)
+				debug1("VWPubStatListener-JMSListener - dumping rcvd msg, to see if 'wacky' headers show up:\n{}", msg)
+				msg match {
+					case objMsg: JMSObjMsg => {
+						myStatusRcvdCnt += 1
+						if ((statDumpPeriod > 0) && ((myStatusRcvdCnt % statDumpPeriod) == 0)) {
+							val objCont: JSerializable = objMsg.getObject
+							info4("VWPubStatListener received {}th update, msgID={}, tstamp={}, notice={}", myStatusRcvdCnt : JInt,
+								objMsg.getJMSMessageID, objMsg.getJMSTimestamp: JLong, objCont.asInstanceOf[AnyRef])
+						}
+					}
+					case otherMsg => {
+						error2("Received unexpected (not JMS-ObjectMessage) message, class={}, dump=\n{}", otherMsg.getClass,  otherMsg)
+					}
+				}
+			}
+		}
+	}
 }
 
