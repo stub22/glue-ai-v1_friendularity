@@ -18,14 +18,14 @@ public class QPidBrokerMain extends org.apache.qpid.server.Main {
 	public static boolean doExitOnLaunchFailure = false;
 
 	// User should call this instead of Main.main(args).
-	public static void ourMainMethod(Logger logger, String[] args) {
+	public static boolean ourMainMethod(Logger logger, String[] args) {
 		// As of 0.32, QPid broker  Main.main() simply calls the Main constructor, which does
 		// all the actual work.  This is a problem because we can't construct our own Main
 		// subclass instance without calling that superclass constructor.  Hence
 		// the gymnastics seen here.
 		theLog = logger;
 		QPidBrokerMain qbm = new QPidBrokerMain(); // suppresses superclass constructor behavior.
-		qbm.ourBetterLauncherModifiedFromSuperConstructor(args); // Pass good args, without suppression.
+		return qbm.ourBetterLauncherModifiedFromSuperConstructor(args); // Pass good args, without suppression.
 	}
 	private static String SUPPRESSED_ARG = "SUPPRESSED_PARENT";
 	public static String[] suppressionArgsForParentConstructor = {SUPPRESSED_ARG};
@@ -47,7 +47,8 @@ public class QPidBrokerMain extends org.apache.qpid.server.Main {
 		}
 	}
 
-	private void ourBetterLauncherModifiedFromSuperConstructor(final String[] args) {
+	private boolean ourBetterLauncherModifiedFromSuperConstructor(final String[] args) {
+		boolean successFlag = false;
 		theLog.info("In QPidBrokerMain.ourBetterLauncherModifiedFromSuperConstructor, hooray!");
 		// We do allow superclass constructor to get past the first line, because it contains
 		// the hard-shutdown exception handler.   Instead we use a modified impl here.
@@ -55,6 +56,7 @@ public class QPidBrokerMain extends org.apache.qpid.server.Main {
 		{
 			try	{
 				execute(); // Note that this calls the startBroker method, which we override below.
+				successFlag = true;
 			}
 			catch(Exception e)	{
 				theLog.error("QPidBrokerMain caught exception during startup", e);
@@ -64,7 +66,8 @@ public class QPidBrokerMain extends org.apache.qpid.server.Main {
 			theLog.error("parseCommandline failed for args={}", (Object) args);
 			weFailedSoMaybeExitJVM();
 		}
-		theLog.info("Finished QPidBrokerMain.ourBetterLauncherModifiedFromSuperConstructor.");
+		theLog.info("QPidBrokerMain.ourBetterLauncherMod- returning successFlag={}",successFlag);
+		return successFlag;
 	}
 	private void weFailedSoMaybeExitJVM() {
 		// Superclass always does this shutdown on launch failure, but we make it optional.

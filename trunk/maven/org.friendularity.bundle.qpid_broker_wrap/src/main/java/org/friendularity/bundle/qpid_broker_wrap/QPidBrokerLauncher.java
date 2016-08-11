@@ -55,12 +55,13 @@ public class QPidBrokerLauncher extends BasicDebugger {
 	static public String DEFAULT_HOME_DIR_PATH = "qpid_broker_home/";
 	static public String DEFAULT_WORK_DIR_PATH = "qpid_broker_work/";
 
-	public static void launchBrokerWithDfltArgs(BundleContext bunCtx) {
-		launchBrokerWithDirpaths(bunCtx, DEFAULT_HOME_DIR_PATH, DEFAULT_WORK_DIR_PATH);
+	public static boolean launchBrokerWithDfltArgs(BundleContext bunCtx) {
+		return launchBrokerWithDirpaths(bunCtx, DEFAULT_HOME_DIR_PATH, DEFAULT_WORK_DIR_PATH);
 	}
 
-	public static void launchBrokerWithDirpaths(BundleContext bunCtx,
+	public static boolean launchBrokerWithDirpaths(BundleContext bunCtx,
 				String homeDirPath, String workDirPath) {
+		boolean successFlag = false;
 		// This arg setup can be done instead through System.Properties or env vars, whatever.
 		String[] pseudoArgs = {
 				"-prop", "qpid.home_dir=" + homeDirPath,
@@ -76,29 +77,31 @@ public class QPidBrokerLauncher extends BasicDebugger {
 				theLog.info("\n====\nSaved old classloader={}\nSetting contextClassLoader to: {}", savedCL, bundleCL);
 				Thread.currentThread().setContextClassLoader(bundleCL);
 			}
-			for (int i = 0; i< pseudoArgs.length ; i++) {
+			for (int i = 0; i < pseudoArgs.length; i++) {
 				theLog.info("Arg[{}]={}", i, pseudoArgs[i]);
 			}
 			theLog.info("Launching broker main");
-			launchBrokerMain(pseudoArgs);
-			theLog.info("\n==========\nFinished launching broker main");
+			successFlag = launchBrokerMain(pseudoArgs);
+			theLog.info("\n==========\nFinished launching broker main, successFlag={}", successFlag);
 		} catch (Throwable th) {
-			theLog.error(".start() caught exception: ", th);
+			// Usually exceptions are caught and printed farther down.
+			theLog.error("QPidBrokerLauncher.launchBrokerWithDirpaths() caught exception: ", th);
 			th.printStackTrace();
 		} finally {
 			theLog.info("\n==========\nSetting contextClassLoader back to: {}", savedCL);
 			Thread.currentThread().setContextClassLoader(savedCL);
 		}
-		theLog.debug("\n==========\n.launchBrokerWithDirpaths() is returning");
+		theLog.debug("\n==========\n.launchBrokerWithDirpaths() is returning successFlag={}", successFlag);
+		return successFlag;
 
 	}
-	static public void launchBrokerMain(String[] args) throws Throwable {
+	static public boolean launchBrokerMain(String[] args) throws Throwable {
 		// Our class derived from Main addresses issue #3 in comments at top, shutting off
 		// QPid's configuration of Log4J.  Also addresses #4, by making process-shutdown optional
 		// on failure.
 
 		Logger brokerLogger = getLoggerForClass(QPidBrokerMain.class);
-		QPidBrokerMain.ourMainMethod(brokerLogger, args);
+		return QPidBrokerMain.ourMainMethod(brokerLogger, args);
 
 		// Source of Main.java is here in the top qpid-broker project.
 		// http://grepcode.com/file/repo1.maven.org/maven2/org.apache.qpid/qpid-broker/0.32/org/apache/qpid/server/Main.java?av=f
@@ -106,8 +109,7 @@ public class QPidBrokerLauncher extends BasicDebugger {
 		// Source of Broker.java and BrokerOptions.java is in the qpid-broker-core project.
 		// http://grepcode.com/file/repo1.maven.org/maven2/org.apache.qpid/qpid-broker-core/0.32/org/apache/qpid/server/Broker.java?av=f
 
-
-
+		
 	}
 
 

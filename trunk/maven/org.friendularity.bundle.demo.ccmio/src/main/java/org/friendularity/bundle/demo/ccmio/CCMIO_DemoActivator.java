@@ -157,8 +157,8 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 		}
 		getLogger().info("============ Calling launchCPumpService() ==========");
 		launchCPumpService(bundleCtx);
-		getLogger().info("============ Calling launchMechioServiceConns() ==========");
-		launchMechioServiceConns(bundleCtx);
+		// getLogger().info("============ Calling launchMechioRemoteClientConns_UNUSED() ==========");
+		// launchMechioRemoteClientConns_UNUSED(bundleCtx);
 		getLogger().info("============ Calling launchOtherStuffLate() ==========");
 		launchOtherStuffLate();
 		getLogger().info("============ launchCcmioDemo END  ==========");
@@ -215,7 +215,7 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 	private void launchQPidBroker(BundleContext bunCtx) {
 		QPidBrokerLauncher.launchBrokerWithDfltArgs(bunCtx);
 	}
-	private void launchMechioServiceConns(BundleContext bundleCtx) {
+	private void launchMechioRemoteClientConns_UNUSED(BundleContext bundleCtx) {
 		MechioRemoteClientConnectionHelper msh = new MechioRemoteClientConnectionHelper();
 		msh.startEmUp(bundleCtx);
 	}
