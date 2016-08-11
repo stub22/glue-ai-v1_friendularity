@@ -76,3 +76,10 @@ class JmsSenderChanImpl(myJmsSess : JMSSession, myJmsProd: JMSMsgProducer, myHdW
 	override def getHeaderWriter_opt : Option[WritesJmsHeaders] = myHdWrtrOpt
 
 }
+class DummyTestHeaderWriter() extends WritesJmsHeaders {
+	override def putHeadersOnMsg(msg : JMSMsg, dataInside : Any): Unit = {
+		msg.setIntProperty("wackyInt", 987654321);
+		msg.setStringProperty("wackyName", "Widget");
+		msg.setDoubleProperty("wackyPrice", 0.99);
+	}
+}

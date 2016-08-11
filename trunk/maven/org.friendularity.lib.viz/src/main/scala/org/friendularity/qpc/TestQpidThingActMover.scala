@@ -28,6 +28,7 @@ import org.cogchar.api.thing.ThingActionSpec
 import org.cogchar.render.rendtest.GoodyTestMsgMaker
 import org.friendularity.akact.DummyActorMaker
 import org.friendularity.cpmsg.{ActorRefCPMsgTeller, CPStrongTeller}
+import org.friendularity.netcli.vwta.TestTAQPidClient
 
 import org.friendularity.thact.{ThingActReceiverBinary, ThingActReceiverTxt, ThingActSender, ThingActTurtleEncoder}
 import org.friendularity.vwmsg.{VWorldNotice, VWGoodyRqActionSpec, VWGoodyRqRdf, VWGoodyRqTAS, VWGoodyRqTurtle}

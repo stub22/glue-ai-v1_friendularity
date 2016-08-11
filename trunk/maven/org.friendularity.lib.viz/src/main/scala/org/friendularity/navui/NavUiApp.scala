@@ -27,7 +27,7 @@ import org.friendularity.cpump.ScheduleHelper
 
 import org.friendularity.dull.SpecialAppPumpSpace
 import org.friendularity.field.{StatusTickMsg, MsgToStatusSrc}
-import org.friendularity.qpc.{TestTAQPidClient, TestTAQpidServer, VWorldAmqpDestNames, QPidDestMgr_JNDI_032}
+import org.friendularity.qpc.{ TestTAQpidServer, VWorldAmqpDestNames, QPidDestMgr_JNDI_032}
 import org.friendularity.qpc.TestQpidThingActMover.info1
 import org.friendularity.respire._
 import org.friendularity.vwimpl.{VWorldActorFactoryFuncs, LegacyBodyLoader_Stateless}

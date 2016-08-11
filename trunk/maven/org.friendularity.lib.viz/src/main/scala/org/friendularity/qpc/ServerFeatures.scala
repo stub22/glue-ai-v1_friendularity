@@ -45,7 +45,7 @@ trait ServerReceiveFeature {
 	// Should be unnecessary, unless we decide to process more in RDF space with inference+onto.
 	// def setTurtleTxtListenTeller (tellerLikesGoodyRdf : CPStrongTeller[VWGoodyRqRdf])
 }
-trait MakesRqConsumers extends KnowsTARqDestinations {
+trait MakesRqConsumers extends KnowsVWTARqDestinations {
 	private lazy val myJmsSession = getDestMgr.getJmsSession
 	protected lazy val myConsumer_forTurtleTxt: JMSMsgConsumer = myJmsSession.createConsumer(destVWRqTATxt)
 	protected lazy val myConsumer_forJSerBin: JMSMsgConsumer = myJmsSession.createConsumer(destVWRqTABin)
@@ -72,7 +72,7 @@ class ServerReceiveFeatureImpl(destMgr : QpidDestMgr) extends QPidFeatureEndpoin
 
 }
 class ServerPublishFeatureImpl(destMgr : QpidDestMgr) extends QPidFeatureEndpoint(destMgr)
-			with ServerPublishFeature with  KnowsPubStatDestinations {
+			with ServerPublishFeature with  KnowsVWPubStatDestinations {
 	private lazy val myJmsSession = getDestMgr.getJmsSession
 	private lazy val myJmsProdForVWPubNoticeBin : JMSMsgProducer = myJmsSession.createProducer(destForVWPubStatsBin)
 	private lazy val mySenderForVWPubNoticeBin :  VWNoticeSender = new VWNoticeSenderJmsImpl(myJmsSession, myJmsProdForVWPubNoticeBin)
