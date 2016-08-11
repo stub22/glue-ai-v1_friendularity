@@ -216,7 +216,7 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 		QPidBrokerLauncher.launchBrokerWithDfltArgs(bunCtx);
 	}
 	private void launchMechioServiceConns(BundleContext bundleCtx) {
-		MechioServiceHelper msh = new MechioServiceHelper();
+		MechioRemoteClientConnectionHelper msh = new MechioRemoteClientConnectionHelper();
 		msh.startEmUp(bundleCtx);
 	}
 

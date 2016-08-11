@@ -28,7 +28,10 @@
             <version>${project.version}</version>
         </dependency>
 
-
+    <!-- These friendu-headless deps are for wiring of remote *client* AMQP connections
+            to external services and thus are not needed in our current CCMIO server demo.
+            Including them here somewhat confuses the mission of this demo, so we are
+            taking them out.
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>org.friendularity.bundle.headless.messaging</artifactId>
@@ -44,6 +47,7 @@
             <artifactId>org.friendularity.bundle.headless.animation</artifactId>
             <version>${project.version}</version>
         </dependency>
+        -->
 
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -58,7 +62,7 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!-- Next two ar eused only when we boot in old(2014) compat mode.  Can be removed soon. -->
+        <!-- Next two ar used only when we boot in old(2014) compat mode.  Can be removed soon. -->
         <dependency>
 			<groupId>org.cogchar</groupId>
 			<artifactId>org.cogchar.bundle.app.puma</artifactId>
@@ -69,11 +73,13 @@
 			<version>${appdapter.version}</version>
 		</dependency>
 
+        <!-- Last two deps may be easily disabled, along with a few lines of Java code in the Activator -->
+        <!-- For displaying the dynamic lifecycle monitor, which is just an extra debug tool -->
 		<dependency>
 			<groupId>org.rwshop</groupId>
 			<artifactId>org.rwshop.swing.common</artifactId>
 		</dependency>
-        <!-- o.a.b.gui allows us to use DemoBrowser object inspector -->
+        <!-- o.a.b.gui allows us to use DemoBrowser object inspector, yet another extra debug tool -->
         <dependency>
             <groupId>org.appdapter</groupId>
             <artifactId>org.appdapter.bundle.gui</artifactId>
