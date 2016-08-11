@@ -196,7 +196,7 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 	}
 	private NavUiAppImpl startVWorldNavUI_2016(BundleContext bundleCtx, ActorSystem akkaSys) {
 		NavUiAppImpl nuiApp = new NavUiAppImpl(akkaSys);
-		getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^  TestNavUI.main() created nuiApp={}\n\nNow sending setup msgs", nuiApp);
+		getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^  CCMIO_DemoActivator.startVWorldNavUI_2016() created nuiApp={}\n\nNow sending setup msgs", nuiApp);
 		nuiApp.sendSetupMsgs_Async();
 		return nuiApp;
 	}
@@ -212,14 +212,19 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 	private void launchCPumpService(BundleContext bundleCtx) {
 		myCPumpHelper.launchCPump(bundleCtx);
 	}
-	private void launchQPidBroker(BundleContext bunCtx) {
-		QPidBrokerLauncher.launchBrokerWithDfltArgs(bunCtx);
+	private boolean launchQPidBroker(BundleContext bunCtx) {
+		boolean successFlag = QPidBrokerLauncher.launchBrokerWithDfltArgs(bunCtx);
+		if (!successFlag) {
+			getLogger().warn("QPidBrokerLauncher failed.  But if another AMQP broker is already running, we may connect to it");
+		}
+		return successFlag;
 	}
+	/*
 	private void launchMechioRemoteClientConns_UNUSED(BundleContext bundleCtx) {
 		MechioRemoteClientConnectionHelper msh = new MechioRemoteClientConnectionHelper();
 		msh.startEmUp(bundleCtx);
 	}
-
+	*/
 	private void launchOtherStuffLate()  {
 	
 		if (myFlag_connectObsoleteNetworkVision) {

@@ -42,11 +42,13 @@ import org.slf4j.Logger;
  * 3) Qpid broker wants to configure Log4J as discussed here:
  * https://qpid.apache.org/releases/qpid-0.32/java-broker/book/Java-Broker-Runtime.html#Java-Broker-Runtime-Log-Files
  * At runtime this overwrites our existing Log4J config (set up by our boss bundle).  Boo!
- * So we want to counteract that, preferably by preventing it, or alternately
- * restoring our setup after broker launch, or telling QPid to use our log file instead, or...
  *
- * 4) On failure during launch, QPid broker will call   java system  .shutdown(), and halt
+ * We have disabled this behavior.
+ *
+ * 4) On failure during launch, QPid broker will normally call   java system  .shutdown(), and halt
  * the Java VM.
+ *
+ * We have made this behavior optional.
  *
  */
 public class QPidBrokerLauncher extends BasicDebugger {
@@ -82,7 +84,7 @@ public class QPidBrokerLauncher extends BasicDebugger {
 			}
 			theLog.info("Launching broker main");
 			successFlag = launchBrokerMain(pseudoArgs);
-			theLog.info("\n==========\nFinished launching broker main, successFlag={}", successFlag);
+			theLog.info("Finished launching broker main, successFlag={}", successFlag);
 		} catch (Throwable th) {
 			// Usually exceptions are caught and printed farther down.
 			theLog.error("QPidBrokerLauncher.launchBrokerWithDirpaths() caught exception: ", th);
@@ -91,7 +93,7 @@ public class QPidBrokerLauncher extends BasicDebugger {
 			theLog.info("\n==========\nSetting contextClassLoader back to: {}", savedCL);
 			Thread.currentThread().setContextClassLoader(savedCL);
 		}
-		theLog.debug("\n==========\n.launchBrokerWithDirpaths() is returning successFlag={}", successFlag);
+		theLog.debug("launchBrokerWithDirpaths() is returning successFlag={}", successFlag);
 		return successFlag;
 
 	}
@@ -109,7 +111,7 @@ public class QPidBrokerLauncher extends BasicDebugger {
 		// Source of Broker.java and BrokerOptions.java is in the qpid-broker-core project.
 		// http://grepcode.com/file/repo1.maven.org/maven2/org.apache.qpid/qpid-broker-core/0.32/org/apache/qpid/server/Broker.java?av=f
 
-		
+
 	}
 
 
