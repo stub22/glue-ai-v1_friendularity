@@ -1,3 +1,20 @@
+/*
+ *  Copyright 2016 by The Friendularity Project (www.friendularity.org).
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
+
 package org.friendularity.qpc
 
 import java.io.{Serializable => JSerializable}
@@ -17,26 +34,32 @@ import org.friendularity.thact.{ThingActReceiverBinary, ThingActReceiverTxt}
 import org.friendularity.vwmsg.{VWGoodyRqRdf, VWGoodyRqActionSpec, VWorldNotice}
 
 /**
-  * Created by Owner on 8/8/2016.
+  * Created by Stub22 on 8/8/2016.
   */
-object TestAppNames {
+object VWorldAmqpDestNames {
 	// Nothing stops us from making these names the same, combining destinations, etc, if that's what we wanted.
 	// But separate queues for separate formats is a decent approach.
-	val topicName_forJSerBinTA = "vwRqTA_jserBin"
-	val topicName_forTurtleTxtTA = "vwRqTA_turtleTxt"
+	val queueName_forJSerBinTA = "vwRqTA_jserBin"
+	val queueName_forTurtleTxtTA = "vwRqTA_turtleTxt"
+	val queueName_forUnifiedTA = "vwRqTA_unified" // accepts both serBin and turtleTxt messages
 
 	val topicName_forVWPubStatJSerBin = "vwPubStat_jserBin"
 
-	val allTopics = List(topicName_forJSerBinTA, topicName_forTurtleTxtTA, topicName_forVWPubStatJSerBin)
+	val allDestinNames : List[String] = List(queueName_forUnifiedTA, queueName_forJSerBinTA, queueName_forTurtleTxtTA, topicName_forVWPubStatJSerBin)
+}
+trait KnowsJmsSession {
+	def getJmsSession : JMSSession
 }
 
-trait KnowsDestMgr extends KnowsJmsSession {
+trait KnowsDestMgr { // extends KnowsJmsSession {
 	def getDestMgr : QpidDestMgr
-}
-class QPidFeatureEndpoint(myJmsDestMgr : QpidDestMgr) extends KnowsJmsSession with KnowsDestMgr {
-	lazy val myJmsSession = myJmsDestMgr.makeSession
 
-	override protected def getJmsSession : JMSSession = myJmsSession
+//	override def getJmsSession : JMSSession = getDestMgr.getJmsSession
+}
+
+// KnowsJmsSession with
+class QPidFeatureEndpoint(myJmsDestMgr : QpidDestMgr) extends  KnowsDestMgr {
+	// lazy val myJmsSession = myJmsDestMgr.makeSession
 
 	override def getDestMgr : QpidDestMgr = myJmsDestMgr
 
@@ -44,23 +67,35 @@ class QPidFeatureEndpoint(myJmsDestMgr : QpidDestMgr) extends KnowsJmsSession wi
 
 // This trait can be used on both server and client sides
 trait KnowsTARqDestinations extends KnowsDestMgr  {
-	lazy val destForVWRqTATxt : JMSDestination = getDestMgr.makeQueueDestination(TestAppNames.topicName_forTurtleTxtTA)
-	lazy val destForVWRqTABin : JMSDestination = getDestMgr.makeQueueDestination(TestAppNames.topicName_forJSerBinTA)
+	lazy val destVWRqTATxt : JMSDestination = getDestMgr.makeQueueDestination(VWorldAmqpDestNames.queueName_forTurtleTxtTA)
+	lazy val destVWRqTABin : JMSDestination = getDestMgr.makeQueueDestination(VWorldAmqpDestNames.queueName_forJSerBinTA)
+	lazy val destVWRqTAUni : JMSDestination = getDestMgr.makeQueueDestination(VWorldAmqpDestNames.queueName_forUnifiedTA)
 
 }
 trait KnowsPubStatDestinations extends KnowsDestMgr  {
-	lazy val destForVWPubStatsBin : JMSDestination = getDestMgr.getDestForTopicName(TestAppNames.topicName_forVWPubStatJSerBin)
+	lazy val destForVWPubStatsBin : JMSDestination = getDestMgr.getDestForTopicName(VWorldAmqpDestNames.topicName_forVWPubStatJSerBin)
+}
+
+trait MakesRqProducers extends KnowsTARqDestinations {
+	private lazy val myJmsSession = getDestMgr.getJmsSession
+	val myProdForTurtle : JMSMsgProducer = myJmsSession.createProducer(destVWRqTATxt)
+	val myProdForJSer : JMSMsgProducer = myJmsSession.createProducer(destVWRqTABin)
+
+	val mySender = new ThingActSenderQPid(myJmsSession, myProdForJSer, None, myProdForTurtle, None)
+
+}
+
+trait MakesPubStatConsumers extends KnowsPubStatDestinations {
+	private lazy val myJmsSession = getDestMgr.getJmsSession
+
+	lazy val myConsumer_forVWPubStatBin : JMSMsgConsumer = myJmsSession.createConsumer(destForVWPubStatsBin)
+
 }
 
 import scala.collection.JavaConverters._
 class TestTAQPidClient(qpidDestMgr : QpidDestMgr) extends QPidFeatureEndpoint(qpidDestMgr)
-			with KnowsTARqDestinations with KnowsPubStatDestinations with  ExoPubStatDumpingListenerMaker {
+			with MakesRqProducers with MakesPubStatConsumers with  ExoPubStatDumpingListenerMaker {
 
-	val myProdForTurtle : JMSMsgProducer = myJmsSession.createProducer(destForVWRqTATxt)
-	val myProdForJSer : JMSMsgProducer = myJmsSession.createProducer(destForVWRqTABin)
-
-	val mySender = new ThingActSenderQPid(myJmsSession, myProdForJSer, None, myProdForTurtle, None)
-	lazy val myConsumer_forVWPubStatBin : JMSMsgConsumer = myJmsSession.createConsumer(destForVWPubStatsBin)
 
 	val statDumpPeriod : Int = 5
 	myConsumer_forVWPubStatBin.setMessageListener(makePubStatDumpingListener(statDumpPeriod))
@@ -133,5 +168,13 @@ trait OffersQpidSvcs extends KnowsAkkaSys with VarargsLogging {
 		}
 
 		noticeSender.sendPingNotice("NavUiApp testing VWNotice send")
+	}
+}
+
+class DummyTestHeaderWriter() extends WritesJmsHeaders {
+	override def putHeadersOnMsg(msg : JMSMsg, dataInside : Any): Unit = {
+		msg.setIntProperty("wackyInt", 987654321);
+		msg.setStringProperty("wackyName", "Widget");
+		msg.setDoubleProperty("wackyPrice", 0.99);
 	}
 }

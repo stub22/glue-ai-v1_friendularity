@@ -12,14 +12,18 @@ import org.appdapter.fancy.log.VarargsLogging
 /**
   * Created by Stub22 on 8/8/2016.
   */
-trait QpidDestMgr {
+trait QpidDestMgr extends KnowsJmsSession {
 
 	val QUEUE_PROPS_SUFFIX = "; {create: always, node: {type: queue}}";
 	val TOPIC_PROPS_SUFFIX = "; {create: always, node: {type: topic}}";
 
 	protected def getConnMgr : QpidConnMgr
 
-	def makeSession : JMSSession = getConnMgr.makeSessionAutoAck()
+	private def makeSession : JMSSession = getConnMgr.makeSessionAutoAck()
+
+	private lazy val myJmsSession = makeSession
+
+	override def getJmsSession : JMSSession = myJmsSession
 
 //	def getDestsByNameTail :  Map[String, JMSDestination]
 
@@ -39,6 +43,7 @@ trait QpidDestMgr {
 		val dest : JMSDestination = connMgr.makeFullySpecifiedDestination(destNameTailFull)
 		dest
 	}
+
 }
 abstract class DestMgrImpl(myConnMgr : QpidConnMgr) extends QpidDestMgr {
 	override protected def getConnMgr: QpidConnMgr = myConnMgr

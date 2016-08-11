@@ -27,8 +27,8 @@ import org.friendularity.cpump.ScheduleHelper
 
 import org.friendularity.dull.SpecialAppPumpSpace
 import org.friendularity.field.{StatusTickMsg, MsgToStatusSrc}
-import org.friendularity.qpc.{TestTAQPidClient, TestTAQpidServer, TestAppNames, QPidDestMgr_JNDI_032}
-import org.friendularity.qpc.ThingActMoverQPid_UnitTest.info1
+import org.friendularity.qpc.{TestTAQPidClient, TestTAQpidServer, VWorldAmqpDestNames, QPidDestMgr_JNDI_032}
+import org.friendularity.qpc.TestQpidThingActMover.info1
 import org.friendularity.respire._
 import org.friendularity.vwimpl.{VWorldActorFactoryFuncs, LegacyBodyLoader_Stateless}
 import org.friendularity.vwmsg.{VWExoBodyChance, VWorldPublicTellers, VWorldRequest, VWBodyRq, VWBodyMakeRq, VWBodyLifeRq, VWARM_FindPublicTellers, VWSetupRq_Lnch, VWSetupRq_Conf, VWARM_GreetFromPumpAdmin, VWBodyNotice}

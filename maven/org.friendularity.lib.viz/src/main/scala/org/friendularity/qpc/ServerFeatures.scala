@@ -1,3 +1,19 @@
+/*
+ *  Copyright 2016 by The Friendularity Project (www.friendularity.org).
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
 package org.friendularity.qpc
 
 import java.io.{Serializable => JSerializable}
@@ -14,7 +30,7 @@ import org.friendularity.thact.{ThingActReceiverTxt, ThingActReceiverBinary}
 import org.friendularity.vwmsg.{VWGoodyRqRdf, VWGoodyRqActionSpec}
 
 /**
-  * Created by Owner on 8/10/2016.
+  * Created by Stub22 on 8/10/2016.
   */
 
 trait ServerPublishFeature {
@@ -29,13 +45,14 @@ trait ServerReceiveFeature {
 	// Should be unnecessary, unless we decide to process more in RDF space with inference+onto.
 	// def setTurtleTxtListenTeller (tellerLikesGoodyRdf : CPStrongTeller[VWGoodyRqRdf])
 }
+trait MakesRqConsumers extends KnowsTARqDestinations {
+	private lazy val myJmsSession = getDestMgr.getJmsSession
+	protected lazy val myConsumer_forTurtleTxt: JMSMsgConsumer = myJmsSession.createConsumer(destVWRqTATxt)
+	protected lazy val myConsumer_forJSerBin: JMSMsgConsumer = myJmsSession.createConsumer(destVWRqTABin)
+}
 
 class ServerReceiveFeatureImpl(destMgr : QpidDestMgr) extends QPidFeatureEndpoint(destMgr)
-			with ServerReceiveFeature with  KnowsTARqDestinations {
-
-	// TODO: These consumers should be for queues (not topics) and in fact often just for a single queue.
-	private lazy val myConsumer_forTurtleTxt : JMSMsgConsumer = getJmsSession.createConsumer(destForVWRqTATxt)
-	private lazy val myConsumer_forJSerBin : JMSMsgConsumer = getJmsSession.createConsumer(destForVWRqTABin)
+			with ServerReceiveFeature with  MakesRqConsumers {
 
 	/* Oops, we need to watch out for:
 	 Exception=javax.jms.IllegalStateException: Attempt to alter listener while session is started.
@@ -56,9 +73,9 @@ class ServerReceiveFeatureImpl(destMgr : QpidDestMgr) extends QPidFeatureEndpoin
 }
 class ServerPublishFeatureImpl(destMgr : QpidDestMgr) extends QPidFeatureEndpoint(destMgr)
 			with ServerPublishFeature with  KnowsPubStatDestinations {
-
-	private val myJmsProdForVWPubNoticeBin : JMSMsgProducer = getJmsSession.createProducer(destForVWPubStatsBin)
-	private val mySenderForVWPubNoticeBin :  VWNoticeSender = new VWNoticeSenderJmsImpl(getJmsSession, myJmsProdForVWPubNoticeBin)
+	private lazy val myJmsSession = getDestMgr.getJmsSession
+	private lazy val myJmsProdForVWPubNoticeBin : JMSMsgProducer = myJmsSession.createProducer(destForVWPubStatsBin)
+	private lazy val mySenderForVWPubNoticeBin :  VWNoticeSender = new VWNoticeSenderJmsImpl(myJmsSession, myJmsProdForVWPubNoticeBin)
 
 	override def getVWPubNoticeSender : VWNoticeSender = mySenderForVWPubNoticeBin
 	//	def sendNotice(notice : VWorldNotice): Unit = mySender.postThingAct(taSpec, encodePref)

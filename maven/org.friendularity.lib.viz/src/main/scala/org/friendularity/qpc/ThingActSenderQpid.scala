@@ -41,5 +41,14 @@ class ThingActSenderQPid(myJmsSess : JMSSession, myJmsProd_JSer : JMSMsgProducer
 		mySendChan_TATurtle.sendJmsTxtMsg(taAsTurtleTxt)
 		// sendTxtMsg(taAsTurtleTxt)
 	}
+}
+// Java-friendly class, offering turtle-encoding only, for use in student environments.
+class TASenderQPidTurtleTxt(jmsSess : JMSSession, jmsProd_Turtle : JMSMsgProducer,
+							jmsHdrWrtr_orNull : WritesJmsHeaders)
+		extends ThingActSenderQPid(jmsSess, null, None, jmsProd_Turtle, Option(jmsHdrWrtr_orNull)) {
+
+	override def supportsJavaSer: Boolean = false
+
+	override def postThingActViaJavaSer(srlzblTASpec: ThingActionSpec): Unit = ???
 
 }

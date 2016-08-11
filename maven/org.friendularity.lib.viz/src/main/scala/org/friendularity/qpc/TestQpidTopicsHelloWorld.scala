@@ -43,7 +43,7 @@ import javax.naming.InitialContext;
  *	agent-A1 says to quadStore-Q1 { operation-UI-Action {subtype KeyPress (or webPush, or 
  */
 
-object TopicalRouterTest extends VarargsLogging {
+object TestQpidTopicsHelloWorld extends VarargsLogging {
 	def main(args: Array[String]) : Unit = {
 		// Backup - if logging is not working, try enabling these two lines.
 		// Must enable "compile" or "provided" scope for Log4J dep in order to compile this code.
