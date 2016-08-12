@@ -5,34 +5,18 @@ import org.appdapter.fancy.log.VarargsLogging
 import org.friendularity.akact.{FrienduActor, KnowsAkkaSys}
 import org.friendularity.cpmsg.{ActorRefCPMsgTeller, CPStrongTeller}
 import org.friendularity.field.MsgToStatusSrc
-import org.friendularity.qpc.OffersQpidSvcs
-import org.friendularity.vwmsg.{VWGoodyRqActionSpec, VWorldPublicTellers, VWBodyLifeRq, VWARM_FindPublicTellers, VWorldRequest}
+import org.friendularity.qpc.OffersVWorldServer
+import org.friendularity.vwimpl.MakesVWTAReqRouterTeller
+import org.friendularity.vwmsg.{VWRqTAWrapper, VWGoodyRqTAWrapper, VWorldPublicTellers, VWBodyLifeRq, VWARM_FindPublicTellers, VWorldRequest}
 
 /**
   * Created by Stub22 on 8/8/2016.
   */
-trait ThingActReqRouterLogic extends VarargsLogging {
-	def routeRq(vwgrq: VWGoodyRqActionSpec) : Unit = {
-		val tellers = getVWPubTellers
-		info1("Router handling TARq in binary format: {}", vwgrq)
-	}
-	def getVWPubTellers : VWorldPublicTellers
-}
-class ThingActReqRouterActor(routerLogic : ThingActReqRouterLogic) extends FrienduActor {
-	override def receive = {
-		case vwgrq: VWGoodyRqActionSpec => {
-			routerLogic.routeRq(vwgrq)
-		}
-		case other => {
-			getLogger().warn("ThingActReqRouterActor received unexpected message: {}", other)
-		}
-	}
-}
 trait ExtraSetupLogic {
 	def doExtraSetup(vwpt : VWorldPublicTellers) : Unit
 }
-trait TARqRouterSetupLogic extends ExtraSetupLogic with KnowsAkkaSys with VarargsLogging {
-	protected def findRouterQpidSvcOffering_opt : Option[OffersQpidSvcs] = None  // Override to plugin QPid services
+trait VWTARqRouterSetupLogic extends ExtraSetupLogic with MakesVWTAReqRouterTeller {
+	protected def findRouterQpidSvcOffering_opt : Option[OffersVWorldServer] = None  // Override to plugin QPid services
 
 	override def doExtraSetup(vwpt : VWorldPublicTellers) : Unit = {
 		info0("TARqRouterSetupLogic is calling setupRouting")
@@ -44,27 +28,13 @@ trait TARqRouterSetupLogic extends ExtraSetupLogic with KnowsAkkaSys with Vararg
 		info1("qpidSvcOffer_opt = {}", qpidSvcOffer_opt)
 		if (qpidSvcOffer_opt.isDefined) {
 			val qso = qpidSvcOffer_opt.get
-			val srvRcvFeat = qso.getServerReceiveFeature
-			info1("Got srvFeatAcc={}", srvRcvFeat)
-			val binSerRouteTeller = makeBinSerRoutingTeller(vwpt)
-			info1("Setting bin-ser routing teller to {}", binSerRouteTeller)
-			srvRcvFeat.setSerBinListenTeller(binSerRouteTeller)
+			val binTgtTeller = makeBinSerRoutingTeller(vwpt)
+			info1("Setting unified routing teller to binTgtTeller={}", binTgtTeller)
+			//	srvRcvFeat.setSerBinListenTeller(binSerRouteTeller)
+			qso.setUnifiedListenTeller(binTgtTeller)
 		} else {
 			warn1("Cannot setup routing, because no qpid services are offered to logic={}", this)
 		}
-	}
-	private def makeBinSerRoutingTeller(vwpt : VWorldPublicTellers) : CPStrongTeller[VWGoodyRqActionSpec] = {
-		val akkaSys = getAkkaSys
-		val routerLogic = new ThingActReqRouterLogic {
-			val myVWPT : VWorldPublicTellers = vwpt
-			override def getVWPubTellers : VWorldPublicTellers = myVWPT
-		}
-		info1("Made routerLogic={}", routerLogic)
-		val routerActorProps = Props(classOf[ThingActReqRouterActor], routerLogic)
-		val routerActorRef : ActorRef = akkaSys.actorOf(routerActorProps, "taBinSerRouterActr")
-		info1("Made routerActorRef={}", routerActorRef)
-		val routerTeller = new ActorRefCPMsgTeller[VWGoodyRqActionSpec](routerActorRef)
-		routerTeller
 	}
 }
 // Extend this trait in an app specific method
@@ -72,10 +42,10 @@ trait AppServiceHandleGroup extends KnowsAkkaSys with VarargsLogging {
 	private lazy val myAppAkkaSys = getAkkaSys
 
 	// When this method is overridden by the app class, it is seen in nested our subclasses of TARqRouterSetupLogic and VWStatPubLogic.
-	protected def findAppQpidSvcOffering_opt : Option[OffersQpidSvcs] = None
+	protected def findAppQpidSvcOffering_opt : Option[OffersVWorldServer] = None
 
-	lazy private val taRouterSetupLogic = new TARqRouterSetupLogic {
-		override protected def findRouterQpidSvcOffering_opt : Option[OffersQpidSvcs] = findAppQpidSvcOffering_opt
+	lazy private val taRouterSetupLogic = new VWTARqRouterSetupLogic {
+		override protected def findRouterQpidSvcOffering_opt : Option[OffersVWorldServer] = findAppQpidSvcOffering_opt
 
 		override protected def getAkkaSys: ActorSystem = myAppAkkaSys
 	}

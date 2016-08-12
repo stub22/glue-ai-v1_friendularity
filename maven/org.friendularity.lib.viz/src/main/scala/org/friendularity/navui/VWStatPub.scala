@@ -3,7 +3,7 @@ package org.friendularity.navui
 import akka.actor.Actor
 import org.appdapter.fancy.log.VarargsLogging
 import org.friendularity.field.{StatusTickMsg, MsgToStatusSrc}
-import org.friendularity.qpc.OffersQpidSvcs
+import org.friendularity.qpc.OffersVWorldServer
 import org.friendularity.vwmsg.VWorldPublicTellers
 
 /**
@@ -12,7 +12,7 @@ import org.friendularity.vwmsg.VWorldPublicTellers
 
 trait VWStatPubLogic extends VarargsLogging {
 	protected def getPubTellers : VWorldPublicTellers
-	protected def getQpidSvcOffering_opt : Option[OffersQpidSvcs] = None
+	protected def getQpidSvcOffering_opt : Option[OffersVWorldServer] = None
 
 	def gatherStatusAndSendHelpfulNotices : Unit = {
 		val pubTellers = getPubTellers

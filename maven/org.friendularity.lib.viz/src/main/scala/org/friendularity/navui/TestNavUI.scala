@@ -36,6 +36,7 @@ import org.cogchar.render.goody.basic.BasicGoodyCtx
 import org.cogchar.render.model.humanoid.{VWorldHumanoidFigureEntity, HumanoidFigure}
 import org.cogchar.render.rendtest.{GoodyTestMsgMaker, GoodyRenderTestApp}
 import org.cogchar.render.sys.goody.GoodyRenderRegistryClient
+import org.friendularity.qpc.OffersVWorldClient
 import org.friendularity.raiz.{VizappLegacyLoaderFactory, VizappProfileLoaderFactory, TestRaizLoad}
 
 /**
@@ -81,8 +82,11 @@ object TestNavUI extends VarargsLogging {
 		// info1("^^^^^^^^^^^^^^^^^^^^^^^^  TestNavUI.main() got legConfERC_opt={}", legConfERC_opt)
 		navUiAppImpl.sendSetupMsgs_Async
 
+		info0("========== TestNavUI.main() starting VW-SERVER qpidConn")
 		navUiAppImpl.startQpidConn
-		navUiAppImpl.pingQpidSvcs(true)
+		navUiAppImpl.checkServerSvcs()
+
+		maybeLaunchPhonyClient
 
 		val bodyUserLogic = navUiAppSvc.makeFunUserLogic()
 		appSysStandalone.sendStart_SemiLegacySinbad(bodyUserLogic)
@@ -94,6 +98,15 @@ object TestNavUI extends VarargsLogging {
 		warn0("^^^^^^^^^^^^^^^^^^^^^^^^  TestNavUI.main() When user presses 'cancel' on JME splash, how can " +
 					"we find that out here and exit accordingly?")
 
+	}
+	val myFlag_addPhonyClient = true
+	private def maybeLaunchPhonyClient: Unit = {
+		if (myFlag_addPhonyClient) {
+			val phonyClientOffer = new OffersVWorldClient {}
+			info0("========== .maybeLaunchPhonyClient() starting CLIENT qpidConn")
+			phonyClientOffer.startQpidConn
+			phonyClientOffer.checkClient
+		}
 	}
 	private def launchOldGoodyRenderTestApp : Unit = {
 		// Just a wrapper for the same test we can run inside Cogchar o.c.lib.render.goody.

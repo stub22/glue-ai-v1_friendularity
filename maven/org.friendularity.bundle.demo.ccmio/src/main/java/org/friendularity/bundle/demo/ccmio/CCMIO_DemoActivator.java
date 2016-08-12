@@ -12,7 +12,7 @@ import org.friendularity.navui.NavUiAppSvc;
 
 import org.friendularity.old.ccmio.OldLaunchHelper;
 // import org.friendularity.raiz.TestSetupLoader;
-import org.friendularity.qpc.OffersQpidSvcs;
+import org.friendularity.qpc.OffersVWorldServer;
 import org.friendularity.raiz.VizappLegacyLoader;
 import org.friendularity.raiz.VizappLegacyLoaderFactory;
 import org.friendularity.raiz.VizappProfileLoader;
@@ -175,8 +175,8 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 		if (myFlag_launchQpidTopics) {
 			getLogger().info("============ Calling pingQpidSvcs() ==========");
 			boolean includeDummyClient = false;
-			((OffersQpidSvcs) appSvc).startQpidConn();
-			((OffersQpidSvcs) appSvc).pingQpidSvcs(includeDummyClient);
+			((OffersVWorldServer) appSvc).startQpidConn();
+			((OffersVWorldServer) appSvc).checkServerSvcs();
 		}
 
 		// Now the VWorld is up and accepting messages, but there is no char in it yet.

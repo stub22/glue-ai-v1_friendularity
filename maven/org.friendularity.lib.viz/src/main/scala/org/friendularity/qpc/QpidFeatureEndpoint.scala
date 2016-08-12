@@ -32,7 +32,7 @@ import org.friendularity.akact.{KnowsAkkaSys, DummyActorMaker}
 import org.friendularity.cpmsg.{CPStrongTeller, ActorRefCPMsgTeller}
 import org.friendularity.netcli.vwta.TestTAQPidClient
 import org.friendularity.thact.{ThingActSender, ThingActReceiverBinary, ThingActReceiverTxt}
-import org.friendularity.vwmsg.{VWGoodyRqRdf, VWGoodyRqActionSpec, VWorldNotice}
+import org.friendularity.vwmsg.{VWRqTAWrapper, VWGoodyRqRdf, VWGoodyRqTAWrapper, VWorldNotice}
 
 /**
   * Created by Stub22 on 8/8/2016.
@@ -46,21 +46,34 @@ class QPidFeatureEndpoint(myJmsDestMgr : QpidDestMgr) extends  KnowsDestMgr {
 }
 
 
-
-trait OffersQpidSvcs extends KnowsAkkaSys with VarargsLogging {
-	// lazy val qpidTopicMgr : QpidTopicConn = new QPidTopicConn_JNDI_032(TestAppNames.allTopics)
-
+trait HasQpidConn extends VarargsLogging {
 	private lazy val myQpidConnMgr : QpidConnMgr = new QpidConnMgrJFlux
+
+	def getQpidConnMgr : QpidConnMgr = myQpidConnMgr
 
 	var myConnStartedFlag : Boolean = false
 
 	def startQpidConn : Unit = {
 		if (!myConnStartedFlag) {
 			myQpidConnMgr.startConn
+			myConnStartedFlag = true
 		} else {
 			warn1("Qpid connection was already started for {}, ignoring extra request to do so", this)
 		}
 	}
+
+}
+trait OffersQpidSomething extends VarargsLogging {
+	protected lazy val myQpidConnHaver = new HasQpidConn{}
+	protected lazy val myQpidConnMgr = myQpidConnHaver.getQpidConnMgr
+	def startQpidConn: Unit = {
+		myQpidConnMgr.startConn
+	}
+}
+
+trait OffersVWorldServer extends KnowsAkkaSys with OffersQpidSomething  {
+	// lazy val qpidTopicMgr : QpidTopicConn = new QPidTopicConn_JNDI_032(TestAppNames.allTopics)
+
 	// Under OSGi the server and client cannot easily deserialize messages with JMSMessage.getObject
 	// (Needs classpath wiring help - would it help to set context-cl during onMessage handler?).
 	// However they can *make* serialized messages OK, and send them out for consumption by
@@ -75,30 +88,37 @@ trait OffersQpidSvcs extends KnowsAkkaSys with VarargsLogging {
      [java] 	at org.apache.qpid.client.BasicMessageConsumer.notifyMessage(BasicMessageConsumer.java:777)
 */
 	private lazy val myServer : ServerFeatureAccess = {
-
 		val server = new TestTAQpidServer(getAkkaSys, myQpidConnMgr)
 		server
 	}
 
-	def getServerReceiveFeature : ServerReceiveFeature = myServer.getServerRecieveFeature
+	private def getServerReceiveFeature : ServerReceiveFeature = myServer.getServerRecieveFeature
+	private def getServerPublishFeature : ServerPublishFeature = myServer.getServerPublishFeature
 
-	def getVWPubNoticeSender : VWNoticeSender = myServer.getServerPublishFeature.getVWPubNoticeSender
+	def setUnifiedListenTeller(tellerLikesBin : CPStrongTeller[VWRqTAWrapper]) : Unit = {
+		getServerReceiveFeature.setUnifiedListenTeller(tellerLikesBin)
+	}
 
-	private lazy val myTestClient = {
+	def getVWPubNoticeSender : VWNoticeSender = getServerPublishFeature.getVWPubNoticeSender
+
+
+	def checkServerSvcs() : Unit = {
+		val noticeSender = getVWPubNoticeSender
+		info2("My Qpid server: {}, noticeSender={}", myServer, noticeSender)
+		noticeSender.sendPingNotice("NavUiApp testing VWNotice send")
+	}
+}
+
+trait OffersVWorldClient extends OffersQpidSomething {
+	private lazy val myClient : TestTAQPidClient = {
 		val clientDestMgr : QpidDestMgr = new QPidDestMgrJFlux(myQpidConnMgr)
 		val client = new TestTAQPidClient(clientDestMgr)
 		client
 	}
 
-
-	def pingQpidSvcs(includeDummyClient : Boolean) : Unit = {
-		val noticeSender = getVWPubNoticeSender
-		info2("My Qpid server: {}, noticeSender={}", myServer, noticeSender)
-		if (includeDummyClient) {
-			info1("My Qpid dummy client: {}", myTestClient)
-		}
-
-		noticeSender.sendPingNotice("NavUiApp testing VWNotice send")
+	def checkClient() : Unit = {
+		info1("Beginning checkClient for offer={}", this)
+		val destMgr = myClient.getDestMgr
+		info3("Finished checkClient for offer={}, client={}, destMgr={}", this, myClient, destMgr)
 	}
 }
-

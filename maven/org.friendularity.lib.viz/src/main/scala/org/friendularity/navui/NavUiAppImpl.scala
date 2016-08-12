@@ -5,7 +5,7 @@ import org.appdapter.core.name.Ident
 import org.cogchar.api.humanoid.HumanoidFigureConfig
 import org.cogchar.bind.mio.robot.svc.ModelBlendingRobotServiceContext
 import org.friendularity.cpmsg.CPStrongTeller
-import org.friendularity.qpc.OffersQpidSvcs
+import org.friendularity.qpc.OffersVWorldServer
 import org.friendularity.respire.DetachedGST
 import org.friendularity.vwimpl.MakesVWBoss
 import org.friendularity.vwmsg.{VWBodyMakeRq, VWBodyNotice, VWSetupRq_Lnch, VWSetupRq_Conf}
@@ -14,10 +14,10 @@ import org.friendularity.vwmsg.{VWBodyMakeRq, VWBodyNotice, VWSetupRq_Lnch, VWSe
   * Created by Owner on 8/8/2016.
   */
 class NavUiAppImpl(myAkkaSys : ActorSystem) extends NavUiAppSvc with NavPumpSpaceOwner
-			with AppServiceHandleGroup with MakesVWBoss with OffersQpidSvcs {
+			with AppServiceHandleGroup with MakesVWBoss with OffersVWorldServer {
 
 	override protected def getAkkaSys : ActorSystem = myAkkaSys
-	override protected def findAppQpidSvcOffering_opt : Option[OffersQpidSvcs] = Some(this)
+	override protected def findAppQpidSvcOffering_opt : Option[OffersVWorldServer] = Some(this)
 
 	// Desired effect of these messages is to launch a running OpenGL v-world, ready for characters and other content
 	// to be inserted into it.  Those facilities are available via actors defined in PubTeller replies sent to the

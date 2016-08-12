@@ -23,7 +23,7 @@ import javax.jms.{Destination => JMSDestination, Message => JMSMsg, MessageConsu
 import org.appdapter.fancy.log.VarargsLogging
 import org.cogchar.api.thing.ThingActionSpec
 import org.friendularity.cpmsg.CPStrongTeller
-import org.friendularity.vwmsg.{VWorldNotice, VWGoodyRqTAS, VWGoodyRqActionSpec, VWGoodyRqTurtle, VWGoodyRqRdf}
+import org.friendularity.vwmsg.{VWorldNotice, VWGoodyRqTAS, VWGoodyRqTAWrapper, VWGoodyRqTurtle, VWGoodyRqRdf}
 
 /**
   * Created by Stub22 on 8/6/2016.
@@ -38,9 +38,31 @@ import org.friendularity.vwmsg.{VWorldNotice, VWGoodyRqTAS, VWGoodyRqActionSpec,
 trait JmsListenerMaker {
 	def makeListener : JMSMsgListener
 }
-class ThingActReceiverTxt(goodyTATurtleTeller : CPStrongTeller[VWGoodyRqRdf]) extends
-			JmsListenerMaker with VarargsLogging {
+trait TurtleTAMsgDecoder extends JenaModelReader with VarargsLogging {
+	def decodeTAJmsTurtleMsg(jmsTxtMsg : JMSTextMsg) : Traversable[ThingActionSpec] = {
+		val txtCont: String = jmsTxtMsg.getText
+		decodeTATurtleTxtModel(txtCont)
+	}
+	// Currently we log a warning if TA count != 1, then process all TAs.   Can refine that behavior as needed.
+	def decodeTATurtleTxtModel(modelTxt : String) : Traversable[ThingActionSpec] = {
 
+		val decodeFlags_opt = None
+		val jenaModel = readModelFromTurtleTxt(modelTxt, decodeFlags_opt)
+		val exposer = new ThingActExposer {}
+		val thingActs: List[ThingActionSpec] = exposer.extractThingActsFromModel(jenaModel)
+
+		if (thingActs.isEmpty) {
+			warn1("Found 0 ThingActs in inbound jmsTxt-message, dumping model:\n {}", jenaModel)
+		}
+		if (thingActs.length > 1) {
+			warn1("Found {} ThingActs in inbound jmsTxt-message, processing in arbitrary order (TODO: sort by timestamp)", thingActs.length: Integer)
+		}
+		thingActs
+	}
+
+}
+class ThingActReceiverTxt(goodyTATurtleTeller : CPStrongTeller[VWGoodyRqRdf]) extends
+			JmsListenerMaker with TurtleTAMsgDecoder {
 
 	private def forwardUndecodedGoodyTxtMsg(txtMsg : JMSTextMsg) : Unit = {
 		val txtCont = txtMsg.getText
@@ -68,7 +90,7 @@ class ThingActReceiverTxt(goodyTATurtleTeller : CPStrongTeller[VWGoodyRqRdf]) ex
 	}
 }
 // Note that if this receiver is running under OSGi, it must have correct classpath in scope (thrdCtx?) during deserial.
-class ThingActReceiverBinary(goodyTADirectTeller : CPStrongTeller[VWGoodyRqActionSpec])
+class ThingActReceiverBinary(goodyTADirectTeller : CPStrongTeller[VWGoodyRqTAWrapper])
 			extends JmsListenerMaker with VarargsLogging {
 
 	def receiveJSerBinaryMsg(objMsg : JMSObjMsg) : Unit = {
@@ -107,8 +129,7 @@ class ThingActReceiverBinary(goodyTADirectTeller : CPStrongTeller[VWGoodyRqActio
 	// TODO:    makeConversionListenTeller
 }
 
-class ThingActReceiverDual(myTARcvBin : ThingActReceiverBinary) extends JmsListenerMaker
-				with JenaModelReader with VarargsLogging {
+class ThingActReceiverDual(myTARcvBin : ThingActReceiverBinary) extends JmsListenerMaker with TurtleTAMsgDecoder {
 
 	private def receiveTAJmsTurtleMsg(jmsTxtMsg : JMSTextMsg) : Int = {
 		val thingActs = decodeTAJmsTurtleMsg(jmsTxtMsg)
@@ -116,25 +137,6 @@ class ThingActReceiverDual(myTARcvBin : ThingActReceiverBinary) extends JmsListe
 			myTARcvBin.receiveThingAction(thAct)
 		}
 		thingActs.size
-	}
-	private def decodeTAJmsTurtleMsg(jmsTxtMsg : JMSTextMsg) : Traversable[ThingActionSpec] = {
-		val txtCont: String = jmsTxtMsg.getText
-		decodeTATurtleTxtModel(txtCont)
-	}
-	private def decodeTATurtleTxtModel(modelTxt : String) : Traversable[ThingActionSpec] = {
-
-		val decodeFlags_opt = None
-		val jenaModel = readModelFromTurtleTxt(modelTxt, decodeFlags_opt)
-		val exposer = new ThingActExposer {}
-		val thingActs: List[ThingActionSpec] = exposer.extractThingActsFromModel(jenaModel)
-
-		if (thingActs.isEmpty) {
-			warn1("Found 0 ThingActs in inbound jmsTxt-message, dumping model:\n {}", jenaModel)
-		}
-		if (thingActs.length > 1) {
-			warn1("Found {} ThingActs in inbound jmsTxt-message, processing in arbitrary order (TODO: sort by timestamp)", thingActs.length: Integer)
-		}
-		thingActs
 	}
 
 	override def makeListener: JMSMsgListener = {
@@ -152,7 +154,7 @@ class ThingActReceiverDual(myTARcvBin : ThingActReceiverBinary) extends JmsListe
 						myTARcvBin.receiveJSerBinaryMsg(objMsg)
 					}
 					case other => {
-						error2("Received unexpected (not JMS-ObjectMessage) message, class={}, dump=\n{}", other.getClass,  other)
+						error2("Received unexpected (not JMS-ObjectMsg nor JMS-TextMsg) message, class={}, dump=\n{}", other.getClass,  other)
 					}
 				}
 

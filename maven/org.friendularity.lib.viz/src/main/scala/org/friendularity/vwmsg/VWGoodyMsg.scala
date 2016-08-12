@@ -42,10 +42,12 @@ case class VWGoodyRqTurtle(myTurtleTxt : String) extends VWGoodyRqRdf with JenaM
 		readModelFromTurtleTxt(modelTurtleTxt, flags_opt)
 	}
 }
-trait VWGoodyRqActionSpec extends VWContentRq {
+trait VWRqTAWrapper extends VWContentRq {
 	def getActionSpec : ThingActionSpec
 }
-case class VWGoodyRqTAS(myBTAS : ThingActionSpec) extends  VWGoodyRqActionSpec {
+trait VWGoodyRqTAWrapper extends VWRqTAWrapper
+
+case class VWGoodyRqTAS(myBTAS : ThingActionSpec) extends  VWGoodyRqTAWrapper {
 	override def getActionSpec : ThingActionSpec = myBTAS
 }
 

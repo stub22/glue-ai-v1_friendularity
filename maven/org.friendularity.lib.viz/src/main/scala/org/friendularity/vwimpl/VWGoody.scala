@@ -22,7 +22,7 @@ import org.appdapter.fancy.log.VarargsLogging
 import org.cogchar.api.thing.ThingActionSpec
 import org.cogchar.render.goody.basic.BasicGoodyCtx
 import org.friendularity.thact.ThingActExposer
-import org.friendularity.vwmsg.{VWGoodyRqActionSpec, VWGoodyRqRdf, VWGoodyRqTAS, VWorldRequest}
+import org.friendularity.vwmsg.{VWGoodyRqTAWrapper, VWGoodyRqRdf, VWGoodyRqTAS, VWorldRequest}
 
 /**
   * Created by Stub22 on 5/25/2016.
@@ -33,12 +33,12 @@ trait VWGoodyJobLogic extends VarargsLogging {
 	protected def processVWGoodyRequest(vwmsg : VWorldRequest, slfActr : ActorRef, localActorCtx : ActorContext): Unit = {
 		vwmsg match {
 
-			case goodyActSpecMsg: VWGoodyRqActionSpec => processVWGoodyActSpec(goodyActSpecMsg, localActorCtx)
+			case goodyActSpecMsg: VWGoodyRqTAWrapper => processVWGoodyActSpec(goodyActSpecMsg, localActorCtx)
 
 			case goodyRdfMsg: VWGoodyRqRdf => processVWGoodyRdfMsg(goodyRdfMsg, slfActr, localActorCtx)
 		}
 	}
-	protected def processVWGoodyActSpec (goodyActSpecMsg : VWGoodyRqActionSpec, localActorCtx : ActorContext) : Unit = {
+	protected def processVWGoodyActSpec (goodyActSpecMsg : VWGoodyRqTAWrapper, localActorCtx : ActorContext) : Unit = {
 		val actSpec = goodyActSpecMsg.getActionSpec
 		info4("VWGoodyJobLogic is processing received actSpec of class={}, verb={}, tgtType={} tgtID={}",
 					actSpec.getClass, actSpec.getVerbID, actSpec.getTargetThingTypeID, actSpec.getTargetThingID)
