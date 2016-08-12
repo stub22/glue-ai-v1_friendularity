@@ -26,8 +26,8 @@ Session => JMSSession, TextMessage => JMSTextMsg}
 import akka.actor.ActorRefFactory
 import org.friendularity.akact.DummyActorMaker
 import org.friendularity.cpmsg.{ActorRefCPMsgTeller, CPStrongTeller}
-import org.friendularity.thact.{ThingActReceiverTxt, ThingActReceiverBinary}
-import org.friendularity.vwmsg.{VWGoodyRqRdf, VWGoodyRqActionSpec}
+import org.friendularity.thact.{ThingActReceiverDual, ThingActReceiverTxt, ThingActReceiverBinary}
+import org.friendularity.vwmsg.{VWRqTAWrapper, VWGoodyRqRdf, VWGoodyRqTAWrapper}
 
 /**
   * Created by Stub22 on 8/10/2016.
@@ -38,36 +38,49 @@ trait ServerPublishFeature {
 }
 trait ServerReceiveFeature {
 
-	def setSerBinListenTeller(tellerLikesSerBin : CPStrongTeller[VWGoodyRqActionSpec])
+	def setUnifiedListenTeller(tellerLikesSerBin : CPStrongTeller[VWRqTAWrapper]) : Unit
 
-	def setTurtleTxtListenTeller(tellerLikesSerBin : CPStrongTeller[VWGoodyRqRdf])
+	def setSerBinListenTeller(tellerLikesSerBin : CPStrongTeller[VWRqTAWrapper]) : Unit
+
+	def setTurtleTxtListenTeller(tellerLikesSerBin : CPStrongTeller[VWGoodyRqRdf]) : Unit
 
 	// Should be unnecessary, unless we decide to process more in RDF space with inference+onto.
 	// def setTurtleTxtListenTeller (tellerLikesGoodyRdf : CPStrongTeller[VWGoodyRqRdf])
 }
-trait MakesRqConsumers extends KnowsVWTARqDestinations {
+trait MakesVWTARqConsumers extends KnowsVWTARqDestinations {
 	private lazy val myJmsSession = getDestMgr.getJmsSession
-	protected lazy val myConsumer_forTurtleTxt: JMSMsgConsumer = myJmsSession.createConsumer(destVWRqTATxt)
-	protected lazy val myConsumer_forJSerBin: JMSMsgConsumer = myJmsSession.createConsumer(destVWRqTABin)
+
+	def getFlagUnified : Boolean = true
+
+	protected lazy val myCnsmr_Uni: JMSMsgConsumer = myJmsSession.createConsumer(destVWRqTAUni)
+
+	protected lazy val myCnsmr_turtleTxt: JMSMsgConsumer = if(getFlagUnified) myCnsmr_Uni else myJmsSession.createConsumer(destVWRqTATxt)
+	protected lazy val myCnsmr_jSerBin: JMSMsgConsumer = if(getFlagUnified) myCnsmr_Uni else myJmsSession.createConsumer(destVWRqTABin)
 }
 
 class ServerReceiveFeatureImpl(destMgr : QpidDestMgr) extends QPidFeatureEndpoint(destMgr)
-			with ServerReceiveFeature with  MakesRqConsumers {
+			with ServerReceiveFeature with  MakesVWTARqConsumers {
 
 	/* Oops, we need to watch out for:
 	 Exception=javax.jms.IllegalStateException: Attempt to alter listener while session is started.
 	 caught in logic=org.friendularity.navui.OuterJobbyWrapper@6f52d3a9 during process of msg=VWPubTellersMsgImpl
 	 */
-	override def setSerBinListenTeller(tellerLikesSerBin : CPStrongTeller[VWGoodyRqActionSpec]) : Unit = {
+	override def setUnifiedListenTeller(tellerLikesBin : CPStrongTeller[VWRqTAWrapper]) : Unit = {
+		val subRcvrBin = new ThingActReceiverBinary(tellerLikesBin)
+		val topRcvrUni = new ThingActReceiverDual(subRcvrBin)
+		val listener : JMSMsgListener = topRcvrUni.makeListener
+		myCnsmr_Uni.setMessageListener(listener)
+	}
+	override def setSerBinListenTeller(tellerLikesSerBin : CPStrongTeller[VWRqTAWrapper]) : Unit = {
 		val taRcvrBin = new ThingActReceiverBinary(tellerLikesSerBin)
 		val listener : JMSMsgListener = taRcvrBin.makeListener
-		myConsumer_forJSerBin.setMessageListener(listener)
+		myCnsmr_jSerBin.setMessageListener(listener)
 	}
 
 	override def setTurtleTxtListenTeller(tellerLikesTrtlTxt : CPStrongTeller[VWGoodyRqRdf]) : Unit = {
 		val taRcvrTxt : ThingActReceiverTxt = new ThingActReceiverTxt(tellerLikesTrtlTxt)
 		val listener : JMSMsgListener = taRcvrTxt.makeListener
-		myConsumer_forTurtleTxt.setMessageListener(listener)
+		myCnsmr_turtleTxt.setMessageListener(listener)
 	}
 
 }
@@ -91,12 +104,11 @@ trait ServerFeatureAccess {
 class TestTAQpidServer(myParentARF : ActorRefFactory, myQpidConnMgr: QpidConnMgr)
 			extends ServerFeatureAccess with DummyActorMaker {
 
-	lazy val rcvDestMgr = new QPidDestMgrJFlux(myQpidConnMgr)
+	lazy val rcvDestMgr = new QPidDestMgrJFlux(myQpidConnMgr)  // Creates a private JMS Session
 	lazy val rcvFeatImpl = new ServerReceiveFeatureImpl(rcvDestMgr)
 	override def getServerRecieveFeature : ServerReceiveFeature = rcvFeatImpl
 
-
-	lazy val pubDestMgr = new QPidDestMgrJFlux(myQpidConnMgr)
+	lazy val pubDestMgr = new QPidDestMgrJFlux(myQpidConnMgr) // Creates a private JMS Session
 	lazy  val pubFeatImpl = new ServerPublishFeatureImpl(pubDestMgr)
 	override def getServerPublishFeature : ServerPublishFeature = pubFeatImpl
 
@@ -110,7 +122,8 @@ class TestTAQpidServer(myParentARF : ActorRefFactory, myQpidConnMgr: QpidConnMgr
 		// Default setup:  Make extractor wrappers, ask them to make listeners, and attach those listeners to our JmsConsumers.
 		// We use our dummyActor by default, but subclass or user could call these set...Teller methods again
 		// to install a more useful actor as the listener for either channel.
-		rcvFeatImpl.setSerBinListenTeller(dummyRcvWeakTeller.asInstanceOf[CPStrongTeller[VWGoodyRqActionSpec]])
-		rcvFeatImpl.setTurtleTxtListenTeller(dummyRcvWeakTeller.asInstanceOf[CPStrongTeller[VWGoodyRqRdf]])
+		rcvFeatImpl.setUnifiedListenTeller(dummyRcvWeakTeller.asInstanceOf[CPStrongTeller[VWRqTAWrapper]])
+		// rcvFeatImpl.setSerBinListenTeller(dummyRcvWeakTeller.asInstanceOf[CPStrongTeller[VWGoodyRqActionSpec]])
+		// rcvFeatImpl.setTurtleTxtListenTeller(dummyRcvWeakTeller.asInstanceOf[CPStrongTeller[VWGoodyRqRdf]])
 	}
 }

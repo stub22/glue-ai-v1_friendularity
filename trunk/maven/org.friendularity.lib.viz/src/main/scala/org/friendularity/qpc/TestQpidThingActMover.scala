@@ -31,7 +31,7 @@ import org.friendularity.cpmsg.{ActorRefCPMsgTeller, CPStrongTeller}
 import org.friendularity.netcli.vwta.TestTAQPidClient
 
 import org.friendularity.thact.{ThingActReceiverBinary, ThingActReceiverTxt, ThingActSender, ThingActTurtleEncoder}
-import org.friendularity.vwmsg.{VWorldNotice, VWGoodyRqActionSpec, VWGoodyRqRdf, VWGoodyRqTAS, VWGoodyRqTurtle}
+import org.friendularity.vwmsg.{VWorldNotice, VWGoodyRqTAWrapper, VWGoodyRqRdf, VWGoodyRqTAS, VWGoodyRqTurtle}
 
 /**
   * Created by StuB22 on 6/13/2016.
@@ -68,26 +68,34 @@ object TestQpidThingActMover extends VarargsLogging {
 		//  JNDI works in standalone unit tests, but not so well under OSGi
 		// val qpidTopicMgr : QpidTopicConn = new QPidTopicConn_JNDI_032(TestAppNames.allTopics)
 
-		val qpidConnMgr : QpidConnMgr = new QpidConnMgrJFlux
+		val srvrConnMgr : QpidConnMgr = new QpidConnMgrJFlux
+		val clientConnMgr : QpidConnMgr = new QpidConnMgrJFlux
 
 		// info1("QPidConnMgr.DestMap={}", qpidConnMgr.getDestsByNameTail)
 
 		// server and client are in same Java process, same qpid-conn, but separate JMSSessions.
-		val server = new TestTAQpidServer(myServerAkkaSys, qpidConnMgr)
+		val server = new TestTAQpidServer(myServerAkkaSys, srvrConnMgr)
 
-		val clientDestMgr : QpidDestMgr = new QPidDestMgrJFlux(qpidConnMgr)
+		val clientDestMgr : QpidDestMgr = new QPidDestMgrJFlux(clientConnMgr)
 
 		val client = new TestTAQPidClient(clientDestMgr)
 
-		qpidConnMgr.startConn
+		info0("\nStarting SERVER Conn")
+		srvrConnMgr.startConn
+
+		info0("\nStarting CLIENT Conn")
+		clientConnMgr.startConn
 
 		client.sendSomeVWRqs(500) // sends a mixture of bin-serial and turtle-txt TAs, which we see receieved in server
 
 		val vwNoticeSender = server.getServerPublishFeature.getVWPubNoticeSender
 		sendSomeVWNotices_Blocking(vwNoticeSender, 25, 450) // Sends bin-serial notices out, which we see received in client
 
+		info0("\nWill install server listeners, then sleep 2 sec.")
 		server.installDumpingListeners()
-
+		Thread.sleep(2000)
+		info0("\nWoke up and will send some more client msgs.")
+		client.sendSomeVWRqs(300)
 	}
 	def sendSomeVWNotices_Blocking(sender : VWNoticeSender, numNotices : Int, sleepIntervMsec : Int) : Unit = {
 		var msgCount = 0

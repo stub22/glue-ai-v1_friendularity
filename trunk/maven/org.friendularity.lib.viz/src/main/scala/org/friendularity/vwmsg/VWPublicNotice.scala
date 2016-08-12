@@ -9,18 +9,18 @@ import org.friendularity.cpmsg.CPStrongTeller
 // This trait is made available as a helpful starting point, not as the definitive or exhaustive API.
 trait VWorldPublicTellers extends VWorldNotice  {
 
-	def getGoodyDirectTeller : Option[CPStrongTeller[VWGoodyRqActionSpec]] = None
+	def getGoodyDirectTeller : Option[CPStrongTeller[VWGoodyRqTAWrapper]] = None
 	def getCharAdminTeller : Option[CPStrongTeller[VWBodyLifeRq]] = None
 	def getShaperTeller : Option[CPStrongTeller[VWShapeCreateRq]] = None
 	def getStageTeller : Option[CPStrongTeller[VWStageRqMsg]] = None
 	def getOverlayTeller : Option[CPStrongTeller[VWOverlayRq]] = None
 }
-case class VWPubTellersMsgImpl(goodyTeller : CPStrongTeller[VWGoodyRqActionSpec],
+case class VWPubTellersMsgImpl(goodyTeller : CPStrongTeller[VWGoodyRqTAWrapper],
 							   charAdminTeller: CPStrongTeller[VWBodyLifeRq],
 							   shaperTeller : CPStrongTeller[VWShapeCreateRq],
-								stageTeller: CPStrongTeller[VWStageRqMsg],
-							    ovlTeller : CPStrongTeller[VWOverlayRq]) extends VWorldPublicTellers {
-	override def getGoodyDirectTeller : Option[CPStrongTeller[VWGoodyRqActionSpec]] = Option(goodyTeller)
+							   stageTeller: CPStrongTeller[VWStageRqMsg],
+							   ovlTeller : CPStrongTeller[VWOverlayRq]) extends VWorldPublicTellers {
+	override def getGoodyDirectTeller : Option[CPStrongTeller[VWGoodyRqTAWrapper]] = Option(goodyTeller)
 	override def getCharAdminTeller : Option[CPStrongTeller[VWBodyLifeRq]] = Option(charAdminTeller)
 	override def getShaperTeller : Option[CPStrongTeller[VWShapeCreateRq]] = Option(shaperTeller)
 	override def getStageTeller : Option[CPStrongTeller[VWStageRqMsg]] = Option(stageTeller)

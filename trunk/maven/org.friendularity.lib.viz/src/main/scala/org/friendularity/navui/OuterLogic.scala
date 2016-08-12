@@ -137,14 +137,20 @@ trait PatientSender_GoodyTest extends OuterLogic with IdentHlp with TurtleSerHlp
 	private var myStoredTellers_opt : Option[VWorldPublicTellers] = None
 
 	private val useTurtleSerialization : Boolean = true
+	private val testGoodyMsgsInternally : Boolean = false
+
 	override def rcvPubTellers (vwpt : VWorldPublicTellers): Unit = {
 		// This is the (outbound) notice we get back from boss, confirming system has started and these tellers are ready for biz.
 		info1("Outer logic got public tellers: {}", vwpt)
 		myStoredTellers_opt = Option(vwpt)
 		val goodyTeller = vwpt.getGoodyDirectTeller
 		if (goodyTeller.isDefined) {
-			info1("Sending goody tst msgs to: {}", goodyTeller.get)
-			finallySendGoodyTstMsgs(goodyTeller.get, useTurtleSerialization)
+			if (testGoodyMsgsInternally) {
+				info1("Sending goody tst msgs to: {}", goodyTeller.get)
+				finallySendGoodyTstMsgs(goodyTeller.get, useTurtleSerialization)
+			} else {
+				debug0("Skipping internal goody-msg test")
+			}
 		} else {
 			warn0("GoodyTeller is not available, cannot send goody tst msgs.")
 		}

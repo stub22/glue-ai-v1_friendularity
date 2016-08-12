@@ -47,10 +47,11 @@ object VWorldAmqpDestNames {
 
 // This trait can be used on both server and client sides
 trait KnowsVWTARqDestinations extends KnowsDestMgr  {
+	// More serious apps will prefer to use just uni.
+	lazy val destVWRqTAUni : JMSDestination = getDestMgr.makeQueueDestination(VWorldAmqpDestNames.queueName_forUnifiedTA)
+	// Two more dests factored by channel don't add much, but if a simpler unit test is desired, can use these.
 	lazy val destVWRqTATxt : JMSDestination = getDestMgr.makeQueueDestination(VWorldAmqpDestNames.queueName_forTurtleTxtTA)
 	lazy val destVWRqTABin : JMSDestination = getDestMgr.makeQueueDestination(VWorldAmqpDestNames.queueName_forJSerBinTA)
-	lazy val destVWRqTAUni : JMSDestination = getDestMgr.makeQueueDestination(VWorldAmqpDestNames.queueName_forUnifiedTA)
-
 }
 trait KnowsVWPubStatDestinations extends KnowsDestMgr  {
 	lazy val destForVWPubStatsBin : JMSDestination = getDestMgr.getDestForTopicName(VWorldAmqpDestNames.topicName_forVWPubStatJSerBin)
@@ -60,12 +61,13 @@ trait MakesVWTARqProducers extends KnowsVWTARqDestinations {
 	private lazy val myJmsSession = getDestMgr.getJmsSession
 
 	def getFlagUnified : Boolean = true
-	val myProdForUni : JMSMsgProducer = myJmsSession.createProducer(destVWRqTAUni)
 
-	val myProdForTurtle : JMSMsgProducer = if (getFlagUnified) myProdForUni else myJmsSession.createProducer(destVWRqTATxt)
-	val myProdForJSer : JMSMsgProducer = if (getFlagUnified) myProdForUni else myJmsSession.createProducer(destVWRqTABin)
+	private lazy val myProdForUni : JMSMsgProducer = myJmsSession.createProducer(destVWRqTAUni)
 
-	val myGenSender : ThingActSender = new ThingActSenderQPid(myJmsSession, myProdForJSer, None, myProdForTurtle, None)
+	private lazy val myProdForTurtle : JMSMsgProducer = if (getFlagUnified) myProdForUni else myJmsSession.createProducer(destVWRqTATxt)
+	private lazy val myProdForJSer : JMSMsgProducer = if (getFlagUnified) myProdForUni else myJmsSession.createProducer(destVWRqTABin)
+
+	protected val myGenSender : ThingActSender = new ThingActSenderQPid(myJmsSession, myProdForJSer, None, myProdForTurtle, None)
 }
 
 trait MakesVWPubStatConsumers extends KnowsVWPubStatDestinations {
