@@ -79,7 +79,7 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 	public static	boolean		myFlag_attachVizappTChunkRepo = true; // false => uses old vanilla mediator backup
 
 	public static boolean  myFlag_launchQpidBroker = true;
-	public static boolean  myFlag_launchQpidTopics = true;
+	public static boolean myFlag_launchVWorldAmqpSvcs = true;
 
 	private Class 		myProfileMarkerClz = TestRaizLoad.class;
 	private Class 		myLegConfMarkerClz = TestRaizLoad.class;
@@ -172,7 +172,7 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 
 		NavUiAppSvc appSvc = startVWorldNavUI_2016(bundleCtx, akkaSys);
 
-		if (myFlag_launchQpidTopics) {
+		if (myFlag_launchVWorldAmqpSvcs) {
 			getLogger().info("============ Calling pingQpidSvcs() ==========");
 			boolean includeDummyClient = false;
 			((OffersVWorldServer) appSvc).startQpidConn();

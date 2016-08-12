@@ -27,7 +27,7 @@ import akka.actor.ActorRefFactory
 import org.friendularity.akact.DummyActorMaker
 import org.friendularity.cpmsg.{ActorRefCPMsgTeller, CPStrongTeller}
 import org.friendularity.thact.{ThingActReceiverDual, ThingActReceiverTxt, ThingActReceiverBinary}
-import org.friendularity.vwmsg.{VWRqTAWrapper, VWGoodyRqRdf, VWGoodyRqTAWrapper}
+import org.friendularity.vwmsg.{VWRqTAWrapper, VWTARqRdf}
 
 /**
   * Created by Stub22 on 8/10/2016.
@@ -42,7 +42,7 @@ trait ServerReceiveFeature {
 
 	def setSerBinListenTeller(tellerLikesSerBin : CPStrongTeller[VWRqTAWrapper]) : Unit
 
-	def setTurtleTxtListenTeller(tellerLikesSerBin : CPStrongTeller[VWGoodyRqRdf]) : Unit
+	def setTurtleTxtListenTeller(tellerLikesSerBin : CPStrongTeller[VWTARqRdf]) : Unit
 
 	// Should be unnecessary, unless we decide to process more in RDF space with inference+onto.
 	// def setTurtleTxtListenTeller (tellerLikesGoodyRdf : CPStrongTeller[VWGoodyRqRdf])
@@ -77,7 +77,7 @@ class ServerReceiveFeatureImpl(destMgr : QpidDestMgr) extends QPidFeatureEndpoin
 		myCnsmr_jSerBin.setMessageListener(listener)
 	}
 
-	override def setTurtleTxtListenTeller(tellerLikesTrtlTxt : CPStrongTeller[VWGoodyRqRdf]) : Unit = {
+	override def setTurtleTxtListenTeller(tellerLikesTrtlTxt : CPStrongTeller[VWTARqRdf]) : Unit = {
 		val taRcvrTxt : ThingActReceiverTxt = new ThingActReceiverTxt(tellerLikesTrtlTxt)
 		val listener : JMSMsgListener = taRcvrTxt.makeListener
 		myCnsmr_turtleTxt.setMessageListener(listener)

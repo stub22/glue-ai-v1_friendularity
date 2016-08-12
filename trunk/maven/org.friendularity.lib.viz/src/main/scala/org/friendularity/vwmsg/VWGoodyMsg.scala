@@ -32,9 +32,9 @@ import org.friendularity.thact.{JenaModelReader, RdfMsg}
   */
 
 
-trait VWGoodyRqRdf extends VWContentRq  with RdfMsg {
+trait VWTARqRdf extends VWContentRq  with RdfMsg {
 }
-case class VWGoodyRqTurtle(myTurtleTxt : String) extends VWGoodyRqRdf with JenaModelReader with VarargsLogging{
+case class VWTARqTurtle(myTurtleTxt : String) extends VWTARqRdf with JenaModelReader with VarargsLogging{
 	override def asTurtleString : String = myTurtleTxt
 
 	override def asJenaModel(flags_opt: Option[AnyRef]) : JenaModel = {
@@ -45,9 +45,9 @@ case class VWGoodyRqTurtle(myTurtleTxt : String) extends VWGoodyRqRdf with JenaM
 trait VWRqTAWrapper extends VWContentRq {
 	def getActionSpec : ThingActionSpec
 }
-trait VWGoodyRqTAWrapper extends VWRqTAWrapper
+// trait VWGoodyRqTAWrapper extends VWRqTAWrapper
 
-case class VWGoodyRqTAS(myBTAS : ThingActionSpec) extends  VWGoodyRqTAWrapper {
+case class VWRqTAWrapImpl(myBTAS : ThingActionSpec) extends  VWRqTAWrapper {
 	override def getActionSpec : ThingActionSpec = myBTAS
 }
 

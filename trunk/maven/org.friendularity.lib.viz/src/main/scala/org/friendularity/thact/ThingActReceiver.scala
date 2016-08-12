@@ -23,7 +23,7 @@ import javax.jms.{Destination => JMSDestination, Message => JMSMsg, MessageConsu
 import org.appdapter.fancy.log.VarargsLogging
 import org.cogchar.api.thing.ThingActionSpec
 import org.friendularity.cpmsg.CPStrongTeller
-import org.friendularity.vwmsg.{VWorldNotice, VWGoodyRqTAS, VWGoodyRqTAWrapper, VWGoodyRqTurtle, VWGoodyRqRdf}
+import org.friendularity.vwmsg.{VWRqTAWrapper, VWorldNotice, VWRqTAWrapImpl,  VWTARqTurtle, VWTARqRdf}
 
 /**
   * Created by Stub22 on 8/6/2016.
@@ -61,15 +61,15 @@ trait TurtleTAMsgDecoder extends JenaModelReader with VarargsLogging {
 	}
 
 }
-class ThingActReceiverTxt(goodyTATurtleTeller : CPStrongTeller[VWGoodyRqRdf]) extends
+class ThingActReceiverTxt(taTurtleTeller : CPStrongTeller[VWTARqRdf]) extends
 			JmsListenerMaker with TurtleTAMsgDecoder {
 
 	private def forwardUndecodedGoodyTxtMsg(txtMsg : JMSTextMsg) : Unit = {
 		val txtCont = txtMsg.getText
 		// We assume it is a turtle encoding of ThingActSpec(s), targeting VW-Goodies.
 		// But what if it is a body-manip or cam-manip request?
-		val goodyTATurtleRq = new VWGoodyRqTurtle(txtCont)
-		goodyTATurtleTeller.tellStrongCPMsg(goodyTATurtleRq)
+		val goodyTATurtleRq = new VWTARqTurtle(txtCont)
+		taTurtleTeller.tellStrongCPMsg(goodyTATurtleRq)
 	}
 	override def makeListener : JMSMsgListener = {
 		new JMSMsgListener() {
@@ -90,7 +90,7 @@ class ThingActReceiverTxt(goodyTATurtleTeller : CPStrongTeller[VWGoodyRqRdf]) ex
 	}
 }
 // Note that if this receiver is running under OSGi, it must have correct classpath in scope (thrdCtx?) during deserial.
-class ThingActReceiverBinary(goodyTADirectTeller : CPStrongTeller[VWGoodyRqTAWrapper])
+class ThingActReceiverBinary(taDirectTeller : CPStrongTeller[VWRqTAWrapper])
 			extends JmsListenerMaker with VarargsLogging {
 
 	def receiveJSerBinaryMsg(objMsg : JMSObjMsg) : Unit = {
@@ -102,12 +102,12 @@ class ThingActReceiverBinary(goodyTADirectTeller : CPStrongTeller[VWGoodyRqTAWra
 		val verbID = taSpec.getVerbID
 		val targetID = taSpec.getTargetThingID
 		val targetTypeID = taSpec.getTargetThingTypeID
-		info3("Naively forwarding TA to goody-teller for target={}, targetType={}, verb={}", targetID, targetTypeID, verbID)
-		forwardMsgToGoodyActor(taSpec)
+		info3("forwarding TA to taTeller for target={}, targetType={}, verb={}", targetID, targetTypeID, verbID)
+		forwardMsgToThingActionActor(taSpec)
 	}
-	def forwardMsgToGoodyActor(taSpec: ThingActionSpec) : Unit = {
-		val goodyTADirectRq = new VWGoodyRqTAS(taSpec) // make a new wrapper message to pass along
-		goodyTADirectTeller.tellStrongCPMsg(goodyTADirectRq)
+	def forwardMsgToThingActionActor(taSpec: ThingActionSpec) : Unit = {
+		val taDirectRq = new VWRqTAWrapImpl(taSpec) // make a new wrapper message to pass along
+		taDirectTeller.tellStrongCPMsg(taDirectRq)
 	}
 	override def makeListener : JMSMsgListener = {
 		new JMSMsgListener() {
@@ -126,7 +126,6 @@ class ThingActReceiverBinary(goodyTADirectTeller : CPStrongTeller[VWGoodyRqTAWra
 			}
 		}
 	}
-	// TODO:    makeConversionListenTeller
 }
 
 class ThingActReceiverDual(myTARcvBin : ThingActReceiverBinary) extends JmsListenerMaker with TurtleTAMsgDecoder {

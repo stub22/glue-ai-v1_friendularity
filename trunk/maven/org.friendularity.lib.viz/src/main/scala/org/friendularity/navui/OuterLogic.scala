@@ -35,7 +35,7 @@ import org.friendularity.vwimpl.{OverlayPage, IdentHlp, VWorldMasterFactory}
 
 import scala.collection.immutable.HashMap
 
-import org.friendularity.vwmsg.{VWOverlayRq, VWSetupOvlBookRq, NavCmdImpl, NavCmdKeyClkBind, NavCmd, InnerNavCmds, VWorldPublicTellers, VWSCR_Node, VWBindCamNodeRq, VWCreateCamAndViewportRq, CamStateParams3D, CamState3D, ViewportDesc, ShapeManipRqImpl, SmooveManipEndingImpl, TransformParams3D, VWBodySkeletonDisplayToggle, VWBroadcastToAllBodies, VWClearAllShapes, VWStageResetToDefault, VWKeymapBinding_Medial, OrdinaryParams3D, VWSCR_Sphere, VWStageOpticsBasic, VWSCR_CellGrid, VWStageEmulateBonusContentAndCams, VWBodyLifeRq, VWGoodyRqTAS, VWGoodyRqTurtle}
+import org.friendularity.vwmsg.{VWOverlayRq, VWSetupOvlBookRq, NavCmdImpl, NavCmdKeyClkBind, NavCmd, InnerNavCmds, VWorldPublicTellers, VWSCR_Node, VWBindCamNodeRq, VWCreateCamAndViewportRq, CamStateParams3D, CamState3D, ViewportDesc, ShapeManipRqImpl, SmooveManipEndingImpl, TransformParams3D, VWBodySkeletonDisplayToggle, VWBroadcastToAllBodies, VWClearAllShapes, VWStageResetToDefault, VWKeymapBinding_Medial, OrdinaryParams3D, VWSCR_Sphere, VWStageOpticsBasic, VWSCR_CellGrid, VWStageEmulateBonusContentAndCams, VWBodyLifeRq, VWRqTAWrapImpl, VWTARqTurtle}
 
 
 /**
@@ -73,11 +73,33 @@ trait TurtleSerHlp extends VarargsLogging {
 	}
 
 }
-trait PatientSender_GoodyTest extends OuterLogic with IdentHlp with TurtleSerHlp {
+trait GoodyTestMsgFun extends IdentHlp with TurtleSerHlp {
 	import scala.collection.JavaConverters._
+	private lazy val myRandomizer: JRandom = new JRandom
 
-	lazy val myRandomizer: JRandom = new JRandom
+	def finallySendGoodyTstMsgs(goodyTeller : CPMsgTeller, flag_serToTurtle : Boolean): Unit = {
+		val gtmm: GoodyTestMsgMaker = new GoodyTestMsgMaker
+		val msgsJList = gtmm.makeGoodyCreationMsgs
 
+		val msgsScbuf : List[BasicThingActionSpec] = msgsJList.asScala.toList // BTAS is known to be serializable
+
+		for (actSpec <- msgsScbuf) {
+			if (flag_serToTurtle) {
+				//				val ftmw = new FancyThingModelWriter
+				//				val specModelWithPrefixes : JenaModel  = ftmw.writeTASpecAndPrefixesToNewModel(actSpec, myRandomizer)
+				//				val turtleTriplesString : String = ftmw.serializeSpecModelToTurtleString(specModelWithPrefixes)
+				val turtleTxt = serlzOneTAMsgToTurtleTxt(actSpec, myRandomizer)
+				val turtleMsg = new VWTARqTurtle(turtleTxt)
+				goodyTeller.tellCPMsg(turtleMsg)
+			} else {
+				getLogger.info("Sending java-serializable TA message: {}", actSpec)
+				val vwMsgWrap = new VWRqTAWrapImpl(actSpec)
+				goodyTeller.tellCPMsg(vwMsgWrap)
+			}
+		}
+	}
+}
+trait FunWithShapes extends IdentHlp {
 	def sendBigGridRq(shapeTeller : CPMsgTeller): Unit = {
 		val rq_makeBigGrid = new VWSCR_CellGrid{}
 		shapeTeller.tellCPMsg(rq_makeBigGrid)
@@ -113,27 +135,9 @@ trait PatientSender_GoodyTest extends OuterLogic with IdentHlp with TurtleSerHlp
 		sendShpSmooveRq(shapeTeller, bigOvalID, tgtXform, 40.0f)
 	}
 
-	def finallySendGoodyTstMsgs(goodyTeller : CPMsgTeller, flag_serToTurtle : Boolean): Unit = {
-		val gtmm: GoodyTestMsgMaker = new GoodyTestMsgMaker
-		val msgsJList = gtmm.makeGoodyCreationMsgs
+}
+trait PatientSender_GoodyTest extends OuterLogic with FunWithShapes with GoodyTestMsgFun {
 
-		val msgsScbuf : List[BasicThingActionSpec] = msgsJList.asScala.toList // BTAS is known to be serializable
-
-		for (actSpec <- msgsScbuf) {
-			if (flag_serToTurtle) {
-//				val ftmw = new FancyThingModelWriter
-//				val specModelWithPrefixes : JenaModel  = ftmw.writeTASpecAndPrefixesToNewModel(actSpec, myRandomizer)
-//				val turtleTriplesString : String = ftmw.serializeSpecModelToTurtleString(specModelWithPrefixes)
-				val turtleTxt = serlzOneTAMsgToTurtleTxt(actSpec, myRandomizer)
-				val turtleMsg = new VWGoodyRqTurtle(turtleTxt)
-				goodyTeller.tellCPMsg(turtleMsg)
-			} else {
-				getLogger.info("Sending java-serializable TA message: {}", actSpec)
-				val vwMsgWrap = new VWGoodyRqTAS(actSpec)
-				goodyTeller.tellCPMsg(vwMsgWrap)
-			}
-		}
-	}
 	private var myStoredTellers_opt : Option[VWorldPublicTellers] = None
 
 	private val useTurtleSerialization : Boolean = true

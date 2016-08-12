@@ -102,10 +102,26 @@ object TestNavUI extends VarargsLogging {
 	val myFlag_addPhonyClient = true
 	private def maybeLaunchPhonyClient: Unit = {
 		if (myFlag_addPhonyClient) {
-			val phonyClientOffer = new OffersVWorldClient {}
+			val phonyClientOffer = new OffersVWorldClient {
+				def sendTestMsgs : Unit = {
+					val client = myClient
+					client.sendSomeVWRqs(1500)
+				}
+			}
 			info0("========== .maybeLaunchPhonyClient() starting CLIENT qpidConn")
 			phonyClientOffer.startQpidConn
 			phonyClientOffer.checkClient
+
+			val delayMsec : Int = 20000
+			val testSendThrd = new Thread() {
+				override def run : Unit = {
+					info1("Client test send thread is sleeping for {} msec", delayMsec : Integer)
+					Thread.sleep(delayMsec)
+					info0("Client test thread has awoken, sending TA tst messages")
+					phonyClientOffer.sendTestMsgs
+				}
+			}
+			testSendThrd.start()
 		}
 	}
 	private def launchOldGoodyRenderTestApp : Unit = {
