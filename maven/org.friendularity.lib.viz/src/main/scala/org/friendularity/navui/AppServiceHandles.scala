@@ -1,3 +1,19 @@
+/*
+ *  Copyright 2016 by The Friendularity Project (www.friendularity.org).
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
 package org.friendularity.navui
 
 import akka.actor.{ActorRef, Props, ActorSystem}
@@ -37,13 +53,17 @@ trait VWTARqRouterSetupLogic extends ExtraSetupLogic with MakesVWTAReqRouterTell
 		}
 	}
 }
-// Extend this trait in an app specific method
+// Extend this trait in an app specific method.
+// All the wiring of these lazy vals begins whenever someone calls registerPostInitWaiters,
+// which can happen as soon as a "boss" teller is known.
 trait AppServiceHandleGroup extends KnowsAkkaSys with VarargsLogging {
 	private lazy val myAppAkkaSys = getAkkaSys
 
 	// When this method is overridden by the app class, it is seen in nested our subclasses of TARqRouterSetupLogic and VWStatPubLogic.
 	protected def findAppQpidSvcOffering_opt : Option[OffersVWorldServer] = None
 
+	// Here instead of a dedicated rendezvous, we make the TARouter setup subord to
+	// PatientSender_GoodyTest, but perhaps those roles should be reversed!
 	lazy private val taRouterSetupLogic = new VWTARqRouterSetupLogic {
 		override protected def findRouterQpidSvcOffering_opt : Option[OffersVWorldServer] = findAppQpidSvcOffering_opt
 
@@ -81,6 +101,8 @@ trait AppServiceHandleGroup extends KnowsAkkaSys with VarargsLogging {
 	}
 	lazy private val statusTickTrigTeller  = OuterJobbyLogic_MasterFactory.makeOoLogicAndTeller(statusTickPumpLogic, myAppAkkaSys, "statusTickPumpSetup")
 
+	// Ask the supplied teller (presumed to be a "boss" teller) to send messages back to all our
+	// interested parties, after the core "public" services are accessible.
 	def registerPostInitWaiters(vbt : CPStrongTeller[VWorldRequest]) : Unit = {
 
 		// Each of these the results of happy startup, to trigger further ops.

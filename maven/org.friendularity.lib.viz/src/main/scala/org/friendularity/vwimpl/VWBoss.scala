@@ -8,7 +8,7 @@ import org.cogchar.render.sys.registry.RenderRegistryClient
 import org.cogchar.render.sys.window.WindowStatusMonitor
 import org.friendularity.akact.KnowsAkkaSys
 import org.friendularity.cpmsg.{CPStrongTeller, ActorRefCPMsgTeller}
-import org.friendularity.vwmsg.{VWOverlayRq, VWStageRqMsg, VWShapeCreateRq, VWorldInternalNotice, VWBodyLifeRq, VWPubTellersMsgImpl, VWGoodyRqTAWrapper, LesserIngred, BodyMgrIngred, VWorldNotice, VWSetupResultsNotice, VWARM_GreetFromPumpAdmin, VWARM_FindPublicTellers, VWAdminRqMsg, VWSetupRq_Lnch, VWSetupRq_Conf, VWorldRequest}
+import org.friendularity.vwmsg.{VWRqTAWrapper, VWOverlayRq, VWStageRqMsg, VWShapeCreateRq, VWorldInternalNotice, VWBodyLifeRq, VWPubTellersMsgImpl, LesserIngred, BodyMgrIngred, VWorldNotice, VWSetupResultsNotice, VWARM_GreetFromPumpAdmin, VWARM_FindPublicTellers, VWAdminRqMsg, VWSetupRq_Lnch, VWSetupRq_Conf, VWorldRequest}
 
 /**
   * Created by Stub22 on 6/15/2016.
@@ -83,7 +83,7 @@ trait VWorldBossLogic [VWSM <: VWorldSysMgr] extends VarargsLogging with VWPTRen
 		val sysMgr = getSysMgr
 
 		val goodyActorRef = VWorldActorFactoryFuncs.makeVWGoodyActor(localActorCtx, "googoo", bgc)
-		val goodyTeller = new ActorRefCPMsgTeller[VWGoodyRqTAWrapper](goodyActorRef)
+		val goodyTeller = new ActorRefCPMsgTeller[VWRqTAWrapper](goodyActorRef)
 
 		val pmrc = bmi.getPMRC
 		val cmgrCtx = new VWCharMgrCtxImpl(pmrc)

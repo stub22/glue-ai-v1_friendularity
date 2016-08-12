@@ -31,7 +31,7 @@ import org.friendularity.cpmsg.{ActorRefCPMsgTeller, CPStrongTeller}
 import org.friendularity.netcli.vwta.TestTAQPidClient
 
 import org.friendularity.thact.{ThingActReceiverBinary, ThingActReceiverTxt, ThingActSender, ThingActTurtleEncoder}
-import org.friendularity.vwmsg.{VWorldNotice, VWGoodyRqTAWrapper, VWGoodyRqRdf, VWGoodyRqTAS, VWGoodyRqTurtle}
+import org.friendularity.vwmsg.{VWorldNotice,  VWTARqRdf, VWRqTAWrapImpl, VWTARqTurtle}
 
 /**
   * Created by StuB22 on 6/13/2016.

@@ -22,7 +22,7 @@ import org.appdapter.fancy.log.VarargsLogging
 import org.cogchar.api.thing.ThingActionSpec
 import org.cogchar.render.goody.basic.BasicGoodyCtx
 import org.friendularity.thact.ThingActExposer
-import org.friendularity.vwmsg.{VWGoodyRqTAWrapper, VWGoodyRqRdf, VWGoodyRqTAS, VWorldRequest}
+import org.friendularity.vwmsg.{VWRqTAWrapper, VWTARqRdf, VWRqTAWrapImpl, VWorldRequest}
 
 /**
   * Created by Stub22 on 5/25/2016.
@@ -33,13 +33,13 @@ trait VWGoodyJobLogic extends VarargsLogging {
 	protected def processVWGoodyRequest(vwmsg : VWorldRequest, slfActr : ActorRef, localActorCtx : ActorContext): Unit = {
 		vwmsg match {
 
-			case goodyActSpecMsg: VWGoodyRqTAWrapper => processVWGoodyActSpec(goodyActSpecMsg, localActorCtx)
+			case taBinWrapMsg: VWRqTAWrapper => processVWGoodyActSpec(taBinWrapMsg, localActorCtx)
 
-			case goodyRdfMsg: VWGoodyRqRdf => processVWGoodyRdfMsg(goodyRdfMsg, slfActr, localActorCtx)
+			case goodyRdfMsg: VWTARqRdf => processVWGoodyRdfMsg(goodyRdfMsg, slfActr, localActorCtx)
 		}
 	}
-	protected def processVWGoodyActSpec (goodyActSpecMsg : VWGoodyRqTAWrapper, localActorCtx : ActorContext) : Unit = {
-		val actSpec = goodyActSpecMsg.getActionSpec
+	protected def processVWGoodyActSpec (thingActSpecMsg : VWRqTAWrapper, localActorCtx : ActorContext) : Unit = {
+		val actSpec = thingActSpecMsg.getActionSpec
 		info4("VWGoodyJobLogic is processing received actSpec of class={}, verb={}, tgtType={} tgtID={}",
 					actSpec.getClass, actSpec.getVerbID, actSpec.getTargetThingTypeID, actSpec.getTargetThingID)
 		val goodyCtx = getGoodyCtx
@@ -48,7 +48,7 @@ trait VWGoodyJobLogic extends VarargsLogging {
 		goodyCtx.consumeAction(actSpec)
 	}
 
-	protected def processVWGoodyRdfMsg (goodyMsg : VWGoodyRqRdf, slfActr : ActorRef, localActorCtx : ActorContext) : Unit = {
+	protected def processVWGoodyRdfMsg (goodyMsg : VWTARqRdf, slfActr : ActorRef, localActorCtx : ActorContext) : Unit = {
 		val jenaModel = goodyMsg.asJenaModel(None)
 		val exposer = new ThingActExposer {}
 		val thingActs : List[ThingActionSpec] = exposer.extractThingActsFromModel(jenaModel)
@@ -61,7 +61,7 @@ trait VWGoodyJobLogic extends VarargsLogging {
 		}
 
 		for (tas <- thingActs) {
-			val specMsg = new VWGoodyRqTAS(tas)
+			val specMsg = new VWRqTAWrapImpl(tas)
 			slfActr.tell(specMsg, slfActr)
 		}
 

@@ -32,7 +32,7 @@ import org.friendularity.akact.{KnowsAkkaSys, DummyActorMaker}
 import org.friendularity.cpmsg.{CPStrongTeller, ActorRefCPMsgTeller}
 import org.friendularity.netcli.vwta.TestTAQPidClient
 import org.friendularity.thact.{ThingActSender, ThingActReceiverBinary, ThingActReceiverTxt}
-import org.friendularity.vwmsg.{VWRqTAWrapper, VWGoodyRqRdf, VWGoodyRqTAWrapper, VWorldNotice}
+import org.friendularity.vwmsg.{VWRqTAWrapper, VWTARqRdf, VWorldNotice}
 
 /**
   * Created by Stub22 on 8/8/2016.
@@ -110,7 +110,7 @@ trait OffersVWorldServer extends KnowsAkkaSys with OffersQpidSomething  {
 }
 
 trait OffersVWorldClient extends OffersQpidSomething {
-	private lazy val myClient : TestTAQPidClient = {
+	protected lazy val myClient : TestTAQPidClient = {
 		val clientDestMgr : QpidDestMgr = new QPidDestMgrJFlux(myQpidConnMgr)
 		val client = new TestTAQPidClient(clientDestMgr)
 		client
