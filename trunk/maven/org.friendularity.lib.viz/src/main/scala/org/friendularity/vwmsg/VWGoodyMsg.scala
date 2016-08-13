@@ -87,14 +87,16 @@ trait VWTAMsgMaker extends IdentHlp {
 	def writeScale(gapw : GoodyActionParamWriter, maybeScale: MaybeScaled3D) : Unit = {
 		if (maybeScale.getScl_opt.isDefined) {
 			val scl = maybeScale.getScale
-			gapw.putLocation(scl.getX, scl.getY, scl.getZ)
+			gapw.putScaleVec(scl.getX, scl.getY, scl.getZ)
 		}
 	}
-
-	def writeXform3D(paramSerMap: SerTypedValueMap, mayXform : MaybeTransform3D) : Unit = {
-		val gapw = new GoodyActionParamWriter(paramSerMap)
+	def writeXform3D(gapw : GoodyActionParamWriter, mayXform : MaybeTransform3D) : Unit = {
 		writePos(gapw, mayXform)
 		writeRot(gapw, mayXform)
 		writeScale(gapw, mayXform)
+	}
+	def writeXform3D(paramSerMap: SerTypedValueMap, mayXform : MaybeTransform3D) : Unit = {
+		val gapw = new GoodyActionParamWriter(paramSerMap)
+		writeXform3D(gapw, mayXform)
 	}
 }

@@ -117,8 +117,10 @@ object TestNavUI extends VarargsLogging {
 					val bodyID = new FreeIdent(sinbadBodyURI)
 					val btvm : BasicTypedValueMap  = new ConcreteTVM()
 					val paramWriter = new GoodyActionParamWriter(btvm)
+					writeXform3D(paramWriter, maybeXform3D)
 					paramWriter.putDuration(durSec)
 					val taSpec = makeTASpec(bodyID, GoodyNames.TYPE_AVATAR, GoodyNames.ACTION_MOVE, btvm)
+					info1("Sending Sinbad Smoove rq={}", taSpec)
 					myClient.sendVWRqThingAct(taSpec, myClient.ENCODE_PREF_TRT)
 				}
 			}
@@ -131,10 +133,10 @@ object TestNavUI extends VarargsLogging {
 				override def run : Unit = {
 					info1("Client test send thread is sleeping for {} msec", delayMsec : Integer)
 					Thread.sleep(delayMsec)
-					info0("Client test thread has awoken, sending TA tst messages")
-					phonyClientOffer.sendTestMsgs
+//					info0("Client test thread has awoken, sending TA tst messages")
+//					phonyClientOffer.sendTestMsgs
 					val tgtPos = new Vector3f(-20.0f, 150.0f, -30.0f)
-					val tgtScl = new Vector3f(9.0f, 4.0f, 3.0f)
+					val tgtScl = new Vector3f(12.0f, 3.0f, 8.0f)
 					val mxf = new PartialTransform3D(Some(tgtPos), None, Some(tgtScl))
 					phonyClientOffer.sendSinbadSmooveRq(mxf, 22.0f)
 				}

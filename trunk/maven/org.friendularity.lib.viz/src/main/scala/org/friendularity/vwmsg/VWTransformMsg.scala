@@ -43,13 +43,7 @@ trait Scaled3D extends MaybeScaled3D {
 
 // User must check for existence of particular parts, and apply defaults as desired.
 trait MaybeTransform3D extends MaybeLocated3D with MaybeRotated3D with MaybeScaled3D {
-	def makeDefinite : Transform3D = new Transform3D {
 
-	}
-
-	def writeToTAParams(gapw : GoodyActionParamWriter) : Unit = {
-
-	}
 }
 
 case class PartialTransform3D(posOpt : Option[Vector3f], rotOpt : Option[Quaternion], sclOpt : Option[Vector3f]) extends MaybeTransform3D {
