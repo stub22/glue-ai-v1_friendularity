@@ -19,21 +19,21 @@ package org.friendularity.netcli.vwta
 import javax.jms.Session
 
 import org.cogchar.api.thing.ThingActionSpec
+import org.cogchar.name.goody.GoodyNames
 import org.cogchar.render.rendtest.GoodyTestMsgMaker
 import org.friendularity.qpc.{MakesVWTARqProducers, MakesVWPubStatConsumers, QPidFeatureEndpoint, ExoPubStatDumpingListenerMaker, QpidDestMgr, WritesJmsHeaders, KnowsVWTARqDestinations}
+import org.friendularity.thact.ThingActSender
 
 /**
   * Created by Stub22 on 8/11/2016.
   */
-trait VWTASender extends KnowsVWTARqDestinations {
+trait VWTASender extends ThingActSender with KnowsVWTARqDestinations {
 	override def getDestMgr : QpidDestMgr = null
 }
 
 // Java friendly class
 class VWTASenderTurtleQpid(myJmsSess : javax.jms.Session, jmsHdrWrtr_orNull : WritesJmsHeaders)
-			extends VWTASender {
-
-}
+			extends VWTASender
 
 import scala.collection.JavaConverters._
 class TestTAQPidClient(qpidDestMgr : QpidDestMgr) extends QPidFeatureEndpoint(qpidDestMgr)
@@ -53,8 +53,12 @@ class TestTAQPidClient(qpidDestMgr : QpidDestMgr) extends QPidFeatureEndpoint(qp
 		val msgSList : List[ThingActionSpec] = msgsJList.asScala.toList
 		for (msg <- msgSList) {
 			val preferredEncoding : Int = msgCount % 3 // Cycles through 0=no-pref, 1=prefer-bin-ser, 2=prefer-turtle-txt
-			sendVWRqThingAct(msg, preferredEncoding)
-			msgCount += 1
+			if (msg.getTargetThingTypeID.equals(GoodyNames.TYPE_BIT_BOX) && msg.getVerbID.equals(GoodyNames.ACTION_SET)) {
+				warn1("Skipping bitBox-set which is reliably crashing the scene-graph when submitted this way, msg={}", msg)
+			} else {
+				sendVWRqThingAct(msg, preferredEncoding)
+				msgCount += 1
+			}
 			Thread.sleep(delayMsec)
 		}
 	}

@@ -33,14 +33,15 @@ trait Colorable extends HasMainGeom {
 trait Locatable extends HasMainSpat {
 	// Reads but doesn't disturb VW scene graph, so OK on any thrd.
 	def getCurrXform_anyThrd: Transform3D = {
-		val fPos = new Vector3f
-		val fRotQuat = new Quaternion
-		val fScale = new Vector3f
+		val spat = getMainSpat
+		val locXform = spat.getLocalTransform
+		val locPos = locXform.getTranslation
+		val locRot = locXform.getRotation
+		val locScl = locXform.getScale
 
-		val xform3D = new TransformParams3D(fPos, fRotQuat, fScale)
+		val xform3D = new TransformParams3D(locPos, locRot, locScl)
 		xform3D
 	}
-	//
 
 }
 
