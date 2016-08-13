@@ -148,7 +148,12 @@ trait IdentHlp {
 		String.format("%s%d_%06d%s", prefix, tstamp : java.lang.Long, rnum : Integer, suffix)
 	}
 	def makeStampyRandyIdent() : Ident = {
-		val uriTxt = makeStampyRandyString("urn:sri_", idSuffix)
+		makeStampyRandyIdent("")
+	}
+	def makeStampyRandyIdent(shortLab : String) : Ident = {
+		val prePre = "urn:sri_"
+		val prefix : String = if (shortLab.length > 0) {prePre + shortLab + "_"} else prePre
+		val uriTxt = makeStampyRandyString(prefix, idSuffix)
 		val id = new FreeIdent(uriTxt)
 		id
 	}

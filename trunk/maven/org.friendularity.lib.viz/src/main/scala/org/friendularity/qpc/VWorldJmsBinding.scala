@@ -68,6 +68,9 @@ trait MakesVWTARqProducers extends KnowsVWTARqDestinations {
 	private lazy val myProdForJSer : JMSMsgProducer = if (getFlagUnified) myProdForUni else myJmsSession.createProducer(destVWRqTABin)
 
 	protected val myGenSender : ThingActSender = new ThingActSenderQPid(myJmsSession, myProdForJSer, None, myProdForTurtle, None)
+	val ENCODE_NO_PREF = myGenSender.NO_PREFERENCE
+	val ENCODE_PREF_BIN = myGenSender.PREFER_JAVA_SER
+	val ENCODE_PREF_TRT = myGenSender.PREFER_TURTLE_SER
 }
 
 trait MakesVWPubStatConsumers extends KnowsVWPubStatDestinations {

@@ -27,7 +27,9 @@ import org.cogchar.render.sys.registry.RenderRegistryClient
 import org.friendularity.cpmsg.{ActorRefCPMsgTeller, CPStrongTeller}
 
 import org.friendularity.rbody.{DualBodyHelper, DualBodyRecord}
-import org.friendularity.vwmsg.{ManipDesc, VWBodyManipRq, VWBroadcastToAllBodies, VWBodySkeletonDisplayToggle, VWBodyLifeRq, VWBodyMakeRq,  VWBodyNotice, VWBodyRq}
+import org.friendularity.vwmsg.{VWBodyNoticeImpl, VWBodyFindRq, ManipDesc, VWBodyManipRq, VWBroadcastToAllBodies, VWBodySkeletonDisplayToggle, VWBodyLifeRq, VWBodyMakeRq, VWBodyNotice, VWBodyRq}
+
+import scala.collection.mutable
 
 /**
   * Created by Stub22 on 6/6/2016.
@@ -58,22 +60,28 @@ trait VWCharMgrJobLogic extends VarargsLogging {
 		val dbr = myHelper.finishDualBodInit(dualBodyID, mbsrc_opt, pmrc, hfm, fullHumaCfg)
 		dbr
 	}
+	private val myBTlrsByBodyID = new mutable.HashMap[Ident, CPStrongTeller[VWBodyRq]]()
 	private var myBodyTellersForBrdcst :Set[CPStrongTeller[VWBodyRq]] = Set()
 	def processCharRq(vwcr: VWBodyLifeRq, slfActr : ActorRef, localActorCtx : ActorContext): Unit = {
 		vwcr match {
-			case crchr: VWBodyMakeRq => {
-				info1("Processing create-char rq={}", crchr)
-				val dbr: DualBodyRecord = createAndBindVWBody(crchr.dualBodyID, crchr.fullHumaCfg, crchr.myMBRoboSvcCtx_opt)
+			case mkVWBody: VWBodyMakeRq => {
+				val vwBodyID = mkVWBody.dualBodyID
+				info2("Processing create-char rq for bodyID={}, rq={}", vwBodyID, mkVWBody)
+				val dbr: DualBodyRecord = createAndBindVWBody(mkVWBody.dualBodyID, mkVWBody.fullHumaCfg, mkVWBody.myMBRoboSvcCtx_opt)
 				info1("Finished connecting dual body, now what kind of notices do we want to send?  dbr={}", dbr)
-				val actorName = "bdActr_" + crchr.dualBodyID.getLocalName
+				val actorName = "bdActr_" + vwBodyID.getLocalName
 				val bodyActor = VWorldActorFactoryFuncs.makeVWBodyActor(localActorCtx, actorName, dbr)
 				val bodyTeller = new ActorRefCPMsgTeller[VWBodyRq](bodyActor)
 				myBodyTellersForBrdcst += bodyTeller
-				val bodyNotice = new VWBodyNotice {
-					override def getBodyTeller: CPStrongTeller[VWBodyRq] = bodyTeller
-				}
-				crchr.answerTeller.tellStrongCPMsg(bodyNotice)
-
+				myBTlrsByBodyID.put(vwBodyID, bodyTeller)
+				val bodyNotice = new VWBodyNoticeImpl(vwBodyID, Some(bodyTeller))
+				mkVWBody.answerTeller.tellStrongCPMsg(bodyNotice)
+			}
+			case bfrq: VWBodyFindRq => {
+				val vwBodyID = bfrq.dualBodyID
+				val bodyTeller_opt = myBTlrsByBodyID.get(vwBodyID)
+				val bodyNotice = new VWBodyNoticeImpl(vwBodyID, bodyTeller_opt)
+				bfrq.answerTeller.tellStrongCPMsg(bodyNotice)
 			}
 			case brdcst: VWBroadcastToAllBodies => {
 				val msgToBrdcst = brdcst.bodyRQ

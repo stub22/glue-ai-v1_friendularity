@@ -23,7 +23,7 @@ import org.friendularity.cpmsg.{ActorRefCPMsgTeller, CPStrongTeller}
 import org.friendularity.field.MsgToStatusSrc
 import org.friendularity.qpc.OffersVWorldServer
 import org.friendularity.vwimpl.MakesVWTAReqRouterTeller
-import org.friendularity.vwmsg.{VWRqTAWrapper, VWGoodyRqTAWrapper, VWorldPublicTellers, VWBodyLifeRq, VWARM_FindPublicTellers, VWorldRequest}
+import org.friendularity.vwmsg.{VWRqTAWrapper, VWorldPublicTellers, VWBodyLifeRq, VWARM_FindPublicTellers, VWorldRequest}
 
 /**
   * Created by Stub22 on 8/8/2016.

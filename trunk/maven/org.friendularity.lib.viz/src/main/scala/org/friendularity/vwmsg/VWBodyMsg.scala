@@ -18,6 +18,8 @@ case class VWBodyMakeRq(dualBodyID: Ident, fullHumaCfg : HumanoidFigureConfig,
 						myMBRoboSvcCtx_opt : Option[ModelBlendingRobotServiceContext],
 						answerTeller : CPStrongTeller[VWBodyNotice]) extends VWBodyLifeRq
 
+case class VWBodyFindRq(dualBodyID: Ident, answerTeller : CPStrongTeller[VWBodyNotice]) extends VWBodyLifeRq
+
 case class VWBroadcastToAllBodies(bodyRQ : VWBodyRq) extends VWBodyLifeRq
 
 

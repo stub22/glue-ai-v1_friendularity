@@ -17,14 +17,21 @@
 package org.friendularity.vwmsg
 
 import java.io.ByteArrayInputStream
+import java.lang
+import java.lang.{Double, Float, Boolean}
 import java.nio.charset.StandardCharsets
 
 
 import com.hp.hpl.jena.rdf.model.{Model => JenaModel, ModelFactory => JenaModelFactory, Resource, ResIterator}
 import org.apache.jena.riot.RDFFormat
+import org.appdapter.core.name.Ident
 import org.appdapter.fancy.log.VarargsLogging
-import org.cogchar.api.thing.ThingActionSpec
+import org.cogchar.api.thing.{SerTypedValueMap, TypedValueMap, ActionParamWriter, ThingActionSpec}
+import org.cogchar.api.vworld.GoodyActionParamWriter
+import org.cogchar.impl.thing.basic.{BasicTypedValueMap, BasicThingActionSpec}
+import org.cogchar.impl.thing.fancy.ConcreteTVM
 import org.friendularity.thact.{JenaModelReader, RdfMsg}
+import org.friendularity.vwimpl.IdentHlp
 
 
 /**
@@ -54,4 +61,40 @@ case class VWRqTAWrapImpl(myBTAS : ThingActionSpec) extends  VWRqTAWrapper {
 
 trait VWStatMsg extends VWorldNotice
 
+trait MainFloatParams {
 
+}
+trait VWTAMsgMaker extends IdentHlp {
+	val myAgentID : Ident = makeStampyRandyIdent()
+
+	def makeTASpec(entityID : Ident, typeID : Ident, verbID : Ident, paramSerMap: SerTypedValueMap) : ThingActionSpec = {
+		val actRecID : Ident = makeStampyRandyIdent("actSpec")
+		// gar.writeToMap(paramWriter)
+		val srcAgentID: Ident = myAgentID
+		val postedTStampMsec: Long = System.currentTimeMillis
+		val actionSpec = new BasicThingActionSpec(actRecID, entityID, typeID, verbID, srcAgentID, paramSerMap, postedTStampMsec)
+		actionSpec
+	}
+	def writePos(gapw : GoodyActionParamWriter, maybeLocated3D: MaybeLocated3D) : Unit = {
+		if (maybeLocated3D.getPos_opt.isDefined) {
+			val pos = maybeLocated3D.getPos
+			gapw.putLocation(pos.getX, pos.getY, pos.getZ)
+		}
+	}
+	def writeRot(gapw : GoodyActionParamWriter, maybeRot: MaybeRotated3D) : Unit = {
+
+	}
+	def writeScale(gapw : GoodyActionParamWriter, maybeScale: MaybeScaled3D) : Unit = {
+		if (maybeScale.getScl_opt.isDefined) {
+			val scl = maybeScale.getScale
+			gapw.putLocation(scl.getX, scl.getY, scl.getZ)
+		}
+	}
+
+	def writeXform3D(paramSerMap: SerTypedValueMap, mayXform : MaybeTransform3D) : Unit = {
+		val gapw = new GoodyActionParamWriter(paramSerMap)
+		writePos(gapw, mayXform)
+		writeRot(gapw, mayXform)
+		writeScale(gapw, mayXform)
+	}
+}

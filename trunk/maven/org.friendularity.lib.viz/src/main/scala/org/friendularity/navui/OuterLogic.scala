@@ -85,9 +85,6 @@ trait GoodyTestMsgFun extends IdentHlp with TurtleSerHlp {
 
 		for (actSpec <- msgsScbuf) {
 			if (flag_serToTurtle) {
-				//				val ftmw = new FancyThingModelWriter
-				//				val specModelWithPrefixes : JenaModel  = ftmw.writeTASpecAndPrefixesToNewModel(actSpec, myRandomizer)
-				//				val turtleTriplesString : String = ftmw.serializeSpecModelToTurtleString(specModelWithPrefixes)
 				val turtleTxt = serlzOneTAMsgToTurtleTxt(actSpec, myRandomizer)
 				val turtleMsg = new VWTARqTurtle(turtleTxt)
 				goodyTeller.tellCPMsg(turtleMsg)
@@ -189,6 +186,7 @@ trait PatientForwarder_CharAdminTest extends OuterLogic {
 	def propagateMessages(pubTellers_opt : Option[VWorldPublicTellers]) : Unit = {
 		this.synchronized {
 			// Top part of this method could easily be shortened to a few lines of functional piping, sure.
+			// We write it out long form here to make it more readable.
 			if (pubTellers_opt.isDefined) {
 				val charAdminTeller_opt = pubTellers_opt.get.getCharAdminTeller
 				if (charAdminTeller_opt.isDefined) {

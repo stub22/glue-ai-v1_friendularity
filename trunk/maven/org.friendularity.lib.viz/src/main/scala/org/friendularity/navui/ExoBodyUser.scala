@@ -41,8 +41,7 @@ trait ExoBodyUserLogic extends ScheduleHelper with VarargsLogging {
 	var myBodyTeller_opt : Option[CPStrongTeller[VWBodyRq]] = None
 	def rcvBodyNotice(bodyNotice : VWBodyNotice): Unit = {
 		info1("ExoBody UserLogic received bodyNotice={}", bodyNotice)
-		val bodyTeller: CPStrongTeller[VWBodyRq] = bodyNotice.getBodyTeller
-		myBodyTeller_opt = Option(bodyTeller)
+		myBodyTeller_opt = bodyNotice.getBodyTeller_opt
 	}
 
 	def rcvUpdtick(exoBodyUpChance : VWExoBodyChance) : Unit = {

@@ -19,16 +19,20 @@ package org.friendularity.navui
 // import akka.actor._
 import akka.actor.{Scheduler => AkkaSched, Actor, ActorRef, ActorContext, ActorSystem, ActorRefFactory, Props, ActorLogging}
 import com.hp.hpl.jena.rdf.model.{Model => JenaModel}
-import org.appdapter.core.name.Ident
+import com.jme3.math.Vector3f
+import org.appdapter.core.name.{FreeIdent, Ident}
 import org.appdapter.core.store.Repo
 import org.appdapter.fancy.log.VarargsLogging
 import org.appdapter.fancy.rclient.EnhancedLocalRepoClient
 import org.cogchar.api.humanoid.HumanoidFigureConfig
+import org.cogchar.api.vworld.GoodyActionParamWriter
 import org.cogchar.bind.mio.robot.svc.ModelBlendingRobotServiceContext
 import org.cogchar.blob.emit.RenderConfigEmitter
 import org.cogchar.blob.entry.EntryHost
 import org.cogchar.impl.scene.read.BehavMasterConfigTest
-import org.cogchar.impl.thing.basic.BasicThingActionSpec
+import org.cogchar.impl.thing.basic.{BasicTypedValueMap, BasicThingActionSpec}
+import org.cogchar.impl.thing.fancy.ConcreteTVM
+import org.cogchar.name.goody.GoodyNames
 import org.cogchar.platform.gui.keybind.KeyBindingConfig
 import org.cogchar.platform.trigger.CommandSpace
 import org.cogchar.render.app.humanoid.HumanoidRenderWorldMapper
@@ -38,6 +42,7 @@ import org.cogchar.render.rendtest.{GoodyTestMsgMaker, GoodyRenderTestApp}
 import org.cogchar.render.sys.goody.GoodyRenderRegistryClient
 import org.friendularity.qpc.OffersVWorldClient
 import org.friendularity.raiz.{VizappLegacyLoaderFactory, VizappProfileLoaderFactory, TestRaizLoad}
+import org.friendularity.vwmsg.{PartialTransform3D, MaybeTransform3D, VWTAMsgMaker}
 
 /**
   * Created by Owner on 4/1/2016.
@@ -102,10 +107,19 @@ object TestNavUI extends VarargsLogging {
 	val myFlag_addPhonyClient = true
 	private def maybeLaunchPhonyClient: Unit = {
 		if (myFlag_addPhonyClient) {
-			val phonyClientOffer = new OffersVWorldClient {
+			val phonyClientOffer = new OffersVWorldClient with VWTAMsgMaker {
 				def sendTestMsgs : Unit = {
 					val client = myClient
 					client.sendSomeVWRqs(1500)
+				}
+				def sendSinbadSmooveRq(maybeXform3D : MaybeTransform3D, durSec : Float) : Unit = {
+					val sinbadBodyURI = "urn:ftd:cogchar.org:2012:runtime#char_sinbad_88"
+					val bodyID = new FreeIdent(sinbadBodyURI)
+					val btvm : BasicTypedValueMap  = new ConcreteTVM()
+					val paramWriter = new GoodyActionParamWriter(btvm)
+					paramWriter.putDuration(durSec)
+					val taSpec = makeTASpec(bodyID, GoodyNames.TYPE_AVATAR, GoodyNames.ACTION_MOVE, btvm)
+					myClient.sendVWRqThingAct(taSpec, myClient.ENCODE_PREF_TRT)
 				}
 			}
 			info0("========== .maybeLaunchPhonyClient() starting CLIENT qpidConn")
@@ -119,6 +133,10 @@ object TestNavUI extends VarargsLogging {
 					Thread.sleep(delayMsec)
 					info0("Client test thread has awoken, sending TA tst messages")
 					phonyClientOffer.sendTestMsgs
+					val tgtPos = new Vector3f(-20.0f, 30.0f, 10.0f)
+					val tgtScl = new Vector3f(9.0f, 4.0f, 3.0f)
+					val mxf = new PartialTransform3D(Some(tgtPos), None, Some(tgtScl))
+					phonyClientOffer.sendSinbadSmooveRq(mxf, 22.0f)
 				}
 			}
 			testSendThrd.start()
