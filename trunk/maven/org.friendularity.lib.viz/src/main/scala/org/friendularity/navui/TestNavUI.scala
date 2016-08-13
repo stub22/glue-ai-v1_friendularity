@@ -133,7 +133,7 @@ object TestNavUI extends VarargsLogging {
 					Thread.sleep(delayMsec)
 					info0("Client test thread has awoken, sending TA tst messages")
 					phonyClientOffer.sendTestMsgs
-					val tgtPos = new Vector3f(-20.0f, 30.0f, 10.0f)
+					val tgtPos = new Vector3f(-20.0f, 150.0f, -30.0f)
 					val tgtScl = new Vector3f(9.0f, 4.0f, 3.0f)
 					val mxf = new PartialTransform3D(Some(tgtPos), None, Some(tgtScl))
 					phonyClientOffer.sendSinbadSmooveRq(mxf, 22.0f)
