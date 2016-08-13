@@ -110,13 +110,25 @@ trait VWThingActReqRouterLogic extends BodyTARouterLogic with MakesTransform3D {
 
 	def extractXform (tvm : TypedValueMap, gax : GoodyActionExtractor) : MaybeTransform3D = {
 		val allKeys : Set[Ident] = tvm.iterateKeys().asScala.toSet
-		val loc_opt : Option[Vector3f] = if(allKeys.contains(GoodyNames.LOCATION_X)) Option(gax.getLocationVec3f) else None
-		val rot_opt : Option[Quaternion] = if(allKeys.contains(GoodyNames.ROTATION_MAG_DEG)) Option(gax.getRotationQuaternion) else None
-		val scl_opt : Option[Vector3f] = if(allKeys.contains(GoodyNames.SCALE_X)) Option(gax.getLocationVec3f) 	else {
-			if (allKeys.contains(GoodyNames.SCALE_UNIFORM)) {
-				val scaleUni : Float = gax.getScaleUniform
-				Some(new Vector3f(scaleUni, scaleUni, scaleUni))
-			} else None
+		val loc_opt : Option[Vector3f] = {
+			if(allKeys.contains(GoodyNames.LOCATION_X))
+				Option(gax.getLocationVec3f)
+			else None
+		}
+		val rot_opt : Option[Quaternion] = {
+			if(allKeys.contains(GoodyNames.ROTATION_MAG_DEG))
+				Option(gax.getRotationQuaternion)
+			else None
+		}
+		val scl_opt : Option[Vector3f] = {
+			if(allKeys.contains(GoodyNames.SCALE_X))
+				Option(gax.getScaleVec3f)
+			else {
+				if (allKeys.contains(GoodyNames.SCALE_UNIFORM)) {
+					val scaleUni : Float = gax.getScaleUniform
+					Some(new Vector3f(scaleUni, scaleUni, scaleUni))
+				} else None
+			}
 		}
 		new PartialTransform3D(loc_opt, rot_opt, scl_opt)
 	}
