@@ -4,6 +4,7 @@ import com.jme3.animation.{LoopMode, AnimControl, AnimationFactory, Animation}
 import com.jme3.math.{Quaternion, Vector3f, ColorRGBA}
 import com.jme3.scene.Spatial
 import org.appdapter.core.name.Ident
+import org.appdapter.fancy.log.VarargsLogging
 import org.friendularity.vwmsg.{VWShapeManipRq, ShapeManipRqImpl, SmooveManipFullImpl, SmooveManipEnding, AbruptManipAbs, ManipDesc, DoTransformAbsoluteNow,  TransformParams3D, Transform3D, SmooveManipFull}
 
 /**
@@ -151,13 +152,15 @@ trait Smoovable extends Movable with Locatable with Addressable {
 		chan.setLoopMode(LoopMode.DontLoop)  // Cogchar lore says this should be done after setAnim
 	}
 }
-trait Manipable extends Smoovable {
+trait Manipable extends Smoovable with VarargsLogging {
 	def applyManipDesc(manip : ManipDesc, enqHelp : FullEnqHlp) : Unit = {
 		manip match {
 			case smf : SmooveManipFull => {
+				info1("Starting full-smoove manip: {}", smf)
 				applySmooveNow_anyThrd(smf)
 			}
 			case sme : SmooveManipEnding => {
+				info1("Starting half-smoove manip: {}", sme)
 				applySmooveFromCurrent_mystThrd(sme)
 			}
 			case ama : AbruptManipAbs => {

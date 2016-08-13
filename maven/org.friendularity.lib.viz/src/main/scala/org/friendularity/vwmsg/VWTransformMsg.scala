@@ -64,7 +64,7 @@ trait Transform3D extends MaybeTransform3D with Located3D with Rotated3D with Sc
 
 // Different impls of Transform3D
 // Fancier:  Wrap subunits, which can be easier if computation is nontrivial
-class CompoundXform3D(loc: Located3D, rot: Rotated3D, scale: Scaled3D) extends Transform3D {
+case class CompoundXform3D(loc: Located3D, rot: Rotated3D, scale: Scaled3D) extends Transform3D {
 	override def getPos : Vector3f = loc.getPos
 	override def getRotQuat: Quaternion = rot.getRotQuat
 	override def getScale: Vector3f = scale.getScale
@@ -74,7 +74,7 @@ class CompoundXform3D(loc: Located3D, rot: Rotated3D, scale: Scaled3D) extends T
 
 }
 // ...OR just supply some nice known scalar values.  (Note that "nulls" supplied here are mapped to None).
-class TransformParams3D(myPos3f : Vector3f, myRotQuat : Quaternion, myScale3f : Vector3f) extends Transform3D {
+case class TransformParams3D(myPos3f : Vector3f, myRotQuat : Quaternion, myScale3f : Vector3f) extends Transform3D {
 	override def getPos : Vector3f = myPos3f
 	override def getRotQuat : Quaternion = myRotQuat
 	override def getScale : Vector3f = myScale3f

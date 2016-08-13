@@ -60,7 +60,7 @@ trait NavUiAppSvc extends VarargsLogging {
 
 	def makeFunUserLogic(): ExoBodyUserLogic = {
 		val btc = new BodyTestClient {}
-		val userLogic: ExoBodyUserLogic = btc.makeMoveTestLogic()
+		val userLogic: ExoBodyUserLogic = btc.makeEmptyExoBodyUserLogic /// btc.makeMoveTestLogic()
 		userLogic
 	}
 

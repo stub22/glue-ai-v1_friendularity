@@ -9,6 +9,11 @@ import org.friendularity.vwmsg.{VWBodyManipRq, AbruptManipAbsImpl, TransformPara
   * Created by Owner on 6/18/2016.
   */
 trait BodyTestClient extends VarargsLogging {
+	def makeEmptyExoBodyUserLogic : ExoBodyUserLogic = new  ExoBodyUserLogic() {
+		override protected def rcvUpdtickForBody(exoBodyUpChance : VWExoBodyChance, bodyTeller : CPStrongTeller[VWBodyRq]) : Unit = {
+			warn0("Empty exo body user logic does nothin!")
+		}
+	}
 	def makeMoveTestLogic(): ExoBodyUserLogic = {
 		val userLogic: ExoBodyUserLogic = new ExoBodyUserLogic() {
 			override protected def rcvUpdtickForBody(exoBodyUpChance : VWExoBodyChance, bodyTeller : CPStrongTeller[VWBodyRq]) : Unit = {
