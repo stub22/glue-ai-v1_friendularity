@@ -189,7 +189,8 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 		getLogger().info("============= 2016 semi-legacy launcher calling startSemiLegacyBodyConn_OSGi_Sinbad() ======");
 		// This method instantiates necessary config objects and outer callback ("bodyNoticer"),
 		// and then enqueues an async request for the char-admin actor.
-		ExoBodyUserLogic funUserLogic = appSvc.makeFunUserLogic();
+		boolean flag_sendTestMovesFromExoUserLogic = true;
+		ExoBodyUserLogic funUserLogic = appSvc.makeFunUserLogic(flag_sendTestMovesFromExoUserLogic);
 		appSvc.requestSemiLegacyBodyConn_OSGi_Sinbad(bundleCtx, akkaSys, elrc, funUserLogic);
 		getLogger().info("============= 2016 semi-legacy VWorld + Body launcher is done sending messages  ======");
 

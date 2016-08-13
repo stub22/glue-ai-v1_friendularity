@@ -107,7 +107,7 @@ trait FunWithShapes extends IdentHlp {
 		val spherePos = new Vector3f(-15.0f, 12.0f, 4.0f) // biggish dirigible
 		val sphereRot = Quaternion.IDENTITY
 		val sphereParams = new OrdinaryParams3D(spherePos, sphereRot, Vector3f.UNIT_XYZ, sphereCol)
-		val knownSphereID_opt : Option[Ident] = Some(makeStampyRandyIdent())
+		val knownSphereID_opt : Option[Ident] = Some(makeStampyRandyIdentAnon())
 		val rq_makeSphere = new VWSCR_Sphere(9.0f, sphereParams, knownSphereID_opt)
 		shapeTeller.tellCPMsg(rq_makeSphere)
 		knownSphereID_opt.get
@@ -203,7 +203,7 @@ trait PatientForwarder_CharAdminTest extends OuterLogic {
 		}
 	}
 }
-trait PatientSender_BonusStaging extends OuterLogic with IdentHlp {
+trait PatientSender_BonusStaging extends OuterLogic with OuterCamHelp with IdentHlp {
 	override def rcvPubTellers(vwpt: VWorldPublicTellers): Unit = {
 		val stageTeller = vwpt.getStageTeller.get
 
@@ -287,11 +287,14 @@ trait PatientSender_BonusStaging extends OuterLogic with IdentHlp {
 		val cpv = new Vector3f(-70.0f, 5.0f, -3.0f)
 		val pdir = new Vector3f(1.0f, 0.0f, 0.0f)
 		val cst = new CamStateParams3D(cpv, pdir)
-		val camID : Ident = makeStampyRandyIdent
+
+		val camGuideNodeID : Ident = makeAndBindExtraCam(stageTeller, spcTeller, "extra", cst, vpd)
+		/*
+		val camID : Ident = makeStampyRandyIdentAnon
 		val makeCamRq = new VWCreateCamAndViewportRq(camID, cst, vpd)
 		stageTeller.tellCPMsg(makeCamRq)
 
-		val camGuideNodeID : Ident = makeStampyRandyIdent
+		val camGuideNodeID : Ident = makeStampyRandyIdentAnon
 		info1("Requesting cam-guide node at ID={}", camGuideNodeID)
 		val makeGuideNodeRQ = new VWSCR_Node(camGuideNodeID, None)
 		spcTeller.tellCPMsg(makeGuideNodeRQ)
@@ -299,7 +302,7 @@ trait PatientSender_BonusStaging extends OuterLogic with IdentHlp {
 		val guideIsParent = true
 		val camGuideBindRq = new VWBindCamNodeRq(camID, guideIsParent, spcTeller, camGuideNodeID)
 		stageTeller.tellCPMsg(camGuideBindRq)
-
+		*/
 		val guideTgtPos = new Vector3f(-1.0f, 5.0f, 3.0f)
 		val rotAngles = Array(45.0f, -45.0f, 15.0f)
 		val guideTgtRot = new Quaternion(rotAngles)
@@ -348,7 +351,7 @@ trait OuterAppPumpSetupLogic extends OuterLogic with IdentHlp with StatusTickSch
 	}
 	def setupDynamicStatusFlow(vwpt: VWorldPublicTellers): Unit = {
 		val downstreamTeller = setupDownstreamActors_UnusedRightNow(vwpt.getOverlayTeller.get)
-		val chanID = makeStampyRandyIdent()
+		val chanID = makeStampyRandyIdentAnon()
 		val wrong = downstreamTeller
 		val toWhom: CPStrongTeller[SourceDataMsg] = ???
 		val blankPolicy = new ReportingPolicy {}

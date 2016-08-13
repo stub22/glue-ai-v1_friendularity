@@ -25,6 +25,7 @@ import org.cogchar.name.goody.GoodyNames
 import org.cogchar.render.app.entity.GoodyActionExtractor
 import org.friendularity.akact.{KnowsAkkaSys, FrienduActor}
 import org.friendularity.cpmsg.{ActorRefCPMsgTeller, CPStrongTeller}
+import org.friendularity.navui.OuterCamHelp
 import org.friendularity.vwmsg.{SmooveManipEndingImpl, VWBodyManipRq, AbruptManipAbsImpl, SmooveManipGutsImpl, ManipDesc, Transform3D, MakesTransform3D, PartialTransform3D, MaybeTransform3D, VWBodyFindRq, VWBodyLifeRq, VWBodyRq, VWBodyNotice, VWorldPublicTellers, VWRqTAWrapper}
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
@@ -33,7 +34,37 @@ import java.lang.{Integer => JInt, Long => JLong, Float => JFloat}
 /**
   * Created by Stub22 on 8/11/2016.
   */
-trait BodyTARouterLogic extends VarargsLogging {
+
+trait TARqExtractorHelp {
+	import scala.collection.JavaConverters._
+	def extractXform (tvm : TypedValueMap, gax : GoodyActionExtractor) : MaybeTransform3D = {
+		val allKeys : Set[Ident] = tvm.iterateKeys().asScala.toSet
+		val loc_opt : Option[Vector3f] = {
+			if(allKeys.contains(GoodyNames.LOCATION_X))
+				Option(gax.getLocationVec3f)
+			else None
+		}
+		val rot_opt : Option[Quaternion] = {
+			if(allKeys.contains(GoodyNames.ROTATION_MAG_DEG))
+				Option(gax.getRotationQuaternion)
+			else None
+		}
+		val scl_opt : Option[Vector3f] = {
+			if(allKeys.contains(GoodyNames.SCALE_X))
+				Option(gax.getScaleVec3f)
+			else {
+				if (allKeys.contains(GoodyNames.SCALE_UNIFORM)) {
+					val scaleUni : Float = gax.getScaleUniform
+					Some(new Vector3f(scaleUni, scaleUni, scaleUni))
+				} else None
+			}
+		}
+		new PartialTransform3D(loc_opt, rot_opt, scl_opt)
+	}
+	def extractDuration(tvm : TypedValueMap) : Option[JFloat] = Option(tvm.getAsFloat(GoodyNames.TRAVEL_TIME))
+
+}
+trait VWBodyMedialRendezvous extends VarargsLogging {
 	def getCharAdminTeller : CPStrongTeller[VWBodyLifeRq]
 
 	val myBodyTlrsByID = new mutable.HashMap[Ident, CPStrongTeller[VWBodyRq]]
@@ -86,9 +117,49 @@ trait BodyTARouterLogic extends VarargsLogging {
 		}
 	}
 }
+trait VWBodyTARouterLogic extends TARqExtractorHelp with MakesTransform3D {
+	protected def getMedialRendezvous :  VWBodyMedialRendezvous
 
-trait VWThingActReqRouterLogic extends BodyTARouterLogic with MakesTransform3D {
-	import scala.collection.JavaConverters._
+	def handleBodyTA(ta : ThingActionSpec, gax: GoodyActionExtractor, whoDat : ActorRef) : Unit = {
+		val bodyID = gax.getGoodyID
+		val tvm = ta.getParamTVM
+		val maybeXform = extractXform(tvm, gax)
+		val concXform : Transform3D = makeDefiniteXForm(maybeXform)
+		val dur_opt = extractDuration(tvm)
+		val manipGuts : ManipDesc = if (dur_opt.isDefined) {
+			new SmooveManipEndingImpl(concXform, dur_opt.get)
+		} else {
+			new AbruptManipAbsImpl(concXform)
+		}
+		val msgForBody : VWBodyRq = new VWBodyManipRq(manipGuts)
+		getMedialRendezvous.routeBodyRq(bodyID, msgForBody, whoDat)
+	}
+	def receiveBodyNotice(vwbn : VWBodyNotice) : Unit = {
+		getMedialRendezvous.noticeBody(vwbn)
+	}
+
+}
+trait CamTARouterLogic extends TARqExtractorHelp with MakesTransform3D with OuterCamHelp {
+	def handleCameraTA(ta : ThingActionSpec, gax: GoodyActionExtractor, whoDat : ActorRef) : Unit = {
+		// Resolve message cam-URI to paired shape ID, which is used for most camera movement control.
+		// However, if we want to use ".lookAt" ...
+		val camGuideShapeID = gax.getGoodyID
+		val opKind = gax.getKind
+		opKind match {
+			case GoodyActionExtractor.Kind.CREATE => {
+
+			}
+
+		}
+	}
+}
+trait VWThingActReqRouterLogic extends VWBodyTARouterLogic with CamTARouterLogic with MakesTransform3D {
+	protected def getVWPubTellers : VWorldPublicTellers
+
+	lazy private val myBodyMedialRndzvs = new VWBodyMedialRendezvous {
+		override def getCharAdminTeller: CPStrongTeller[VWBodyLifeRq] = getVWPubTellers.getCharAdminTeller.get
+	}
+	override protected def getMedialRendezvous :  VWBodyMedialRendezvous  = myBodyMedialRndzvs
 	def routeRq(vwtarq: VWRqTAWrapper, whoDat : ActorRef) : Unit = {
 		val tellers = getVWPubTellers
 		info1("Router handling TARq in binary format: {}, and wisely using vwpt-tellers...", vwtarq)
@@ -105,54 +176,9 @@ trait VWThingActReqRouterLogic extends BodyTARouterLogic with MakesTransform3D {
 			directLegacyGoodyTeller.get.tellStrongCPMsg(vwtarq)
 		}
 	}
-	def getVWPubTellers : VWorldPublicTellers
-	override def getCharAdminTeller : CPStrongTeller[VWBodyLifeRq] = getVWPubTellers.getCharAdminTeller.get
 
-	def extractXform (tvm : TypedValueMap, gax : GoodyActionExtractor) : MaybeTransform3D = {
-		val allKeys : Set[Ident] = tvm.iterateKeys().asScala.toSet
-		val loc_opt : Option[Vector3f] = {
-			if(allKeys.contains(GoodyNames.LOCATION_X))
-				Option(gax.getLocationVec3f)
-			else None
-		}
-		val rot_opt : Option[Quaternion] = {
-			if(allKeys.contains(GoodyNames.ROTATION_MAG_DEG))
-				Option(gax.getRotationQuaternion)
-			else None
-		}
-		val scl_opt : Option[Vector3f] = {
-			if(allKeys.contains(GoodyNames.SCALE_X))
-				Option(gax.getScaleVec3f)
-			else {
-				if (allKeys.contains(GoodyNames.SCALE_UNIFORM)) {
-					val scaleUni : Float = gax.getScaleUniform
-					Some(new Vector3f(scaleUni, scaleUni, scaleUni))
-				} else None
-			}
-		}
-		new PartialTransform3D(loc_opt, rot_opt, scl_opt)
-	}
-	def extractDuration(tvm : TypedValueMap) : Option[JFloat] = Option(tvm.getAsFloat(GoodyNames.TRAVEL_TIME))
+	// override def getCharAdminTeller : CPStrongTeller[VWBodyLifeRq] = getVWPubTellers.getCharAdminTeller.get
 
-	def handleBodyTA(ta : ThingActionSpec, gax: GoodyActionExtractor, whoDat : ActorRef) : Unit = {
-		val bodyID = gax.getGoodyID
-		val tvm = ta.getParamTVM
-		val maybeXform = extractXform(tvm, gax)
-		val concXform : Transform3D = makeDefiniteXForm(maybeXform)
-		val dur_opt = extractDuration(tvm)
-		val manipGuts : ManipDesc = if (dur_opt.isDefined) {
-			new SmooveManipEndingImpl(concXform, dur_opt.get)
-		} else {
-			new AbruptManipAbsImpl(concXform)
-		}
-		val msgForBody : VWBodyRq = new VWBodyManipRq(manipGuts)
-		routeBodyRq(bodyID, msgForBody, whoDat)
-	}
-	def handleCameraTA(ta : ThingActionSpec, gax: GoodyActionExtractor, whoDat : ActorRef) : Unit = {
-		// Resolve message cam-URI to paired shape ID, which is used for most camera movement control.
-		// However, if we want to use ".lookAt" ...
-		val camID = gax.getGoodyID
-	}
 }
 class VWThingActReqRouterActor(routerLogic : VWThingActReqRouterLogic) extends FrienduActor {
 	override def receive = {
@@ -160,7 +186,7 @@ class VWThingActReqRouterActor(routerLogic : VWThingActReqRouterLogic) extends F
 			routerLogic.routeRq(vwgrq, self)
 		}
 		case vwbn: VWBodyNotice => {
-			routerLogic.noticeBody(vwbn)
+			routerLogic.receiveBodyNotice(vwbn)
 		}
 		case other => {
 			getLogger().warn("ThingActReqRouterActor received unexpected message: {}", other)

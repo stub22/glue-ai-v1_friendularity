@@ -65,7 +65,7 @@ trait MainFloatParams {
 
 }
 trait VWTAMsgMaker extends IdentHlp {
-	val myAgentID : Ident = makeStampyRandyIdent()
+	val myAgentID : Ident = makeStampyRandyIdentAnon()
 
 	def makeTASpec(entityID : Ident, typeID : Ident, verbID : Ident, paramSerMap: SerTypedValueMap) : ThingActionSpec = {
 		val actRecID : Ident = makeStampyRandyIdent("actSpec")

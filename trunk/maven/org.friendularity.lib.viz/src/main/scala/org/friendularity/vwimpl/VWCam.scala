@@ -52,7 +52,7 @@ trait VWCamLogic extends VarargsLogging with IdentHlp with MonitoredSpaceImpl {
 
 		camNode.setControlDir(CameraControl.ControlDirection.SpatialToCamera)
 
-		val camNodeShapeID = makeStampyRandyIdent()
+		val camNodeShapeID = makeStampyRandyIdentAnon()
 		val registerCamNodeAsShape = new VWSCR_ExistingNode(camNode, camNodeShapeID, Option(bcnRq.spaceNodeID))
 
 		// Unclear exactly how previous state of camera is affected/replaced by the node attachment.

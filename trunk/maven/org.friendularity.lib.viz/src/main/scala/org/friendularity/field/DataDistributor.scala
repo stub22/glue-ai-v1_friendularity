@@ -124,7 +124,7 @@ trait UpstreamOrganizer extends IdentHlp {
 			val relvSpecs = specs.filter(_.getItemID.equals(rID))
 			val upTeller_opt = myUpstreamTellersByItemID.get(rID)
 			if (upTeller_opt.isDefined) {
-				val regMsg = new IntRegMsgImpl(makeStampyRandyIdent(), relvSpecs, downTeller, 0.5f)
+				val regMsg = new IntRegMsgImpl(makeStampyRandyIdentAnon(), relvSpecs, downTeller, 0.5f)
 				upTeller_opt.get.tellStrongCPMsg(regMsg)
 				myRegisteredInterests.append(regMsg)
 			} else {
