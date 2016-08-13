@@ -42,7 +42,7 @@ import com.jme3.scene.{Node => JmeNode, Mesh}
 // NavPages are 2D depictions, usually using some transparency, usually attached somewhere under guiNode.
 // They may be navigated by user using the NavLogic keybindings.
 trait  OverlayPage extends IdentHlp {
-	def getPageID : Ident = makeStampyRandyIdent()
+	def getPageID : Ident = makeStampyRandyIdentAnon()
 
 	protected def makeTopFlatWidget : FlatWidget
 	lazy val myTopWidget : FlatWidget = makeTopFlatWidget
@@ -62,7 +62,7 @@ trait  GadgetMaker extends IdentHlp {
 	def makeUpdatableTxtLine(dataSrcID : Ident, preferredSize : Int) : UpdatingTextLine = {
 		//		val remote = ???
 		val sizeHints =  new OneLineTxtBlkSzHints(Some(preferredSize / 2), Some(preferredSize), Some(preferredSize * 2))
-		val gadg = new UpdatingTextLineGadget(makeStampyRandyIdent(), sizeHints)
+		val gadg = new UpdatingTextLineGadget(makeStampyRandyIdentAnon(), sizeHints)
 		gadg
 	}
 }
@@ -277,9 +277,9 @@ case class FloatDataGadget(id : Ident, sizeHints : TextBlockSizeParams)
 case class DDPartVector3f(label : String, fieldID : Ident) extends DynamicDisplayPart {
 
 	val fieldSizeHints = new OneLineTxtBlkSzHints(Some(3), Some(7), Some(11))
-	val xGadget = new FloatDataGadget(makeStampyRandyIdent(), fieldSizeHints)
-	val yGadget = new FloatDataGadget(makeStampyRandyIdent(), fieldSizeHints)
-	val zGadget = new FloatDataGadget(makeStampyRandyIdent(), fieldSizeHints)
+	val xGadget = new FloatDataGadget(makeStampyRandyIdentAnon(), fieldSizeHints)
+	val yGadget = new FloatDataGadget(makeStampyRandyIdentAnon(), fieldSizeHints)
+	val zGadget = new FloatDataGadget(makeStampyRandyIdentAnon(), fieldSizeHints)
 
 	def layoutVert(dispHlp : OvlDisplayHelp) : JmeNode = {
 		dispHlp.layoutGadgSpatsInLine(MakesJmeNode("nodeFor_" + fieldID.getLocalName),

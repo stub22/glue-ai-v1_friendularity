@@ -58,8 +58,8 @@ trait EntityDisplayTemplate {
 class SimplePageEntrySpec(myLabelTxt_opt : Option[String], myBinding_opt : Option[BoundToDataSrc])
 					extends PageEntrySpec with IdentHlp {
 
-	lazy val myLabelGadgID = makeStampyRandyIdent()
-	lazy val myDynaGadgID = makeStampyRandyIdent()
+	lazy val myLabelGadgID = makeStampyRandyIdentAnon()
+	lazy val myDynaGadgID = makeStampyRandyIdentAnon()
 
 	//override def getFixedLabelGadgetID_opt = Option(myLabelGadgID)
 	//override def getFixedLabelTxt : String = myLabelTxt
@@ -83,7 +83,7 @@ trait PageEntryToGadget extends GadgetMaker {
 class SimpleNavPage(outerLabel : String, entries : List[PageEntrySpec]) extends OverlayPage
 			with BoundPage with  GadgetMaker {
 
-	val myOuterGadgID = makeStampyRandyIdent()
+	val myOuterGadgID = makeStampyRandyIdentAnon()
 	val myOuterGadg : FlatGadget = makeFixedTxtLine(myOuterGadgID, outerLabel).asInstanceOf[FlatGadget]
 
 	override def lookupBinding(g : FlatGadget) : Option[BoundToDataSrc] = {

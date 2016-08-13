@@ -25,14 +25,19 @@ import javax.jms.{Destination => JMSDestination, Message => JMSMsg, MessageConsu
 
 
 import akka.actor.ActorRefFactory
+import org.appdapter.core.name.{Ident, FreeIdent}
 import org.appdapter.fancy.log.VarargsLogging
 import org.cogchar.api.thing.ThingActionSpec
+import org.cogchar.api.vworld.GoodyActionParamWriter
+import org.cogchar.impl.thing.basic.BasicTypedValueMap
+import org.cogchar.impl.thing.fancy.ConcreteTVM
+import org.cogchar.name.goody.GoodyNames
 import org.cogchar.render.rendtest.GoodyTestMsgMaker
 import org.friendularity.akact.{KnowsAkkaSys, DummyActorMaker}
 import org.friendularity.cpmsg.{CPStrongTeller, ActorRefCPMsgTeller}
 import org.friendularity.netcli.vwta.TestTAQPidClient
 import org.friendularity.thact.{ThingActSender, ThingActReceiverBinary, ThingActReceiverTxt}
-import org.friendularity.vwmsg.{VWRqTAWrapper, VWTARqRdf, VWorldNotice}
+import org.friendularity.vwmsg.{MaybeTransform3D, VWTAMsgMaker, VWRqTAWrapper, VWTARqRdf, VWorldNotice}
 
 /**
   * Created by Stub22 on 8/8/2016.
@@ -109,7 +114,7 @@ trait OffersVWorldServer extends KnowsAkkaSys with OffersQpidSomething  {
 	}
 }
 
-trait OffersVWorldClient extends OffersQpidSomething {
+trait OffersVWorldClient extends OffersQpidSomething  with VWTAMsgMaker {
 	protected lazy val myClient : TestTAQPidClient = {
 		val clientDestMgr : QpidDestMgr = new QPidDestMgrJFlux(myQpidConnMgr)
 		val client = new TestTAQPidClient(clientDestMgr)
@@ -120,5 +125,57 @@ trait OffersVWorldClient extends OffersQpidSomething {
 		info1("Beginning checkClient for offer={}", this)
 		val destMgr = myClient.getDestMgr
 		info3("Finished checkClient for offer={}, client={}, destMgr={}", this, myClient, destMgr)
+	}
+	val myPreferredEncoding : Int = myClient.ENCODE_PREF_TRT
+	var myMsgSendCnt = 0;
+	protected def sendTARq(taSpec : ThingActionSpec) : Unit = {
+		debug1("Sending ta-rq={}", taSpec)
+		myClient.sendVWRqThingAct(taSpec, myPreferredEncoding)
+		myMsgSendCnt += 1
+	}
+
+	def sendEntitySmooveRq(entityID : Ident, typeID: Ident, maybeXform3D : MaybeTransform3D, durSec : Float) : Unit = {
+		val btvm : BasicTypedValueMap  = new ConcreteTVM()
+		val paramWriter = new GoodyActionParamWriter(btvm)
+		writeXform3D(paramWriter, maybeXform3D)
+		paramWriter.putDuration(durSec)
+		val taSpec = makeTASpec(entityID, typeID, GoodyNames.ACTION_MOVE, btvm)
+		sendTARq(taSpec)
+	}
+
+
+	def sendSinbadSmooveRq(maybeXform3D : MaybeTransform3D, durSec : Float) : Unit = {
+		val sinbadBodyURI = "urn:ftd:cogchar.org:2012:runtime#char_sinbad_88"
+		val bodyID = new FreeIdent(sinbadBodyURI)
+		sendEntitySmooveRq(bodyID, GoodyNames.TYPE_AVATAR, maybeXform3D, durSec)
+/*
+		val btvm : BasicTypedValueMap  = new ConcreteTVM()
+		val paramWriter = new GoodyActionParamWriter(btvm)
+		writeXform3D(paramWriter, maybeXform3D)
+		paramWriter.putDuration(durSec)
+		val taSpec = makeTASpec(bodyID, GoodyNames.TYPE_AVATAR, GoodyNames.ACTION_MOVE, btvm)
+		info1("Sending Sinbad Smoove rq={}", taSpec)
+
+		myClient.sendVWRqThingAct(taSpec, myClient.ENCODE_PREF_TRT)
+*/
+	}
+	def sendRq_makeCamera(camGuideShapeID : Ident) : Unit = {
+		val btvm : BasicTypedValueMap  = new ConcreteTVM()
+		val paramWriter = new GoodyActionParamWriter(btvm)
+//		writeXform3D(paramWriter, maybeXform3D)
+//		paramWriter.putDuration(durSec)
+		val taSpec = makeTASpec(camGuideShapeID, GoodyNames.TYPE_CAMERA, GoodyNames.ACTION_CREATE, btvm)
+		info1("Sending Camera make rq={}", taSpec)
+		myClient.sendVWRqThingAct(taSpec, myClient.ENCODE_PREF_TRT)
+	}
+	def sendRq_moveCamera(camGuideShapeID : Ident, xform : MaybeTransform3D, durSec : Float) : Unit = {
+		sendEntitySmooveRq(camGuideShapeID, GoodyNames.TYPE_CAMERA, xform, durSec)
+	}
+	def sendRq_bindMainCamera(camGuideShapeID : Ident) : Unit = {
+		val dfltCamRefID : Ident = GoodyNames.makeID("DFLT_CAM")
+		val btvm : BasicTypedValueMap  = new ConcreteTVM()
+		val paramWriter = new GoodyActionParamWriter(btvm)
+		paramWriter.putNameAtName(GoodyNames.SUBCOMPONENT, dfltCamRefID)
+		val taSpec = makeTASpec(camGuideShapeID, GoodyNames.TYPE_CAMERA, GoodyNames.ACTION_SET, btvm)
 	}
 }

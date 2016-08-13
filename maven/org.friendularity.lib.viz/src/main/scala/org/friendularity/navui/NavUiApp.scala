@@ -57,10 +57,12 @@ trait NavUiAppSvc extends VarargsLogging {
 		val schedItem = schedHelper.makeSchedItemRepeating(tickMsg, phaseMillis, periodMillis)
 		schedItem.addToSchedForSys(akkaSys, tgtActor, tgtActor)
 	}
-
-	def makeFunUserLogic(): ExoBodyUserLogic = {
+	def makeFunUserLogic(flag_sendTestMoves : Boolean): ExoBodyUserLogic = {
 		val btc = new BodyTestClient {}
-		val userLogic: ExoBodyUserLogic = btc.makeEmptyExoBodyUserLogic /// btc.makeMoveTestLogic()
+		val userLogic: ExoBodyUserLogic = if (flag_sendTestMoves)
+			btc.makeMoveTestLogic
+		else
+			btc.makeEmptyExoBodyUserLogic
 		userLogic
 	}
 

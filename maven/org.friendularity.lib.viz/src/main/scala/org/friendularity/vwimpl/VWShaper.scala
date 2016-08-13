@@ -147,7 +147,7 @@ trait IdentHlp {
 		val tstamp = System.currentTimeMillis()
 		String.format("%s%d_%06d%s", prefix, tstamp : java.lang.Long, rnum : Integer, suffix)
 	}
-	def makeStampyRandyIdent() : Ident = {
+	def makeStampyRandyIdentAnon() : Ident = {
 		makeStampyRandyIdent("")
 	}
 	def makeStampyRandyIdent(shortLab : String) : Ident = {
@@ -212,7 +212,7 @@ trait VWShaperLogic extends PatternGridMaker with AttachHlp with IdentHlp {
 	}
 	protected def getOrMakeID_opt (toMake : VWShapeCreateRq) : Option[Ident] = {
 		val clientSentID_opt = toMake.getKnownID_opt
-		clientSentID_opt.orElse(if (makeIdentIfMissing) Some(makeStampyRandyIdent()) else None)
+		clientSentID_opt.orElse(if (makeIdentIfMissing) Some(makeStampyRandyIdentAnon()) else None)
 	}
 	protected def registerSpat(madeSpat : Spatial, toMake : VWShapeCreateRq): MadeSpatRec = {
 		val assignedID_opt = getOrMakeID_opt(toMake)

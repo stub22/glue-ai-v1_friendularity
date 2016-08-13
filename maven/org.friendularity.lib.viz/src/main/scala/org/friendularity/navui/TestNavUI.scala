@@ -42,6 +42,7 @@ import org.cogchar.render.rendtest.{GoodyTestMsgMaker, GoodyRenderTestApp}
 import org.cogchar.render.sys.goody.GoodyRenderRegistryClient
 import org.friendularity.qpc.OffersVWorldClient
 import org.friendularity.raiz.{VizappLegacyLoaderFactory, VizappProfileLoaderFactory, TestRaizLoad}
+import org.friendularity.vwimpl.IdentHlp
 import org.friendularity.vwmsg.{PartialTransform3D, MaybeTransform3D, VWTAMsgMaker}
 
 /**
@@ -92,8 +93,8 @@ object TestNavUI extends VarargsLogging {
 		navUiAppImpl.checkServerSvcs()
 
 		maybeLaunchPhonyClient
-
-		val bodyUserLogic = navUiAppSvc.makeFunUserLogic()
+		val flag_sendTestMovesFromExoUserLogic = true
+		val bodyUserLogic = navUiAppSvc.makeFunUserLogic(flag_sendTestMovesFromExoUserLogic)
 		appSysStandalone.sendStart_SemiLegacySinbad(bodyUserLogic)
 
 
@@ -107,21 +108,10 @@ object TestNavUI extends VarargsLogging {
 	val myFlag_addPhonyClient = true
 	private def maybeLaunchPhonyClient: Unit = {
 		if (myFlag_addPhonyClient) {
-			val phonyClientOffer = new OffersVWorldClient with VWTAMsgMaker {
+			val phonyClientOffer = new OffersVWorldClient with VWTAMsgMaker  {
 				def sendTestMsgs : Unit = {
 					val client = myClient
 					client.sendSomeVWRqs(1500)
-				}
-				def sendSinbadSmooveRq(maybeXform3D : MaybeTransform3D, durSec : Float) : Unit = {
-					val sinbadBodyURI = "urn:ftd:cogchar.org:2012:runtime#char_sinbad_88"
-					val bodyID = new FreeIdent(sinbadBodyURI)
-					val btvm : BasicTypedValueMap  = new ConcreteTVM()
-					val paramWriter = new GoodyActionParamWriter(btvm)
-					writeXform3D(paramWriter, maybeXform3D)
-					paramWriter.putDuration(durSec)
-					val taSpec = makeTASpec(bodyID, GoodyNames.TYPE_AVATAR, GoodyNames.ACTION_MOVE, btvm)
-					info1("Sending Sinbad Smoove rq={}", taSpec)
-					myClient.sendVWRqThingAct(taSpec, myClient.ENCODE_PREF_TRT)
 				}
 			}
 			info0("========== .maybeLaunchPhonyClient() starting CLIENT qpidConn")
@@ -135,10 +125,17 @@ object TestNavUI extends VarargsLogging {
 					Thread.sleep(delayMsec)
 //					info0("Client test thread has awoken, sending TA tst messages")
 //					phonyClientOffer.sendTestMsgs
-					val tgtPos = new Vector3f(-20.0f, 150.0f, -30.0f)
+					val tgtPos = new Vector3f(-20.0f, 150.0f, -20.0f)
 					val tgtScl = new Vector3f(12.0f, 3.0f, 8.0f)
 					val mxf = new PartialTransform3D(Some(tgtPos), None, Some(tgtScl))
 					phonyClientOffer.sendSinbadSmooveRq(mxf, 22.0f)
+
+					val xtraCamGuideShapeID = phonyClientOffer.makeStampyRandyIdent("xtraCam")
+					phonyClientOffer.sendRq_makeCamera(xtraCamGuideShapeID)
+
+					val tgtCamPos = new Vector3f(-80.0f, 50.0f, -70.0f)
+					val cxf = new PartialTransform3D(Some(tgtPos), None, None)
+					phonyClientOffer.sendRq_moveCamera(xtraCamGuideShapeID, cxf, 30.0f)
 				}
 			}
 			testSendThrd.start()
