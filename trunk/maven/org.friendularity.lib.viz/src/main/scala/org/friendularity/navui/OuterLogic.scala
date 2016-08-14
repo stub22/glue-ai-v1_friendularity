@@ -283,7 +283,7 @@ trait PatientSender_BonusStaging extends OuterLogic with OuterCamHelp with Ident
 		stageTeller.tellCPMsg(kcmdReg)
 	}
 	def sendExtraCameraRqs(stageTeller : CPMsgTeller, spcTeller : CPMsgTeller): Unit = {
-		val vpd = new ViewportDesc(0.2f, 0.4f, 0.15f, 0.30f, Some(ColorRGBA.Pink))
+		val vpd = new ViewportDesc(0.2f, 0.4f, 0.15f, 0.30f, Some(ColorRGBA.DarkGray))
 		val cpv = new Vector3f(-70.0f, 5.0f, -3.0f)
 		val pdir = new Vector3f(1.0f, 0.0f, 0.0f)
 		val cst = new CamStateParams3D(cpv, pdir)

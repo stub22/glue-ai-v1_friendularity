@@ -80,12 +80,13 @@ object TestQpidThingActMover extends VarargsLogging {
 
 		val client = new TestTAQPidClient(clientDestMgr)
 
-		info0("\nStarting SERVER Conn")
+		info0("\nStarting SERVER Conn (listens for TARqs, publishes stat-notices)")
 		srvrConnMgr.startConn
 
-		info0("\nStarting CLIENT Conn")
+		info0("\nStarting CLIENT Conn (sends TA-Rqs  listens for stat-notices")
 		clientConnMgr.startConn
 
+		// We send some messages before the server is listening, to see if it picks them up after listening starts.
 		client.sendSomeVWRqs(500) // sends a mixture of bin-serial and turtle-txt TAs, which we see receieved in server
 
 		val vwNoticeSender = server.getServerPublishFeature.getVWPubNoticeSender
