@@ -18,11 +18,14 @@ package org.friendularity.netcli.vwta
 
 import javax.jms.Session
 
+import com.jme3.math.Vector3f
 import org.cogchar.api.thing.ThingActionSpec
 import org.cogchar.name.goody.GoodyNames
 import org.cogchar.render.rendtest.GoodyTestMsgMaker
-import org.friendularity.qpc.{MakesVWTARqProducers, MakesVWPubStatConsumers, QPidFeatureEndpoint, ExoPubStatDumpingListenerMaker, QpidDestMgr, WritesJmsHeaders, KnowsVWTARqDestinations}
+import org.friendularity.navui.TestNavUI.{info1, info0}
+import org.friendularity.qpc.{OffersVWorldClient, MakesVWTARqProducers, MakesVWPubStatConsumers, QPidFeatureEndpoint, ExoPubStatDumpingListenerMaker, QpidDestMgr, WritesJmsHeaders, KnowsVWTARqDestinations}
 import org.friendularity.thact.ThingActSender
+import org.friendularity.vwmsg.{PartialTransform3D, VWTAMsgMaker}
 
 /**
   * Created by Stub22 on 8/11/2016.
@@ -61,5 +64,46 @@ class TestTAQPidClient(qpidDestMgr : QpidDestMgr) extends QPidFeatureEndpoint(qp
 			}
 			Thread.sleep(delayMsec)
 		}
+	}
+}
+
+class ClientTestMsgSender() extends OffersVWorldClient with VWTAMsgMaker  {
+	def sendTestMsgs : Unit = {
+		val client = myClient
+		client.sendSomeVWRqs(1500)
+	}
+	val clientOffer = this
+	def startTestThread (initDelayMsec : Int, stepDelayMsec : Int) {
+		info0("========== .maybeLaunchPhonyClient() starting CLIENT qpidConn")
+		clientOffer.startQpidConn
+		clientOffer.checkClient
+
+		val testSendThrd = new Thread() {
+			override def run : Unit = {
+				info1("Client test send thread is sleeping for {} msec", initDelayMsec : Integer)
+				Thread.sleep(initDelayMsec)
+				//					info0("Client test thread has awoken, sending TA tst messages")
+				//					phonyClientOffer.sendTestMsgs
+				val tgtPos = new Vector3f(-20.0f, 150.0f, -20.0f)
+				val tgtScl = new Vector3f(12.0f, 3.0f, 8.0f)
+				val mxf = new PartialTransform3D(Some(tgtPos), None, Some(tgtScl))
+				clientOffer.sendSinbadSmooveRq(mxf, 22.0f)
+				Thread.sleep(stepDelayMsec)
+				val xtraCamGuideShapeID = clientOffer.makeStampyRandyIdent("xtraCam")
+				clientOffer.sendRq_makeExtraCamera(xtraCamGuideShapeID)
+				Thread.sleep(stepDelayMsec)
+				val nextTgtCamPos = new Vector3f(-80.0f, 50.0f, -72.7f)
+				val cxf = new PartialTransform3D(Some(nextTgtCamPos), None, None)
+				clientOffer.sendRq_moveCamera(xtraCamGuideShapeID, cxf, 20.0f)
+			}
+		}
+		testSendThrd.start()
+	}
+
+}
+object RunClientTestMsgSender {
+	def main(args: Array[String]): Unit = {
+		val clientTestSender = new ClientTestMsgSender()
+		clientTestSender.startTestThread(20000, 2000)
 	}
 }

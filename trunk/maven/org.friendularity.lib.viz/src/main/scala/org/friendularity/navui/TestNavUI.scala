@@ -40,6 +40,7 @@ import org.cogchar.render.goody.basic.BasicGoodyCtx
 import org.cogchar.render.model.humanoid.{VWorldHumanoidFigureEntity, HumanoidFigure}
 import org.cogchar.render.rendtest.{GoodyTestMsgMaker, GoodyRenderTestApp}
 import org.cogchar.render.sys.goody.GoodyRenderRegistryClient
+import org.friendularity.netcli.vwta.ClientTestMsgSender
 import org.friendularity.qpc.OffersVWorldClient
 import org.friendularity.raiz.{VizappLegacyLoaderFactory, VizappProfileLoaderFactory, TestRaizLoad}
 import org.friendularity.vwimpl.IdentHlp
@@ -105,41 +106,11 @@ object TestNavUI extends VarargsLogging {
 					"we find that out here and exit accordingly?")
 
 	}
-	val myFlag_addPhonyClient = true
+	val myFlag_addPhonyClient = false
 	private def maybeLaunchPhonyClient: Unit = {
 		if (myFlag_addPhonyClient) {
-			val phonyClientOffer = new OffersVWorldClient with VWTAMsgMaker  {
-				def sendTestMsgs : Unit = {
-					val client = myClient
-					client.sendSomeVWRqs(1500)
-				}
-			}
-			info0("========== .maybeLaunchPhonyClient() starting CLIENT qpidConn")
-			phonyClientOffer.startQpidConn
-			phonyClientOffer.checkClient
-
-			val delayMsec : Int = 20000
-			val stepDelayMsec : Int = 2000
-			val testSendThrd = new Thread() {
-				override def run : Unit = {
-					info1("Client test send thread is sleeping for {} msec", delayMsec : Integer)
-					Thread.sleep(delayMsec)
-//					info0("Client test thread has awoken, sending TA tst messages")
-//					phonyClientOffer.sendTestMsgs
-					val tgtPos = new Vector3f(-20.0f, 150.0f, -20.0f)
-					val tgtScl = new Vector3f(12.0f, 3.0f, 8.0f)
-					val mxf = new PartialTransform3D(Some(tgtPos), None, Some(tgtScl))
-					phonyClientOffer.sendSinbadSmooveRq(mxf, 22.0f)
-					Thread.sleep(stepDelayMsec)
-					val xtraCamGuideShapeID = phonyClientOffer.makeStampyRandyIdent("xtraCam")
-					phonyClientOffer.sendRq_makeExtraCamera(xtraCamGuideShapeID)
-					Thread.sleep(stepDelayMsec)
-					val nextTgtCamPos = new Vector3f(-80.0f, 50.0f, -72.7f)
-					val cxf = new PartialTransform3D(Some(nextTgtCamPos), None, None)
-					phonyClientOffer.sendRq_moveCamera(xtraCamGuideShapeID, cxf, 20.0f)
-				}
-			}
-			testSendThrd.start()
+			val clientTestSender = new ClientTestMsgSender()
+			clientTestSender.startTestThread(20000, 2000)
 		}
 	}
 	private def launchOldGoodyRenderTestApp : Unit = {
