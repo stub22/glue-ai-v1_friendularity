@@ -87,7 +87,8 @@ trait MakesTransform3D {
 		new TransformParams3D(pos, rot, scl)
 	}
 	def makeDefiniteXForm(src : MaybeTransform3D): Transform3D = {
-		new TransformParams3D(src.getPos, src.getRotQuat, src.getScale)
+		if (src.isInstanceOf[Transform3D]) src.asInstanceOf[Transform3D]
+		else new TransformParams3D(src.getPos, src.getRotQuat, src.getScale)
 	}
 }
 trait Pointed3D { // Used for Cameras, presumes there is a well defined meaning of "pointing" the thing

@@ -308,9 +308,11 @@ trait PatientSender_BonusStaging extends OuterLogic with OuterCamHelp with Ident
 		val guideTgtRot = new Quaternion(rotAngles)
 		val guideTgtScale = Vector3f.UNIT_XYZ
 		val guideTgtXform = new TransformParams3D(guideTgtPos, guideTgtRot, guideTgtScale)
-		val endingManip = new SmooveManipEndingImpl(guideTgtXform, 60.0f)
-		val guideManipMsg = new ShapeManipRqImpl(camGuideNodeID, endingManip)
-		spcTeller.tellCPMsg(guideManipMsg)
+
+		sentCamMoveRq(spcTeller, camGuideNodeID, guideTgtXform, Some(60.0f))
+		// val endingManip = new SmooveManipEndingImpl(guideTgtXform, 60.0f)
+		// val guideManipMsg = new ShapeManipRqImpl(camGuideNodeID, endingManip)
+		// spcTeller.tellCPMsg(guideManipMsg)
 
 	}
 }

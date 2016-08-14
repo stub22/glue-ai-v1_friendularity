@@ -134,9 +134,9 @@ object TestNavUI extends VarargsLogging {
 					val xtraCamGuideShapeID = phonyClientOffer.makeStampyRandyIdent("xtraCam")
 					phonyClientOffer.sendRq_makeExtraCamera(xtraCamGuideShapeID)
 					Thread.sleep(stepDelayMsec)
-					val tgtCamPos = new Vector3f(-80.0f, 50.0f, -70.0f)
-					val cxf = new PartialTransform3D(Some(tgtPos), None, None)
-					phonyClientOffer.sendRq_moveCamera(xtraCamGuideShapeID, cxf, 30.0f)
+					val nextTgtCamPos = new Vector3f(-80.0f, 50.0f, -72.7f)
+					val cxf = new PartialTransform3D(Some(nextTgtCamPos), None, None)
+					phonyClientOffer.sendRq_moveCamera(xtraCamGuideShapeID, cxf, 20.0f)
 				}
 			}
 			testSendThrd.start()
