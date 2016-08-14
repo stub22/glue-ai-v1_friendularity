@@ -26,7 +26,7 @@ import org.cogchar.render.app.entity.GoodyActionExtractor
 import org.friendularity.akact.{KnowsAkkaSys, FrienduActor}
 import org.friendularity.cpmsg.{CPMsgTeller, ActorRefCPMsgTeller, CPStrongTeller}
 import org.friendularity.navui.OuterCamHelp
-import org.friendularity.vwmsg.{CamStateParams3D, ViewportDesc, CamState3D, SmooveManipEndingImpl, VWBodyManipRq, AbruptManipAbsImpl, SmooveManipGutsImpl, ManipDesc, Transform3D, MakesTransform3D, PartialTransform3D, MaybeTransform3D, VWBodyFindRq, VWBodyLifeRq, VWBodyRq, VWBodyNotice, VWorldPublicTellers, VWRqTAWrapper}
+import org.friendularity.vwmsg.{TransformParams3D, CamStateParams3D, ViewportDesc, CamState3D, SmooveManipEndingImpl, VWBodyManipRq, AbruptManipAbsImpl, SmooveManipGutsImpl, ManipDesc, Transform3D, MakesTransform3D, PartialTransform3D, MaybeTransform3D, VWBodyFindRq, VWBodyLifeRq, VWBodyRq, VWBodyNotice, VWorldPublicTellers, VWRqTAWrapper}
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 
@@ -169,6 +169,7 @@ trait CamTARouterLogic extends TARqExtractorHelp with MakesTransform3D with Oute
 		// Resolve message cam-URI to paired shape ID, which is used for most camera movement control.
 		// However, if we want to use ".lookAt" ...
 		val camGuideShapeID = gax.getGoodyID
+		val tvm = ta.getParamTVM
 
 		val stageTeller : CPMsgTeller = getVWPubTellers.getStageTeller.get
 		val spcTeller : CPMsgTeller = getVWPubTellers.getShaperTeller.get
@@ -182,17 +183,31 @@ trait CamTARouterLogic extends TARqExtractorHelp with MakesTransform3D with Oute
 				val (left, right, bot, top) = (0.7f, 0.95f, 0.75f, 0.95f)
 				val bgColor_opt = extractColor(gax) // .orElse(Some(ColorRGBA.Blue))
 				val initVP = new ViewportDesc(left, right, bot, top, bgColor_opt)
-				val camGuideID = makeAndBindExtraCam(stageTeller, spcTeller, camShortLabel, initCamState, initVP)
+				val camID : Ident = makeStampyRandyIdent(camShortLabel + "_intrnCam")
+				makeAndBindExtraCam(stageTeller, spcTeller, camID, camGuideShapeID, initCamState, initVP)
 			}
 			case GoodyActionExtractor.Kind.MOVE => {
 				info1("Processing cam-move request: {}", ta)
-/*
-				val camShortLabel: String = "camMadeByTARouter"
-				val initCamState: CamState3D = null
-				val initVP: ViewportDesc = null
 
-				val camGuideID = makeAndBindExtraCam(stageTeller, spcTeller, camShortLabel, initCamState, initVP)
-*/
+				val maybeXform : MaybeTransform3D = extractXform(tvm, gax)
+				val dur_opt : Option[JFloat] = extractDuration(tvm)
+
+				sentCamMoveRq(spcTeller, camGuideShapeID, maybeXform, dur_opt)
+				/*
+				val guideTgtPos = new Vector3f(-1.0f, 5.0f, 3.0f)
+				val rotAngles = Array(45.0f, -45.0f, 15.0f)
+				val guideTgtRot = new Quaternion(rotAngles)
+				val guideTgtScale = Vector3f.UNIT_XYZ
+				val guideTgtXform = new TransformParams3D(guideTgtPos, guideTgtRot, guideTgtScale)
+				*/
+
+
+				/*
+					val camShortLabel: String = "camMadeByTARouter"
+					val initCamState: CamState3D = null
+					val initVP: ViewportDesc = null
+					val camGuideID = makeAndBindExtraCam(stageTeller, spcTeller, camShortLabel, initCamState, initVP)
+				*/
 			}
 			case GoodyActionExtractor.Kind.SET => {
 
