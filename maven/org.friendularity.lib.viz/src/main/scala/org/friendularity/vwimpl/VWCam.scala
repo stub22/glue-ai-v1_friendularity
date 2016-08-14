@@ -33,6 +33,7 @@ trait VWCamLogic extends VarargsLogging with IdentHlp with MonitoredSpaceImpl {
 		applyViewportDesc_rendThrd(cbind, mcavRq.initVP)
 		// "attach_" is Designed to only be called once for each cam/binding, it appears.
 		cbind.attachViewPort(getStageCtx.getRRC)
+		info1("Cam {} is now attached", mcavRq.camID)
 	}
 
 	def updateCamState_rendThrd(mcRq : VWModifyCamStateRq) : Unit = {

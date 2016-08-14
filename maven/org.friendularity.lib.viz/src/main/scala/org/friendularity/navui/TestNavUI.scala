@@ -119,6 +119,7 @@ object TestNavUI extends VarargsLogging {
 			phonyClientOffer.checkClient
 
 			val delayMsec : Int = 20000
+			val stepDelayMsec : Int = 2000
 			val testSendThrd = new Thread() {
 				override def run : Unit = {
 					info1("Client test send thread is sleeping for {} msec", delayMsec : Integer)
@@ -129,10 +130,10 @@ object TestNavUI extends VarargsLogging {
 					val tgtScl = new Vector3f(12.0f, 3.0f, 8.0f)
 					val mxf = new PartialTransform3D(Some(tgtPos), None, Some(tgtScl))
 					phonyClientOffer.sendSinbadSmooveRq(mxf, 22.0f)
-
+					Thread.sleep(stepDelayMsec)
 					val xtraCamGuideShapeID = phonyClientOffer.makeStampyRandyIdent("xtraCam")
-					phonyClientOffer.sendRq_makeCamera(xtraCamGuideShapeID)
-
+					phonyClientOffer.sendRq_makeExtraCamera(xtraCamGuideShapeID)
+					Thread.sleep(stepDelayMsec)
 					val tgtCamPos = new Vector3f(-80.0f, 50.0f, -70.0f)
 					val cxf = new PartialTransform3D(Some(tgtPos), None, None)
 					phonyClientOffer.sendRq_moveCamera(xtraCamGuideShapeID, cxf, 30.0f)

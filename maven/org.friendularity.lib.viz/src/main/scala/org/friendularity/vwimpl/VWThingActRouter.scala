@@ -17,16 +17,16 @@
 package org.friendularity.vwimpl
 
 import akka.actor.{ActorRef, Props}
-import com.jme3.math.{Quaternion, Vector3f}
+import com.jme3.math.{ColorRGBA, Quaternion, Vector3f}
 import org.appdapter.core.name.Ident
 import org.appdapter.fancy.log.VarargsLogging
 import org.cogchar.api.thing.{TypedValueMap, ThingActionSpec}
 import org.cogchar.name.goody.GoodyNames
 import org.cogchar.render.app.entity.GoodyActionExtractor
 import org.friendularity.akact.{KnowsAkkaSys, FrienduActor}
-import org.friendularity.cpmsg.{ActorRefCPMsgTeller, CPStrongTeller}
+import org.friendularity.cpmsg.{CPMsgTeller, ActorRefCPMsgTeller, CPStrongTeller}
 import org.friendularity.navui.OuterCamHelp
-import org.friendularity.vwmsg.{SmooveManipEndingImpl, VWBodyManipRq, AbruptManipAbsImpl, SmooveManipGutsImpl, ManipDesc, Transform3D, MakesTransform3D, PartialTransform3D, MaybeTransform3D, VWBodyFindRq, VWBodyLifeRq, VWBodyRq, VWBodyNotice, VWorldPublicTellers, VWRqTAWrapper}
+import org.friendularity.vwmsg.{CamStateParams3D, ViewportDesc, CamState3D, SmooveManipEndingImpl, VWBodyManipRq, AbruptManipAbsImpl, SmooveManipGutsImpl, ManipDesc, Transform3D, MakesTransform3D, PartialTransform3D, MaybeTransform3D, VWBodyFindRq, VWBodyLifeRq, VWBodyRq, VWBodyNotice, VWorldPublicTellers, VWRqTAWrapper}
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 
@@ -63,6 +63,7 @@ trait TARqExtractorHelp {
 	}
 	def extractDuration(tvm : TypedValueMap) : Option[JFloat] = Option(tvm.getAsFloat(GoodyNames.TRAVEL_TIME))
 
+	def extractColor(gax : GoodyActionExtractor) : Option[ColorRGBA] = Option(gax.getColor)
 }
 trait VWBodyMedialRendezvous extends VarargsLogging {
 	def getCharAdminTeller : CPStrongTeller[VWBodyLifeRq]
@@ -117,15 +118,36 @@ trait VWBodyMedialRendezvous extends VarargsLogging {
 		}
 	}
 }
-trait VWBodyTARouterLogic extends TARqExtractorHelp with MakesTransform3D {
+trait VWBodyTARouterLogic extends TARqExtractorHelp with MakesTransform3D  with VarargsLogging {
 	protected def getMedialRendezvous :  VWBodyMedialRendezvous
 
 	def handleBodyTA(ta : ThingActionSpec, gax: GoodyActionExtractor, whoDat : ActorRef) : Unit = {
 		val bodyID = gax.getGoodyID
 		val tvm = ta.getParamTVM
-		val maybeXform = extractXform(tvm, gax)
+		val maybeXform : MaybeTransform3D = extractXform(tvm, gax)
+		val dur_opt : Option[JFloat] = extractDuration(tvm)
+
+		val opKind = gax.getKind
+		opKind match {
+			case GoodyActionExtractor.Kind.MOVE => {
+				sendMedialVWBodyMoveRq(bodyID, maybeXform, dur_opt, whoDat)
+			}
+			case GoodyActionExtractor.Kind.CREATE => {
+				error1("Cannot create VW-bodies using a TA-Rq.  Are you trying to find a body to command? Failed rq-TA={}", ta)
+			}
+			case GoodyActionExtractor.Kind.SET => {
+
+			}
+			case GoodyActionExtractor.Kind.DELETE => {
+
+			}
+
+		}
+
+	}
+	private def sendMedialVWBodyMoveRq(bodyID : Ident, maybeXform : MaybeTransform3D,
+									   dur_opt : Option[JFloat], whoDat : ActorRef): Unit = {
 		val concXform : Transform3D = makeDefiniteXForm(maybeXform)
-		val dur_opt = extractDuration(tvm)
 		val manipGuts : ManipDesc = if (dur_opt.isDefined) {
 			new SmooveManipEndingImpl(concXform, dur_opt.get)
 		} else {
@@ -133,6 +155,7 @@ trait VWBodyTARouterLogic extends TARqExtractorHelp with MakesTransform3D {
 		}
 		val msgForBody : VWBodyRq = new VWBodyManipRq(manipGuts)
 		getMedialRendezvous.routeBodyRq(bodyID, msgForBody, whoDat)
+
 	}
 	def receiveBodyNotice(vwbn : VWBodyNotice) : Unit = {
 		getMedialRendezvous.noticeBody(vwbn)
@@ -140,21 +163,48 @@ trait VWBodyTARouterLogic extends TARqExtractorHelp with MakesTransform3D {
 
 }
 trait CamTARouterLogic extends TARqExtractorHelp with MakesTransform3D with OuterCamHelp {
+	protected def getVWPubTellers : VWorldPublicTellers
+
 	def handleCameraTA(ta : ThingActionSpec, gax: GoodyActionExtractor, whoDat : ActorRef) : Unit = {
 		// Resolve message cam-URI to paired shape ID, which is used for most camera movement control.
 		// However, if we want to use ".lookAt" ...
 		val camGuideShapeID = gax.getGoodyID
+
+		val stageTeller : CPMsgTeller = getVWPubTellers.getStageTeller.get
+		val spcTeller : CPMsgTeller = getVWPubTellers.getShaperTeller.get
 		val opKind = gax.getKind
 		opKind match {
 			case GoodyActionExtractor.Kind.CREATE => {
+				val camShortLabel: String = "camMadeByTARouter"
+				val initCamPos : Vector3f = Vector3f.ZERO
+				val initPointDir : Vector3f = Vector3f.UNIT_Z // .negate()
+				val initCamState: CamState3D = new CamStateParams3D(initCamPos, initPointDir)
+				val (left, right, bot, top) = (0.7f, 0.95f, 0.75f, 0.95f)
+				val bgColor_opt = extractColor(gax) // .orElse(Some(ColorRGBA.Blue))
+				val initVP = new ViewportDesc(left, right, bot, top, bgColor_opt)
+				val camGuideID = makeAndBindExtraCam(stageTeller, spcTeller, camShortLabel, initCamState, initVP)
+			}
+			case GoodyActionExtractor.Kind.MOVE => {
+				info1("Processing cam-move request: {}", ta)
+/*
+				val camShortLabel: String = "camMadeByTARouter"
+				val initCamState: CamState3D = null
+				val initVP: ViewportDesc = null
+
+				val camGuideID = makeAndBindExtraCam(stageTeller, spcTeller, camShortLabel, initCamState, initVP)
+*/
+			}
+			case GoodyActionExtractor.Kind.SET => {
 
 			}
+			case GoodyActionExtractor.Kind.DELETE => {
 
+			}
 		}
 	}
 }
 trait VWThingActReqRouterLogic extends VWBodyTARouterLogic with CamTARouterLogic with MakesTransform3D {
-	protected def getVWPubTellers : VWorldPublicTellers
+
 
 	lazy private val myBodyMedialRndzvs = new VWBodyMedialRendezvous {
 		override def getCharAdminTeller: CPStrongTeller[VWBodyLifeRq] = getVWPubTellers.getCharAdminTeller.get

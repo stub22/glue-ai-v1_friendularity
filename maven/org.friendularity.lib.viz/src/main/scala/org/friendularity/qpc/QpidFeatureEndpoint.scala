@@ -159,7 +159,7 @@ trait OffersVWorldClient extends OffersQpidSomething  with VWTAMsgMaker {
 		myClient.sendVWRqThingAct(taSpec, myClient.ENCODE_PREF_TRT)
 */
 	}
-	def sendRq_makeCamera(camGuideShapeID : Ident) : Unit = {
+	def sendRq_makeExtraCamera(camGuideShapeID : Ident) : Unit = {
 		val btvm : BasicTypedValueMap  = new ConcreteTVM()
 		val paramWriter = new GoodyActionParamWriter(btvm)
 //		writeXform3D(paramWriter, maybeXform3D)
