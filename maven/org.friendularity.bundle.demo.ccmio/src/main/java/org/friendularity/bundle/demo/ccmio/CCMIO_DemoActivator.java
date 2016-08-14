@@ -173,7 +173,7 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 		NavUiAppSvc appSvc = startVWorldNavUI_2016(bundleCtx, akkaSys);
 
 		if (myFlag_launchVWorldAmqpSvcs) {
-			getLogger().info("============ Calling pingQpidSvcs() ==========");
+			getLogger().info("============ Calling startQpidConn() and checkServerSvcs() ==========");
 			boolean includeDummyClient = false;
 			((OffersVWorldServer) appSvc).startQpidConn();
 			((OffersVWorldServer) appSvc).checkServerSvcs();
