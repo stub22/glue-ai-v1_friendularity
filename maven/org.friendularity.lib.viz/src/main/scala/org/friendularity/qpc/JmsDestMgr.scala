@@ -11,8 +11,10 @@ import org.appdapter.fancy.log.VarargsLogging
 
 /**
   * Created by Stub22 on 8/8/2016.
+  *
+  * This is our wrapper for a single JMSSession, and accompanying set of destinations = queues + topics.
   */
-trait QpidDestMgr extends KnowsJmsSession {
+trait JmsDestMgr extends KnowsJmsSession {
 
 	val QUEUE_PROPS_SUFFIX = "; {create: always, node: {type: queue}}";
 	val TOPIC_PROPS_SUFFIX = "; {create: always, node: {type: topic}}";
@@ -45,7 +47,7 @@ trait QpidDestMgr extends KnowsJmsSession {
 	}
 
 }
-abstract class DestMgrImpl(myConnMgr : QpidConnMgr) extends QpidDestMgr {
+abstract class DestMgrImpl(myConnMgr : QpidConnMgr) extends JmsDestMgr {
 	override protected def getConnMgr: QpidConnMgr = myConnMgr
 
 	override def getDestForTopicName(topicName: String): JMSDestination = ???
@@ -63,7 +65,7 @@ class QPidDestMgrJFlux(connMgr : QpidConnMgr) extends DestMgrImpl(connMgr) with 
 // Notes:  We have not made JNDI work under OSGi.  (Would need to resolve some class-wiring issues).
 // So instead we now use the Qpid...JFlux  classes instead.
 // This impl needs retesting with latest "fullySpecified" destination names.  Not sure where those fit in JNDI concept.
-class QPidDestMgr_JNDI_032(myTopicExchangeNameList : List[String]) extends QpidDestMgr
+class QPidDestMgr_JNDI_032(myTopicExchangeNameList : List[String]) extends JmsDestMgr
 			with VarargsLogging {
 	private lazy val myNameMgr = new QPid_032_NameManager()
 

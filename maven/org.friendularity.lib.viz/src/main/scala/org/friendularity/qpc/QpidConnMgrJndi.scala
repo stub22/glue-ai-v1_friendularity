@@ -49,7 +49,7 @@ class QpidConnMgrJndi(val myJndiProps : Properties) extends QpidConnMgr with Var
 		info3("Resolved nameTailFull={} to destination clz={}, dump={}", destNameTailFull, dest.getClass, dest)
 		dest
 	}
-	override def getConn : JMSConnection = {
+	override def getJmsConnection : JMSConnection = {
 		myJmsConn
 	}
 

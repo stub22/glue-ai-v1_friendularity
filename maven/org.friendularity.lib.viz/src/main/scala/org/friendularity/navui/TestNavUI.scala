@@ -106,7 +106,7 @@ object TestNavUI extends VarargsLogging {
 					"we find that out here and exit accordingly?")
 
 	}
-	val myFlag_addPhonyClient = false
+	val myFlag_addPhonyClient = true
 	private def maybeLaunchPhonyClient: Unit = {
 		if (myFlag_addPhonyClient) {
 			val clientTestSender = new ClientTestMsgSender()

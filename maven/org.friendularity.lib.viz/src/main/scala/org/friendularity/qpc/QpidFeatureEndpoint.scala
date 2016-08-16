@@ -44,10 +44,10 @@ import org.friendularity.vwmsg.{MaybeTransform3D, VWTAMsgMaker, VWRqTAWrapper, V
   */
 
 // KnowsJmsSession with
-class QPidFeatureEndpoint(myJmsDestMgr : QpidDestMgr) extends  KnowsDestMgr {
+class QPidFeatureEndpoint(myJmsDestMgr : JmsDestMgr) extends  KnowsDestMgr {
 	// lazy val myJmsSession = myJmsDestMgr.makeSession
 
-	override def getDestMgr : QpidDestMgr = myJmsDestMgr
+	override def getJmsDestMgr : JmsDestMgr = myJmsDestMgr
 }
 
 
@@ -116,14 +116,14 @@ trait OffersVWorldServer extends KnowsAkkaSys with OffersQpidSomething  {
 
 trait OffersVWorldClient extends OffersQpidSomething  with VWTAMsgMaker {
 	protected lazy val myClient : TestTAQPidClient = {
-		val clientDestMgr : QpidDestMgr = new QPidDestMgrJFlux(myQpidConnMgr)
+		val clientDestMgr : JmsDestMgr = new QPidDestMgrJFlux(myQpidConnMgr)
 		val client = new TestTAQPidClient(clientDestMgr)
 		client
 	}
 
 	def checkClient() : Unit = {
 		info1("Beginning checkClient for offer={}", this)
-		val destMgr = myClient.getDestMgr
+		val destMgr = myClient.getJmsDestMgr
 		info3("Finished checkClient for offer={}, client={}, destMgr={}", this, myClient, destMgr)
 	}
 	val myPreferredEncoding : Int = myClient.ENCODE_PREF_TRT
@@ -148,16 +148,6 @@ trait OffersVWorldClient extends OffersQpidSomething  with VWTAMsgMaker {
 		val sinbadBodyURI = "urn:ftd:cogchar.org:2012:runtime#char_sinbad_88"
 		val bodyID = new FreeIdent(sinbadBodyURI)
 		sendEntitySmooveRq(bodyID, GoodyNames.TYPE_AVATAR, maybeXform3D, durSec)
-/*
-		val btvm : BasicTypedValueMap  = new ConcreteTVM()
-		val paramWriter = new GoodyActionParamWriter(btvm)
-		writeXform3D(paramWriter, maybeXform3D)
-		paramWriter.putDuration(durSec)
-		val taSpec = makeTASpec(bodyID, GoodyNames.TYPE_AVATAR, GoodyNames.ACTION_MOVE, btvm)
-		info1("Sending Sinbad Smoove rq={}", taSpec)
-
-		myClient.sendVWRqThingAct(taSpec, myClient.ENCODE_PREF_TRT)
-*/
 	}
 	def sendRq_makeExtraCamera(camGuideShapeID : Ident) : Unit = {
 		val btvm : BasicTypedValueMap  = new ConcreteTVM()
