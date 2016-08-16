@@ -1,8 +1,6 @@
 package org.friendularity.qpc
 
-import javax.jms.{Destination => JMSDestination, Message => JMSMsg, MessageConsumer => JMSMsgConsumer,
-MessageListener => JMSMsgListener, MessageProducer => JMSMsgProducer, ObjectMessage => JMSObjMsg,
-Session => JMSSession, TextMessage => JMSTextMsg}
+import javax.jms.{Session => JMSSession, Connection => JMSConnection, Destination => JMSDestination, MessageConsumer => JMSMsgConsumer, MessageListener => JMSMsgListener, MessageProducer => JMSMsgProducer}
 
 /**
   * Created by Stub22 on 8/11/2016.
@@ -12,9 +10,10 @@ trait KnowsJmsSession {
 	def getJmsSession : JMSSession
 }
 
-trait KnowsDestMgr { // extends KnowsJmsSession {
-	def getDestMgr : QpidDestMgr
-
-	//	override def getJmsSession : JMSSession = getDestMgr.getJmsSession
+trait KnowsDestMgr {
+	def getJmsDestMgr : JmsDestMgr
 }
 
+trait KnowsJmsConnection {
+	def getJmsConnection : JMSConnection
+}

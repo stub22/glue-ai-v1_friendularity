@@ -19,11 +19,12 @@ package org.friendularity.netcli.vwta
 import javax.jms.Session
 
 import com.jme3.math.Vector3f
+import org.appdapter.fancy.log.VarargsLogging
 import org.cogchar.api.thing.ThingActionSpec
 import org.cogchar.name.goody.GoodyNames
 import org.cogchar.render.rendtest.GoodyTestMsgMaker
 import org.friendularity.navui.TestNavUI.{info1, info0}
-import org.friendularity.qpc.{OffersVWorldClient, MakesVWTARqProducers, MakesVWPubStatConsumers, QPidFeatureEndpoint, ExoPubStatDumpingListenerMaker, QpidDestMgr, WritesJmsHeaders, KnowsVWTARqDestinations}
+import org.friendularity.qpc.{OffersVWorldClient, MakesVWTARqProducers, MakesVWPubStatConsumers, QPidFeatureEndpoint, ExoPubStatDumpingListenerMaker, JmsDestMgr, WritesJmsHeaders, KnowsVWTARqDestinations}
 import org.friendularity.thact.ThingActSender
 import org.friendularity.vwmsg.{PartialTransform3D, VWTAMsgMaker}
 
@@ -31,7 +32,7 @@ import org.friendularity.vwmsg.{PartialTransform3D, VWTAMsgMaker}
   * Created by Stub22 on 8/11/2016.
   */
 trait VWTASender extends ThingActSender with KnowsVWTARqDestinations {
-	override def getDestMgr : QpidDestMgr = null
+	override def getJmsDestMgr : JmsDestMgr = null
 }
 
 // Java friendly class
@@ -39,7 +40,7 @@ class VWTASenderTurtleQpid(myJmsSess : javax.jms.Session, jmsHdrWrtr_orNull : Wr
 			extends VWTASender
 
 import scala.collection.JavaConverters._
-class TestTAQPidClient(qpidDestMgr : QpidDestMgr) extends QPidFeatureEndpoint(qpidDestMgr)
+class TestTAQPidClient(qpidDestMgr : JmsDestMgr) extends QPidFeatureEndpoint(qpidDestMgr)
 			with MakesVWTARqProducers with MakesVWPubStatConsumers with  ExoPubStatDumpingListenerMaker {
 
 	val statDumpPeriod : Int = 5
@@ -48,8 +49,9 @@ class TestTAQPidClient(qpidDestMgr : QpidDestMgr) extends QPidFeatureEndpoint(qp
 	def sendVWRqThingAct(taSpec : ThingActionSpec, encodePref : Integer): Unit = {
 		myGenSender.postThingAct(taSpec, encodePref)
 	}
-
-	def sendSomeVWRqs(delayMsec : Int) : Unit = {
+}
+trait DummyGoodySender extends VarargsLogging {
+	def sendSomeVWRqs(testClient : TestTAQPidClient, delayMsec : Int) : Unit = {
 		val gtmm: GoodyTestMsgMaker = new GoodyTestMsgMaker
 		val msgsJList = gtmm.makeGoodyCreationMsgs
 		var msgCount = 0
@@ -59,19 +61,16 @@ class TestTAQPidClient(qpidDestMgr : QpidDestMgr) extends QPidFeatureEndpoint(qp
 			if (msg.getTargetThingTypeID.equals(GoodyNames.TYPE_BIT_BOX) && msg.getVerbID.equals(GoodyNames.ACTION_SET)) {
 				warn1("Skipping bitBox-set which is reliably crashing the scene-graph when submitted this way, msg={}", msg)
 			} else {
-				sendVWRqThingAct(msg, preferredEncoding)
+				testClient.sendVWRqThingAct(msg, preferredEncoding)
 				msgCount += 1
 			}
 			Thread.sleep(delayMsec)
 		}
 	}
 }
-
 class ClientTestMsgSender() extends OffersVWorldClient with VWTAMsgMaker  {
-	def sendTestMsgs : Unit = {
-		val client = myClient
-		client.sendSomeVWRqs(1500)
-	}
+	override val myPreferredEncoding : Int = myClient.ENCODE_PREF_BIN
+
 	val clientOffer = this
 	def startTestThread (initDelayMsec : Int, stepDelayMsec : Int) {
 		info0("========== .maybeLaunchPhonyClient() starting CLIENT qpidConn")
@@ -95,6 +94,9 @@ class ClientTestMsgSender() extends OffersVWorldClient with VWTAMsgMaker  {
 				val nextTgtCamPos = new Vector3f(-80.0f, 50.0f, -72.7f)
 				val cxf = new PartialTransform3D(Some(nextTgtCamPos), None, None)
 				clientOffer.sendRq_moveCamera(xtraCamGuideShapeID, cxf, 20.0f)
+				Thread.sleep(stepDelayMsec)
+				val dummyGoodySender = new DummyGoodySender {}
+				dummyGoodySender.sendSomeVWRqs(myClient, stepDelayMsec)
 			}
 		}
 		testSendThrd.start()
@@ -104,6 +106,6 @@ class ClientTestMsgSender() extends OffersVWorldClient with VWTAMsgMaker  {
 object RunClientTestMsgSender {
 	def main(args: Array[String]): Unit = {
 		val clientTestSender = new ClientTestMsgSender()
-		clientTestSender.startTestThread(20000, 2000)
+		clientTestSender.startTestThread(3000, 2000)
 	}
 }

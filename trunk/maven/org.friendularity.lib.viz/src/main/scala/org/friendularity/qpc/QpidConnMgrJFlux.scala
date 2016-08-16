@@ -32,7 +32,7 @@ class QpidConnMgrJFlux extends QpidConnMgr with IdentHlp with VarargsLogging {
 		}
 		return qpidConn
 	}
-	override def getConn : JMSConnection = myJmsConn
+	override def getJmsConnection : JMSConnection = myJmsConn
 	/*  Copied and modified from JFlux ConnectionUtils
 		private static String buildNameString(String destName, int type) */
 

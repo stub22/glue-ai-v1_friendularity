@@ -8,21 +8,21 @@ import org.appdapter.fancy.log.VarargsLogging
   * Created by Stub22 on 8/8/2016.
   */
 
-trait QpidConnMgr extends VarargsLogging {
+trait QpidConnMgr extends KnowsJmsConnection with VarargsLogging {
 	def makeSessionAutoAck() : JMSSession = {
 		// Creates a session. This session is not transactional (transactions='false'),
 		// and messages are automatically acknowledged.
 		// QPid HelloWorld uses AUTO_ACKNOWLEDGE,  // R25 uses   CLIENT_ACKNOWLEDGE
-		val conn = getConn
+		val conn = getJmsConnection
 		info2("================= Creating JMS Session in AUTO_ACK mode, for connMgr={}, conn={}", this, conn)
 		conn.createSession(false, JMSSession.AUTO_ACKNOWLEDGE);
 	}
 	def makeFullySpecifiedDestination(destNameTailFull : String) : JMSDestination
 
-	def getConn : JMSConnection
+	override def getJmsConnection : JMSConnection
 
 	def startConn: Unit = {
-		val qpidConn = getConn
+		val qpidConn = getJmsConnection
 		info1("Now starting qpidConn, so any existing consumers should already have listeners set up.  conn={}", qpidConn)
 		qpidConn.start
 	}

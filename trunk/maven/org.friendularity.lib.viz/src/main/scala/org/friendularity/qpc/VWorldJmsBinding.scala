@@ -48,17 +48,17 @@ object VWorldAmqpDestNames {
 // This trait can be used on both server and client sides
 trait KnowsVWTARqDestinations extends KnowsDestMgr  {
 	// More serious apps will prefer to use just uni.
-	lazy val destVWRqTAUni : JMSDestination = getDestMgr.makeQueueDestination(VWorldAmqpDestNames.queueName_forUnifiedTA)
+	lazy val destVWRqTAUni : JMSDestination = getJmsDestMgr.makeQueueDestination(VWorldAmqpDestNames.queueName_forUnifiedTA)
 	// Two more dests factored by channel don't add much, but if a simpler unit test is desired, can use these.
-	lazy val destVWRqTATxt : JMSDestination = getDestMgr.makeQueueDestination(VWorldAmqpDestNames.queueName_forTurtleTxtTA)
-	lazy val destVWRqTABin : JMSDestination = getDestMgr.makeQueueDestination(VWorldAmqpDestNames.queueName_forJSerBinTA)
+	lazy val destVWRqTATxt : JMSDestination = getJmsDestMgr.makeQueueDestination(VWorldAmqpDestNames.queueName_forTurtleTxtTA)
+	lazy val destVWRqTABin : JMSDestination = getJmsDestMgr.makeQueueDestination(VWorldAmqpDestNames.queueName_forJSerBinTA)
 }
 trait KnowsVWPubStatDestinations extends KnowsDestMgr  {
-	lazy val destForVWPubStatsBin : JMSDestination = getDestMgr.getDestForTopicName(VWorldAmqpDestNames.topicName_forVWPubStatJSerBin)
+	lazy val destForVWPubStatsBin : JMSDestination = getJmsDestMgr.getDestForTopicName(VWorldAmqpDestNames.topicName_forVWPubStatJSerBin)
 }
 // TODO:  Add Knows...Producers intf
 trait MakesVWTARqProducers extends KnowsVWTARqDestinations {
-	private lazy val myJmsSession = getDestMgr.getJmsSession
+	private lazy val myJmsSession = getJmsDestMgr.getJmsSession
 
 	def getFlagUnified : Boolean = true
 
@@ -74,7 +74,7 @@ trait MakesVWTARqProducers extends KnowsVWTARqDestinations {
 }
 
 trait MakesVWPubStatConsumers extends KnowsVWPubStatDestinations {
-	private lazy val myJmsSession = getDestMgr.getJmsSession
+	private lazy val myJmsSession = getJmsDestMgr.getJmsSession
 
 	lazy val myConsumer_forVWPubStatBin : JMSMsgConsumer = myJmsSession.createConsumer(destForVWPubStatsBin)
 

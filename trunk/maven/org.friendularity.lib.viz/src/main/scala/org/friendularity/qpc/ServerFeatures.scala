@@ -48,7 +48,7 @@ trait ServerReceiveFeature {
 	// def setTurtleTxtListenTeller (tellerLikesGoodyRdf : CPStrongTeller[VWGoodyRqRdf])
 }
 trait MakesVWTARqConsumers extends KnowsVWTARqDestinations {
-	private lazy val myJmsSession = getDestMgr.getJmsSession
+	private lazy val myJmsSession = getJmsDestMgr.getJmsSession
 
 	def getFlagUnified : Boolean = true
 
@@ -58,7 +58,7 @@ trait MakesVWTARqConsumers extends KnowsVWTARqDestinations {
 	protected lazy val myCnsmr_jSerBin: JMSMsgConsumer = if(getFlagUnified) myCnsmr_Uni else myJmsSession.createConsumer(destVWRqTABin)
 }
 
-class ServerReceiveFeatureImpl(destMgr : QpidDestMgr) extends QPidFeatureEndpoint(destMgr)
+class ServerReceiveFeatureImpl(destMgr : JmsDestMgr) extends QPidFeatureEndpoint(destMgr)
 			with ServerReceiveFeature with  MakesVWTARqConsumers {
 
 	/* Oops, we need to watch out for:
@@ -84,9 +84,9 @@ class ServerReceiveFeatureImpl(destMgr : QpidDestMgr) extends QPidFeatureEndpoin
 	}
 
 }
-class ServerPublishFeatureImpl(destMgr : QpidDestMgr) extends QPidFeatureEndpoint(destMgr)
+class ServerPublishFeatureImpl(destMgr : JmsDestMgr) extends QPidFeatureEndpoint(destMgr)
 			with ServerPublishFeature with  KnowsVWPubStatDestinations {
-	private lazy val myJmsSession = getDestMgr.getJmsSession
+	private lazy val myJmsSession = getJmsDestMgr.getJmsSession
 	private lazy val myJmsProdForVWPubNoticeBin : JMSMsgProducer = myJmsSession.createProducer(destForVWPubStatsBin)
 	private lazy val mySenderForVWPubNoticeBin :  VWNoticeSender = new VWNoticeSenderJmsImpl(myJmsSession, myJmsProdForVWPubNoticeBin)
 
