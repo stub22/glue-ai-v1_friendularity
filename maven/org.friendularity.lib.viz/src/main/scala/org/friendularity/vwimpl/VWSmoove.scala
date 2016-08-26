@@ -72,32 +72,12 @@ trait Movable extends HasMainSpat {
 	}
 }
 
-trait Smoovable extends Movable with Locatable with Addressable {
-
-	def applySmooveNow_anyThrd(manipFull : SmooveManipFull): Unit = {
-		// Since this happens at the "controls" level, is it then not really a sceneGraph mod, requiring queueing?
-		val anim = makeJmeAnimUsingFactory(manipFull)
-		val spat = getMainSpat
-		applyAnim_anyThrd(anim, spat)
-	}
-	def applySmooveFromCurrent_mystThrd(manipEnding : SmooveManipEnding) : Unit = {
-		val smv = createSmooveStartingFromCurrentPos_anyThrd(manipEnding.getXform_finish,
-			manipEnding.getDuration_sec)
-		applySmooveNow_anyThrd(smv)
-	}
-
-	def createSmooveStartingFromCurrentPos_anyThrd(endXform : Transform3D, durSec : Float) : SmooveManipFull = {
-		val currXform = getCurrXform_anyThrd
-		val manipFull = new SmooveManipFullImpl(currXform, endXform, durSec)
-		manipFull
-	}
-
-
+trait JmeAnimMaker {
 	def makeJmeAnimUsingFactory (smv : SmooveManipFull): Animation = {
 		// Hmmm, the animFactory creates all frames in memory when it creates a SpatialTrack.
 		// SpatialTrack does have a times[] array, but it is used very bluntly by AnimFactory.
 		// It looks like if we made SpatialTracks directly, they could use much less RAM.
-		// We could fill in
+
 		val durF = smv.getDuration_sec
 		val animName = "smv_" + smv.hashCode() + "_at_" + System.currentTimeMillis()
 		val animFactory = new AnimationFactory(durF, animName)
@@ -129,10 +109,46 @@ trait Smoovable extends Movable with Locatable with Addressable {
 		af.addTimeScale(frameTime, fScale)
 	}
 
-	def applyAnim_anyThrd(a : Animation, s : Spatial) : Unit = {
-		val ctrl = new AnimControl()  // Trigger point + update bridge for a set of animations, over many channels,
+}
+trait Smoovable extends Movable with Locatable with Addressable {
+	val myAnimMaker = new JmeAnimMaker {}
 
+	def applySmooveNow_anyThrd(manipFull : SmooveManipFull): Unit = {
+		// Since this happens at the "controls" level, is it then not really a sceneGraph mod, requiring queueing?
+		val anim = myAnimMaker.makeJmeAnimUsingFactory(manipFull)
+		val spat = getMainSpat
+		applyAnim_anyThrd(anim, spat)
+	}
+	def applySmooveFromCurrent_mystThrd(manipEnding : SmooveManipEnding) : Unit = {
+		val smv = createSmooveStartingFromCurrentPos_anyThrd(manipEnding.getXform_finish,
+				manipEnding.getDuration_sec)
+		applySmooveNow_anyThrd(smv)
+	}
+
+	def createSmooveStartingFromCurrentPos_anyThrd(endXform : Transform3D, durSec : Float) : SmooveManipFull = {
+		val currXform = getCurrXform_anyThrd
+		val manipFull = new SmooveManipFullImpl(currXform, endXform, durSec)
+		manipFull
+	}
+
+	def applyAnim_anyThrd(a : Animation, s : Spatial) : Unit = {
+
+		// val ctrl = new AnimControl()  // Trigger point + update bridge for a set of animations, over many channels,
+		// s.addControl(ctrl)
+		val ctrl = {
+			val c = s.getControl(classOf[AnimControl])
+			if (c != null) {
+				c
+			} else {
+				val nc = new AnimControl()
+				s.addControl(nc)
+				nc
+			}
+		}
 		ctrl.addAnim(a) // Each anim may have multiple tracks of type:  SpatialTrack, BoneTrack, AudioTrack, EffectTrack
+
+		ctrl.clearChannels()
+
 		// Rendering happens on callbacks to the tracks that look like:
 		// void setTime(float time, float weight, AnimControl control, AnimChannel channel, TempVars vars);
 		// BoneTrack constructor is:
@@ -145,7 +161,6 @@ trait Smoovable extends Movable with Locatable with Addressable {
             tempV.interpolateLocal(tempV2, blend);
             tempS.interpolateLocal(tempS2, blend);
 		 */
-		s.addControl(ctrl)
 		val chan = ctrl.createChannel // Each chan
 		val blendTime = 0f
 		chan.setAnim(a.getName, blendTime) // This step "activates" the ctrl-chan-anim combo, yes?

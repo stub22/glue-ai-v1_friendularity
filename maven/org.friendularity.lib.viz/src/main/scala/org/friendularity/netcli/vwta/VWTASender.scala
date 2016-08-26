@@ -83,10 +83,10 @@ class ClientTestMsgSender() extends OffersVWorldClient with VWTAMsgMaker  {
 				Thread.sleep(initDelayMsec)
 				//					info0("Client test thread has awoken, sending TA tst messages")
 				//					phonyClientOffer.sendTestMsgs
-				val tgtPos = new Vector3f(-20.0f, 150.0f, -20.0f)
+				val tgtPos = new Vector3f(-20.0f, 90.0f, -20.0f)
 				val tgtScl = new Vector3f(12.0f, 3.0f, 8.0f)
 				val mxf = new PartialTransform3D(Some(tgtPos), None, Some(tgtScl))
-				clientOffer.sendSinbadSmooveRq(mxf, 22.0f)
+				clientOffer.sendSinbadSmooveRq(mxf, 4.0f)
 				Thread.sleep(stepDelayMsec)
 				val xtraCamGuideShapeID = clientOffer.makeStampyRandyIdent("xtraCam")
 				clientOffer.sendRq_makeExtraCamera(xtraCamGuideShapeID)
@@ -95,8 +95,13 @@ class ClientTestMsgSender() extends OffersVWorldClient with VWTAMsgMaker  {
 				val cxf = new PartialTransform3D(Some(nextTgtCamPos), None, None)
 				clientOffer.sendRq_moveCamera(xtraCamGuideShapeID, cxf, 20.0f)
 				Thread.sleep(stepDelayMsec)
-				val dummyGoodySender = new DummyGoodySender {}
-				dummyGoodySender.sendSomeVWRqs(myClient, stepDelayMsec)
+
+//				val dummyGoodySender = new DummyGoodySender {}
+//				dummyGoodySender.sendSomeVWRqs(myClient, stepDelayMsec)
+
+				val nxtChrPos = new Vector3f(40.0f, 10.0f, 20.0f)
+				val nxf = new PartialTransform3D(Some(nxtChrPos), None, None)
+				clientOffer.sendSinbadSmooveRq(nxf, 8.0f)
 			}
 		}
 		testSendThrd.start()
