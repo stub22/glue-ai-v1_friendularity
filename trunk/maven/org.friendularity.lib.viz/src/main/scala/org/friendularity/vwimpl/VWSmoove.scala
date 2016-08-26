@@ -1,6 +1,6 @@
 package org.friendularity.vwimpl
 
-import com.jme3.animation.{LoopMode, AnimControl, AnimationFactory, Animation}
+import com.jme3.animation.{LoopMode, AnimControl => JmeAnimCtrl, AnimationFactory, Animation => JmeGrossAnim}
 import com.jme3.math.{Quaternion, Vector3f, ColorRGBA}
 import com.jme3.scene.Spatial
 import org.appdapter.core.name.Ident
@@ -49,6 +49,11 @@ trait Locatable extends HasMainSpat {
 trait Movable extends HasMainSpat {
 
 	def applyTransform_runThrd(xform : Transform3D) : Unit = {
+		// This impl does not worry about any existing animCtrl.
+		// Override (in Smoovable or other) to protect from animCtrls, or to use them.
+		naiveTransform_runThrd(xform)
+	}
+	protected def naiveTransform_runThrd(xform : Transform3D) : Unit = {
 		val spat = getMainSpat
 		val fPos = xform.getPos
 		val fRotQuat = xform.getRotQuat
@@ -58,7 +63,7 @@ trait Movable extends HasMainSpat {
 		spat.setLocalScale(fScale)
 	}
 
-	def rotToLookAtWorldPos_UNUSED(dirToLook_worldCoord : Vector3f, upDir : Vector3f) : Unit = {
+	private def rotToLookAtWorldPos_UNUSED(dirToLook_worldCoord : Vector3f, upDir : Vector3f) : Unit = {
 		// Fun JME shortcut which we don't currently use, but want to keep in mind at this level.
 		// From the source of Spatial.java
 		// " Unlike {@link Quaternion#lookAt(com.jme3.math.Vector3f, com.jme3.math.Vector3f) }
@@ -73,7 +78,7 @@ trait Movable extends HasMainSpat {
 }
 
 trait JmeAnimMaker {
-	def makeJmeAnimUsingFactory (smv : SmooveManipFull): Animation = {
+	def makeJmeAnimUsingFactory (smv : SmooveManipFull): JmeGrossAnim = {
 		// Hmmm, the animFactory creates all frames in memory when it creates a SpatialTrack.
 		// SpatialTrack does have a times[] array, but it is used very bluntly by AnimFactory.
 		// It looks like if we made SpatialTracks directly, they could use much less RAM.
@@ -110,63 +115,119 @@ trait JmeAnimMaker {
 	}
 
 }
+trait JmeAnimCtrlWrap {
+	// val ctrl = new AnimControl()  // Trigger point + update bridge for a set of animations, over many channels,
+	// s.addControl(ctrl)
+	def findAnimCtrl(s : Spatial) : Option[JmeAnimCtrl] = {
+		val c = s.getControl(classOf[JmeAnimCtrl])
+		Option(c)
+	}
+
+	def findOrMakeAnimCtrl(s : Spatial) : JmeAnimCtrl = {
+		val ctrl : JmeAnimCtrl = {
+			val copt = findAnimCtrl(s)
+//			val c = s.getControl(classOf[JmeAnimCtrl])
+//			if (c != null) {
+//				c
+//			} else {
+			copt.getOrElse {
+				val nc = new JmeAnimCtrl()
+				s.addControl(nc)
+				nc
+			}
+		}
+		ctrl
+	}
+	def cancelOldAnims(ac : JmeAnimCtrl) : Unit = {
+		ac.clearChannels()
+	}
+	def haltAndDetachAnimCtrl(ac : JmeAnimCtrl) : Unit = {
+		ac.setEnabled(false)
+	}
+	def haltAndDetachAnyAnimCtrl(s : Spatial) : Unit = {
+		val ctrlOpt : Option[JmeAnimCtrl] = findAnimCtrl(s)
+		ctrlOpt.map(ac => haltAndDetachAnimCtrl(ac))
+	}
+	def fireAnim(ac : JmeAnimCtrl, a: JmeGrossAnim, blendTimeSec : Float, loopMode : LoopMode) : Unit = {
+		ac.addAnim(a) // Each anim may have multiple tracks of type:  SpatialTrack, BoneTrack, AudioTrack, EffectTrack
+		val chan = ac.createChannel
+		ac.setEnabled(true) // Will generally stay enabled until some direct abrupt move is sent
+		chan.setAnim(a.getName, blendTimeSec) // This step "activates" the ctrl-chan-anim combo, yes?
+		chan.setLoopMode(LoopMode.DontLoop)  // Cogchar lore says this should be done after setAnim
+
+	}
+
+	def fireAnimUnloopedUnblended(ac : JmeAnimCtrl, a: JmeGrossAnim) : Unit = {
+		cancelOldAnims(ac)
+		val blendTimeSec = 0f
+		fireAnim(ac, a, blendTimeSec, LoopMode.DontLoop)
+	}
+	def fireAnimUnloopedUnblended(s : Spatial, a: JmeGrossAnim) : Unit = {
+		val ac = findOrMakeAnimCtrl(s)
+		fireAnimUnloopedUnblended(ac, a)
+	}
+}
 trait Smoovable extends Movable with Locatable with Addressable {
 	val myAnimMaker = new JmeAnimMaker {}
 
-	def applySmooveNow_anyThrd(manipFull : SmooveManipFull): Unit = {
+	override def applyTransform_runThrd(xform: Transform3D): Unit = {
+		detachAnimCtrl()
+		super.applyTransform_runThrd(xform)
+	}
+
+	private def detachAnimCtrl(): Unit = {
+		val spat = getMainSpat
+		val acHelper = new JmeAnimCtrlWrap {}
+		acHelper.haltAndDetachAnyAnimCtrl(spat)
+	}
+
+	def applySmooveNow_anyThrd(manipFull: SmooveManipFull): Unit = {
 		// Since this happens at the "controls" level, is it then not really a sceneGraph mod, requiring queueing?
 		val anim = myAnimMaker.makeJmeAnimUsingFactory(manipFull)
 		val spat = getMainSpat
 		applyAnim_anyThrd(anim, spat)
 	}
-	def applySmooveFromCurrent_mystThrd(manipEnding : SmooveManipEnding) : Unit = {
+
+	def applySmooveFromCurrent_mystThrd(manipEnding: SmooveManipEnding): Unit = {
 		val smv = createSmooveStartingFromCurrentPos_anyThrd(manipEnding.getXform_finish,
-				manipEnding.getDuration_sec)
+			manipEnding.getDuration_sec)
 		applySmooveNow_anyThrd(smv)
 	}
 
-	def createSmooveStartingFromCurrentPos_anyThrd(endXform : Transform3D, durSec : Float) : SmooveManipFull = {
+	def createSmooveStartingFromCurrentPos_anyThrd(endXform: Transform3D, durSec: Float): SmooveManipFull = {
 		val currXform = getCurrXform_anyThrd
 		val manipFull = new SmooveManipFullImpl(currXform, endXform, durSec)
 		manipFull
 	}
 
-	def applyAnim_anyThrd(a : Animation, s : Spatial) : Unit = {
-
-		// val ctrl = new AnimControl()  // Trigger point + update bridge for a set of animations, over many channels,
-		// s.addControl(ctrl)
-		val ctrl = {
-			val c = s.getControl(classOf[AnimControl])
-			if (c != null) {
-				c
-			} else {
-				val nc = new AnimControl()
-				s.addControl(nc)
-				nc
-			}
-		}
-		ctrl.addAnim(a) // Each anim may have multiple tracks of type:  SpatialTrack, BoneTrack, AudioTrack, EffectTrack
-
-		ctrl.clearChannels()
-
-		// Rendering happens on callbacks to the tracks that look like:
-		// void setTime(float time, float weight, AnimControl control, AnimChannel channel, TempVars vars);
-		// BoneTrack constructor is:
-		// BoneTrack(int targetBoneIndex, float[] times, Vector3f[] translations, Quaternion[] rotations, Vector3f[] scales)
-		// While SpatialTrack constructor is:
-		// SpatialTrack(float[] times, Vector3f[] translations, Quaternion[] rotations, Vector3f[] scales)
-		// It does:
-		/*
-		    tempQ.nlerp(tempQ2, blend);
-            tempV.interpolateLocal(tempV2, blend);
-            tempS.interpolateLocal(tempS2, blend);
-		 */
-		val chan = ctrl.createChannel // Each chan
-		val blendTime = 0f
-		chan.setAnim(a.getName, blendTime) // This step "activates" the ctrl-chan-anim combo, yes?
-		chan.setLoopMode(LoopMode.DontLoop)  // Cogchar lore says this should be done after setAnim
+	def applyAnim_anyThrd(a: JmeGrossAnim, s: Spatial): Unit = {
+		val acHelper = new JmeAnimCtrlWrap {}
+		acHelper.fireAnimUnloopedUnblended(s, a)
 	}
 }
+/*
+	// val ctrl = new AnimControl()  // Trigger point + update bridge for a set of animations, over many channels,
+	// s.addControl(ctrl)
+	val ctrl = {
+		val c = s.getControl(classOf[AnimControl])
+		if (c != null) {
+			c
+		} else {
+			val nc = new AnimControl()
+			s.addControl(nc)
+			nc
+		}
+	}
+	ctrl.clearChannels()
+
+	ctrl.addAnim(a) // Each anim may have multiple tracks of type:  SpatialTrack, BoneTrack, AudioTrack, EffectTrack
+
+	val chan = ctrl.createChannel // Each chan
+	val blendTime = 0f
+	chan.setAnim(a.getName, blendTime) // This step "activates" the ctrl-chan-anim combo, yes?
+	chan.setLoopMode(LoopMode.DontLoop)  // Cogchar lore says this should be done after setAnim
+*/
+
 trait Manipable extends Smoovable with VarargsLogging {
 	def applyManipDesc(manip : ManipDesc, enqHelp : FullEnqHlp) : Unit = {
 		manip match {
@@ -188,6 +249,7 @@ trait Manipable extends Smoovable with VarargsLogging {
 	}
 
 }
+
 /*  Inefficient RAM use in AnimationFactory - we could do a tighter  MotionTrack creator than this:
 https://github.com/jMonkeyEngine/jmonkeyengine/blob/master/jme3-core/src/main/java/com/jme3/animation/AnimationFactory.java
         totalFrames = (int) (fps * duration) + 1;
@@ -197,13 +259,27 @@ https://github.com/jMonkeyEngine/jmonkeyengine/blob/master/jme3-core/src/main/ja
         rotations = new Quaternion[totalFrames];
         scales = new Vector3f[totalFrames];
  */
+trait JmeBoneAnimHlp {
+	// Rendering happens on callbacks to the tracks that look like:
+	// void setTime(float time, float weight, AnimControl control, AnimChannel channel, TempVars vars);
+	// BoneTrack constructor is:
+	// BoneTrack(int targetBoneIndex, float[] times, Vector3f[] translations, Quaternion[] rotations, Vector3f[] scales)
+	// While SpatialTrack constructor is:
+	// SpatialTrack(float[] times, Vector3f[] translations, Quaternion[] rotations, Vector3f[] scales)
+	// It does:
+	/*
+		tempQ.nlerp(tempQ2, blend);
+		tempV.interpolateLocal(tempV2, blend);
+		tempS.interpolateLocal(tempS2, blend);
+	 */
+}
 
 
 // Other main tricks for rot of a spatial are shown in JME Cine MotionEvent.computeTargetDirection, such as
 // directly instructing the spatial to look at a Vector3f lookAt, in *world* coordinates.    Reviewing the
 // code indicates
 // that it just sets the localRot once, does not establish a lower constraint.
-// Also ote that lookAt is in *world* coordinates.
+// Also note that lookAt is in *world* coordinates.
 
 // spatial.lookAt(lookAt, upVector);
 
