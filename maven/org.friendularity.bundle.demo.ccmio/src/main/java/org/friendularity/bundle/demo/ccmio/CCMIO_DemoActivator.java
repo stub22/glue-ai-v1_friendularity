@@ -18,6 +18,7 @@ import org.friendularity.raiz.VizappLegacyLoaderFactory;
 import org.friendularity.raiz.VizappProfileLoader;
 import org.friendularity.raiz.VizappProfileLoaderFactory;
 import org.friendularity.vsim.vworld.UnusedNetworkVisionDataFeed;
+import org.friendularity.wbrst.WbrstServerTest;
 import org.osgi.framework.BundleContext;
 import org.rwshop.swing.common.lifecycle.ServicesFrame;
 
@@ -80,6 +81,7 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 
 	public static boolean  myFlag_launchQpidBroker = true;
 	public static boolean myFlag_launchVWorldAmqpSvcs = true;
+	public static boolean myFlag_launchCrudeSprayRestSrv = true;
 
 	private Class 		myProfileMarkerClz = TestRaizLoad.class;
 	private Class 		myLegConfMarkerClz = TestRaizLoad.class;
@@ -154,6 +156,10 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 			ActorSystem akkaSys = myCPumpHelper.dangerActorSysExposed();  // Should be avail because startAkkaOSGi was called during .start().
 			EnhancedLocalRepoClient elrc = legacyLoader.makeLegacyELRC(mergedProfileJM);
 			launchVWorldWithSinbad_2016(bundleCtx, akkaSys, elrc); //  mergedProfileJM, legConfEHost);
+			if (myFlag_launchCrudeSprayRestSrv) {
+				WbrstServerTest.launchTestSvcs(akkaSys);
+			}
+
 		}
 		getLogger().info("============ Calling launchCPumpService() ==========");
 		launchCPumpService(bundleCtx);
@@ -227,7 +233,7 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 	}
 	*/
 	private void launchOtherStuffLate()  {
-	
+
 		if (myFlag_connectObsoleteNetworkVision) {
 			//	Startup alternate QPid network vision connection (separate from JVision)
 			startObsoleteNetworkVisionMonitors();
