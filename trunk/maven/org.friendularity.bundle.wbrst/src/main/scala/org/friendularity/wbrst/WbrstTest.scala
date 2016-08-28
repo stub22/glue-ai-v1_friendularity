@@ -34,19 +34,30 @@ object WbrstServerTest  extends VarargsLogging {
 		info0("^^^^^^^^^^^^^^^^^^^^^^^^  WbrstServerTest main().START");
 		val wbrstAkkaSysName = "wbrstSys"
 		val wbrstAkkaSys = ActorSystem(wbrstAkkaSysName)
+		launchTestSvcs(wbrstAkkaSys)
+		info0("^^^^^^^^^^^^^^^^^^^^^^^^  WbrstServerTest main().END");
+	}
+	def launchTestSvcs(wbrstAkkaSys : ActorSystem) : Unit = {
+		val wbrstRoutedPort = 8082
+		launchRoutedSvc(wbrstAkkaSys, wbrstRoutedPort)
+		val wbrstDirectPort = 8081
+		launchDirectSvc(wbrstAkkaSys, wbrstDirectPort)
+	}
+	def launchRoutedSvc(wbrstAkkaSys : ActorSystem, wbrstRoutedPort : Int) : Unit = {
 		val routingExampleActorProps = Props[TrialRoutingHttpSvcActor]
 		val wbrstRoutedActorName = "wbrstRouted"
 		val routedSvcAkkaRef = wbrstAkkaSys.actorOf(routingExampleActorProps, "wbrstRoutedActorName")
 		val launcher = new SprayCanLauncher {}
-		val wbrstRoutedPort = 8082
 		launcher.launchForListener(wbrstAkkaSys,  routedSvcAkkaRef, wbrstRoutedPort)
 		info2("Finished launch routing-based service on port={}, svc={}", wbrstRoutedPort : Integer, routedSvcAkkaRef)
-		val wbrstDirectPort = 8081
+	}
+	def launchDirectSvc(wbrstAkkaSys : ActorSystem, wbrstDirectPort : Int) : Unit = {
 		val directProps = Props[TrialDirectHttpSvcActor]
-		val directSvcAkkaRef = wbrstAkkaSys.actorOf(directProps, "wbrstDirect")
+		val wbrstDirectActorName = "wbrstDirect"
+		val directSvcAkkaRef = wbrstAkkaSys.actorOf(directProps, wbrstDirectActorName)
+		val launcher = new SprayCanLauncher {}
 		launcher.launchForListener(wbrstAkkaSys,  directSvcAkkaRef, wbrstDirectPort)
 		info2("Finished launch routing-based service on port={}, svc={}", wbrstDirectPort : Integer, directSvcAkkaRef)
-		info0("^^^^^^^^^^^^^^^^^^^^^^^^  WbrstServerTest main().END");
 	}
 
 }
