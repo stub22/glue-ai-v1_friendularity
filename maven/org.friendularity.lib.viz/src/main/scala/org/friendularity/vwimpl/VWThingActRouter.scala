@@ -232,11 +232,23 @@ trait VWThingActReqRouterLogic extends VWBodyTARouterLogic with CamTARouterLogic
 		val taSpec : ThingActionSpec = vwtarq.getActionSpec
 		val gax: GoodyActionExtractor = new GoodyActionExtractor(taSpec)
 		val targetTypeID = gax.getType
+
+		// Handle TA messages for 3 primary kinds of entity:  Avatar-body, VWCamera, Goody.
+		// First two handle primarily:
+		// * Movements, both smooth and abrupt, along axes of position, rotation, scale.
+		// * Creation, attachment, detach
 		if (targetTypeID.equals(GoodyNames.TYPE_AVATAR)) {
 			handleBodyTA(taSpec, gax, whoDat)
 		} else if (targetTypeID.equals(GoodyNames.TYPE_CAMERA)) {
 			handleCameraTA(taSpec, gax, whoDat)
 		} else {
+			// Other messages are presumed to refer to goodies, and are forwarded to a
+			// dedicated actor that translates and directs them.   These may involve
+			// create/destroy, attach/detach, movement (smooth or abrupt), goody-state changes,
+			// color+transparency changes.
+			// As of 2016-08-28, this message eventually gets handled by
+			// VWGoodyJobLogic, which in turn invokes the old cogchar method:
+			//   goodyCtx.consumeAction(actSpec)
 			val directLegacyGoodyTeller = getVWPubTellers.getGoodyDirectTeller
 			directLegacyGoodyTeller.get.tellStrongCPMsg(vwtarq)
 		}
