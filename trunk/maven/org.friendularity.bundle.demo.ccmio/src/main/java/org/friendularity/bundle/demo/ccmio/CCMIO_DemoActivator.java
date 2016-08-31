@@ -157,6 +157,9 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 			EnhancedLocalRepoClient elrc = legacyLoader.makeLegacyELRC(mergedProfileJM);
 			launchVWorldWithSinbad_2016(bundleCtx, akkaSys, elrc); //  mergedProfileJM, legConfEHost);
 			if (myFlag_launchCrudeSprayRestSrv) {
+				// Uses that same akkaSys (from CPumpHelper) to wire up web services, although
+				// it could be a different akkaSys (with a different netty-remote port, or a local-only
+				// dispatcher), if we had one handy.
 				WbrstServerTest.launchTestSvcs(akkaSys);
 			}
 

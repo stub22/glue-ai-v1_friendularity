@@ -26,6 +26,17 @@ import org.friendularity.vwmsg.{VWRqTAWrapper, VWTARqRdf, VWRqTAWrapImpl, VWorld
 
 /**
   * Created by Stub22 on 5/25/2016.
+  *
+  * Handles messages to (sometimes stateful) goody visual objects.
+  * 	// dedicated actor that translates and directs them.
+  *	These may involve:
+  * create/destroy, attach/detach, movement (smooth or abrupt),
+  * goody-state changes, color+transparency changes.
+  *
+  * Note that currently we don't support any outbound replies or notices from the Goody system.
+  *
+  * Messages to avatars/bodies and cameras are *not* handled here - they are processed upstream
+  * of here in VWThingActRouter.
   */
 
 trait VWGoodyJobLogic extends VarargsLogging {
@@ -44,7 +55,6 @@ trait VWGoodyJobLogic extends VarargsLogging {
 					actSpec.getClass, actSpec.getVerbID, actSpec.getTargetThingTypeID, actSpec.getTargetThingID)
 		val goodyCtx = getGoodyCtx
 
-
 		goodyCtx.consumeAction(actSpec)
 	}
 
@@ -61,8 +71,13 @@ trait VWGoodyJobLogic extends VarargsLogging {
 		}
 
 		for (tas <- thingActs) {
+
 			val specMsg = new VWRqTAWrapImpl(tas)
-			slfActr.tell(specMsg, slfActr)
+
+			processVWGoodyActSpec(specMsg, localActorCtx)
+			// We could instead requeue, like so:
+			// 	slfActr.tell(specMsg, slfActr)
+			// but that could change order of mixed TA processing from client's point of view.
 		}
 
 	}
@@ -76,13 +91,11 @@ class VWGoodyActor(myGoodyCtx : BasicGoodyCtx) extends Actor with VWGoodyJobLogi
 		}
 	}
 }
-
+/*
 trait MoveBodiesLogic {
-
 }
 trait MoveCamerasLogic {
-
 }
 trait PublishStatsLogic {
-
 }
+*/
