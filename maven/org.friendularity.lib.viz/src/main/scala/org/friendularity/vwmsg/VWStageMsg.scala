@@ -14,7 +14,7 @@ trait VWStageRqMsg extends VWorldRequest
 case class VWStageResetToDefault() extends VWStageRqMsg // Reset all camera + lighting effects to stored defaults
 case class VWStageEmulateBonusContentAndCams() extends VWStageRqMsg
 
-case class VWStageOpticsBasic(moveSpeed : Int, bgColor: ColorRGBA)  extends VWStageRqMsg
+case class VWStageOpticsBasic(moveSpeed : Int, bgColor: ColorRGBA, pauseOnLostFocus : Boolean)  extends VWStageRqMsg
 
 // JME describes the coords as:   float left, float right, float bottom, float top) {
 case class ViewportDesc(myX1_left : Float, myX2_right : Float, myY1_bot : Float, myY2_top : Float,

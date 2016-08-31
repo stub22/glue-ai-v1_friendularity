@@ -29,6 +29,7 @@ import org.appdapter.core.name.Ident
 import org.appdapter.fancy.log.VarargsLogging
 import org.cogchar.bind.midi.in.{CCParamRouter, TempMidiBridge}
 import org.cogchar.platform.gui.keybind.KeyBindingTracker
+import org.cogchar.render.app.core.WorkaroundAppStub;
 import org.cogchar.render.app.entity.CameraBinding
 import org.cogchar.render.opengl.optic.CameraMgr
 import org.cogchar.render.sys.context.CogcharRenderContext
@@ -151,23 +152,24 @@ trait DummyContentLogic extends VarargsLogging with EnqHlp {
 
 }
 trait BasicOpticsLogic extends VarargsLogging with EnqHlp {
-	def prepareIndependentOptics_onRendThrd(flyCam: FlyByCamera, mainViewPort: ViewPort,
+	def prepareIndependentOptics_onRendThrd(workaroundStub: WorkaroundAppStub, flyCam: FlyByCamera, mainViewPort: ViewPort,
 											moveSpeed : Int, bgColor: ColorRGBA): Unit = {
 
 		info2("prepareOpticsStage1: setting flyCam speed to {}, and background color to {}",
 			moveSpeed : Integer, bgColor)
 		// Sets the speed of our POV camera movement.  The default is pretty slow.
 		flyCam.setMoveSpeed(moveSpeed)
-
+        
 		mainViewPort.setBackgroundColor(bgColor)
+        workaroundStub.setPauseOnLostFocus(false)
 	}
 	def sendRendTaskForOpticsBasic(rq : VWStageOpticsBasic, rrc: RenderRegistryClient) : Unit = {
 		val workaroundStub = rrc.getWorkaroundAppStub
 		val fbCam = workaroundStub.getFlyByCamera
-
+        
 		val mvp = workaroundStub.getPrimaryAppViewPort
 		val senderCallable : Function0[Unit] = () => {
-			prepareIndependentOptics_onRendThrd(fbCam, mvp, rq.moveSpeed, rq.bgColor)
+			prepareIndependentOptics_onRendThrd(workaroundStub, fbCam, mvp, rq.moveSpeed, rq.bgColor)
 		}
 		enqueueJmeCallable(rrc, senderCallable)
 	}
