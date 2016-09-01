@@ -210,7 +210,8 @@ trait PatientSender_BonusStaging extends OuterLogic with OuterCamHelp with Ident
 		val moveSpeed : Int = 25
 		val bgColor = ColorRGBA.Yellow
         val pauseOnLostFocus = false
-		val opticsBasicRq = new VWStageOpticsBasic(moveSpeed, bgColor, pauseOnLostFocus)
+        val dragMouseToRotateCamera = true
+		val opticsBasicRq = new VWStageOpticsBasic(moveSpeed, bgColor, pauseOnLostFocus, dragMouseToRotateCamera)
 		stageTeller.tellCPMsg(opticsBasicRq)
 
 		val emuBonusRq = new VWStageEmulateBonusContentAndCams()

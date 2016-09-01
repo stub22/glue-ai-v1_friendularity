@@ -153,15 +153,16 @@ trait DummyContentLogic extends VarargsLogging with EnqHlp {
 }
 trait BasicOpticsLogic extends VarargsLogging with EnqHlp {
 	def prepareIndependentOptics_onRendThrd(workaroundStub: WorkaroundAppStub, flyCam: FlyByCamera, mainViewPort: ViewPort,
-											moveSpeed : Int, bgColor: ColorRGBA): Unit = {
+											moveSpeed : Int, bgColor: ColorRGBA, pauseOnLostFocus: Boolean, dragMouseToRotateCamera : Boolean): Unit = {
 
 		info2("prepareOpticsStage1: setting flyCam speed to {}, and background color to {}",
 			moveSpeed : Integer, bgColor)
 		// Sets the speed of our POV camera movement.  The default is pretty slow.
 		flyCam.setMoveSpeed(moveSpeed)
+		flyCam.setDragToRotate(dragMouseToRotateCamera)
         
 		mainViewPort.setBackgroundColor(bgColor)
-        workaroundStub.setPauseOnLostFocus(false)
+        workaroundStub.setPauseOnLostFocus(pauseOnLostFocus)
 	}
 	def sendRendTaskForOpticsBasic(rq : VWStageOpticsBasic, rrc: RenderRegistryClient) : Unit = {
 		val workaroundStub = rrc.getWorkaroundAppStub
@@ -169,7 +170,7 @@ trait BasicOpticsLogic extends VarargsLogging with EnqHlp {
         
 		val mvp = workaroundStub.getPrimaryAppViewPort
 		val senderCallable : Function0[Unit] = () => {
-			prepareIndependentOptics_onRendThrd(workaroundStub, fbCam, mvp, rq.moveSpeed, rq.bgColor)
+			prepareIndependentOptics_onRendThrd(workaroundStub, fbCam, mvp, rq.moveSpeed, rq.bgColor, rq.pauseOnLostFocus, rq.dragMouseToRotateCamera)
 		}
 		enqueueJmeCallable(rrc, senderCallable)
 	}
