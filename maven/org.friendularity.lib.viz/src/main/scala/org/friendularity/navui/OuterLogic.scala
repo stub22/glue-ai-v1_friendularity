@@ -35,7 +35,7 @@ import org.friendularity.vwimpl.{OverlayPage, IdentHlp, VWorldMasterFactory}
 
 import scala.collection.immutable.HashMap
 
-import org.friendularity.vwmsg.{VWOverlayRq, VWSetupOvlBookRq, NavCmdImpl, NavCmdKeyClkBind, NavCmd, InnerNavCmds, VWorldPublicTellers, VWSCR_Node, VWBindCamNodeRq, VWCreateCamAndViewportRq, CamStateParams3D, CamState3D, ViewportDesc, ShapeManipRqImpl, SmooveManipEndingImpl, TransformParams3D, VWBodySkeletonDisplayToggle, VWBroadcastToAllBodies, VWClearAllShapes, VWStageResetToDefault, VWKeymapBinding_Medial, OrdinaryParams3D, VWSCR_Sphere, VWStageOpticsBasic, VWSCR_CellGrid, VWStageEmulateBonusContentAndCams, VWBodyLifeRq, VWRqTAWrapImpl, VWTARqTurtle}
+import org.friendularity.vwmsg.{KnownShapeCreateRqImpl, VWSCR_MeshyCmpnd, VWOverlayRq, VWSetupOvlBookRq, NavCmdImpl, NavCmdKeyClkBind, NavCmd, InnerNavCmds, VWorldPublicTellers, VWSCR_Node, VWBindCamNodeRq, VWCreateCamAndViewportRq, CamStateParams3D, CamState3D, ViewportDesc, ShapeManipRqImpl, SmooveManipEndingImpl, TransformParams3D, VWBodySkeletonDisplayToggle, VWBroadcastToAllBodies, VWClearAllShapes, VWStageResetToDefault, VWKeymapBinding_Medial, OrdinaryParams3D, VWSCR_Sphere, VWStageOpticsBasic, VWSCR_CellGrid, VWStageEmulateBonusContentAndCams, VWBodyLifeRq, VWRqTAWrapImpl, VWTARqTurtle}
 
 
 /**
@@ -107,9 +107,12 @@ trait FunWithShapes extends IdentHlp {
 		val spherePos = new Vector3f(-15.0f, 12.0f, 4.0f) // biggish dirigible
 		val sphereRot = Quaternion.IDENTITY
 		val sphereParams = new OrdinaryParams3D(spherePos, sphereRot, Vector3f.UNIT_XYZ, sphereCol)
+		val msgPart_sphereDesc = new VWSCR_Sphere(9.0f, sphereParams)
 		val knownSphereID_opt : Option[Ident] = Some(makeStampyRandyIdentAnon())
-		val rq_makeSphere = new VWSCR_Sphere(9.0f, sphereParams, knownSphereID_opt)
-		shapeTeller.tellCPMsg(rq_makeSphere)
+		val parentID_opt = None
+		val msgPart_known = new KnownShapeCreateRqImpl(knownSphereID_opt, parentID_opt)
+		val sphereCmpndReq = new VWSCR_MeshyCmpnd(msgPart_known, msgPart_sphereDesc)
+		shapeTeller.tellCPMsg(sphereCmpndReq)
 		knownSphereID_opt.get
 	}
 	def makeArbXform() : TransformParams3D = {
@@ -150,7 +153,7 @@ trait PatientSender_GoodyTest extends OuterLogic with FunWithShapes with GoodyTe
 				info1("Sending goody tst msgs to: {}", goodyTeller.get)
 				finallySendGoodyTstMsgs(goodyTeller.get, useTurtleSerialization)
 			} else {
-				debug0("Skipping internal goody-msg test")
+				debug0("Skipping internal goody-msg test; note that goodies may instead be sent from ClientTestMsgSender, or other clients: AMQP | akka")
 			}
 		} else {
 			warn0("GoodyTeller is not available, cannot send goody tst msgs.")

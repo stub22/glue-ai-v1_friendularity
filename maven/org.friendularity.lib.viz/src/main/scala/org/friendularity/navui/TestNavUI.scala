@@ -47,7 +47,7 @@ import org.friendularity.vwimpl.IdentHlp
 import org.friendularity.vwmsg.{PartialTransform3D, MaybeTransform3D, VWTAMsgMaker}
 
 /**
-  * Created by Owner on 4/1/2016.
+  * Created by Stub22 on 4/1/2016.
   */
 object TestNavUI extends VarargsLogging {
 
@@ -109,8 +109,9 @@ object TestNavUI extends VarargsLogging {
 	val myFlag_addPhonyClient = true
 	private def maybeLaunchPhonyClient: Unit = {
 		if (myFlag_addPhonyClient) {
-			val clientTestSender = new ClientTestMsgSender()
-			clientTestSender.startTestThread(20000, 2000)
+			val (doSinbadMoves, doExtraCam, doGoodyPile) = (true, true, true)
+			val clientTestSender = new ClientTestMsgSender(3000, 2000, doSinbadMoves, doExtraCam, doGoodyPile)
+			clientTestSender.startTestThread
 		}
 	}
 	private def launchOldGoodyRenderTestApp : Unit = {

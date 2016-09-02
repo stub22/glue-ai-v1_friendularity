@@ -79,10 +79,11 @@ trait VWorldBossLogic [VWSM <: VWorldSysMgr] extends VarargsLogging with VWPTRen
 		info1("Got setup result (lesser) ingredients: {}", lesserIngred)
 		val rrc : RenderRegistryClient = lesserIngred.getRendRegClient
 		val winStatMon : WindowStatusMonitor = lesserIngred.getWindowStatusMonitor
-		val bgc : BasicGoodyCtx = new BasicGoodyCtxImpl(rrc, winStatMon)
+		// val oldStyleBGC : BasicGoodyCtx = new BasicGoodyCtxImpl(rrc, winStatMon)
+		val betterBGC = new BetterBGC(rrc, winStatMon)
 		val sysMgr = getSysMgr
 
-		val goodyActorRef = VWorldActorFactoryFuncs.makeVWGoodyActor(localActorCtx, "googoo", bgc)
+		val goodyActorRef = VWorldActorFactoryFuncs.makeVWGoodyActor(localActorCtx, "googoo", betterBGC)
 		val goodyTeller = new ActorRefCPMsgTeller[VWRqTAWrapper](goodyActorRef)
 
 		val pmrc = bmi.getPMRC

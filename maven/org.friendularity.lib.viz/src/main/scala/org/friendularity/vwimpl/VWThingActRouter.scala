@@ -39,16 +39,21 @@ trait TARqExtractorHelp {
 	import scala.collection.JavaConverters._
 	def extractXform (tvm : TypedValueMap, gax : GoodyActionExtractor) : MaybeTransform3D = {
 		val allKeys : Set[Ident] = tvm.iterateKeys().asScala.toSet
+		// We assume that presence or absence of a single coordinate indicates that part of
+		// each transform: Location, Rotation, Scale.
+		// Location
 		val loc_opt : Option[Vector3f] = {
 			if(allKeys.contains(GoodyNames.LOCATION_X))
 				Option(gax.getLocationVec3f)
 			else None
 		}
+		// Rotation
 		val rot_opt : Option[Quaternion] = {
 			if(allKeys.contains(GoodyNames.ROTATION_MAG_DEG))
 				Option(gax.getRotationQuaternion)
 			else None
 		}
+		// Scale
 		val scl_opt : Option[Vector3f] = {
 			if(allKeys.contains(GoodyNames.SCALE_X))
 				Option(gax.getScaleVec3f)
@@ -59,6 +64,7 @@ trait TARqExtractorHelp {
 				} else None
 			}
 		}
+		// "Partial" here indicates that each of the 3 pieces is optional.
 		new PartialTransform3D(loc_opt, rot_opt, scl_opt)
 	}
 	def extractDuration(tvm : TypedValueMap) : Option[JFloat] = Option(tvm.getAsFloat(GoodyNames.TRAVEL_TIME))
@@ -247,8 +253,11 @@ trait VWThingActReqRouterLogic extends VWBodyTARouterLogic with CamTARouterLogic
 			// create/destroy, attach/detach, movement (smooth or abrupt), goody-state changes,
 			// color+transparency changes.
 			// As of 2016-08-28, this message eventually gets handled by
-			// VWGoodyJobLogic, which in turn invokes the old cogchar method:
-			//   goodyCtx.consumeAction(actSpec)
+			// VWGoodyJobLogic (in VWGoody.scala), which in turn invokes the old cogchar method:
+			//   o.c.render.goody.basic.BasicGoodyCtxImpl.consumeAction(actSpec)
+			// That object connection was attached during startup in
+			// VWorldBossLogic.completeBossSetupAndPublish (in VWBoss.scala).
+
 			val directLegacyGoodyTeller = getVWPubTellers.getGoodyDirectTeller
 			directLegacyGoodyTeller.get.tellStrongCPMsg(vwtarq)
 		}

@@ -6,7 +6,7 @@ import org.friendularity.cpmsg.CPStrongTeller
 import org.friendularity.vwmsg.{VWBodyManipRq, AbruptManipAbsImpl, TransformParams3D, VWExoBodyChance, VWBodyRq, VWBodyNotice}
 
 /**
-  * Created by Owner on 6/18/2016.
+  * Created by StuB22 on 6/18/2016.
   */
 trait BodyTestClient extends VarargsLogging {
 	def makeEmptyExoBodyUserLogic : ExoBodyUserLogic = new  ExoBodyUserLogic() {
