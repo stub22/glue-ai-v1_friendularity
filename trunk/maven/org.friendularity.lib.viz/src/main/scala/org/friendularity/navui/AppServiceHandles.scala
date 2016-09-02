@@ -102,27 +102,28 @@ trait AppServiceHandleGroup extends KnowsAkkaSys with VarargsLogging {
 	lazy private val statusTickTrigTeller  = OuterJobbyLogic_MasterFactory.makeOoLogicAndTeller(statusTickPumpLogic, myAppAkkaSys, "statusTickPumpSetup")
 
 	// Ask the supplied teller (presumed to be a "boss" teller) to send messages back to all our
-	// interested parties, after the core "public" services are accessible.
-	def registerPostInitWaiters(vbt : CPStrongTeller[VWorldRequest]) : Unit = {
+	// interested parties, after the core "public" services are accessible.  That time could
+	// be right away, or later.   OK to call this anytime to connect to an existing running vworld.
+	def registerPostInitWaiters(bossTeller : CPStrongTeller[VWorldRequest]) : Unit = {
 
 		// Each of these the results of happy startup, to trigger further ops.
 		// The VWPTRendezvous logic makes sure that each such waiter gets notified regardless of message order,
-		// so it is OK to send them after init is already complete (although usually it won't be).
+		// so it is OK to send these after init is already complete (although usually it won't be).
 		val goodyTstRegMsg = new VWARM_FindPublicTellers(goodyTestSenderTrigTeller)
-		debug2("Sending goody-listener--reg={} to VWBossTeller : {}", goodyTstRegMsg, vbt)
-		vbt.tellCPMsg(goodyTstRegMsg)
+		debug2("Sending goody-listener--reg={} to VWBossTeller : {}", goodyTstRegMsg, bossTeller)
+		bossTeller.tellCPMsg(goodyTstRegMsg)
 
 		val charAdmRegMsg = new VWARM_FindPublicTellers(charAdmSenderTrigTeller)
-		debug2("Sending char-admin-listener-reg={} to VWBossTeller : {}", charAdmRegMsg, vbt)
-		vbt.tellCPMsg(charAdmRegMsg)
+		debug2("Sending char-admin-listener-reg={} to VWBossTeller : {}", charAdmRegMsg, bossTeller)
+		bossTeller.tellCPMsg(charAdmRegMsg)
 
 		val bonusStageRegMsg = new VWARM_FindPublicTellers(bonusStagingTrigTeller)
-		debug2("Sending bonusStage-listener-reg={} to VWBossTeller : {}", bonusStageRegMsg, vbt)
-		vbt.tellCPMsg(bonusStageRegMsg)
+		debug2("Sending bonusStage-listener-reg={} to VWBossTeller : {}", bonusStageRegMsg, bossTeller)
+		bossTeller.tellCPMsg(bonusStageRegMsg)
 
 		val tickPumpRegMsg = new VWARM_FindPublicTellers(statusTickTrigTeller)
-		debug2("Sending tickPump-listener-reg={} to VWBossTeller : {}", tickPumpRegMsg, vbt)
-		vbt.tellCPMsg(tickPumpRegMsg)
+		debug2("Sending tickPump-listener-reg={} to VWBossTeller : {}", tickPumpRegMsg, bossTeller)
+		bossTeller.tellCPMsg(tickPumpRegMsg)
 	}
 	// Can't so directly send this yet as  actor msg.  There is a kind of implicit rendezvous going on here
 	// between  the optional MechIO connection, the legacy-repo-based humaConfig, and the launched VWorld actors.

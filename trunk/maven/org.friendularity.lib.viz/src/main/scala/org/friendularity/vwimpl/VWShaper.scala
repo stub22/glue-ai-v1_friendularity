@@ -26,7 +26,7 @@ import org.appdapter.fancy.log.VarargsLogging
 import org.cogchar.render.sys.registry.RenderRegistryClient
 import org.cogchar.render.trial.TextSpatialFactory
 import org.friendularity.respire.Srtw
-import org.friendularity.vwmsg.{VWSCR_ExistingNode, VWSCR_Node, VWShapeManipRq, Transform3D, VWMeshyShapeRq, VWClearAllShapes, VWSCR_Sphere, VWSCR_TextBox, VWShapeCreateRq, VWSCR_CellGrid, VWStageRqMsg}
+import org.friendularity.vwmsg.{TwoPartMeshyShapeRq, VWSCR_ExistingNode, VWSCR_Node, VWShapeManipRq, Transform3D, VWMeshyShapeRq, VWClearAllShapes, VWSCR_Sphere, VWSCR_TextBox, VWShapeCreateRq, VWSCR_CellGrid, VWStageRqMsg}
 
 import scala.collection.mutable
 import scala.util.Random
@@ -97,21 +97,30 @@ trait VWSpatialsForShapes extends PatternGridMaker with SpatMatHelper {
 			case bigGrid : VWSCR_CellGrid => {
 				makeBigGridNode(getTooMuchRRC)
 			}
-			case meshBasedRq : VWMeshyShapeRq => {
-				val mesh: Mesh = meshBasedRq match {
-					case sph: VWSCR_Sphere => {
-						// zSamp, rSamp, radius
-						new Sphere(16, 16, sph.myRadius)
-					}
-
-				}
-				val geomNameArb: String = "geom_from_msg_shape_" + System.currentTimeMillis()
-				val geom = new Geometry(geomNameArb, mesh)
-				applyMat(geom, meshBasedRq)
-				applySpatialTransform(geom, meshBasedRq.getCoreParams3D.get)
+			case twoPartMeshyRq : TwoPartMeshyShapeRq => {
+				val meshDescPart = twoPartMeshyRq.getMeshyDescPart
+				val geom = makeMeshFromDesc(meshDescPart)
 				geom
 			}
+			case meshBasedRq : VWMeshyShapeRq => {
+				makeMeshFromDesc(meshBasedRq)
+			}
 		}
+	}
+	def makeMeshFromDesc(meshBasedRq : VWMeshyShapeRq) : Spatial = {
+		val mesh: Mesh = meshBasedRq match {
+			case sph: VWSCR_Sphere => {
+				// zSamp, rSamp, radius
+				new Sphere(16, 16, sph.myRadius)
+			}
+
+		}
+		val geomNameArb: String = "geom_from_msg_shape_" + System.currentTimeMillis()
+		val geom = new Geometry(geomNameArb, mesh)
+		applyMat(geom, meshBasedRq)
+		applySpatialTransform(geom, meshBasedRq.getCoreParams3D.get)
+		geom
+
 	}
 	def applyMat(geom : Geometry, mshShpRq : VWMeshyShapeRq) : Unit = {
 		val dsc_opt : Option[ColorRGBA] = mshShpRq.getColorParam
@@ -199,11 +208,13 @@ trait VWShaperLogic extends PatternGridMaker with AttachHlp with IdentHlp {
 	}
 	val makeIdentIfMissing : Boolean = true
 
-
+	// makes the spat, attaches IDs as needed, async attaches to parent-node as needed.
 	def makeAndPlace(toMake : VWShapeCreateRq): MadeSpatRec = {
 		val madeSpat : Spatial = myShapeMaker.makeForRq(toMake)
 		val madeSpatRec = registerSpat(madeSpat, toMake)
-		val deferredAttachFunc : Function0[Unit] = () => {attachToParent_onRendThrd(madeSpat, toMake)}
+		val deferredAttachFunc : Function0[Unit] = () => {
+			attachToParent_onRendThrd(madeSpat, toMake)
+		}
 		enqueueJmeCallable(deferredAttachFunc)
 		madeSpatRec
 	}
@@ -237,6 +248,7 @@ trait VWShaperLogic extends PatternGridMaker with AttachHlp with IdentHlp {
 		}
 		madeSpatRec
 	}
+	// Uses node at knownParentID if specified, else attaches to 2D or 3D "root" node.
 	def attachToParent_onRendThrd(madeSpat : Spatial, toMake : VWShapeCreateRq) : Unit = {
 		val knownParentID_opt = toMake.getKnownParentID_opt
 		val knownParentNode_opt : Option[JmeNode] = if (knownParentID_opt.isDefined) {

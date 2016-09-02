@@ -9,7 +9,7 @@ import org.appdapter.core.name.Ident
 import org.cogchar.render.trial.TextSpatialFactory
 
 /**
-  * Created by Owner on 6/22/2016.
+  * Created by Stub22 on 6/22/2016.
   *
   * See both the "shape" and "debug" packages:
   * https://github.com/jMonkeyEngine/jmonkeyengine/tree/master/jme3-core/src/main/java/com/jme3/scene/shape
@@ -74,10 +74,7 @@ object ParamsConstants {
 	val dullestParams = new OrdinaryParams3D(Vector3f.ZERO, Quaternion.IDENTITY, Vector3f.UNIT_XYZ, dullishColor)
 }
 
-trait VWShapeClearRq extends VWContentRq {
-
-}
-
+trait VWShapeClearRq extends VWContentRq
 
 case class VWClearAllShapes() extends VWShapeClearRq
 
@@ -85,20 +82,20 @@ case class VWClearAllShapes() extends VWShapeClearRq
 
 // case class VWCamWrapShapeCreateRq() extends VWShapeCreateRq
 
-case class VWSCR_ExistingNode(existingNode : JmeNode,  nodeID : Ident, knownParentID_opt : Option[Ident])
-			extends VWShapeCreateRq {
-	override def getKnownID_opt : Option[Ident] = Option(nodeID)
+class KnownShapeCreateRqImpl(knownNodeID_opt : Option[Ident], knownParentID_opt : Option[Ident]) extends VWShapeCreateRq {
+	override def getKnownID_opt : Option[Ident] = knownNodeID_opt
+	// We generally allow but don't require a parentID.
 	override def getKnownParentID_opt : Option[Ident] = knownParentID_opt
 }
 
+case class VWSCR_ExistingNode(existingNode : JmeNode,  nodeID : Ident,
+							  knownParentID_opt : Option[Ident])
+			extends KnownShapeCreateRqImpl(Option(nodeID), knownParentID_opt)
 
-case class VWSCR_Node(knownNodeID : Ident, knownParentID_opt : Option[Ident]) extends VWShapeCreateRq {
-	override def getKnownID_opt : Option[Ident] = Option(knownNodeID)
+case class VWSCR_Node(knownNodeID : Ident, knownParentID_opt : Option[Ident])
+			extends KnownShapeCreateRqImpl(Option(knownNodeID), knownParentID_opt) {
+//	override def getKnownID_opt : Option[Ident] = Option(knownNodeID)
 	override def expectEmptySlot : Boolean = true
-
-	// We allow but don't require a parentID.
-	override def getKnownParentID_opt : Option[Ident] = knownParentID_opt
-
 }
 
 trait VWMeshyShapeRq extends VWShapeCreateRq {
@@ -108,21 +105,43 @@ trait VWMeshyShapeRq extends VWShapeCreateRq {
 	def getRotParam : Option[Quaternion] = getCoreParams3D.map(_.getRotQuat)
 }
 
-case class VWSCR_Sphere(myRadius : Float, myCoreParams : CoreParams3D, knownID_opt : Option[Ident]) extends VWMeshyShapeRq {
-	override def getCoreParams3D : Option[CoreParams3D] = Option(myCoreParams)
+trait TwoPartMeshyShapeRq extends VWShapeCreateRq with VWMeshyShapeRq  {
+	def getKnownIdentsPart : VWShapeCreateRq
+	def getMeshyDescPart : VWMeshyShapeRq
 
-	override def getKnownID_opt : Option[Ident] = knownID_opt
+	override def getKnownID_opt  = getKnownIdentsPart.getKnownID_opt
+	override def getKnownParentID_opt  = getKnownIdentsPart.getKnownParentID_opt
+
+	override def getCoreParams3D = getMeshyDescPart.getCoreParams3D
+	override def getColorParam = getMeshyDescPart.getColorParam
+	override def getPosParam  = getMeshyDescPart.getPosParam
+	override def getRotParam  = getMeshyDescPart.getRotParam
+
+}
+case class VWSCR_MeshyCmpnd(idsPart : VWShapeCreateRq, meshyPart : VWMeshyShapeRq) extends TwoPartMeshyShapeRq {
+	override def getKnownIdentsPart: VWShapeCreateRq = idsPart
+
+	override def getMeshyDescPart: VWMeshyShapeRq = meshyPart
 }
 
-trait VWSCR_Box extends VWMeshyShapeRq
+case class VWSCR_Sphere(myRadius : Float, myCoreParams : CoreParams3D) extends VWMeshyShapeRq {
 
-trait VWSCR_Cylinder extends VWMeshyShapeRq
+	override def getCoreParams3D : Option[CoreParams3D] = Option(myCoreParams)
 
-trait VWSCR_Torus extends VWMeshyShapeRq
+}
 
-trait VWSCR_PQTorus extends VWMeshyShapeRq
+// Each of these is the inner-meshy part of a message to create one of the JME3 primitive
+// shape kinds.
 
-trait VWSCR_Quad extends VWMeshyShapeRq
+case class VWSCR_Box() extends VWMeshyShapeRq
+
+case class VWSCR_Cylinder() extends VWMeshyShapeRq
+
+case class VWSCR_Torus() extends VWMeshyShapeRq
+
+case class VWSCR_PQTorus() extends VWMeshyShapeRq
+
+case class VWSCR_Quad() extends VWMeshyShapeRq
 
 case class  VWSCR_TextBox(contentTxt : String) extends VWShapeCreateRq {
 	override def inFlatSpace : Boolean = true
