@@ -20,11 +20,18 @@ import java.awt.Dimension
 
 import akka.actor.{Actor, ActorContext, ActorRef}
 import com.hp.hpl.jena.rdf.model.{Model => JenaModel, ModelFactory => JenaModelFactory}
+import com.jme3.math.{Quaternion, ColorRGBA, Vector3f}
+import com.jme3.scene.{Node => JmeNode}
+import org.appdapter.core.name.Ident
 import org.appdapter.fancy.log.VarargsLogging
 import org.cogchar.api.thing.ThingActionSpec
 import org.cogchar.api.thing.WantsThingAction.ConsumpStatus
-import org.cogchar.render.app.entity.{VWorldEntityReg, VWorldEntity, GoodyActionExtractor}
-import org.cogchar.render.goody.basic.{BasicGoodyCtxImpl, BasicGoodyCtx}
+import org.cogchar.name.goody.GoodyNames
+import org.cogchar.render.app.entity.{CameraBinding, VWorldEntityReg, VWorldEntity, GoodyActionExtractor}
+import org.cogchar.render.goody.basic.{GoodyBox, VirtualFloor, BasicGoodyCtxImpl, BasicGoodyCtx}
+import org.cogchar.render.goody.bit.{TicTacGrid, TicTacMark, BitCube, BitBox}
+import org.cogchar.render.goody.flat.{ParagraphGoody, ScoreBoardGoody, CrossHairGoody}
+import org.cogchar.render.optic.goody.VWorldCameraEntity
 import org.cogchar.render.sys.registry.RenderRegistryClient
 import org.cogchar.render.sys.task.Queuer.QueueingStyle
 import org.cogchar.render.sys.window.WindowStatusMonitor
@@ -48,25 +55,25 @@ import org.friendularity.vwmsg.{VWRqTAWrapper, VWTARqRdf, VWRqTAWrapImpl, VWorld
   *
   * Old BasicGoodyCtx defines these basic capabilities
 
-    RenderRegistryClient getRRC();
-    VWorldEntityReg getVWER();  -- defines addGoody, removeGoody, getGoody, hasGoodyAt, getAllGoodies
-    Dimension getScreenDimension();
-    void applyNewScreenDimension(Dimension var1);
-    ConsumpStatus consumeAction(ThingActionSpec var1);
+  * RenderRegistryClient getRRC();
+  * VWorldEntityReg getVWER();  -- defines addGoody, removeGoody, getGoody, hasGoodyAt, getAllGoodies
+  * Dimension getScreenDimension();
+  * void applyNewScreenDimension(Dimension var1);
+  * ConsumpStatus consumeAction(ThingActionSpec var1);
 
-  While old VWorldEntity defines:
+  * While old VWorldEntity defines:
 
-    public Ident getUri()
+  * public Ident getUri()
 
-    public abstract void setPosition(Vector3f var1, QueueingStyle var2);
-    public void setRotation(Quaternion newRotation, QueueingStyle style)
-    public void setVectorScale(Vector3f scaleVector, QueueingStyle style)
-    public void setUniformScaleFactor(Float scale, QueueingStyle style)
+  * public abstract void setPosition(Vector3f var1, QueueingStyle var2);
+  * public void setRotation(Quaternion newRotation, QueueingStyle style)
+  * public void setVectorScale(Vector3f scaleVector, QueueingStyle style)
+  * public void setUniformScaleFactor(Float scale, QueueingStyle style)
 
-    public abstract void applyAction(GoodyActionExtractor var1, QueueingStyle var2);
-    public void attachToVirtualWorldNode(Node attachmentNode, QueueingStyle style)
-    public void detachFromVirtualWorldNode(QueueingStyle style)
-    public void applyScreenDimension(Dimension screenDimension)
+  * public abstract void applyAction(GoodyActionExtractor var1, QueueingStyle var2);
+  * public void attachToVirtualWorldNode(Node attachmentNode, QueueingStyle style)
+  * public void detachFromVirtualWorldNode(QueueingStyle style)
+  * public void applyScreenDimension(Dimension screenDimension)
 
   */
 
@@ -123,20 +130,130 @@ class VWGoodyActor(myGoodyCtx : BasicGoodyCtx) extends Actor with VWGoodyJobLogi
 	}
 }
 
-class BetterBGC(rrc : RenderRegistryClient, winStatMon : WindowStatusMonitor) extends BasicGoodyCtxImpl(rrc, winStatMon) {
-	override def applyNewScreenDimension(newDimension: Dimension): Unit = {
-		super.applyNewScreenDimension(newDimension)
-	}
+class BetterBGC(rrc : RenderRegistryClient, winStatMon : WindowStatusMonitor)
+			extends BasicGoodyCtxImpl(rrc, winStatMon) {
+	val myVargler = new VarargsLogging {}
 
-	override def consumeAction(actionSpec: ThingActionSpec): ConsumpStatus = {
-		super.consumeAction(actionSpec)
-	}
+//	def finishSetup(): Unit = {
+//		setupAsMainGoodyCtx
+//	}
+	override protected def createByAction(ga: GoodyActionExtractor): VWorldEntity = {
+		var novGoody: VWorldEntity = null
 
-	override def getVWER: VWorldEntityReg = {
-		super.getVWER
-	}
-
-	override def createAndAttachByAction(ga: GoodyActionExtractor, qStyle: QueueingStyle): VWorldEntity = {
-		super.createAndAttachByAction(ga, qStyle)
+		if (ga.getKind eq GoodyActionExtractor.Kind.CREATE) {
+			try {
+				var scaleVec: Vector3f = ga.getScaleVec3f
+				val scaleUniform: java.lang.Float = ga.getScaleUniform
+				if ((scaleVec == null) && (scaleUniform != null)) {
+					scaleVec = new Vector3f(scaleUniform, scaleUniform, scaleUniform)
+				}
+				val locVec: Vector3f = ga.getLocationVec3f
+				val rotQuat: Quaternion = ga.getRotationQuaternion
+				val goodyID: Ident = ga.getGoodyID
+				val goodyType: Ident = ga.getType
+				val gcolor: ColorRGBA = ga.getColor
+				val goodyText: String = ga.getText
+				val bitBoxState: Boolean = ga.getSpecialBoolean(GoodyNames.BOOLEAN_STATE)
+				val isAnO: Boolean = ga.getSpecialBoolean(GoodyNames.USE_O)
+				val rowCount: Integer = ga.getSpecialInteger(GoodyNames.ROWS)
+				val bgc: BasicGoodyCtx = this
+				myVargler.info1("BetterBGC seeking match for goodyType={}", goodyType)
+				if (GoodyNames.TYPE_BIT_BOX == goodyType) {
+					novGoody = new BitBox(bgc, goodyID, locVec, rotQuat, scaleVec, bitBoxState)
+				}
+				else if (GoodyNames.TYPE_BIT_CUBE == goodyType) {
+					novGoody = new BitCube(bgc, goodyID, locVec, rotQuat, scaleVec, bitBoxState)
+				}
+				else if (GoodyNames.TYPE_FLOOR == goodyType) {
+					novGoody = new VirtualFloor(bgc, ga.getGoodyID, locVec, gcolor, true)
+				}
+				else if (GoodyNames.TYPE_TICTAC_MARK == goodyType) {
+					novGoody = new TicTacMark(bgc, goodyID, locVec, rotQuat, scaleVec, isAnO)
+				}
+				else if (GoodyNames.TYPE_TICTAC_GRID == goodyType) {
+					novGoody = new TicTacGrid(bgc, goodyID, locVec, rotQuat, gcolor, scaleVec)
+				}
+				else if (GoodyNames.TYPE_BOX == goodyType) {
+					novGoody = new GoodyBox(bgc, goodyID, locVec, rotQuat, gcolor, scaleVec)
+				}
+				else if (GoodyNames.TYPE_CROSSHAIR == goodyType) {
+					novGoody = new CrossHairGoody(bgc, goodyID, locVec, scaleUniform)
+				}
+				else if (GoodyNames.TYPE_SCOREBOARD == goodyType) {
+					val sizeVec: Array[java.lang.Float] = ga.getSizeVec3D
+					val sizeX: Float = sizeVec(0)
+					val rowHeight: Float = sizeX
+					val textSize: Float = scaleUniform
+					getLogger.info("Scoreboard row count=" + rowCount + ", rowHeight=" + rowHeight + ", textSize=" + textSize + ", locVec=" + locVec)
+					novGoody = new ScoreBoardGoody(bgc, goodyID, locVec, rowHeight, rowCount, textSize)
+				}
+				else if (GoodyNames.TYPE_TEXT == goodyType) {
+					novGoody = new ParagraphGoody(bgc, goodyID, locVec, scaleVec.getX, gcolor, goodyText)
+				}
+				else {
+					myVargler.warn1("Did not recognize requested goody type for creation: {}", ga.getType)
+				}
+			}
+			catch {
+				case e: Exception => {
+					myVargler.error2("Error attempting to create goody {}", ga.getGoodyID, e)
+				}
+			}
+		}
+		else {
+			myVargler.warn1("GoodyFactory received request to add a goody, but the GoodyAction kind was not CREATE! Goody URI: {}", ga.getGoodyID)
+		}
+		novGoody
 	}
 }
+/*
+	override def consumeAction(actionSpec: ThingActionSpec): ConsumpStatus = {
+		getLogger.info("The targetThingType is {}", actionSpec.getTargetThingTypeID)
+		val ga: GoodyActionExtractor = new GoodyActionExtractor(actionSpec)
+		val gid: Ident = ga.getGoodyID
+		val vwer = getVWER
+		var goodyOne: VWorldEntity = vwer.getGoody(gid)
+		val kind: GoodyActionExtractor.Kind = ga.getKind
+		getLogger.info("The kind of Goody inspected is {}", kind)
+
+		if (kind != null) {
+			ga.getKind match {
+				case GoodyActionExtractor.Kind.CREATE => {
+					if (vwer.hasGoodyAt(gid)) {
+						getLogger.warn("Goody already created! Ignoring additional creation request for goody: {}", gid)
+					}
+					else {
+						goodyOne = createAndAttachByAction(ga, QueueingStyle.QUEUE_AND_RETURN)
+						if (goodyOne != null) {
+							vwer.addGoody(goodyOne)
+							return ConsumpStatus.USED
+						}
+					}
+
+				}
+				case GoodyActionExtractor.Kind.DELETE => {
+					if (!vwer.hasGoodyAt(gid)) {
+						myVargler.warn1("Could not delete goody because it does not exist: {}", gid)
+					}
+					else {
+						vwer.removeGoody(goodyOne)
+						return ConsumpStatus.USED
+					}
+
+				}
+				case _ => {
+					try {
+						goodyOne.applyAction(ga, QueueingStyle.QUEUE_AND_RETURN)
+						return ConsumpStatus.USED
+					}
+					catch {
+						case e: Exception => {
+							myVargler.warn2("Problem attempting to update goody with URI: {}", gid, e)
+						}
+					}
+				}
+			}
+		}
+		return ConsumpStatus.IGNORED
+	}
+*/

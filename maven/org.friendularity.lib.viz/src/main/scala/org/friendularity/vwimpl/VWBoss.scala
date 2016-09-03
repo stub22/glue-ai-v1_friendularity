@@ -81,9 +81,11 @@ trait VWorldBossLogic [VWSM <: VWorldSysMgr] extends VarargsLogging with VWPTRen
 		val winStatMon : WindowStatusMonitor = lesserIngred.getWindowStatusMonitor
 		// val oldStyleBGC : BasicGoodyCtx = new BasicGoodyCtxImpl(rrc, winStatMon)
 		val betterBGC = new BetterBGC(rrc, winStatMon)
+		val eitherBGC : BasicGoodyCtx = betterBGC
+		eitherBGC.setupAsMainGoodyCtx
 		val sysMgr = getSysMgr
 
-		val goodyActorRef = VWorldActorFactoryFuncs.makeVWGoodyActor(localActorCtx, "googoo", betterBGC)
+		val goodyActorRef = VWorldActorFactoryFuncs.makeVWGoodyActor(localActorCtx, "googoo", eitherBGC)
 		val goodyTeller = new ActorRefCPMsgTeller[VWRqTAWrapper](goodyActorRef)
 
 		val pmrc = bmi.getPMRC

@@ -197,10 +197,6 @@ trait VWShaperLogic extends PatternGridMaker with AttachHlp with IdentHlp {
 		for (madeRec <- myMadeSpatRecsByID.values) {
 			val madeSpat = madeRec.mySpat
 			val removed = madeSpat.removeFromParent()
-//			val parentNode = madeSpat.getParent()
-//			if (parentNode != null) {
-//				parentNode.detachChild(madeSpat)
-//			}
 		}
 		myMadeSpatRecsByID.clear()
 		myTopDeepNode.detachAllChildren()
@@ -208,7 +204,7 @@ trait VWShaperLogic extends PatternGridMaker with AttachHlp with IdentHlp {
 	}
 	val makeIdentIfMissing : Boolean = true
 
-	// makes the spat, attaches IDs as needed, async attaches to parent-node as needed.
+	// makes the spat, attaches IDs as needed, defers attachment to parent-node as needed.
 	def makeAndPlace(toMake : VWShapeCreateRq): MadeSpatRec = {
 		val madeSpat : Spatial = myShapeMaker.makeForRq(toMake)
 		val madeSpatRec = registerSpat(madeSpat, toMake)
