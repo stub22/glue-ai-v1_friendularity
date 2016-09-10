@@ -41,10 +41,10 @@ import org.cogchar.render.model.humanoid.{VWorldHumanoidFigureEntity, HumanoidFi
 import org.cogchar.render.rendtest.{GoodyTestMsgMaker, GoodyRenderTestApp}
 import org.cogchar.render.sys.goody.GoodyRenderRegistryClient
 import org.friendularity.netcli.vwta.ClientTestMsgSender
-import org.friendularity.qpc.OffersVWorldClient
+
 import org.friendularity.raiz.{VizappLegacyLoaderFactory, VizappProfileLoaderFactory, TestRaizLoad}
 import org.friendularity.vwimpl.IdentHlp
-import org.friendularity.vwmsg.{PartialTransform3D, MaybeTransform3D, VWTAMsgMaker}
+import org.friendularity.vwmsg.{PartialTransform3D, MaybeTransform3D}
 
 /**
   * Created by Stub22 on 4/1/2016.

@@ -27,7 +27,7 @@ import org.cogchar.render.sys.registry.RenderRegistryClient
 import org.friendularity.cpmsg.{ActorRefCPMsgTeller, CPStrongTeller}
 
 import org.friendularity.rbody.{DualBodyHelper, DualBodyRecord}
-import org.friendularity.vwmsg.{VWBodyNoticeImpl, VWBodyFindRq, ManipDesc, VWBodyManipRq, VWBroadcastToAllBodies, VWBodySkeletonDisplayToggle, VWBodyLifeRq, VWBodyMakeRq, VWBodyNotice, VWBodyRq}
+import org.friendularity.vwmsg.{VWBodyDangerYogaRq, VWBodyNoticeImpl, VWBodyFindRq, ManipDesc, VWBodyManipRq, VWBroadcastToAllBodies, VWBodySkeletonDisplayToggle, VWBodyLifeRq, VWBodyMakeRq, VWBodyNotice, VWBodyRq}
 
 import scala.collection.mutable
 
@@ -127,6 +127,10 @@ trait VWBodyLogic extends FullEnqHlp with VarargsLogging {
 				val fig = bodyRec.humaFig
 				val func = () => {fig.toggleDebugSkeleton_onSceneThread}
 				enqueueJmeCallable(func)
+			}
+			case dangerYogaRq : VWBodyDangerYogaRq => {
+				info1("Starting danger-yoga motion [expected to work ONLY in OSGi apps as of 2016-09-09] for body={}", bodyRec)
+
 			}
 			case manipWrap : VWBodyManipRq => {
 				myBodyManipRqCnt += 1

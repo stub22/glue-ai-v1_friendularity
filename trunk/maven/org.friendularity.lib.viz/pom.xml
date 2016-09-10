@@ -17,10 +17,19 @@
 			<groupId>org.cogchar</groupId>
 			<artifactId>org.cogchar.bundle.render.opengl</artifactId>
 		</dependency>
+
+        <!--  The only class we still need from here is VWorldRoboPump,
+        for bone-joint-angle data.  Now making new replacement in VWRoboBoneStatePump.scala  -->
         <dependency>
             <groupId>org.cogchar</groupId>
             <artifactId>org.cogchar.bundle.app.vworld.startup</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>org.cogchar</groupId>
+            <artifactId>org.cogchar.bundle.bind.mechio</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>org.friendularity.bundle.jvision</artifactId>

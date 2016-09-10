@@ -14,7 +14,7 @@ import org.friendularity.vwmsg.{VWBodyNotice, VWBodyRq}
 import org.osgi.framework.BundleContext
 
 /**
-  * Created by Owner on 6/16/2016.
+  * Created by Stub22 on 6/16/2016.
   */
 class LegacyBodyLoader_Stateless extends VarargsLogging {
 	// Yet STILL a semi-old way of producing body conf (from legacy-style repo), but no longer buried under the PUMA.

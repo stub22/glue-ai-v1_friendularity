@@ -1,7 +1,7 @@
 package org.friendularity.respire
 
 import java.util.{ArrayList, Map}
-
+/*
 import akka.actor.ActorContext
 import com.hp.hpl.jena.rdf.model.Model
 import org.appdapter.core.name.{FreeIdent, Ident}
@@ -24,9 +24,6 @@ import org.osgi.framework.BundleContext
 
 import java.util.{Map => JMap, ArrayList => JArrayList}
 import com.hp.hpl.jena.rdf.model.{Model => JenaModel}
-/**
-  * Created by Owner on 6/16/2016.
-  */
 
 trait EmulateVintageLaunch extends VarargsLogging {
 	// Keys from   org.cogchar.bundle.app.vworld.central.VWorldMapperLifecycle
@@ -218,3 +215,4 @@ case class VintageBodyIngredImpl(pcMediator: PumaContextMediator,
 }
 
 // case class InterimBodyIngredImpl()
+*/

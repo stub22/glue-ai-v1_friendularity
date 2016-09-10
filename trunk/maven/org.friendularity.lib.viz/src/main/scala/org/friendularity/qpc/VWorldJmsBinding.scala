@@ -22,6 +22,7 @@ import javax.jms.{Destination => JMSDestination, Message => JMSMsg, MessageConsu
 		MessageListener => JMSMsgListener, MessageProducer => JMSMsgProducer, ObjectMessage => JMSObjMsg,
 		Session => JMSSession, TextMessage => JMSTextMsg}
 
+import org.friendularity.netcli.vwta.ThingActSenderQPid
 import org.friendularity.thact.ThingActSender
 
 
@@ -56,27 +57,6 @@ trait KnowsVWTARqDestinations extends KnowsDestMgr  {
 trait KnowsVWPubStatDestinations extends KnowsDestMgr  {
 	lazy val destForVWPubStatsBin : JMSDestination = getJmsDestMgr.getDestForTopicName(VWorldAmqpDestNames.topicName_forVWPubStatJSerBin)
 }
-// TODO:  Add Knows...Producers intf
-trait MakesVWTARqProducers extends KnowsVWTARqDestinations {
-	private lazy val myJmsSession = getJmsDestMgr.getJmsSession
 
-	def getFlagUnified : Boolean = true
 
-	private lazy val myProdForUni : JMSMsgProducer = myJmsSession.createProducer(destVWRqTAUni)
-
-	private lazy val myProdForTurtle : JMSMsgProducer = if (getFlagUnified) myProdForUni else myJmsSession.createProducer(destVWRqTATxt)
-	private lazy val myProdForJSer : JMSMsgProducer = if (getFlagUnified) myProdForUni else myJmsSession.createProducer(destVWRqTABin)
-
-	protected val myGenSender : ThingActSender = new ThingActSenderQPid(myJmsSession, myProdForJSer, None, myProdForTurtle, None)
-	val ENCODE_NO_PREF = myGenSender.NO_PREFERENCE
-	val ENCODE_PREF_BIN = myGenSender.PREFER_JAVA_SER
-	val ENCODE_PREF_TRT = myGenSender.PREFER_TURTLE_SER
-}
-
-trait MakesVWPubStatConsumers extends KnowsVWPubStatDestinations {
-	private lazy val myJmsSession = getJmsDestMgr.getJmsSession
-
-	lazy val myConsumer_forVWPubStatBin : JMSMsgConsumer = myJmsSession.createConsumer(destForVWPubStatsBin)
-
-}
 
