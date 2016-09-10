@@ -134,23 +134,20 @@ class BetterBGC(rrc : RenderRegistryClient, winStatMon : WindowStatusMonitor)
 			extends BasicGoodyCtxImpl(rrc, winStatMon) {
 	val myVargler = new VarargsLogging {}
 
-//	def finishSetup(): Unit = {
-//		setupAsMainGoodyCtx
-//	}
 	override protected def createByAction(ga: GoodyActionExtractor): VWorldEntity = {
 		var novGoody: VWorldEntity = null
 
 		if (ga.getKind eq GoodyActionExtractor.Kind.CREATE) {
 			try {
+				val goodyID: Ident = ga.getGoodyID
+				val goodyType: Ident = ga.getType
+				val locVec: Vector3f = ga.getLocationVec3f
+				val rotQuat: Quaternion = ga.getRotationQuaternion
 				var scaleVec: Vector3f = ga.getScaleVec3f
 				val scaleUniform: java.lang.Float = ga.getScaleUniform
 				if ((scaleVec == null) && (scaleUniform != null)) {
 					scaleVec = new Vector3f(scaleUniform, scaleUniform, scaleUniform)
 				}
-				val locVec: Vector3f = ga.getLocationVec3f
-				val rotQuat: Quaternion = ga.getRotationQuaternion
-				val goodyID: Ident = ga.getGoodyID
-				val goodyType: Ident = ga.getType
 				val gcolor: ColorRGBA = ga.getColor
 				val goodyText: String = ga.getText
 				val bitBoxState: Boolean = ga.getSpecialBoolean(GoodyNames.BOOLEAN_STATE)

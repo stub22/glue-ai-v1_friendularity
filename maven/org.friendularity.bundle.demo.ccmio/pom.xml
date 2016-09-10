@@ -62,7 +62,11 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!-- Next two ar used only when we boot in old(2014) compat mode.  Can be removed soon. -->
+        <!-- Next three are used only when we boot in old(2014) compat mode.  -->
+        <dependency>
+            <groupId>org.cogchar</groupId>
+            <artifactId>org.cogchar.bundle.app.vworld.startup</artifactId>
+        </dependency>
         <dependency>
 			<groupId>org.cogchar</groupId>
 			<artifactId>org.cogchar.bundle.app.puma</artifactId>

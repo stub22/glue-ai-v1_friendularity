@@ -23,11 +23,14 @@ import org.cogchar.api.thing.ThingActionSpec
   * Created by Stub22 on 8/6/2016.
   */
 
-// To be used on client side where they may not have CPump awareness
-trait ThingActSender extends VarargsLogging {
+trait TAEncodePrefs {
 	val NO_PREFERENCE : Integer = 0
 	val PREFER_JAVA_SER : Integer = 1
 	val PREFER_TURTLE_SER : Integer = 2
+}
+
+// To be used on client side where they may not have CPump awareness
+trait ThingActSender extends TAEncodePrefs with  VarargsLogging {
 
 	def supportsJavaSer : Boolean = false
 	def supportsTurtleSer : Boolean = false

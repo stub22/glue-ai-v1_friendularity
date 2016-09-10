@@ -135,6 +135,7 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 			throw new RuntimeException("launchCcmioDemo cannot read profile from classpath containing " + myProfileMarkerClz);
 		}
 
+		// This loader is currently used for both 2014 and 2016 launch styles.
 		VizappLegacyLoader legacyLoader = VizappLegacyLoaderFactory.makeDlftOSGiLegacyLoader(myLegConfMarkerClz);
 
 		if (myFlag_launchQpidBroker) {

@@ -35,7 +35,7 @@ import org.friendularity.vwimpl.{OverlayPage, IdentHlp, VWorldMasterFactory}
 
 import scala.collection.immutable.HashMap
 
-import org.friendularity.vwmsg.{KnownShapeCreateRqImpl, VWSCR_MeshyCmpnd, VWOverlayRq, VWSetupOvlBookRq, NavCmdImpl, NavCmdKeyClkBind, NavCmd, InnerNavCmds, VWorldPublicTellers, VWSCR_Node, VWBindCamNodeRq, VWCreateCamAndViewportRq, CamStateParams3D, CamState3D, ViewportDesc, ShapeManipRqImpl, SmooveManipEndingImpl, TransformParams3D, VWBodySkeletonDisplayToggle, VWBroadcastToAllBodies, VWClearAllShapes, VWStageResetToDefault, VWKeymapBinding_Medial, OrdinaryParams3D, VWSCR_Sphere, VWStageOpticsBasic, VWSCR_CellGrid, VWStageEmulateBonusContentAndCams, VWBodyLifeRq, VWRqTAWrapImpl, VWTARqTurtle}
+import org.friendularity.vwmsg.{VWBodyDangerYogaRq, KnownShapeCreateRqImpl, VWSCR_MeshyCmpnd, VWOverlayRq, VWSetupOvlBookRq, NavCmdImpl, NavCmdKeyClkBind, NavCmd, InnerNavCmds, VWorldPublicTellers, VWSCR_Node, VWBindCamNodeRq, VWCreateCamAndViewportRq, CamStateParams3D, CamState3D, ViewportDesc, ShapeManipRqImpl, SmooveManipEndingImpl, TransformParams3D, VWBodySkeletonDisplayToggle, VWBroadcastToAllBodies, VWClearAllShapes, VWStageResetToDefault, VWKeymapBinding_Medial, OrdinaryParams3D, VWSCR_Sphere, VWStageOpticsBasic, VWSCR_CellGrid, VWStageEmulateBonusContentAndCams, VWBodyLifeRq, VWRqTAWrapImpl, VWTARqTurtle}
 
 
 /**
@@ -246,6 +246,12 @@ trait PatientSender_BonusStaging extends OuterLogic with OuterCamHelp with Ident
 		val brdcstRq = new VWBroadcastToAllBodies(innerBodyRq)
 		cadmTeller.tellCPMsg(brdcstRq)
 	}
+	def sendBodyYoga(cadmTeller : CPMsgTeller) : Unit = {
+		val innerBodyRq = new VWBodyDangerYogaRq
+		val brdcstRq = new VWBroadcastToAllBodies(innerBodyRq)
+		cadmTeller.tellCPMsg(brdcstRq)
+	}
+
 	// Cmds sent to navTeller
 
 	def setupOverlayBook(vwpt: VWorldPublicTellers) : Unit = {
@@ -278,8 +284,8 @@ trait PatientSender_BonusStaging extends OuterLogic with OuterCamHelp with Ident
 		stageTeller.tellCPMsg(regMsg)
 
 		val funcSkelHiliteToggle = (pt : VWorldPublicTellers) => {sendToggleSkelHilite(pt.getCharAdminTeller.get)}
-
-		val nextMap = Map("F2" -> funcSkelHiliteToggle)
+		val funcBodyYogaTest = (pt : VWorldPublicTellers) => {sendBodyYoga(pt.getCharAdminTeller.get)}
+		val nextMap = Map("F2" -> funcSkelHiliteToggle, "F3" -> funcBodyYogaTest)
 		val regMsg2 = new VWKeymapBinding_Medial(nextMap, vwpt)
 		stageTeller.tellCPMsg(regMsg2)
 

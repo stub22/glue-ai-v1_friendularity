@@ -37,8 +37,15 @@
 			<groupId>${project.groupId}</groupId>
 			<artifactId>org.friendularity.lib.viz</artifactId>
 			<version>${project.version}</version>
+            <!--  We can mark this dep "provided" as soon as its deps on old cogchar puma+vwlaunch
+            bundles are cleaned up.
+            <scope>provided</scope>
+            -->
 		</dependency>
-
+        <dependency>
+            <groupId>org.cogchar</groupId>
+            <artifactId>org.cogchar.bundle.render.opengl</artifactId>
+        </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>org.friendularity.bundle.jvision</artifactId>

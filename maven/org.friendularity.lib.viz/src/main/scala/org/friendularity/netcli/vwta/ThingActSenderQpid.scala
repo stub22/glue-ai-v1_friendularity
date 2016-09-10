@@ -1,13 +1,15 @@
-package org.friendularity.qpc
+package org.friendularity.netcli.vwta
 
 import java.io.{Serializable => JSerializable}
 import java.lang.{Long => JLong}
-import javax.jms.{Destination => JMSDestination, Message => JMSMsg, MessageConsumer => JMSMsgConsumer,
-		MessageListener => JMSMsgListener, MessageProducer => JMSMsgProducer, ObjectMessage => JMSObjMsg,
+import javax.jms.{Destination => JMSDestination, Message => JMSMsg,
+		MessageConsumer => JMSMsgConsumer, MessageListener => JMSMsgListener,
+		MessageProducer => JMSMsgProducer, ObjectMessage => JMSObjMsg,
 		Session => JMSSession, TextMessage => JMSTextMsg}
 
 import org.cogchar.api.thing.ThingActionSpec
-import org.friendularity.thact.{ThingActTurtleEncoder, ThingActSender}
+import org.friendularity.qpc.{DefinedJmsSenderChan, JmsSenderChanImpl, KnowsJmsSession, WritesJmsHeaders}
+import org.friendularity.thact.{ThingActSender, ThingActTurtleEncoder}
 
 /**
   * Created by Stub22 on 8/8/2016.

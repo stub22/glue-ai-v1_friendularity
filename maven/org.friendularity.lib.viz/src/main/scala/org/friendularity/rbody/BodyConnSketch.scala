@@ -11,9 +11,9 @@ import org.appdapter.core.name.Ident
 import org.appdapter.fancy.log.VarargsLogging
 import org.appdapter.fancy.rclient.RepoClient
 import org.cogchar.api.skeleton.config.BoneRobotConfig
-import org.cogchar.app.puma.body.PumaBodyGateway
-import org.cogchar.app.puma.config.BodyHandleRecord
-import org.cogchar.app.puma.registry.ResourceFileCategory
+//import org.cogchar.app.puma.body.PumaBodyGateway
+//import org.cogchar.app.puma.config.BodyHandleRecord
+//import org.cogchar.app.puma.registry.ResourceFileCategory
 import org.cogchar.bind.mio.robot.client.RobotVisemeClient
 import org.cogchar.bind.mio.robot.model.ModelRobot
 import org.cogchar.bind.mio.robot.svc.ModelBlendingRobotServiceContext
@@ -60,6 +60,7 @@ trait BonyRobotInitFuncs extends VarargsLogging {
 							  clsForRKConf: JList[ClassLoader]) : Boolean = {
 
 		// Use this handle to call  .unregister() later, as needed.
+		info1("connectBonyRobotToMio called for conf={}", boneRobotConf)
 		val brcServiceReg = bundleCtx.registerService(classOf[BoneRobotConfig].getName, boneRobotConf, null)
 		mbsrc.makeModelRobotWithBlenderAndFrameSource(boneRobotConf)
 		val bonyRobot : ModelRobot = mbsrc.getRobot
@@ -91,7 +92,7 @@ trait DualBodyInitFuncs extends VarargsLogging {
 
 	def attachBonyRobotToFigure(mbsrc : ModelBlendingRobotServiceContext, figID : Ident, hf : HumanoidFigure): VWorldRoboPump = {
 		val bonyRobot : ModelRobot = mbsrc.getRobot
-		info1("Calling connnectBonyRobotToHumanoidFigure for charID={}", figID)
+		debug1("Calling connectBonyRobotToHumanoidFigure for charID={}", figID)
 
 		val pump: VWorldRoboPump = setupRoboPump(figID, bonyRobot, hf)
 		pump

@@ -33,4 +33,6 @@ case class VWBodyManipRq(manipGuts : ManipDesc) extends VWBodyRq
 
 case class VWBodySkeletonDisplayToggle()  extends VWBodyRq
 
+case class VWBodyDangerYogaRq()  extends VWBodyRq
+
 case class VWBodyAttachCamToBone(cam : Camera, boneName : String) extends VWBodyRq

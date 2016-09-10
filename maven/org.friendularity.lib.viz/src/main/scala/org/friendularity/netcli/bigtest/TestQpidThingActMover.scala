@@ -14,24 +14,18 @@
  *  limitations under the License.
  */
 
-package org.friendularity.qpc
+package org.friendularity.netcli.bigtest
 
 import java.io.{Serializable => JSerializable}
-import java.lang.{Long => JLong, Integer => JInt}
-import javax.jms.{Destination => JMSDestination, Message => JMSMsg, MessageConsumer => JMSMsgConsumer,
-		MessageListener => JMSMsgListener, MessageProducer => JMSMsgProducer, ObjectMessage => JMSObjMsg,
-		Session => JMSSession, TextMessage => JMSTextMsg}
+import java.lang.{Integer => JInt, Long => JLong}
+import javax.jms.{Destination => JMSDestination, Message => JMSMsg, MessageConsumer => JMSMsgConsumer, MessageListener => JMSMsgListener, MessageProducer => JMSMsgProducer, ObjectMessage => JMSObjMsg, Session => JMSSession, TextMessage => JMSTextMsg}
 
-import akka.actor.{Actor, ActorRef, ActorRefFactory, ActorSystem, Props}
+import akka.actor.{ActorRefFactory, ActorSystem}
 import org.appdapter.fancy.log.VarargsLogging
-import org.cogchar.api.thing.ThingActionSpec
-import org.cogchar.render.rendtest.GoodyTestMsgMaker
 import org.friendularity.akact.DummyActorMaker
-import org.friendularity.cpmsg.{ActorRefCPMsgTeller, CPStrongTeller}
-import org.friendularity.netcli.vwta.{DummyGoodySender, TestTAQPidClient}
-
-import org.friendularity.thact.{ThingActReceiverBinary, ThingActReceiverTxt, ThingActSender, ThingActTurtleEncoder}
-import org.friendularity.vwmsg.{VWorldNotice,  VWTARqRdf, VWRqTAWrapImpl, VWTARqTurtle}
+import org.friendularity.cpmsg.ActorRefCPMsgTeller
+import org.friendularity.netcli.vwta.{DummyGoodySender, QPidTATestClient}
+import org.friendularity.qpc.{JmsDestMgr, QPidDestMgrJFlux, QpidConnMgr, QpidConnMgrJFlux, TestTAQpidServer, VWNoticeSender}
 
 /**
   * Created by StuB22 on 6/13/2016.
@@ -78,7 +72,7 @@ object TestQpidThingActMover extends VarargsLogging {
 
 		val clientDestMgr : JmsDestMgr = new QPidDestMgrJFlux(clientConnMgr)
 
-		val client = new TestTAQPidClient(clientDestMgr)
+		val client = new QPidTATestClient(clientDestMgr)
 
 		info0("\nStarting SERVER Conn (listens for TARqs, publishes stat-notices)")
 		srvrConnMgr.startConn

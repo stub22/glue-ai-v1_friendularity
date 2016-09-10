@@ -49,7 +49,6 @@ trait OuterBindNavCmdKeys extends InnerNavCmds {
 		"N" -> NCmd_GO_DOWN,
 		"G" -> NCmd_GO_LEFT,
 		"J" -> NCmd_GO_RIGHT,
-		"B" -> NCmd_GO_RIGHT,
 		"B" -> NCmd_PAG_PREV,
 		"M" -> NCmd_PAG_NEXT
 	)
