@@ -75,7 +75,7 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 	private	boolean		myFlag_connectSwingDebugGUI = false;  // Swing debug code disabled, anyway
 	private boolean		myFlag_monitorLifecycles = true;  // LifeMon window is launched by .start()
 
-	private boolean 	myFlag_useOldLaunchStyle2014 = false;  // USe this flag to switch between 2014 (PUMA) and 2016 (akka) style launch
+	private boolean 	myFlag_useOldLaunchStyle2014 = false;  // Use this flag to switch between 2014 (PUMA) and 2016 (akka) style launch
 	// attach... flag now used only during old launch style 2014
 	public static	boolean		myFlag_attachVizappTChunkRepo = true; // false => uses old vanilla mediator backup
 
@@ -202,6 +202,10 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 		boolean flag_sendTestMovesFromExoUserLogic = true;
 		ExoBodyUserLogic funUserLogic = appSvc.makeFunUserLogic(flag_sendTestMovesFromExoUserLogic);
 		appSvc.requestSemiLegacyBodyConn_OSGi_Sinbad(bundleCtx, akkaSys, elrc, funUserLogic);
+
+		// TODO:  We are currently missing some anim-agent launch stuff.
+		// See commented code-pastes at bottom of VWorldRoboPump.
+
 		getLogger().info("============= 2016 semi-legacy VWorld + Body launcher is done sending messages  ======");
 
 	}
