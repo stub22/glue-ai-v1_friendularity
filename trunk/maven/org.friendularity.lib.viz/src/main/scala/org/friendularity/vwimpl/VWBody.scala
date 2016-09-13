@@ -20,7 +20,10 @@ import akka.actor.{Actor, ActorContext, ActorRef}
 import org.appdapter.core.name.Ident
 import org.appdapter.fancy.log.VarargsLogging
 import org.cogchar.api.humanoid.HumanoidFigureConfig
+import org.cogchar.bind.mio.robot.client.RobotAnimClient.BuiltinAnimKind
+import org.cogchar.bind.mio.robot.client.RobotAnimContext
 import org.cogchar.bind.mio.robot.svc.ModelBlendingRobotServiceContext
+import org.cogchar.bundle.app.vworld.central.VWorldRoboPump
 import org.cogchar.render.model.humanoid.HumanoidFigureManager
 import org.cogchar.render.sys.context.PhysicalModularRenderContext
 import org.cogchar.render.sys.registry.RenderRegistryClient
@@ -57,7 +60,7 @@ trait VWCharMgrJobLogic extends VarargsLogging {
 							mbsrc_opt : Option[ModelBlendingRobotServiceContext]) : DualBodyRecord = {
 		val pmrc = getChrMgrCtx.getRenderCtx
 		val hfm = getChrMgrCtx.getHumaFigMgr
-		val dbr = myHelper.finishDualBodInit(dualBodyID, mbsrc_opt, pmrc, hfm, fullHumaCfg)
+		val dbr : DualBodyRecord = myHelper.finishDualBodInit(dualBodyID, mbsrc_opt, pmrc, hfm, fullHumaCfg)
 		dbr
 	}
 	private val myBTlrsByBodyID = new mutable.HashMap[Ident, CPStrongTeller[VWBodyRq]]()
@@ -67,7 +70,8 @@ trait VWCharMgrJobLogic extends VarargsLogging {
 			case mkVWBody: VWBodyMakeRq => {
 				val vwBodyID = mkVWBody.dualBodyID
 				info2("Processing create-char rq for bodyID={}, rq={}", vwBodyID, mkVWBody)
-				val dbr: DualBodyRecord = createAndBindVWBody(mkVWBody.dualBodyID, mkVWBody.fullHumaCfg, mkVWBody.myMBRoboSvcCtx_opt)
+				val dbr: DualBodyRecord =
+					createAndBindVWBody(mkVWBody.dualBodyID, mkVWBody.fullHumaCfg, mkVWBody.myMBRoboSvcCtx_opt)
 				info1("Finished connecting dual body, now what kind of notices do we want to send?  dbr={}", dbr)
 				val actorName = "bdActr_" + vwBodyID.getLocalName
 				val bodyActor = VWorldActorFactoryFuncs.makeVWBodyActor(localActorCtx, actorName, dbr)
@@ -114,8 +118,7 @@ trait VWBodyLogic extends FullEnqHlp with VarargsLogging {
 	protected def getManipDumpPeriod : Int = 7
 
 	protected def processBodyRq(bodyRq : VWBodyRq, slfActr : ActorRef, localActorCtx : ActorContext): Unit = {
-		val bodyRec = getBodyRec
-
+		val bodyRec : DualBodyRecord = getBodyRec
 
 		bodyRq match {
 			// case moverq : VWBodyMoveRq => {
@@ -130,7 +133,13 @@ trait VWBodyLogic extends FullEnqHlp with VarargsLogging {
 			}
 			case dangerYogaRq : VWBodyDangerYogaRq => {
 				info1("Starting danger-yoga motion [expected to work ONLY in OSGi apps as of 2016-09-09] for body={}", bodyRec)
-
+				val ranimCtx_opt = bodyRec.myRobotAnimCtx_opt
+				if (ranimCtx_opt.isDefined) {
+					val ranimCtx : RobotAnimContext = ranimCtx_opt.get
+					val animKind = BuiltinAnimKind.BAK_DANGER_YOGA
+					info1("Calling playBuiltinAnimNow on animCtx={}", ranimCtx)
+					ranimCtx.playBuiltinAnimNow(animKind)
+				}
 			}
 			case manipWrap : VWBodyManipRq => {
 				myBodyManipRqCnt += 1
@@ -145,6 +154,7 @@ trait VWBodyLogic extends FullEnqHlp with VarargsLogging {
 			}
 		}
 	}
+
 }
 
 class VWBodyActor(dualBodyRec : DualBodyRecord) extends Actor with VWBodyLogic {

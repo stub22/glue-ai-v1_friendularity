@@ -1,7 +1,7 @@
 package org.friendularity.rbody
 
 import java.io.InputStream
-import java.util
+import java.util.{List => JList, ArrayList => JArrayList}
 import java.util.concurrent.{Callable, Future}
 
 import com.jme3.math.Vector3f
@@ -14,10 +14,10 @@ import org.cogchar.api.skeleton.config.BoneRobotConfig
 //import org.cogchar.app.puma.body.PumaBodyGateway
 //import org.cogchar.app.puma.config.BodyHandleRecord
 //import org.cogchar.app.puma.registry.ResourceFileCategory
-import org.cogchar.bind.mio.robot.client.RobotVisemeClient
+import org.cogchar.bind.mio.robot.client.{DirectRobotAnimContext, RobotAnimContext, RobotVisemeClient}
 import org.cogchar.bind.mio.robot.model.ModelRobot
 import org.cogchar.bind.mio.robot.svc.ModelBlendingRobotServiceContext
-import org.cogchar.blob.emit.RenderConfigEmitter
+import org.cogchar.blob.emit.{BehaviorConfigEmitter, RenderConfigEmitter}
 import org.cogchar.bundle.app.vworld.central.VWorldRoboPump
 import org.cogchar.platform.util.ClassLoaderUtils
 import org.cogchar.render.app.humanoid.HumanoidRenderContext
@@ -113,7 +113,7 @@ class DualBodyHelper() extends HumaFigureInitFuncs with DualBodyInitFuncs {
 
 		info1("******* ********************** Finished attaching bony robot and human figure for dualBodyID={}", dualBodyID)
 		val rrc =  pmrc.getRenderRegistryClient
-		new DualBodyRecord(dualBodyID, hfConf, humaFig, vwRoboPump_opt, rrc)
+		new DualBodyRecord(dualBodyID, hfConf, humaFig, vwRoboPump_opt, rrc, mbsrc_opt)
 	}
 }
 trait JmeQueueClient {
@@ -126,15 +126,33 @@ trait JmeQueueClient {
 	}
 
 }
+trait SetupRobotAnimCtx {
+
+	def connectDirectRoboAnimCtx(agentID : Ident, rsc : ModelBlendingRobotServiceContext,
+								 clsForConf : JList[ClassLoader],
+								 behavCE : BehaviorConfigEmitter ) : DirectRobotAnimContext = {
+		val animOutTrigChanID : Ident = agentID
+		val drac = new DirectRobotAnimContext(animOutTrigChanID, behavCE, rsc);
+		// Setup classLoaders used to load animations
+		drac.setResourceClassLoaders(clsForConf);
+		drac
+	}
+}
+
 case class DualBodyRecord(dualBodyID: Ident, hfConf  : HumanoidFigureConfig,
 						  humaFig: HumanoidFigure, vwRoboPump_opt : Option[VWorldRoboPump],
-						  rrc : RenderRegistryClient ) extends JmeQueueClient with Manipable {
+						  rrc : RenderRegistryClient,  mbsrc_opt : Option[ModelBlendingRobotServiceContext] )
+			extends JmeQueueClient with Manipable with SetupRobotAnimCtx {
 
 	override def getRenderTaskScheduler : CogcharRenderSchedule = rrc.getWorkaroundAppStub
 
 	// Called an orphan because it is not part of a 2012-2014 entity-space
 	lazy val myOrphanEntity = new VWorldHumanoidFigureEntity(rrc, hfConf.getFigureID, humaFig)
 
+	lazy val myRobotAnimCtx_opt : Option[RobotAnimContext] = mbsrc_opt.map(mbsrc => {
+		val clsForConf : JList[ClassLoader] = new JArrayList[ClassLoader]()
+		connectDirectRoboAnimCtx(dualBodyID, mbsrc, clsForConf, null)
+	})
 	def moveVWBody_usingEntity(x : Float, y : Float, z : Float) : Unit = {
 		val posVec3f = new Vector3f(x, y, z)
 		myOrphanEntity.setPosition(posVec3f, QueueingStyle.QUEUE_AND_RETURN)
