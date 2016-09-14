@@ -5,6 +5,7 @@ import org.appdapter.fancy.rclient.EnhancedLocalRepoClient;
 import org.appdapter.osgi.core.BundleActivatorBase;
 import org.cogchar.bind.symja.MathGate;
 import org.friendularity.api.west.WorldEstimate;
+import org.friendularity.bundle.headless.animation.AnimServiceLauncher;
 import org.friendularity.bundle.qpid_broker_wrap.QPidBrokerLauncher;
 import org.friendularity.navui.ExoBodyUserLogic;
 import org.friendularity.navui.NavUiAppImpl;
@@ -13,6 +14,8 @@ import org.friendularity.navui.NavUiAppSvc;
 import org.friendularity.old.ccmio.OldLaunchHelper;
 // import org.friendularity.raiz.TestSetupLoader;
 import org.friendularity.qpc.OffersVWorldServer;
+import org.friendularity.qpc.QpidConnMgr;
+import org.friendularity.qpc.QpidConnMgrJFlux;
 import org.friendularity.raiz.VizappLegacyLoader;
 import org.friendularity.raiz.VizappLegacyLoaderFactory;
 import org.friendularity.raiz.VizappProfileLoader;
@@ -25,6 +28,8 @@ import org.rwshop.swing.common.lifecycle.ServicesFrame;
 import org.friendularity.raiz.TestRaizLoad;
 
 import com.hp.hpl.jena.rdf.model.Model;
+
+import javax.jms.Connection;
 
 // import org.cogchar.test.symcalc.ScriptEngineExperiment;
 // import org.mechio.ui.swing.common.lifecycle.ServicesFrame;
@@ -164,7 +169,7 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 				WbrstServerTest.launchTestSvcs(akkaSys);
 			}
 
-		}
+			}
 		getLogger().info("============ Calling launchCPumpService() ==========");
 		launchCPumpService(bundleCtx);
 		// getLogger().info("============ Calling launchMechioRemoteClientConns_UNUSED() ==========");
@@ -206,6 +211,8 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 		// TODO:  We are currently missing some anim-agent launch stuff.
 		// See commented code-pastes at bottom of VWorldRoboPump.
 
+		launchMechioAnimHelper(bundleCtx);
+
 		getLogger().info("============= 2016 semi-legacy VWorld + Body launcher is done sending messages  ======");
 
 	}
@@ -215,6 +222,18 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 		nuiApp.sendSetupMsgs_Async();
 		return nuiApp;
 	}
+	private void launchMechioAnimHelper(BundleContext bundleCtx) {
+		QpidConnMgr qcm = new QpidConnMgrJFlux();
+		qcm.startConn();
+		Connection qpidConn = qcm.getJmsConnection();
+
+		String animPlayerID = "Sinbad";
+		getLogger().info("Got dedicated MechIO-helper qpidConn={}", qpidConn);
+		getLogger().info("========== Launching anim services for animPlayerID={}", animPlayerID);
+		AnimServiceLauncher.launchServices(bundleCtx, qpidConn, animPlayerID);
+	}
+
+
 
 	private CCMIO_CPumpHelper myCPumpHelper = new CCMIO_CPumpHelper();
 
