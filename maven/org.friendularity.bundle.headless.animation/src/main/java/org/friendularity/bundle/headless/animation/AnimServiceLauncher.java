@@ -30,6 +30,9 @@ import javax.jms.Connection;
  * launch only occurs once.
  *
  * Will need some refinement if we want to support multiple robots/characters or multiple anim-players.
+ *
+ * TODO:  Clarify what this class is doing!
+ *
  */
 public class AnimServiceLauncher extends BasicDebugger {
 	private final static Logger theLogger = getLoggerForClass(AnimServiceLauncher.class);
@@ -62,7 +65,7 @@ public class AnimServiceLauncher extends BasicDebugger {
 
 	public void doLaunchServices(BundleContext context, Connection qpidConn, String animPlayerID) throws Throwable {
 		connectAnimation(context, qpidConn);
-		launchRemotePlayer(context, PLAYER_ID, ANIM_RECEIVER_ID,
+		launchRemotePlayer(context, animPlayerID, ANIM_RECEIVER_ID,
 				SIGNAL_SENDER_ID, CONNECTION_ID, ANIM_DEST_ID);
 		AnimationPlayerHostLifecycle animPlayerHostLcyc = new AnimationPlayerHostLifecycle(animPlayerID, ANIM_RECEIVER_ID, SIGNAL_SENDER_ID);
 		OSGiComponent<AnimationPlayerHostLifecycle> osgiComp = new OSGiComponent(context, animPlayerHostLcyc);
