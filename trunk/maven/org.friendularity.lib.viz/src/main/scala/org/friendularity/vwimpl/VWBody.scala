@@ -17,11 +17,15 @@
 package org.friendularity.vwimpl
 
 import akka.actor.{Actor, ActorContext, ActorRef}
+
+import java.lang.{Integer => JInt, Long => JLong}
+import java.util.{List => JList}
 import org.appdapter.core.name.Ident
 import org.appdapter.fancy.log.VarargsLogging
 import org.cogchar.api.humanoid.HumanoidFigureConfig
 import org.cogchar.bind.mio.robot.client.RobotAnimClient.BuiltinAnimKind
-import org.cogchar.bind.mio.robot.client.RobotAnimContext
+import org.cogchar.bind.mio.robot.client.{RobotAnimClient, RobotAnimContext}
+import org.cogchar.bind.mio.robot.model.ModelRobot
 import org.cogchar.bind.mio.robot.svc.ModelBlendingRobotServiceContext
 import org.cogchar.bundle.app.vworld.central.VWorldRoboPump
 import org.cogchar.render.model.humanoid.HumanoidFigureManager
@@ -29,8 +33,9 @@ import org.cogchar.render.sys.context.PhysicalModularRenderContext
 import org.cogchar.render.sys.registry.RenderRegistryClient
 import org.friendularity.cpmsg.{ActorRefCPMsgTeller, CPStrongTeller}
 
-import org.friendularity.rbody.{DualBodyHelper, DualBodyRecord}
+import org.friendularity.rbody.{EnhRobotAnimContext, DualBodyHelper, DualBodyRecord}
 import org.friendularity.vwmsg.{VWBodyDangerYogaRq, VWBodyNoticeImpl, VWBodyFindRq, ManipDesc, VWBodyManipRq, VWBroadcastToAllBodies, VWBodySkeletonDisplayToggle, VWBodyLifeRq, VWBodyMakeRq, VWBodyNotice, VWBodyRq}
+import org.mechio.api.animation.{Channel, Animation}
 
 import scala.collection.mutable
 
@@ -117,6 +122,8 @@ trait VWBodyLogic extends FullEnqHlp with VarargsLogging {
 	var myBodyManipRqCnt : Int = 0
 	protected def getManipDumpPeriod : Int = 7
 
+	import scala.collection.JavaConverters._
+
 	protected def processBodyRq(bodyRq : VWBodyRq, slfActr : ActorRef, localActorCtx : ActorContext): Unit = {
 		val bodyRec : DualBodyRecord = getBodyRec
 
@@ -136,9 +143,22 @@ trait VWBodyLogic extends FullEnqHlp with VarargsLogging {
 				val ranimCtx_opt = bodyRec.myRobotAnimCtx_opt
 				if (ranimCtx_opt.isDefined) {
 					val ranimCtx : RobotAnimContext = ranimCtx_opt.get
+					val enhRanimCtx : EnhRobotAnimContext = ranimCtx.asInstanceOf[EnhRobotAnimContext]
 					val animKind = BuiltinAnimKind.BAK_DANGER_YOGA
-					info1("Calling playBuiltinAnimNow on animCtx={}", ranimCtx)
-					ranimCtx.playBuiltinAnimNow(animKind)
+					// info1("Calling playBuiltinAnimNow on animCtx={}", ranimCtx)
+					// ranimCtx.playBuiltinAnimNow(animKind)
+					val modelRobot : ModelRobot = enhRanimCtx.getRobot
+					val animCli : RobotAnimClient = enhRanimCtx.getAnimClient
+					val builtinAnim : Animation = animCli.makeBuiltinAnim(animKind, modelRobot);
+					val chanList : JList[Channel] = builtinAnim.getChannels
+					info2("Made builtin anim of length={} with channels={}", builtinAnim.getLength : JLong, chanList)
+					for (c <- chanList.asScala.toList) {
+						val chan : Channel = c
+						info2("Chan id={} has name={}", chan.getId, chan.getName)
+					}
+					info1("Anim.toString = {}", builtinAnim)
+					val job = enhRanimCtx.startFullAnimationNow(builtinAnim)
+					info1("Started animation, job={}", job)
 				}
 			}
 			case manipWrap : VWBodyManipRq => {

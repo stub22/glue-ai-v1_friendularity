@@ -14,7 +14,7 @@ import org.cogchar.api.skeleton.config.BoneRobotConfig
 //import org.cogchar.app.puma.body.PumaBodyGateway
 //import org.cogchar.app.puma.config.BodyHandleRecord
 //import org.cogchar.app.puma.registry.ResourceFileCategory
-import org.cogchar.bind.mio.robot.client.{DirectRobotAnimContext, RobotAnimContext, RobotVisemeClient}
+import org.cogchar.bind.mio.robot.client.{RobotAnimClient, DirectRobotAnimContext, RobotAnimContext, RobotVisemeClient}
 import org.cogchar.bind.mio.robot.model.ModelRobot
 import org.cogchar.bind.mio.robot.svc.ModelBlendingRobotServiceContext
 import org.cogchar.blob.emit.{BehaviorConfigEmitter, RenderConfigEmitter}
@@ -126,13 +126,19 @@ trait JmeQueueClient {
 	}
 
 }
+class EnhRobotAnimContext(animOutChanID : Ident, behavCE : BehaviorConfigEmitter,
+						  robotSvcContext : ModelBlendingRobotServiceContext)
+			extends  DirectRobotAnimContext(animOutChanID, behavCE, robotSvcContext) {
+	def getAnimClient : RobotAnimClient = myAnimClient
+	def getRobot : ModelRobot = getModelRobot
+}
 trait SetupRobotAnimCtx {
 
 	def connectDirectRoboAnimCtx(agentID : Ident, rsc : ModelBlendingRobotServiceContext,
 								 clsForConf : JList[ClassLoader],
-								 behavCE : BehaviorConfigEmitter ) : DirectRobotAnimContext = {
+								 behavCE : BehaviorConfigEmitter ) : EnhRobotAnimContext = {
 		val animOutTrigChanID : Ident = agentID
-		val drac = new DirectRobotAnimContext(animOutTrigChanID, behavCE, rsc);
+		val drac = new EnhRobotAnimContext(animOutTrigChanID, behavCE, rsc)
 		// Setup classLoaders used to load animations
 		drac.setResourceClassLoaders(clsForConf);
 		drac
