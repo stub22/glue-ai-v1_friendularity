@@ -162,7 +162,7 @@ class BetterBGC(rrc : RenderRegistryClient, winStatMon : WindowStatusMonitor)
 					novGoody = new BitCube(bgc, goodyID, locVec, rotQuat, scaleVec, bitBoxState)
 				}
 				else if (GoodyNames.TYPE_FLOOR == goodyType) {
-					novGoody = new VirtualFloor(bgc, ga.getGoodyID, locVec, gcolor, true)
+					novGoody = new VirtualFloor(bgc, goodyID, locVec, gcolor, true)
 				}
 				else if (GoodyNames.TYPE_TICTAC_MARK == goodyType) {
 					novGoody = new TicTacMark(bgc, goodyID, locVec, rotQuat, scaleVec, isAnO)
