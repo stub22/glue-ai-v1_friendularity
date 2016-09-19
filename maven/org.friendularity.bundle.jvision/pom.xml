@@ -102,14 +102,41 @@
 							native/win_x64/opencv_videostab246.dll;
 							osname=win32;
                             processor=x86-64,
+
+							native/win_x64/opencv_calib3d246.dll;
+							native/win_x64/opencv_contrib246.dll;
+							native/win_x64/opencv_core246.dll;
+							native/win_x64/opencv_features2d246.dll;
+							native/win_x64/opencv_ffmpeg246_64.dll;
+							native/win_x64/opencv_flann246.dll;
+							native/win_x64/opencv_gpu246.dll;
+							native/win_x64/opencv_highgui246.dll;
+							native/win_x64/opencv_imgproc246.dll;
+							native/win_x64/opencv_java246.dll;
+							native/win_x64/opencv_legacy246.dll;
+							native/win_x64/opencv_ml246.dll;
+							native/win_x64/opencv_nonfree246.dll;
+							native/win_x64/opencv_objdetect246.dll;
+							native/win_x64/opencv_ocl246.dll;
+							native/win_x64/opencv_photo246.dll;
+							native/win_x64/opencv_stitching246.dll;
+							native/win_x64/opencv_superres246.dll;
+							native/win_x64/opencv_ts246.dll;
+							native/win_x64/opencv_video246.dll;
+							native/win_x64/opencv_videostab246.dll;
+							osname=win10;
+                            processor=x86-64,
+
                             native/linux_x86/libopencv_java247.so;
                             native/linux_x86/cv2.so;
                             osname=linux;
                             processor=x86,
+
                             native/linux_x64/libopencv_java246.so;
                             native/linux_x64/cv2.so;
                             osname=linux;
                             processor=x86-64,
+
                             native/linux_arm/libopencv_java246.so;
                             osname=linux;
                             processor=arm
