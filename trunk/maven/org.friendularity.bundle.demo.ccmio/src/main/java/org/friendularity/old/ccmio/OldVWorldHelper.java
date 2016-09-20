@@ -50,11 +50,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
  * @author Stu B22 <stub22@appstract.com>
  *
- *
- * From 2014 era, performs final setup + content-population tasks for CCMIO demo after the VWorld is launched.
+ * From 2014 era, performs final setup + content-population tasks for CCMIO demo after the
+ * VWorld is launched.
  *
  * This class is instantiated via a lifecycle that depends on the VWorldRegistry being available.
  */

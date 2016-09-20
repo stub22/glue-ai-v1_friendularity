@@ -41,6 +41,8 @@ class LegacyBodyLoader_Stateless extends VarargsLogging {
 		val dualBodyID = partialFigCfg.getFigureID
 		val bci: BodyConnImpl = new BodyConnImpl(bundleCtx, dualBodyID)
 		val legacyRC_hooboy: RepoClient = legacyELRC
+		info3("Calling BodyConnImpl[bunCtx={},bodyID={}].connectBonyRobot_usingOldRC(bGrphID={}, legacyRC=yikes) - \n" +
+					"to make a new ModelBlendingRobotServiceContext", bundleCtx, dualBodyID, bonyGraphID)
 		bci.connectBonyRobot_usingOldRC(bundleCtx, partialFigCfg, bonyGraphID, legacyRC_hooboy)
 		val mbrsc: ModelBlendingRobotServiceContext = bci.getMBRSvcCtx
 		mbrsc
