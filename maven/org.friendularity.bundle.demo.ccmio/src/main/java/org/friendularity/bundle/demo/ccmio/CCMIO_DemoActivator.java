@@ -74,22 +74,35 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 
 	// These flags control feature activation.
 	// TODO: Replace with flag values sourced from profile.
-	public static	boolean		myFlag_connectJVision = true;  	      // Read JNI (JNA?) vision stream
+	public static	boolean		myFlag_connectJVision = false;  	      // Read JNI (JNA?) vision stream
 	private	boolean		myFlag_connectObsoleteNetworkVision = false;  // Read QPid vision streams
 
 	private	boolean		myFlag_connectSwingDebugGUI = false;  // Swing debug code disabled, anyway
-	private boolean		myFlag_monitorLifecycles = true;  // LifeMon window is launched by .start()
+	private boolean		myFlag_monitorLifecycles = false;  // LifeMon window is launched by .start()
 
 	private boolean 	myFlag_useOldLaunchStyle2014 = false;  // Use this flag to switch between 2014 (PUMA) and 2016 (akka) style launch
 	// attach... flag now used only during old launch style 2014
 	public static	boolean		myFlag_attachVizappTChunkRepo = true; // false => uses old vanilla mediator backup
 
+	// 2016-09-20 set to false.  When true, it causes JME animControl to take over the bone state,
+	// which prevents our MechIO ModelRobot from controlling the JME bones.
+	private boolean flag_sendTestMovesFromExoUserLogic = false;
+
 	public static boolean  myFlag_launchQpidBroker = true;
 	public static boolean myFlag_launchVWorldAmqpSvcs = true;
 	public static boolean myFlag_launchCrudeSprayRestSrv = true;
 
-	private Class 		myProfileMarkerClz = TestRaizLoad.class;
-	private Class 		myLegConfMarkerClz = TestRaizLoad.class;
+
+	// We can refer to config in the .vsim bundle that contains these classes
+	// private Class 		myProfileMarkerClz = TestRaizLoad.class;
+	// private Class 		myLegConfMarkerClz = TestRaizLoad.class;
+
+	// Or, if enough OSGi-classpath wiring is in place, we can declare the classes to come from this bundle.
+	// Trying it this way on 2016-09-16 to see if that makes lifecycles happier.
+	// (Thus making them use same classloader as bundleContext arg that is passed around everywhere.)
+
+	private Class 		myProfileMarkerClz = CCMIO_DemoActivator.class;
+	private Class 		myLegConfMarkerClz = CCMIO_DemoActivator.class;
 
 	private OldLaunchHelper myOldLaunchHelper;
 
@@ -169,7 +182,7 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 				WbrstServerTest.launchTestSvcs(akkaSys);
 			}
 
-			}
+		}
 		getLogger().info("============ Calling launchCPumpService() ==========");
 		launchCPumpService(bundleCtx);
 		// getLogger().info("============ Calling launchMechioRemoteClientConns_UNUSED() ==========");
@@ -201,24 +214,26 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 		// are unused.  We really just want the bone mappngs + body mesh-names,
 		// which occupy just a few of these loaded graphs.
 
+		launchMechioAnimHelper(bundleCtx);
+
 		getLogger().info("============= 2016 semi-legacy launcher calling startSemiLegacyBodyConn_OSGi_Sinbad() ======");
+
 		// This method instantiates necessary config objects and outer callback ("bodyNoticer"),
 		// and then enqueues an async request for the char-admin actor.
-		boolean flag_sendTestMovesFromExoUserLogic = true;
+
 		ExoBodyUserLogic funUserLogic = appSvc.makeFunUserLogic(flag_sendTestMovesFromExoUserLogic);
+
 		appSvc.requestSemiLegacyBodyConn_OSGi_Sinbad(bundleCtx, akkaSys, elrc, funUserLogic);
 
 		// TODO:  We are currently missing some anim-agent launch stuff.
 		// See commented code-pastes at bottom of VWorldRoboPump.
-
-		launchMechioAnimHelper(bundleCtx);
 
 		getLogger().info("============= 2016 semi-legacy VWorld + Body launcher is done sending messages  ======");
 
 	}
 	private NavUiAppImpl startVWorldNavUI_2016(BundleContext bundleCtx, ActorSystem akkaSys) {
 		NavUiAppImpl nuiApp = new NavUiAppImpl(akkaSys);
-		getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^  CCMIO_DemoActivator.startVWorldNavUI_2016() created nuiApp={}\n\nNow sending setup msgs", nuiApp);
+		getLogger().info("^^^^^^^^^^^^  CCMIO_DemoActivator.startVWorldNavUI_2016() for bundle={} created nuiApp={}\n\nNow sending setup msgs", bundleCtx.getBundle(), nuiApp);
 		nuiApp.sendSetupMsgs_Async();
 		return nuiApp;
 	}

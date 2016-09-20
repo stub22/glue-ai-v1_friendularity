@@ -32,6 +32,7 @@
             to external services and thus are not needed in our current CCMIO server demo.
             Including them here somewhat confuses the mission of this demo, so we are
             taking them out.
+    -->
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>org.friendularity.bundle.headless.messaging</artifactId>
@@ -42,7 +43,7 @@
             <artifactId>org.friendularity.bundle.headless.speech</artifactId>
             <version>${project.version}</version>
         </dependency>
-        -->
+
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>org.friendularity.bundle.headless.animation</artifactId>
@@ -102,7 +103,8 @@
 						<Bundle-Activator>org.friendularity.bundle.demo.ccmio.CCMIO_DemoActivator</Bundle-Activator>
 
 						<Export-Package>
-							org.friendularity.bundle.demo.ccmio
+							org.friendularity.bundle.demo.ccmio,
+                            org.friendu.tchunk.*
 						</Export-Package>
 
 					</instructions>
