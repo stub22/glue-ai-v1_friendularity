@@ -46,7 +46,7 @@ class ClientTestMsgSender(initDelayMsec : Int, stepDelayMsec : Int, sinbadMoves 
 
 		if (goodyPile) {
 			val dummyGoodySender = new DummyGoodySender {}
-			dummyGoodySender.sendSomeVWRqs(myClient, stepDelayMsec)
+			dummyGoodySender.slowlySendSomeVWRqs(myClient, stepDelayMsec)
 		}
 
 		if (sinbadMoves) {

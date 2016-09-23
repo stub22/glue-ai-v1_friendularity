@@ -82,7 +82,7 @@ object TestQpidThingActMover extends VarargsLogging {
 
 		val dummyGoodySender = new DummyGoodySender {}
 		// We send some messages before the server is listening, to see if it picks them up after listening starts.
-		dummyGoodySender.sendSomeVWRqs(client, 500) // sends a mixture of bin-serial and turtle-txt TAs, which we see receieved in server
+		dummyGoodySender.slowlySendSomeVWRqs(client, 500) // sends a mixture of bin-serial and turtle-txt TAs, which we see receieved in server
 
 		val vwNoticeSender = server.getServerPublishFeature.getVWPubNoticeSender
 		sendSomeVWNotices_Blocking(vwNoticeSender, 25, 450) // Sends bin-serial notices out, which we see received in client
@@ -91,7 +91,7 @@ object TestQpidThingActMover extends VarargsLogging {
 		server.installDumpingListeners()
 		Thread.sleep(2000)
 		info0("\nWoke up and will send some more client msgs.")
-		dummyGoodySender.sendSomeVWRqs(client, 300)
+		dummyGoodySender.slowlySendSomeVWRqs(client, 300)
 	}
 	def sendSomeVWNotices_Blocking(sender : VWNoticeSender, numNotices : Int, sleepIntervMsec : Int) : Unit = {
 		var msgCount = 0

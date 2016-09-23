@@ -168,7 +168,7 @@ trait IdentHlp {
 	}
 }
 
-trait VWShaperLogic extends PatternGridMaker with AttachHlp with IdentHlp {
+trait 	VWShaperLogic extends PatternGridMaker with AttachHlp with IdentHlp {
 
 	protected val myTopDeepNode : JmeNode = {
 		val nodeName = makeStampyRandyString("deep_shape_parent_", noSuffix)
