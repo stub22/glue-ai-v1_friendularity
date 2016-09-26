@@ -63,7 +63,7 @@ trait MakesVWTARqProducers extends KnowsVWTARqDestinations with TAEncodePrefs {
 }
 
 
-	trait DummyGoodySender extends VarargsLogging {
+trait DummyGoodySender extends VarargsLogging {
 	def slowlySendSomeVWRqs(testClient : QPidTATestClient, delayMsec : Int) : Unit = {
 		val gtmm: GoodyTestMsgMaker = new GoodyTestMsgMaker
 		val msgsJList = gtmm.makeGoodyCreationMsgs
