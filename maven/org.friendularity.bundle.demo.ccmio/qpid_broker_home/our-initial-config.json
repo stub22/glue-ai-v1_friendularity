@@ -25,6 +25,7 @@
   "authenticationproviders" : [ {
     "name" : "passwordFile",
     "type" : "PlainPasswordFile",
+	"secureOnlyMechanisms" : [ ],	
     "path" : "${qpid.home_dir}${file.separator}etc${file.separator}passwd",
     "preferencesproviders" : [{
         "name": "fileSystemPreferences",
