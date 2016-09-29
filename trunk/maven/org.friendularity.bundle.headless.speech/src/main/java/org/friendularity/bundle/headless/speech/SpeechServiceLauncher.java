@@ -1,5 +1,7 @@
 package org.friendularity.bundle.headless.speech;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.appdapter.core.log.BasicDebugger;
 import org.jflux.api.core.Adapter;
 import org.jflux.api.core.util.EmptyAdapter;
@@ -47,16 +49,16 @@ public class SpeechServiceLauncher extends BasicDebugger {
 	private final static String REQUEST_SENDER_ID = "speechRequest";
 	private final static String EVENT_RECEIVER_ID = "speechEvent";
 
-	static public boolean theLaunchHasHappened = false;
+    private final static List<String> theLaunchedServiceIDs = new ArrayList<String>();
 
-	public static boolean launchServices(BundleContext bunCtx)  {
-		if (theLaunchHasHappened) {
-			throw new RuntimeException("Duplicate launch of qpid service conns for speech");
+	public static boolean launchServices(BundleContext bunCtx, String robotID)  {
+		if (theLaunchedServiceIDs.contains(robotID)) {
+			throw new RuntimeException("Duplicate launch of qpid service conns for speech with ID=" + robotID);
 		}
 		try {
 			SpeechServiceLauncher launcher = new SpeechServiceLauncher();
-			launcher.doLaunchServices(bunCtx);
-			theLaunchHasHappened = true;
+			launcher.doLaunchServices(bunCtx, robotID);
+			theLaunchedServiceIDs.add(robotID);
 			return true;
 		}	catch (Throwable t) {
 			theLogger.error("Caught exception", t);
@@ -64,17 +66,24 @@ public class SpeechServiceLauncher extends BasicDebugger {
 		}
 
 	}
-	public void doLaunchServices(BundleContext bunCtx) throws Throwable {
+	public void doLaunchServices(BundleContext bunCtx, String robotID) throws Throwable {
 
 		theLogger.info("Launching JMS SpeechService Provider.");
-		launchVisemeNotifier(bunCtx, SPEECH_SERVICE_ID);
+		launchVisemeNotifier(bunCtx, robotID + "_" + SPEECH_SERVICE_ID);
 		launchRemoteClient(bunCtx,
-				SPEECH_SERVICE_ID, SPEECH_SERVICE_ID, CONNECTION_ID,
-				COMMAND_DEST_ID, COMMAND_SENDER_ID,
-				CONFIG_DEST_ID, CONFIG_SENDER_ID,
-				ERROR_DEST_ID, ERROR_RECEIVER_ID,
-				REQUEST_DEST_ID, REQUEST_SENDER_ID,
-				EVENT_DEST_ID, EVENT_RECEIVER_ID);
+				robotID + "_" + SPEECH_SERVICE_ID, 
+                robotID + "_" + SPEECH_SERVICE_ID, 
+                robotID + "_" + CONNECTION_ID,
+				robotID + "_" + COMMAND_DEST_ID, 
+                robotID + "_" + COMMAND_SENDER_ID,
+				robotID + "_" + CONFIG_DEST_ID, 
+                robotID + "_" + CONFIG_SENDER_ID,
+				robotID + "_" + ERROR_DEST_ID, 
+                robotID + "_" + ERROR_RECEIVER_ID,
+				robotID + "_" + REQUEST_DEST_ID, 
+                robotID + "_" + REQUEST_SENDER_ID,
+				robotID + "_" + EVENT_DEST_ID, 
+                robotID + "_" + EVENT_RECEIVER_ID);
 		startSpeechReqLifeComp(bunCtx);
 
 	}
