@@ -133,7 +133,36 @@ class VWGoodyActor(myGoodyCtx : BasicGoodyCtx) extends Actor with VWGoodyJobLogi
 class BetterBGC(rrc : RenderRegistryClient, winStatMon : WindowStatusMonitor)
 			extends BasicGoodyCtxImpl(rrc, winStatMon) {
 	val myVargler = new VarargsLogging {}
+    
+  def getScaleVectorFrom(goodyActionExtractor: GoodyActionExtractor) : Vector3f = {
+    var scaleVec: Vector3f = goodyActionExtractor.getScaleVec3f
+    val scaleUniform: java.lang.Float = goodyActionExtractor.getScaleUniform
+    if ((scaleVec == null) && (scaleUniform != null)) {
+        scaleVec = new Vector3f(scaleUniform, scaleUniform, scaleUniform)
+    }
+    scaleVec
+  }
+  
+  def getScaleUniformFrom(goodyActionExtractor: GoodyActionExtractor) : java.lang.Float = {
+    var scaleUniform: java.lang.Float = goodyActionExtractor.getScaleUniform
+    val scaleVec: Vector3f = goodyActionExtractor.getScaleVec3f
+ 
+    if ((scaleUniform == null) && (scaleVec != null)) {
+      if(java.lang.Float.compare(scaleVec.getX, scaleVec.getY) == 0 && java.lang.Float.compare(scaleVec.getX, scaleVec.getZ) == 0){
+        scaleUniform = scaleVec.getX
+      }else {
+        throw new IllegalStateException("Could not find uniform scale in GoodyActionExtractor.")
+      }
+    }
+    scaleUniform
+  }
 
+  /**
+   * Changed this method to unpack variables only if they are used by the current
+   *  {@link VWorldEntity}. If we don't we get nullPointerExceptions when trying to apply a type
+   * to null values.
+   * - Ben[2016-09-29]
+   */
 	override protected def createByAction(ga: GoodyActionExtractor): VWorldEntity = {
 		var novGoody: VWorldEntity = null
 
@@ -142,49 +171,61 @@ class BetterBGC(rrc : RenderRegistryClient, winStatMon : WindowStatusMonitor)
 				val goodyID: Ident = ga.getGoodyID
 				val goodyType: Ident = ga.getType
 				val locVec: Vector3f = ga.getLocationVec3f
-				val rotQuat: Quaternion = ga.getRotationQuaternion
-				var scaleVec: Vector3f = ga.getScaleVec3f
-				val scaleUniform: java.lang.Float = ga.getScaleUniform
-				if ((scaleVec == null) && (scaleUniform != null)) {
-					scaleVec = new Vector3f(scaleUniform, scaleUniform, scaleUniform)
-				}
-				val gcolor: ColorRGBA = ga.getColor
-				val goodyText: String = ga.getText
-				val bitBoxState: Boolean = ga.getSpecialBoolean(GoodyNames.BOOLEAN_STATE)
-				val isAnO: Boolean = ga.getSpecialBoolean(GoodyNames.USE_O)
-				val rowCount: Integer = ga.getSpecialInteger(GoodyNames.ROWS)
+						
 				val bgc: BasicGoodyCtx = this
 				myVargler.info1("BetterBGC seeking match for goodyType={}", goodyType)
 				if (GoodyNames.TYPE_BIT_BOX == goodyType) {
-					novGoody = new BitBox(bgc, goodyID, locVec, rotQuat, scaleVec, bitBoxState)
+                  val bitBoxState: Boolean = ga.getSpecialBoolean(GoodyNames.BOOLEAN_STATE)
+                  val rotQuat: Quaternion = ga.getRotationQuaternion
+                  val scaleVec: Vector3f = getScaleVectorFrom(ga)
+                  novGoody = new BitBox(bgc, goodyID, locVec, rotQuat, scaleVec, bitBoxState)
 				}
 				else if (GoodyNames.TYPE_BIT_CUBE == goodyType) {
-					novGoody = new BitCube(bgc, goodyID, locVec, rotQuat, scaleVec, bitBoxState)
+                  val bitBoxState: Boolean = ga.getSpecialBoolean(GoodyNames.BOOLEAN_STATE)
+                  val rotQuat: Quaternion = ga.getRotationQuaternion
+                  val scaleVec: Vector3f = getScaleVectorFrom(ga)
+                  novGoody = new BitCube(bgc, goodyID, locVec, rotQuat, scaleVec, bitBoxState)
 				}
 				else if (GoodyNames.TYPE_FLOOR == goodyType) {
-					novGoody = new VirtualFloor(bgc, goodyID, locVec, gcolor, true)
+                  val gcolor: ColorRGBA = ga.getColor
+                  novGoody = new VirtualFloor(bgc, goodyID, locVec, gcolor, true)
 				}
 				else if (GoodyNames.TYPE_TICTAC_MARK == goodyType) {
-					novGoody = new TicTacMark(bgc, goodyID, locVec, rotQuat, scaleVec, isAnO)
+                  val isAnO: Boolean = ga.getSpecialBoolean(GoodyNames.USE_O)
+                  val rotQuat: Quaternion = ga.getRotationQuaternion
+                  val scaleVec: Vector3f = getScaleVectorFrom(ga)
+                  novGoody = new TicTacMark(bgc, goodyID, locVec, rotQuat, scaleVec, isAnO)
 				}
 				else if (GoodyNames.TYPE_TICTAC_GRID == goodyType) {
-					novGoody = new TicTacGrid(bgc, goodyID, locVec, rotQuat, gcolor, scaleVec)
+                  val rotQuat: Quaternion = ga.getRotationQuaternion
+                  val scaleVec: Vector3f = getScaleVectorFrom(ga)
+                  val gcolor: ColorRGBA = ga.getColor
+                  novGoody = new TicTacGrid(bgc, goodyID, locVec, rotQuat, gcolor, scaleVec)
 				}
 				else if (GoodyNames.TYPE_BOX == goodyType) {
-					novGoody = new GoodyBox(bgc, goodyID, locVec, rotQuat, gcolor, scaleVec)
+                  val rotQuat: Quaternion = ga.getRotationQuaternion
+                  val scaleVec: Vector3f = getScaleVectorFrom(ga)
+                  val gcolor: ColorRGBA = ga.getColor
+                  novGoody = new GoodyBox(bgc, goodyID, locVec, rotQuat, gcolor, scaleVec)
 				}
 				else if (GoodyNames.TYPE_CROSSHAIR == goodyType) {
-					novGoody = new CrossHairGoody(bgc, goodyID, locVec, scaleUniform)
+                  val scaleUniform: java.lang.Float =  getScaleUniformFrom(ga)
+                  novGoody = new CrossHairGoody(bgc, goodyID, locVec, scaleUniform)
 				}
 				else if (GoodyNames.TYPE_SCOREBOARD == goodyType) {
+                    val rowCount: Integer = ga.getSpecialInteger(GoodyNames.ROWS)
 					val sizeVec: Array[java.lang.Float] = ga.getSizeVec3D
 					val sizeX: Float = sizeVec(0)
 					val rowHeight: Float = sizeX
+                    val scaleUniform: java.lang.Float =  getScaleUniformFrom(ga)
 					val textSize: Float = scaleUniform
 					getLogger.info("Scoreboard row count=" + rowCount + ", rowHeight=" + rowHeight + ", textSize=" + textSize + ", locVec=" + locVec)
 					novGoody = new ScoreBoardGoody(bgc, goodyID, locVec, rowHeight, rowCount, textSize)
 				}
 				else if (GoodyNames.TYPE_TEXT == goodyType) {
+                    val goodyText: String = ga.getText
+                    val scaleVec: Vector3f = getScaleVectorFrom(ga)
+                    val gcolor: ColorRGBA = ga.getColor
 					novGoody = new ParagraphGoody(bgc, goodyID, locVec, scaleVec.getX, gcolor, goodyText)
 				}
 				else {
