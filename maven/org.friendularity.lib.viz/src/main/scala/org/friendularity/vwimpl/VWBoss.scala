@@ -63,11 +63,23 @@ trait VWorldBossLogic [VWSM <: VWorldSysMgr] extends VarargsLogging with VWPTRen
 		// TODO:  We want this launch process to call us back with the ingredients chef needs to proceed.
 		// The soonest that *could* happen is *during* JME3.start(), but we would actually prefer it be later,
 		// during isolatedInitTask.
+		if (vwLnchMsg.wrapInSwingCanv) {
+			launchSwingWrappedCanvas(slfActr, localActorCtx)
+		} else {
+			launchBareJmeCanvas(slfActr, localActorCtx)
+		}
+	}
+	private def launchBareJmeCanvas(slfActr : ActorRef,  localActorCtx : ActorContext) : Unit = {
 		val bsim = new SimBalloonAppLauncher {}
 		val resultsTeller = new ActorRefCPMsgTeller(slfActr) // vwLnchMsg.resultsTeller
-		info0("makeSimSpace Calling bsim.setup")
+		info0("launchBareJmeCanvas Calling bsim.setup")
 		bsim.setup(resultsTeller)
-		info0("makeSimSpace END - vworld is now running, but delayed setup jobs may still be running/pending")
+		info0("launchBareJmeCanvas END - vworld is now running, but delayed setup jobs may still be running/pending")
+	}
+	private def launchSwingWrappedCanvas(slfActr : ActorRef,  localActorCtx : ActorContext) : Unit = {
+		val resultsTeller = new ActorRefCPMsgTeller(slfActr)
+		val jdkSwCanvLauncher = new VWJdkAwtCanvasMgr{}
+		jdkSwCanvLauncher.launch(resultsTeller)
 	}
 
 	// Crucial method which wraps the internal setup results handles with a set of public actors,

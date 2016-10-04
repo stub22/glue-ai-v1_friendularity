@@ -17,15 +17,13 @@ case class VWARM_GreetFromPumpAdmin(pumpAdminTeller : CPMsgTeller) extends VWAdm
 case class VWARM_FindPublicTellers(answerTeller: CPStrongTeller[VWorldPublicTellers]) extends VWAdminRqMsg
 
 
-
-// Concept:  Type filtering hooha uses concrete classes.  We expect there will be a case class Msg.
-
 case class VWSetupRq_Conf() extends VWorldRequest // Not being sent as of 2016-06-16
 
-case class VWSetupRq_Lnch() extends VWorldRequest {  // Sent from NuiiApp to VWBoss, as of 2016-06-16
-	// Includes callback-teller hook for result pointers after successful launch
+case class VWSetupRq_Lnch(wrapInSwingCanv : Boolean) extends VWorldRequest {
+	// Sent from NuiiApp to VWBoss, as of 2016-06-16
 }
 
+// Boss eventually sends this response to the answerTeller of each VWARM_FindPublicTellers rcvd.
 case class VWSetupResultsNotice(lesserIngred: LesserIngred,
 								bodyMgrIngred: BodyMgrIngred,
 								updAtchr : UpdateAttacher, tmb_opt : Option[TempMidiBridge]) extends VWorldInternalNotice

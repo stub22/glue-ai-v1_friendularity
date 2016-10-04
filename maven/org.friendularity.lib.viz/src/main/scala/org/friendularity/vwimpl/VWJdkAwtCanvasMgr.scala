@@ -1,23 +1,137 @@
 package org.friendularity.vwimpl
 
+import java.awt.Canvas
+import java.awt.event.{WindowEvent, WindowAdapter, WindowListener}
+import javax.swing.JFrame
+
+import com.jme3.app.SimpleApplication
+import com.jme3.system.{JmeCanvasContext, JmeContext}
+import org.appdapter.fancy.log.VarargsLogging
+import org.cogchar.blob.emit.RenderConfigEmitter
+import org.cogchar.render.gui.bony.{PanelUtils, VirtualCharacterPanel}
+import org.cogchar.render.sys.window.WindowStatusMonitor
+import org.friendularity.cpmsg.CPMsgTeller
+
 /**
   * Created by Stub22 on 9/6/2016.
   */
-trait VWJdkSwingCanvas {
 
+class WrappedSimBalloonApp extends  SimBalloonJmeApp {
+	def doLegacyApplySettings : Unit = {
+		applySettings()
+	}
+	def doHideJmeDebug : Unit = {
+		hideJmonkeyDebugInfo()
+	}
 }
 
-/*
-From Cogchar: VWorldRegistry.java
-    public void initVWorldUnsafe(PumaContextMediator mediator) throws Throwable {
-        String panelKind = mediator.getPanelKind();
+class SimBalloonWindowEventAdapter() extends WindowAdapter with VarargsLogging {
+	override def windowClosed(e: WindowEvent): Unit = {
+		super.windowClosed(e)
+		warn1("Got WindowClosed event: {}", e)
 
-		PumaVirtualWorldMapper vwm = getVWM();
-        HumanoidRenderContext hrc = vwm.initHumanoidRenderContext(panelKind);
-        boolean allowJFrames = mediator.getFlagAllowJFrames();
-        if (allowJFrames) {
-            WindowAdapter winLis = new WindowAdapter() {
-                @Override
+	}
+}
+
+trait VWJdkAwtCanvasMgr extends VarargsLogging {
+
+	def launch(resultsTeller : CPMsgTeller) : Unit = {
+		val sbJmeApp: WrappedSimBalloonApp = makeJmeApp
+
+		sbJmeApp.wireSetupResultsTeller(resultsTeller)
+
+		makePanelForApp(sbJmeApp)
+
+		info0("VWJdkSwingCanvasLauncher.launch calling sbJmeApp.start")
+
+		val flag_blockUntilRunning = true
+
+		// assetManager does not exist until start is called, triggering simpleInit callback.
+
+		sbJmeApp.startCanvas(flag_blockUntilRunning)
+
+		info0("VWJdkSwingCanvasLauncher.launch - END")
+	}
+	def makeJmeApp : WrappedSimBalloonApp = {
+		new WrappedSimBalloonApp
+	}
+	def makePanelForApp(app : WrappedSimBalloonApp) : Unit = {
+		val bce = new RenderConfigEmitter();
+		val panelKind = "SLIM"
+		info1("******************* Initializing VirtualCharacterPanel of kind={} with canvas", panelKind);
+		val vcp : VirtualCharacterPanel  = PanelUtils.makeVCPanel(bce, panelKind);
+		val can = makeAWTCanvas(app, 600, 400)
+		vcp.setRenderCanvas(can)
+		// Old step no longer needed:		getBonyRenderContext().setPanel(vcp);
+
+		// Frame must be packed after panel created, but created before startCanvas.
+		// Additional ancient comment:
+		// If startJMonkey is called first, we often hang in frame.setVisible() as JMonkey tries
+		// to do some magic restart deal that doesn't work as of jme3-alpha4-August_2011.
+		val jf : JFrame  = vcp.makeEnclosingJFrame("VWJdk Swing Canvas");
+
+		// Another old comment, related to OSGi shutdown:
+		// Frame will receive a close event when org.cogchar.bundle.render.opengl is STOPPED
+		// So, that's our attempt to close the window gracefully on app exit (under OSGi).
+
+		// Meanwhile, if someone X-s the window, the optWindowEventListener gets a callback,
+		// which could try to shut down whatever system is running (e.g. OSGi).
+		val winEvtAdapter = new SimBalloonWindowEventAdapter
+
+		jf.addWindowListener(winEvtAdapter)
+	}
+
+	def makeAWTCanvas(app : WrappedSimBalloonApp, width : Int, height : Int)  : Canvas = {
+
+		app.doLegacyApplySettings // Works if called now, but not after createCanvas.
+		app.doHideJmeDebug
+
+		app.createCanvas()
+		// Does not work at this time or subsq:		app.doLegacyApplySettings
+
+		val  ctx : JmeContext = app.getContext();
+
+		val cctx : JmeCanvasContext = ctx.asInstanceOf[JmeCanvasContext];
+		val awtCanvas : Canvas = cctx.getCanvas();
+		awtCanvas.setSize(width, height);
+		return awtCanvas;
+	}
+		/****
+	*theDbg.logInfo("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Value of org.lwjgl.librarypath = " + System.getProperty("org.lwjgl.librarypath"));
+	*theDbg.logInfo("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Forcing lowPermissions during initCharPanelWithCanvas(), to prevent JME3 forcing value into org.lwjgl.librarypath");
+
+	*JmeSystem.setLowPermissions(true);
+	*bvcApp.initCharPanelWithCanvas(vcp);
+	*JmeSystem.setLowPermissions(false);
+
+	*resultBRC = bvcApp.getBonyRenderContext();
+	*theDbg.logInfo("******************* Registering BonyRenderContext as OSGi service");
+	*bundleCtx.registerService(BonyRenderContext.class.getName(), resultBRC, null);
+	*return resultBRC;
+*****/
+}
+trait WinStatusAdapter extends WindowStatusMonitor {  }
+
+/*
+	public String getPanelKind() {
+		return "SLIM";
+	}
+ */
+
+/**********************************
+*From Cogchar: VWorldRegistry.java
+  *public void initVWorldUnsafe(PumaContextMediator mediator) throws Throwable {
+  *String panelKind = mediator.getPanelKind();
+  *
+
+  *PumaVirtualWorldMapper vwm = getVWM();
+  *HumanoidRenderContext hrc = vwm.initHumanoidRenderContext(panelKind);
+  *boolean allowJFrames = mediator.getFlagAllowJFrames();
+  *if (allowJFrames) {
+  *
+  *WindowAdapter winLis = new WindowAdapter() {
+ *
+  *@Override
                 public void windowClosed(WindowEvent e) {
                     getLogger().warn("PumaBooter caught window CLOSED event for OpenGL frame:  {}", e);
                     notifyVWorldWindowClosed();
@@ -230,6 +344,7 @@ RenderBundleUtils.java   (for standalone app see HumanoidPuppetTestMain)
 		// IDE hints may show these symbols (from transitive deps) as undefined, but they should compile OK with maven.
 		theDbg.logInfo("******************* Fetching VerySimpleRegistry");
 
+*/
 		/*
 		theLogger.info("******************* Registering assumed resource bundle with default AssetContext");
 		AssetContext defAssetCtx = RenderRegistryFuncs.findOrMakeAssetContext(null, null);
@@ -237,7 +352,7 @@ RenderBundleUtils.java   (for standalone app see HumanoidPuppetTestMain)
 		defAssetCtx.addAssetSource(null);
 		 *
 		 */
-
+/*
 		theDbg.logInfo("******************* Creating BonyConfigEmitter, HumanoidPuppetApp");
 		// TODO - lookup the sysContextURI from appropriate place.
 		RenderConfigEmitter bce = new RenderConfigEmitter();
@@ -301,12 +416,14 @@ WorkaroundFuncsMustDie.java
 		return makeAWTCanvas(app, settings.getWidth(), settings.getHeight());
 	}
 	public static Canvas makeAWTCanvas(SimpleApplication app, int width, int height) {
+	*/
+
 /* In a silent applet, we might do:
  *         settings.setAudioRenderer(null);
 		 // setLowPermissions has important effects on native libs and classpath resource loading.
         JmeSystem.setLowPermissions(true);
  */
-
+/*
 		// This causes JME ClasspathLocator to use:
 		//							url = ClasspathLocator.class.getResource("/" + name);
         //			instead of		url = Thread.currentThread().getContextClassLoader().getResource(name);

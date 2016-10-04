@@ -87,7 +87,9 @@ object TestNavUI extends VarargsLogging {
 		// info0("^^^^^^^^^^^^^^^^^^^^^^^^  TestNavUI.main() - fetching legacy config graphs")
 		// val legConfERC_opt = nuii.getLegConfERC_opt
 		// info1("^^^^^^^^^^^^^^^^^^^^^^^^  TestNavUI.main() got legConfERC_opt={}", legConfERC_opt)
-		navUiAppImpl.sendSetupMsgs_Async
+
+		val wrapWithSwing : Boolean = true
+		navUiAppImpl.sendSetupMsgs_Async(wrapWithSwing)
 
 		info0("========== TestNavUI.main() starting VW-SERVER qpidConn")
 		navUiAppImpl.startQpidConn
