@@ -234,7 +234,8 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 	private NavUiAppImpl startVWorldNavUI_2016(BundleContext bundleCtx, ActorSystem akkaSys) {
 		NavUiAppImpl nuiApp = new NavUiAppImpl(akkaSys);
 		getLogger().info("^^^^^^^^^^^^  CCMIO_DemoActivator.startVWorldNavUI_2016() for bundle={} created nuiApp={}\n\nNow sending setup msgs", bundleCtx.getBundle(), nuiApp);
-		nuiApp.sendSetupMsgs_Async();
+		boolean flag_wrapWithSwing = true;
+		nuiApp.sendSetupMsgs_Async(flag_wrapWithSwing);
 		return nuiApp;
 	}
 	private void launchMechioAnimHelper(BundleContext bundleCtx) {

@@ -22,7 +22,7 @@ class NavUiAppImpl(myAkkaSys : ActorSystem) extends NavUiAppSvc with NavPumpSpac
 	// Desired effect of these messages is to launch a running OpenGL v-world, ready for characters and other content
 	// to be inserted into it.  Those facilities are available via actors defined in PubTeller replies sent to the
 	// postInitWaiters.
-	def sendSetupMsgs_Async {
+	def sendSetupMsgs_Async(wrapWithSwing : Boolean) {
 		val vbt = getVWBossTeller // triggers creation of Boss Actor + teller
 		sendGreetMsgs_Async(vbt)  // Validates actor messaging, otherwise no significant effect as of 2016-06-16
 
@@ -33,7 +33,7 @@ class NavUiAppImpl(myAkkaSys : ActorSystem) extends NavUiAppSvc with NavPumpSpac
 		// the avatar bodies.
 		// sendVWSetup_Conf()
 
-		sendVWSetup_Lnch() // First and only call that really makes async launch happen, as of 2016-06-17
+		sendVWSetup_Lnch(wrapWithSwing) // First and only call that really makes async launch happen, as of 2016-06-17
 
 		registerPostInitWaiters(vbt) // Setup listeners to do more stuff at appropriate times, as VWorld init completes.
 
@@ -44,8 +44,8 @@ class NavUiAppImpl(myAkkaSys : ActorSystem) extends NavUiAppSvc with NavPumpSpac
 		getVWBossTeller.tellCPMsg(msg)
 	}
 
-	def sendVWSetup_Lnch() : Unit = {
-		val msg = new VWSetupRq_Lnch
+	def sendVWSetup_Lnch(wrapWithSwing : Boolean) : Unit = {
+		val msg = new VWSetupRq_Lnch(wrapWithSwing)
 		getVWBossTeller.tellCPMsg(msg)
 	}
 
