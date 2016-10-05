@@ -20,6 +20,7 @@ import java.util.{Random => JRandom}
 import java.lang.{Long => JLong, Integer => JInt}
 import akka.actor.{ActorSystem, ActorRefFactory, ActorContext, ActorRef}
 import com.jme3.math.{Quaternion, Vector3f, ColorRGBA}
+import org.appdapter.core.name.FreeIdent
 import org.appdapter.core.name.Ident
 import org.appdapter.fancy.log.VarargsLogging
 import org.cogchar.api.fancy.FancyThingModelWriter
@@ -35,8 +36,11 @@ import org.friendularity.vwimpl.{OverlayPage, IdentHlp, VWorldMasterFactory}
 
 import scala.collection.immutable.HashMap
 
-import org.friendularity.vwmsg.{VWBodyDangerYogaRq, KnownShapeCreateRqImpl, VWSCR_MeshyCmpnd, VWOverlayRq, VWSetupOvlBookRq, NavCmdImpl, NavCmdKeyClkBind, NavCmd, InnerNavCmds, VWorldPublicTellers, VWSCR_Node, VWBindCamNodeRq, VWCreateCamAndViewportRq, CamStateParams3D, CamState3D, ViewportDesc, ShapeManipRqImpl, SmooveManipEndingImpl, TransformParams3D, VWBodySkeletonDisplayToggle, VWBroadcastToAllBodies, VWClearAllShapes, VWStageResetToDefault, VWKeymapBinding_Medial, OrdinaryParams3D, VWSCR_Sphere, VWStageOpticsBasic, VWSCR_CellGrid, VWStageEmulateBonusContentAndCams, VWBodyLifeRq, VWRqTAWrapImpl, VWTARqTurtle}
-
+import org.friendularity.vwmsg.{VWBodyDangerYogaRq, KnownShapeCreateRqImpl, VWSCR_MeshyCmpnd, VWOverlayRq, VWSetupOvlBookRq, NavCmdImpl, NavCmdKeyClkBind, NavCmd, InnerNavCmds, VWorldPublicTellers, VWSCR_Node, VWBindCamNodeRq, VWCreateCamAndViewportRq, CamStateParams3D, CamState3D, ViewportDesc, ShapeManipRqImpl, SmooveManipEndingImpl, TransformParams3D, VWBodySkeletonDisplayToggle, VWBroadcastToAllBodies, VWClearAllShapes, VWStageResetToDefault, VWKeymapBinding_Medial, OrdinaryParams3D, VWSCR_Sphere, VWStageOpticsBasic, VWSCR_CellGrid, VWStageEmulateBonusContentAndCams, VWBodyLifeRq, VWRqTAWrapImpl, VWTARqTurtle, VWStatsViewMessage}
+import org.cogchar.impl.thing.fancy.ConcreteTVM
+import org.cogchar.api.vworld.GoodyActionParamWriter
+import org.cogchar.api.thing.SerTypedValueMap;
+import org.cogchar.name.goody.GoodyNames
 
 /**
   * Created by Stu B22 - June 2016
@@ -136,7 +140,21 @@ trait FunWithShapes extends IdentHlp {
 	}
 
 }
-trait PatientSender_GoodyTest extends OuterLogic with FunWithShapes with GoodyTestMsgFun {
+
+/**
+ * Based off of {@link PatientSender_GoodyTest} but without the fun shapes. This is used
+ * in {@link AppServiceHandles} to send Goody messages. 
+ * (ben)[2016-10-04] 
+ */
+trait PatientSender_GoodyRouter extends OuterLogic {
+
+	override def rcvPubTellers (vwpt : VWorldPublicTellers): Unit = {
+		doAllExtraSetup(vwpt)
+	}
+}
+
+trait PatientSender_GoodyTest extends OuterLogic with FunWithShapes with GoodyTestMsgFun
+                                 {
 
 	private var myStoredTellers_opt : Option[VWorldPublicTellers] = None
 
@@ -210,23 +228,34 @@ trait PatientSender_BonusStaging extends OuterLogic with OuterCamHelp with Ident
 	override def rcvPubTellers(vwpt: VWorldPublicTellers): Unit = {
 		val stageTeller = vwpt.getStageTeller.get
 
-		val moveSpeed : Int = 25
-		val bgColor = ColorRGBA.Yellow
+		val moveSpeed : Int = 60
+        val darkBlue : ColorRGBA = new ColorRGBA(0f, 0.1f, 0.35f, 1f)
+        val bgColor = darkBlue
         val pauseOnLostFocus = false
         val dragMouseToRotateCamera = true
-		val opticsBasicRq = new VWStageOpticsBasic(moveSpeed, bgColor, pauseOnLostFocus, dragMouseToRotateCamera)
+        val location: Vector3f = new Vector3f(0f, 40f, 80f)
+        val direction: Vector3f =  new Vector3f(0f, -0.3f, -1f)
+		val opticsBasicRq = new VWStageOpticsBasic(location, direction, moveSpeed, bgColor, pauseOnLostFocus, dragMouseToRotateCamera)
 		stageTeller.tellCPMsg(opticsBasicRq)
-
+        
+        val displayContentStatsOnScreen = false
+        val displayFPSOnScreen = false
+        val displayStatsOnScreenRequest = new VWStatsViewMessage(displayContentStatsOnScreen, displayFPSOnScreen)
+        stageTeller.tellCPMsg(displayStatsOnScreenRequest)
+    
 		val emuBonusRq = new VWStageEmulateBonusContentAndCams()
 	 	stageTeller.tellStrongCPMsg(emuBonusRq)
 
 		setupStatusPumps(vwpt)
 
+        setupFloorGoody(vwpt.getGoodyDirectTeller.get)
+    
 		setupOverlayBook(vwpt)
 
 		setupKeysAndClicks(vwpt)
 
-		sendExtraCameraRqs(stageTeller, vwpt.getShaperTeller.get)
+        // (ben)[2016-10-04]: Removing for avatar release
+//		sendExtraCameraRqs(stageTeller, vwpt.getShaperTeller.get)
 
 		doAllExtraSetup(vwpt)
 	}
@@ -239,6 +268,32 @@ trait PatientSender_BonusStaging extends OuterLogic with OuterCamHelp with Ident
 	def sendClearShaps(shapeTeller : CPMsgTeller) : Unit = {
 		val clrShpsMsg = new VWClearAllShapes
 		shapeTeller.tellCPMsg(clrShpsMsg)
+	}
+    
+  /**
+   * TODO(ben)[2016-10-04]: Move to ttl sheet when we have the time.
+   */
+    def setupFloorGoody(messageTeller : CPMsgTeller) : Unit = {
+        val  paramWriter : GoodyActionParamWriter = new GoodyActionParamWriter(new ConcreteTVM())
+        // Virtual Floors *MUST* have a color and location
+        paramWriter.putColor(0.8f, 0.8f, 0.8f, 1f)
+        paramWriter.putLocation(0f, -0.5f, 0f)
+        val  postedTStampMsec : Long = System.currentTimeMillis()
+        val  valueMap : SerTypedValueMap = paramWriter.getValueMap()
+        val actionInstanceID : Ident = new FreeIdent("urn:ftd:cogchar.org:2012:inst#action_create_default_virtual_floor")
+        val entityID : Ident = new FreeIdent("urn:ftd:cogchar.org:2012:inst#default_virtual_floor")
+        val entityTypeID : Ident = GoodyNames.TYPE_FLOOR
+        val goodyActionVerbID : Ident = GoodyNames.ACTION_CREATE
+        val sourceAgentID : Ident = new FreeIdent("urn:ftd:robosteps.org:2012:inst#agent_outer_logic_setup_floor_goody")
+        
+        val  thingActionSpec : BasicThingActionSpec = new BasicThingActionSpec(actionInstanceID,
+                                                                         entityID,
+                                                                         entityTypeID,
+                                                                         goodyActionVerbID,
+                                                                         sourceAgentID, valueMap,
+                                                                         postedTStampMsec)
+        val vwMsgWrap = new VWRqTAWrapImpl(thingActionSpec)
+        messageTeller.tellCPMsg(vwMsgWrap)
 	}
 
 	def sendToggleSkelHilite(cadmTeller : CPMsgTeller) : Unit = {

@@ -4,6 +4,7 @@ import com.jme3.math.ColorRGBA
 import org.appdapter.core.name.Ident
 import org.friendularity.cpmsg.CPMsgTeller
 import org.friendularity.vwimpl.OverlayPage
+import com.jme3.math.Vector3f
 
 /**
   * Created by Stub22 on 6/16/2016.
@@ -14,7 +15,13 @@ trait VWStageRqMsg extends VWorldRequest
 case class VWStageResetToDefault() extends VWStageRqMsg // Reset all camera + lighting effects to stored defaults
 case class VWStageEmulateBonusContentAndCams() extends VWStageRqMsg
 
-case class VWStageOpticsBasic(moveSpeed : Int, bgColor: ColorRGBA, pauseOnLostFocus : Boolean, dragMouseToRotateCamera: Boolean)  extends VWStageRqMsg
+case class VWStageOpticsBasic(location : Vector3f, direction :Vector3f, moveSpeed : Int, bgColor: ColorRGBA, pauseOnLostFocus : Boolean, dragMouseToRotateCamera: Boolean)  extends VWStageRqMsg
+
+/**
+* @param displayContentStatsOnScreen FrameBuffers, Textures, Shaders, Objects, etc..
+* @param displayFPSOnScreen Show frames per second
+*/
+case class VWStatsViewMessage(displayContentStatsOnScreen: Boolean, displayFPSOnScreen: Boolean)  extends VWStageRqMsg
 
 // JME describes the coords as:   float left, float right, float bottom, float top) {
 case class ViewportDesc(myX1_left : Float, myX2_right : Float, myY1_bot : Float, myY2_top : Float,
