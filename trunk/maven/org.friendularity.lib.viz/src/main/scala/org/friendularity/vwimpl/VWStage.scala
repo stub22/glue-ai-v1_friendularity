@@ -40,7 +40,7 @@ import org.cogchar.render.trial.{PointerCone, TrialCameras, TrialContent}
 import org.friendularity.field.{MsgToStatusSrc, ReportSourceCtrlMsg, ReportingTickChance, MediumFieldDataBag, ItemFieldSpecDirectImpl, VWTestFieldIdents, ReportFilteringPolicy, ItemFieldData, MonitoredSpaceImpl}
 
 import org.friendularity.rbody.DualBodyRecord
-import org.friendularity.vwmsg.{VWSetupOvlBookRq, NavCmd, InnerNavCmds, VWSCR_ExistingNode, CamState3D, ViewportDesc, VWModifyCamStateRq, VWCreateCamAndViewportRq, VWBindCamNodeRq, VWorldPublicTellers, VWKeymapBinding_Medial, VWStageOpticsBasic, VWStageEmulateBonusContentAndCams, VWStageRqMsg, VWBodyRq}
+import org.friendularity.vwmsg.{VWSetupOvlBookRq, NavCmd, InnerNavCmds, VWSCR_ExistingNode, CamState3D, ViewportDesc, VWModifyCamStateRq, VWCreateCamAndViewportRq, VWBindCamNodeRq, VWorldPublicTellers, VWKeymapBinding_Medial, VWStageOpticsBasic, VWStageEmulateBonusContentAndCams, VWStageRqMsg, VWBodyRq, VWStatsViewMessage}
 
 import java.util.concurrent.{Callable => ConcurrentCallable, Future}
 
@@ -153,7 +153,7 @@ trait DummyContentLogic extends VarargsLogging with EnqHlp {
 }
 trait BasicOpticsLogic extends VarargsLogging with EnqHlp {
 	def prepareIndependentOptics_onRendThrd(workaroundStub: WorkaroundAppStub, flyCam: FlyByCamera, mainViewPort: ViewPort,
-											moveSpeed : Int, bgColor: ColorRGBA, pauseOnLostFocus: Boolean, dragMouseToRotateCamera : Boolean): Unit = {
+											location : Vector3f, direction : Vector3f, moveSpeed : Int, bgColor: ColorRGBA, pauseOnLostFocus: Boolean, dragMouseToRotateCamera : Boolean): Unit = {
 
 		info2("prepareOpticsStage1: setting flyCam speed to {}, and background color to {}",
 			moveSpeed : Integer, bgColor)
@@ -161,21 +161,63 @@ trait BasicOpticsLogic extends VarargsLogging with EnqHlp {
 		flyCam.setMoveSpeed(moveSpeed)
 		flyCam.setDragToRotate(dragMouseToRotateCamera)
         
+        setLocationAndRotation(flyCam, location, direction)
+        
 		mainViewPort.setBackgroundColor(bgColor)
         workaroundStub.setPauseOnLostFocus(pauseOnLostFocus)
 	}
+    
+  /**
+   * TODO(ben)[2016-10-05]: Set default location and rotation in a better manner.
+   * This currently uses reflection, which means it could be done better. This is just
+   * a quick hack for a release. 
+   * 
+   * The location and rotation should both be loaded via ttl files in the future as well.
+   */
+    def setLocationAndRotation(flyCam: FlyByCamera, location : Vector3f, direction : Vector3f) : Unit = {
+      try{
+        val camField : java.lang.reflect.Field = flyCam.getClass().getDeclaredField("cam") //NoSuchFieldException
+        camField.setAccessible(true)
+        val camera : Camera = camField.get(flyCam).asInstanceOf[Camera] //IllegalAccessException
+        camera.setLocation(location)
+        camera.lookAtDirection(direction, new Vector3f(0f, 1f, 0f))
+        
+      } catch{
+        case e: NoSuchFieldException => error0("Could not set the camera's location and rotation!")
+        case ex: IllegalAccessException => error0("Could not set the camera's location and rotation!")
+        case _: Exception => error0("Got some other kind of exception")
+      }
+    }
+  
 	def sendRendTaskForOpticsBasic(rq : VWStageOpticsBasic, rrc: RenderRegistryClient) : Unit = {
 		val workaroundStub = rrc.getWorkaroundAppStub
 		val fbCam = workaroundStub.getFlyByCamera
         
 		val mvp = workaroundStub.getPrimaryAppViewPort
 		val senderCallable : Function0[Unit] = () => {
-			prepareIndependentOptics_onRendThrd(workaroundStub, fbCam, mvp, rq.moveSpeed, rq.bgColor, rq.pauseOnLostFocus, rq.dragMouseToRotateCamera)
+			prepareIndependentOptics_onRendThrd(workaroundStub, fbCam, mvp, rq.location, rq.direction, rq.moveSpeed, rq.bgColor, rq.pauseOnLostFocus, rq.dragMouseToRotateCamera)
 		}
 		enqueueJmeCallable(rrc, senderCallable)
 	}
 }
-trait VWStageLogic extends DummyContentLogic with BasicOpticsLogic with VarargsLogging with EnqHlp {
+trait StatsViewLogic extends VarargsLogging with EnqHlp {
+	def setStatsView_onRendThrd(simpleApplication : com.jme3.app.SimpleApplication, displayContentStatsOnScreen: Boolean, displayFPSOnScreen: Boolean): Unit = {
+		info2("setting stats view: setting displayContentStatsOnScreen to {} and displayFPSOnScreen to {}",
+              displayContentStatsOnScreen.toString, displayFPSOnScreen.toString)
+        
+        simpleApplication.setDisplayFps(displayFPSOnScreen)
+        simpleApplication.setDisplayStatView(displayContentStatsOnScreen)
+	}
+	def sendRendTaskForStatsView(rq : VWStatsViewMessage, rrc: RenderRegistryClient) : Unit = {
+        val simpleApplication : com.jme3.app.SimpleApplication = rrc.getJme3AppStateManager(null).getApplication.asInstanceOf[com.jme3.app.SimpleApplication]
+    
+		val senderCallable : Function0[Unit] = () => {
+			setStatsView_onRendThrd(simpleApplication, rq.displayContentStatsOnScreen, rq.displayFPSOnScreen)
+		}
+		enqueueJmeCallable(rrc, senderCallable)
+	}
+}
+trait VWStageLogic extends DummyContentLogic with BasicOpticsLogic with StatsViewLogic with VarargsLogging with EnqHlp {
 
 
 }
@@ -195,6 +237,9 @@ class VWStageActor(myStageCtx : VWStageCtx) extends Actor with VWStageLogic with
 		}
 		case opticsBasicRq :	VWStageOpticsBasic => {
 			sendRendTaskForOpticsBasic(opticsBasicRq, myStageCtx.getRRC)
+		}
+        case statsViewRq :	VWStatsViewMessage => {
+			sendRendTaskForStatsView(statsViewRq, myStageCtx.getRRC)
 		}
 		case keymapMedial : VWKeymapBinding_Medial => {
 			registerKeymap(myStageCtx.getRRC, keymapMedial.inpNamesToActionFuncs, keymapMedial.pubTellers)

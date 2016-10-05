@@ -72,7 +72,10 @@ trait AppServiceHandleGroup extends KnowsAkkaSys with VarargsLogging {
 
 	// Jobby approach to actor launch is used here for our outer actors, experimentally.
 	// Each jobby can subordinately choose to define extraSetupTasks.
-	lazy private val goodyTestSenderLogic = new PatientSender_GoodyTest {
+    // (ben)[2016-10-04]: Is just used as router for goody thing actions
+	lazy private val goodyTestSenderLogic = new PatientSender_GoodyRouter {
+    // Has fun shape object test
+//	lazy private val goodyTestSenderLogic = new PatientSender_GoodyTest { 
 		// Notice how more extra setup tasks could be used in place of some of the OuterJobbyLogics below.
 		override protected def getExtraSetupTasks() : List[ExtraSetupLogic] = List(taRouterSetupLogic)
 	}
@@ -108,7 +111,8 @@ trait AppServiceHandleGroup extends KnowsAkkaSys with VarargsLogging {
 
 		// Each of these the results of happy startup, to trigger further ops.
 		// The VWPTRendezvous logic makes sure that each such waiter gets notified regardless of message order,
-		// so it is OK to send these after init is already complete (although usually it won't be).
+		// so it is OK to send these after init is already complete (although usually it won't be
+        
 		val goodyTstRegMsg = new VWARM_FindPublicTellers(goodyTestSenderTrigTeller)
 		debug2("Sending goody-listener--reg={} to VWBossTeller : {}", goodyTstRegMsg, bossTeller)
 		bossTeller.tellCPMsg(goodyTstRegMsg)

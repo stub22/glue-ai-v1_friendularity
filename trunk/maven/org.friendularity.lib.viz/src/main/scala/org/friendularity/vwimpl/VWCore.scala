@@ -50,6 +50,14 @@ trait SimBalloonAppLauncher extends VarargsLogging {
 	// Generally called on main() thread to do initial app setup.
 	def setup(resultsTeller : CPMsgTeller) : Unit = {
 		mySBApp.wireSetupResultsTeller(resultsTeller)
+        /**
+         * (ben)[2016-10-04]: Disable the on screen displayed settings by default. 
+         * If we need to re-enable them we should use a 
+         * {@link org.friendularity.vwmsg.VWStatsViewMessage}
+         */
+        mySBApp.setDisplayFps(false)
+        mySBApp.setShowSettings(false)
+    
 		// Code copied from TrialBalloon.main
 		info0("^^^^^^^^^^^^^^^^^^^^^^^^  SimBalloonAppLauncher.setup() calling initMidi()")
 		// Initialize any MIDI stuff, so it is available during app wiring, if desired.
