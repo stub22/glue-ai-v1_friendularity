@@ -131,21 +131,21 @@ trait VWBodyTARouterLogic extends TARqExtractorHelp with MakesTransform3D  with 
 		val bodyID = gax.getGoodyID
 		val tvm = ta.getParamTVM
 		val maybeXform : MaybeTransform3D = extractXform(tvm, gax)
-		val dur_opt : Option[JFloat] = extractDuration(tvm)
-
+		
 		val opKind = gax.getKind
 		opKind match {
 			case GoodyActionExtractor.Kind.MOVE => {
+                val dur_opt : Option[JFloat] = extractDuration(tvm)
 				sendMedialVWBodyMoveRq(bodyID, maybeXform, dur_opt, whoDat)
 			}
 			case GoodyActionExtractor.Kind.CREATE => {
 				error1("Cannot create VW-bodies using a TA-Rq.  Are you trying to find a body to command? Failed rq-TA={}", ta)
 			}
 			case GoodyActionExtractor.Kind.SET => {
-
+				sendMedialVWBodyMoveRq(bodyID, maybeXform, Option.empty[JFloat], whoDat)
 			}
 			case GoodyActionExtractor.Kind.DELETE => {
-
+                error1("Cannot delete VW-bodies using a TA-Rq.  Are you trying to find a body to command? Failed rq-TA={}", ta)
 			}
 
 		}
@@ -216,7 +216,9 @@ trait CamTARouterLogic extends TARqExtractorHelp with MakesTransform3D with Oute
 				*/
 			}
 			case GoodyActionExtractor.Kind.SET => {
-
+                info1("Processing cam-set request: {}", ta)
+				val maybeXform : MaybeTransform3D = extractXform(tvm, gax)
+				sentCamMoveRq(spcTeller, camGuideShapeID, maybeXform, Option.empty[JFloat])
 			}
 			case GoodyActionExtractor.Kind.DELETE => {
 
