@@ -1,3 +1,19 @@
+/*
+ *  Copyright 2016 by The Friendularity Project (www.friendularity.org).
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
 package org.friendularity.vwimpl
 
 import java.awt.Canvas
@@ -11,6 +27,9 @@ import org.cogchar.blob.emit.RenderConfigEmitter
 import org.cogchar.render.gui.bony.{PanelUtils, VirtualCharacterPanel}
 import org.cogchar.render.sys.window.WindowStatusMonitor
 import org.friendularity.cpmsg.CPMsgTeller
+import org.friendularity.navui.NavAppCloser
+
+import java.lang.{Integer => JInt, Long => JLong, Float => JFloat}
 
 /**
   * Created by Stub22 on 9/6/2016.
@@ -25,29 +44,33 @@ class WrappedSimBalloonApp extends  SimBalloonJmeApp {
 	}
 }
 
-class SimBalloonWindowEventAdapter() extends WindowAdapter with VarargsLogging {
+class SimBalloonWindowEventAdapter(clozer : NavAppCloser) extends WindowAdapter with VarargsLogging {
 	override def windowClosed(e: WindowEvent): Unit = {
 		super.windowClosed(e)
-		warn1("Got WindowClosed event: {}", e)
-
+		warn1("Got WindowClosed event: {}, triggering NavAppCloser", e)
+		clozer.closeTheApp
 	}
 }
 
 trait VWJdkAwtCanvasMgr extends VarargsLogging {
 
-	def launch(resultsTeller : CPMsgTeller) : Unit = {
+	// This launch blocks/sleeps in 2 places.
+	// It also indirecly invokes our JME app callback (simpleInit).
+	def launch(resultsTeller : CPMsgTeller, clozer : NavAppCloser) : Unit = {
 		val sbJmeApp: WrappedSimBalloonApp = makeJmeApp
 
 		sbJmeApp.wireSetupResultsTeller(resultsTeller)
 
-		makePanelForApp(sbJmeApp)
+		val sleepMsecAfterFramePack : JLong = 7300L
+
+		// First blocking/sleeping operation.
+		makePanelAndFrameForApp(sbJmeApp, clozer, sleepMsecAfterFramePack)
 
 		info0("VWJdkSwingCanvasLauncher.launch calling sbJmeApp.start")
 
 		val flag_blockUntilRunning = true
 
-		// assetManager does not exist until start is called, triggering simpleInit callback.
-
+		// JME assetManager does not exist until this call runs.  It triggers our simpleInit app callback.
 		sbJmeApp.startCanvas(flag_blockUntilRunning)
 
 		info0("VWJdkSwingCanvasLauncher.launch - END")
@@ -55,7 +78,7 @@ trait VWJdkAwtCanvasMgr extends VarargsLogging {
 	def makeJmeApp : WrappedSimBalloonApp = {
 		new WrappedSimBalloonApp
 	}
-	def makePanelForApp(app : WrappedSimBalloonApp) : Unit = {
+	def makePanelAndFrameForApp(app : WrappedSimBalloonApp, clozer : NavAppCloser, sleepMsecAfterFramePack : JLong) : Unit = {
 		val bce = new RenderConfigEmitter();
 		val panelKind = "SLIM"
 		info1("******************* Initializing VirtualCharacterPanel of kind={} with canvas", panelKind);
@@ -68,15 +91,18 @@ trait VWJdkAwtCanvasMgr extends VarargsLogging {
 		// Additional ancient comment:
 		// If startJMonkey is called first, we often hang in frame.setVisible() as JMonkey tries
 		// to do some magic restart deal that doesn't work as of jme3-alpha4-August_2011.
-		val jf : JFrame  = vcp.makeEnclosingJFrame("VWJdk Swing Canvas");
 
+		// Hmmmm...this sleeps for 10 sec, after frame.pack() but before it calls frame.setVisible().
+		info0("******************* Calling vcp.makeEnclosingJFrame");
+		val jf : JFrame  = vcp.makeEnclosingJFrame("VWJdk Swing Canvas", sleepMsecAfterFramePack);
+		info0("******************* Returned from vcp.makeEnclosingJFrame");
 		// Another old comment, related to OSGi shutdown:
 		// Frame will receive a close event when org.cogchar.bundle.render.opengl is STOPPED
 		// So, that's our attempt to close the window gracefully on app exit (under OSGi).
 
 		// Meanwhile, if someone X-s the window, the optWindowEventListener gets a callback,
 		// which could try to shut down whatever system is running (e.g. OSGi).
-		val winEvtAdapter = new SimBalloonWindowEventAdapter
+		val winEvtAdapter = new SimBalloonWindowEventAdapter(clozer)
 
 		jf.addWindowListener(winEvtAdapter)
 	}

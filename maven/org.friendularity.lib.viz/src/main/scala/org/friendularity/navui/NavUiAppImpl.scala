@@ -1,3 +1,19 @@
+/*
+ *  Copyright 2016 by The Friendularity Project (www.friendularity.org).
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
 package org.friendularity.navui
 
 import akka.actor.ActorSystem
@@ -11,10 +27,10 @@ import org.friendularity.vwimpl.MakesVWBoss
 import org.friendularity.vwmsg.{VWBodyMakeRq, VWBodyNotice, VWSetupRq_Lnch, VWSetupRq_Conf}
 
 /**
-  * Created by Owner on 8/8/2016.
+  * Created by Stub22 on 8/8/2016.
   */
-class NavUiAppImpl(myAkkaSys : ActorSystem) extends NavUiAppSvc with NavPumpSpaceOwner
-			with AppServiceHandleGroup with MakesVWBoss with OffersVWorldServer {
+class NavUiAppImpl(myAkkaSys : ActorSystem) extends NavUiAppSvc with NavAppCloser with NavPumpSpaceOwner
+			with AppServiceHandleGroup with MakesVWBoss with OffersVWorldServer  {
 
 	override protected def getAkkaSys : ActorSystem = myAkkaSys
 	override protected def findAppQpidSvcOffering_opt : Option[OffersVWorldServer] = Some(this)
@@ -45,7 +61,8 @@ class NavUiAppImpl(myAkkaSys : ActorSystem) extends NavUiAppSvc with NavPumpSpac
 	}
 
 	def sendVWSetup_Lnch(wrapWithSwing : Boolean) : Unit = {
-		val msg = new VWSetupRq_Lnch(wrapWithSwing)
+		val fixmeClzrNonSerial : NavAppCloser = this
+		val msg = new VWSetupRq_Lnch(wrapWithSwing, fixmeClzrNonSerial)
 		getVWBossTeller.tellCPMsg(msg)
 	}
 
