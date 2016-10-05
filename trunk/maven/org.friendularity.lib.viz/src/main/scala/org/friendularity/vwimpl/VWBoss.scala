@@ -1,3 +1,19 @@
+/*
+ *  Copyright 2016 by The Friendularity Project (www.friendularity.org).
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
 package org.friendularity.vwimpl
 
 import akka.actor.{ActorLogging, Actor, ActorContext, ActorRef}
@@ -8,6 +24,7 @@ import org.cogchar.render.sys.registry.RenderRegistryClient
 import org.cogchar.render.sys.window.WindowStatusMonitor
 import org.friendularity.akact.KnowsAkkaSys
 import org.friendularity.cpmsg.{CPStrongTeller, ActorRefCPMsgTeller}
+import org.friendularity.navui.NavAppCloser
 import org.friendularity.vwmsg.{VWRqTAWrapper, VWOverlayRq, VWStageRqMsg, VWShapeCreateRq, VWorldInternalNotice, VWBodyLifeRq, VWPubTellersMsgImpl, LesserIngred, BodyMgrIngred, VWorldNotice, VWSetupResultsNotice, VWARM_GreetFromPumpAdmin, VWARM_FindPublicTellers, VWAdminRqMsg, VWSetupRq_Lnch, VWSetupRq_Conf, VWorldRequest}
 
 /**
@@ -64,7 +81,8 @@ trait VWorldBossLogic [VWSM <: VWorldSysMgr] extends VarargsLogging with VWPTRen
 		// The soonest that *could* happen is *during* JME3.start(), but we would actually prefer it be later,
 		// during isolatedInitTask.
 		if (vwLnchMsg.wrapInSwingCanv) {
-			launchSwingWrappedCanvas(slfActr, localActorCtx)
+
+			launchSwingWrappedCanvas(slfActr, localActorCtx, vwLnchMsg.fixmeClzrNonSerial)
 		} else {
 			launchBareJmeCanvas(slfActr, localActorCtx)
 		}
@@ -76,10 +94,10 @@ trait VWorldBossLogic [VWSM <: VWorldSysMgr] extends VarargsLogging with VWPTRen
 		bsim.setup(resultsTeller)
 		info0("launchBareJmeCanvas END - vworld is now running, but delayed setup jobs may still be running/pending")
 	}
-	private def launchSwingWrappedCanvas(slfActr : ActorRef,  localActorCtx : ActorContext) : Unit = {
+	private def launchSwingWrappedCanvas(slfActr : ActorRef,  localActorCtx : ActorContext, fixmeClzrNonSerial : NavAppCloser) : Unit = {
 		val resultsTeller = new ActorRefCPMsgTeller(slfActr)
 		val jdkSwCanvLauncher = new VWJdkAwtCanvasMgr{}
-		jdkSwCanvLauncher.launch(resultsTeller)
+		jdkSwCanvLauncher.launch(resultsTeller, fixmeClzrNonSerial)
 	}
 
 	// Crucial method which wraps the internal setup results handles with a set of public actors,

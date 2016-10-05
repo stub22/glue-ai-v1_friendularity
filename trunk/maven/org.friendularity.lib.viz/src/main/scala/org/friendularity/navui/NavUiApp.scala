@@ -114,8 +114,31 @@ trait NavUiAppSvc extends VarargsLogging {
 		val bodyNoticer : CPStrongTeller[VWBodyNotice] = makeExoBodyUserTeller_withTicks(akkaSys, "sinbad_standy_body_user", exoBodyUserLogic)
 		postPatientCharCreateRq(sinbadBodyID, fullHumaCfg, None, bodyNoticer)
 
+	}
+}
+
+trait NavAppCloser extends VarargsLogging {
+	protected def getAkkaSys : ActorSystem
+
+	// TODO:  Initiate this shutdown via an actor msg
+	def closeTheApp : Unit = {
+		val akkaSys = getAkkaSys
+		warn1("closeTheApp is calling shutdown on akkaSys={}", akkaSys)
+		akkaSys.shutdown()
+
+		// TODO:  Shutdown QPid broker (Possibly sending higher level "Goodbye" to partners, first)
+		// TODO:  Stop Body-anim modules
+		// TODO:  Close windows
+		// TODO:  Close AL devices
+		// TODO:  Close MIDI devices
+		// TODO:  Stop OSGi bundles
+		// TODO:  Become compatible with robot shutdown
+
+		Thread.sleep(600)
+		System.exit(0)
 
 	}
+
 }
 
 trait NavPumpSpaceOwner extends KnowsAkkaSys with VarargsLogging {
