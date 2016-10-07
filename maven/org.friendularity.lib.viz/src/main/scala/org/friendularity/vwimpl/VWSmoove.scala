@@ -1,3 +1,18 @@
+/*
+ *  Copyright 2016 by The Friendularity Project (www.friendularity.org).
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.friendularity.vwimpl
 
 import com.jme3.animation.{LoopMode, AnimControl => JmeAnimCtrl, AnimationFactory, Animation => JmeGrossAnim}
@@ -11,7 +26,6 @@ import org.friendularity.vwmsg.{VWShapeManipRq, ShapeManipRqImpl, SmooveManipFul
   * Created by Stub22 on 6/30/2016.
   * Capturing the most important traits needed for smooth anim and transform of given spatials,
   * using JME features, primarily via the class com.jme3.animation.AnimationFactory.
-
   */
 
 trait VWSmoove
@@ -116,8 +130,7 @@ trait JmeAnimMaker {
 
 }
 trait JmeAnimCtrlWrap {
-	// val ctrl = new AnimControl()  // Trigger point + update bridge for a set of animations, over many channels,
-	// s.addControl(ctrl)
+	// JmeAnimCtrl = Trigger point + update bridge for a set of animations, over many channels,
 	def findAnimCtrl(s : Spatial) : Option[JmeAnimCtrl] = {
 		val c = s.getControl(classOf[JmeAnimCtrl])
 		Option(c)
@@ -126,10 +139,6 @@ trait JmeAnimCtrlWrap {
 	def findOrMakeAnimCtrl(s : Spatial) : JmeAnimCtrl = {
 		val ctrl : JmeAnimCtrl = {
 			val copt = findAnimCtrl(s)
-//			val c = s.getControl(classOf[JmeAnimCtrl])
-//			if (c != null) {
-//				c
-//			} else {
 			copt.getOrElse {
 				val nc = new JmeAnimCtrl()
 				s.addControl(nc)
@@ -148,13 +157,19 @@ trait JmeAnimCtrlWrap {
 		val ctrlOpt : Option[JmeAnimCtrl] = findAnimCtrl(s)
 		ctrlOpt.map(ac => haltAndDetachAnimCtrl(ac))
 	}
+	def ensureAnimCtrlEnabled(s : Spatial) : Unit = {
+		val ac = findOrMakeAnimCtrl(s)
+		ac.setEnabled(true)
+	}
 	def fireAnim(ac : JmeAnimCtrl, a: JmeGrossAnim, blendTimeSec : Float, loopMode : LoopMode) : Unit = {
 		ac.addAnim(a) // Each anim may have multiple tracks of type:  SpatialTrack, BoneTrack, AudioTrack, EffectTrack
 		val chan = ac.createChannel
+
+		// 2016-10-06   Stu sez:  This enabled AnimCtrl may be what is preventing later bone animations from working.
+
 		ac.setEnabled(true) // Will generally stay enabled until some direct abrupt move is sent
 		chan.setAnim(a.getName, blendTimeSec) // This step "activates" the ctrl-chan-anim combo, yes?
 		chan.setLoopMode(LoopMode.DontLoop)  // Cogchar lore says this should be done after setAnim
-
 	}
 
 	def fireAnimUnloopedUnblended(ac : JmeAnimCtrl, a: JmeGrossAnim) : Unit = {
@@ -167,18 +182,26 @@ trait JmeAnimCtrlWrap {
 		fireAnimUnloopedUnblended(ac, a)
 	}
 }
-trait Smoovable extends Movable with Locatable with Addressable {
+trait Smoovable extends Movable with Locatable with Addressable with VarargsLogging {
 	val myAnimMaker = new JmeAnimMaker {}
 
 	override def applyTransform_runThrd(xform: Transform3D): Unit = {
-		detachAnimCtrl()
+		info0("applyTransform_runThrd is calling detach")
+		detachAnimCtrl() // If we don't do this, then the direct transform fails
 		super.applyTransform_runThrd(xform)
+		info0("applyTransform_runThrd is calling attach")
+		attachAnimCtrl() // If we don't do this, then subsequent bone aninations don't work
 	}
 
 	private def detachAnimCtrl(): Unit = {
 		val spat = getMainSpat
 		val acHelper = new JmeAnimCtrlWrap {}
 		acHelper.haltAndDetachAnyAnimCtrl(spat)
+	}
+	private def attachAnimCtrl(): Unit = {
+		val spat = getMainSpat
+		val acHelper = new JmeAnimCtrlWrap {}
+		acHelper.ensureAnimCtrlEnabled(spat)
 	}
 
 	def applySmooveNow_anyThrd(manipFull: SmooveManipFull): Unit = {

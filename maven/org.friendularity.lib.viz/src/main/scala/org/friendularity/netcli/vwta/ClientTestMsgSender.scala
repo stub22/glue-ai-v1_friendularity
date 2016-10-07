@@ -1,3 +1,19 @@
+/*
+ *  Copyright 2016 by The Friendularity Project (www.friendularity.org).
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
 package org.friendularity.netcli.vwta
 
 import com.jme3.math.Vector3f
@@ -43,6 +59,13 @@ class ClientTestMsgSender(initDelayMsec : Int, stepDelayMsec : Int, sinbadMoves 
 		} else {
 			Thread.sleep(stepDelayMsec)
 		}
+		if (sinbadMoves) {
+			val tgtPos = new Vector3f(-5.0f, 38.0f, 0.6f)
+			// val tgtScl = new Vector3f(12.0f, 3.0f, 8.0f)
+			val mxf = new PartialTransform3D(Some(tgtPos), None, None) // Some(tgtScl))
+			clientOffer.sendSinbadAbruptMoveRq(mxf)
+			Thread.sleep(stepDelayMsec)
+		}
 
 		if (goodyPile) {
 			val dummyGoodySender = new DummyGoodySender {}
@@ -72,6 +95,6 @@ object RunClientTestMsgSender {
 		val (doSinbadMoves, doExtraCam, doGoodyPile) = (true, true, true)
 
 		val clientTestSender = new ClientTestMsgSender(3000, 2000, doSinbadMoves, doExtraCam, doGoodyPile)
-		clientTestSender.startTestThread
+		clientTestSender.sendMsgs
 	}
 }
