@@ -186,10 +186,10 @@ trait Smoovable extends Movable with Locatable with Addressable with VarargsLogg
 	val myAnimMaker = new JmeAnimMaker {}
 
 	override def applyTransform_runThrd(xform: Transform3D): Unit = {
-		info0("applyTransform_runThrd is calling detach")
+		debug0("applyTransform_runThrd is calling detach")
 		detachAnimCtrl() // If we don't do this, then the direct transform fails
 		super.applyTransform_runThrd(xform)
-		info0("applyTransform_runThrd is calling attach")
+		debug0("applyTransform_runThrd is calling attach")
 		attachAnimCtrl() // If we don't do this, then subsequent bone aninations don't work
 	}
 

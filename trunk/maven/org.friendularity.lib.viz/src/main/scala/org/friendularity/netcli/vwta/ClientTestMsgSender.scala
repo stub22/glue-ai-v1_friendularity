@@ -45,7 +45,7 @@ class ClientTestMsgSender(initDelayMsec : Int, stepDelayMsec : Int, sinbadMoves 
 			val tgtPos = new Vector3f(-20.0f, 90.0f, -20.0f)
 			val tgtScl = new Vector3f(12.0f, 3.0f, 8.0f)
 			val mxf = new PartialTransform3D(Some(tgtPos), None, Some(tgtScl))
-			clientOffer.sendSinbadSmooveRq(mxf, 4.0f)
+			clientOffer.sendSinbadSmooveRq(mxf, 1.5f)
 			Thread.sleep(stepDelayMsec)
 		}
 		if (xtraCam) {
@@ -92,7 +92,7 @@ class ClientTestMsgSender(initDelayMsec : Int, stepDelayMsec : Int, sinbadMoves 
 object RunClientTestMsgSender {
 	def main(args: Array[String]): Unit = {
 
-		val (doSinbadMoves, doExtraCam, doGoodyPile) = (true, true, true)
+		val (doSinbadMoves, doExtraCam, doGoodyPile) = (true, true, false)
 
 		val clientTestSender = new ClientTestMsgSender(3000, 2000, doSinbadMoves, doExtraCam, doGoodyPile)
 		clientTestSender.sendMsgs
