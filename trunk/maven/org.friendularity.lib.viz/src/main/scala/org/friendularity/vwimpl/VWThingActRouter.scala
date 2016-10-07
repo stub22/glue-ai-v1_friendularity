@@ -142,7 +142,7 @@ trait VWBodyTARouterLogic extends TARqExtractorHelp with MakesTransform3D  with 
 				error1("Cannot create VW-bodies using a TA-Rq.  Are you trying to find a body to command? Failed rq-TA={}", ta)
 			}
 			case GoodyActionExtractor.Kind.SET => {
-				sendMedialVWBodyMoveRq(bodyID, maybeXform, Option.empty[JFloat], whoDat)
+				sendMedialVWBodyMoveRq(bodyID, maybeXform, None, whoDat)
 			}
 			case GoodyActionExtractor.Kind.DELETE => {
                 error1("Cannot delete VW-bodies using a TA-Rq.  Are you trying to find a body to command? Failed rq-TA={}", ta)
@@ -198,7 +198,7 @@ trait CamTARouterLogic extends TARqExtractorHelp with MakesTransform3D with Oute
 				val maybeXform : MaybeTransform3D = extractXform(tvm, gax)
 				val dur_opt : Option[JFloat] = extractDuration(tvm)
 
-				sentCamMoveRq(spcTeller, camGuideShapeID, maybeXform, dur_opt)
+				sendCamMoveRq(spcTeller, camGuideShapeID, maybeXform, dur_opt)
 				/*
 				val guideTgtPos = new Vector3f(-1.0f, 5.0f, 3.0f)
 				val rotAngles = Array(45.0f, -45.0f, 15.0f)
@@ -218,7 +218,7 @@ trait CamTARouterLogic extends TARqExtractorHelp with MakesTransform3D with Oute
 			case GoodyActionExtractor.Kind.SET => {
                 info1("Processing cam-set request: {}", ta)
 				val maybeXform : MaybeTransform3D = extractXform(tvm, gax)
-				sentCamMoveRq(spcTeller, camGuideShapeID, maybeXform, Option.empty[JFloat])
+				sendCamMoveRq(spcTeller, camGuideShapeID, maybeXform, Option.empty[JFloat])
 			}
 			case GoodyActionExtractor.Kind.DELETE => {
 
@@ -255,8 +255,11 @@ trait VWThingActReqRouterLogic extends VWBodyTARouterLogic with CamTARouterLogic
 			// create/destroy, attach/detach, movement (smooth or abrupt), goody-state changes,
 			// color+transparency changes.
 			// As of 2016-08-28, this message eventually gets handled by
-			// VWGoodyJobLogic (in VWGoody.scala), which in turn invokes the old cogchar method:
+			// VWGoodyJobLogic (in VWGoody.scala), which in turn passes control to an instance of
+			// BetterBGC.   We use the old cogchar method:
 			//   o.c.render.goody.basic.BasicGoodyCtxImpl.consumeAction(actSpec)
+			// However, in the case of CREATE operations, the behavior is overridden in
+			// BetterBGC.createByAction.
 			// That object connection was attached during startup in
 			// VWorldBossLogic.completeBossSetupAndPublish (in VWBoss.scala).
 

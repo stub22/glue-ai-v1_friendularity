@@ -16,35 +16,19 @@
 
 package org.friendularity.navui
 
-// import akka.actor._
-import akka.actor.{Scheduler => AkkaSched, Actor, ActorRef, ActorContext, ActorSystem, ActorRefFactory, Props, ActorLogging}
+import akka.actor.{ActorSystem}
 import com.hp.hpl.jena.rdf.model.{Model => JenaModel}
-import com.jme3.math.Vector3f
-import org.appdapter.core.name.{FreeIdent, Ident}
-import org.appdapter.core.store.Repo
+
 import org.appdapter.fancy.log.VarargsLogging
 import org.appdapter.fancy.rclient.EnhancedLocalRepoClient
-import org.cogchar.api.humanoid.HumanoidFigureConfig
-import org.cogchar.api.vworld.GoodyActionParamWriter
-import org.cogchar.bind.mio.robot.svc.ModelBlendingRobotServiceContext
 import org.cogchar.blob.emit.RenderConfigEmitter
-import org.cogchar.blob.entry.EntryHost
-import org.cogchar.impl.scene.read.BehavMasterConfigTest
-import org.cogchar.impl.thing.basic.{BasicTypedValueMap, BasicThingActionSpec}
-import org.cogchar.impl.thing.fancy.ConcreteTVM
-import org.cogchar.name.goody.GoodyNames
 import org.cogchar.platform.gui.keybind.KeyBindingConfig
 import org.cogchar.platform.trigger.CommandSpace
-import org.cogchar.render.app.humanoid.HumanoidRenderWorldMapper
 import org.cogchar.render.goody.basic.BasicGoodyCtx
-import org.cogchar.render.model.humanoid.{VWorldHumanoidFigureEntity, HumanoidFigure}
 import org.cogchar.render.rendtest.{GoodyTestMsgMaker, GoodyRenderTestApp}
-import org.cogchar.render.sys.goody.GoodyRenderRegistryClient
-import org.friendularity.netcli.vwta.ClientTestMsgSender
 
+import org.friendularity.netcli.vwta.ClientTestMsgSender
 import org.friendularity.raiz.{VizappLegacyLoaderFactory, VizappProfileLoaderFactory, TestRaizLoad}
-import org.friendularity.vwimpl.IdentHlp
-import org.friendularity.vwmsg.{PartialTransform3D, MaybeTransform3D}
 
 /**
   * Created by Stub22 on 4/1/2016.
@@ -54,7 +38,7 @@ object TestNavUI extends VarargsLogging {
 	// Goal - load vworld *incrementally* using messages found in "modern" config chunk(s),
 	// mediated by higher-level instructions from profile recipes.  Most of these messages
 	// (other than gross system-startup and system-shutdown) should be conveyable over
-	// network, so the load ordering logic is independent from the instruction execution.
+	// network, when desired.
 
 	// From the outside, the VWorld entities are all identified *only* by URI (optionally
 	// extended by offset params).  Anything not identified by URI(+offset) must be private
@@ -81,17 +65,14 @@ object TestNavUI extends VarargsLogging {
 		val appSysStandalone = new StandaloneNavAppSys();
 		val navUiAppImpl : NavUiAppImpl = appSysStandalone.findOrMakeNavUiApp
 		val navUiAppSvc : NavUiAppSvc = navUiAppImpl
- 		info1("^^^^^^^^^^^^^^^^^^^^^^^^  TestNavUI.main() created nuii={}", navUiAppImpl)
-		warn0("^^^^^^^^^^^^^^^^^^^^^^^^  TestNavUI.main() running detached GridSpace tst - MOVE me to a msgHandler!")
+ 		info1("^^^^^^^^^^^^^^^^^^^^^^^^  TestNavUI.launchNuiiTest() created nuii={}", navUiAppImpl)
+		warn0("^^^^^^^^^^^^^^^^^^^^^^^^  TestNavUI.launchNuiiTest() running detached GridSpace tst - MOVE me to a msgHandler!")
 		navUiAppImpl.testDetachedGS
-		// info0("^^^^^^^^^^^^^^^^^^^^^^^^  TestNavUI.main() - fetching legacy config graphs")
-		// val legConfERC_opt = nuii.getLegConfERC_opt
-		// info1("^^^^^^^^^^^^^^^^^^^^^^^^  TestNavUI.main() got legConfERC_opt={}", legConfERC_opt)
 
 		val wrapWithSwing : Boolean = true
 		navUiAppImpl.sendSetupMsgs_Async(wrapWithSwing)
 
-		info0("========== TestNavUI.main() starting VW-SERVER qpidConn")
+		info0("========== TestNavUI.launchNuiiTest() starting VW-SERVER qpidConn")
 		navUiAppImpl.startQpidConn
 		navUiAppImpl.checkServerSvcs()
 
@@ -100,11 +81,7 @@ object TestNavUI extends VarargsLogging {
 		val bodyUserLogic = navUiAppSvc.makeFunUserLogic(flag_sendTestMovesFromExoUserLogic)
 		appSysStandalone.sendStart_SemiLegacySinbad(bodyUserLogic)
 
-
-		// info0("^^^^^^^^^^^^^^^^^^^^^^^^  TestNavUI.main() finished running setup msgs, now making SimSpace VWCanv")
-		// nuii.launchSimRenderSpace()
-		//info0("^^^^^^^^^^^^^^^^^^^^^^^^  TestNavUI.main() finished launchSimRenderSpace()")
-		warn0("^^^^^^^^^^^^^^^^^^^^^^^^  TestNavUI.main() When user presses 'cancel' on JME splash, how can " +
+		warn0("^^^^^^^^^^^^^^^^^^^^^^^^  TestNavUI.launchNuiiTest() is done.  But if user presses 'cancel' on JME splash, how can " +
 					"we find that out here and exit accordingly?")
 
 	}
@@ -127,7 +104,7 @@ object TestNavUI extends VarargsLogging {
 	}
 }
 object NavUiTestPublicNames {
-	// TODO:  Push as many setup params as possible downward, feed them from profile recipes
+	// TODO:  Push as many setup params as possible downward, and then feed them in from profile recipes
 	val akkaSysName : String = "NavUiStandApp_4719"
 	val akkaRemotePort : Integer = 4719
 	val cpumpName = "standPumpCtx_181"

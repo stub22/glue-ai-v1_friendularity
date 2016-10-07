@@ -110,6 +110,7 @@ trait VWorldBossLogic [VWSM <: VWorldSysMgr] extends VarargsLogging with VWPTRen
 		val rrc : RenderRegistryClient = lesserIngred.getRendRegClient
 		val winStatMon : WindowStatusMonitor = lesserIngred.getWindowStatusMonitor
 		// val oldStyleBGC : BasicGoodyCtx = new BasicGoodyCtxImpl(rrc, winStatMon)
+		// Plug in our "better" GoodyCtx, which overrides the createByAction method.
 		val betterBGC = new BetterBGC(rrc, winStatMon)
 		val eitherBGC : BasicGoodyCtx = betterBGC
 		eitherBGC.setupAsMainGoodyCtx

@@ -93,6 +93,11 @@ trait VWGoodyJobLogic extends VarargsLogging {
 					actSpec.getClass, actSpec.getVerbID, actSpec.getTargetThingTypeID, actSpec.getTargetThingID)
 		val goodyCtx = getGoodyCtx
 
+		// As of 2016-10-06, this method call routes to the old Cogchar impl in
+		//   o.c.render.goody.basic.BasicGoodyCtxImpl.consumeAction(actSpec)
+		// However, in the case of CREATE operations, the behavior is overridden in
+		// BetterBGC.createByAction.
+
 		goodyCtx.consumeAction(actSpec)
 	}
 

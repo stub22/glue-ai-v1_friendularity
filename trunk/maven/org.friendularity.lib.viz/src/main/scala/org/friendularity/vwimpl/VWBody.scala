@@ -128,10 +128,6 @@ trait VWBodyLogic extends FullEnqHlp with VarargsLogging {
 		val bodyRec : DualBodyRecord = getBodyRec
 
 		bodyRq match {
-			// case moverq : VWBodyMoveRq => {
-			//	info1("Moving body according to moveRq={}", moverq)
-			//	bodyRec.moveVWBody_usingEntity(moverq.xPos, moverq.yPos, moverq.zPos)
-			//}
 			case toggleSkelHilite : VWBodySkeletonDisplayToggle => {
 				info1("Toggling skeleton hilite for body={}", bodyRec)
 				val fig = bodyRec.humaFig

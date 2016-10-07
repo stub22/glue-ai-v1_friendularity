@@ -40,13 +40,24 @@ trait OffersVWorldClient extends OffersQpidSomething  with VWTAMsgMaker {
 		val taSpec = makeTASpec(entityID, typeID, GoodyNames.ACTION_MOVE, btvm)
 		sendTARq(taSpec)
 	}
-
-
-	def sendSinbadSmooveRq(maybeXform3D : MaybeTransform3D, durSec : Float) : Unit = {
-		val sinbadBodyURI = "urn:ftd:cogchar.org:2012:runtime#char_sinbad_88"
-		val bodyID = new FreeIdent(sinbadBodyURI)
-		sendEntitySmooveRq(bodyID, GoodyNames.TYPE_AVATAR, maybeXform3D, durSec)
+	def sendEntityAbruptMoveRq(entityID : Ident, typeID: Ident, maybeXform3D : MaybeTransform3D) : Unit = {
+		val btvm : BasicTypedValueMap  = new ConcreteTVM()
+		val paramWriter = new GoodyActionParamWriter(btvm)
+		writeXform3D(paramWriter, maybeXform3D)
+		// ACTION_MOVE with no duration, and ACTION_SET are both (equivalently) defined to be "abrupt" moves.
+		val taSpec = makeTASpec(entityID, typeID, GoodyNames.ACTION_MOVE, btvm)
+		sendTARq(taSpec)
 	}
+
+	val sinbadBodyURI = "urn:ftd:cogchar.org:2012:runtime#char_sinbad_88"
+	val sinbadBodyID = new FreeIdent(sinbadBodyURI)
+	def sendSinbadSmooveRq(maybeXform3D : MaybeTransform3D, durSec : Float) : Unit = {
+		sendEntitySmooveRq(sinbadBodyID, GoodyNames.TYPE_AVATAR, maybeXform3D, durSec)
+	}
+	def sendSinbadAbruptMoveRq(maybeXform3D : MaybeTransform3D) : Unit = {
+		sendEntityAbruptMoveRq(sinbadBodyID, GoodyNames.TYPE_AVATAR, maybeXform3D)
+	}
+
 	def sendRq_makeExtraCamera(camGuideShapeID : Ident) : Unit = {
 		val btvm : BasicTypedValueMap  = new ConcreteTVM()
 		val paramWriter = new GoodyActionParamWriter(btvm)
