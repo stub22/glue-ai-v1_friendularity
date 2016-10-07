@@ -150,18 +150,23 @@ trait JmeAnimCtrlWrap {
 	def cancelOldAnims(ac : JmeAnimCtrl) : Unit = {
 		ac.clearChannels()
 	}
+	/*
 	def haltAndDetachAnimCtrl(ac : JmeAnimCtrl) : Unit = {
-		cancelOldAnims(ac)  // Does this help the control "let go" of positions, when later reenabled?
-		ac.setEnabled(false)
+		cancelOldAnims(ac)  // This is necessary for the control "let go" of positions.
+		// Curious if this part is really needed, since the anims are now cancelled.
+		// ac.setEnabled(false)
 	}
-	def haltAndDetachAnyAnimCtrl(s : Spatial) : Unit = {
+	*/
+	def cancelAnyOldAnimsFound(s : Spatial) : Unit = {
 		val ctrlOpt : Option[JmeAnimCtrl] = findAnimCtrl(s)
-		ctrlOpt.map(ac => haltAndDetachAnimCtrl(ac))
+		ctrlOpt.map(ac => cancelOldAnims(ac))
 	}
+	/*
 	def ensureAnimCtrlEnabled(s : Spatial) : Unit = {
 		val ac = findOrMakeAnimCtrl(s)
 		ac.setEnabled(true)
 	}
+	*/
 	def fireAnim(ac : JmeAnimCtrl, a: JmeGrossAnim, blendTimeSec : Float, loopMode : LoopMode) : Unit = {
 		ac.addAnim(a) // Each anim may have multiple tracks of type:  SpatialTrack, BoneTrack, AudioTrack, EffectTrack
 		val chan = ac.createChannel
@@ -188,27 +193,30 @@ trait Smoovable extends Movable with Locatable with Addressable with VarargsLogg
 
 	// applyTransform_runThrd cannot be used reliably on a spatial that is controlled by an animCtrl.
 	override def applyTransform_runThrd(xform: Transform3D): Unit = {
-		debug0("applyTransform_runThrd is calling detach")
-		detachAnimCtrl() // If we don't do this, then the direct transform fails.
+		debug0("applyTransform_runThrd is calling cancelAnyOldAnims")
+		cancelAnyOldAnims() // If we don't do this, then the direct transform fails.
 		super.applyTransform_runThrd(xform)
-		debug0("applyTransform_runThrd is calling attach")
-		attachAnimCtrl() // If we don't do this, then subsequent bone aninations don't work.
+
+		// Before, when we were doing setEnabled(false) on the animControl, then we needed to reattach like so.
+		//	attachAnimCtrl() // If we don't do this, then subsequent bone aninations don't work.
 		// Our bone-anim system doesn't go directly through the animCtrl system, but the latter must be
 		// involved somehow.
 		// If the detach step does not clear old anims, then this reattach will nullify our direct movement,
 		// as the animCtrl reasserts control over position of the spatial.
 	}
 
-	private def detachAnimCtrl(): Unit = {
+	private def cancelAnyOldAnims(): Unit = {
 		val spat = getMainSpat
 		val acHelper = new JmeAnimCtrlWrap {}
-		acHelper.haltAndDetachAnyAnimCtrl(spat)
+		acHelper.cancelAnyOldAnimsFound(spat)
 	}
+	/*
 	private def attachAnimCtrl(): Unit = {
 		val spat = getMainSpat
 		val acHelper = new JmeAnimCtrlWrap {}
 		acHelper.ensureAnimCtrlEnabled(spat)
 	}
+	*/
 
 	def applySmooveNow_anyThrd(manipFull: SmooveManipFull): Unit = {
 		// Since this happens at the "controls" level, is it then not really a sceneGraph mod, requiring queueing?
