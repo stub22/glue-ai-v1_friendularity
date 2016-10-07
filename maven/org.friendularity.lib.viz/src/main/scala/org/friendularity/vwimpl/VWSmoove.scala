@@ -151,6 +151,7 @@ trait JmeAnimCtrlWrap {
 		ac.clearChannels()
 	}
 	def haltAndDetachAnimCtrl(ac : JmeAnimCtrl) : Unit = {
+		cancelOldAnims(ac)  // Does this help the control "let go" of positions, when later reenabled?
 		ac.setEnabled(false)
 	}
 	def haltAndDetachAnyAnimCtrl(s : Spatial) : Unit = {
@@ -185,12 +186,17 @@ trait JmeAnimCtrlWrap {
 trait Smoovable extends Movable with Locatable with Addressable with VarargsLogging {
 	val myAnimMaker = new JmeAnimMaker {}
 
+	// applyTransform_runThrd cannot be used reliably on a spatial that is controlled by an animCtrl.
 	override def applyTransform_runThrd(xform: Transform3D): Unit = {
 		debug0("applyTransform_runThrd is calling detach")
-		detachAnimCtrl() // If we don't do this, then the direct transform fails
+		detachAnimCtrl() // If we don't do this, then the direct transform fails.
 		super.applyTransform_runThrd(xform)
 		debug0("applyTransform_runThrd is calling attach")
-		attachAnimCtrl() // If we don't do this, then subsequent bone aninations don't work
+		attachAnimCtrl() // If we don't do this, then subsequent bone aninations don't work.
+		// Our bone-anim system doesn't go directly through the animCtrl system, but the latter must be
+		// involved somehow.
+		// If the detach step does not clear old anims, then this reattach will nullify our direct movement,
+		// as the animCtrl reasserts control over position of the spatial.
 	}
 
 	private def detachAnimCtrl(): Unit = {
@@ -228,28 +234,6 @@ trait Smoovable extends Movable with Locatable with Addressable with VarargsLogg
 		acHelper.fireAnimUnloopedUnblended(s, a)
 	}
 }
-/*
-	// val ctrl = new AnimControl()  // Trigger point + update bridge for a set of animations, over many channels,
-	// s.addControl(ctrl)
-	val ctrl = {
-		val c = s.getControl(classOf[AnimControl])
-		if (c != null) {
-			c
-		} else {
-			val nc = new AnimControl()
-			s.addControl(nc)
-			nc
-		}
-	}
-	ctrl.clearChannels()
-
-	ctrl.addAnim(a) // Each anim may have multiple tracks of type:  SpatialTrack, BoneTrack, AudioTrack, EffectTrack
-
-	val chan = ctrl.createChannel // Each chan
-	val blendTime = 0f
-	chan.setAnim(a.getName, blendTime) // This step "activates" the ctrl-chan-anim combo, yes?
-	chan.setLoopMode(LoopMode.DontLoop)  // Cogchar lore says this should be done after setAnim
-*/
 
 trait Manipable extends Smoovable with VarargsLogging {
 	def applyManipDesc(manip : ManipDesc, enqHelp : FullEnqHlp) : Unit = {

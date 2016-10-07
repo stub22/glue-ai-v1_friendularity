@@ -102,7 +102,7 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 
 	// 2016-09-20 set to false.  When true, it causes JME animControl to take over the bone state,
 	// which prevents our MechIO ModelRobot from controlling the JME bones.
-	private boolean flag_sendTestAbruptMovesFromExoUserLogic = true;
+	private boolean flag_sendTestAbruptMovesFromExoUserLogic = false;
 
 	public static boolean  myFlag_launchQpidBroker = true;
 	public static boolean myFlag_launchVWorldAmqpSvcs = true;
