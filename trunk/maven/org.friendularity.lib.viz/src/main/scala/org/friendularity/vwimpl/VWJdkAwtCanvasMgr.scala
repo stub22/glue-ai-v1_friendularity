@@ -53,6 +53,12 @@ class SimBalloonWindowEventAdapter(clozer : NavAppCloser) extends WindowAdapter 
 }
 
 trait VWJdkAwtCanvasMgr extends VarargsLogging {
+    
+    var myFrame_opt : Option[JFrame] = Option.empty[JFrame]
+    def getFrameOption() : Option[JFrame] = {
+        myFrame_opt
+    }
+    
 
 	// This launch blocks/sleeps in 2 places.
 	// It also indirecly invokes our JME app callback (simpleInit).
@@ -94,7 +100,7 @@ trait VWJdkAwtCanvasMgr extends VarargsLogging {
 
 		// Hmmmm...this sleeps for 10 sec, after frame.pack() but before it calls frame.setVisible().
 		info0("******************* Calling vcp.makeEnclosingJFrame");
-		val jf : JFrame  = vcp.makeEnclosingJFrame("VWJdk Swing Canvas", sleepMsecAfterFramePack);
+		val frame  = vcp.makeEnclosingJFrame("VWJdk Swing Canvas", sleepMsecAfterFramePack)
 		info0("******************* Returned from vcp.makeEnclosingJFrame");
 		// Another old comment, related to OSGi shutdown:
 		// Frame will receive a close event when org.cogchar.bundle.render.opengl is STOPPED
@@ -104,7 +110,8 @@ trait VWJdkAwtCanvasMgr extends VarargsLogging {
 		// which could try to shut down whatever system is running (e.g. OSGi).
 		val winEvtAdapter = new SimBalloonWindowEventAdapter(clozer)
 
-		jf.addWindowListener(winEvtAdapter)
+		frame.addWindowListener(winEvtAdapter)
+        myFrame_opt = Some(frame)
 	}
 
 	def makeAWTCanvas(app : WrappedSimBalloonApp, width : Int, height : Int)  : Canvas = {
