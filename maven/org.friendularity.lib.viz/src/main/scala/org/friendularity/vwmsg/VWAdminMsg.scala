@@ -16,6 +16,7 @@
 
 package org.friendularity.vwmsg
 
+import java.awt.Image
 import org.appdapter.fancy.log.VarargsLogging
 import org.cogchar.bind.midi.in.TempMidiBridge
 import org.friendularity.cpmsg.{CPStrongTeller, CPMsgTeller}
@@ -40,6 +41,8 @@ case class VWSetupRq_Conf() extends VWorldRequest // Not being sent as of 2016-0
 case class VWSetupRq_Lnch(wrapInSwingCanv : Boolean, fixmeClzrNonSerial : NavAppCloser) extends VWorldRequest {
 	// Sent from NuiiApp to VWBoss, as of 2016-06-16
 }
+
+case class VWSetSwingCanvasBranding(canvasTitle: String,  canvasIconImage : Image) extends VWAdminRqMsg
 
 // Boss eventually sends this response to the answerTeller of each VWARM_FindPublicTellers rcvd.
 case class VWSetupResultsNotice(lesserIngred: LesserIngred,

@@ -17,6 +17,7 @@
 package org.friendularity.navui
 
 import akka.actor.ActorSystem
+import java.awt.Image
 import org.appdapter.core.name.Ident
 import org.cogchar.api.humanoid.HumanoidFigureConfig
 import org.cogchar.bind.mio.robot.svc.ModelBlendingRobotServiceContext
@@ -24,7 +25,7 @@ import org.friendularity.cpmsg.CPStrongTeller
 import org.friendularity.qpc.OffersVWorldServer
 import org.friendularity.respire.DetachedGST
 import org.friendularity.vwimpl.MakesVWBoss
-import org.friendularity.vwmsg.{VWBodyMakeRq, VWBodyNotice, VWSetupRq_Lnch, VWSetupRq_Conf}
+import org.friendularity.vwmsg.{VWBodyMakeRq, VWBodyNotice, VWSetupRq_Lnch, VWSetupRq_Conf, VWSetSwingCanvasBranding}
 
 /**
   * Created by Stub22 on 8/8/2016.
@@ -63,6 +64,11 @@ class NavUiAppImpl(myAkkaSys : ActorSystem) extends NavUiAppSvc with NavAppClose
 	def sendVWSetup_Lnch(wrapWithSwing : Boolean) : Unit = {
 		val fixmeClzrNonSerial : NavAppCloser = this
 		val msg = new VWSetupRq_Lnch(wrapWithSwing, fixmeClzrNonSerial)
+		getVWBossTeller.tellCPMsg(msg)
+	}
+    
+    def sendVWSetSwingCanvasBranding(canvasTitle: String,  canvasIconImage : Image) : Unit = {
+		val msg = new VWSetSwingCanvasBranding(canvasTitle, canvasIconImage)
 		getVWBossTeller.tellCPMsg(msg)
 	}
 

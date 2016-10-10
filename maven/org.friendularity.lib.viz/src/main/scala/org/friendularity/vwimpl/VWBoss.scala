@@ -17,6 +17,9 @@
 package org.friendularity.vwimpl
 
 import akka.actor.{ActorLogging, Actor, ActorContext, ActorRef}
+import java.awt.Image
+import javax.swing.ImageIcon
+import javax.swing.JFrame
 import org.appdapter.fancy.log.VarargsLogging
 import org.cogchar.bind.midi.in.TempMidiBridge
 import org.cogchar.render.goody.basic.{BasicGoodyCtxImpl, BasicGoodyCtx}
@@ -25,12 +28,13 @@ import org.cogchar.render.sys.window.WindowStatusMonitor
 import org.friendularity.akact.KnowsAkkaSys
 import org.friendularity.cpmsg.{CPStrongTeller, ActorRefCPMsgTeller}
 import org.friendularity.navui.NavAppCloser
-import org.friendularity.vwmsg.{VWRqTAWrapper, VWOverlayRq, VWStageRqMsg, VWShapeCreateRq, VWorldInternalNotice, VWBodyLifeRq, VWPubTellersMsgImpl, LesserIngred, BodyMgrIngred, VWorldNotice, VWSetupResultsNotice, VWARM_GreetFromPumpAdmin, VWARM_FindPublicTellers, VWAdminRqMsg, VWSetupRq_Lnch, VWSetupRq_Conf, VWorldRequest}
+import org.friendularity.vwmsg.{VWRqTAWrapper, VWOverlayRq, VWStageRqMsg, VWShapeCreateRq, VWorldInternalNotice, VWBodyLifeRq, VWPubTellersMsgImpl, LesserIngred, BodyMgrIngred, VWorldNotice, VWSetupResultsNotice, VWARM_GreetFromPumpAdmin, VWARM_FindPublicTellers, VWAdminRqMsg, VWSetupRq_Lnch, VWSetupRq_Conf, VWorldRequest, VWSetSwingCanvasBranding}
 
 /**
   * Created by Stub22 on 6/15/2016.
   */
 trait VWorldBossLogic [VWSM <: VWorldSysMgr] extends VarargsLogging with VWPTRendezvous {
+    var myJavaCanvasManager_opt :Option[VWJdkAwtCanvasMgr] = Option.empty[VWJdkAwtCanvasMgr]
 	protected def getSysMgr : VWSM
 
 	protected def processVWorldRequest(vwmsg : VWorldRequest, slfActr : ActorRef, localActorCtx : ActorContext): Unit = {
@@ -61,6 +65,13 @@ trait VWorldBossLogic [VWSM <: VWorldSysMgr] extends VarargsLogging with VWPTRen
 				info1("VWBoss registering a pub-teller listener: {}", fpt)
 				addVWPTListener(fpt.answerTeller)
 			}
+            
+            case sscb: VWSetSwingCanvasBranding =>{
+                if(myJavaCanvasManager_opt.isDefined){
+                    info1("Setting swing canvas branding: {}", sscb)
+                    setSwingCanvasBranding(sscb.canvasTitle, sscb.canvasIconImage)    
+                }
+            }    
 		}
 	}
 	// Handle event from inside this boss, translate into messages for boss-clients.
@@ -98,6 +109,24 @@ trait VWorldBossLogic [VWSM <: VWorldSysMgr] extends VarargsLogging with VWPTRen
 		val resultsTeller = new ActorRefCPMsgTeller(slfActr)
 		val jdkSwCanvLauncher = new VWJdkAwtCanvasMgr{}
 		jdkSwCanvLauncher.launch(resultsTeller, fixmeClzrNonSerial)
+        myJavaCanvasManager_opt = Some(jdkSwCanvLauncher)
+	}
+    
+    private def setSwingCanvasBranding(canvasTitle: String,  canvasIconImage : Image) : Unit = {
+        
+        if(myJavaCanvasManager_opt.isDefined){
+            val javaCanvasManager : VWJdkAwtCanvasMgr  = myJavaCanvasManager_opt.get
+            val jFrame_opt: Option[JFrame] = javaCanvasManager.getFrameOption
+            if(jFrame_opt.isDefined){
+                val jFrame = jFrame_opt.get
+                jFrame.setTitle(canvasTitle)
+                jFrame.setIconImage(canvasIconImage)
+            }else{
+                error1("Cannot set swing canvas branding with title {}. jFrame does not exist.", canvasTitle)
+            }
+            error1("Cannot set swing canvas branding with title {}. javaCanvasManager does not exist.", canvasTitle)
+        }
+       
 	}
 
 	// Crucial method which wraps the internal setup results handles with a set of public actors,
