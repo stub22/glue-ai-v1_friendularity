@@ -37,6 +37,8 @@ import org.osgi.framework.BundleContext
 
 /**
   * Created by Stub22 on 6/8/2016.
+// "App" here means FriendU app, not a JME3 "app".  (This instance is several layers further out)
+// The latter is made during launchSimRenderSpace in VWCore.scala.
   */
 trait NavUiAppSvc extends VarargsLogging {
 
@@ -98,7 +100,8 @@ trait NavUiAppSvc extends VarargsLogging {
 		// instantiate the avatar body and send back a notice when done, to our bodyNoticer.
 		// THEN our bodyNoticer can send more requests do any additional manipulation on the body
 		// such as move its v-world position and orientation, attach a camera, launch an animation.
-
+		// HOWEVER, it is also possible to indepdently find bodies, as is done by VWThingActReqRouterLogic
+		// using VWBodyTARouterLogic and VWBodyMedialRendezvous.
 		postPatientCharCreateRq(charBodyID, fullHumaCfg, Option(mbrsc), bodyNoticer)
 
 	}
@@ -156,5 +159,4 @@ trait NavPumpSpaceOwner extends KnowsAkkaSys with VarargsLogging {
 	}
 
 }
-// "App" here means FriendU app, not a JME3 "app".  (This instance is several layers further out)
-// The latter is made during launchSimRenderSpace in VWCore.scala.
+

@@ -18,11 +18,13 @@ package org.friendularity.vwimpl
 
 import akka.actor.{ActorRef, Props}
 import com.jme3.math.{ColorRGBA, Quaternion, Vector3f}
-import org.appdapter.core.name.Ident
+import org.appdapter.core.name.{FreeIdent, Ident}
 import org.appdapter.fancy.log.VarargsLogging
 import org.cogchar.api.thing.{TypedValueMap, ThingActionSpec}
+import org.cogchar.name.cinema.LightsCameraAN
 import org.cogchar.name.goody.GoodyNames
 import org.cogchar.render.app.entity.GoodyActionExtractor
+import org.cogchar.render.opengl.optic.CameraMgr
 import org.friendularity.akact.{KnowsAkkaSys, FrienduActor}
 import org.friendularity.cpmsg.{CPMsgTeller, ActorRefCPMsgTeller, CPStrongTeller}
 import org.friendularity.navui.OuterCamHelp
@@ -172,8 +174,52 @@ trait CamTARouterLogic extends TARqExtractorHelp with MakesTransform3D with Oute
 	protected def getVWPubTellers : VWorldPublicTellers
 
 	def handleCameraTA(ta : ThingActionSpec, gax: GoodyActionExtractor, whoDat : ActorRef) : Unit = {
+		val camGoodyID = gax.getGoodyID
+		val dfltCamID = new FreeIdent(LightsCameraAN.URI_defaultCam);// CameraMgr.DEF_CAM_ID
+		if (camGoodyID.equals(dfltCamID)) {
+			handleCameraDirectManipTA(ta, gax, whoDat)
+		} else {
+			handleCameraGuideTA(ta, gax, whoDat)
+		}
+	}
+	def handleCameraDirectManipTA(ta : ThingActionSpec, gax: GoodyActionExtractor, whoDat : ActorRef) : Unit = {
+		val camID = gax.getGoodyID
+		val tvm = ta.getParamTVM
+
+		val stageTeller : CPMsgTeller = getVWPubTellers.getStageTeller.get
+		val opKind = gax.getKind
+
+		opKind match {
+			case GoodyActionExtractor.Kind.MOVE => {
+				info1("Processing cam-direct-move request: {}", ta)
+
+				val maybeXform: MaybeTransform3D = extractXform(tvm, gax)
+				val dur_opt: Option[JFloat] = extractDuration(tvm)
+
+				val worldPos = maybeXform.getPos // defaults to ZERO
+				val worldPointQuat = maybeXform.getRotQuat // defaults to IDENTITY
+
+				val negZDirVect =	new Vector3f(0, 0, -1)
+				val worldPointDirVect = worldPointQuat.mult(negZDirVect)
+				val updState_opt : Option[CamState3D] = Some(CamStateParams3D(worldPos, worldPointDirVect))
+				val updVP_opt: Option[ViewportDesc] = None
+
+				sendCamStateModifyRq(stageTeller, camID, updState_opt, updVP_opt)
+			}
+			case GoodyActionExtractor.Kind.SET => {
+				// Used to set the viewport
+				info1("Processing cam-viewport-change request: {}", ta)
+			}
+			case otherX => {
+				warn2("Got unexpected camera-direct op={}, full TA={}", opKind, ta)
+			}
+		}
+	}
+	def handleCameraGuideTA(ta : ThingActionSpec, gax: GoodyActionExtractor, whoDat : ActorRef) : Unit = {
 		// Resolve message cam-URI to paired shape ID, which is used for most camera movement control.
 		// However, if we want to use ".lookAt" ...
+		// OR, if we want to control a default camera (which does not have a parent shape ID)...
+
 		val camGuideShapeID = gax.getGoodyID
 		val tvm = ta.getParamTVM
 
@@ -198,7 +244,7 @@ trait CamTARouterLogic extends TARqExtractorHelp with MakesTransform3D with Oute
 				val maybeXform : MaybeTransform3D = extractXform(tvm, gax)
 				val dur_opt : Option[JFloat] = extractDuration(tvm)
 
-				sendCamMoveRq(spcTeller, camGuideShapeID, maybeXform, dur_opt)
+				sendXtraCamMoveRq(spcTeller, camGuideShapeID, maybeXform, dur_opt)
 				/*
 				val guideTgtPos = new Vector3f(-1.0f, 5.0f, 3.0f)
 				val rotAngles = Array(45.0f, -45.0f, 15.0f)
@@ -218,7 +264,7 @@ trait CamTARouterLogic extends TARqExtractorHelp with MakesTransform3D with Oute
 			case GoodyActionExtractor.Kind.SET => {
                 info1("Processing cam-set request: {}", ta)
 				val maybeXform : MaybeTransform3D = extractXform(tvm, gax)
-				sendCamMoveRq(spcTeller, camGuideShapeID, maybeXform, Option.empty[JFloat])
+				sendXtraCamMoveRq(spcTeller, camGuideShapeID, maybeXform, Option.empty[JFloat])
 			}
 			case GoodyActionExtractor.Kind.DELETE => {
 
