@@ -38,6 +38,7 @@ trait VWCamLogic extends VarargsLogging with IdentHlp with MonitoredSpaceImpl {
 
 	def updateCamState_rendThrd(mcRq : VWModifyCamStateRq) : Unit = {
 		val cbind : CameraBinding = myCamMgr.findOrMakeCameraBinding(mcRq.camID)
+		info2("Found cbind={}, applying rq={}", cbind, mcRq)
 		mcRq.updState_opt.map(applyCamState_anyThrd(cbind, _))
 		mcRq.updVP_opt.map(applyViewportDesc_rendThrd(cbind, _))
 
