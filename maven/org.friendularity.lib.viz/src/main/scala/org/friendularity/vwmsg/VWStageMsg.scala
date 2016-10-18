@@ -22,6 +22,7 @@ case class VWStageOpticsBasic(location : Vector3f, direction :Vector3f, moveSpee
 * @param displayFPSOnScreen Show frames per second
 */
 case class VWStatsViewMessage(displayContentStatsOnScreen: Boolean, displayFPSOnScreen: Boolean)  extends VWStageRqMsg
+case class VWStageSetupLighting(ambientLightColor: ColorRGBA)  extends VWStageRqMsg
 
 // JME describes the coords as:   float left, float right, float bottom, float top) {
 case class ViewportDesc(myX1_left : Float, myX2_right : Float, myY1_bot : Float, myY2_top : Float,
