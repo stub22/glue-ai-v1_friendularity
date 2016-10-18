@@ -36,7 +36,7 @@ import org.friendularity.vwimpl.{OverlayPage, IdentHlp, VWorldMasterFactory}
 
 import scala.collection.immutable.HashMap
 
-import org.friendularity.vwmsg.{VWBodyDangerYogaRq, KnownShapeCreateRqImpl, VWSCR_MeshyCmpnd, VWOverlayRq, VWSetupOvlBookRq, NavCmdImpl, NavCmdKeyClkBind, NavCmd, InnerNavCmds, VWorldPublicTellers, VWSCR_Node, VWBindCamNodeRq, VWCreateCamAndViewportRq, CamStateParams3D, CamState3D, ViewportDesc, ShapeManipRqImpl, SmooveManipEndingImpl, TransformParams3D, VWBodySkeletonDisplayToggle, VWBroadcastToAllBodies, VWClearAllShapes, VWStageResetToDefault, VWKeymapBinding_Medial, OrdinaryParams3D, VWSCR_Sphere, VWStageOpticsBasic, VWSCR_CellGrid, VWStageEmulateBonusContentAndCams, VWBodyLifeRq, VWRqTAWrapImpl, VWTARqTurtle, VWStatsViewMessage}
+import org.friendularity.vwmsg.{VWBodyDangerYogaRq, KnownShapeCreateRqImpl, VWSCR_MeshyCmpnd, VWOverlayRq, VWSetupOvlBookRq, NavCmdImpl, NavCmdKeyClkBind, NavCmd, InnerNavCmds, VWorldPublicTellers, VWSCR_Node, VWBindCamNodeRq, VWCreateCamAndViewportRq, CamStateParams3D, CamState3D, ViewportDesc, ShapeManipRqImpl, SmooveManipEndingImpl, TransformParams3D, VWBodySkeletonDisplayToggle, VWBroadcastToAllBodies, VWClearAllShapes, VWStageResetToDefault, VWKeymapBinding_Medial, OrdinaryParams3D, VWSCR_Sphere, VWStageOpticsBasic, VWSCR_CellGrid, VWStageEmulateBonusContentAndCams, VWBodyLifeRq, VWRqTAWrapImpl, VWTARqTurtle, VWStatsViewMessage, VWStageSetupLighting}
 import org.cogchar.impl.thing.fancy.ConcreteTVM
 import org.cogchar.api.vworld.GoodyActionParamWriter
 import org.cogchar.api.thing.SerTypedValueMap;
@@ -107,7 +107,8 @@ trait FunWithShapes extends IdentHlp {
 	}
 
 	def sendOvalRq_MAKE(shapeTeller : CPMsgTeller) : Ident = {
-		val sphereCol = new ColorRGBA(0.1f,1.0f,0.5f, 0.65f) // aqua
+		val aqua : ColorRGBA = new ColorRGBA(0.1f,1.0f,0.5f, 0.65f)
+		val sphereCol : ColorRGBA = aqua
 		val spherePos = new Vector3f(-15.0f, 12.0f, 4.0f) // biggish dirigible
 		val sphereRot = Quaternion.IDENTITY
 		val sphereParams = new OrdinaryParams3D(spherePos, sphereRot, Vector3f.UNIT_XYZ, sphereCol)
@@ -237,11 +238,16 @@ trait PatientSender_BonusStaging extends OuterLogic with OuterCamHelp with Ident
         val direction: Vector3f =  new Vector3f(0f, -0.3f, -1f)
 		val opticsBasicRq = new VWStageOpticsBasic(location, direction, moveSpeed, bgColor, pauseOnLostFocus, dragMouseToRotateCamera)
 		stageTeller.tellCPMsg(opticsBasicRq)
+		
         
         val displayContentStatsOnScreen = false
         val displayFPSOnScreen = false
         val displayStatsOnScreenRequest = new VWStatsViewMessage(displayContentStatsOnScreen, displayFPSOnScreen)
         stageTeller.tellCPMsg(displayStatsOnScreenRequest)
+		
+		val mostlyWhite : ColorRGBA = new ColorRGBA(0.8f, 0.8f, 0.8f, 1f)
+		val setupLightingRequest = new VWStageSetupLighting(mostlyWhite)
+        stageTeller.tellCPMsg(setupLightingRequest)
     
 		val emuBonusRq = new VWStageEmulateBonusContentAndCams()
 	 	stageTeller.tellStrongCPMsg(emuBonusRq)
@@ -276,7 +282,7 @@ trait PatientSender_BonusStaging extends OuterLogic with OuterCamHelp with Ident
     def setupFloorGoody(messageTeller : CPMsgTeller) : Unit = {
         val  paramWriter : GoodyActionParamWriter = new GoodyActionParamWriter(new ConcreteTVM())
         // Virtual Floors *MUST* have a color and location
-        paramWriter.putColor(0.8f, 0.8f, 0.8f, 1f)
+        paramWriter.putColor(0.5f, 0.5f, 0.5f, 1f)
         paramWriter.putLocation(0f, -0.5f, 0f)
         val  postedTStampMsec : Long = System.currentTimeMillis()
         val  valueMap : SerTypedValueMap = paramWriter.getValueMap()

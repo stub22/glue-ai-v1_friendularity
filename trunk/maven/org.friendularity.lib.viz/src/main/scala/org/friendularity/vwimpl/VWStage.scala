@@ -19,6 +19,7 @@ import akka.actor.Actor
 import com.jme3.asset.AssetManager
 import com.jme3.input.controls.{Trigger, ActionListener}
 import com.jme3.input.{InputManager, FlyByCamera}
+import com.jme3.light.DirectionalLight
 import com.jme3.math.{Rectangle, Vector2f, Vector3f, ColorRGBA}
 import com.jme3.renderer.{Camera, ViewPort}
 import com.jme3.scene.control.CameraControl
@@ -32,6 +33,7 @@ import org.cogchar.platform.gui.keybind.KeyBindingTracker
 import org.cogchar.render.app.core.WorkaroundAppStub;
 import org.cogchar.render.app.entity.CameraBinding
 import org.cogchar.render.opengl.optic.CameraMgr
+import org.cogchar.render.opengl.optic.LightFactory
 import org.cogchar.render.sys.context.CogcharRenderContext
 import org.cogchar.render.sys.input.VW_InputBindingFuncs
 import org.cogchar.render.sys.registry.RenderRegistryClient
@@ -40,7 +42,7 @@ import org.cogchar.render.trial.{PointerCone, TrialCameras, TrialContent}
 import org.friendularity.field.{MsgToStatusSrc, ReportSourceCtrlMsg, ReportingTickChance, MediumFieldDataBag, ItemFieldSpecDirectImpl, VWTestFieldIdents, ReportFilteringPolicy, ItemFieldData, MonitoredSpaceImpl}
 
 import org.friendularity.rbody.DualBodyRecord
-import org.friendularity.vwmsg.{VWSetupOvlBookRq, NavCmd, InnerNavCmds, VWSCR_ExistingNode, CamState3D, ViewportDesc, VWModifyCamStateRq, VWCreateCamAndViewportRq, VWBindCamNodeRq, VWorldPublicTellers, VWKeymapBinding_Medial, VWStageOpticsBasic, VWStageEmulateBonusContentAndCams, VWStageRqMsg, VWBodyRq, VWStatsViewMessage}
+import org.friendularity.vwmsg.{VWSetupOvlBookRq, NavCmd, InnerNavCmds, VWSCR_ExistingNode, CamState3D, ViewportDesc, VWModifyCamStateRq, VWCreateCamAndViewportRq, VWBindCamNodeRq, VWorldPublicTellers, VWKeymapBinding_Medial, VWStageOpticsBasic, VWStageEmulateBonusContentAndCams, VWStageRqMsg, VWBodyRq, VWStatsViewMessage, VWStageSetupLighting}
 
 import java.util.concurrent.{Callable => ConcurrentCallable, Future}
 
@@ -193,7 +195,6 @@ trait BasicOpticsLogic extends VarargsLogging with EnqHlp {
 	def sendRendTaskForOpticsBasic(rq : VWStageOpticsBasic, rrc: RenderRegistryClient) : Unit = {
 		val workaroundStub = rrc.getWorkaroundAppStub
 		val fbCam = workaroundStub.getFlyByCamera
-        
 		val mvp = workaroundStub.getPrimaryAppViewPort
 		val senderCallable : Function0[Unit] = () => {
 			prepareIndependentOptics_onRendThrd(workaroundStub, fbCam, mvp, rq.location, rq.direction, rq.moveSpeed, rq.bgColor, rq.pauseOnLostFocus, rq.dragMouseToRotateCamera)
@@ -209,16 +210,59 @@ trait StatsViewLogic extends VarargsLogging with EnqHlp {
         simpleApplication.setDisplayFps(displayFPSOnScreen)
         simpleApplication.setDisplayStatView(displayContentStatsOnScreen)
 	}
-	def sendRendTaskForStatsView(rq : VWStatsViewMessage, rrc: RenderRegistryClient) : Unit = {
-        val simpleApplication : com.jme3.app.SimpleApplication = rrc.getJme3AppStateManager(null).getApplication.asInstanceOf[com.jme3.app.SimpleApplication]
+	def sendRendTaskForStatsView(statsViewMessage : VWStatsViewMessage, registryClient: RenderRegistryClient) : Unit = {
+        val simpleApplication : com.jme3.app.SimpleApplication = registryClient.getJme3AppStateManager(null).getApplication.asInstanceOf[com.jme3.app.SimpleApplication]
     
 		val senderCallable : Function0[Unit] = () => {
-			setStatsView_onRendThrd(simpleApplication, rq.displayContentStatsOnScreen, rq.displayFPSOnScreen)
+			setStatsView_onRendThrd(simpleApplication, statsViewMessage.displayContentStatsOnScreen, statsViewMessage.displayFPSOnScreen)
 		}
-		enqueueJmeCallable(rrc, senderCallable)
+		enqueueJmeCallable(registryClient, senderCallable)
 	}
 }
-trait VWStageLogic extends DummyContentLogic with BasicOpticsLogic with StatsViewLogic with VarargsLogging with EnqHlp {
+trait LightingSetupLogic extends VarargsLogging with EnqHlp {
+	
+	/**
+	 * The 2014 virtual world had ambient lighting where {@code 
+	 * ambientLightingColor = new ColorRGBA(0.8f, 0.8f, 0.8f, 1f)}
+	 */
+	def addAmbientLighting_onRenderThread(rootNode : com.jme3.scene.Node, 
+										  ambientLightingColor : ColorRGBA): Unit = {
+		
+		info1("setting ambient light: color: {}", ambientLightingColor.toString)
+		LightFactory.addAmbientLight(rootNode, ambientLightingColor)
+	}
+	
+	/**
+	 * The 2014 virtual world had a directional light where {@code 
+	 * lightingDirection = new Vector3f(-0.1f, -0.7f, -1f)} 
+	 * and {@code lightingColor = new ColorRGBA(1f, 1f, 1f, 1f)}
+	 */
+	def addDirectionalLighting_onRenderThread(rootNode : com.jme3.scene.Node, 
+											  lightingDirection : Vector3f,
+											  lightingColor : ColorRGBA, 
+											  cogcharRenderContext: CogcharRenderContext): Unit = {
+		
+		info2("setting directional light: direction to {} and color to {}", 
+						lightingDirection.toString, lightingColor.toString)
+		
+		val factory : LightFactory = new LightFactory()
+		factory.setParentNode(rootNode)
+		val directionalLight : DirectionalLight = factory.makeDirectionalLight(lightingDirection, lightingColor)
+		factory.addLightOnMainThread(directionalLight,  cogcharRenderContext)
+	}
+	
+	
+	def sendRendTaskForLightingSetup(rq : VWStageSetupLighting, registryClient: RenderRegistryClient, 
+									 cogcharRenderContext: CogcharRenderContext) : Unit = {
+		val rootNode : com.jme3.scene.Node = registryClient.getJme3RootDeepNode(null)
+		
+		val senderCallable : Function0[Unit] = () => {
+			addAmbientLighting_onRenderThread(rootNode, rq.ambientLightColor)
+		}
+		enqueueJmeCallable(registryClient, senderCallable)
+	}
+}
+trait VWStageLogic extends DummyContentLogic with BasicOpticsLogic with StatsViewLogic with LightingSetupLogic with VarargsLogging with EnqHlp {
 
 
 }
@@ -241,6 +285,9 @@ class VWStageActor(myStageCtx : VWStageCtx) extends Actor with VWStageLogic with
 		}
         case statsViewRq :	VWStatsViewMessage => {
 			sendRendTaskForStatsView(statsViewRq, myStageCtx.getRRC)
+		}
+        case setupLightingRq :	VWStageSetupLighting => {
+			sendRendTaskForLightingSetup(setupLightingRq, myStageCtx.getRRC, myStageCtx.getCRC)
 		}
 		case keymapMedial : VWKeymapBinding_Medial => {
 			registerKeymap(myStageCtx.getRRC, keymapMedial.inpNamesToActionFuncs, keymapMedial.pubTellers)
