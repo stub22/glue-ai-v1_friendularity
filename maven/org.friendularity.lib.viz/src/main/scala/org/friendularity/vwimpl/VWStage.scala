@@ -180,7 +180,8 @@ trait BasicOpticsLogic extends VarargsLogging with EnqHlp {
         camField.setAccessible(true)
         val camera : Camera = camField.get(flyCam).asInstanceOf[Camera] //IllegalAccessException
         camera.setLocation(location)
-        camera.lookAtDirection(direction, new Vector3f(0f, 1f, 0f))
+		val upRefDirection = Vector3f.UNIT_Y
+        camera.lookAtDirection(direction, upRefDirection) // new Vector3f(0f, 1f, 0f))
         
       } catch{
         case e: NoSuchFieldException => error0("Could not set the camera's location and rotation!")
