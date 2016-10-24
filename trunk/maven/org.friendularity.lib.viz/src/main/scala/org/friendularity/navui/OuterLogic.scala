@@ -36,7 +36,7 @@ import org.friendularity.vwimpl.{OverlayPage, IdentHlp, VWorldMasterFactory}
 
 import scala.collection.immutable.HashMap
 
-import org.friendularity.vwmsg.{VWBodyDangerYogaRq, KnownShapeCreateRqImpl, VWSCR_MeshyCmpnd, VWOverlayRq, VWSetupOvlBookRq, NavCmdImpl, NavCmdKeyClkBind, NavCmd, InnerNavCmds, VWorldPublicTellers, VWSCR_Node, VWBindCamNodeRq, VWCreateCamAndViewportRq, CamStateParams3D, CamState3D, ViewportDesc, ShapeManipRqImpl, SmooveManipEndingImpl, TransformParams3D, VWBodySkeletonDisplayToggle, VWBroadcastToAllBodies, VWClearAllShapes, VWStageResetToDefault, VWKeymapBinding_Medial, OrdinaryParams3D, VWSCR_Sphere, VWStageOpticsBasic, VWSCR_CellGrid, VWStageEmulateBonusContentAndCams, VWBodyLifeRq, VWRqTAWrapImpl, VWTARqTurtle, VWStatsViewMessage, VWStageSetupLighting}
+import org.friendularity.vwmsg.{VWBodyDangerYogaRq, KnownShapeCreateRqImpl, VWSCR_MeshyCmpnd, VWOverlayRq, VWSetupOvlBookRq, NavCmdImpl, NavCmdKeyClkBind, NavCmd, InnerNavCmds, VWorldPublicTellers, VWSCR_Node, VWBindCamNodeRq, VWCreateCamAndViewportRq, CamStateParams3D, CamState3D, ViewportDesc, ShapeManipRqImpl, SmooveManipEndingImpl, TransformParams3D, VWBodySkeletonDisplayToggle, VWBroadcastToAllBodies, VWClearAllShapes, VWStageResetToDefault, VWKeymapBinding_Medial, OrdinaryParams3D, VWSCR_Sphere, VWStageOpticsBasic, VWSCR_CellGrid, VWStageEmulateBonusContentAndCams, VWBodyLifeRq, VWRqTAWrapImpl, VWTARqTurtle, VWStatsViewMessage, VWStageSetupLighting, VWStageBackgroundColor, VWStageBackgroundSkybox}
 import org.cogchar.impl.thing.fancy.ConcreteTVM
 import org.cogchar.api.vworld.GoodyActionParamWriter
 import org.cogchar.api.thing.SerTypedValueMap;
@@ -230,14 +230,27 @@ trait PatientSender_BonusStaging extends OuterLogic with OuterCamHelp with Ident
 		val stageTeller = vwpt.getStageTeller.get
 
 		val moveSpeed : Int = 60
-        val darkBlue : ColorRGBA = new ColorRGBA(0f, 0.1f, 0.35f, 1f)
-        val bgColor = darkBlue
         val pauseOnLostFocus = false
         val dragMouseToRotateCamera = true
         val location: Vector3f = new Vector3f(0f, 40f, 80f)
         val direction: Vector3f =  new Vector3f(0f, -0.3f, -1f)
-		val opticsBasicRq = new VWStageOpticsBasic(location, direction, moveSpeed, bgColor, pauseOnLostFocus, dragMouseToRotateCamera)
+		val opticsBasicRq = new VWStageOpticsBasic(location, direction, moveSpeed, pauseOnLostFocus, dragMouseToRotateCamera)
 		stageTeller.tellCPMsg(opticsBasicRq)
+		
+		val darkBlue : ColorRGBA = new ColorRGBA(0f, 0.1f, 0.35f, 1f)
+		val backgroundColorRequest = new VWStageBackgroundColor(darkBlue)
+		stageTeller.tellCPMsg(backgroundColorRequest)
+        
+		val skyboxFolder : String = "textures/skybox/Sunny Ocean/";
+		val northImagePath: String = skyboxFolder + "North.png"
+		val eastImagePath: String = skyboxFolder + "East.png"
+		val southImagePath: String = skyboxFolder + "South.png"
+		val westImagePath: String = skyboxFolder + "West.png"
+		val upImagePath: String = skyboxFolder + "Up.png"
+		val downImagePath: String = skyboxFolder + "Down.png"
+		val backgroundSkyBoxRequest = new VWStageBackgroundSkybox(northImagePath, eastImagePath, southImagePath,
+				  westImagePath, upImagePath, downImagePath)
+		stageTeller.tellCPMsg(backgroundSkyBoxRequest)
 		
         
         val displayContentStatsOnScreen = false

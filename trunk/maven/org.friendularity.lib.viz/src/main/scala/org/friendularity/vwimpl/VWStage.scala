@@ -24,7 +24,11 @@ import com.jme3.math.{Rectangle, Vector2f, Vector3f, ColorRGBA}
 import com.jme3.renderer.{Camera, ViewPort}
 import com.jme3.scene.control.CameraControl
 import com.jme3.scene.{Node => JmeNode, CameraNode}
+import com.jme3.scene.Spatial
 import com.jme3.system.AppSettings
+import com.jme3.texture.Texture
+import com.jme3.util.SkyFactory
+
 import org.appdapter.core.name.Ident
 
 import org.appdapter.fancy.log.VarargsLogging
@@ -42,7 +46,7 @@ import org.cogchar.render.trial.{PointerCone, TrialCameras, TrialContent}
 import org.friendularity.field.{MsgToStatusSrc, ReportSourceCtrlMsg, ReportingTickChance, MediumFieldDataBag, ItemFieldSpecDirectImpl, VWTestFieldIdents, ReportFilteringPolicy, ItemFieldData, MonitoredSpaceImpl}
 
 import org.friendularity.rbody.DualBodyRecord
-import org.friendularity.vwmsg.{VWSetupOvlBookRq, NavCmd, InnerNavCmds, VWSCR_ExistingNode, CamState3D, ViewportDesc, VWModifyCamStateRq, VWCreateCamAndViewportRq, VWBindCamNodeRq, VWorldPublicTellers, VWKeymapBinding_Medial, VWStageOpticsBasic, VWStageEmulateBonusContentAndCams, VWStageRqMsg, VWBodyRq, VWStatsViewMessage, VWStageSetupLighting}
+import org.friendularity.vwmsg.{VWSetupOvlBookRq, NavCmd, InnerNavCmds, VWSCR_ExistingNode, CamState3D, ViewportDesc, VWModifyCamStateRq, VWCreateCamAndViewportRq, VWBindCamNodeRq, VWorldPublicTellers, VWKeymapBinding_Medial, VWStageOpticsBasic, VWStageEmulateBonusContentAndCams, VWStageRqMsg, VWBodyRq, VWStatsViewMessage, VWStageSetupLighting, VWStageBackgroundColor, VWStageBackgroundSkybox}
 
 import java.util.concurrent.{Callable => ConcurrentCallable, Future}
 
@@ -154,20 +158,99 @@ trait DummyContentLogic extends VarargsLogging with EnqHlp {
 
 }
 trait BasicOpticsLogic extends VarargsLogging with EnqHlp {
+	
+	var skyBox_opt : Option[Spatial] = Option.empty[Spatial]
+	var backgroundColor_opt : Option[ColorRGBA] = Option.empty[ColorRGBA]
+	
+	
 	def prepareIndependentOptics_onRendThrd(workaroundStub: WorkaroundAppStub, flyCam: FlyByCamera, mainViewPort: ViewPort,
-											location : Vector3f, direction : Vector3f, moveSpeed : Int, bgColor: ColorRGBA, pauseOnLostFocus: Boolean, dragMouseToRotateCamera : Boolean): Unit = {
+											location : Vector3f, direction : Vector3f, moveSpeed : Int, pauseOnLostFocus: Boolean, dragMouseToRotateCamera : Boolean): Unit = {
 
-		info2("prepareOpticsStage1: setting flyCam speed to {}, and background color to {}",
-			moveSpeed : Integer, bgColor)
+		info1("prepareOpticsStage1: setting flyCam speed to {}", moveSpeed : Integer)
 		// Sets the speed of our POV camera movement.  The default is pretty slow.
 		flyCam.setMoveSpeed(moveSpeed)
 		flyCam.setDragToRotate(dragMouseToRotateCamera)
-        
         setLocationAndRotation(flyCam, location, direction)
         
-		mainViewPort.setBackgroundColor(bgColor)
         workaroundStub.setPauseOnLostFocus(pauseOnLostFocus)
 	}
+    
+	def setBackgroundColor_onRendThrd(mainViewPort: ViewPort, parentDeepNode: JmeNode,  bgColor: ColorRGBA): Unit = {
+
+		info1("prepareOpticsStage1: setting background color to {}", bgColor)
+		if (skyBox_opt.isDefined){
+			removeSkyBox_onRendThread(parentDeepNode)
+		}
+		
+		mainViewPort.setBackgroundColor(bgColor)
+	}
+	
+	def  removeSkyBox_onRendThread(parentDeepNode: JmeNode) : Unit = {
+		info0("SkyBox is already set. Removing SkyBox.")
+		parentDeepNode.detachChild(skyBox_opt.get)
+		skyBox_opt = Option.empty[Spatial]
+	}
+	
+	def mayLoadTexture_OnRenderThread(assetManager: AssetManager, imagePath: String) : Option[Texture] = {
+		var texture_opt : Option[Texture] = Option.empty[Texture]
+		
+		try{
+			/*
+			 * The JME documentation says: assetManager.loadTexture returns The loaded texture or 
+			 * null if failed to be loaded.
+			 * 
+			 * But in practice an AssetNotFoundException is thrown.
+			 */
+			texture_opt  = Option(assetManager.loadTexture(imagePath))
+			if(texture_opt.isEmpty){
+				error1("Failed to load texture from: {}", imagePath)
+			}
+		
+			trace1("Successfully loaded texture from: {}", texture_opt)
+		} catch{
+        case e: com.jme3.asset.AssetNotFoundException => error1("Failed to load texture from: {}", imagePath)
+      }
+
+		texture_opt
+	}
+	
+	 /**
+     * This will load a skybox background instead of a static color background. Asset is found in the
+     * content project, textures/skybox/
+     *
+	 *
+	 *
+     * Ex. textures/skybox/Default/West.png
+     */
+    def setBackgroundSkyBox_onRendThrd(parentDeepNode: JmeNode, assetManager: AssetManager, 
+				  northImagePath: String, eastImagePath: String, southImagePath: String,
+				  westImagePath: String, upImagePath: String, downImagePath: String) : Unit = {
+		info3("Setting background skybox with the following images. [North: {}, East: {}, South: {}]",
+		northImagePath, eastImagePath, southImagePath)
+		info3("Setting background skybox with the following images. [West: {}, Up: {}, Down: {}]",
+		 westImagePath, upImagePath, downImagePath)
+		
+		if (skyBox_opt.isDefined){
+			removeSkyBox_onRendThread(parentDeepNode)
+		}
+		
+		val northTexture : Option[Texture] = mayLoadTexture_OnRenderThread(assetManager, northImagePath)
+		val eastTexture : Option[Texture] = mayLoadTexture_OnRenderThread(assetManager, eastImagePath)
+		val southTexture : Option[Texture] = mayLoadTexture_OnRenderThread(assetManager, southImagePath)
+		val westTexture : Option[Texture] = mayLoadTexture_OnRenderThread(assetManager, westImagePath)
+		val upTexture : Option[Texture] = mayLoadTexture_OnRenderThread(assetManager, upImagePath)
+		val downTexture : Option[Texture] = mayLoadTexture_OnRenderThread(assetManager, downImagePath)
+		
+		if(northTexture.isEmpty || eastTexture.isEmpty || southTexture.isEmpty 
+		|| westTexture.isEmpty || upTexture.isEmpty || downTexture.isEmpty){
+			error0("Tried to set SkyBox. Could not load all of the SkyBox's textures. Ensure paths to SkyBox texture images are correct.")
+			return
+		}
+			
+		skyBox_opt = Some(SkyFactory.createSky(assetManager, westTexture.get, eastTexture.get,
+				northTexture.get, southTexture.get, upTexture.get, downTexture.get))
+		parentDeepNode.attachChild(skyBox_opt.get);
+    }
     
   /**
    * TODO(ben)[2016-10-05]: Set default location and rotation in a better manner.
@@ -197,7 +280,29 @@ trait BasicOpticsLogic extends VarargsLogging with EnqHlp {
 		val fbCam = workaroundStub.getFlyByCamera
 		val mvp = workaroundStub.getPrimaryAppViewPort
 		val senderCallable : Function0[Unit] = () => {
-			prepareIndependentOptics_onRendThrd(workaroundStub, fbCam, mvp, rq.location, rq.direction, rq.moveSpeed, rq.bgColor, rq.pauseOnLostFocus, rq.dragMouseToRotateCamera)
+			prepareIndependentOptics_onRendThrd(workaroundStub, fbCam, mvp, rq.location, rq.direction, rq.moveSpeed, rq.pauseOnLostFocus, rq.dragMouseToRotateCamera)
+		}
+		enqueueJmeCallable(rrc, senderCallable)
+	}
+	
+	def sendRendTaskForBackgroundSkyBox(rq : VWStageBackgroundSkybox, rrc: RenderRegistryClient) : Unit = {
+		val workaroundStub = rrc.getWorkaroundAppStub
+		val mvp = workaroundStub.getPrimaryAppViewPort
+		val parentDeepNode: JmeNode = rrc.getJme3RootDeepNode(null)
+		val assetManager: AssetManager = rrc.getJme3AssetManager(null)
+		val senderCallable : Function0[Unit] = () => {
+			setBackgroundSkyBox_onRendThrd(parentDeepNode, assetManager, rq.northImagePath, rq.eastImagePath, rq.southImagePath,
+																		 rq.westImagePath, rq.upImagePath, rq.downImagePath)
+		}
+		enqueueJmeCallable(rrc, senderCallable)
+	}
+	
+	def sendRendTaskForBackgroundColor(rq : VWStageBackgroundColor, rrc: RenderRegistryClient) : Unit = {
+		val workaroundStub = rrc.getWorkaroundAppStub
+		val mvp = workaroundStub.getPrimaryAppViewPort
+		val parentDeepNode: JmeNode = rrc.getJme3RootDeepNode(null)
+		val senderCallable : Function0[Unit] = () => {
+			setBackgroundColor_onRendThrd(mvp, parentDeepNode, rq.bgColor)
 		}
 		enqueueJmeCallable(rrc, senderCallable)
 	}
@@ -282,6 +387,12 @@ class VWStageActor(myStageCtx : VWStageCtx) extends Actor with VWStageLogic with
 		}
 		case opticsBasicRq :	VWStageOpticsBasic => {
 			sendRendTaskForOpticsBasic(opticsBasicRq, myStageCtx.getRRC)
+		}
+		case backroundColorRq :	VWStageBackgroundColor => {
+			sendRendTaskForBackgroundColor(backroundColorRq, myStageCtx.getRRC)
+		}
+		case backgroundSkyBoxRq :	VWStageBackgroundSkybox => {
+			sendRendTaskForBackgroundSkyBox(backgroundSkyBoxRq, myStageCtx.getRRC)
 		}
         case statsViewRq :	VWStatsViewMessage => {
 			sendRendTaskForStatsView(statsViewRq, myStageCtx.getRRC)
