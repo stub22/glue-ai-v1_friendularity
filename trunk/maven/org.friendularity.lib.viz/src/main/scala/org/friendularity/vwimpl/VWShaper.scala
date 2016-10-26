@@ -82,7 +82,7 @@ trait VWSpatialsForShapes extends PatternGridMaker with SpatMatHelper {
 
 
 	//	val tsf: TextSpatialFactory = new TextSpatialFactory(rrc)
-	def makeForRq(vwscr : VWShapeCreateRq) : Spatial = {
+	def makeOrExtractSpat(vwscr : VWShapeCreateRq) : Spatial = {
 		vwscr match {
 			case aNode : VWSCR_Node => {
 				val madeNode: JmeNode = new JmeNode("made_node_" + System.currentTimeMillis())
@@ -206,7 +206,7 @@ trait 	VWShaperLogic extends PatternGridMaker with AttachHlp with IdentHlp {
 
 	// makes the spat, attaches IDs as needed, defers attachment to parent-node as needed.
 	def makeAndPlace(toMake : VWShapeCreateRq): MadeSpatRec = {
-		val madeSpat : Spatial = myShapeMaker.makeForRq(toMake)
+		val madeSpat : Spatial = myShapeMaker.makeOrExtractSpat(toMake)
 		val madeSpatRec = registerSpat(madeSpat, toMake)
 		val deferredAttachFunc : Function0[Unit] = () => {
 			attachToParent_onRendThrd(madeSpat, toMake)

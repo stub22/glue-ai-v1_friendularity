@@ -67,13 +67,17 @@ trait OffersVWorldClient extends OffersQpidSomething  with VWTAMsgMaker {
 		info1("Sending Camera make rq={}", taSpec)
 		myClient.sendVWRqThingAct(taSpec, myClient.ENCODE_PREF_TRT)
 	}
-	def sendRq_moveExtraCamera(camGuideShapeID : Ident, xform : MaybeTransform3D, durSec : Float) : Unit = {
+	def sendRq_smooveCameraGuideShape(camGuideShapeID : Ident, xform : MaybeTransform3D, durSec : Float) : Unit = {
 		sendEntitySmooveRq(camGuideShapeID, GoodyNames.TYPE_CAMERA, xform, durSec)
 	}
 	def sendRq_abruptMoveRootCamera(rootCamID : Ident, xform : MaybeTransform3D) : Unit = {
 		sendEntityAbruptMoveRq(rootCamID, GoodyNames.TYPE_CAMERA, xform)
 	}
-	def UNUSED_sendRq_bindMainCamera_UNUSED(camGuideShapeID : Ident) : Unit = {
+	def sendRq_smooveRootCamera(rootCamID : Ident, xform : MaybeTransform3D, durSec : Float) : Unit = {
+		sendEntitySmooveRq(rootCamID, GoodyNames.TYPE_CAMERA, xform, durSec)
+	}
+
+	def UNUSED_sendRq_bindKnownCamera_UNUSED(knownCamID : Ident, camGuideShapeID : Ident) : Unit = {
 		val dfltCamRefID : Ident = GoodyNames.makeID("DFLT_CAM")
 		val btvm : BasicTypedValueMap  = new ConcreteTVM()
 		val paramWriter = new GoodyActionParamWriter(btvm)

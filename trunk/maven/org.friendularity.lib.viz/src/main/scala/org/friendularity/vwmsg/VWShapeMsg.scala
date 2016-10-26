@@ -88,10 +88,12 @@ class KnownShapeCreateRqImpl(knownNodeID_opt : Option[Ident], knownParentID_opt 
 	override def getKnownParentID_opt : Option[Ident] = knownParentID_opt
 }
 
+// Can only work as a local message.  Binds an existing JmeNode to a given ID, and optional parent.
 case class VWSCR_ExistingNode(existingNode : JmeNode,  nodeID : Ident,
 							  knownParentID_opt : Option[Ident])
 			extends KnownShapeCreateRqImpl(Option(nodeID), knownParentID_opt)
 
+// Creates a new JmeNode.
 case class VWSCR_Node(knownNodeID : Ident, knownParentID_opt : Option[Ident])
 			extends KnownShapeCreateRqImpl(Option(knownNodeID), knownParentID_opt) {
 //	override def getKnownID_opt : Option[Ident] = Option(knownNodeID)

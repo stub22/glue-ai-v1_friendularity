@@ -52,7 +52,7 @@ class ClientTestMsgSender(initDelayMsec : Int, stepDelayMsec : Int, sinbadMoves 
 			Thread.sleep(stepDelayMsec)
 			val nextTgtCamPos = new Vector3f(-80.0f, 50.0f, -72.7f)
 			val cxf = new PartialTransform3D(Some(nextTgtCamPos), None, None)
-			clientOffer.sendRq_moveExtraCamera(xtraCamGuideShapeID, cxf, 20.0f)
+			clientOffer.sendRq_smooveCameraGuideShape(xtraCamGuideShapeID, cxf, 20.0f)
 			Thread.sleep(stepDelayMsec)
 		} else {
 			Thread.sleep(stepDelayMsec)
@@ -76,29 +76,48 @@ class ClientTestMsgSender(initDelayMsec : Int, stepDelayMsec : Int, sinbadMoves 
 			clientOffer.sendSinbadSmooveRq(nxf, 8.0f)
 		}
 	}
-	def sendMainCamMsgs(): Unit = {
+	def sendMainCamMsgs_AbruptDirect(): Unit = {
 		val clientOffer = this
 		val mainCamID = new FreeIdent(LightsCameraAN.URI_defaultCam)
 		val nxtCamPos = new Vector3f(5.0f, 3.0f, 150.0f)
 		val nxf = new PartialTransform3D(Some(nxtCamPos), None, None)
-		clientOffer.sendRq_abruptMoveRootCamera(mainCamID, nxf)
+		// clientOffer.sendRq_abruptMoveRootCamera(mainCamID, nxf)
+		val dur = 7.0f
+		clientOffer.sendRq_smooveRootCamera(mainCamID, nxf, dur)
 		Thread.sleep(stepDelayMsec)
 		val nxtCamPos2 = new Vector3f(-5.0f, 8.0f, 40.0f)
 		val nxf2 = new PartialTransform3D(Some(nxtCamPos2), None, None)
-		clientOffer.sendRq_abruptMoveRootCamera(mainCamID, nxf2)
+//		clientOffer.sendRq_abruptMoveRootCamera(mainCamID, nxf2)
+		clientOffer.sendRq_smooveRootCamera(mainCamID, nxf2, dur)
+
 		Thread.sleep(stepDelayMsec)
-		clientOffer.sendRq_abruptMoveRootCamera(mainCamID, nxf)
+		//		clientOffer.sendRq_abruptMoveRootCamera(mainCamID, nxf)
+		clientOffer.sendRq_smooveRootCamera(mainCamID, nxf, dur)
+
 		Thread.sleep(stepDelayMsec)
-		clientOffer.sendRq_abruptMoveRootCamera(mainCamID, nxf2)
+		// clientOffer.sendRq_abruptMoveRootCamera(mainCamID, nxf2)
+		clientOffer.sendRq_smooveRootCamera(mainCamID, nxf2, dur)
 	}
+/*
+	def testMainCamBindAndSmoove: Unit = {
+		val clientOffer = this
+		val mainCamID = new FreeIdent(LightsCameraAN.URI_defaultCam)
+
+	}
+*/
+	val testMainCamAbruptDirect = true
 	def sendAll(): Unit = {
 		info1("Client test send thread is sleeping for {} msec", initDelayMsec: Integer)
-		Thread.sleep(initDelayMsec)
-		sendMainCamMsgs()
+		if (testMainCamAbruptDirect) {
+			Thread.sleep(initDelayMsec)
+			sendMainCamMsgs_AbruptDirect()
+		}
 		Thread.sleep(stepDelayMsec)
 		sendBunchaMsgs()
-		Thread.sleep(stepDelayMsec)
-		sendMainCamMsgs()
+		if (testMainCamAbruptDirect) {
+			Thread.sleep(stepDelayMsec)
+			sendMainCamMsgs_AbruptDirect()
+		}
 	}
 	def startTestThread () {
 		initClientConn()
