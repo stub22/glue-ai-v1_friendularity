@@ -44,17 +44,32 @@ trait OuterCamHelp extends MakesTransform3D with IdentHlp with VarargsLogging {
 		val makeCamRq = new VWCreateCamAndViewportRq(camID, initCamState, initVP)
 		stageTeller.tellCPMsg(makeCamRq)
 
-		info1("Requesting cam-guide node at ID={}", camGuideNodeID)
+		info1("Requesting cam(xtra)-guide node at ID={}", camGuideNodeID)
 		val makeGuideNodeRQ = new VWSCR_Node(camGuideNodeID, None)
 		spcTeller.tellCPMsg(makeGuideNodeRQ)
 
-		val guideIsParent = true
-		info2("Binding cam at ID={} to cam-guide node at ID={}", camGuideNodeID, camID)
+		val flag_guideIsParent = true
+		info2("Binding xtra cam at ID={} to cam-guide node at ID={}", camID, camGuideNodeID)
 
-		val camGuideBindRq = new VWBindCamNodeRq(camID, guideIsParent, spcTeller, camGuideNodeID)
+		val flag_attachVisibleMarker = true
+		val camGuideBindRq = new VWBindCamNodeRq(camID, flag_guideIsParent, spcTeller, camGuideNodeID, flag_attachVisibleMarker)
 		stageTeller.tellCPMsg(camGuideBindRq)
 	}
-	def sendXtraCamMoveRq(spcTeller : CPMsgTeller, xtraCamGuideNodeID : Ident, mayXform : MaybeTransform3D, durSec_opt : Option[JFloat]) : Unit = {
+	def bindKnownCam(stageTeller : CPMsgTeller, spcTeller : CPMsgTeller,
+							camID : Ident,	camGuideNodeID : Ident) : Unit = {
+		info1("Requesting cam(known)-guide node at ID={}", camGuideNodeID)
+		val makeGuideNodeRQ = new VWSCR_Node(camGuideNodeID, None)
+		spcTeller.tellCPMsg(makeGuideNodeRQ)
+
+		val flag_guideIsParent = true
+		info2("Binding known cam at ID={} to cam-guide node at ID={}", camID, camGuideNodeID)
+
+		val flag_attachVisibleMarker = true
+		// Cam guide node will become the parent of the camera-Node
+		val camGuideBindRq = new VWBindCamNodeRq(camID, flag_guideIsParent, spcTeller, camGuideNodeID, flag_attachVisibleMarker)
+		stageTeller.tellCPMsg(camGuideBindRq)
+	}
+	def sendGuidedCamMoveRq(spcTeller : CPMsgTeller, xtraCamGuideNodeID : Ident, mayXform : MaybeTransform3D, durSec_opt : Option[JFloat]) : Unit = {
 		val concXform : Transform3D = makeDefiniteXForm(mayXform)
 		val manipGuts : ManipDesc = if (durSec_opt.isDefined) {
 			new SmooveManipEndingImpl(concXform, durSec_opt.get)
@@ -62,6 +77,7 @@ trait OuterCamHelp extends MakesTransform3D with IdentHlp with VarargsLogging {
 			new AbruptManipAbsImpl(concXform)
 		}
 		val guideManipMsg = new ShapeManipRqImpl(xtraCamGuideNodeID, manipGuts)
+		info1("Sending guided cam manip msg to spcTeller: {}", guideManipMsg)
 		spcTeller.tellCPMsg(guideManipMsg)
 	}
 

@@ -182,38 +182,82 @@ trait CamTARouterLogic extends TARqExtractorHelp with MakesTransform3D with Oute
 			handleCameraGuideTA(ta, gax, whoDat)
 		}
 	}
-	def handleCameraDirectManipTA(ta : ThingActionSpec, gax: GoodyActionExtractor, whoDat : ActorRef) : Unit = {
+	private lazy val myDfltCamGuideID : Ident = makeStampyRandyIdent("dfltCamGuide")
+	private var dfltCamIsBoundToGuide : Boolean = false
+
+	private def ensureDfltCamIsBoundToGuide(dfltCamID : Ident): Ident = {
+		if (!dfltCamIsBoundToGuide) {
+			val stageTeller : CPMsgTeller = getVWPubTellers.getStageTeller.get
+			val spcTeller : CPMsgTeller = getVWPubTellers.getShaperTeller.get
+
+			bindKnownCam(stageTeller, spcTeller, dfltCamID, myDfltCamGuideID)
+			dfltCamIsBoundToGuide = true
+		}
+		myDfltCamGuideID
+	}
+	private def handleCameraDirectManipTA(ta : ThingActionSpec, gax: GoodyActionExtractor, whoDat : ActorRef) : Unit = {
 		val camID = gax.getGoodyID
 		val tvm = ta.getParamTVM
 
 		val stageTeller : CPMsgTeller = getVWPubTellers.getStageTeller.get
 		val opKind = gax.getKind
 
+		val useDirectMoves = false
 		opKind match {
+
+			case GoodyActionExtractor.Kind.CREATE => {
+				// OPTIONAL:  Interpreted as request to bind guide shape
+				val guideShapeID = ensureDfltCamIsBoundToGuide(camID)
+			}
+
 			case GoodyActionExtractor.Kind.MOVE => {
-				info1("Processing cam-direct-move request: {}", ta)
+				if (useDirectMoves) {
+					routeDirectCamMove(ta, gax)
+				} else {
+					// Possible minor race condition here, since cam-binding may not be completed in stage teller
+					// before guided movement begins in space teller.  However, seems that the movement
+					// is independent, and thus should catch-up anyway.
+					val guideShapeID = ensureDfltCamIsBoundToGuide(camID)
+					val maybeXform : MaybeTransform3D = extractXform(tvm, gax)
+					val dur_opt : Option[JFloat] = extractDuration(tvm)
 
-				val maybeXform: MaybeTransform3D = extractXform(tvm, gax)
-				val dur_opt: Option[JFloat] = extractDuration(tvm)
+					val spcTeller : CPMsgTeller = getVWPubTellers.getShaperTeller.get
 
-				val worldPos = maybeXform.getPos // defaults to ZERO
-				val worldPointQuat = maybeXform.getRotQuat // defaults to IDENTITY
-
-				val negZDirVect =	new Vector3f(0, 0, -1)
-				val worldPointDirVect = worldPointQuat.mult(negZDirVect)
-				val updState_opt : Option[CamState3D] = Some(CamStateParams3D(worldPos, worldPointDirVect))
-				val updVP_opt: Option[ViewportDesc] = None
-
-				sendCamStateModifyRq(stageTeller, camID, updState_opt, updVP_opt)
+					sendGuidedCamMoveRq(spcTeller, guideShapeID, maybeXform, dur_opt)
+				}
 			}
 			case GoodyActionExtractor.Kind.SET => {
-				// Used to set the viewport
-				info1("Processing cam-viewport-change request: {}", ta)
+				// TODO:  Can be used to set the viewport
+				info1("OOPS 'SET' NOT IMPLELENTED YET for default camera, ignoring TA={}", ta)
 			}
 			case otherX => {
 				warn2("Got unexpected camera-direct op={}, full TA={}", opKind, ta)
 			}
 		}
+	}
+
+	private def routeDirectCamMove(ta : ThingActionSpec, gax: GoodyActionExtractor) : Unit = {
+
+		val camID = gax.getGoodyID
+		val tvm = ta.getParamTVM
+
+		val stageTeller : CPMsgTeller = getVWPubTellers.getStageTeller.get
+
+		info1("Routing cam-direct-move request based on TA={}", ta)
+
+		val maybeXform: MaybeTransform3D = extractXform(tvm, gax)
+		val dur_opt: Option[JFloat] = extractDuration(tvm)
+
+		val worldPos = maybeXform.getPos // defaults to ZERO
+		val worldPointQuat = maybeXform.getRotQuat // defaults to IDENTITY
+
+		val negZDirVect =	new Vector3f(0, 0, -1)
+		val worldPointDirVect = worldPointQuat.mult(negZDirVect)
+		val updState_opt : Option[CamState3D] = Some(CamStateParams3D(worldPos, worldPointDirVect))
+		val updVP_opt: Option[ViewportDesc] = None
+
+		sendCamStateModifyRq(stageTeller, camID, updState_opt, updVP_opt)
+
 	}
 	def handleCameraGuideTA(ta : ThingActionSpec, gax: GoodyActionExtractor, whoDat : ActorRef) : Unit = {
 		// Resolve message cam-URI to paired shape ID, which is used for most camera movement control.
@@ -244,7 +288,7 @@ trait CamTARouterLogic extends TARqExtractorHelp with MakesTransform3D with Oute
 				val maybeXform : MaybeTransform3D = extractXform(tvm, gax)
 				val dur_opt : Option[JFloat] = extractDuration(tvm)
 
-				sendXtraCamMoveRq(spcTeller, camGuideShapeID, maybeXform, dur_opt)
+				sendGuidedCamMoveRq(spcTeller, camGuideShapeID, maybeXform, dur_opt)
 				/*
 				val guideTgtPos = new Vector3f(-1.0f, 5.0f, 3.0f)
 				val rotAngles = Array(45.0f, -45.0f, 15.0f)
@@ -264,7 +308,7 @@ trait CamTARouterLogic extends TARqExtractorHelp with MakesTransform3D with Oute
 			case GoodyActionExtractor.Kind.SET => {
                 info1("Processing cam-set request: {}", ta)
 				val maybeXform : MaybeTransform3D = extractXform(tvm, gax)
-				sendXtraCamMoveRq(spcTeller, camGuideShapeID, maybeXform, Option.empty[JFloat])
+				sendGuidedCamMoveRq(spcTeller, camGuideShapeID, maybeXform, Option.empty[JFloat])
 			}
 			case GoodyActionExtractor.Kind.DELETE => {
 

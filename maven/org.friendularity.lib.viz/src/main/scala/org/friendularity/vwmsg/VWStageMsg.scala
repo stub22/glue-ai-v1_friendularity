@@ -44,7 +44,8 @@ case class VWModifyCamStateRq(camID : Ident, updState_opt : Option[CamState3D], 
 // Must refer to an existing cam, which was either made by VWCreateCam_, or is known by some wellKnownID.
 // node will be attached as camera parent or child depending on flag.
 // Shape(node) is an example of a spaceNode.
-case class VWBindCamNodeRq(camID : Ident, spaceNodeIsCamParent_NotChild : Boolean, spaceTeller : CPMsgTeller, spaceNodeID : Ident) extends VWStageRqMsg
+case class VWBindCamNodeRq(camID : Ident, flag_spaceNodeIsCamParent_NotChild : Boolean, spaceTeller : CPMsgTeller,
+						   spaceNodeID : Ident, flag_attachVisibleMarker : Boolean) extends VWStageRqMsg
 
 // This can
 // case class VWCamNodeManipRq(camNodeID : Ident, manipGuts : ManipDesc) extends VWStageRqMsg
