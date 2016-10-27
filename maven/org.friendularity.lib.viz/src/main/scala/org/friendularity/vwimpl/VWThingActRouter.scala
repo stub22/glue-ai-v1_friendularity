@@ -28,7 +28,7 @@ import org.cogchar.render.opengl.optic.CameraMgr
 import org.friendularity.akact.{KnowsAkkaSys, FrienduActor}
 import org.friendularity.cpmsg.{CPMsgTeller, ActorRefCPMsgTeller, CPStrongTeller}
 import org.friendularity.navui.OuterCamHelp
-import org.friendularity.vwmsg.{TransformParams3D, CamStateParams3D, ViewportDesc, CamState3D, SmooveManipEndingImpl, VWBodyManipRq, AbruptManipAbsImpl, SmooveManipGutsImpl, ManipDesc, Transform3D, MakesTransform3D, PartialTransform3D, MaybeTransform3D, VWBodyFindRq, VWBodyLifeRq, VWBodyRq, VWBodyNotice, VWorldPublicTellers, VWRqTAWrapper}
+import org.friendularity.vwmsg.{VWShapeAttachRq, VWSCR_Node, VWShapeDetachRq, ManipStatusMsg, TransformParams3D, CamStateParams3D, ViewportDesc, CamState3D, SmooveManipEndingImpl, VWBodyManipRq, AbruptManipAbsImpl, SmooveManipGutsImpl, ManipDesc, Transform3D, MakesTransform3D, PartialTransform3D, MaybeTransform3D, VWBodyFindRq, VWBodyLifeRq, VWBodyRq, VWBodyNotice, VWorldPublicTellers, VWRqTAWrapper}
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 
@@ -168,34 +168,95 @@ trait VWBodyTARouterLogic extends TARqExtractorHelp with MakesTransform3D  with 
 	def receiveBodyNotice(vwbn : VWBodyNotice) : Unit = {
 		getMedialRendezvous.noticeBody(vwbn)
 	}
-
 }
-trait CamTARouterLogic extends TARqExtractorHelp with MakesTransform3D with OuterCamHelp {
+trait DfltCamGuideMgr extends OuterCamHelp with TARqExtractorHelp with IdentHlp {
 	protected def getVWPubTellers : VWorldPublicTellers
 
-	def handleCameraTA(ta : ThingActionSpec, gax: GoodyActionExtractor, whoDat : ActorRef) : Unit = {
-		val camGoodyID = gax.getGoodyID
-		val dfltCamID = new FreeIdent(LightsCameraAN.URI_defaultCam);// CameraMgr.DEF_CAM_ID
-		if (camGoodyID.equals(dfltCamID)) {
-			handleCameraDirectManipTA(ta, gax, whoDat)
-		} else {
-			handleCameraGuideTA(ta, gax, whoDat)
-		}
-	}
 	private lazy val myDfltCamGuideID : Ident = makeStampyRandyIdent("dfltCamGuide")
 	private var dfltCamIsBoundToGuide : Boolean = false
 
-	private def ensureDfltCamIsBoundToGuide(dfltCamID : Ident): Ident = {
+	private var dfltCamGuideIsBoundToRoot = false
+
+	private var myLastMoveStatHandlerID_opt : Option[Ident] = None
+
+	protected def getLastSendStatHandlerID_opt : Option[Ident] = myLastMoveStatHandlerID_opt
+
+	protected def ensureDfltCamIsBoundToGuide(dfltCamID : Ident): Ident = {
 		if (!dfltCamIsBoundToGuide) {
 			val stageTeller : CPMsgTeller = getVWPubTellers.getStageTeller.get
 			val spcTeller : CPMsgTeller = getVWPubTellers.getShaperTeller.get
 
 			bindKnownCam(stageTeller, spcTeller, dfltCamID, myDfltCamGuideID)
 			dfltCamIsBoundToGuide = true
+			dfltCamGuideIsBoundToRoot = true
+		} else {
+			if (!dfltCamGuideIsBoundToRoot) {
+				reattachDfltCamGuideToRoot()
+			}
 		}
 		myDfltCamGuideID
 	}
-	private def handleCameraDirectManipTA(ta : ThingActionSpec, gax: GoodyActionExtractor, whoDat : ActorRef) : Unit = {
+	protected def detachDfltCamGuideFromRoot(): Unit = {
+		val guideNodeID = myDfltCamGuideID
+		val spcTeller : CPMsgTeller = getVWPubTellers.getShaperTeller.get
+		val detachRq = new VWShapeDetachRq(guideNodeID)
+		spcTeller.tellCPMsg(detachRq)
+		dfltCamGuideIsBoundToRoot = false
+	}
+	private def reattachDfltCamGuideToRoot(): Unit = {
+		val guideNodeID = myDfltCamGuideID
+		info1("Reattaching dflt-cam guide at ID={} to parent (root)", guideNodeID)
+		val reattachGuideNodeRQ = new VWShapeAttachRq(guideNodeID, None)
+		val spcTeller : CPMsgTeller = getVWPubTellers.getShaperTeller.get
+		spcTeller.tellCPMsg(reattachGuideNodeRQ)
+
+		dfltCamGuideIsBoundToRoot = true
+	}
+	protected def moveDfltCamViaGuide(ta : ThingActionSpec, gax: GoodyActionExtractor, whoDat : ActorRef) : Unit = {
+		val camID = gax.getGoodyID
+		val tvm = ta.getParamTVM
+
+// 		val stageTeller : CPMsgTeller = getVWPubTellers.getStageTeller.get
+
+		// Possible minor race condition here, since cam-binding may not be completed in stage teller
+		// before guided movement begins in space teller.  However, seems that the movement
+		// is independent, and thus should catch-up anyway.
+		val guideShapeID = ensureDfltCamIsBoundToGuide(camID)
+		val maybeXform : MaybeTransform3D = extractXform(tvm, gax)
+		val dur_opt : Option[JFloat] = extractDuration(tvm)
+
+		val spcTeller : CPMsgTeller = getVWPubTellers.getShaperTeller.get
+
+		val cmplStsTlr = new ActorRefCPMsgTeller[ManipStatusMsg](whoDat)
+		val statusHandlerID_opt : Option[Ident] = sendGuidedCamMoveRq(spcTeller, guideShapeID, maybeXform, dur_opt, Some(cmplStsTlr))
+		val statHandlerID = statusHandlerID_opt.get
+		myLastMoveStatHandlerID_opt = statusHandlerID_opt
+	}
+	def receiveManipStatus (manipStat : ManipStatusMsg) : Unit = {
+		info1("CamTARouterLogic received manipStat={}", manipStat)
+		val handleID = manipStat.getHandleID
+		val lastSentHandleID = myLastMoveStatHandlerID_opt.get
+		if (lastSentHandleID.equals(handleID)) {
+			info1("Ahoy - got completion for handlerID={}, so this is where we want to detach the main-cam guide node", handleID)
+			detachDfltCamGuideFromRoot()
+		} else {
+			warn2("Ignoring completion for handleID={}, because it does not match our lastSentHandleID={}", handleID, lastSentHandleID)
+		}
+	}
+}
+trait CamTARouterLogic extends TARqExtractorHelp with MakesTransform3D with OuterCamHelp with DfltCamGuideMgr {
+
+
+	def handleCameraTA(ta : ThingActionSpec, gax: GoodyActionExtractor, whoDat : ActorRef) : Unit = {
+		val camGoodyID = gax.getGoodyID
+		val dfltCamID = new FreeIdent(LightsCameraAN.URI_defaultCam);// CameraMgr.DEF_CAM_ID
+		if (camGoodyID.equals(dfltCamID)) {
+			handleDfltCameraManipTA(ta, gax, whoDat)
+		} else {
+			handleCameraGuideTA(ta, gax, whoDat)
+		}
+	}
+	private def handleDfltCameraManipTA(ta : ThingActionSpec, gax: GoodyActionExtractor, whoDat : ActorRef) : Unit = {
 		val camID = gax.getGoodyID
 		val tvm = ta.getParamTVM
 
@@ -214,21 +275,12 @@ trait CamTARouterLogic extends TARqExtractorHelp with MakesTransform3D with Oute
 				if (useDirectMoves) {
 					routeDirectCamMove(ta, gax)
 				} else {
-					// Possible minor race condition here, since cam-binding may not be completed in stage teller
-					// before guided movement begins in space teller.  However, seems that the movement
-					// is independent, and thus should catch-up anyway.
-					val guideShapeID = ensureDfltCamIsBoundToGuide(camID)
-					val maybeXform : MaybeTransform3D = extractXform(tvm, gax)
-					val dur_opt : Option[JFloat] = extractDuration(tvm)
-
-					val spcTeller : CPMsgTeller = getVWPubTellers.getShaperTeller.get
-
-					sendGuidedCamMoveRq(spcTeller, guideShapeID, maybeXform, dur_opt)
+					moveDfltCamViaGuide(ta, gax, whoDat)
 				}
 			}
 			case GoodyActionExtractor.Kind.SET => {
 				// TODO:  Can be used to set the viewport
-				info1("OOPS 'SET' NOT IMPLELENTED YET for default camera, ignoring TA={}", ta)
+				info1("OOPS 'SET' NOT IMPLELENTED YET for default camera (but you can use MOVE with/without duration), ignoring TA={}", ta)
 			}
 			case otherX => {
 				warn2("Got unexpected camera-direct op={}, full TA={}", opKind, ta)
@@ -288,33 +340,21 @@ trait CamTARouterLogic extends TARqExtractorHelp with MakesTransform3D with Oute
 				val maybeXform : MaybeTransform3D = extractXform(tvm, gax)
 				val dur_opt : Option[JFloat] = extractDuration(tvm)
 
-				sendGuidedCamMoveRq(spcTeller, camGuideShapeID, maybeXform, dur_opt)
-				/*
-				val guideTgtPos = new Vector3f(-1.0f, 5.0f, 3.0f)
-				val rotAngles = Array(45.0f, -45.0f, 15.0f)
-				val guideTgtRot = new Quaternion(rotAngles)
-				val guideTgtScale = Vector3f.UNIT_XYZ
-				val guideTgtXform = new TransformParams3D(guideTgtPos, guideTgtRot, guideTgtScale)
-				*/
+				sendGuidedCamMoveRq(spcTeller, camGuideShapeID, maybeXform, dur_opt, None)
 
-
-				/*
-					val camShortLabel: String = "camMadeByTARouter"
-					val initCamState: CamState3D = null
-					val initVP: ViewportDesc = null
-					val camGuideID = makeAndBindExtraCam(stageTeller, spcTeller, camShortLabel, initCamState, initVP)
-				*/
 			}
 			case GoodyActionExtractor.Kind.SET => {
                 info1("Processing cam-set request: {}", ta)
 				val maybeXform : MaybeTransform3D = extractXform(tvm, gax)
-				sendGuidedCamMoveRq(spcTeller, camGuideShapeID, maybeXform, Option.empty[JFloat])
+				sendGuidedCamMoveRq(spcTeller, camGuideShapeID, maybeXform, Option.empty[JFloat], None)
 			}
 			case GoodyActionExtractor.Kind.DELETE => {
 
 			}
 		}
 	}
+
+
 }
 trait VWThingActReqRouterLogic extends VWBodyTARouterLogic with CamTARouterLogic with MakesTransform3D {
 
@@ -358,8 +398,6 @@ trait VWThingActReqRouterLogic extends VWBodyTARouterLogic with CamTARouterLogic
 		}
 	}
 
-	// override def getCharAdminTeller : CPStrongTeller[VWBodyLifeRq] = getVWPubTellers.getCharAdminTeller.get
-
 }
 class VWThingActReqRouterActor(routerLogic : VWThingActReqRouterLogic) extends FrienduActor {
 	override def receive = {
@@ -368,6 +406,9 @@ class VWThingActReqRouterActor(routerLogic : VWThingActReqRouterLogic) extends F
 		}
 		case vwbn: VWBodyNotice => {
 			routerLogic.receiveBodyNotice(vwbn)
+		}
+		case manipStat : ManipStatusMsg => {
+			routerLogic.receiveManipStatus(manipStat)
 		}
 		case other => {
 			getLogger().warn("ThingActReqRouterActor received unexpected message: {}", other)

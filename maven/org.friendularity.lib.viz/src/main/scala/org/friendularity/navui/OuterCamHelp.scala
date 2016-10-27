@@ -21,9 +21,9 @@ import java.lang.{Integer => JInt, Long => JLong, Float => JFloat}
 import com.jme3.math.{Quaternion, Vector3f}
 import org.appdapter.core.name.Ident
 import org.appdapter.fancy.log.VarargsLogging
-import org.friendularity.cpmsg.CPMsgTeller
+import org.friendularity.cpmsg.{CPStrongTeller, CPMsgTeller}
 import org.friendularity.vwimpl.IdentHlp
-import org.friendularity.vwmsg.{VWModifyCamStateRq, AbruptManipAbsImpl, ManipDesc, MakesTransform3D, Transform3D, MaybeTransform3D, ShapeManipRqImpl, SmooveManipEndingImpl, TransformParams3D, VWBindCamNodeRq, VWSCR_Node, VWCreateCamAndViewportRq, ViewportDesc, CamState3D}
+import org.friendularity.vwmsg.{ManipStatusMsg, VWModifyCamStateRq, AbruptManipAbsImpl, ManipDesc, MakesTransform3D, Transform3D, MaybeTransform3D, ShapeManipRqImpl, SmooveManipEndingImpl, TransformParams3D, VWBindCamNodeRq, VWSCR_Node, VWCreateCamAndViewportRq, ViewportDesc, CamState3D}
 
 /**
   * Created by Stub22 on 8/13/2016.
@@ -69,16 +69,20 @@ trait OuterCamHelp extends MakesTransform3D with IdentHlp with VarargsLogging {
 		val camGuideBindRq = new VWBindCamNodeRq(camID, flag_guideIsParent, spcTeller, camGuideNodeID, flag_attachVisibleMarker)
 		stageTeller.tellCPMsg(camGuideBindRq)
 	}
-	def sendGuidedCamMoveRq(spcTeller : CPMsgTeller, xtraCamGuideNodeID : Ident, mayXform : MaybeTransform3D, durSec_opt : Option[JFloat]) : Unit = {
+	// Returns ID of the statusHandler
+	def sendGuidedCamMoveRq(spcTeller : CPMsgTeller, xtraCamGuideNodeID : Ident, mayXform : MaybeTransform3D,
+							durSec_opt : Option[JFloat], statusTlr_opt : Option[CPStrongTeller[ManipStatusMsg]] ) : Option[Ident] = {
 		val concXform : Transform3D = makeDefiniteXForm(mayXform)
 		val manipGuts : ManipDesc = if (durSec_opt.isDefined) {
 			new SmooveManipEndingImpl(concXform, durSec_opt.get)
 		} else {
 			new AbruptManipAbsImpl(concXform)
 		}
-		val guideManipMsg = new ShapeManipRqImpl(xtraCamGuideNodeID, manipGuts)
-		info1("Sending guided cam manip msg to spcTeller: {}", guideManipMsg)
+		val guideManipMsg = new ShapeManipRqImpl(xtraCamGuideNodeID, manipGuts, statusTlr_opt)
+		val statusHandlerID_opt = guideManipMsg.getStatusHandler_opt.map(_.getHandleID) //  manipGuts.getManipID
+		info2("Sending guided cam manip msg with statusHandlerID_opt={} to spcTeller: {}", statusHandlerID_opt, guideManipMsg)
 		spcTeller.tellCPMsg(guideManipMsg)
+		statusHandlerID_opt
 	}
 
 	def sendCamStateModifyRq(stgTeller : CPMsgTeller, camID : Ident, updState_opt : Option[CamState3D], updVP_opt: Option[ViewportDesc]) : Unit = {

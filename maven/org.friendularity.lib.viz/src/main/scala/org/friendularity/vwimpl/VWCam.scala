@@ -49,8 +49,10 @@ trait VWCamLogic extends VarargsLogging with IdentHlp with MonitoredSpaceImpl {
 		val cam = cbind.getCamera
 		val camNode = new CameraNode(camNodeName, cam)
 
-		val camMarkerNode: JmeNode = makePointerCone(getStageCtx.getRRC, "markerConeFor_" + camNodeName)
-		camNode.attachChild(camMarkerNode)
+		if (bcnRq.flag_attachVisibleMarker) {
+			val camMarkerNode: JmeNode = makePointerCone(getStageCtx.getRRC, "markerConeFor_" + camNodeName)
+			camNode.attachChild(camMarkerNode)
+		}
 
 		camNode.setControlDir(CameraControl.ControlDirection.SpatialToCamera)
 
