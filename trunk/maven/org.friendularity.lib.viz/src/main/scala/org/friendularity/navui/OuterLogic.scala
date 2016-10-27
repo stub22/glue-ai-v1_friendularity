@@ -130,7 +130,7 @@ trait FunWithShapes extends IdentHlp {
 	def sendShpSmooveRq(shapeTeller : CPMsgTeller, shapeID : Ident,
 						tgtXform : TransformParams3D, durSec : Float) : Unit = {
 		val endingManip = new SmooveManipEndingImpl(tgtXform, durSec)
-		val sphereManipMsg = new ShapeManipRqImpl(shapeID, endingManip)
+		val sphereManipMsg = new ShapeManipRqImpl(shapeID, endingManip, None)
 		shapeTeller.tellCPMsg(sphereManipMsg)
 	}
 	def finallySendFunShapeRqs(shapeTeller : CPMsgTeller) : Unit = {
@@ -394,7 +394,7 @@ trait PatientSender_BonusStaging extends OuterLogic with OuterCamHelp with Ident
 		val guideTgtScale = Vector3f.UNIT_XYZ
 		val guideTgtXform = new TransformParams3D(guideTgtPos, guideTgtRot, guideTgtScale)
 
-		sendGuidedCamMoveRq(spcTeller, camGuideNodeID, guideTgtXform, Some(60.0f))
+		sendGuidedCamMoveRq(spcTeller, camGuideNodeID, guideTgtXform, Some(60.0f), None)
 		// val endingManip = new SmooveManipEndingImpl(guideTgtXform, 60.0f)
 		// val guideManipMsg = new ShapeManipRqImpl(camGuideNodeID, endingManip)
 		// spcTeller.tellCPMsg(guideManipMsg)

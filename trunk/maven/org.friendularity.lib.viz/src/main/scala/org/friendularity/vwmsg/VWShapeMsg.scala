@@ -7,6 +7,7 @@ import com.jme3.scene.{Node => JmeNode}
 
 import org.appdapter.core.name.Ident
 import org.cogchar.render.trial.TextSpatialFactory
+import org.friendularity.cpmsg.CPStrongTeller
 
 /**
   * Created by Stub22 on 6/22/2016.
@@ -30,14 +31,22 @@ trait VWShapeCreateRq extends VWContentRq {
 	def inFlatSpace : Boolean = false // Default is inDeepSpace=3D, override to make flat=2D=true
 }
 
+case class VWShapeAttachRq(knownID : Ident, knownParentID_opt : Option[Ident]) extends VWContentRq
+
+
 trait VWShapeManipRq extends VWContentRq {
 	def getTgtShapeID : Ident
 	def getManipDesc : ManipDesc
+	def getStatusHandler_opt : Option[ManipCompletionHandle] = None
 }
-case class ShapeManipRqImpl(myTgtShapeID : Ident, myManipDesc : ManipDesc) extends 	VWShapeManipRq {
+case class ShapeManipRqImpl(myTgtShapeID : Ident, myManipDesc : ManipDesc,
+							statusTlr_opt : Option[CPStrongTeller[ManipStatusMsg]]) extends VWShapeManipRq {
 	override def getTgtShapeID: Ident = myTgtShapeID
 
 	override def getManipDesc: ManipDesc = myManipDesc
+
+	lazy val statusHandlerOpt = statusTlr_opt.map(tlr => new ManipStatusPropagator(Option(tlr)))
+	override def getStatusHandler_opt : Option[ManipCompletionHandle] = statusHandlerOpt
 }
 
 // Actual msgs we expect, with case-class impls below.
@@ -77,6 +86,9 @@ object ParamsConstants {
 trait VWShapeClearRq extends VWContentRq
 
 case class VWClearAllShapes() extends VWShapeClearRq
+
+case class VWShapeDetachRq(shapeID : Ident) extends VWContentRq
+
 
 // These message types are matchable to the fleshier 3D primitives in JMonkey3
 

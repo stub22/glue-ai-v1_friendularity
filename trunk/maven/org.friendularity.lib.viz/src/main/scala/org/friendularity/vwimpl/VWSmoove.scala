@@ -15,12 +15,12 @@
  */
 package org.friendularity.vwimpl
 
-import com.jme3.animation.{LoopMode, AnimControl => JmeAnimCtrl, AnimationFactory, Animation => JmeGrossAnim}
+import com.jme3.animation.{AnimControl => JmeAnimCtrl, Animation => JmeGrossAnim, AnimEventListener => JmeAnimEventListener, AnimChannel, LoopMode, AnimationFactory}
 import com.jme3.math.{Quaternion, Vector3f, ColorRGBA}
 import com.jme3.scene.Spatial
 import org.appdapter.core.name.Ident
 import org.appdapter.fancy.log.VarargsLogging
-import org.friendularity.vwmsg.{VWShapeManipRq, ShapeManipRqImpl, SmooveManipFullImpl, SmooveManipEnding, AbruptManipAbs, ManipDesc, DoTransformAbsoluteNow,  TransformParams3D, Transform3D, SmooveManipFull}
+import org.friendularity.vwmsg.{ManipCompletionHandle, VWShapeManipRq, ShapeManipRqImpl, SmooveManipFullImpl, SmooveManipEnding, AbruptManipAbs, ManipDesc, DoTransformAbsoluteNow, TransformParams3D, Transform3D, SmooveManipFull}
 
 /**
   * Created by Stub22 on 6/30/2016.
@@ -159,7 +159,7 @@ trait JmeAnimCtrlWrap {
 	*/
 	def cancelAnyOldAnimsFound(s : Spatial) : Unit = {
 		val ctrlOpt : Option[JmeAnimCtrl] = findAnimCtrl(s)
-		ctrlOpt.map(ac => cancelOldAnims(ac))
+		ctrlOpt.map(ac => cancelOldAnims(ac))  // Note that this calls clearChannels
 	}
 	/*
 	def ensureAnimCtrlEnabled(s : Spatial) : Unit = {
@@ -179,13 +179,37 @@ trait JmeAnimCtrlWrap {
 	}
 
 	def fireAnimUnloopedUnblended(ac : JmeAnimCtrl, a: JmeGrossAnim) : Unit = {
-		cancelOldAnims(ac)
+		cancelOldAnims(ac)  // Note that this calls clearChannels
 		val blendTimeSec = 0f
 		fireAnim(ac, a, blendTimeSec, LoopMode.DontLoop)
 	}
 	def fireAnimUnloopedUnblended(s : Spatial, a: JmeGrossAnim) : Unit = {
 		val ac = findOrMakeAnimCtrl(s)
 		fireAnimUnloopedUnblended(ac, a)
+	}
+
+	def registerListener(ac : JmeAnimCtrl, ael : JmeAnimEventListener): Unit = {
+		ac.addListener(ael)
+	}
+
+	def registerPropagator(ac : JmeAnimCtrl, cmplHndl : ManipCompletionHandle) : Unit = {
+		val propagator = new CompletionPropagator(cmplHndl)
+		registerListener(ac, propagator)
+	}
+	def registerPropagator(s : Spatial, cmplHndl : ManipCompletionHandle) : Unit = {
+		val ac = findOrMakeAnimCtrl(s)
+		registerPropagator(ac, cmplHndl)
+	}
+
+}
+class CompletionPropagator(cmplHndl : ManipCompletionHandle) extends JmeAnimEventListener with VarargsLogging {
+	override def onAnimCycleDone(animControl: JmeAnimCtrl, animChannel: AnimChannel, animName: String): Unit = {
+		info2("Propagating onAnimCycleDone for animName={} to cmplHndl={}", animName, cmplHndl)
+		cmplHndl.notifyComplete("anim=[" + animName  + "] chan=[" + animChannel + "]")
+	}
+
+	override def onAnimChange(animControl: JmeAnimCtrl, animChannel: AnimChannel, animName: String): Unit = {
+		warn2("Ignoring onAnimChange for animName={} to cmplHndl={}", animName, cmplHndl)
 	}
 }
 trait Smoovable extends Movable with Locatable with Addressable with VarargsLogging {
@@ -194,7 +218,9 @@ trait Smoovable extends Movable with Locatable with Addressable with VarargsLogg
 	// applyTransform_runThrd cannot be used reliably on a spatial that is controlled by an animCtrl.
 	override def applyTransform_runThrd(xform: Transform3D): Unit = {
 		debug0("applyTransform_runThrd is calling cancelAnyOldAnims")
-		cancelAnyOldAnims() // If we don't do this, then the direct transform fails.
+		cancelAnyOldAnims() // If we don't do this, then the direct transform fails.  We don't expect any COMPLETE
+				// events to be delivered as a result of the cancel.
+
 		super.applyTransform_runThrd(xform)
 
 		// Before, when we were doing setEnabled(false) on the animControl, then we needed to reattach like so.
@@ -218,17 +244,16 @@ trait Smoovable extends Movable with Locatable with Addressable with VarargsLogg
 	}
 	*/
 
-	def applySmooveNow_anyThrd(manipFull: SmooveManipFull): Unit = {
+	def applySmooveNow_anyThrd(manipFull: SmooveManipFull, ch : ManipCompletionHandle): Unit = {
 		// Since this happens at the "controls" level, is it then not really a sceneGraph mod, requiring queueing?
 		val anim = myAnimMaker.makeJmeAnimUsingFactory(manipFull)
 		val spat = getMainSpat
-		applyAnim_anyThrd(anim, spat)
+		applyAnim_anyThrd(anim, spat, ch)
 	}
 
-	def applySmooveFromCurrent_mystThrd(manipEnding: SmooveManipEnding): Unit = {
-		val smv = createSmooveStartingFromCurrentPos_anyThrd(manipEnding.getXform_finish,
-			manipEnding.getDuration_sec)
-		applySmooveNow_anyThrd(smv)
+	def applySmooveFromCurrent_mystThrd(manipEnding: SmooveManipEnding, ch : ManipCompletionHandle ): Unit = {
+		val smv = createSmooveStartingFromCurrentPos_anyThrd(manipEnding.getXform_finish, manipEnding.getDuration_sec)
+		applySmooveNow_anyThrd(smv, ch )
 	}
 
 	def createSmooveStartingFromCurrentPos_anyThrd(endXform: Transform3D, durSec: Float): SmooveManipFull = {
@@ -237,26 +262,39 @@ trait Smoovable extends Movable with Locatable with Addressable with VarargsLogg
 		manipFull
 	}
 
-	def applyAnim_anyThrd(a: JmeGrossAnim, s: Spatial): Unit = {
+	def applyAnim_anyThrd(a: JmeGrossAnim, s: Spatial, ch : ManipCompletionHandle): Unit = {
 		val acHelper = new JmeAnimCtrlWrap {}
+		acHelper.registerPropagator(s, ch)
 		acHelper.fireAnimUnloopedUnblended(s, a)
 	}
 }
 
-trait Manipable extends Smoovable with VarargsLogging {
-	def applyManipDesc(manip : ManipDesc, enqHelp : FullEnqHlp) : Unit = {
+trait Manipable extends Smoovable with IdentHlp with VarargsLogging {
+	def applyManipDesc(manip : ManipDesc, enqHelp : FullEnqHlp, ch_opt: Option[ManipCompletionHandle]) : Unit = {
+		val ch : ManipCompletionHandle = ch_opt.getOrElse(new ManipCompletionHandle with VarargsLogging {
+			override def notifyComplete(dbg : Any): Unit = {
+				info3("Default completion for handleID={}, dbg={}, manip={}", myDummyHandleID, dbg.asInstanceOf[Object], manip)
+			}
+			private val myDummyHandleID = makeStampyRandyIdent("dummyCmpltnHndlr")
+
+			override def getHandleID: Ident = myDummyHandleID
+		})
 		manip match {
 			case smf : SmooveManipFull => {
 				info1("Starting full-smoove manip: {}", smf)
-				applySmooveNow_anyThrd(smf)
+				applySmooveNow_anyThrd(smf, ch)
+
 			}
 			case sme : SmooveManipEnding => {
 				info1("Starting half-smoove manip: {}", sme)
-				applySmooveFromCurrent_mystThrd(sme)
+				applySmooveFromCurrent_mystThrd(sme, ch)
 			}
 			case ama : AbruptManipAbs => {
 				val xform = ama.getXform_finish
-				val func : Function0[Unit] = () => { applyTransform_runThrd(xform)}
+				val func : Function0[Unit] = () => {
+					applyTransform_runThrd(xform)
+					ch.notifyComplete("abrubtXform=[" + xform + "]")
+				}
 				enqHelp.enqueueJmeCallable(func)
 
 			}

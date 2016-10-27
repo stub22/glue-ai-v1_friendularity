@@ -165,7 +165,7 @@ trait VWBodyLogic extends FullEnqHlp with VarargsLogging {
 					debug3("Received {}th bodyManipRq {} for bodyID={}", myBodyManipRqCnt : Integer, bodyRq, bodyRec.dualBodyID)
 				}
 				val manipGuts : ManipDesc = manipWrap.manipGuts
-				bodyRec.applyManipDesc(manipGuts, this)
+				bodyRec.applyManipDesc(manipGuts, this, None)
 
 			}
 		}
