@@ -171,7 +171,7 @@ trait JmeAnimCtrlWrap {
 		ac.addAnim(a) // Each anim may have multiple tracks of type:  SpatialTrack, BoneTrack, AudioTrack, EffectTrack
 		val chan = ac.createChannel
 
-		// 2016-10-06   Stu sez:  This enabled AnimCtrl may be what is preventing later bone animations from working.
+
 
 		ac.setEnabled(true) // Will generally stay enabled until some direct abrupt move is sent
 		chan.setAnim(a.getName, blendTimeSec) // This step "activates" the ctrl-chan-anim combo, yes?

@@ -79,21 +79,23 @@ class ClientTestMsgSender(initDelayMsec : Int, stepDelayMsec : Int, sinbadMoves 
 	def sendMainCamMsg(useSmooves : Boolean): Unit = {
 		val clientOffer = this
 		val mainCamID = new FreeIdent(LightsCameraAN.URI_defaultCam)
-		val nxtCamPos = new Vector3f(5.0f, 3.0f, 150.0f)
+		val nxtCamPos = new Vector3f(5.0f, 33.0f, -250.0f)
 		val nxf = new PartialTransform3D(Some(nxtCamPos), None, None)
 		val dur = 7.0f
 
 		if (useSmooves) {
+			info0("Sending main-cam smoove 1")
 			clientOffer.sendRq_smooveRootCamera(mainCamID, nxf, dur)
 		} else {
 			clientOffer.sendRq_abruptMoveRootCamera(mainCamID, nxf)
 		}
 
 		Thread.sleep(stepDelayMsec)
-		val nxtCamPos2 = new Vector3f(-5.0f, 8.0f, 40.0f)
+		val nxtCamPos2 = new Vector3f(-5.0f, 10.0f, -70.0f)
 		val nxf2 = new PartialTransform3D(Some(nxtCamPos2), None, None)
 
 		if (useSmooves) {
+			info0("Sending main-cam smoove 2")
 			clientOffer.sendRq_smooveRootCamera(mainCamID, nxf2, dur)
 		} else {
 			clientOffer.sendRq_abruptMoveRootCamera(mainCamID, nxf2)
@@ -101,6 +103,7 @@ class ClientTestMsgSender(initDelayMsec : Int, stepDelayMsec : Int, sinbadMoves 
 		Thread.sleep(stepDelayMsec)
 
 		if (useSmooves) {
+			info0("Sending main-cam smoove 3")
 			clientOffer.sendRq_smooveRootCamera(mainCamID, nxf, dur)
 		} else {
 			clientOffer.sendRq_abruptMoveRootCamera(mainCamID, nxf)
@@ -108,6 +111,7 @@ class ClientTestMsgSender(initDelayMsec : Int, stepDelayMsec : Int, sinbadMoves 
 		Thread.sleep(stepDelayMsec)
 
 		if (useSmooves) {
+			info0("Sending main-cam smoove 4")
 			clientOffer.sendRq_smooveRootCamera(mainCamID, nxf2, dur)
 		} else {
 			clientOffer.sendRq_abruptMoveRootCamera(mainCamID, nxf2)
