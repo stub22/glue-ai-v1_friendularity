@@ -33,7 +33,7 @@ case class ManipStatus_Complete(statusHandleID : Ident, dbgBonus : Any) extends 
 	override def getHandleID : Ident = statusHandleID
 }
 trait ManipCompletionHandle {
-	def notifyComplete(dbgBonus : Any) : Unit
+	def notifyComplete(animName : String, dbgBonus : Any) : Unit
 	def getHandleID : Ident
 }
 // def getManipStatusTeller_opt : Option[CPStrongTeller[ManipStatusMsg]] = None
@@ -55,7 +55,7 @@ class ManipStatusPropagator(statTlrOpt : Option[CPStrongTeller[ManipStatusMsg]])
 	def getManipStatusTeller_opt : Option[CPStrongTeller[ManipStatusMsg]] = statTlrOpt
 	private val myPropagatorID = makeStampyRandyIdent("mnpStatPrpg")
 	override def getHandleID : Ident = myPropagatorID
-	override def notifyComplete(dbgBonus : Any) : Unit = {
+	override def notifyComplete(animName : String, dbgBonus : Any) : Unit = {
 		val statTeller = getManipStatusTeller_opt
 		statTeller.map( tlr => {
 			val msg = ManipStatus_Complete(getHandleID, dbgBonus)

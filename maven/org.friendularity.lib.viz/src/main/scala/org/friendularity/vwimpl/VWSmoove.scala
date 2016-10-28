@@ -178,14 +178,16 @@ trait JmeAnimCtrlWrap {
 		chan.setLoopMode(LoopMode.DontLoop)  // Cogchar lore says this should be done after setAnim
 	}
 
-	def fireAnimUnloopedUnblended(ac : JmeAnimCtrl, a: JmeGrossAnim) : Unit = {
+	def fireAnimUnloopedUnblended(ac : JmeAnimCtrl, a: JmeGrossAnim, cmplHndl_opt : Option[ManipCompletionHandle]) : Unit = {
 		cancelOldAnims(ac)  // Note that this calls clearChannels
+		ac.clearListeners()
+		cmplHndl_opt.map(registerPropagator(ac, _))
 		val blendTimeSec = 0f
 		fireAnim(ac, a, blendTimeSec, LoopMode.DontLoop)
 	}
-	def fireAnimUnloopedUnblended(s : Spatial, a: JmeGrossAnim) : Unit = {
+	def fireAnimUnloopedUnblended(s : Spatial, a: JmeGrossAnim, cmplHndl_opt : Option[ManipCompletionHandle]) : Unit = {
 		val ac = findOrMakeAnimCtrl(s)
-		fireAnimUnloopedUnblended(ac, a)
+		fireAnimUnloopedUnblended(ac, a, cmplHndl_opt)
 	}
 
 	def registerListener(ac : JmeAnimCtrl, ael : JmeAnimEventListener): Unit = {
@@ -203,9 +205,12 @@ trait JmeAnimCtrlWrap {
 
 }
 class CompletionPropagator(cmplHndl : ManipCompletionHandle) extends JmeAnimEventListener with VarargsLogging {
+	// Does this get called when an animation is interrupted/cancelled ?
 	override def onAnimCycleDone(animControl: JmeAnimCtrl, animChannel: AnimChannel, animName: String): Unit = {
+		// Causes co-modification exceptions
+		// animControl.removeListener(this)
 		info2("Propagating onAnimCycleDone for animName={} to cmplHndl={}", animName, cmplHndl)
-		cmplHndl.notifyComplete("anim=[" + animName  + "] chan=[" + animChannel + "]")
+		cmplHndl.notifyComplete(animName, "anim=[" + animName  + "] chan=[" + animChannel + "]")
 	}
 
 	override def onAnimChange(animControl: JmeAnimCtrl, animChannel: AnimChannel, animName: String): Unit = {
@@ -253,6 +258,7 @@ trait Smoovable extends Movable with Locatable with Addressable with VarargsLogg
 
 	def applySmooveFromCurrent_mystThrd(manipEnding: SmooveManipEnding, ch : ManipCompletionHandle ): Unit = {
 		val smv = createSmooveStartingFromCurrentPos_anyThrd(manipEnding.getXform_finish, manipEnding.getDuration_sec)
+		info1("Created smoove starting from current pos: {}", smv)
 		applySmooveNow_anyThrd(smv, ch )
 	}
 
@@ -264,16 +270,16 @@ trait Smoovable extends Movable with Locatable with Addressable with VarargsLogg
 
 	def applyAnim_anyThrd(a: JmeGrossAnim, s: Spatial, ch : ManipCompletionHandle): Unit = {
 		val acHelper = new JmeAnimCtrlWrap {}
-		acHelper.registerPropagator(s, ch)
-		acHelper.fireAnimUnloopedUnblended(s, a)
+		// acHelper.registerPropagator(s, ch)
+		acHelper.fireAnimUnloopedUnblended(s, a, Option(ch))
 	}
 }
 
 trait Manipable extends Smoovable with IdentHlp with VarargsLogging {
 	def applyManipDesc(manip : ManipDesc, enqHelp : FullEnqHlp, ch_opt: Option[ManipCompletionHandle]) : Unit = {
 		val ch : ManipCompletionHandle = ch_opt.getOrElse(new ManipCompletionHandle with VarargsLogging {
-			override def notifyComplete(dbg : Any): Unit = {
-				info3("Default completion for handleID={}, dbg={}, manip={}", myDummyHandleID, dbg.asInstanceOf[Object], manip)
+			override def notifyComplete(animName : String, dbg : Any): Unit = {
+				debug3("Default completion for handleID={}, dbg={}, manip={}", myDummyHandleID, dbg.asInstanceOf[Object], manip)
 			}
 			private val myDummyHandleID = makeStampyRandyIdent("dummyCmpltnHndlr")
 
@@ -293,7 +299,7 @@ trait Manipable extends Smoovable with IdentHlp with VarargsLogging {
 				val xform = ama.getXform_finish
 				val func : Function0[Unit] = () => {
 					applyTransform_runThrd(xform)
-					ch.notifyComplete("abrubtXform=[" + xform + "]")
+					ch.notifyComplete("ABRUPT_NO_ANIM", "abrubtXform=[" + xform + "]")
 				}
 				enqHelp.enqueueJmeCallable(func)
 

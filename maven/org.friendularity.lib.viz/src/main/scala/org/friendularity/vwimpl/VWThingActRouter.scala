@@ -353,8 +353,6 @@ trait CamTARouterLogic extends TARqExtractorHelp with MakesTransform3D with Oute
 			}
 		}
 	}
-
-
 }
 trait VWThingActReqRouterLogic extends VWBodyTARouterLogic with CamTARouterLogic with MakesTransform3D {
 
