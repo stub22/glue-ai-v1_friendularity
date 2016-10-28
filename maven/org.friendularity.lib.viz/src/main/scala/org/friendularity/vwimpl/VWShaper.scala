@@ -26,7 +26,7 @@ import org.appdapter.fancy.log.VarargsLogging
 import org.cogchar.render.sys.registry.RenderRegistryClient
 import org.cogchar.render.trial.TextSpatialFactory
 import org.friendularity.respire.Srtw
-import org.friendularity.vwmsg.{VWShapeAttachRq, VWShapeDetachRq, TwoPartMeshyShapeRq, VWSCR_ExistingNode, VWSCR_Node, VWShapeManipRq, Transform3D, VWMeshyShapeRq, VWClearAllShapes, VWSCR_Sphere, VWSCR_TextBox, VWShapeCreateRq, VWSCR_CellGrid, VWStageRqMsg}
+import org.friendularity.vwmsg.{VWSCR_CamGuideNode, VWShapeAttachRq, VWShapeDetachRq, TwoPartMeshyShapeRq, VWSCR_ExistingNode, VWSCR_Node, VWShapeManipRq, Transform3D, VWMeshyShapeRq, VWClearAllShapes, VWSCR_Sphere, VWSCR_TextBox, VWShapeCreateRq, VWSCR_CellGrid, VWStageRqMsg}
 
 import scala.collection.mutable
 import scala.util.Random
@@ -85,7 +85,11 @@ trait VWSpatialsForShapes extends PatternGridMaker with SpatMatHelper {
 	def makeOrExtractSpat(vwscr : VWShapeCreateRq) : Spatial = {
 		vwscr match {
 			case aNode : VWSCR_Node => {
-				val madeNode: JmeNode = new JmeNode("made_node_" + System.currentTimeMillis())
+				val madeNode: JmeNode = new JmeNode("generic_node_" + System.currentTimeMillis())
+				madeNode
+			}
+			case cgNode : VWSCR_CamGuideNode => {
+				val madeNode: JmeNode = new JmeNode("camGuide_node_" + System.currentTimeMillis())
 				madeNode
 			}
 			case existingNode :	VWSCR_ExistingNode => {
@@ -138,12 +142,28 @@ trait VWSpatialsForShapes extends PatternGridMaker with SpatMatHelper {
 	}
 }
 
+trait SyncMe {
+	def syncAfterAttach_onRendThrd : Unit = { }
+}
+abstract class MadeSpatRecBase extends Manipable with SyncMe
 
 case class MadeSpatRec(mySpat : Spatial, myID_opt : Option[Ident], myCreateRq : VWShapeCreateRq)
-			extends Manipable {
+			extends MadeSpatRecBase() {
 	override def getMainSpat : Spatial = mySpat
 	override def getID : Ident = myID_opt.get // Will throw if myID_opt is None!
+
 }
+
+case class CamGuideMadeSpatRec(myGuideNode : JmeNode, myGuideID : Ident, myCreateRq : VWSCR_CamGuideNode)
+			extends MadeSpatRecBase() with SyncsToCam {
+	override def getMainSpat : Spatial = myGuideNode
+	override def getID : Ident = myGuideID
+
+	override def syncAfterAttach_onRendThrd : Unit = {
+		syncGuideToCam_rendThrd
+	}
+}
+
 
 trait IdentHlp {
 	val uniqueR = new Random()
@@ -191,18 +211,18 @@ trait 	VWShaperLogic extends PatternGridMaker with AttachHlp with IdentHlp {
 		override  protected def getTooMuchRRC : RenderRegistryClient = getRRC
 	}
 
-	lazy protected val myMadeSpatRecsByID = new mutable.HashMap[Ident, MadeSpatRec]()
+	lazy protected val myMadeSpatRecsByID = new mutable.HashMap[Ident, MadeSpatRecBase]()
 
 	protected def detachFromParent_onRendThrd(childSpatID : Ident): Unit = {
-		val spatRec : MadeSpatRec = myMadeSpatRecsByID.get(childSpatID).get
-		val spat = spatRec.mySpat
+		val spatRec : MadeSpatRecBase = myMadeSpatRecsByID.get(childSpatID).get
+		val spat = spatRec.getMainSpat
 		val resultFlag = spat.removeFromParent()
 		info3("removeFromParent returned={} for spat={} found at shapeID={}", resultFlag : java.lang.Boolean, spat, spatRec)
 	}
 
 	protected def clearAllShapes_onRendThrd(): Unit = {
 		for (madeRec <- myMadeSpatRecsByID.values) {
-			val madeSpat = madeRec.mySpat
+			val madeSpat = madeRec.getMainSpat
 			val removed = madeSpat.removeFromParent()
 		}
 		myMadeSpatRecsByID.clear()
@@ -212,16 +232,22 @@ trait 	VWShaperLogic extends PatternGridMaker with AttachHlp with IdentHlp {
 	val makeIdentIfMissing : Boolean = true
 
 	// makes the spat, attaches IDs as needed, defers attachment to parent-node as needed.
-	def makeAndPlace(toMake : VWShapeCreateRq): MadeSpatRec = {
+	def makeAndPlace(toMake : VWShapeCreateRq, deferAttach : Boolean): MadeSpatRecBase = {
 		val madeSpat : Spatial = myShapeMaker.makeOrExtractSpat(toMake)
-		val madeSpatRec = registerSpat(madeSpat, toMake)
+		val madeSpatRec : MadeSpatRecBase = registerSpat(madeSpat, toMake)
 		val deferredAttachFunc : Function0[Unit] = () => {
 			attachToParent_onRendThrd(madeSpat, toMake)
+			// This causes an exception if the sub-cam is not attached yet
+			// madeSpatRec.syncAfterAttach_onRendThrd
 		}
-		enqueueJmeCallable(deferredAttachFunc)
+		if (deferAttach) {
+			enqueueJmeCallable(deferredAttachFunc)
+		} else {
+			deferredAttachFunc
+		}
 		madeSpatRec
 	}
-	protected def findMadeSpatRec(shapeID : Ident) : Option[MadeSpatRec] = {
+	protected def findMadeSpatRec(shapeID : Ident) : Option[MadeSpatRecBase] = {
 		myMadeSpatRecsByID.get(shapeID)
 	}
 	protected def getOrMakeID_opt (toMake : VWShapeCreateRq) : Option[Ident] = {
@@ -230,12 +256,15 @@ trait 	VWShaperLogic extends PatternGridMaker with AttachHlp with IdentHlp {
 	}
 
 	// TODO:  Clarify the exact meaning and rules of this operation
-	protected def registerSpat(madeSpat : Spatial, toMake : VWShapeCreateRq): MadeSpatRec = {
+	protected def registerSpat(madeSpat : Spatial, toMake : VWShapeCreateRq): MadeSpatRecBase = {
 		val assignedID_opt = getOrMakeID_opt(toMake)
 
 		if (assignedID_opt.isDefined) {
 			val assignedID: Ident = assignedID_opt.get
-			val existingMSR_opt  : Option[MadeSpatRec] = if (toMake.expectEmptySlot) {
+
+			// Hmm.   What is this logic saying?
+			// What does "expectEmptySlot" really mean?
+			val existingMSR_opt  : Option[MadeSpatRecBase] = if (toMake.expectEmptySlot) {
 				val previousMadeSpatRec_opt = myMadeSpatRecsByID.get(assignedID)
 
 				if (previousMadeSpatRec_opt.isDefined) {
@@ -244,8 +273,20 @@ trait 	VWShaperLogic extends PatternGridMaker with AttachHlp with IdentHlp {
 					previousMadeSpatRec_opt
 				} else None
 			} else None
+
 			existingMSR_opt.getOrElse({
-				val madeSpatRec = new MadeSpatRec(madeSpat, assignedID_opt, toMake)
+
+				val madeSpatRec : MadeSpatRecBase = {
+					toMake match {
+						case cgn : VWSCR_CamGuideNode => {
+							new CamGuideMadeSpatRec(madeSpat.asInstanceOf[JmeNode], assignedID, cgn)
+						}
+						case otherN  => {
+							new MadeSpatRec(madeSpat, assignedID_opt, toMake)
+						}
+					}
+
+				}
 				info2("Storing madeSpatRec at id={}, rec={}", assignedID, madeSpatRec)
 				myMadeSpatRecsByID.put(assignedID, madeSpatRec)
 				madeSpatRec
@@ -257,13 +298,14 @@ trait 	VWShaperLogic extends PatternGridMaker with AttachHlp with IdentHlp {
 	def attachToParent_onRendThrd(madeSpat : Spatial, toMake : VWShapeCreateRq) : Unit = {
 		val knownParentID_opt = toMake.getKnownParentID_opt
 		attachToParent_onRendThrd(madeSpat, toMake.getKnownParentID_opt, toMake.inFlatSpace)
+
 	}
-	def attachToParent_onRendThrd(spatToAttach : Spatial, knownParentID_opt : Option[Ident], inFlatSpc : Boolean) : Unit = {
+	private def attachToParent_onRendThrd(spatToAttach : Spatial, knownParentID_opt : Option[Ident], inFlatSpc : Boolean) : Unit = {
 		val knownParentNode_opt : Option[JmeNode] = if (knownParentID_opt.isDefined) {
 			val kparid = knownParentID_opt.get
 			val knownParentMadeRec_opt = myMadeSpatRecsByID.get(kparid)
 			if (knownParentMadeRec_opt.isDefined) {
-				val pNode : JmeNode = knownParentMadeRec_opt.get.mySpat.asInstanceOf[JmeNode]
+				val pNode : JmeNode = knownParentMadeRec_opt.get.getMainSpat.asInstanceOf[JmeNode]
 				info1("Found known parentNode: {}", pNode)
 				Option(pNode)
 			} else {
@@ -285,8 +327,9 @@ trait 	VWShaperLogic extends PatternGridMaker with AttachHlp with IdentHlp {
 		val dooda = parentToUse_opt.map(_.attachChild(spatToAttach))
 	}
 	def reattachShapeToParent_onRendThrd(attchRq : VWShapeAttachRq) : Unit = {
-		val msr : MadeSpatRec = findMadeSpatRec(attchRq.knownID).get
+		val msr : MadeSpatRecBase = findMadeSpatRec(attchRq.knownID).get
 		attachToParent_onRendThrd(msr.getMainSpat, attchRq.knownParentID_opt, false)
+		msr.syncAfterAttach_onRendThrd
 	}
 	def attachBigGrid_onRendThrd(): Unit = {
 		makeBigGridAndAttach_onRendThrd(getRRC, myTopDeepNode)
@@ -316,14 +359,17 @@ class VWShaperActor(myRRC: RenderRegistryClient) extends Actor with VWShaperLogi
 			enqueueJmeCallable(myRRC, func)
 		}
 		case vwsrq: VWShapeCreateRq => {
-			val unusedResult : MadeSpatRec = makeAndPlace(vwsrq)
+			val unusedResult : MadeSpatRecBase = makeAndPlace(vwsrq, true)
 		}
 
 		case manipRq : VWShapeManipRq => {
 			val shapeID : Ident = manipRq.getTgtShapeID
-			val madeSpatRec_opt : Option[MadeSpatRec] = findMadeSpatRec(shapeID)
+			val madeSpatRec_opt : Option[MadeSpatRecBase] = findMadeSpatRec(shapeID)
 			val manipDesc = manipRq.getManipDesc
-			madeSpatRec_opt.get.applyManipDesc(manipDesc, this, manipRq.getStatusHandler_opt)
+			val func : Function0[Unit] = () => {
+				madeSpatRec_opt.get.applyManipDesc(manipDesc, this, manipRq.getStatusHandler_opt)
+			}
+			enqueueJmeCallable(myRRC, func)
 		}
 	}
 }

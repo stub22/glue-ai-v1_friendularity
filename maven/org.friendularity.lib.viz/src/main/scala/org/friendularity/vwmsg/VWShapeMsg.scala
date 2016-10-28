@@ -45,7 +45,7 @@ case class ShapeManipRqImpl(myTgtShapeID : Ident, myManipDesc : ManipDesc,
 
 	override def getManipDesc: ManipDesc = myManipDesc
 
-	lazy val statusHandlerOpt = statusTlr_opt.map(tlr => new ManipStatusPropagator(Option(tlr)))
+	lazy private val statusHandlerOpt = statusTlr_opt.map(tlr => new ManipStatusPropagator(Option(tlr)))
 	override def getStatusHandler_opt : Option[ManipCompletionHandle] = statusHandlerOpt
 }
 
@@ -101,14 +101,23 @@ class KnownShapeCreateRqImpl(knownNodeID_opt : Option[Ident], knownParentID_opt 
 }
 
 // Can only work as a local message.  Binds an existing JmeNode to a given ID, and optional parent.
+// We use this to register CameraNodes after they have been bound to a camera.
 case class VWSCR_ExistingNode(existingNode : JmeNode,  nodeID : Ident,
 							  knownParentID_opt : Option[Ident])
 			extends KnownShapeCreateRqImpl(Option(nodeID), knownParentID_opt)
 
-// Creates a new JmeNode.
+// Creates a new JmeNode, to be used as a parent for other spatials.
 case class VWSCR_Node(knownNodeID : Ident, knownParentID_opt : Option[Ident])
 			extends KnownShapeCreateRqImpl(Option(knownNodeID), knownParentID_opt) {
-//	override def getKnownID_opt : Option[Ident] = Option(knownNodeID)
+
+	override def expectEmptySlot : Boolean = true
+}
+
+// Create a JmeNode specifically for the purpose of guiding a child cameraNode around, with the
+// special ability to re-sync itself to that camera's current position, upon attachment.
+case class VWSCR_CamGuideNode(knownNodeID : Ident, knownParentID_opt : Option[Ident])
+			extends KnownShapeCreateRqImpl(Option(knownNodeID), knownParentID_opt) {
+
 	override def expectEmptySlot : Boolean = true
 }
 
