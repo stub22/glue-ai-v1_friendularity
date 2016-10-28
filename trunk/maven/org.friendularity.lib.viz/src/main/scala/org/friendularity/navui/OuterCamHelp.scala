@@ -23,7 +23,7 @@ import org.appdapter.core.name.Ident
 import org.appdapter.fancy.log.VarargsLogging
 import org.friendularity.cpmsg.{CPStrongTeller, CPMsgTeller}
 import org.friendularity.vwimpl.IdentHlp
-import org.friendularity.vwmsg.{ManipStatusMsg, VWModifyCamStateRq, AbruptManipAbsImpl, ManipDesc, MakesTransform3D, Transform3D, MaybeTransform3D, ShapeManipRqImpl, SmooveManipEndingImpl, TransformParams3D, VWBindCamNodeRq, VWSCR_Node, VWCreateCamAndViewportRq, ViewportDesc, CamState3D}
+import org.friendularity.vwmsg.{VWSCR_CamGuideNode, ManipStatusMsg, VWModifyCamStateRq, AbruptManipAbsImpl, ManipDesc, MakesTransform3D, Transform3D, MaybeTransform3D, ShapeManipRqImpl, SmooveManipEndingImpl, TransformParams3D, VWBindCamNodeRq, VWSCR_Node, VWCreateCamAndViewportRq, ViewportDesc, CamState3D}
 
 /**
   * Created by Stub22 on 8/13/2016.
@@ -57,8 +57,9 @@ trait OuterCamHelp extends MakesTransform3D with IdentHlp with VarargsLogging {
 	}
 	def bindKnownCam(stageTeller : CPMsgTeller, spcTeller : CPMsgTeller,
 							camID : Ident,	camGuideNodeID : Ident) : Unit = {
+		// TODO:  Move this first step into the stage teller so that camGuide can sync to cam in predictable way
 		info1("Requesting cam(known)-guide node at ID={}", camGuideNodeID)
-		val makeGuideNodeRQ = new VWSCR_Node(camGuideNodeID, None)
+		val makeGuideNodeRQ = new VWSCR_CamGuideNode(camGuideNodeID, None)
 		spcTeller.tellCPMsg(makeGuideNodeRQ)
 
 		val flag_guideIsParent = true

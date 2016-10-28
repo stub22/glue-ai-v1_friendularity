@@ -138,29 +138,29 @@ class VWGoodyActor(myGoodyCtx : BasicGoodyCtx) extends Actor with VWGoodyJobLogi
 class BetterBGC(rrc : RenderRegistryClient, winStatMon : WindowStatusMonitor)
 			extends BasicGoodyCtxImpl(rrc, winStatMon) {
 	val myVargler = new VarargsLogging {}
-    
-  def getScaleVectorFrom(goodyActionExtractor: GoodyActionExtractor) : Vector3f = {
-    var scaleVec: Vector3f = goodyActionExtractor.getScaleVec3f
-    val scaleUniform: java.lang.Float = goodyActionExtractor.getScaleUniform
-    if ((scaleVec == null) && (scaleUniform != null)) {
-        scaleVec = new Vector3f(scaleUniform, scaleUniform, scaleUniform)
-    }
-    scaleVec
-  }
-  
-  def getScaleUniformFrom(goodyActionExtractor: GoodyActionExtractor) : java.lang.Float = {
-    var scaleUniform: java.lang.Float = goodyActionExtractor.getScaleUniform
-    val scaleVec: Vector3f = goodyActionExtractor.getScaleVec3f
- 
-    if ((scaleUniform == null) && (scaleVec != null)) {
-      if(java.lang.Float.compare(scaleVec.getX, scaleVec.getY) == 0 && java.lang.Float.compare(scaleVec.getX, scaleVec.getZ) == 0){
-        scaleUniform = scaleVec.getX
-      }else {
-        throw new IllegalStateException("Could not find uniform scale in GoodyActionExtractor.")
-      }
-    }
-    scaleUniform
-  }
+
+	def getScaleVectorFrom(goodyActionExtractor: GoodyActionExtractor): Vector3f = {
+		var scaleVec: Vector3f = goodyActionExtractor.getScaleVec3f
+		val scaleUniform: java.lang.Float = goodyActionExtractor.getScaleUniform
+		if ((scaleVec == null) && (scaleUniform != null)) {
+			scaleVec = new Vector3f(scaleUniform, scaleUniform, scaleUniform)
+		}
+		scaleVec
+	}
+
+	def getScaleUniformFrom(goodyActionExtractor: GoodyActionExtractor): java.lang.Float = {
+		var scaleUniform: java.lang.Float = goodyActionExtractor.getScaleUniform
+		val scaleVec: Vector3f = goodyActionExtractor.getScaleVec3f
+
+		if ((scaleUniform == null) && (scaleVec != null)) {
+			if (java.lang.Float.compare(scaleVec.getX, scaleVec.getY) == 0 && java.lang.Float.compare(scaleVec.getX, scaleVec.getZ) == 0) {
+				scaleUniform = scaleVec.getX
+			} else {
+				throw new IllegalStateException("Could not find uniform scale in GoodyActionExtractor.")
+			}
+		}
+		scaleUniform
+	}
 
   /**
    * Changed this method to unpack variables only if they are used by the current
@@ -249,7 +249,8 @@ class BetterBGC(rrc : RenderRegistryClient, winStatMon : WindowStatusMonitor)
 		novGoody
 	}
 }
-/*
+/*  Here is what the inherited consumeAction method looks like as of Summer 2016.
+
 	override def consumeAction(actionSpec: ThingActionSpec): ConsumpStatus = {
 		getLogger.info("The targetThingType is {}", actionSpec.getTargetThingTypeID)
 		val ga: GoodyActionExtractor = new GoodyActionExtractor(actionSpec)

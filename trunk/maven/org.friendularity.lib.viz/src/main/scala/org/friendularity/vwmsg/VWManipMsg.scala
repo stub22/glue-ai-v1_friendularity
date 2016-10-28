@@ -27,10 +27,13 @@ trait ManipStatusMsg extends CPumpMsg {
 	val	MANIP_ABORTED	= 2
 
 	def getHandleID : Ident
+
+	def getAnimName_opt : Option[String]
 }
-case class ManipStatus_Complete(statusHandleID : Ident, dbgBonus : Any) extends ManipStatusMsg {
+case class ManipStatus_Complete(statusHandleID : Ident, animName_opt : Option[String], dbgBonus : Any) extends ManipStatusMsg {
 	override def getStatusCode : Int = MANIP_COMPLETE
 	override def getHandleID : Ident = statusHandleID
+	override def getAnimName_opt : Option[String] = animName_opt
 }
 trait ManipCompletionHandle {
 	def notifyComplete(animName : String, dbgBonus : Any) : Unit
@@ -58,7 +61,7 @@ class ManipStatusPropagator(statTlrOpt : Option[CPStrongTeller[ManipStatusMsg]])
 	override def notifyComplete(animName : String, dbgBonus : Any) : Unit = {
 		val statTeller = getManipStatusTeller_opt
 		statTeller.map( tlr => {
-			val msg = ManipStatus_Complete(getHandleID, dbgBonus)
+			val msg = ManipStatus_Complete(getHandleID, Option(animName), dbgBonus)
 			tlr.tellStrongCPMsg(msg)
 		})
 	}

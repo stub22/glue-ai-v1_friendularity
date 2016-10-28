@@ -17,7 +17,7 @@ package org.friendularity.vwimpl
 
 import com.jme3.animation.{AnimControl => JmeAnimCtrl, Animation => JmeGrossAnim, AnimEventListener => JmeAnimEventListener, AnimChannel, LoopMode, AnimationFactory}
 import com.jme3.math.{Quaternion, Vector3f, ColorRGBA}
-import com.jme3.scene.Spatial
+import com.jme3.scene.{Node => JmeNode, CameraNode, Spatial}
 import org.appdapter.core.name.Ident
 import org.appdapter.fancy.log.VarargsLogging
 import org.friendularity.vwmsg.{ManipCompletionHandle, VWShapeManipRq, ShapeManipRqImpl, SmooveManipFullImpl, SmooveManipEnding, AbruptManipAbs, ManipDesc, DoTransformAbsoluteNow, TransformParams3D, Transform3D, SmooveManipFull}
@@ -129,7 +129,7 @@ trait JmeAnimMaker {
 	}
 
 }
-trait JmeAnimCtrlWrap {
+trait JmeAnimCtrlWrap extends VarargsLogging {
 	// JmeAnimCtrl = Trigger point + update bridge for a set of animations, over many channels,
 	def findAnimCtrl(s : Spatial) : Option[JmeAnimCtrl] = {
 		val c = s.getControl(classOf[JmeAnimCtrl])
@@ -179,11 +179,13 @@ trait JmeAnimCtrlWrap {
 	}
 
 	def fireAnimUnloopedUnblended(ac : JmeAnimCtrl, a: JmeGrossAnim, cmplHndl_opt : Option[ManipCompletionHandle]) : Unit = {
+		info1("********** Preparing to fire grossAnim={} - canceling old anims and clearing listeners, first", a)
 		cancelOldAnims(ac)  // Note that this calls clearChannels
 		ac.clearListeners()
 		cmplHndl_opt.map(registerPropagator(ac, _))
 		val blendTimeSec = 0f
 		fireAnim(ac, a, blendTimeSec, LoopMode.DontLoop)
+		info1("Completed firing of grossAnim={}", a)
 	}
 	def fireAnimUnloopedUnblended(s : Spatial, a: JmeGrossAnim, cmplHndl_opt : Option[ManipCompletionHandle]) : Unit = {
 		val ac = findOrMakeAnimCtrl(s)
@@ -253,7 +255,8 @@ trait Smoovable extends Movable with Locatable with Addressable with VarargsLogg
 		// Since this happens at the "controls" level, is it then not really a sceneGraph mod, requiring queueing?
 		val anim = myAnimMaker.makeJmeAnimUsingFactory(manipFull)
 		val spat = getMainSpat
-		applyAnim_anyThrd(anim, spat, ch)
+		val wrappedMCH = new WrappedMCH(anim.getName, ch)
+		applyAnim_anyThrd(anim, spat, wrappedMCH)
 	}
 
 	def applySmooveFromCurrent_mystThrd(manipEnding: SmooveManipEnding, ch : ManipCompletionHandle ): Unit = {
@@ -262,17 +265,32 @@ trait Smoovable extends Movable with Locatable with Addressable with VarargsLogg
 		applySmooveNow_anyThrd(smv, ch )
 	}
 
-	def createSmooveStartingFromCurrentPos_anyThrd(endXform: Transform3D, durSec: Float): SmooveManipFull = {
+	private def createSmooveStartingFromCurrentPos_anyThrd(endXform: Transform3D, durSec: Float): SmooveManipFull = {
 		val currXform = getCurrXform_anyThrd
 		val manipFull = new SmooveManipFullImpl(currXform, endXform, durSec)
 		manipFull
 	}
 
-	def applyAnim_anyThrd(a: JmeGrossAnim, s: Spatial, ch : ManipCompletionHandle): Unit = {
+	private def applyAnim_anyThrd(a: JmeGrossAnim, s: Spatial, ch : ManipCompletionHandle): Unit = {
 		val acHelper = new JmeAnimCtrlWrap {}
 		// acHelper.registerPropagator(s, ch)
 		acHelper.fireAnimUnloopedUnblended(s, a, Option(ch))
 	}
+}
+class WrappedMCH(onlyAnimName : String, delegate : ManipCompletionHandle)
+			extends ManipCompletionHandle with IdentHlp with VarargsLogging {
+	def notifyComplete(animName : String, dbgBonus : Any) : Unit = {
+		if (animName.equals(onlyAnimName)) {
+			info3("WrappedMCH ID={} is ALLOWING propagation of completion for anim={} to delegate with ID={}",
+				getHandleID, animName, delegate.getHandleID)
+			delegate.notifyComplete(animName, dbgBonus)
+		} else {
+			info3("WrappedMCH ID={} is DENYING propagation of completion for anim={}, which does not match our filter: {}",
+				getHandleID, animName, onlyAnimName)
+		}
+	}
+	lazy  private val myHandleID = makeStampyRandyIdent("wrappedMCH")
+	def getHandleID : Ident = myHandleID
 }
 
 trait Manipable extends Smoovable with IdentHlp with VarargsLogging {
@@ -309,6 +327,28 @@ trait Manipable extends Smoovable with IdentHlp with VarargsLogging {
 
 }
 
+trait SyncsToCam extends Movable with Locatable with VarargsLogging {
+	def getGrandchildCamXform: Transform3D = {
+		val guideNode : JmeNode = getMainSpat.asInstanceOf[JmeNode]
+		val camNode = guideNode.getChild(0).asInstanceOf[CameraNode]
+		val cam = camNode.getCamera
+		info2("Pulling current transform of camera={} within camNode={}", cam, camNode)
+		val locPos = cam.getLocation
+		val locRot = cam.getRotation // compare getDirection
+		val locScl = Vector3f.UNIT_XYZ
+
+		val xform3D = new TransformParams3D(locPos, locRot, locScl)
+		info1("Pulled camXform={}", xform3D)
+		xform3D
+
+	}
+	def syncGuideToCam_rendThrd(): Unit = {
+
+		val xform = getGrandchildCamXform
+		applyTransform_runThrd(xform)
+
+	}
+}
 /*  Inefficient RAM use in AnimationFactory - we could do a tighter  MotionTrack creator than this:
 https://github.com/jMonkeyEngine/jmonkeyengine/blob/master/jme3-core/src/main/java/com/jme3/animation/AnimationFactory.java
         totalFrames = (int) (fps * duration) + 1;
