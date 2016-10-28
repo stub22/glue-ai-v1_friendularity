@@ -285,7 +285,7 @@ class WrappedMCH(onlyAnimName : String, delegate : ManipCompletionHandle)
 				getHandleID, animName, delegate.getHandleID)
 			delegate.notifyComplete(animName, dbgBonus)
 		} else {
-			info3("WrappedMCH ID={} is DENYING propagation of completion for anim={}, which does not match our filter: {}",
+			warn3("WrappedMCH ID={} is DENYING propagation of completion for anim={}, which does not match our filter: {}",
 				getHandleID, animName, onlyAnimName)
 		}
 	}
