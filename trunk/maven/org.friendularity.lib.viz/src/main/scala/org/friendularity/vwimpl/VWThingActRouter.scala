@@ -186,7 +186,10 @@ trait DfltCamGuideMgr extends OuterCamHelp with TARqExtractorHelp with IdentHlp 
 			val stageTeller : CPMsgTeller = getVWPubTellers.getStageTeller.get
 			val spcTeller : CPMsgTeller = getVWPubTellers.getShaperTeller.get
 
-			bindKnownCam(stageTeller, spcTeller, dfltCamID, myDfltCamGuideID)
+			val flag_attachVisibleMarker = false
+
+			bindKnownCam(stageTeller, spcTeller, dfltCamID, myDfltCamGuideID, flag_attachVisibleMarker)
+
 			dfltCamIsBoundToGuide = true
 			dfltCamGuideIsBoundToRoot = true
 		} else {

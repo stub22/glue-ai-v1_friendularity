@@ -268,10 +268,13 @@ trait PatientSender_BonusStaging extends OuterLogic with OuterCamHelp with Ident
 		setupStatusPumps(vwpt)
 
         setupFloorGoody(vwpt.getGoodyDirectTeller.get)
-    
-		setupOverlayBook(vwpt)
 
-		setupKeysAndClicks(vwpt)
+		val powerUserMode = false
+		if (powerUserMode) {
+			setupOverlayBook(vwpt)
+		}
+
+		setupKeysAndClicks(vwpt, powerUserMode)
 
         // (ben)[2016-10-04]: Removing for avatar release
 //		sendExtraCameraRqs(stageTeller, vwpt.getShaperTeller.get)
@@ -336,36 +339,55 @@ trait PatientSender_BonusStaging extends OuterLogic with OuterCamHelp with Ident
 		val ovlSetupMsg = new VWSetupOvlBookRq(pages)
 
 		ovlTeller.tellStrongCPMsg(ovlSetupMsg)
+
+		val outerKeysWidg = new OuterBindNavCmdKeys{}
+		val kcmdReg = new VWKeymapBinding_Medial(outerKeysWidg.navCmdKeyBindMap, vwpt)
+		val stageTeller = vwpt.getStageTeller.get
+		stageTeller.tellCPMsg(kcmdReg)
 	}
 
 	def setupStatusPumps(vwpt: VWorldPublicTellers) : Unit = {}
 
-	def setupKeysAndClicks(vwpt: VWorldPublicTellers) : Unit = {
+	private def setupPowerUserKeys(vwpt: VWorldPublicTellers): Unit = {
+		// Define callback functions to be invoked in response to keyboard down stroke events.
+		val funcStgRst = (pt: VWorldPublicTellers) => {
+			sendStageReset(pt.getStageTeller.get)
+		}
+		val funcClrShps = (pt: VWorldPublicTellers) => {
+			sendClearShaps(pt.getShaperTeller.get)
+		}
+		val funcBodyYogaTest = (pt : VWorldPublicTellers) => {
+			sendBodyYoga(pt.getCharAdminTeller.get)
+		}
+
+		val inlineMap: Map[String, Function1[VWorldPublicTellers, Unit]] = Map(
+			"K" -> funcStgRst,
+			"L" -> funcClrShps,
+			"F3" -> funcBodyYogaTest)
+
+		// val typedMap =  HashMap(inlineMap)
+		info1("inlineKeymap={}", inlineMap) // , typedMap)
+		val regMsg = new VWKeymapBinding_Medial(inlineMap, vwpt)
+		val stageTeller = vwpt.getStageTeller.get
+		stageTeller.tellCPMsg(regMsg)
+
+	}
+	def setupKeysAndClicks(vwpt: VWorldPublicTellers, powerUserMode : Boolean) : Unit = {
 
 		val stageTeller = vwpt.getStageTeller.get
 
 		// sendClearKeysAndClicks(stageTeller)
 
+		if (powerUserMode) {
+			setupPowerUserKeys(vwpt)
+		}
 		// Define callback functions to be invoked in response to keyboard down stroke events.
-		val funcStgRst = (pt : VWorldPublicTellers) => {sendStageReset(pt.getStageTeller.get)}
-
-		val funcClrShps = (pt : VWorldPublicTellers) => {sendClearShaps(pt.getShaperTeller.get)}
-
-		val inlineMap : Map[String,Function1[VWorldPublicTellers,Unit]] = Map("K" -> funcStgRst, "L" -> funcClrShps)
-		// val typedMap =  HashMap(inlineMap)
-		info1("inlineKeymap={}", inlineMap) // , typedMap)
-		val regMsg = new VWKeymapBinding_Medial(inlineMap, vwpt)
-		stageTeller.tellCPMsg(regMsg)
-
 		val funcSkelHiliteToggle = (pt : VWorldPublicTellers) => {sendToggleSkelHilite(pt.getCharAdminTeller.get)}
-		val funcBodyYogaTest = (pt : VWorldPublicTellers) => {sendBodyYoga(pt.getCharAdminTeller.get)}
-		val nextMap = Map("F2" -> funcSkelHiliteToggle, "F3" -> funcBodyYogaTest)
+
+		val nextMap = Map("F2" -> funcSkelHiliteToggle)
 		val regMsg2 = new VWKeymapBinding_Medial(nextMap, vwpt)
 		stageTeller.tellCPMsg(regMsg2)
 
-		val outerKeysWidg = new OuterBindNavCmdKeys{}
-		val kcmdReg = new VWKeymapBinding_Medial(outerKeysWidg.navCmdKeyBindMap, vwpt)
-		stageTeller.tellCPMsg(kcmdReg)
 	}
 	def sendExtraCameraRqs(stageTeller : CPMsgTeller, spcTeller : CPMsgTeller): Unit = {
 		val vpd = new ViewportDesc(0.2f, 0.4f, 0.15f, 0.30f, Some(ColorRGBA.DarkGray))
