@@ -56,7 +56,7 @@ trait OuterCamHelp extends MakesTransform3D with IdentHlp with VarargsLogging {
 		stageTeller.tellCPMsg(camGuideBindRq)
 	}
 	def bindKnownCam(stageTeller : CPMsgTeller, spcTeller : CPMsgTeller,
-							camID : Ident,	camGuideNodeID : Ident) : Unit = {
+							camID : Ident,	camGuideNodeID : Ident, flag_attachVisibleMarker : Boolean) : Unit = {
 		// TODO:  Move this first step into the stage teller so that camGuide can sync to cam in predictable way
 		info1("Requesting cam(known)-guide node at ID={}", camGuideNodeID)
 		val makeGuideNodeRQ = new VWSCR_CamGuideNode(camGuideNodeID, None)
@@ -65,7 +65,6 @@ trait OuterCamHelp extends MakesTransform3D with IdentHlp with VarargsLogging {
 		val flag_guideIsParent = true
 		info2("Binding known cam at ID={} to cam-guide node at ID={}", camID, camGuideNodeID)
 
-		val flag_attachVisibleMarker = true
 		// Cam guide node will become the parent of the camera-Node
 		val camGuideBindRq = new VWBindCamNodeRq(camID, flag_guideIsParent, spcTeller, camGuideNodeID, flag_attachVisibleMarker)
 		stageTeller.tellCPMsg(camGuideBindRq)
