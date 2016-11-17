@@ -327,28 +327,7 @@ trait Manipable extends Smoovable with IdentHlp with VarargsLogging {
 
 }
 
-trait SyncsToCam extends Movable with Locatable with VarargsLogging {
-	def getGrandchildCamXform: Transform3D = {
-		val guideNode : JmeNode = getMainSpat.asInstanceOf[JmeNode]
-		val camNode = guideNode.getChild(0).asInstanceOf[CameraNode]
-		val cam = camNode.getCamera
-		info2("Pulling current transform of camera={} within camNode={}", cam, camNode)
-		val locPos = cam.getLocation
-		val locRot = cam.getRotation // compare getDirection
-		val locScl = Vector3f.UNIT_XYZ
 
-		val xform3D = new TransformParams3D(locPos, locRot, locScl)
-		info1("Pulled camXform={}", xform3D)
-		xform3D
-
-	}
-	def syncGuideToCam_rendThrd(): Unit = {
-
-		val xform = getGrandchildCamXform
-		applyTransform_runThrd(xform)
-
-	}
-}
 /*  Inefficient RAM use in AnimationFactory - we could do a tighter  MotionTrack creator than this:
 https://github.com/jMonkeyEngine/jmonkeyengine/blob/master/jme3-core/src/main/java/com/jme3/animation/AnimationFactory.java
         totalFrames = (int) (fps * duration) + 1;
