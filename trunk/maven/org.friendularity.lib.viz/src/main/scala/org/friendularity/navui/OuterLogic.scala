@@ -240,18 +240,8 @@ trait PatientSender_BonusStaging extends OuterLogic with OuterCamHelp with Ident
 		val darkBlue : ColorRGBA = new ColorRGBA(0f, 0.1f, 0.35f, 1f)
 		val backgroundColorRequest = new VWStageBackgroundColor(darkBlue)
 		stageTeller.tellCPMsg(backgroundColorRequest)
-        
-		val skyboxFolder : String = "textures/skybox/Sunny Ocean/";
-		val northImagePath: String = skyboxFolder + "North.png"
-		val eastImagePath: String = skyboxFolder + "East.png"
-		val southImagePath: String = skyboxFolder + "South.png"
-		val westImagePath: String = skyboxFolder + "West.png"
-		val upImagePath: String = skyboxFolder + "Up.png"
-		val downImagePath: String = skyboxFolder + "Down.png"
-		val backgroundSkyBoxRequest = new VWStageBackgroundSkybox(northImagePath, eastImagePath, southImagePath,
-				  westImagePath, upImagePath, downImagePath)
-		stageTeller.tellCPMsg(backgroundSkyBoxRequest)
-		
+
+		sendSkyboxRq(stageTeller)
         
         val displayContentStatsOnScreen = false
         val displayFPSOnScreen = false
@@ -280,6 +270,20 @@ trait PatientSender_BonusStaging extends OuterLogic with OuterCamHelp with Ident
 //		sendExtraCameraRqs(stageTeller, vwpt.getShaperTeller.get)
 
 		doAllExtraSetup(vwpt)
+	}
+	private def sendSkyboxRq(stageTeller : CPMsgTeller) : Unit = {
+		// Ooops!
+		// When we embed paths like this, we need to know where that resource is expected to be found, i.e. what bundle?
+		val skyboxFolder : String = "textures/skybox/Sunny Ocean/";
+		val northImagePath: String = skyboxFolder + "North.png"
+		val eastImagePath: String = skyboxFolder + "East.png"
+		val southImagePath: String = skyboxFolder + "South.png"
+		val westImagePath: String = skyboxFolder + "West.png"
+		val upImagePath: String = skyboxFolder + "Up.png"
+		val downImagePath: String = skyboxFolder + "Down.png"
+		val backgroundSkyBoxRequest = new VWStageBackgroundSkybox(northImagePath, eastImagePath, southImagePath,
+			westImagePath, upImagePath, downImagePath)
+		stageTeller.tellCPMsg(backgroundSkyBoxRequest)
 	}
 	//
 	def sendStageReset(stageTeller : CPMsgTeller) : Unit = {
