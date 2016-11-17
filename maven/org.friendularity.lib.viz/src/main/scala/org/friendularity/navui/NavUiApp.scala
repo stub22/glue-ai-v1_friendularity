@@ -37,129 +37,129 @@ import org.osgi.framework.BundleContext
   */
 trait NavUiAppSvc extends VarargsLogging {
 
-  def postPatientCharCreateRq(dualBodyID: Ident, fullHumaCfg: HumanoidFigureConfig,
-                              mbrsc_opt: Option[ModelBlendingRobotServiceContext],
-                              answerTeller: CPStrongTeller[VWBodyNotice]): Unit
+	def postPatientCharCreateRq(dualBodyID: Ident, fullHumaCfg: HumanoidFigureConfig,
+								mbrsc_opt: Option[ModelBlendingRobotServiceContext],
+								answerTeller: CPStrongTeller[VWBodyNotice]): Unit
 
-  def makeExoBodyUserTeller_withTicks(akkaSys: ActorSystem, ebuActorName: String, userLogic: ExoBodyUserLogic): CPStrongTeller[VWBodyNotice] = {
-    val parentARF: ActorRefFactory = akkaSys
-    val ebuActor: ActorRef = ExoActorFactory.makeExoBodyUserActor(parentARF, ebuActorName, userLogic)
-    val ebuTeller: CPStrongTeller[VWBodyNotice] = new ActorRefCPMsgTeller[VWBodyNotice](ebuActor)
-    // Let the user logic create the TickItem = callback func and schedule params
-    val regTickItem = userLogic.makeRegularTickItem()
-    regTickItem.addToSchedForSys(akkaSys, ebuActor, ebuActor)
-    ebuTeller
-  }
+	def makeExoBodyUserTeller_withTicks(akkaSys: ActorSystem, ebuActorName: String, userLogic: ExoBodyUserLogic): CPStrongTeller[VWBodyNotice] = {
+		val parentARF: ActorRefFactory = akkaSys
+		val ebuActor: ActorRef = ExoActorFactory.makeExoBodyUserActor(parentARF, ebuActorName, userLogic)
+		val ebuTeller: CPStrongTeller[VWBodyNotice] = new ActorRefCPMsgTeller[VWBodyNotice](ebuActor)
+		// Let the user logic create the TickItem = callback func and schedule params
+		val regTickItem = userLogic.makeRegularTickItem()
+		regTickItem.addToSchedForSys(akkaSys, ebuActor, ebuActor)
+		ebuTeller
+	}
 
-  def UNUSED_scheduleCallback_UNUSED(akkaSys: ActorSystem, tgtActor: ActorRef, tickMsg: CPumpMsg, phaseMillis: Integer,
-                                     periodMillis: Integer, schedHelper: ScheduleHelper): Unit = {
-    val schedItem = schedHelper.makeSchedItemRepeating(tickMsg, phaseMillis, periodMillis)
-    schedItem.addToSchedForSys(akkaSys, tgtActor, tgtActor)
-  }
+	def UNUSED_scheduleCallback_UNUSED(akkaSys: ActorSystem, tgtActor: ActorRef, tickMsg: CPumpMsg, phaseMillis: Integer,
+									   periodMillis: Integer, schedHelper: ScheduleHelper): Unit = {
+		val schedItem = schedHelper.makeSchedItemRepeating(tickMsg, phaseMillis, periodMillis)
+		schedItem.addToSchedForSys(akkaSys, tgtActor, tgtActor)
+	}
 
-  def makeFunUserLogic(flag_sendTestMoves: Boolean): ExoBodyUserLogic = {
-    val btc = new BodyTestClient {}
-    val userLogic: ExoBodyUserLogic = if (flag_sendTestMoves)
-      btc.makeMoveTestLogic
-    else
-      btc.makeEmptyExoBodyUserLogic
-    userLogic
-  }
+	def makeFunUserLogic(flag_sendTestMoves: Boolean): ExoBodyUserLogic = {
+		val btc = new BodyTestClient {}
+		val userLogic: ExoBodyUserLogic = if (flag_sendTestMoves)
+			btc.makeMoveTestLogic
+		else
+			btc.makeEmptyExoBodyUserLogic
+		userLogic
+	}
 
-  val sinbadBodyID: Ident = new FreeIdent("urn:ftd:cogchar.org:2012:runtime#char_sinbad_88")
-  val sinbadHmdGraphID: Ident = new FreeIdent("urn:ftd:cogchar.org:2012:runtime#hmd_sheet_22")
-  val sinbadBonyGraphID: Ident = new FreeIdent("urn:ftd:cogchar.org:2012:runtime#bony_sheet_sinbad")
+	val sinbadBodyID: Ident = new FreeIdent("urn:ftd:cogchar.org:2012:runtime#char_sinbad_88")
+	val sinbadHmdGraphID: Ident = new FreeIdent("urn:ftd:cogchar.org:2012:runtime#hmd_sheet_22")
+	val sinbadBonyGraphID: Ident = new FreeIdent("urn:ftd:cogchar.org:2012:runtime#bony_sheet_sinbad")
 
-  // Includes MechIO anim connections, requires bundleCtx.
-  // TODO:  If we were sending to an actor that knew how to discover the MechIOBody connection,
-  // possibly by waiting for a lifecycle update, then this impl could be same as the "Standy" method below.
-  def requestSemiLegacyBodyConn_OSGi_Sinbad(bundleCtx: BundleContext, akkaSys: ActorSystem,
-                                            legacyELRC: EnhancedLocalRepoClient, exoBodyUserLogic: ExoBodyUserLogic): Unit = {
-    requestSemiLegacyBodyConn_OSGi(bundleCtx, akkaSys, legacyELRC, sinbadBodyID,
-      sinbadHmdGraphID, sinbadBonyGraphID, exoBodyUserLogic)
-  }
+	// Includes MechIO anim connections, requires bundleCtx.
+	// TODO:  If we were sending to an actor that knew how to discover the MechIOBody connection,
+	// possibly by waiting for a lifecycle update, then this impl could be same as the "Standy" method below.
+	def requestSemiLegacyBodyConn_OSGi_Sinbad(bundleCtx: BundleContext, akkaSys: ActorSystem,
+											  legacyELRC: EnhancedLocalRepoClient, exoBodyUserLogic: ExoBodyUserLogic): Unit = {
+		requestSemiLegacyBodyConn_OSGi(bundleCtx, akkaSys, legacyELRC, sinbadBodyID,
+			sinbadHmdGraphID, sinbadBonyGraphID, exoBodyUserLogic)
+	}
 
-  def requestSemiLegacyBodyConn_OSGi(bundleCtx: BundleContext, akkaSys: ActorSystem,
-                                     legacyELRC: EnhancedLocalRepoClient, charBodyID: Ident,
-                                     hmdGraphID: Ident, bonyGraphID: Ident,
-                                     exoBodyUserLogic: ExoBodyUserLogic): Unit = {
+	def requestSemiLegacyBodyConn_OSGi(bundleCtx: BundleContext, akkaSys: ActorSystem,
+									   legacyELRC: EnhancedLocalRepoClient, charBodyID: Ident,
+									   hmdGraphID: Ident, bonyGraphID: Ident,
+									   exoBodyUserLogic: ExoBodyUserLogic): Unit = {
 
-    val legBodyLdr = new LegacyBodyLoader_Stateless
-    val fullHumaCfg: HumanoidFigureConfig = legBodyLdr.loadFullHumaConfig_SemiLegacy(legacyELRC, charBodyID, hmdGraphID, bonyGraphID)
-    val mbrsc: ModelBlendingRobotServiceContext = legBodyLdr.connectMechIOBody(legacyELRC, bundleCtx, fullHumaCfg, bonyGraphID)
+		val legBodyLdr = new LegacyBodyLoader_Stateless
+		val fullHumaCfg: HumanoidFigureConfig = legBodyLdr.loadFullHumaConfig_SemiLegacy(legacyELRC, charBodyID, hmdGraphID, bonyGraphID)
+		val mbrsc: ModelBlendingRobotServiceContext = legBodyLdr.connectMechIOBody(legacyELRC, bundleCtx, fullHumaCfg, bonyGraphID)
 
-    // Before we create the body itself, create an external client actor, with ability to
-    // talk to VW body, and also to receive schedule ticks
-    val noticerName = "bodyNoticer_" + charBodyID.getLocalName
-    val bodyNoticer: CPStrongTeller[VWBodyNotice] = makeExoBodyUserTeller_withTicks(akkaSys, noticerName, exoBodyUserLogic)
+		// Before we create the body itself, create an external client actor, with ability to
+		// talk to VW body, and also to receive schedule ticks
+		val noticerName = "bodyNoticer_" + charBodyID.getLocalName
+		val bodyNoticer: CPStrongTeller[VWBodyNotice] = makeExoBodyUserTeller_withTicks(akkaSys, noticerName, exoBodyUserLogic)
 
-    // Now we've done all the "outer" setup that requires assumptions, and we can
-    // send off a tidy async request to the v-world actors, requesting them to
-    // instantiate the avatar body and send back a notice when done, to our bodyNoticer.
-    // THEN our bodyNoticer can send more requests do any additional manipulation on the body
-    // such as move its v-world position and orientation, attach a camera, launch an animation.
-    // HOWEVER, it is also possible to indepdently find bodies, as is done by VWThingActReqRouterLogic
-    // using VWBodyTARouterLogic and VWBodyMedialRendezvous.
-    postPatientCharCreateRq(charBodyID, fullHumaCfg, Option(mbrsc), bodyNoticer)
+		// Now we've done all the "outer" setup that requires assumptions, and we can
+		// send off a tidy async request to the v-world actors, requesting them to
+		// instantiate the avatar body and send back a notice when done, to our bodyNoticer.
+		// THEN our bodyNoticer can send more requests do any additional manipulation on the body
+		// such as move its v-world position and orientation, attach a camera, launch an animation.
+		// HOWEVER, it is also possible to indepdently find bodies, as is done by VWThingActReqRouterLogic
+		// using VWBodyTARouterLogic and VWBodyMedialRendezvous.
+		postPatientCharCreateRq(charBodyID, fullHumaCfg, Option(mbrsc), bodyNoticer)
 
-  }
+	}
 
-  // Creates a posable VW character, but does not ask for or assume any MechIO (or other OSGi) infrastructure.
-  def requestStandySemiLegacyBody_Sinbad(akkaSys: ActorSystem,
-                                         legacyELRC: EnhancedLocalRepoClient,
-                                         exoBodyUserLogic: ExoBodyUserLogic): Unit = {
-    val legBodyLdr = new LegacyBodyLoader_Stateless
-    val fullHumaCfg: HumanoidFigureConfig = legBodyLdr.loadFullHumaConfig_SemiLegacy(legacyELRC, sinbadBodyID, sinbadHmdGraphID, sinbadBonyGraphID)
+	// Creates a posable VW character, but does not ask for or assume any MechIO (or other OSGi) infrastructure.
+	def requestStandySemiLegacyBody_Sinbad(akkaSys: ActorSystem,
+										   legacyELRC: EnhancedLocalRepoClient,
+										   exoBodyUserLogic: ExoBodyUserLogic): Unit = {
+		val legBodyLdr = new LegacyBodyLoader_Stateless
+		val fullHumaCfg: HumanoidFigureConfig = legBodyLdr.loadFullHumaConfig_SemiLegacy(legacyELRC, sinbadBodyID, sinbadHmdGraphID, sinbadBonyGraphID)
 
-    // Before we create the body itself, create an external client actor, with ability to
-    // talk to VW body, and also to receive schedule ticks
-    val bodyNoticer: CPStrongTeller[VWBodyNotice] = makeExoBodyUserTeller_withTicks(akkaSys, "sinbad_standy_body_user", exoBodyUserLogic)
-    postPatientCharCreateRq(sinbadBodyID, fullHumaCfg, None, bodyNoticer)
+		// Before we create the body itself, create an external client actor, with ability to
+		// talk to VW body, and also to receive schedule ticks
+		val bodyNoticer: CPStrongTeller[VWBodyNotice] = makeExoBodyUserTeller_withTicks(akkaSys, "sinbad_standy_body_user", exoBodyUserLogic)
+		postPatientCharCreateRq(sinbadBodyID, fullHumaCfg, None, bodyNoticer)
 
-  }
+	}
 }
 
 trait NavAppCloser extends VarargsLogging {
-  protected def getAkkaSys: ActorSystem
+	protected def getAkkaSys: ActorSystem
 
-  // TODO:  Initiate this shutdown via an actor msg
-  def closeTheApp: Unit = {
-    val speechServerCloser: SpeechServerCloser = new SpeechServerCloser()
-    warn1("closeTheApp is calling close on speechServerCloser={}", speechServerCloser)
-    speechServerCloser.close()
+	// TODO:  Initiate this shutdown via an actor msg
+	def closeTheApp: Unit = {
+		val speechServerCloser: SpeechServerCloser = new SpeechServerCloser()
+		warn1("closeTheApp is calling close on speechServerCloser={}", speechServerCloser)
+		speechServerCloser.close()
 
-    val akkaSys = getAkkaSys
-    warn1("closeTheApp is calling shutdown on akkaSys={}", akkaSys)
-    akkaSys.shutdown()
+		val akkaSys = getAkkaSys
+		warn1("closeTheApp is calling shutdown on akkaSys={}", akkaSys)
+		akkaSys.shutdown()
 
-    // TODO:  Shutdown QPid broker (Possibly sending higher level "Goodbye" to partners, first)
-    // TODO:  Stop Body-anim modules
-    // TODO:  Close windows
-    // TODO:  Close AL devices
-    // TODO:  Close MIDI devices
-    // TODO:  Stop OSGi bundles
-    // TODO:  Become compatible with robot shutdown
+		// TODO:  Shutdown QPid broker (Possibly sending higher level "Goodbye" to partners, first)
+		// TODO:  Stop Body-anim modules
+		// TODO:  Close windows
+		// TODO:  Close AL devices
+		// TODO:  Close MIDI devices
+		// TODO:  Stop OSGi bundles
+		// TODO:  Become compatible with robot shutdown
 
-    Thread.sleep(600)
-    System.exit(0)
+		Thread.sleep(600)
+		System.exit(0)
 
-  }
+	}
 
 }
 
 trait NavPumpSpaceOwner extends KnowsAkkaSys with VarargsLogging {
 
-  lazy private val myPumpSpace = new SpecialAppPumpSpace(getAkkaSys)
-  lazy private val standPumpTestCtxName = NavUiTestPublicNames.cpumpName
-  lazy private val standPumpCtxActorRef: ActorRef = myPumpSpace.findTopActorRef(standPumpTestCtxName)
-  lazy private val standPumpAdminTeller = new ActorRefCPMsgTeller(standPumpCtxActorRef)
+	lazy private val myPumpSpace = new SpecialAppPumpSpace(getAkkaSys)
+	lazy private val standPumpTestCtxName = NavUiTestPublicNames.cpumpName
+	lazy private val standPumpCtxActorRef: ActorRef = myPumpSpace.findTopActorRef(standPumpTestCtxName)
+	lazy private val standPumpAdminTeller = new ActorRefCPMsgTeller(standPumpCtxActorRef)
 
-  protected def sendGreetMsgs_Async(vwBossTeller: CPMsgTeller): Unit = {
-    // We send a currently-non-essential administrative howdy to get the game rollin
-    val hpatMsg = new VWARM_GreetFromPumpAdmin(standPumpAdminTeller)
-    info2("Sending greeting msg={} to VWBossTeller : {}", hpatMsg, vwBossTeller)
-    vwBossTeller.tellCPMsg(hpatMsg)
-  }
+	protected def sendGreetMsgs_Async(vwBossTeller: CPMsgTeller): Unit = {
+		// We send a currently-non-essential administrative howdy to get the game rollin
+		val hpatMsg = new VWARM_GreetFromPumpAdmin(standPumpAdminTeller)
+		info2("Sending greeting msg={} to VWBossTeller : {}", hpatMsg, vwBossTeller)
+		vwBossTeller.tellCPMsg(hpatMsg)
+	}
 
 }
 
