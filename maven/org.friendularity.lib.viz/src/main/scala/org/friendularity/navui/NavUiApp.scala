@@ -126,7 +126,7 @@ trait NavAppCloser extends VarargsLogging {
   def closeTheApp: Unit = {
     val speechServerCloser: SpeechServerCloser = new SpeechServerCloser()
     warn1("closeTheApp is calling close on speechServerCloser={}", speechServerCloser)
-    speechServerCloser.close
+    speechServerCloser.close()
 
     val akkaSys = getAkkaSys
     warn1("closeTheApp is calling shutdown on akkaSys={}", akkaSys)
