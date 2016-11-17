@@ -7,13 +7,13 @@
 		<artifactId>org.friendularity.modules.main</artifactId>
 		<version>1.0.9-SNAPSHOT</version>
 		<relativePath>../org.friendularity.modules.main/pom.xml</relativePath>
-	</parent>		
+	</parent>
 
     <artifactId>org.friendularity.bundle.vsim</artifactId>
 
     <packaging>bundle</packaging>
 
-	<name>${project.artifactId} - OSGi</name>	
+	<name>${project.artifactId} - OSGi</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -26,13 +26,13 @@
             <version>4.3.0</version>
             <scope>provided</scope>
         </dependency>
-		
+
         <dependency>
             <groupId>org.appdapter</groupId>
             <artifactId>ext.bundle.akka.remote_v2315_s210</artifactId>
             <version>${appdapter.version}</version>
         </dependency>
-		
+
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>org.friendularity.lib.viz</artifactId>
@@ -82,14 +82,14 @@
                         <Bundle-Activator>org.friendularity.bundle.vsim.Activator</Bundle-Activator>
 						<!-- Cannot just export org.friendularity.*, because that will create copies of
 								classes from other bundles that we depend on, e.g. JVision.
-								
-								On the other hand, a default (implicit) export instruction does not include classes from 
+
+								On the other hand, a default (implicit) export instruction does not include classes from
 								libraries, like o.f.lib.viz, which we *do* want to include(/export).
-								
-								Don't know of a tidier way than explicitly exporting all the packages we do want.
-								(Including "*" exports the whole universe of visible classes - exciting but horrible!)
-						-->                        
-						<Export-Package>
+
+                                Don't know of a tidier way than explicitly exporting all the packages we do want.
+                                (Including "*" exports the whole universe of visible classes - exciting but horrible!)
+                        -->
+                        <Export-Package>
                             org.friendularity.bundle.vsim,
                             org.friendularity.vsim.*,
                             org.friendularity.api.*,
@@ -112,12 +112,13 @@
                             org.friendularity.mjob,
                             org.friendularity.qpc,
                             org.friendularity.thact,
-                            org.friendularity.akact
+                            org.friendularity.akact,
+                            org.friendularity.closing
                         </Export-Package>
                         <Private-Package>
                             org.friendularity.netcli.*
                         </Private-Package>
-						<!-- org.parboiled,  shapeless,  org.uncommons.maths  are used by spray-http -->
+                        <!-- org.parboiled,  shapeless,  org.uncommons.maths  are used by spray-http -->
                     </instructions>
                 </configuration>
             </plugin>
