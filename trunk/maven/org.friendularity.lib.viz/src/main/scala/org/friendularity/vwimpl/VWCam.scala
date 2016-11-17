@@ -11,11 +11,12 @@ import org.cogchar.render.opengl.optic.CameraMgr
 import org.cogchar.render.sys.registry.RenderRegistryClient
 import org.cogchar.render.sys.task.Queuer
 import org.cogchar.render.trial.PointerCone
+import org.friendularity.cpmsg.CPMsgTeller
 import org.friendularity.field.{TypedFieldDataLeafImpl, MediumFieldDataBag, VWTestFieldIdents, ItemFieldSpecDirectImpl, ItemFieldData, ReportFilteringPolicy, MonitoredSpaceImpl}
-import org.friendularity.vwmsg.{ViewportDesc, CamState3D, VWSCR_ExistingNode, VWBindCamNodeRq, VWModifyCamStateRq, VWCreateCamAndViewportRq}
+import org.friendularity.vwmsg.{ShapeManipRqImpl, AbruptManipAbsImpl, TransformParams3D, Transform3D, ViewportDesc, CamState3D, VWSCR_ExistingNode, VWBindCamNodeRq, VWModifyCamStateRq, VWCreateCamAndViewportRq}
 
 /**
-  * Created by Owner on 7/17/2016.
+  * Created by Stub22 on 7/17/2016.
   */
 case class VWCamSummary(camID : Ident, posLoc: Vector3f, pointDir: Vector3f, upDir: Vector3f,
 						viewLowerLeft : Vector2f, viewTopRight : Vector2f) {
@@ -43,10 +44,22 @@ trait VWCamLogic extends VarargsLogging with IdentHlp with MonitoredSpaceImpl {
 		mcRq.updVP_opt.map(applyViewportDesc_rendThrd(cbind, _))
 
 	}
+	private def positionGuideWhereCamIsNow(spcTeller : CPMsgTeller, guideNodeID : Ident, cam : Camera) : Unit = {
+		// Pull the current cam xform so we can copy it as pos for the guide node.
+		val xtractor = new CamXformXtractor {}
+		val camCurrXform = xtractor.pullXformForCam(cam)
+		val abruptManip = new AbruptManipAbsImpl(camCurrXform)
+		val statusTlr_opt = None
+		val guideManipMsg = new ShapeManipRqImpl(guideNodeID, abruptManip, statusTlr_opt)
+		spcTeller.tellCPMsg(guideManipMsg)
+	}
 	def processBindCamNode(bcnRq : VWBindCamNodeRq) : Unit = {
 		val cbind : CameraBinding = myCamMgr.findOrMakeCameraBinding(bcnRq.camID)
 		val camNodeName = makeStampyRandyString("camNode_", "")
 		val cam = cbind.getCamera
+
+		positionGuideWhereCamIsNow(bcnRq.spaceTeller, bcnRq.spaceNodeID, cam)
+
 		val camNode = new CameraNode(camNodeName, cam)
 
 		if (bcnRq.flag_attachVisibleMarker) {
@@ -65,7 +78,6 @@ trait VWCamLogic extends VarargsLogging with IdentHlp with MonitoredSpaceImpl {
 		// Unclear exactly how previous state of camera is affected/replaced by the node attachment.
 		// Need more debug output.
 		bcnRq.spaceTeller.tellCPMsg(registerCamNodeAsShape)
-
 	}
 	def makePointerCone(rrc : RenderRegistryClient, nameSuffix : String) : JmeNode = {
 		val pc: PointerCone = new PointerCone(nameSuffix)
@@ -130,3 +142,34 @@ trait VWCamLogic extends VarargsLogging with IdentHlp with MonitoredSpaceImpl {
 	}
 
 }
+trait CamXformXtractor extends VarargsLogging {
+	def pullXformForCam(cam : Camera) : Transform3D = {
+		val locPos = cam.getLocation
+		val locRot = cam.getRotation // compare getDirection
+		val locScl = Vector3f.UNIT_XYZ
+
+		val xform3D = new TransformParams3D(locPos, locRot, locScl)
+		info1("Pulled camXform={}", xform3D)
+		xform3D
+	}
+}
+
+trait SyncsToCam extends Movable with Locatable with CamXformXtractor {
+	// This works, but unclear how long this state remains good after attachment of cam to a parent.
+	// Probably gets wiped out as soon as we return from the render callback, eh?
+
+	private def getGrandchildCamXform: Transform3D = {
+		val guideNode : JmeNode = getMainSpat.asInstanceOf[JmeNode]
+		val camNode = guideNode.getChild(0).asInstanceOf[CameraNode]
+		val cam : Camera = camNode.getCamera
+		info2("Pulling current transform of camera={} within camNode={}", cam, camNode)
+		pullXformForCam(cam)
+	}
+	protected def syncGuideToCam_rendThrd(): Unit = {
+
+		val xform = getGrandchildCamXform
+		applyTransform_runThrd(xform)
+
+	}
+}
+

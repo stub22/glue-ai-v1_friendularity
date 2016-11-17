@@ -190,6 +190,9 @@ trait DfltCamGuideMgr extends OuterCamHelp with TARqExtractorHelp with IdentHlp 
 
 			bindKnownCam(stageTeller, spcTeller, dfltCamID, myDfltCamGuideID, flag_attachVisibleMarker)
 
+			info0("Sleeping for 150 msec as clumsy insurance against race condition in setting up cam-guide")
+			Thread.sleep(150)
+
 			dfltCamIsBoundToGuide = true
 			dfltCamGuideIsBoundToRoot = true
 		} else {
@@ -256,7 +259,7 @@ trait CamTARouterLogic extends TARqExtractorHelp with MakesTransform3D with Oute
 		if (camGoodyID.equals(dfltCamID)) {
 			handleDfltCameraManipTA(ta, gax, whoDat)
 		} else {
-			handleCameraGuideTA(ta, gax, whoDat)
+			handleXtraCameraGuideTA(ta, gax, whoDat)
 		}
 	}
 	private def handleDfltCameraManipTA(ta : ThingActionSpec, gax: GoodyActionExtractor, whoDat : ActorRef) : Unit = {
@@ -314,7 +317,7 @@ trait CamTARouterLogic extends TARqExtractorHelp with MakesTransform3D with Oute
 		sendCamStateModifyRq(stageTeller, camID, updState_opt, updVP_opt)
 
 	}
-	def handleCameraGuideTA(ta : ThingActionSpec, gax: GoodyActionExtractor, whoDat : ActorRef) : Unit = {
+	def handleXtraCameraGuideTA(ta : ThingActionSpec, gax: GoodyActionExtractor, whoDat : ActorRef) : Unit = {
 		// Resolve message cam-URI to paired shape ID, which is used for most camera movement control.
 		// However, if we want to use ".lookAt" ...
 		// OR, if we want to control a default camera (which does not have a parent shape ID)...

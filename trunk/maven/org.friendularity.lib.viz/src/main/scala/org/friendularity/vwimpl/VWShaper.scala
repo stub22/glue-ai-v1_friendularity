@@ -237,8 +237,10 @@ trait 	VWShaperLogic extends PatternGridMaker with AttachHlp with IdentHlp {
 		val madeSpatRec : MadeSpatRecBase = registerSpat(madeSpat, toMake)
 		val deferredAttachFunc : Function0[Unit] = () => {
 			attachToParent_onRendThrd(madeSpat, toMake)
-			// This causes an exception if the sub-cam is not attached yet
+			// This causes an exception if the sub-cam is not attached yet.
 			// madeSpatRec.syncAfterAttach_onRendThrd
+			// So we don't use that technique here.
+			// Instead see VWCamLogic.positionGuideWhereCamIsNow
 		}
 		if (deferAttach) {
 			enqueueJmeCallable(deferredAttachFunc)
