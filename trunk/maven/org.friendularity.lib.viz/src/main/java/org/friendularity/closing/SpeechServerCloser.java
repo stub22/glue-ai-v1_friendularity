@@ -46,8 +46,7 @@ public class SpeechServerCloser {
 				Destination cmdDest = new AMQQueue("speechCommand; {create: always, node: {type: queue}}");
 
 				JMSAvroMessageSender<ServiceCommand, ServiceCommandRecord> cmdSender =
-						new JMSAvroMessageSender<>(
-								session, cmdDest);
+						new JMSAvroMessageSender(session, cmdDest);
 
 				cmdSender.setAdapter(new EmptyAdapter());
 				cmdSender.setDefaultContentType(JMSAvroServiceFacade.COMMAND_MIME_TYPE);
