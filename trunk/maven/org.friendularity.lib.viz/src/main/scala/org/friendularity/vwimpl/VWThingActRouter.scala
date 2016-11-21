@@ -28,7 +28,7 @@ import org.cogchar.render.opengl.optic.CameraMgr
 import org.friendularity.akact.{KnowsAkkaSys, FrienduActor}
 import org.friendularity.cpmsg.{CPMsgTeller, ActorRefCPMsgTeller, CPStrongTeller}
 import org.friendularity.navui.OuterCamHelp
-import org.friendularity.vwmsg.{VWShapeAttachRq, VWSCR_Node, VWShapeDetachRq, ManipStatusMsg, TransformParams3D, CamStateParams3D, ViewportDesc, CamState3D, SmooveManipEndingImpl, VWBodyManipRq, AbruptManipAbsImpl, SmooveManipGutsImpl, ManipDesc, Transform3D, MakesTransform3D, PartialTransform3D, MaybeTransform3D, VWBodyFindRq, VWBodyLifeRq, VWBodyRq, VWBodyNotice, VWorldPublicTellers, VWRqTAWrapper}
+import org.friendularity.vwmsg.{VWShapeAttachRq, VWSCR_Node, VWShapeDetachRq, ManipStatusMsg, TransformParams3D, CamStateParams3D, ViewportDesc, CamState3D, SmooveManipEndingFullImpl, VWBodyManipRq, AbruptManipAbsFullImpl, SmooveManipGutsFullImpl, ManipDesc, Transform3D, MakesTransform3D, PartialTransform3D, MaybeTransform3D, VWBodyFindRq, VWBodyLifeRq, VWBodyRq, VWBodyNotice, VWorldPublicTellers, VWRqTAWrapper}
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 
@@ -155,11 +155,12 @@ trait VWBodyTARouterLogic extends TARqExtractorHelp with MakesTransform3D  with 
 	}
 	private def sendMedialVWBodyMoveRq(bodyID : Ident, maybeXform : MaybeTransform3D,
 									   dur_opt : Option[JFloat], whoDat : ActorRef): Unit = {
+		// TODO:  Allow for a partial transform in, as is done in OuterCamHelp.sendGuidedCamMoveRq
 		val concXform : Transform3D = makeDefiniteXForm(maybeXform)
 		val manipGuts : ManipDesc = if (dur_opt.isDefined) {
-			new SmooveManipEndingImpl(concXform, dur_opt.get)
+			new SmooveManipEndingFullImpl(concXform, dur_opt.get)
 		} else {
-			new AbruptManipAbsImpl(concXform)
+			new AbruptManipAbsFullImpl(concXform)
 		}
 		val msgForBody : VWBodyRq = new VWBodyManipRq(manipGuts)
 		getMedialRendezvous.routeBodyRq(bodyID, msgForBody, whoDat)

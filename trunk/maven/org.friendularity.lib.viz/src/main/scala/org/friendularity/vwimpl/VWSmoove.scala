@@ -20,7 +20,7 @@ import com.jme3.math.{Quaternion, Vector3f, ColorRGBA}
 import com.jme3.scene.{Node => JmeNode, CameraNode, Spatial}
 import org.appdapter.core.name.Ident
 import org.appdapter.fancy.log.VarargsLogging
-import org.friendularity.vwmsg.{ManipCompletionHandle, VWShapeManipRq, ShapeManipRqImpl, SmooveManipFullImpl, SmooveManipEnding, AbruptManipAbs, ManipDesc, DoTransformAbsoluteNow, TransformParams3D, Transform3D, SmooveManipFull}
+import org.friendularity.vwmsg.{SmooveManipStoryPartialImpl, MaybeTransform3D, ManipCompletionHandle, VWShapeManipRq, ShapeManipRqImpl, SmooveManipStoryFullImpl, SmooveManipEnding, AbruptManipAbs, ManipDesc, DoTransformAbsoluteNow, TransformParams3D, Transform3D, SmooveManipStory}
 
 /**
   * Created by Stub22 on 6/30/2016.
@@ -91,8 +91,8 @@ trait Movable extends HasMainSpat {
 	}
 }
 
-trait JmeAnimMaker {
-	def makeJmeAnimUsingFactory (smv : SmooveManipFull): JmeGrossAnim = {
+trait JmeAnimMaker extends VarargsLogging {
+	def makeJmeAnimUsingFactory (smv : SmooveManipStory, assumeFullXforms : Boolean): JmeGrossAnim = {
 		// Hmmm, the animFactory creates all frames in memory when it creates a SpatialTrack.
 		// SpatialTrack does have a times[] array, but it is used very bluntly by AnimFactory.
 		// It looks like if we made SpatialTracks directly, they could use much less RAM.
@@ -100,16 +100,24 @@ trait JmeAnimMaker {
 		val durF = smv.getDuration_sec
 		val animName = "smv_" + smv.hashCode() + "_at_" + System.currentTimeMillis()
 		val animFactory = new AnimationFactory(durF, animName)
-		addJmeAnimKeyFrame(animFactory, 0, smv.getXform_begin)
-		addJmeAnimTimedFrame(animFactory, durF, smv.getXform_finish)
+		if (assumeFullXforms) {
+			info1("Using full keyFrames for story: {}", smv)
+			addFullJmeAnimKeyFrame(animFactory, 0, smv.getXform_begin_full)
+			addFullJmeAnimTimedFrame(animFactory, durF, smv.getXform_finish_full)
+		} else {
+			info1("Using partial keyFrames for story: {}", smv)
+			addPartialJmeAnimKeyFrame(animFactory, 0, smv.getXform_begin_partial)
+			addPartialJmeAnimTimedFrame(animFactory, durF, smv.getXform_finish_partial)
+		}
 		val jmeAnim = animFactory.buildAnimation()
 		jmeAnim
 	}
 	// This is an jme.AnimFactory-KeyFrame, not the KeyFrame found in jme.cinematic.
 
 	// Animation is treated as a seq of interpolated frames.
-
-	def addJmeAnimKeyFrame(af : AnimationFactory, frameTimeIdx  : Int, frameXform : Transform3D) : Unit = {
+	// We have variants for both integer index (e.g. 0 is exactly the first frame) and interpolated time.
+	// We also can absorb either Full or Partial("Maybe") transforms.
+	private def addFullJmeAnimKeyFrame(af : AnimationFactory, frameTimeIdx  : Int, frameXform : Transform3D) : Unit = {
 
 		val fPos = frameXform.getPos
 		val fRotQuat = frameXform.getRotQuat
@@ -118,7 +126,7 @@ trait JmeAnimMaker {
 		af.addKeyFrameRotation(frameTimeIdx, fRotQuat)
 		af.addKeyFrameScale(frameTimeIdx, fScale)
 	}
-	def addJmeAnimTimedFrame(af : AnimationFactory, frameTime  : Float, frameXform : Transform3D) : Unit = {
+	private def addFullJmeAnimTimedFrame(af : AnimationFactory, frameTime  : Float, frameXform : Transform3D) : Unit = {
 
 		val fPos = frameXform.getPos
 		val fRotQuat = frameXform.getRotQuat
@@ -126,6 +134,20 @@ trait JmeAnimMaker {
 		af.addTimeTranslation(frameTime, fPos)
 		af.addTimeRotation(frameTime, fRotQuat)
 		af.addTimeScale(frameTime, fScale)
+	}
+	// 2016-11-21 - Stu sez:  Hmmm, this "partial" approach doesn't seem to work, so far.
+	// At least, main cam seems to be jumping to a default +z orientation, even though both rotQuats
+	// are set to None - meaning the keyframe should have no rot info.  Does Jme anim builder require/assume
+	// a complete transform at each keyframe?
+	private def addPartialJmeAnimKeyFrame(af : AnimationFactory, frameTimeIdx  : Int, frameXform : MaybeTransform3D) : Unit = {
+		frameXform.getPos_opt.map(af.addKeyFrameTranslation(frameTimeIdx, _))
+		frameXform.getRotQuat_opt.map(af.addKeyFrameRotation(frameTimeIdx, _))
+		frameXform.getScl_opt.map(af.addKeyFrameScale(frameTimeIdx, _))
+	}
+	private def addPartialJmeAnimTimedFrame(af : AnimationFactory, frameTime  : Float, frameXform : MaybeTransform3D) : Unit = {
+		frameXform.getPos_opt.map(af.addTimeTranslation(frameTime, _))
+		frameXform.getRotQuat_opt.map(af.addTimeRotation(frameTime, _))
+		frameXform.getScl_opt.map(af.addTimeScale(frameTime, _))
 	}
 
 }
@@ -251,26 +273,39 @@ trait Smoovable extends Movable with Locatable with Addressable with VarargsLogg
 	}
 	*/
 
-	def applySmooveNow_anyThrd(manipFull: SmooveManipFull, ch : ManipCompletionHandle): Unit = {
+	protected def applySmooveNow_anyThrd(manipStory: SmooveManipStory, ch : ManipCompletionHandle): Unit = {
 		// Since this happens at the "controls" level, is it then not really a sceneGraph mod, requiring queueing?
-		val anim = myAnimMaker.makeJmeAnimUsingFactory(manipFull)
+		val flag_useFullXforms = manipStory.getFlag_useFullXforms
+		val anim = myAnimMaker.makeJmeAnimUsingFactory(manipStory, flag_useFullXforms)
 		val spat = getMainSpat
 		val wrappedMCH = new WrappedMCH(anim.getName, ch)
 		applyAnim_anyThrd(anim, spat, wrappedMCH)
 	}
 
 	def applySmooveFromCurrent_mystThrd(manipEnding: SmooveManipEnding, ch : ManipCompletionHandle ): Unit = {
-		val smv = createSmooveStartingFromCurrentPos_anyThrd(manipEnding.getXform_finish, manipEnding.getDuration_sec)
+		val smv = if (manipEnding.getFlag_useFullXforms) {
+			createSmooveStartingFromCurrentFullXform_anyThrd(manipEnding.getXform_finish_full, manipEnding.getDuration_sec)
+		} else {
+			createSmooveStartingFromCurrentPartialXform_anyThrd(manipEnding.getXform_finish_partial, manipEnding.getDuration_sec)
+		}
 		info1("Created smoove starting from current pos: {}", smv)
 		applySmooveNow_anyThrd(smv, ch )
 	}
 
-	private def createSmooveStartingFromCurrentPos_anyThrd(endXform: Transform3D, durSec: Float): SmooveManipFull = {
+	private def createSmooveStartingFromCurrentFullXform_anyThrd(endXform: Transform3D, durSec: Float): SmooveManipStory = {
 		val currXform = getCurrXform_anyThrd
-		val manipFull = new SmooveManipFullImpl(currXform, endXform, durSec)
+		val manipFull = new SmooveManipStoryFullImpl(currXform, endXform, durSec)
 		manipFull
 	}
-
+	private def createSmooveStartingFromCurrentPartialXform_anyThrd(endXform_partial: MaybeTransform3D, durSec: Float): SmooveManipStory = {
+		// Two possible approaches should have almost equivalent results, but they don't!
+		val jmeAnimBuilderWantsFullness : Boolean = true
+		val currXform_full = getCurrXform_anyThrd
+		val currXform_partial = if (jmeAnimBuilderWantsFullness) currXform_full else currXform_full.filterByOther(endXform_partial)
+		val augmentedEndXform_partial = if (jmeAnimBuilderWantsFullness) endXform_partial.augmentWithDefaults(currXform_full) else endXform_partial
+		val manipStory = new SmooveManipStoryPartialImpl(currXform_partial, augmentedEndXform_partial, durSec)
+		manipStory
+	}
 	private def applyAnim_anyThrd(a: JmeGrossAnim, s: Spatial, ch : ManipCompletionHandle): Unit = {
 		val acHelper = new JmeAnimCtrlWrap {}
 		// acHelper.registerPropagator(s, ch)
@@ -304,7 +339,7 @@ trait Manipable extends Smoovable with IdentHlp with VarargsLogging {
 			override def getHandleID: Ident = myDummyHandleID
 		})
 		manip match {
-			case smf : SmooveManipFull => {
+			case smf : SmooveManipStory => {
 				info1("Starting full-smoove manip: {}", smf)
 				applySmooveNow_anyThrd(smf, ch)
 
@@ -314,7 +349,7 @@ trait Manipable extends Smoovable with IdentHlp with VarargsLogging {
 				applySmooveFromCurrent_mystThrd(sme, ch)
 			}
 			case ama : AbruptManipAbs => {
-				val xform = ama.getXform_finish
+				val xform = ama.getXform_finish_full
 				val func : Function0[Unit] = () => {
 					applyTransform_runThrd(xform)
 					ch.notifyComplete("ABRUPT_NO_ANIM", "abrubtXform=[" + xform + "]")

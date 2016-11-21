@@ -16,7 +16,7 @@
 
 package org.friendularity.netcli.vwta
 
-import com.jme3.math.Vector3f
+import com.jme3.math.{Quaternion, Vector3f}
 import org.appdapter.core.name.FreeIdent
 import org.cogchar.name.cinema.LightsCameraAN
 
@@ -80,14 +80,18 @@ class ClientTestMsgSender(initDelayMsec : Int, stepDelayMsec : Int, sinbadMoves 
 		val clientOffer = this
 		val mainCamID = new FreeIdent(LightsCameraAN.URI_defaultCam)
 		val nxtCamPos = new Vector3f(5.0f, 33.0f, -250.0f)
-		val nxf = new PartialTransform3D(Some(nxtCamPos), None, None)
+		val srcQ = new Quaternion
+		val quarterAngle : Float = 0.5f * Math.PI.asInstanceOf[Float]
+		val quarterTurn : Quaternion = srcQ.fromAngles(0.0f, quarterAngle, 0.0f)
+		val oppositeTurn = quarterTurn.inverse
+		val nxfA = new PartialTransform3D(Some(nxtCamPos), Some(quarterTurn), None)
 		val dur = 7.0f
 
 		if (useSmooves) {
 			info0("Sending main-cam smoove 1")
-			clientOffer.sendRq_smooveRootCamera(mainCamID, nxf, dur)
+			clientOffer.sendRq_smooveRootCamera(mainCamID, nxfA, dur)
 		} else {
-			clientOffer.sendRq_abruptMoveRootCamera(mainCamID, nxf)
+			clientOffer.sendRq_abruptMoveRootCamera(mainCamID, nxfA)
 		}
 
 		Thread.sleep(stepDelayMsec)
@@ -104,9 +108,9 @@ class ClientTestMsgSender(initDelayMsec : Int, stepDelayMsec : Int, sinbadMoves 
 
 		if (useSmooves) {
 			info0("Sending main-cam smoove 3")
-			clientOffer.sendRq_smooveRootCamera(mainCamID, nxf, dur)
+			clientOffer.sendRq_smooveRootCamera(mainCamID, nxfA, dur)
 		} else {
-			clientOffer.sendRq_abruptMoveRootCamera(mainCamID, nxf)
+			clientOffer.sendRq_abruptMoveRootCamera(mainCamID, nxfA)
 		}
 		Thread.sleep(stepDelayMsec)
 
