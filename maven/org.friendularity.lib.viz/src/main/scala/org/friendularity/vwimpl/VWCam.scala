@@ -13,7 +13,7 @@ import org.cogchar.render.sys.task.Queuer
 import org.cogchar.render.trial.PointerCone
 import org.friendularity.cpmsg.CPMsgTeller
 import org.friendularity.field.{TypedFieldDataLeafImpl, MediumFieldDataBag, VWTestFieldIdents, ItemFieldSpecDirectImpl, ItemFieldData, ReportFilteringPolicy, MonitoredSpaceImpl}
-import org.friendularity.vwmsg.{ShapeManipRqImpl, AbruptManipAbsImpl, TransformParams3D, Transform3D, ViewportDesc, CamState3D, VWSCR_ExistingNode, VWBindCamNodeRq, VWModifyCamStateRq, VWCreateCamAndViewportRq}
+import org.friendularity.vwmsg.{ShapeManipRqImpl, AbruptManipAbsFullImpl, TransformParams3D, Transform3D, ViewportDesc, CamState3D, VWSCR_ExistingNode, VWBindCamNodeRq, VWModifyCamStateRq, VWCreateCamAndViewportRq}
 
 /**
   * Created by Stub22 on 7/17/2016.
@@ -48,7 +48,7 @@ trait VWCamLogic extends VarargsLogging with IdentHlp with MonitoredSpaceImpl {
 		// Pull the current cam xform so we can copy it as pos for the guide node.
 		val xtractor = new CamXformXtractor {}
 		val camCurrXform = xtractor.pullXformForCam(cam)
-		val abruptManip = new AbruptManipAbsImpl(camCurrXform)
+		val abruptManip = new AbruptManipAbsFullImpl(camCurrXform)
 		val statusTlr_opt = None
 		val guideManipMsg = new ShapeManipRqImpl(guideNodeID, abruptManip, statusTlr_opt)
 		spcTeller.tellCPMsg(guideManipMsg)

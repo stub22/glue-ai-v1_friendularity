@@ -12,10 +12,17 @@ import org.cogchar.api.vworld.GoodyActionParamWriter
 // They are marked with "3D" (and when we get to it, "2D").
 
 trait MaybeLocated3D {
-	def getPos_opt : Option[Vector3f] = None
-	def getDefaultPos : Vector3f = Vector3f.ZERO
-	def getPos : Vector3f = getPos_opt.getOrElse(getDefaultPos)
+	def getPos_opt: Option[Vector3f] = None
 
+	def getDefaultPos: Vector3f = Vector3f.ZERO
+
+	def getPos: Vector3f = getPos_opt.getOrElse(getDefaultPos)
+
+/*	def filterByOtherLoc(oml3d: MaybeLocated3D): MaybeLocated3D = {
+		if (oml3d).getPos_opt.isDefined this
+		else new MaybeLocated3D {}
+	}
+	*/
 }
 trait Located3D extends MaybeLocated3D {
 	def getPosX : Float = getPos.getX
@@ -43,7 +50,22 @@ trait Scaled3D extends MaybeScaled3D {
 
 // User must check for existence of particular parts, and apply defaults as desired.
 trait MaybeTransform3D extends MaybeLocated3D with MaybeRotated3D with MaybeScaled3D {
+	def filterByOther(omt3d : MaybeTransform3D) : MaybeTransform3D = {
+		// val posOpt : Option[Vector3f] = if (omt3d.getPos_opt.isDefined) getPos_opt else None
 
+		val posOpt2 : Option[Vector3f] = omt3d.getPos_opt.flatMap(irr => {this.getPos_opt})
+		val rotOpt : Option[Quaternion] = omt3d.getRotQuat_opt.flatMap(irr3 => {this.getRotQuat_opt})
+		val sclOpt : Option[Vector3f] = omt3d.getScl_opt.flatMap(irr4 => {this.getScl_opt})
+		new PartialTransform3D(posOpt2, rotOpt, sclOpt)
+	}
+
+	def augmentWithDefaults(omt3d : MaybeTransform3D) : MaybeTransform3D = {
+		val posOpt : Option[Vector3f] = getPos_opt.orElse(omt3d.getPos_opt)
+		val rotOpt : Option[Quaternion] =  getRotQuat_opt.orElse(omt3d.getRotQuat_opt)
+		val sclOpt : Option[Vector3f] = getScl_opt.orElse(omt3d.getScl_opt)
+		new PartialTransform3D(posOpt, rotOpt, sclOpt)
+
+	}
 }
 
 case class PartialTransform3D(posOpt : Option[Vector3f], rotOpt : Option[Quaternion], sclOpt : Option[Vector3f]) extends MaybeTransform3D {
@@ -76,7 +98,7 @@ case class TransformParams3D(myPos3f : Vector3f, myRotQuat : Quaternion, myScale
 	override def getRotQuat_opt : Option[Quaternion] = Option(myRotQuat)
 	override def getScl_opt : Option[Vector3f] = Option(myScale3f)
 }
-// ... OR, supply only optional components, with nice defaults filled in automagically.
+// ... OR, supply only optional components, with decent defaults filled in automagically.
 // However note that the meaning of the transform fields can be interpreted as absolute or relative.
 trait MakesTransform3D {
 	def makeRelativeXForm(pos_opt : Option[Vector3f], rot_opt : Option[Quaternion], scale_opt : Option[Vector3f])

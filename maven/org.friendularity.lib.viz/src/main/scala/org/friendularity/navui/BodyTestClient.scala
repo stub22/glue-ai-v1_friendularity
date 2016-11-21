@@ -3,7 +3,7 @@ package org.friendularity.navui
 import com.jme3.math.{Quaternion, Vector3f}
 import org.appdapter.fancy.log.VarargsLogging
 import org.friendularity.cpmsg.CPStrongTeller
-import org.friendularity.vwmsg.{VWBodyManipRq, AbruptManipAbsImpl, TransformParams3D, VWExoBodyChance, VWBodyRq, VWBodyNotice}
+import org.friendularity.vwmsg.{VWBodyManipRq, AbruptManipAbsFullImpl, TransformParams3D, VWExoBodyChance, VWBodyRq, VWBodyNotice}
 
 /**
   * Created by StuB22 on 6/18/2016.
@@ -30,7 +30,7 @@ trait BodyTestClient extends VarargsLogging {
 		// val moveRq: VWBodyRq = new VWBodyMoveRq(xf, yf, zf)
 		val tgtPosVec = new Vector3f(xf, yf, zf)
 		val xform = new TransformParams3D(tgtPosVec, Quaternion.IDENTITY, Vector3f.UNIT_XYZ)
-		val manip = new AbruptManipAbsImpl(xform)
+		val manip = new AbruptManipAbsFullImpl(xform)
 		val manipRq = new VWBodyManipRq(manip)
 		debug2("Moving body via teller={}.   Sending manipRq={}", bodyTeller, manipRq)
 		bodyTeller.tellStrongCPMsg(manipRq)
