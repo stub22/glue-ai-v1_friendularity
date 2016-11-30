@@ -1,7 +1,9 @@
 package org.friendularity.vwmsg
 
 import com.jme3.math.{Quaternion, Vector3f}
+import org.appdapter.fancy.log.VarargsLogging
 import org.cogchar.api.vworld.GoodyActionParamWriter
+import java.lang.{Integer => JInt, Long => JLong, Float => JFloat}
 
 /**
   * Created by Owner on 7/2/2016.
@@ -100,19 +102,56 @@ case class TransformParams3D(myPos3f : Vector3f, myRotQuat : Quaternion, myScale
 }
 // ... OR, supply only optional components, with decent defaults filled in automagically.
 // However note that the meaning of the transform fields can be interpreted as absolute or relative.
-trait MakesTransform3D {
-	def makeRelativeXForm(pos_opt : Option[Vector3f], rot_opt : Option[Quaternion], scale_opt : Option[Vector3f])
-					: Transform3D = {
-		val pos : Vector3f = pos_opt.getOrElse(Vector3f.ZERO)
-		val rot : Quaternion = rot_opt.getOrElse(Quaternion.IDENTITY)
-		val scl : Vector3f = scale_opt.getOrElse(Vector3f.UNIT_XYZ)
+trait MakesTransform3D extends VarargsLogging {
+	def makeRelativeXForm(pos_opt: Option[Vector3f], rot_opt: Option[Quaternion], scale_opt: Option[Vector3f])
+	: Transform3D = {
+		val pos: Vector3f = pos_opt.getOrElse(Vector3f.ZERO)
+		val rot: Quaternion = rot_opt.getOrElse(Quaternion.IDENTITY)
+		val scl: Vector3f = scale_opt.getOrElse(Vector3f.UNIT_XYZ)
 		new TransformParams3D(pos, rot, scl)
 	}
-	def makeDefiniteXForm(src : MaybeTransform3D): Transform3D = {
+
+	def makeDefiniteXForm(src: MaybeTransform3D): Transform3D = {
 		if (src.isInstanceOf[Transform3D]) src.asInstanceOf[Transform3D]
 		else new TransformParams3D(src.getPos, src.getRotQuat, src.getScale)
 	}
 }
+trait MakesManipDesc extends MakesTransform3D {
+	private def makeManipDescFull(mayXform : MaybeTransform3D,  durSec_opt : Option[JFloat]) : ManipDesc = {
+
+		val concXform : Transform3D = makeDefiniteXForm(mayXform) // "Full" approach fills in default values as needed
+		val mnpGuts : ManipDesc = if (durSec_opt.isDefined) {
+				new SmooveManipEndingFullImpl(concXform, durSec_opt.get)
+			} else {
+				new AbruptManipAbsFullImpl(concXform)
+			}
+		mnpGuts
+	}
+	private def makeManipDescPartial(mayXform : MaybeTransform3D,  durSec_opt : Option[JFloat]) : ManipDesc = {
+		// "Partial" case.  Note that here we do NOT call "makeDefiniteXform", instead we use the partial
+		// mayXForm directly.
+		val mnpGP : ManipDesc = if (durSec_opt.isDefined) {
+			new SmooveManipEndingPartialImpl(mayXform, durSec_opt.get)
+		} else {
+			new AbruptManipAbsPartialImpl(mayXform)
+		}
+		mnpGP
+
+	}
+	protected def makeManipGuts(mayXform : MaybeTransform3D,  durSec_opt : Option[JFloat], forceFullXForm : Boolean) : ManipDesc = {
+		// FullXform ignores current state and uses default values for missing parameters.
+		// PartialXform attempts to preserve current state wherever parameters are missing.
+		// "Partial" approach is preferred as of 2016-Nov, see RVWS-49 and RVWS-57.
+		info2("forceToFullXform={}, GuidedCamMoveRq={}", forceFullXForm : java.lang.Boolean, mayXform)
+		val manipGuts : ManipDesc = if (forceFullXForm) {
+			makeManipDescFull(mayXform, durSec_opt)
+		} else {
+			makeManipDescPartial(mayXform, durSec_opt)
+		}
+		manipGuts
+	}
+}
+
 trait Pointed3D { // Used for Cameras, presumes there is a well defined meaning of "pointing" the thing
 	def getPointDir : Vector3f
 }

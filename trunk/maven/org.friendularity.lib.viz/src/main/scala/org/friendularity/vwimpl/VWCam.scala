@@ -168,7 +168,7 @@ trait SyncsToCam extends Movable with Locatable with CamXformXtractor {
 	protected def syncGuideToCam_rendThrd(): Unit = {
 
 		val xform = getGrandchildCamXform
-		applyTransform_runThrd(xform)
+		applyTransform_partial_runThrd(xform)
 
 	}
 }

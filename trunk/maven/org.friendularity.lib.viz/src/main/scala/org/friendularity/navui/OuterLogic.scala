@@ -36,7 +36,7 @@ import org.friendularity.vwimpl.{OverlayPage, IdentHlp, VWorldMasterFactory}
 
 import scala.collection.immutable.HashMap
 
-import org.friendularity.vwmsg.{VWBodyDangerYogaRq, KnownShapeCreateRqImpl, VWSCR_MeshyCmpnd, VWOverlayRq, VWSetupOvlBookRq, NavCmdImpl, NavCmdKeyClkBind, NavCmd, InnerNavCmds, VWorldPublicTellers, VWSCR_Node, VWBindCamNodeRq, VWCreateCamAndViewportRq, CamStateParams3D, CamState3D, ViewportDesc, ShapeManipRqImpl, SmooveManipEndingFullImpl, TransformParams3D, VWBodySkeletonDisplayToggle, VWBroadcastToAllBodies, VWClearAllShapes, VWStageResetToDefault, VWKeymapBinding_Medial, OrdinaryParams3D, VWSCR_Sphere, VWStageOpticsBasic, VWSCR_CellGrid, VWStageEmulateBonusContentAndCams, VWBodyLifeRq, VWRqTAWrapImpl, VWTARqTurtle, VWStatsViewMessage, VWStageSetupLighting, VWStageBackgroundColor, VWStageBackgroundSkybox}
+import org.friendularity.vwmsg.{MakesManipDesc, VWBodyDangerYogaRq, KnownShapeCreateRqImpl, VWSCR_MeshyCmpnd, VWOverlayRq, VWSetupOvlBookRq, NavCmdImpl, NavCmdKeyClkBind, NavCmd, InnerNavCmds, VWorldPublicTellers, VWSCR_Node, VWBindCamNodeRq, VWCreateCamAndViewportRq, CamStateParams3D, CamState3D, ViewportDesc, ShapeManipRqImpl, SmooveManipEndingFullImpl, TransformParams3D, VWBodySkeletonDisplayToggle, VWBroadcastToAllBodies, VWClearAllShapes, VWStageResetToDefault, VWKeymapBinding_Medial, OrdinaryParams3D, VWSCR_Sphere, VWStageOpticsBasic, VWSCR_CellGrid, VWStageEmulateBonusContentAndCams, VWBodyLifeRq, VWRqTAWrapImpl, VWTARqTurtle, VWStatsViewMessage, VWStageSetupLighting, VWStageBackgroundColor, VWStageBackgroundSkybox}
 import org.cogchar.impl.thing.fancy.ConcreteTVM
 import org.cogchar.api.vworld.GoodyActionParamWriter
 import org.cogchar.api.thing.SerTypedValueMap;
@@ -100,7 +100,7 @@ trait GoodyTestMsgFun extends IdentHlp with TurtleSerHlp {
 		}
 	}
 }
-trait FunWithShapes extends IdentHlp {
+trait FunWithShapes extends MakesManipDesc with IdentHlp {
 	def sendBigGridRq(shapeTeller : CPMsgTeller): Unit = {
 		val rq_makeBigGrid = new VWSCR_CellGrid{}
 		shapeTeller.tellCPMsg(rq_makeBigGrid)
@@ -129,9 +129,11 @@ trait FunWithShapes extends IdentHlp {
 	}
 	def sendShpSmooveRq(shapeTeller : CPMsgTeller, shapeID : Ident,
 						tgtXform : TransformParams3D, durSec : Float) : Unit = {
-
+/*
 		// TODO:  Allow for a partial transform in, as is done in OuterCamHelp.sendGuidedCamMoveRq
-
+		val forceToFullXform = false // "Partial" approach is preferred as of 2016-Nov, see RVWS-49 and RVWS-57.
+		val manipGuts = makeManipGuts(mayXform, durSec_opt, forceToFullXform)
+*/
 		val endingManip = new SmooveManipEndingFullImpl(tgtXform, durSec)
 		val sphereManipMsg = new ShapeManipRqImpl(shapeID, endingManip, None)
 		shapeTeller.tellCPMsg(sphereManipMsg)

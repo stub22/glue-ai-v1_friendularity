@@ -23,12 +23,12 @@ import org.appdapter.core.name.Ident
 import org.appdapter.fancy.log.VarargsLogging
 import org.friendularity.cpmsg.{CPStrongTeller, CPMsgTeller}
 import org.friendularity.vwimpl.IdentHlp
-import org.friendularity.vwmsg.{SmooveManipEndingPartialImpl, AbruptManipAbsPartialImpl, VWSCR_CamGuideNode, ManipStatusMsg, VWModifyCamStateRq, AbruptManipAbsFullImpl, ManipDesc, MakesTransform3D, Transform3D, MaybeTransform3D, ShapeManipRqImpl, SmooveManipEndingFullImpl, TransformParams3D, VWBindCamNodeRq, VWSCR_Node, VWCreateCamAndViewportRq, ViewportDesc, CamState3D}
+import org.friendularity.vwmsg.{MakesManipDesc, SmooveManipEndingPartialImpl, AbruptManipAbsPartialImpl, VWSCR_CamGuideNode, ManipStatusMsg, VWModifyCamStateRq, AbruptManipAbsFullImpl, ManipDesc, MakesTransform3D, Transform3D, MaybeTransform3D, ShapeManipRqImpl, SmooveManipEndingFullImpl, TransformParams3D, VWBindCamNodeRq, VWSCR_Node, VWCreateCamAndViewportRq, ViewportDesc, CamState3D}
 
 /**
   * Created by Stub22 on 8/13/2016.
   */
-trait OuterCamHelp extends MakesTransform3D with IdentHlp with VarargsLogging {
+trait OuterCamHelp extends MakesManipDesc with IdentHlp with VarargsLogging {
 
 	def makeAndBindExtraCam(stageTeller : CPMsgTeller, spcTeller : CPMsgTeller, camShortLabel : String,
 							initCamState: CamState3D, initVP : ViewportDesc) : Ident = {
@@ -72,27 +72,8 @@ trait OuterCamHelp extends MakesTransform3D with IdentHlp with VarargsLogging {
 	// Returns ID of the statusHandler
 	def sendGuidedCamMoveRq(spcTeller : CPMsgTeller, xtraCamGuideNodeID : Ident, mayXform : MaybeTransform3D,
 							durSec_opt : Option[JFloat], statusTlr_opt : Option[CPStrongTeller[ManipStatusMsg]] ) : Option[Ident] = {
-		// TODO:  Propagate/share this logic to    FunWithShapes.sendShpSmooveRq
-		// TODO: and to VWBodyTARouterLogic.sendMedialVWBodyMoveRq
-
-		val forceToFullXform = false
-		info2("forceToFullXform={}, GuidedCamMoveRq={}", forceToFullXform : java.lang.Boolean, mayXform)
-		val manipGuts : ManipDesc = if (forceToFullXform) {
-			val concXform : Transform3D = makeDefiniteXForm(mayXform)
-			val mnpGuts : ManipDesc = if (durSec_opt.isDefined) {
-				new SmooveManipEndingFullImpl(concXform, durSec_opt.get)
-			} else {
-				new AbruptManipAbsFullImpl(concXform)
-			}
-			mnpGuts
-		} else {
-			val mnpGP : ManipDesc = if (durSec_opt.isDefined) {
-				new SmooveManipEndingPartialImpl(mayXform, durSec_opt.get)
-			} else {
-				new AbruptManipAbsPartialImpl(mayXform)
-			}
-			mnpGP
-		}
+		val forceToFullXform = false // "Partial" approach is preferred as of 2016-Nov, see RVWS-49 and RVWS-57.
+		val manipGuts = makeManipGuts(mayXform, durSec_opt, forceToFullXform)
 		val guideManipMsg = new ShapeManipRqImpl(xtraCamGuideNodeID, manipGuts, statusTlr_opt)
 		val statusHandlerID_opt = guideManipMsg.getStatusHandler_opt.map(_.getHandleID) //  manipGuts.getManipID
 		info2("Sending guided cam manip msg with statusHandlerID_opt={} to spcTeller: {}", statusHandlerID_opt, guideManipMsg)

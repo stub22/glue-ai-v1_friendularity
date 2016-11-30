@@ -28,7 +28,7 @@ import org.cogchar.render.opengl.optic.CameraMgr
 import org.friendularity.akact.{KnowsAkkaSys, FrienduActor}
 import org.friendularity.cpmsg.{CPMsgTeller, ActorRefCPMsgTeller, CPStrongTeller}
 import org.friendularity.navui.OuterCamHelp
-import org.friendularity.vwmsg.{VWShapeAttachRq, VWSCR_Node, VWShapeDetachRq, ManipStatusMsg, TransformParams3D, CamStateParams3D, ViewportDesc, CamState3D, SmooveManipEndingFullImpl, VWBodyManipRq, AbruptManipAbsFullImpl, SmooveManipGutsFullImpl, ManipDesc, Transform3D, MakesTransform3D, PartialTransform3D, MaybeTransform3D, VWBodyFindRq, VWBodyLifeRq, VWBodyRq, VWBodyNotice, VWorldPublicTellers, VWRqTAWrapper}
+import org.friendularity.vwmsg.{MakesManipDesc, VWShapeAttachRq, VWSCR_Node, VWShapeDetachRq, ManipStatusMsg, TransformParams3D, CamStateParams3D, ViewportDesc, CamState3D, SmooveManipEndingFullImpl, VWBodyManipRq, AbruptManipAbsFullImpl, SmooveManipGutsFullImpl, ManipDesc, Transform3D, MakesTransform3D, PartialTransform3D, MaybeTransform3D, VWBodyFindRq, VWBodyLifeRq, VWBodyRq, VWBodyNotice, VWorldPublicTellers, VWRqTAWrapper}
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 
@@ -126,7 +126,7 @@ trait VWBodyMedialRendezvous extends VarargsLogging {
 		}
 	}
 }
-trait VWBodyTARouterLogic extends TARqExtractorHelp with MakesTransform3D  with VarargsLogging {
+trait VWBodyTARouterLogic extends TARqExtractorHelp with MakesManipDesc  with VarargsLogging {
 	protected def getMedialRendezvous :  VWBodyMedialRendezvous
 
 	def handleBodyTA(ta : ThingActionSpec, gax: GoodyActionExtractor, whoDat : ActorRef) : Unit = {
@@ -155,16 +155,11 @@ trait VWBodyTARouterLogic extends TARqExtractorHelp with MakesTransform3D  with 
 	}
 	private def sendMedialVWBodyMoveRq(bodyID : Ident, maybeXform : MaybeTransform3D,
 									   dur_opt : Option[JFloat], whoDat : ActorRef): Unit = {
-		// TODO:  Allow for a partial transform in, as is done in OuterCamHelp.sendGuidedCamMoveRq
-		val concXform : Transform3D = makeDefiniteXForm(maybeXform)
-		val manipGuts : ManipDesc = if (dur_opt.isDefined) {
-			new SmooveManipEndingFullImpl(concXform, dur_opt.get)
-		} else {
-			new AbruptManipAbsFullImpl(concXform)
-		}
+		val forceToFullXform = false // "Partial" approach is preferred as of 2016-Nov, see RVWS-49 and RVWS-57.
+		val manipGuts = makeManipGuts(maybeXform, dur_opt, forceToFullXform)
+
 		val msgForBody : VWBodyRq = new VWBodyManipRq(manipGuts)
 		getMedialRendezvous.routeBodyRq(bodyID, msgForBody, whoDat)
-
 	}
 	def receiveBodyNotice(vwbn : VWBodyNotice) : Unit = {
 		getMedialRendezvous.noticeBody(vwbn)
@@ -219,7 +214,8 @@ trait DfltCamGuideMgr extends OuterCamHelp with TARqExtractorHelp with IdentHlp 
 
 		dfltCamGuideIsBoundToRoot = true
 	}
-	protected def moveDfltCamViaGuide(ta : ThingActionSpec, gax: GoodyActionExtractor, whoDat : ActorRef) : Unit = {
+	protected def moveDfltCamViaGuide(ta : ThingActionSpec, gax: GoodyActionExtractor, whoDat : ActorRef,
+									  flag_allowDur : Boolean) : Unit = {
 		val camID = gax.getGoodyID
 		val tvm = ta.getParamTVM
 
@@ -230,7 +226,7 @@ trait DfltCamGuideMgr extends OuterCamHelp with TARqExtractorHelp with IdentHlp 
 		// is independent, and thus should catch-up anyway.
 		val guideShapeID = ensureDfltCamIsBoundToGuide(camID)
 		val maybeXform : MaybeTransform3D = extractXform(tvm, gax)
-		val dur_opt : Option[JFloat] = extractDuration(tvm)
+		val dur_opt : Option[JFloat] = if (flag_allowDur) extractDuration(tvm) else None
 
 		val spcTeller : CPMsgTeller = getVWPubTellers.getShaperTeller.get
 
@@ -282,12 +278,12 @@ trait CamTARouterLogic extends TARqExtractorHelp with MakesTransform3D with Oute
 				if (useDirectMoves) {
 					routeDirectCamMove(ta, gax)
 				} else {
-					moveDfltCamViaGuide(ta, gax, whoDat)
+					moveDfltCamViaGuide(ta, gax, whoDat, true)
 				}
 			}
 			case GoodyActionExtractor.Kind.SET => {
 				// TODO:  Can be used to set the viewport
-				info1("OOPS 'SET' NOT IMPLELENTED YET for default camera (but you can use MOVE with/without duration), ignoring TA={}", ta)
+				moveDfltCamViaGuide(ta, gax, whoDat, false)
 			}
 			case otherX => {
 				warn2("Got unexpected camera-direct op={}, full TA={}", opKind, ta)
@@ -362,7 +358,6 @@ trait CamTARouterLogic extends TARqExtractorHelp with MakesTransform3D with Oute
 	}
 }
 trait VWThingActReqRouterLogic extends VWBodyTARouterLogic with CamTARouterLogic with MakesTransform3D {
-
 
 	lazy private val myBodyMedialRndzvs = new VWBodyMedialRendezvous {
 		override def getCharAdminTeller: CPStrongTeller[VWBodyLifeRq] = getVWPubTellers.getCharAdminTeller.get

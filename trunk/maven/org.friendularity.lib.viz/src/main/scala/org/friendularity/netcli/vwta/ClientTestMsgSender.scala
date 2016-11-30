@@ -29,6 +29,10 @@ import org.friendularity.vwmsg.{PartialTransform3D}
 class ClientTestMsgSender(initDelayMsec : Int, stepDelayMsec : Int, sinbadMoves : Boolean, xtraCam : Boolean,
 						  goodyPile : Boolean) extends OffersVWorldClient with VWTAMsgMaker  {
 	override val myPreferredEncoding : Int = myClient.ENCODE_PREF_BIN
+	val quarterAngle : Float = 0.5f * Math.PI.asInstanceOf[Float]
+	val srcQ = new Quaternion
+	val quarterTurn : Quaternion = srcQ.fromAngles(0.0f, quarterAngle, 0.0f)
+	val oppositeTurn = quarterTurn.inverse
 
 	def initClientConn(): Unit = {
 		val clientOffer = this
@@ -42,7 +46,7 @@ class ClientTestMsgSender(initDelayMsec : Int, stepDelayMsec : Int, sinbadMoves 
 		if (sinbadMoves) {
 			val tgtPos = new Vector3f(-20.0f, 90.0f, -20.0f)
 			val tgtScl = new Vector3f(12.0f, 3.0f, 8.0f)
-			val mxf = new PartialTransform3D(Some(tgtPos), None, Some(tgtScl))
+			val mxf = new PartialTransform3D(Some(tgtPos), Some(quarterTurn), Some(tgtScl))
 			clientOffer.sendSinbadSmooveRq(mxf, 1.5f)
 			Thread.sleep(stepDelayMsec)
 		}
@@ -62,6 +66,7 @@ class ClientTestMsgSender(initDelayMsec : Int, stepDelayMsec : Int, sinbadMoves 
 			// val tgtScl = new Vector3f(12.0f, 3.0f, 8.0f)
 			val mxf = new PartialTransform3D(Some(tgtPos), None, None) // Some(tgtScl))
 			clientOffer.sendSinbadAbruptMoveRq(mxf)
+			// clientOffer.sendSinbadSmooveRq(mxf, 1.5f)
 			Thread.sleep(stepDelayMsec)
 		}
 
@@ -72,7 +77,7 @@ class ClientTestMsgSender(initDelayMsec : Int, stepDelayMsec : Int, sinbadMoves 
 
 		if (sinbadMoves) {
 			val nxtChrPos = new Vector3f(40.0f, 10.0f, 20.0f)
-			val nxf = new PartialTransform3D(Some(nxtChrPos), None, None)
+			val nxf = new PartialTransform3D(Some(nxtChrPos), Some(oppositeTurn), None)
 			clientOffer.sendSinbadSmooveRq(nxf, 8.0f)
 		}
 	}
@@ -80,10 +85,7 @@ class ClientTestMsgSender(initDelayMsec : Int, stepDelayMsec : Int, sinbadMoves 
 		val clientOffer = this
 		val mainCamID = new FreeIdent(LightsCameraAN.URI_defaultCam)
 		val nxtCamPos = new Vector3f(5.0f, 33.0f, -250.0f)
-		val srcQ = new Quaternion
-		val quarterAngle : Float = 0.5f * Math.PI.asInstanceOf[Float]
-		val quarterTurn : Quaternion = srcQ.fromAngles(0.0f, quarterAngle, 0.0f)
-		val oppositeTurn = quarterTurn.inverse
+
 		val nxfA = new PartialTransform3D(Some(nxtCamPos), Some(quarterTurn), None)
 		val dur = 7.0f
 
@@ -128,7 +130,7 @@ class ClientTestMsgSender(initDelayMsec : Int, stepDelayMsec : Int, sinbadMoves 
 
 	}
 */
-	val testMainCamMoves = true
+	val testMainCamMoves = false
 	val mainCamSmoove_notAbrupt = true
 
 	def sendAll():  Unit = {
