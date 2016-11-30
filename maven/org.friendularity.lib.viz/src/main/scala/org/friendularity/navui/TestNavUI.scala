@@ -77,7 +77,7 @@ object TestNavUI extends VarargsLogging {
 		navUiAppImpl.checkServerSvcs()
 
 		maybeLaunchPhonyClient
-		val flag_sendTestMovesFromExoUserLogic = true
+		val flag_sendTestMovesFromExoUserLogic = false
 		val bodyUserLogic = navUiAppSvc.makeFunUserLogic(flag_sendTestMovesFromExoUserLogic)
 		appSysStandalone.sendStart_SemiLegacySinbad(bodyUserLogic)
 

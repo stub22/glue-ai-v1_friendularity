@@ -62,12 +62,18 @@ trait Locatable extends HasMainSpat {
 
 trait Movable extends HasMainSpat {
 
-	def applyTransform_runThrd(xform : Transform3D) : Unit = {
+	def applyTransform_partial_runThrd(xform : MaybeTransform3D) : Unit = {
 		// This impl does not worry about any existing animCtrl.
 		// Override (in Smoovable or other) to protect from animCtrls, or to use them.
-		naiveTransform_runThrd(xform)
+		naiveTransform_partial_runThrd(xform)
 	}
-	protected def naiveTransform_runThrd(xform : Transform3D) : Unit = {
+	def applyTransform_full_runThrd(xform : Transform3D) : Unit = {
+		// This impl does not worry about any existing animCtrl.
+		// Override (in Smoovable or other) to protect from animCtrls, or to use them.
+		naiveTransform_full_runThrd(xform)
+	}
+
+	protected def naiveTransform_full_runThrd(xform : Transform3D) : Unit = {
 		val spat = getMainSpat
 		val fPos = xform.getPos
 		val fRotQuat = xform.getRotQuat
@@ -75,6 +81,15 @@ trait Movable extends HasMainSpat {
 		spat.setLocalTranslation(fPos)
 		spat.setLocalRotation(fRotQuat)
 		spat.setLocalScale(fScale)
+	}
+	protected def naiveTransform_partial_runThrd(xform : MaybeTransform3D) : Unit = {
+		val spat = getMainSpat
+		val fPos_opt = xform.getPos_opt
+		val fRotQuat_opt = xform.getRotQuat_opt
+		val fScale_opt = xform.getScl_opt
+		fPos_opt.map(spat.setLocalTranslation(_))
+		fRotQuat_opt.map(spat.setLocalRotation(_))
+		fScale_opt.map(spat.setLocalScale(_))
 	}
 
 	private def rotToLookAtWorldPos_UNUSED(dirToLook_worldCoord : Vector3f, upDir : Vector3f) : Unit = {
@@ -86,8 +101,8 @@ trait Movable extends HasMainSpat {
 		getMainSpat.lookAt(dirToLook_worldCoord, upDir)
 	}
 
-	def applyTransformAbs_runThrd(xformAbs : DoTransformAbsoluteNow) : Unit = {
-		applyTransform_runThrd(xformAbs.getAbsXform)
+	private def UNUSED_applyTransformAbs_runThrd(xformAbs : DoTransformAbsoluteNow) : Unit = {
+		applyTransform_partial_runThrd(xformAbs.getAbsXform)
 	}
 }
 
@@ -245,12 +260,12 @@ trait Smoovable extends Movable with Locatable with Addressable with VarargsLogg
 	val myAnimMaker = new JmeAnimMaker {}
 
 	// applyTransform_runThrd cannot be used reliably on a spatial that is controlled by an animCtrl.
-	override def applyTransform_runThrd(xform: Transform3D): Unit = {
+	override def applyTransform_partial_runThrd(xform: MaybeTransform3D): Unit = {
 		debug0("applyTransform_runThrd is calling cancelAnyOldAnims")
 		cancelAnyOldAnims() // If we don't do this, then the direct transform fails.  We don't expect any COMPLETE
 				// events to be delivered as a result of the cancel.
 
-		super.applyTransform_runThrd(xform)
+		super.applyTransform_partial_runThrd(xform)
 
 		// Before, when we were doing setEnabled(false) on the animControl, then we needed to reattach like so.
 		//	attachAnimCtrl() // If we don't do this, then subsequent bone aninations don't work.
@@ -259,7 +274,14 @@ trait Smoovable extends Movable with Locatable with Addressable with VarargsLogg
 		// If the detach step does not clear old anims, then this reattach will nullify our direct movement,
 		// as the animCtrl reasserts control over position of the spatial.
 	}
+	// applyTransform_runThrd cannot be used reliably on a spatial that is controlled by an animCtrl.
+	override def applyTransform_full_runThrd(xform: Transform3D): Unit = {
+		debug0("applyTransform_runThrd is calling cancelAnyOldAnims")
+		cancelAnyOldAnims() // If we don't do this, then the direct transform fails.  We don't expect any COMPLETE
+		// events to be delivered as a result of the cancel.
 
+		super.applyTransform_full_runThrd(xform)
+	}
 	private def cancelAnyOldAnims(): Unit = {
 		val spat = getMainSpat
 		val acHelper = new JmeAnimCtrlWrap {}
@@ -349,10 +371,11 @@ trait Manipable extends Smoovable with IdentHlp with VarargsLogging {
 				applySmooveFromCurrent_mystThrd(sme, ch)
 			}
 			case ama : AbruptManipAbs => {
-				val xform = ama.getXform_finish_full
+				// val xformFull = ama.getXform_finish_full
+				val xformPart = ama.getXform_finish_partial
 				val func : Function0[Unit] = () => {
-					applyTransform_runThrd(xform)
-					ch.notifyComplete("ABRUPT_NO_ANIM", "abrubtXform=[" + xform + "]")
+					applyTransform_partial_runThrd(xformPart)
+					ch.notifyComplete("ABRUPT_NO_ANIM", "abrubtXform_partial=[" + xformPart + "]")
 				}
 				enqHelp.enqueueJmeCallable(func)
 
