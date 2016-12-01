@@ -45,7 +45,7 @@ trait OffersVWorldClient extends OffersQpidSomething  with VWTAMsgMaker {
 		val paramWriter = new GoodyActionParamWriter(btvm)
 		writeXform3D(paramWriter, maybeXform3D)
 		// ACTION_MOVE with no duration, and ACTION_SET are both (equivalently) defined to be "abrupt" moves.
-		val taSpec = makeTASpec(entityID, typeID, GoodyNames.ACTION_MOVE, btvm)
+		val taSpec = makeTASpec(entityID, typeID, GoodyNames.ACTION_SET, btvm)
 		sendTARq(taSpec)
 	}
 
