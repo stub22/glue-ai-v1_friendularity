@@ -84,7 +84,7 @@ class ClientTestMsgSender(initDelayMsec : Int, stepDelayMsec : Int, sinbadMoves 
 	def sendMainCamMsg(useSmooves : Boolean): Unit = {
 		val clientOffer = this
 		val mainCamID = new FreeIdent(LightsCameraAN.URI_defaultCam)
-		val nxtCamPos = new Vector3f(5.0f, 33.0f, -250.0f)
+		val nxtCamPos = new Vector3f(5.0f, 33.0f, -100.0f)
 
 		val nxfA = new PartialTransform3D(Some(nxtCamPos), Some(quarterTurn), None)
 		val dur = 7.0f
@@ -97,7 +97,7 @@ class ClientTestMsgSender(initDelayMsec : Int, stepDelayMsec : Int, sinbadMoves 
 		}
 
 		Thread.sleep(stepDelayMsec)
-		val nxtCamPos2 = new Vector3f(-5.0f, 10.0f, -70.0f)
+		val nxtCamPos2 = new Vector3f(-5.0f, 10.0f, -50.0f)
 		val nxf2 = new PartialTransform3D(Some(nxtCamPos2), None, None)
 
 		if (useSmooves) {
@@ -130,8 +130,8 @@ class ClientTestMsgSender(initDelayMsec : Int, stepDelayMsec : Int, sinbadMoves 
 
 	}
 */
-	val testMainCamMoves = false
-	val mainCamSmoove_notAbrupt = true
+	val testMainCamMoves = true
+	val mainCamSmoove_notAbrupt = false
 
 	def sendAll():  Unit = {
 		info1("Client test send thread is sleeping for {} msec", initDelayMsec: Integer)
