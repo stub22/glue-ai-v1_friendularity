@@ -26,7 +26,7 @@ trait OffersVWorldClient extends OffersQpidSomething  with VWTAMsgMaker {
 	}
 	val myPreferredEncoding : Int = myClient.ENCODE_PREF_TRT
 	var myMsgSendCnt = 0;
-	protected def sendTARq(taSpec : ThingActionSpec) : Unit = {
+	def sendTARq(taSpec : ThingActionSpec) : Unit = {
 		debug1("Sending ta-rq={}", taSpec)
 		myClient.sendVWRqThingAct(taSpec, myPreferredEncoding)
 		myMsgSendCnt += 1

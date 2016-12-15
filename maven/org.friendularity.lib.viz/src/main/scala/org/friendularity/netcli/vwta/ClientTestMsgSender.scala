@@ -19,6 +19,7 @@ package org.friendularity.netcli.vwta
 import com.jme3.math.{Quaternion, Vector3f}
 import org.appdapter.core.name.FreeIdent
 import org.cogchar.name.cinema.LightsCameraAN
+import org.friendularity.vwgoody.TTGRidBurstTest
 
 import org.friendularity.vwmsg.{PartialTransform3D}
 
@@ -146,11 +147,19 @@ class ClientTestMsgSender(initDelayMsec : Int, stepDelayMsec : Int,
 			sendMainCamMsg(mainCamSmoove_notAbrupt)
 		}
 	}
+	val FLAG_ticTacMode = true
 	def startTestThread () {
 		initClientConn()
+		val clientOffer = this
 		val testSendThrd = new Thread() {
 			override def run: Unit = {
-				sendAll()
+				if (FLAG_ticTacMode) {
+					Thread.sleep(8000)
+					val ttBurster = new TTGRidBurstTest(clientOffer)
+					ttBurster.sendEm("one")
+				} else {
+					sendAll()
+				}
 			}
 		}
 		testSendThrd.start()
