@@ -25,6 +25,7 @@ import org.cogchar.render.goody.basic.BasicGoodyCtx
 import org.friendularity.cpmsg.CPStrongTeller
 import org.friendularity.raiz.TestRaizLoad
 import org.friendularity.rbody.DualBodyRecord
+import org.friendularity.vwgoody.VWGoodyActor
 import org.friendularity.vwmsg.VWorldPublicTellers
 
 /**

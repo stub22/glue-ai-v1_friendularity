@@ -28,6 +28,7 @@ import org.cogchar.render.sys.window.WindowStatusMonitor
 import org.friendularity.akact.KnowsAkkaSys
 import org.friendularity.cpmsg.{CPStrongTeller, ActorRefCPMsgTeller}
 import org.friendularity.navui.NavAppCloser
+import org.friendularity.vwgoody.BetterBGC
 import org.friendularity.vwmsg.{VWRqTAWrapper, VWOverlayRq, VWStageRqMsg, VWShapeCreateRq, VWorldInternalNotice, VWBodyLifeRq, VWPubTellersMsgImpl, LesserIngred, BodyMgrIngred, VWorldNotice, VWSetupResultsNotice, VWARM_GreetFromPumpAdmin, VWARM_FindPublicTellers, VWAdminRqMsg, VWSetupRq_Lnch, VWSetupRq_Conf, VWorldRequest, VWSetSwingCanvasBranding}
 
 /**

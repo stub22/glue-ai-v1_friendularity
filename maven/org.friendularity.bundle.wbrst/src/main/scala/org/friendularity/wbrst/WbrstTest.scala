@@ -84,8 +84,9 @@ class TrialRoutingHttpSvcActor extends spray.routing.HttpServiceActor {
 					complete("AROUND")
 				} ~	noop {
 					val rqstInst = requestInstance
+					val up = unmatchedPath
 					// GET Request not understood, rq=spray.routing.directives.BasicDirectives$$anon$3@45063171
-					complete(s"GET Request not understood, rqRoute=${rqstInst}")
+					complete(s"GET Request not understood, rqRoute=${rqstInst}, unmatchedPath=${up}")
 				}
 			} ~ post {
 				complete("POST Request not understood")
@@ -93,7 +94,7 @@ class TrialRoutingHttpSvcActor extends spray.routing.HttpServiceActor {
 				complete("PUT Request not understood")
 			} ~ noop {
 				val rq = requestInstance
-				complete("Strange request not understood")
+				complete("Strange request not understood by RoutedSvc")
 			}
 		}
 	}
@@ -160,7 +161,7 @@ class TrialDirectHttpSvcActor extends Actor with ActorLogging {
 	override def receive  : PartialFunction[Any, Unit] = {
 		// when a new connection comes in we register ourselves as the connection handler
 		case connNot : Http.Connected => {
-			log.info("Received Http.Connected, will now register self")
+			log.info("DirectSvc received Http.Connected, will now register self")
 			sender() ! Http.Register(self)
 		}
 
@@ -172,7 +173,7 @@ class TrialDirectHttpSvcActor extends Actor with ActorLogging {
 			sender() ! HttpResponse(entity = "BANG!")
 
 		case otherReq : HttpRequest =>
-			sender() ! HttpResponse(entity = s"Ignoring your weird request: ${otherReq}")
+			sender() ! HttpResponse(entity = s"DirectSvc is ignoring your weird request: ${otherReq}")
 
 		case otherMsg => {
 			log.info("DirectSvc got some other message", otherMsg)
