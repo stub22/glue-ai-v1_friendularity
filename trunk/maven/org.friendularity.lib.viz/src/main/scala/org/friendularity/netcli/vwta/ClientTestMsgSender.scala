@@ -26,8 +26,9 @@ import org.friendularity.vwmsg.{PartialTransform3D}
   * Created by Stub22 on 9/5/2016.
   */
 
-class ClientTestMsgSender(initDelayMsec : Int, stepDelayMsec : Int, sinbadMoves : Boolean, xtraCam : Boolean,
-						  goodyPile : Boolean) extends OffersVWorldClient with VWTAMsgMaker  {
+class ClientTestMsgSender(initDelayMsec : Int, stepDelayMsec : Int,
+						  sinbadMoves : Boolean, xtraCam : Boolean,
+						  goodyPile : Boolean, mainCamMoves : Boolean) extends OffersVWorldClient with VWTAMsgMaker  {
 	override val myPreferredEncoding : Int = myClient.ENCODE_PREF_BIN
 	val quarterAngle : Float = 0.5f * Math.PI.asInstanceOf[Float]
 	val srcQ = new Quaternion
@@ -130,18 +131,17 @@ class ClientTestMsgSender(initDelayMsec : Int, stepDelayMsec : Int, sinbadMoves 
 
 	}
 */
-	val testMainCamMoves = true
 	val mainCamSmoove_notAbrupt = false
 
 	def sendAll():  Unit = {
 		info1("Client test send thread is sleeping for {} msec", initDelayMsec: Integer)
-		if (testMainCamMoves) {
-			Thread.sleep(initDelayMsec)
+		Thread.sleep(initDelayMsec)
+		if (mainCamMoves) {
 			sendMainCamMsg(mainCamSmoove_notAbrupt)
+			Thread.sleep(stepDelayMsec)
 		}
-		Thread.sleep(stepDelayMsec)
 		sendBunchaMsgs()
-		if (testMainCamMoves) {
+		if (mainCamMoves) {
 			Thread.sleep(stepDelayMsec)
 			sendMainCamMsg(mainCamSmoove_notAbrupt)
 		}
@@ -160,9 +160,9 @@ class ClientTestMsgSender(initDelayMsec : Int, stepDelayMsec : Int, sinbadMoves 
 object RunClientTestMsgSender {
 	def main(args: Array[String]): Unit = {
 
-		val (doSinbadMoves, doExtraCam, doGoodyPile) = (true, true, false)
+		val (doSinbadMoves, doExtraCam, doGoodyPile, doMainCamMoves) = (true, true, false, false)
 
-		val clientTestSender = new ClientTestMsgSender(3000, 2000, doSinbadMoves, doExtraCam, doGoodyPile)
+		val clientTestSender = new ClientTestMsgSender(3000, 2000, doSinbadMoves, doExtraCam, doGoodyPile, doMainCamMoves)
 		clientTestSender.sendAll
 	}
 }
