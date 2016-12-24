@@ -209,8 +209,9 @@ class OneBurst(entIdPrfx : String, burstWidth : Int, burstLen : Int) extends Bun
 		myRefs = myIdents.map(goodyID => {
 			val nxtParams = duplicateParams(lastParams)
 			adjustFloatParam(nxtParams, dynaParamID, dynaDelta)
-			val taRq = makeTASpec(goodyID, GoodyNames.ACTION_CREATE, typeID, nxtParams)
+			val taRq = makeTASpec(goodyID, typeID, GoodyNames.ACTION_CREATE, nxtParams)
 			ovwc.sendTARq(taRq)
+			lastParams = nxtParams
 			delayAsNeeded(delayMsec_opt)
 			val ugRef = new UpdatableGoodyRef(goodyID, typeID, taRq, nxtParams)
 			ugRef
@@ -243,7 +244,7 @@ class AnotherBurstTest(ovwc : OffersVWorldClient) extends Hey with VarargsLoggin
 
 		val seedParams = makeLoc3Params(-10.0f, 15.0f, -2.0f)
 
-		obt.createGoodies(ovwc, GoodyNames.TYPE_TICTAC_GRID, seedParams, GoodyNames.LOCATION_X, 1.5f, Some(300))
+		obt.createGoodies(ovwc, GoodyNames.TYPE_TICTAC_MARK, seedParams, GoodyNames.LOCATION_X, 2.5f, Some(300))
 
 		obt.moveAllGoodies(ovwc, GoodyNames.LOCATION_Y, 1.3f, 2.5f, Some(300))
 	}
