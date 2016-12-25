@@ -62,16 +62,28 @@ trait Hey extends VWTAMsgMaker with VarargsLogging {
 		paramWriter.putDuration(durSec)
 		btvm
 	}
-	def makeRotParam(magRad : Float, axisX : Float, axisY : Float, axisZ : Float) : SerTypedValueMap = {
+	def makeRotParam(magDeg : Float, axisX : Float, axisY : Float, axisZ : Float) : SerTypedValueMap = {
 		val btvm : BasicTypedValueMap  = new ConcreteTVM()
 		val paramWriter = new GoodyActionParamWriter(btvm)
-		paramWriter.putRotation(axisX, axisY, axisZ, magRad)
+		paramWriter.putRotation(axisX, axisY, axisZ, magDeg)
 		btvm
 	}
 	def makeColorParam(r : Float, g : Float, b: Float, a: Float) : SerTypedValueMap = {
 		val btvm : BasicTypedValueMap  = new ConcreteTVM()
 		val paramWriter = new GoodyActionParamWriter(btvm)
 		paramWriter.putColor(r, g, b, a)
+		btvm
+	}
+	def makeBoolStateParam(stateVal : Boolean)  : SerTypedValueMap = {
+		val btvm : BasicTypedValueMap  = new ConcreteTVM()
+		val paramWriter = new GoodyActionParamWriter(btvm)
+		paramWriter.putObjectAtName(GoodyNames.BOOLEAN_STATE, stateVal)
+		btvm
+	}
+	def makeXOStateParam(stateIsO : Boolean)  : SerTypedValueMap = {
+		val btvm : BasicTypedValueMap  = new ConcreteTVM()
+		val paramWriter = new GoodyActionParamWriter(btvm)
+		paramWriter.putObjectAtName(GoodyNames.USE_O, stateIsO)
 		btvm
 	}
 	def absorbParams(absorber : TypedValueMap, src : TypedValueMap) : Unit = {
@@ -239,14 +251,62 @@ class OneBurst(entIdPrfx : String, burstWidth : Int, burstLen : Int) extends Bun
 }
 class AnotherBurstTest(ovwc : OffersVWorldClient) extends Hey with VarargsLogging {
 
-	def fireOneBurst(): Unit = {
-		val obt = new OneBurst("brstOne", 12, 16)
+	val emptyParams = new ConcreteTVM
+	val seedLocParam = makeLoc3Params(-10.0f, 15.0f, -2.0f)
 
-		val seedParams = makeLoc3Params(-10.0f, 15.0f, -2.0f)
+	val stateFalse = makeBoolStateParam(false)
+	val stateTrue = makeBoolStateParam(true)
 
-		obt.createGoodies(ovwc, GoodyNames.TYPE_TICTAC_MARK, seedParams, GoodyNames.LOCATION_X, 2.5f, Some(300))
+	val stateX = makeXOStateParam(false)
+	val stateO = makeXOStateParam(true)
+	// alpha=0.0f is transparent,  1.0f is opaque
+	val redTrans = makeColorParam(1.0f, 0.0f, 0.0f, 0.6f)
 
-		obt.moveAllGoodies(ovwc, GoodyNames.LOCATION_Y, 1.3f, 2.5f, Some(300))
+	val turnAboutY_45deg = makeRotParam(45.0f, 0.0f, 1.0f, 0.0f)
+
+	def fireHorizBurst(bName : String, goodyTypeID : Ident, topParams : SerTypedValueMap) : Unit = {
+
+		val burstParams = combineParams(List(seedLocParam, topParams))
+
+		val brst = new OneBurst(bName, 12, 16)
+
+		brst.createGoodies(ovwc, goodyTypeID, burstParams, GoodyNames.LOCATION_X, 2.5f, Some(300))
+
+		brst.moveAllGoodies(ovwc, GoodyNames.LOCATION_Y, 1.3f, 2.5f, Some(300))
+
+		brst.deleteAllGoodies(ovwc, Some(300))
+	}
+
+	def fireHorizBursts() : Unit = {
+		val boxParams = combineParams(List(redTrans, turnAboutY_45deg))
+		fireHorizBurst("horizBoxOne", GoodyNames.TYPE_BOX, boxParams)
+	}
+	def fireSomeBursts(): Unit = {
+		fireHorizBursts()
+	}
+	def fireLesserBursts(): Unit = {
+
+		val b1Params = combineParams(List(seedLocParam, stateX))
+
+		val brst1 = new OneBurst("brstOne", 12, 16)
+
+		brst1.createGoodies(ovwc, GoodyNames.TYPE_TICTAC_MARK, b1Params, GoodyNames.LOCATION_X, 2.5f, Some(300))
+
+		brst1.moveAllGoodies(ovwc, GoodyNames.LOCATION_Y, 1.3f, 2.5f, Some(300))
+
+		val b2Params = combineParams(List(seedLocParam, stateFalse))
+
+		adjustFloatParam(b2Params,  GoodyNames.LOCATION_Y, 3.0f)
+
+		val brst2 = new OneBurst("brstTwo", 12, 16)
+
+		brst2.createGoodies(ovwc, GoodyNames.TYPE_BIT_BOX, b2Params, GoodyNames.LOCATION_X, 2.5f, Some(300))
+
+		brst2.moveAllGoodies(ovwc, GoodyNames.LOCATION_Y, 1.3f, 2.5f, Some(300))
+
+		brst1.deleteAllGoodies(ovwc, Some(300))
+
+		brst2.deleteAllGoodies(ovwc, Some(300))
 	}
 
 }
