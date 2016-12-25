@@ -161,7 +161,7 @@ class ClientTestMsgSender(initDelayMsec : Int, stepDelayMsec : Int,
 				} else if (FLAG_burstMode) {
 					Thread.sleep(8000)
 					val abt = new AnotherBurstTest(clientOffer)
-					abt.fireOneBurst()
+					abt.fireSomeBursts()
 				} else {
 					sendAll()
 				}
