@@ -165,18 +165,28 @@ class OneBurst(entIdPrfx : String, burstWidth : Int, burstLen : Int) extends Bun
 
 }
 trait GoodyTypeAliases {
+
 	val GT_BOX = GoodyNames.TYPE_BOX
-	val GT_BIT_CUBE = GoodyNames.TYPE_BIT_CUBE
+
 	val GT_BIT_BOX = GoodyNames.TYPE_BIT_BOX
-	val GT_TICTAC_GRID = GoodyNames.TYPE_TICTAC_GRID
+
+	val GT_BIT_CUBE = GoodyNames.TYPE_BIT_CUBE  // Requires Robosteps textures
+
+	val GT_TICTAC_GRID = GoodyNames.TYPE_TICTAC_GRID  // Does not yet support MOVE
+
 	val GT_TICTAC_MARK = GoodyNames.TYPE_TICTAC_MARK
 
-	val GT_FLOOR = GoodyNames.TYPE_FLOOR
+	val GT_FLOOR = GoodyNames.TYPE_FLOOR     // Ignores rotation on CREATE, but respects on MOVE
 
-	val GT_CROSSHAIR = GoodyNames.TYPE_CROSSHAIR
+	// 2D, uses absolute pixel pos
 	val GT_TEXT  = GoodyNames.TYPE_TEXT
 	val GT_SCOREBOARD = GoodyNames.TYPE_SCOREBOARD
 
+	// 2D, requires fractional screen pos
+	val GT_CROSSHAIR = GoodyNames.TYPE_CROSSHAIR
+
+
+	// Not really goody types
 	val GT_AVATAR = GoodyNames.TYPE_AVATAR
 	val GT_CAMERA = GoodyNames.TYPE_CAMERA
 
@@ -269,16 +279,10 @@ class AnotherBurstTest(ovwc : OffersVWorldClient) extends GoodyParamMaker with V
 	}
 	def fireScoreboardBurst() : Unit = {
 /*
-default-dispatcher-3] org.friendularity.vwgoody.VWGoodyActor (HasLogger.scala:33) info4 - VWGoodyJobLogic is processing received actSpec of class=class org.cogchar.impl.thing.basic.BasicThingActionSpec, verb=FreeIdent[absUri=urn:ftd:cogchar.org:2012:goody#ActionCreate], tgtType=FreeIdent[absUri=urn:ftd:cogchar.org:2012:goody#ScoreBoard] tgtID=FreeIdent[absUri=urn:sri_horizScore0_1482796133113_829162#id]
-default-dispatcher-3] org.friendularity.vwgoody.BetterBGC (BasicGoodyCtxImpl.java:216) consumeAction - The targetThingType is FreeIdent[absUri=urn:ftd:cogchar.org:2012:goody#ScoreBoard]
-default-dispatcher-3] org.friendularity.vwgoody.BetterBGC (BasicGoodyCtxImpl.java:225) consumeAction - The kind of Goody inspected is CREATE
-default-dispatcher-3] org.friendularity.vwgoody.BetterBGC$$anon$1 (HasLogger.scala:30) info1 - BetterBGC seeking match for goodyType=FreeIdent[absUri=urn:ftd:cogchar.org:2012:goody#ScoreBoard]
 default-dispatcher-5] org.friendularity.vwgoody.BetterBGC (BetterBGC.scala:107) createByAction - Scoreboard row count=4, rowHeight=10.0, textSize=4.0, locVec=(220.0, 220.0, 0.5)
-
 default-dispatcher-3] org.appdapter.api.facade.MakableObjectHelpFuncs (MakableObjectHelpFuncs.java:67) makeObj - Making new object named CC_SCENE_FLAT_FACADE using default constructor of class org.cogchar.render.opengl.scene.FlatOverlayMgr
 default-dispatcher-3] org.appdapter.api.facade.MakableObjectHelpFuncs (MakableObjectHelpFuncs.java:67) makeObj - Making new object named CC_SCENE_TEXT_FACADE using default constructor of class org.cogchar.render.opengl.scene.TextMgr
 default-dispatcher-3] org.cogchar.render.opengl.scene.TextMgr (TextMgr.java:67) disableCullingForFont - TextMgr disabling culling for a total of 1  font materials
-default-dispatcher-3] org.cogchar.render.app.entity.VWorldEntityReg (VWorldEntityReg.java:20) addGoody - Adding Goody with URI: FreeIdent[absUri=urn:sri_horizScore0_1482796133113_829162#id]
  */
 		val locParams = makeLoc3Params(200.0f, 220.0f, 0.5f)
 		val scale = makeUniformScaleParam(4.0f)         // = textSize
@@ -286,7 +290,7 @@ default-dispatcher-3] org.cogchar.render.app.entity.VWorldEntityReg (VWorldEntit
 		val rows = makeRowCountParam(4)
 		val sbParams = combineParams(List(scale, locParams, sizes, rows))
 
-		fireHorizBurst("horizScore", GT_SCOREBOARD, sbParams, 20.0f, 30.0f, Some(500))
+		fireHorizBurst("horizScore", GT_SCOREBOARD, sbParams, 20.0f, 30.0f, Some(400))
 	}
 	def fireCrosshairBurst() : Unit = {
 		//  org.cogchar.render.goody.flat.CrossHairGoody (FlatGoodyWithScreenFracPos.java:41)
@@ -294,7 +298,7 @@ default-dispatcher-3] org.cogchar.render.app.entity.VWorldEntityReg (VWorldEntit
 		val locParams = makeLoc3Params(0.1f, 0.5f, 0.0f)
 		val scale = makeUniformScaleParam(1.0f)
 		val chParams = combineParams(List(scale, locParams))
-		fireHorizBurst("horizCross", GT_CROSSHAIR, chParams, 0.1f, 0.1f, Some(500))
+		fireHorizBurst("horizCross", GT_CROSSHAIR, chParams, 0.1f, 0.1f, Some(400))
 	}
 	def fireSomeBursts(): Unit = {
 		fireFloorBurst()
