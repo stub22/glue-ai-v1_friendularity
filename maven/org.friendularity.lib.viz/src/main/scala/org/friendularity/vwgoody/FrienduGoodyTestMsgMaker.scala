@@ -18,92 +18,7 @@ import scala.util.Random
 /**
   * Created by Stub22 on 12/15/2016.
   */
-trait Hey extends VWTAMsgMaker with VarargsLogging {
 
-	// entity-ID is a bookeeping handle, of fixed type
-	// type and verb help define meaning of params
-	// params are leaf data describing an initial or updated (partial) state, except on verb=delete
-	val dummyMakerForType = 0
-	def makeMakerForSpec: Unit = {
-	//	makeTASpec(entityID : Ident, typeID : Ident, verbID : Ident, paramSerMap: SerTypedValueMap) : ThingActionSpec = {
-
-	}
-	def makeTTGridSpec(entityID: Ident, verbID: Ident,
-					   paramSerMap: SerTypedValueMap): ThingActionSpec = {
-
-		makeTASpec(entityID, GoodyNames.TYPE_TICTAC_GRID, verbID, paramSerMap)
-	}
-	//val specMakerForType = makeTASpec(_ : Ident, typeID : Ident, _ : Ident, _: SerTypedValueMap)
-	val specMakerForTTGrid = makeTASpec(_ : Ident, GoodyNames.TYPE_TICTAC_GRID, _ : Ident, _: SerTypedValueMap)
-	val specMakerForTTMark = makeTASpec(_ : Ident, GoodyNames.TYPE_TICTAC_MARK, _ : Ident, _: SerTypedValueMap)
-	// val secMakerForBox
-
-	def makeLoc3Params (x : Float, y: Float, z: Float) : SerTypedValueMap = {
-		val btvm : BasicTypedValueMap  = new ConcreteTVM()
-		val paramWriter = new GoodyActionParamWriter(btvm)
-		paramWriter.putLocation(x, y, z)
-		btvm
-	}
-	// delta is added to existing param, or
-	def adjustFloatParam(tgtParams : TypedValueMap, paramID : Ident, delta : Float) : Unit = {
-		val oldVal_orNull : JFloat = tgtParams.getAsFloat(paramID)
-		val oldVal : Float = if (oldVal_orNull == null) 0.0f else oldVal_orNull
-		var nwVal = oldVal + delta
-		tgtParams.putValueAtName(paramID, nwVal)
-	}
-	def makeDurParam(durSec : Float) : SerTypedValueMap = {
-		val btvm : BasicTypedValueMap  = new ConcreteTVM()
-		val paramWriter = new GoodyActionParamWriter(btvm)
-		paramWriter.putDuration(durSec)
-		btvm
-	}
-	def setDurParam(btvm : SerTypedValueMap, durSec : Float) : SerTypedValueMap = {
-		val paramWriter = new GoodyActionParamWriter(btvm)
-		paramWriter.putDuration(durSec)
-		btvm
-	}
-	def makeRotParam(magDeg : Float, axisX : Float, axisY : Float, axisZ : Float) : SerTypedValueMap = {
-		val btvm : BasicTypedValueMap  = new ConcreteTVM()
-		val paramWriter = new GoodyActionParamWriter(btvm)
-		paramWriter.putRotation(axisX, axisY, axisZ, magDeg)
-		btvm
-	}
-	def makeColorParam(r : Float, g : Float, b: Float, a: Float) : SerTypedValueMap = {
-		val btvm : BasicTypedValueMap  = new ConcreteTVM()
-		val paramWriter = new GoodyActionParamWriter(btvm)
-		paramWriter.putColor(r, g, b, a)
-		btvm
-	}
-	def makeBoolStateParam(stateVal : Boolean)  : SerTypedValueMap = {
-		val btvm : BasicTypedValueMap  = new ConcreteTVM()
-		val paramWriter = new GoodyActionParamWriter(btvm)
-		paramWriter.putObjectAtName(GoodyNames.BOOLEAN_STATE, stateVal)
-		btvm
-	}
-	def makeXOStateParam(stateIsO : Boolean)  : SerTypedValueMap = {
-		val btvm : BasicTypedValueMap  = new ConcreteTVM()
-		val paramWriter = new GoodyActionParamWriter(btvm)
-		paramWriter.putObjectAtName(GoodyNames.USE_O, stateIsO)
-		btvm
-	}
-	def absorbParams(absorber : TypedValueMap, src : TypedValueMap) : Unit = {
-		val srcKeysIt = src.iterateKeys()
-		while (srcKeysIt.hasNext) {
-			val srcKey : Ident = srcKeysIt.next()
-			val srcVal : Object = src.getRaw(srcKey)
-			absorber.putValueAtName(srcKey, srcVal)
-		}
-	}
-	// sources are absorbed in order, so last source wins.
-	def combineParams(srcs : List[TypedValueMap]) : SerTypedValueMap = {
-		val result : BasicTypedValueMap  = new ConcreteTVM()
-		srcs.foreach(absorbParams(result, _))
-		result
-	}
-	def duplicateParams(srcParams : TypedValueMap) : SerTypedValueMap = {
-		combineParams(List(srcParams))
-	}
-}
 class UpdatableGoodyRef(goodyID : Ident, typeID : Ident, initTASpec : ThingActionSpec,
 						initParams : SerTypedValueMap) extends VWTAMsgMaker {
 
@@ -121,7 +36,7 @@ class UpdatableGoodyRef(goodyID : Ident, typeID : Ident, initTASpec : ThingActio
 		makeTASpec(goodyID, typeID, GoodyNames.ACTION_DELETE, emptyParams)
 	}
 }
-trait Buncher extends IdentHlp with Hey with VWTAMsgMaker{
+trait Buncher extends IdentHlp with GoodyParamMaker with VWTAMsgMaker{
 	def makeSomeUniqueIdents(idCount : Int, nickPrefix : String) : List[Ident] = {
 		var idx = 0
 
@@ -249,48 +164,155 @@ class OneBurst(entIdPrfx : String, burstWidth : Int, burstLen : Int) extends Bun
 	}
 
 }
-class AnotherBurstTest(ovwc : OffersVWorldClient) extends Hey with VarargsLogging {
+trait GoodyTypeAliases {
+	val GT_BOX = GoodyNames.TYPE_BOX
+	val GT_BIT_CUBE = GoodyNames.TYPE_BIT_CUBE
+	val GT_BIT_BOX = GoodyNames.TYPE_BIT_BOX
+	val GT_TICTAC_GRID = GoodyNames.TYPE_TICTAC_GRID
+	val GT_TICTAC_MARK = GoodyNames.TYPE_TICTAC_MARK
+
+	val GT_FLOOR = GoodyNames.TYPE_FLOOR
+
+	val GT_CROSSHAIR = GoodyNames.TYPE_CROSSHAIR
+	val GT_TEXT  = GoodyNames.TYPE_TEXT
+	val GT_SCOREBOARD = GoodyNames.TYPE_SCOREBOARD
+
+	val GT_AVATAR = GoodyNames.TYPE_AVATAR
+	val GT_CAMERA = GoodyNames.TYPE_CAMERA
+
+}
+class AnotherBurstTest(ovwc : OffersVWorldClient) extends GoodyParamMaker with VarargsLogging with GoodyTypeAliases {
 
 	val emptyParams = new ConcreteTVM
-	val seedLocParam = makeLoc3Params(-10.0f, 15.0f, -2.0f)
+
+	val (seedLocX, seedLocY, seedLocZ) = (-10.0f, 18.0f, -2.0f)
+	val seedLocParam = makeLoc3Params(seedLocX, seedLocY, seedLocZ)
 
 	val stateFalse = makeBoolStateParam(false)
 	val stateTrue = makeBoolStateParam(true)
 
 	val stateX = makeXOStateParam(false)
 	val stateO = makeXOStateParam(true)
+
 	// alpha=0.0f is transparent,  1.0f is opaque
-	val redTrans = makeColorParam(1.0f, 0.0f, 0.0f, 0.6f)
+	val redTrans = makeColorParam(1.0f, 0.0f, 0.0f, 0.4f)
+	val bluTrans = makeColorParam(0.0f, 0.0f, 1.0f, 0.4f)
+	val grnTrans = makeColorParam(0.0f, 1.0f, 0.0f, 0.4f)
+	val ylwTrans = makeColorParam(1.0f, 1.0f, 0.0f, 0.4f)
+	val prpTrans = makeColorParam(1.0f, 0.0f, 1.0f, 0.4f)
 
 	val turnAboutY_45deg = makeRotParam(45.0f, 0.0f, 1.0f, 0.0f)
+	val turnAboutZ_45deg = makeRotParam(45.0f, 0.0f, 0.0f, 1.0f)
+	val turnAboutX_45deg = makeRotParam(45.0f, 1.0f, 0.0f, 0.0f)
+
 
 	def fireHorizBurst(bName : String, goodyTypeID : Ident, topParams : SerTypedValueMap) : Unit = {
+		fireHorizBurst(bName, goodyTypeID, topParams, 2.5f, 1.3f, Some(300))
+	}
+
+	def fireHorizBurst(bName : String, goodyTypeID : Ident, topParams : SerTypedValueMap, xSpacing : Float,
+					   yDelta: Float, stepDelay_opt : Option[Int]) : Unit = {
 
 		val burstParams = combineParams(List(seedLocParam, topParams))
 
 		val brst = new OneBurst(bName, 12, 16)
 
-		brst.createGoodies(ovwc, goodyTypeID, burstParams, GoodyNames.LOCATION_X, 2.5f, Some(300))
+		brst.createGoodies(ovwc, goodyTypeID, burstParams, GoodyNames.LOCATION_X, xSpacing, stepDelay_opt)
 
-		brst.moveAllGoodies(ovwc, GoodyNames.LOCATION_Y, 1.3f, 2.5f, Some(300))
+		brst.moveAllGoodies(ovwc, GoodyNames.LOCATION_Y, yDelta, 2.5f, stepDelay_opt)
 
-		brst.deleteAllGoodies(ovwc, Some(300))
+		brst.deleteAllGoodies(ovwc, stepDelay_opt)
 	}
 
-	def fireHorizBursts() : Unit = {
-		val boxParams = combineParams(List(redTrans, turnAboutY_45deg))
-		fireHorizBurst("horizBoxOne", GoodyNames.TYPE_BOX, boxParams)
+	def fireBoxBurst() : Unit = {
+		// BOX type *requires* that we set a rotation or it throws nullies.
+		val yPos = makeFloatParam(GoodyNames.LOCATION_Y, 6.0f)
+
+		val boxParams = combineParams(List(redTrans, turnAboutY_45deg, yPos))
+
+		fireHorizBurst("horizBoxOne", GT_BOX, boxParams)
+	}
+
+	def fireBitCubeBurst() : Unit = {
+		// TODO:  BitCube expects these texture images:
+//		Texture zeroTexture = assetMgr.loadTexture("textures/robosteps/Zero.png");
+//		Texture oneTexture = assetMgr.loadTexture("textures/robosteps/One.png");
+//		Texture blankTexture = assetMgr.loadTexture("textures/robosteps/BlankGray.png");
+		val yPos = makeFloatParam(GoodyNames.LOCATION_Y, 8.0f)
+
+		val boxParams = combineParams(List(redTrans, turnAboutY_45deg, stateTrue, yPos))
+
+		fireHorizBurst("horizBitCubeOne", GT_BIT_CUBE, boxParams)
+	}
+	def fireTicTacGridBurst() : Unit = {
+		val zPos = makeFloatParam(GoodyNames.LOCATION_Z, -10.0f)
+
+		val boxParams = combineParams(List(redTrans, turnAboutY_45deg,  zPos))
+
+		fireHorizBurst("horizBitCubeOne", GT_TICTAC_GRID, boxParams)
+	}
+	def fireFloorBurst() : Unit = {
+		val yPos = makeFloatParam(GoodyNames.LOCATION_Y, -3.0f)
+
+		val floorParams = combineParams(List(bluTrans, turnAboutZ_45deg, yPos))
+
+		fireHorizBurst("horizFloorOne", GT_FLOOR, floorParams, 6.0f, 3.0f, Some(700))
+
+	}
+
+	def fireTextBurst() : Unit = {
+		val locParams = makeLoc3Params(150.0f, 300.0f, 0.5f)
+		val txtParam = makeTxtParam("Burst o Text is HERE")
+		val scale3 = makeUniformScaleParam(1.0f)
+		val txtParams = combineParams(List(txtParam, scale3, locParams))
+		fireHorizBurst("horizTxt", GT_TEXT, txtParams, 20.0f, 40.0f, Some(500))
+	}
+	def fireScoreboardBurst() : Unit = {
+/*
+default-dispatcher-3] org.friendularity.vwgoody.VWGoodyActor (HasLogger.scala:33) info4 - VWGoodyJobLogic is processing received actSpec of class=class org.cogchar.impl.thing.basic.BasicThingActionSpec, verb=FreeIdent[absUri=urn:ftd:cogchar.org:2012:goody#ActionCreate], tgtType=FreeIdent[absUri=urn:ftd:cogchar.org:2012:goody#ScoreBoard] tgtID=FreeIdent[absUri=urn:sri_horizScore0_1482796133113_829162#id]
+default-dispatcher-3] org.friendularity.vwgoody.BetterBGC (BasicGoodyCtxImpl.java:216) consumeAction - The targetThingType is FreeIdent[absUri=urn:ftd:cogchar.org:2012:goody#ScoreBoard]
+default-dispatcher-3] org.friendularity.vwgoody.BetterBGC (BasicGoodyCtxImpl.java:225) consumeAction - The kind of Goody inspected is CREATE
+default-dispatcher-3] org.friendularity.vwgoody.BetterBGC$$anon$1 (HasLogger.scala:30) info1 - BetterBGC seeking match for goodyType=FreeIdent[absUri=urn:ftd:cogchar.org:2012:goody#ScoreBoard]
+default-dispatcher-5] org.friendularity.vwgoody.BetterBGC (BetterBGC.scala:107) createByAction - Scoreboard row count=4, rowHeight=10.0, textSize=4.0, locVec=(220.0, 220.0, 0.5)
+
+default-dispatcher-3] org.appdapter.api.facade.MakableObjectHelpFuncs (MakableObjectHelpFuncs.java:67) makeObj - Making new object named CC_SCENE_FLAT_FACADE using default constructor of class org.cogchar.render.opengl.scene.FlatOverlayMgr
+default-dispatcher-3] org.appdapter.api.facade.MakableObjectHelpFuncs (MakableObjectHelpFuncs.java:67) makeObj - Making new object named CC_SCENE_TEXT_FACADE using default constructor of class org.cogchar.render.opengl.scene.TextMgr
+default-dispatcher-3] org.cogchar.render.opengl.scene.TextMgr (TextMgr.java:67) disableCullingForFont - TextMgr disabling culling for a total of 1  font materials
+default-dispatcher-3] org.cogchar.render.app.entity.VWorldEntityReg (VWorldEntityReg.java:20) addGoody - Adding Goody with URI: FreeIdent[absUri=urn:sri_horizScore0_1482796133113_829162#id]
+ */
+		val locParams = makeLoc3Params(200.0f, 220.0f, 0.5f)
+		val scale = makeUniformScaleParam(4.0f)         // = textSize
+		val sizes = makeSize3Params(10.0f, 10.0f, 10.0f) // = rowHeight
+		val rows = makeRowCountParam(4)
+		val sbParams = combineParams(List(scale, locParams, sizes, rows))
+
+		fireHorizBurst("horizScore", GT_SCOREBOARD, sbParams, 20.0f, 30.0f, Some(500))
+	}
+	def fireCrosshairBurst() : Unit = {
+		//  org.cogchar.render.goody.flat.CrossHairGoody (FlatGoodyWithScreenFracPos.java:41)
+		// <init> - Cannot find screen dimension.
+		val locParams = makeLoc3Params(0.1f, 0.5f, 0.0f)
+		val scale = makeUniformScaleParam(1.0f)
+		val chParams = combineParams(List(scale, locParams))
+		fireHorizBurst("horizCross", GT_CROSSHAIR, chParams, 0.1f, 0.1f, Some(500))
 	}
 	def fireSomeBursts(): Unit = {
-		fireHorizBursts()
+		fireFloorBurst()
+		fireTextBurst()
+		fireScoreboardBurst()
+		fireCrosshairBurst()
+		fireBoxBurst()
+		// fireBitCubeBurst()
+		fireTicTacGridBurst()
+		overlapSomeBursts()
 	}
-	def fireLesserBursts(): Unit = {
+	def overlapSomeBursts(): Unit = {
 
 		val b1Params = combineParams(List(seedLocParam, stateX))
 
 		val brst1 = new OneBurst("brstOne", 12, 16)
 
-		brst1.createGoodies(ovwc, GoodyNames.TYPE_TICTAC_MARK, b1Params, GoodyNames.LOCATION_X, 2.5f, Some(300))
+		brst1.createGoodies(ovwc, GT_TICTAC_MARK, b1Params, GoodyNames.LOCATION_X, 2.5f, Some(300))
 
 		brst1.moveAllGoodies(ovwc, GoodyNames.LOCATION_Y, 1.3f, 2.5f, Some(300))
 
@@ -300,7 +322,7 @@ class AnotherBurstTest(ovwc : OffersVWorldClient) extends Hey with VarargsLoggin
 
 		val brst2 = new OneBurst("brstTwo", 12, 16)
 
-		brst2.createGoodies(ovwc, GoodyNames.TYPE_BIT_BOX, b2Params, GoodyNames.LOCATION_X, 2.5f, Some(300))
+		brst2.createGoodies(ovwc, GT_BIT_BOX, b2Params, GoodyNames.LOCATION_X, 2.5f, Some(300))
 
 		brst2.moveAllGoodies(ovwc, GoodyNames.LOCATION_Y, 1.3f, 2.5f, Some(300))
 
