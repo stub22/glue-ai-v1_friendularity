@@ -47,6 +47,7 @@ trait Buncher extends IdentHlp with GoodyParamMaker with VWTAMsgMaker{
 		idents
 	}
 }
+/*
 trait TTGridTestMsgMaker extends VWTAMsgMaker {
 
 	def makeTTGridSpec(entityID : Ident, verbID : Ident,
@@ -75,7 +76,8 @@ trait TTGridTestMsgMaker extends VWTAMsgMaker {
 	}
 
 }
-
+*/
+/*
 class TTGRidBurstTest(ovwc : OffersVWorldClient) extends TTGridTestMsgMaker with VarargsLogging {
 	val gridCount = 22
 	val delayMsec = 500
@@ -115,7 +117,7 @@ class TTGRidBurstTest(ovwc : OffersVWorldClient) extends TTGridTestMsgMaker with
 		}
 	}
 }
-
+*/
 class OneBurst(entIdPrfx : String, burstWidth : Int, burstLen : Int) extends Buncher {
 	lazy val myIdents : List[Ident] = makeSomeUniqueIdents(burstWidth, entIdPrfx)
 
