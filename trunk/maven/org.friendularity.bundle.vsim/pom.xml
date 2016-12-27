@@ -113,7 +113,8 @@
                             org.friendularity.qpc,
                             org.friendularity.thact,
                             org.friendularity.akact,
-                            org.friendularity.closing
+                            org.friendularity.closing,
+							org.friendularity.vwgoody
                         </Export-Package>
                         <Private-Package>
                             org.friendularity.netcli.*
