@@ -6,12 +6,12 @@
 		<artifactId>org.friendularity.modules.main</artifactId>
 		<version>1.0.9-SNAPSHOT</version>
 		<relativePath>../org.friendularity.modules.main/pom.xml</relativePath>
-	</parent>	
+	</parent>
 
 	<artifactId>org.friendularity.bundle.qpid_broker_wrap</artifactId>
     <packaging>bundle</packaging>
 
-	<name>${project.artifactId} - OSGi</name>	
+	<name>${project.artifactId} - OSGi</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -145,7 +145,6 @@
                 <dependency>
                     <groupId>org.apache.felix</groupId>
                     <artifactId>org.apache.felix.main</artifactId>
-                    <version>4.0.3</version>
                     <scope>provided</scope>
                 </dependency>
                 <!-- To include a shell:
@@ -223,7 +222,6 @@
                 <dependency>
                     <groupId>org.apache.felix</groupId>
                     <artifactId>org.apache.felix.main</artifactId>
-                    <version>4.0.3</version>
                     <scope>provided</scope>
                 </dependency>
                 <!-- org.apache.felix:org.apache.felix.gogo.shell:0.6.1 useless from Maven since stdin is swallowed -->

@@ -114,7 +114,7 @@
                             org.friendularity.thact,
                             org.friendularity.akact,
                             org.friendularity.closing,
-							org.friendularity.vwgoody
+                            org.friendularity.vwgoody
                         </Export-Package>
                         <Private-Package>
                             org.friendularity.netcli.*
@@ -133,7 +133,6 @@
                 <dependency>
                     <groupId>org.apache.felix</groupId>
                     <artifactId>org.apache.felix.main</artifactId>
-                    <version>4.0.3</version>
                     <scope>provided</scope>
                 </dependency>
                 <!-- To include a shell:
@@ -211,7 +210,6 @@
                 <dependency>
                     <groupId>org.apache.felix</groupId>
                     <artifactId>org.apache.felix.main</artifactId>
-                    <version>4.0.3</version>
                     <scope>provided</scope>
                 </dependency>
                 <!-- org.apache.felix:org.apache.felix.gogo.shell:0.6.1 useless from Maven since stdin is swallowed -->
