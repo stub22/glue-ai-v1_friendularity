@@ -13,13 +13,13 @@
         <cogchar.version>1.0.7.0-SNAPSHOT</cogchar.version>
     </properties>
 
-    <dependencies>      
-    
+    <dependencies>
+
         <dependency>
             <groupId>org.cogchar</groupId>
             <artifactId>org.cogchar.bundle.core</artifactId>
             <version>${cogchar.version}</version>
-        </dependency>        
+        </dependency>
 
     </dependencies>
 
@@ -47,7 +47,7 @@
                 <dependency>
                     <groupId>org.apache.felix</groupId>
                     <artifactId>org.apache.felix.main</artifactId>
-                    <version>4.0.3</version>
+                    <version>5.6.1</version>
                     <scope>provided</scope>
                 </dependency>
                 <!-- To include a shell:
@@ -125,7 +125,7 @@
                 <dependency>
                     <groupId>org.apache.felix</groupId>
                     <artifactId>org.apache.felix.main</artifactId>
-                    <version>4.0.3</version>
+                    <version>5.6.1</version>
                     <scope>provided</scope>
                 </dependency>
                 <!-- org.apache.felix:org.apache.felix.gogo.shell:0.6.1 useless from Maven since stdin is swallowed -->
