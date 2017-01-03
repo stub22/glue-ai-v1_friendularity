@@ -13,6 +13,8 @@ import org.friendularity.netcli.vwta.VWTAMsgMaker
 
 /**
   * Created by Stub22 on 12/26/2016.
+  *
+  * So far this code is used only for outer client test-msg creation.
   */
 trait GoodyParamMaker extends VWTAMsgMaker with VarargsLogging {
 	// entity-ID is a bookeeping handle, of fixed type

@@ -13,7 +13,9 @@ import org.cogchar.render.optic.goody.VWorldCameraEntity
 import org.cogchar.render.sys.goody.GoodyRenderRegistryClient
 import java.lang.{Float => JFloat, Integer => JInt }
 /**
-  * Created by Owner on 4/29/2016.
+  * Created by Stub22 on 4/29/2016.
+  *
+  * This disabled code copy is here as a reminder of what Goodies previously "sort of worked" in the Cogchar ~2013 system.
   */
 trait IgnorePrematureCopy
 /*

@@ -114,7 +114,8 @@
                             org.friendularity.thact,
                             org.friendularity.akact,
                             org.friendularity.closing,
-                            org.friendularity.vwgoody
+                            org.friendularity.vwgoody,
+							org.friendularity.tmpgood.*
                         </Export-Package>
                         <Private-Package>
                             org.friendularity.netcli.*
