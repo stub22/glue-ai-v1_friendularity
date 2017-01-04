@@ -25,9 +25,11 @@ class BetterBGC(rrc : RenderRegistryClient, winStatMon : WindowStatusMonitor)
 	override protected def createByAction(ga: GoodyActionExtractor): VWorldEntity = {
 
 		if (FLAG_useOldGoodies) {
+			// This should remain exactly equivalent to function as of 2016-12-31, still using the Cogchar Goody-impls.
 			createByAction_emulate2014(ga)
 		} else {
-			createByAction_tmpCopies2017(ga)
+			// Copied old Cogchar goody-Impls into these FriendU TG_ impls on 2017-01-02
+			createByAction_TG_tmpCopies2017(ga)
 		}
 	}
 

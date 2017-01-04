@@ -15,11 +15,12 @@ import org.friendularity.tmpgood.tgbit.{TG_TicTacGrid, TG_TicTacMark, TG_BitCube
 import org.friendularity.tmpgood.tgflat.{TG_ParagraphGoody, TG_ScoreBoardGoody, TG_CrossHairGoody}
 
 /**
-  * Created by Owner on 1/2/2017.
+  * Created by Stub22 on 1/2/2017.
+  *
   */
 trait DispatchCopiedTmpGoodies extends GoodyParamExtractorHelp with BasicGoodyCtx {
 	private val myVargler = new VarargsLogging {}
-	protected def createByAction_tmpCopies2017(ga: GoodyActionExtractor): VWorldEntity = {
+	protected def createByAction_TG_tmpCopies2017(ga: GoodyActionExtractor): VWorldEntity = {
 
 		var novGoody: VWorldEntity = null
 
@@ -77,7 +78,7 @@ trait DispatchCopiedTmpGoodies extends GoodyParamExtractorHelp with BasicGoodyCt
 					val scaleUniform: java.lang.Float =  getScaleUniformFrom(ga)
 					val textSize: Float = scaleUniform
 		//			myVargler.info("Scoreboard row count=" + rowCount + ", rowHeight=" + rowHeight + ", textSize=" + textSize + ", locVec=" + locVec)
-		//		myVargler.info4("Scoreboard row count={}, textSize={}, rowHeight={}, locVec={}", rowCount, rowHeight : java.lang.Float, textSize : java.lang.Float, locVec)
+					myVargler.info4("Scoreboard row count={}, textSize={}, rowHeight={}, locVec={}", rowCount, rowHeight : java.lang.Float, textSize : java.lang.Float, locVec)
 					novGoody = new TG_ScoreBoardGoody(bgc, goodyID, locVec, rowHeight, rowCount, textSize)
 				}
 				else if (GoodyNames.TYPE_TEXT == goodyType) {
