@@ -103,19 +103,28 @@ trait VWBodyMedialRendezvous extends VarargsLogging {
 
 		}
 	}
+	// whoDat is an existing actor who wants the notices.  We wrap in a strong-typed teller, and wrap that
+	// in an interest request we send to the charAdmin teller.
 	private def requestBodyNotice(bodyID : Ident, whoDat : ActorRef) : Unit = {
 		val answrTeller = new ActorRefCPMsgTeller[VWBodyNotice](whoDat)
 		val findBody = new VWBodyFindRq(bodyID, answrTeller)
 		getCharAdminTeller.tellStrongCPMsg(findBody)
 	}
+
+	//  Peform correct action for received client msg for a body, based on whether the body is found or not.
 	def routeBodyRq(bodyID : Ident, msgForBody : VWBodyRq, whoDat : ActorRef) : Unit = {
 		// Resolve message body-URI to bodyActor
 		if (myBodyTlrsByID.isDefinedAt(bodyID)) {
 			val bodyTlr = myBodyTlrsByID.get(bodyID).get
+			// Normal case, we found the bodyTlr, so let's send the VWBodyRq message there now.
+			// Note that whoDat is not part of that msg, so replies to client are not possible.
+			// Those are all instead sent out as notices.
 			bodyTlr.tellStrongCPMsg(msgForBody)
 		} else if (myFailedBodyIDs.contains(bodyID)) {
 			warn1("Ignoring request sent to known-failed body with ID={}", bodyID)
 		} else {
+			// Since the bodyTlr was not found, we want to queue our request to be processed later, if+when
+			// the bodyTlr becomes available.   We also assume that client's actor will want notices from that body.
 			val pendingQueue : ListBuffer[VWBodyRq] = myPendingBodyQueues.getOrElseUpdate(bodyID, {
 				info2("Requesting body notice for bodyID={} be delivered to {}", bodyID, whoDat)
 				requestBodyNotice(bodyID, whoDat)
