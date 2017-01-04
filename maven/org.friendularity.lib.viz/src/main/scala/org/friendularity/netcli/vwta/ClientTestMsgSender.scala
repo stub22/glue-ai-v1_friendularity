@@ -32,7 +32,7 @@ import org.friendularity.vwmsg.{PartialTransform3D}
 class ClientTestMsgSender(initDelayMsec : Int, stepDelayMsec : Int,
 						  sinbadMoves : Boolean, xtraCam : Boolean,
 						  goodyPile : Boolean, mainCamMoves : Boolean) extends OffersVWorldClient with VWTAMsgMaker  {
-	override val myPreferredEncoding : Int = myClient.ENCODE_PREF_BIN
+	override val myPreferredEncoding : Int = myClient.ENCODE_PREF_TRT
 	val quarterAngle : Float = 0.5f * Math.PI.asInstanceOf[Float]
 	val srcQ = new Quaternion
 	val quarterTurn : Quaternion = srcQ.fromAngles(0.0f, quarterAngle, 0.0f)
@@ -52,18 +52,18 @@ class ClientTestMsgSender(initDelayMsec : Int, stepDelayMsec : Int,
 			val tgtScl = new Vector3f(12.0f, 3.0f, 8.0f)
 			val mxf = new PartialTransform3D(Some(tgtPos), Some(quarterTurn), Some(tgtScl))
 			clientOffer.sendSinbadSmooveRq(mxf, 1.5f)
-			Thread.sleep(stepDelayMsec)
+			pauseOneStepDelay
 		}
 		if (xtraCam) {
 			val xtraCamGuideShapeID = clientOffer.makeStampyRandyIdent("xtraCam")
 			clientOffer.sendRq_makeExtraCamera(xtraCamGuideShapeID)
-			Thread.sleep(stepDelayMsec)
+			pauseOneStepDelay
 			val nextTgtCamPos = new Vector3f(-80.0f, 50.0f, -72.7f)
 			val cxf = new PartialTransform3D(Some(nextTgtCamPos), None, None)
 			clientOffer.sendRq_smooveCameraGuideShape(xtraCamGuideShapeID, cxf, 20.0f)
-			Thread.sleep(stepDelayMsec)
+			pauseOneStepDelay
 		} else {
-			Thread.sleep(stepDelayMsec)
+			pauseOneStepDelay
 		}
 		if (sinbadMoves) {
 			val tgtPos = new Vector3f(-5.0f, 38.0f, 0.6f)
@@ -71,10 +71,11 @@ class ClientTestMsgSender(initDelayMsec : Int, stepDelayMsec : Int,
 			val mxf = new PartialTransform3D(Some(tgtPos), None, None) // Some(tgtScl))
 			clientOffer.sendSinbadAbruptMoveRq(mxf)
 			// clientOffer.sendSinbadSmooveRq(mxf, 1.5f)
-			Thread.sleep(stepDelayMsec)
+			pauseOneStepDelay
 		}
 
 		if (goodyPile) {
+			// Serves as a basic goody plumbing test, across both turtle and binary-ser encodings.
 			val dummyGoodySender = new DummyGoodySender {}
 			dummyGoodySender.slowlySendSomeVWRqs(myClient, stepDelayMsec)
 		}
@@ -127,49 +128,40 @@ class ClientTestMsgSender(initDelayMsec : Int, stepDelayMsec : Int,
 			clientOffer.sendRq_abruptMoveRootCamera(mainCamID, nxf2)
 		}
 	}
-/*
-	def testMainCamBindAndSmoove: Unit = {
-		val clientOffer = this
-		val mainCamID = new FreeIdent(LightsCameraAN.URI_defaultCam)
 
-	}
-*/
 	val mainCamSmoove_notAbrupt = false
 
+	private def pauseOneStepDelay : Unit = {
+		Thread.sleep(stepDelayMsec)
+	}
 	def sendAll():  Unit = {
-		info1("Client test send thread is sleeping for {} msec", initDelayMsec: Integer)
+		info1("Client test send thread is sleeping for initDelay={} msec", initDelayMsec: Integer)
 		Thread.sleep(initDelayMsec)
+
 		if (mainCamMoves) {
 			sendMainCamMsg(mainCamSmoove_notAbrupt)
-			Thread.sleep(stepDelayMsec)
+			pauseOneStepDelay
 		}
 		sendBunchaMsgs()
 		if (mainCamMoves) {
-			Thread.sleep(stepDelayMsec)
+			pauseOneStepDelay
 			sendMainCamMsg(mainCamSmoove_notAbrupt)
 		}
 	}
-	// val FLAG_ticTacMode = false
 	val FLAG_burstMode = true
+	private def maybeRunBursts : Unit = {
+		if (FLAG_burstMode) {
+			val clientOffer = this
+			val mbt = new TestManyGoodyBursts(clientOffer)
+			mbt.fireSomeBursts()
+			pauseOneStepDelay
+		}
+	}
 	def startTestThread () {
 		initClientConn()
-		val clientOffer = this
 		val testSendThrd = new Thread() {
 			override def run: Unit = {
-				/*
-				if (FLAG_ticTacMode) {
-					Thread.sleep(8000)
-					val ttBurster = new TTGRidBurstTest(clientOffer)
-					ttBurster.sendEm("one")
-				} else
-				*/
-				if (FLAG_burstMode) {
-					Thread.sleep(8000)
-					val mbt = new TestManyGoodyBursts(clientOffer)
-					mbt.fireSomeBursts()
-				} else {
-					sendAll()
-				}
+				sendAll()
 			}
 		}
 		testSendThrd.start()
@@ -180,8 +172,10 @@ object RunClientTestMsgSender {
 	def main(args: Array[String]): Unit = {
 
 		val (doSinbadMoves, doExtraCam, doGoodyPile, doMainCamMoves) = (true, true, false, false)
-
-		val clientTestSender = new ClientTestMsgSender(3000, 2000, doSinbadMoves, doExtraCam, doGoodyPile, doMainCamMoves)
+		val (initDelayMsec, stepDelayMsec) = (3000, 2000)
+		val clientTestSender = new ClientTestMsgSender(initDelayMsec, stepDelayMsec, doSinbadMoves, doExtraCam, doGoodyPile, doMainCamMoves)
+		// We do not startThread, because we want client to exit after sending.
+		// If we cared about replies/notices, we could start a thread, and watch for the ____ signal to exit.
 		clientTestSender.sendAll
 	}
 }

@@ -89,7 +89,8 @@ object TestNavUI extends VarargsLogging {
 	private def maybeLaunchPhonyClient: Unit = {
 		if (myFlag_addPhonyClient) {
 			val (doSinbadMoves, doExtraCam, doGoodyPile, doMainCamMoves) = (false, false, true, false)
-			val clientTestSender = new ClientTestMsgSender(12000, 2000, doSinbadMoves, doExtraCam, doGoodyPile, doMainCamMoves)
+			val (initDelayMsec, stepDelayMsec) = (12000, 2000)
+			val clientTestSender = new ClientTestMsgSender(initDelayMsec, stepDelayMsec, doSinbadMoves, doExtraCam, doGoodyPile, doMainCamMoves)
 			clientTestSender.startTestThread
 		}
 	}
