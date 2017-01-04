@@ -1,10 +1,10 @@
-package org.friendularity.vwgoody
+package org.friendularity.netcli.goodtst
 
-import java.lang.{Float => JFloat, Integer => JInt, Boolean => JBool}
+import java.lang.{Boolean => JBool, Float => JFloat, Integer => JInt}
 
 import org.appdapter.core.name.Ident
 import org.appdapter.fancy.log.VarargsLogging
-import org.cogchar.api.thing.{TypedValueMap, ThingActionSpec, SerTypedValueMap}
+import org.cogchar.api.thing.{SerTypedValueMap, ThingActionSpec, TypedValueMap}
 import org.cogchar.api.vworld.GoodyActionParamWriter
 import org.cogchar.impl.thing.basic.BasicTypedValueMap
 import org.cogchar.impl.thing.fancy.ConcreteTVM
@@ -20,6 +20,8 @@ trait GoodyParamMaker extends VWTAMsgMaker with VarargsLogging {
 	// entity-ID is a bookeeping handle, of fixed type
 	// type and verb help define meaning of params
 	// params are leaf data describing an initial or updated (partial) state, except on verb=delete
+
+	/*
 	val dummyMakerForType = 0
 	def makeMakerForSpec: Unit = {
 		//	makeTASpec(entityID : Ident, typeID : Ident, verbID : Ident, paramSerMap: SerTypedValueMap) : ThingActionSpec = {
@@ -34,6 +36,7 @@ trait GoodyParamMaker extends VWTAMsgMaker with VarargsLogging {
 	val specMakerForTTGrid = makeTASpec(_ : Ident, GoodyNames.TYPE_TICTAC_GRID, _ : Ident, _: SerTypedValueMap)
 	val specMakerForTTMark = makeTASpec(_ : Ident, GoodyNames.TYPE_TICTAC_MARK, _ : Ident, _: SerTypedValueMap)
 	// val secMakerForBox
+	*/
 
 	def makeLoc3Params (x : Float, y: Float, z: Float) : SerTypedValueMap = {
 		val btvm : BasicTypedValueMap  = new ConcreteTVM()

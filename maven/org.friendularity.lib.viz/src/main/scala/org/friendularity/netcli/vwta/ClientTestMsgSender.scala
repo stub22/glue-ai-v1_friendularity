@@ -19,7 +19,9 @@ package org.friendularity.netcli.vwta
 import com.jme3.math.{Quaternion, Vector3f}
 import org.appdapter.core.name.FreeIdent
 import org.cogchar.name.cinema.LightsCameraAN
-import org.friendularity.vwgoody.{AnotherBurstTest} // , TTGRidBurstTest}
+import org.friendularity.netcli.goodtst.TestManyGoodyBursts
+
+// , TTGRidBurstTest}
 
 import org.friendularity.vwmsg.{PartialTransform3D}
 
@@ -163,8 +165,8 @@ class ClientTestMsgSender(initDelayMsec : Int, stepDelayMsec : Int,
 				*/
 				if (FLAG_burstMode) {
 					Thread.sleep(8000)
-					val abt = new AnotherBurstTest(clientOffer)
-					abt.fireSomeBursts()
+					val mbt = new TestManyGoodyBursts(clientOffer)
+					mbt.fireSomeBursts()
 				} else {
 					sendAll()
 				}
