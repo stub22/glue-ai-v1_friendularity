@@ -31,7 +31,8 @@ import org.friendularity.vwmsg.{PartialTransform3D}
 
 class ClientTestMsgSender(initDelayMsec : Int, stepDelayMsec : Int,
 						  sinbadMoves : Boolean, xtraCam : Boolean,
-						  goodyPile : Boolean, mainCamMoves : Boolean) extends OffersVWorldClient with VWTAMsgMaker  {
+						  goodyPile : Boolean, mainCamMoves : Boolean,
+						  goodyBursts : Boolean) extends OffersVWorldClient with VWTAMsgMaker  {
 	override val myPreferredEncoding : Int = myClient.ENCODE_PREF_TRT
 	val quarterAngle : Float = 0.5f * Math.PI.asInstanceOf[Float]
 	val srcQ = new Quaternion
@@ -85,6 +86,9 @@ class ClientTestMsgSender(initDelayMsec : Int, stepDelayMsec : Int,
 			val nxf = new PartialTransform3D(Some(nxtChrPos), Some(oppositeTurn), None)
 			clientOffer.sendSinbadSmooveRq(nxf, 8.0f)
 		}
+		if (goodyBursts) {
+			maybeRunBursts
+		}
 	}
 	def sendMainCamMsg(useSmooves : Boolean): Unit = {
 		val clientOffer = this
@@ -101,7 +105,7 @@ class ClientTestMsgSender(initDelayMsec : Int, stepDelayMsec : Int,
 			clientOffer.sendRq_abruptMoveRootCamera(mainCamID, nxfA)
 		}
 
-		Thread.sleep(stepDelayMsec)
+		pauseOneStepDelay
 		val nxtCamPos2 = new Vector3f(-5.0f, 10.0f, -50.0f)
 		val nxf2 = new PartialTransform3D(Some(nxtCamPos2), None, None)
 
@@ -111,7 +115,7 @@ class ClientTestMsgSender(initDelayMsec : Int, stepDelayMsec : Int,
 		} else {
 			clientOffer.sendRq_abruptMoveRootCamera(mainCamID, nxf2)
 		}
-		Thread.sleep(stepDelayMsec)
+		pauseOneStepDelay
 
 		if (useSmooves) {
 			info0("Sending main-cam smoove 3")
@@ -119,7 +123,7 @@ class ClientTestMsgSender(initDelayMsec : Int, stepDelayMsec : Int,
 		} else {
 			clientOffer.sendRq_abruptMoveRootCamera(mainCamID, nxfA)
 		}
-		Thread.sleep(stepDelayMsec)
+		pauseOneStepDelay
 
 		if (useSmooves) {
 			info0("Sending main-cam smoove 4")
@@ -129,7 +133,7 @@ class ClientTestMsgSender(initDelayMsec : Int, stepDelayMsec : Int,
 		}
 	}
 
-	val mainCamSmoove_notAbrupt = false
+	val mainCamSmoove_notAbrupt = true
 
 	private def pauseOneStepDelay : Unit = {
 		Thread.sleep(stepDelayMsec)
@@ -171,9 +175,10 @@ class ClientTestMsgSender(initDelayMsec : Int, stepDelayMsec : Int,
 object RunClientTestMsgSender {
 	def main(args: Array[String]): Unit = {
 
-		val (doSinbadMoves, doExtraCam, doGoodyPile, doMainCamMoves) = (true, true, false, false)
+		val (doSinbadMoves, doExtraCam, doGoodyPile, doMainCamMoves, doGoodyBursts) = (true, true, false, true, true)
 		val (initDelayMsec, stepDelayMsec) = (3000, 2000)
-		val clientTestSender = new ClientTestMsgSender(initDelayMsec, stepDelayMsec, doSinbadMoves, doExtraCam, doGoodyPile, doMainCamMoves)
+		val clientTestSender = new ClientTestMsgSender(initDelayMsec, stepDelayMsec, doSinbadMoves, doExtraCam, doGoodyPile, doMainCamMoves, doGoodyBursts)
+
 		// We do not startThread, because we want client to exit after sending.
 		// If we cared about replies/notices, we could start a thread, and watch for the ____ signal to exit.
 		clientTestSender.sendAll
