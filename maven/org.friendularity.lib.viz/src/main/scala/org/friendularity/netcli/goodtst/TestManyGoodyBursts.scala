@@ -36,7 +36,8 @@ class TestManyGoodyBursts(ovwc : OffersVWorldClient) extends GoodyParamMaker wit
 
 
 		def fireHorizBurst(bName : String, goodyTypeID : Ident, topParams : SerTypedValueMap) : Unit = {
-			fireHorizBurst(bName, goodyTypeID, topParams, 2.5f, 1.3f, Some(300))
+			val (xSpc, yDelt, stepDlyMsec_opt) = (2.5f, 1.3f, Some(300))
+			fireHorizBurst(bName, goodyTypeID, topParams, xSpc, yDelt, stepDlyMsec_opt)
 		}
 
 		def fireHorizBurst(bName : String, goodyTypeID : Ident, topParams : SerTypedValueMap, xSpacing : Float,

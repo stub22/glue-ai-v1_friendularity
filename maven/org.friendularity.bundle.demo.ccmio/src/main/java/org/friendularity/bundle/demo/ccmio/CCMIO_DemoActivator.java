@@ -23,7 +23,7 @@ import org.cogchar.bind.symja.MathGate;
 import org.friendularity.api.west.WorldEstimate;
 import org.friendularity.bundle.headless.animation.AnimServiceLauncher;
 import org.friendularity.bundle.qpid_broker_wrap.QPidBrokerLauncher;
-import org.friendularity.navui.ExoBodyUserLogic;
+import org.friendularity.vw.cli.bdy.ExoBodyUserLogic;
 import org.friendularity.navui.NavUiAppImpl;
 import org.friendularity.navui.NavUiAppSvc;
 
@@ -40,8 +40,6 @@ import org.friendularity.vsim.vworld.UnusedNetworkVisionDataFeed;
 import org.friendularity.wbrst.WbrstServerTest;
 import org.osgi.framework.BundleContext;
 import org.rwshop.swing.common.lifecycle.ServicesFrame;
-
-import org.friendularity.raiz.TestRaizLoad;
 
 import com.hp.hpl.jena.rdf.model.Model;
 

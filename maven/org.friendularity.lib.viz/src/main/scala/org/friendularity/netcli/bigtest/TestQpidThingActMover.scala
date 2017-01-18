@@ -25,7 +25,8 @@ import org.appdapter.fancy.log.VarargsLogging
 import org.friendularity.akact.DummyActorMaker
 import org.friendularity.cpmsg.ActorRefCPMsgTeller
 import org.friendularity.netcli.vwta.{DummyGoodySender, QPidTATestClient}
-import org.friendularity.qpc.{JmsDestMgr, QPidDestMgrJFlux, QpidConnMgr, QpidConnMgrJFlux, TestTAQpidServer, VWNoticeSender}
+import org.friendularity.qpc.{JmsDestMgr, QPidDestMgrJFlux, QpidConnMgr, QpidConnMgrJFlux, VWNoticeSender}
+import org.friendularity.vw.impl.ta.TestTAQpidServer
 
 /**
   * Created by StuB22 on 6/13/2016.

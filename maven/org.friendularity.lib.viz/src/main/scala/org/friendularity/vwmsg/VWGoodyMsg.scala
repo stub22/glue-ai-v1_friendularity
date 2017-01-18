@@ -32,7 +32,7 @@ import org.cogchar.api.vworld.GoodyActionParamWriter
 import org.cogchar.impl.thing.basic.{BasicTypedValueMap, BasicThingActionSpec}
 import org.cogchar.impl.thing.fancy.ConcreteTVM
 import org.friendularity.thact.{JenaModelReader, RdfMsg}
-import org.friendularity.vwimpl.IdentHlp
+import org.friendularity.vw.msg.cor.{VWContentRq, VWorldNotice}
 
 
 /**
@@ -42,7 +42,7 @@ import org.friendularity.vwimpl.IdentHlp
 
 trait VWTARqRdf extends VWContentRq  with RdfMsg
 
-case class VWTARqTurtle(myTurtleTxt : String) extends VWTARqRdf with JenaModelReader with VarargsLogging{
+case class VWTARqTurtle(myTurtleTxt : String) extends VWTARqRdf with JenaModelReader with VarargsLogging {
 	override def asTurtleString : String = myTurtleTxt
 
 	override def asJenaModel(flags_opt: Option[AnyRef]) : JenaModel = {

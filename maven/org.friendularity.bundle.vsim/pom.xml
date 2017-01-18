@@ -107,14 +107,16 @@
                             org.friendularity.navui,
                             org.friendularity.rbody,
                             org.friendularity.ignore.*,
+							org.friendularity.util,
+							org.friendularity.vw.*,
                             org.friendularity.vwmsg,
                             org.friendularity.vwimpl,
+							org.friendularity.vwgoody,
                             org.friendularity.mjob,
                             org.friendularity.qpc,
                             org.friendularity.thact,
                             org.friendularity.akact,
                             org.friendularity.closing,
-                            org.friendularity.vwgoody,
 							org.friendularity.tmpgood.*
                         </Export-Package>
                         <Private-Package>

@@ -39,8 +39,9 @@ import org.cogchar.render.optic.goody.VWorldCameraEntity
 import org.cogchar.render.sys.goody.GoodyRenderRegistryClient
 import org.cogchar.render.sys.registry.RenderRegistryClient
 import org.cogchar.render.trial.{TrialNexus, TextSpatialFactory}
+import org.friendularity.vw.impl.shp.{Brush, OuterTestQuadsAndTextMaker}
+
 // import org.friendularity.cpump.{Greeting, WhoToGreet}
-import org.friendularity.vwimpl.{Brush, OuterTestQuadsAndTextMaker}
 
 
 /**

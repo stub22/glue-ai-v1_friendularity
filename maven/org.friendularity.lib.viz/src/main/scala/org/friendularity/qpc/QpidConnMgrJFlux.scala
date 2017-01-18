@@ -4,7 +4,8 @@ import javax.jms.{Session => JMSSession, Destination => JMSDestination, Connecti
 
 
 import org.appdapter.fancy.log.VarargsLogging
-import org.friendularity.vwimpl.IdentHlp
+import org.friendularity.util.IdentHlp
+
 import org.jflux.impl.messaging.rk.utils.{ConnectionManager => JfluxQpidConnMgr}
 
 

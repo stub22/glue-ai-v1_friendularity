@@ -7,7 +7,7 @@ import org.cogchar.impl.thing.basic.BasicTypedValueMap
 import org.cogchar.impl.thing.fancy.ConcreteTVM
 import org.cogchar.name.goody.GoodyNames
 import org.friendularity.qpc.{OffersQpidSomething, QPidDestMgrJFlux, JmsDestMgr}
-import org.friendularity.vwmsg.MaybeTransform3D
+import org.friendularity.vw.mprt.manip.MaybeTransform3D
 
 /**
   * Created by Stub22 on 9/5/2016.

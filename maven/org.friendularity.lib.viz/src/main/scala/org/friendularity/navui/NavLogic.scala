@@ -15,7 +15,8 @@
  */
 package org.friendularity.navui
 
-import org.friendularity.vwmsg.{VWorldPublicTellers, NavCmdImpl, InnerNavCmds, NavCmdKeyClkBind, NavCmd}
+import org.friendularity.vw.msg.stg.{InnerNavCmds, NavCmdImpl, NavCmdKeyClkBind, NavCmd}
+import org.friendularity.vwmsg.VWorldPublicTellers
 
 /** Created by Stub22 on 7/7/2016.
   */

@@ -16,7 +16,7 @@
 package org.friendularity.field
 
 import org.appdapter.core.name.{FreeIdent, Ident}
-import org.friendularity.vwimpl.IdentHlp
+import org.friendularity.util.IdentHlp
 
 /**
   * Created by Stub22 on 7/11/2016.

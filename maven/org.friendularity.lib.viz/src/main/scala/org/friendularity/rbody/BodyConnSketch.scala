@@ -27,6 +27,8 @@ import org.appdapter.core.name.Ident
 import org.appdapter.fancy.log.VarargsLogging
 import org.appdapter.fancy.rclient.RepoClient
 import org.cogchar.api.skeleton.config.BoneRobotConfig
+import org.friendularity.vw.impl.manip.Manipable
+
 //import org.cogchar.app.puma.body.PumaBodyGateway
 //import org.cogchar.app.puma.config.BodyHandleRecord
 //import org.cogchar.app.puma.registry.ResourceFileCategory
@@ -44,7 +46,7 @@ import org.cogchar.render.sys.goody.GoodyRenderRegistryClient
 import org.cogchar.render.sys.registry.RenderRegistryClient
 import org.cogchar.render.sys.task.CogcharRenderSchedule
 import org.cogchar.render.sys.task.Queuer.QueueingStyle
-import org.friendularity.vwimpl.{Manipable, Smoovable, HasMainSpat}
+
 import org.osgi.framework.BundleContext
 import org.mechio.api.motion.Robot
 import org.cogchar.api.humanoid.{HumanoidFigureConfig, FigureConfig}

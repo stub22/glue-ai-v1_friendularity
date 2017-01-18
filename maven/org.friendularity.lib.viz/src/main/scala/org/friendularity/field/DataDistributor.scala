@@ -21,8 +21,7 @@ import org.appdapter.core.name.Ident
 import org.appdapter.fancy.log.VarargsLogging
 import org.friendularity.akact.FrienduActor
 import org.friendularity.cpmsg.{ActorRefCPMsgTeller, CPStrongTeller, CPMsgTeller, CPumpMsg}
-
-import org.friendularity.vwimpl.IdentHlp
+import org.friendularity.util.IdentHlp
 
 import scala.collection.mutable.{HashMap => MutableHashMap, ListBuffer}
 

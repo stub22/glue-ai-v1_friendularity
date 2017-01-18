@@ -2,7 +2,7 @@ package org.friendularity.netcli.vwta
 
 import javax.jms.{MessageConsumer => JMSMsgConsumer}
 
-import org.friendularity.qpc.KnowsVWPubStatDestinations
+import org.friendularity.vw.api.amqp.KnowsVWPubStatDestinations
 
 /**
   * Created by Stub22 on 9/5/2016.

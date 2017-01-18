@@ -31,7 +31,8 @@ import org.cogchar.render.goody.flat.{CrossHairGoody, ParagraphGoody, ScoreBoard
 import org.cogchar.render.sys.registry.RenderRegistryClient
 import org.cogchar.render.sys.window.WindowStatusMonitor
 import org.friendularity.thact.ThingActExposer
-import org.friendularity.vwmsg.{VWRqTAWrapImpl, VWRqTAWrapper, VWTARqRdf, VWorldRequest}
+import org.friendularity.vw.msg.cor.VWorldRequest
+import org.friendularity.vwmsg.{VWRqTAWrapImpl, VWRqTAWrapper, VWTARqRdf}
 
 /**
   * Created by Stub22 on 5/25/2016.

@@ -21,9 +21,13 @@ import org.appdapter.fancy.log.VarargsLogging
 import org.friendularity.akact.{FrienduActor, KnowsAkkaSys}
 import org.friendularity.cpmsg.{ActorRefCPMsgTeller, CPStrongTeller}
 import org.friendularity.field.MsgToStatusSrc
+import org.friendularity.vw.cli.stat.{VWStatPubActor, VWStatPubLogic}
 import org.friendularity.qpc.OffersVWorldServer
-import org.friendularity.vwimpl.MakesVWTAReqRouterTeller
-import org.friendularity.vwmsg.{VWRqTAWrapper, VWorldPublicTellers, VWBodyLifeRq, VWARM_FindPublicTellers, VWorldRequest}
+import org.friendularity.vw.impl.ta.MakesVWTAReqRouterTeller
+import org.friendularity.vw.msg.adm.VWARM_FindPublicTellers
+import org.friendularity.vw.msg.bdy.VWBodyLifeRq
+import org.friendularity.vw.msg.cor.VWorldRequest
+import org.friendularity.vwmsg.{VWRqTAWrapper, VWorldPublicTellers}
 
 /**
   * Created by Stub22 on 8/8/2016.

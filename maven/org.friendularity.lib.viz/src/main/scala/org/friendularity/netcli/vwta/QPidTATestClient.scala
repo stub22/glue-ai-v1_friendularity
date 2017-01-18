@@ -9,7 +9,7 @@ import org.cogchar.api.thing.ThingActionSpec
 import org.cogchar.name.goody.GoodyNames
 import org.cogchar.render.rendtest.GoodyTestMsgMaker
 import org.friendularity.netcli.bigtest.ExoPubStatDumpingListenerMaker
-import org.friendularity.qpc.{KnowsVWTARqDestinations, QPidFeatureEndpoint, JmsDestMgr}
+import org.friendularity.qpc.{QPidFeatureEndpoint, JmsDestMgr}
 import javax.jms.{Destination => JMSDestination, Message => JMSMsg, MessageConsumer => JMSMsgConsumer,
 MessageListener => JMSMsgListener, MessageProducer => JMSMsgProducer, ObjectMessage => JMSObjMsg,
 Session => JMSSession, TextMessage => JMSTextMsg}

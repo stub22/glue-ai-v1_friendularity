@@ -32,11 +32,20 @@ import org.friendularity.field.{StatusTickActorFactory, StatusTickDistributor, S
 import org.friendularity.mjob.{MsgJobLogicFactory, MsgJobLogic}
 
 import com.hp.hpl.jena.rdf.model.{Model => JenaModel, ModelFactory => JenaModelFactory, Literal}
-import org.friendularity.vwimpl.{OverlayPage, IdentHlp, VWorldMasterFactory}
+import org.friendularity.util.IdentHlp
+import org.friendularity.vw.cli.cam.OuterCamHelp
+import org.friendularity.vw.impl.ovl.{NavPageDefs, OverlayPage}
+
+import org.friendularity.vw.mprt.manip.{CamStateParams3D, MakesManipDesc, TransformParams3D, SmooveManipEndingFullImpl}
+import org.friendularity.vw.msg.bdy.{VWBodyDangerYogaRq, VWBodySkeletonDisplayToggle, VWBroadcastToAllBodies, VWBodyLifeRq}
+import org.friendularity.vw.msg.cor.{VWSetupOvlBookRq, VWOverlayRq}
+import org.friendularity.vw.msg.shp.deep.{VWSCR_Sphere, VWSCR_MeshyCmpnd, VWSCR_CellGrid, KnownShapeCreateRqImpl, VWClearAllShapes, ShapeManipRqImpl}
+import org.friendularity.vw.msg.stg.{VWKeymapBinding_Medial, ViewportDesc, VWStageSetupLighting, VWStatsViewMessage, VWStageBackgroundSkybox, VWStageBackgroundColor, VWStageOpticsBasic, VWStageEmulateBonusContentAndCams, VWStageResetToDefault}
+import org.friendularity.vwimpl.VWorldMasterFactory
 
 import scala.collection.immutable.HashMap
 
-import org.friendularity.vwmsg.{MakesManipDesc, VWBodyDangerYogaRq, KnownShapeCreateRqImpl, VWSCR_MeshyCmpnd, VWOverlayRq, VWSetupOvlBookRq, NavCmdImpl, NavCmdKeyClkBind, NavCmd, InnerNavCmds, VWorldPublicTellers, VWSCR_Node, VWBindCamNodeRq, VWCreateCamAndViewportRq, CamStateParams3D, CamState3D, ViewportDesc, ShapeManipRqImpl, SmooveManipEndingFullImpl, TransformParams3D, VWBodySkeletonDisplayToggle, VWBroadcastToAllBodies, VWClearAllShapes, VWStageResetToDefault, VWKeymapBinding_Medial, OrdinaryParams3D, VWSCR_Sphere, VWStageOpticsBasic, VWSCR_CellGrid, VWStageEmulateBonusContentAndCams, VWBodyLifeRq, VWRqTAWrapImpl, VWTARqTurtle, VWStatsViewMessage, VWStageSetupLighting, VWStageBackgroundColor, VWStageBackgroundSkybox}
+import org.friendularity.vwmsg.{VWorldPublicTellers, OrdinaryParams3D, VWRqTAWrapImpl, VWTARqTurtle}
 import org.cogchar.impl.thing.fancy.ConcreteTVM
 import org.cogchar.api.vworld.GoodyActionParamWriter
 import org.cogchar.api.thing.SerTypedValueMap;
