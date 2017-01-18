@@ -1,7 +1,7 @@
 package org.friendularity.vwimpl
 
 import org.friendularity.mjob.{MasterFactory, MsgFactoryPair, MsgJobLogic}
-import org.friendularity.vwmsg.VWorldMsg
+import org.friendularity.vw.msg.cor.VWorldMsg
 
 /**
   * Created by Owner on 4/19/2016.

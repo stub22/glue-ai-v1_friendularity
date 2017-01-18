@@ -20,10 +20,9 @@ import com.jme3.math.{Quaternion, Vector3f}
 import org.appdapter.core.name.FreeIdent
 import org.cogchar.name.cinema.LightsCameraAN
 import org.friendularity.netcli.goodtst.TestManyGoodyBursts
+import org.friendularity.vw.mprt.manip.PartialTransform3D
 
 // , TTGRidBurstTest}
-
-import org.friendularity.vwmsg.{PartialTransform3D}
 
 /**
   * Created by Stub22 on 9/5/2016.
@@ -47,6 +46,7 @@ class ClientTestMsgSender(initDelayMsec : Int, stepDelayMsec : Int,
 	}
 
 	protected def sendBunchaMsgs() : Unit = {
+		info0("ClientTestMsgSender starting sendBunchaMsgs")
 		val clientOffer = this
 		if (sinbadMoves) {
 			val tgtPos = new Vector3f(-20.0f, 90.0f, -20.0f)
@@ -89,6 +89,7 @@ class ClientTestMsgSender(initDelayMsec : Int, stepDelayMsec : Int,
 		if (goodyBursts) {
 			maybeRunBursts
 		}
+		info0("ClientTestMsgSender finished sendBunchaMsgs")
 	}
 	def sendMainCamMsg(useSmooves : Boolean): Unit = {
 		val clientOffer = this

@@ -2,6 +2,10 @@ package org.friendularity.vwmsg
 
 import org.appdapter.core.name.Ident
 import org.friendularity.cpmsg.CPStrongTeller
+import org.friendularity.vw.msg.bdy.{VWBodyRq, VWBodyLifeRq}
+import org.friendularity.vw.msg.cor.{VWOverlayRq, VWorldNotice}
+import org.friendularity.vw.msg.shp.deep.VWShapeCreateRq
+import org.friendularity.vw.msg.stg.VWStageRqMsg
 
 /*
 // VWorldPublicTellers = client access to main features for application building.
@@ -44,16 +48,4 @@ case class VWPubTellersMsgImpl(goodyTeller : CPStrongTeller[VWRqTAWrapper],
 	override def getOverlayTeller : Option[CPStrongTeller[VWOverlayRq]] = Option(ovlTeller)
 }
 
-trait VWBodyNotice extends VWorldNotice {
-	def getVWBodyID : Ident
-	def getBodyTeller_opt : Option[CPStrongTeller[VWBodyRq]]
-	// TODO:  Add getBodyState_opt which returns Option[RdfableState]
-}
 
-case class VWBodyNoticeImpl(bodyID : Ident, bodyTeller : Option[CPStrongTeller[VWBodyRq]]) extends VWBodyNotice {
-	override def getVWBodyID: Ident = bodyID
-
-	override def getBodyTeller_opt: Option[CPStrongTeller[VWBodyRq]] = bodyTeller
-}
-
-trait VWExoBodyChance extends VWorldNotice

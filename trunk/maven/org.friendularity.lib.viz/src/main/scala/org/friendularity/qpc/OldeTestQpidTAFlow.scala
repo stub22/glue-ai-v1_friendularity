@@ -22,7 +22,7 @@ package org.friendularity.qpc
 
 import org.appdapter.core.name.{FreeIdent, Ident}
 import org.appdapter.fancy.log.VarargsLogging
-import org.cogchar.api.vworld.GoodyActionParamWriter
+
 import org.cogchar.impl.thing.basic.{BasicThingActionSpec, BasicTypedValueMap, BasicTypedValueMapWithConversion}
 import org.cogchar.name.goody.GoodyNames
 import org.friendularity.thact.DummyThingActionMaker

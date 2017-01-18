@@ -26,6 +26,7 @@ import org.cogchar.platform.gui.keybind.KeyBindingConfig
 import org.cogchar.platform.trigger.CommandSpace
 import org.cogchar.render.goody.basic.BasicGoodyCtx
 import org.cogchar.render.rendtest.{GoodyTestMsgMaker, GoodyRenderTestApp}
+import org.friendularity.vw.cli.bdy.ExoBodyUserLogic
 
 import org.friendularity.netcli.vwta.ClientTestMsgSender
 import org.friendularity.raiz.{VizappLegacyLoaderFactory, VizappProfileLoaderFactory, TestRaizLoad}

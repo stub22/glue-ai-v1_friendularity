@@ -5,8 +5,9 @@ import org.appdapter.core.name.Ident
 import org.cogchar.api.thing.{ThingActionSpec, SerTypedValueMap}
 import org.cogchar.api.vworld.GoodyActionParamWriter
 import org.cogchar.impl.thing.basic.BasicThingActionSpec
-import org.friendularity.vwimpl.IdentHlp
-import org.friendularity.vwmsg.{MaybeTransform3D, MaybeScaled3D, MaybeRotated3D, MaybeLocated3D}
+import org.friendularity.util.IdentHlp
+import org.friendularity.vw.mprt.manip.{MaybeTransform3D, MaybeScaled3D, MaybeRotated3D, MaybeLocated3D}
+
 
 /**
   * Created by Stub22 on 9/5/2016.

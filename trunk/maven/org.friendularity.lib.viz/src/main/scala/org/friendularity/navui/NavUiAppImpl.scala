@@ -24,8 +24,9 @@ import org.cogchar.bind.mio.robot.svc.ModelBlendingRobotServiceContext
 import org.friendularity.cpmsg.CPStrongTeller
 import org.friendularity.qpc.OffersVWorldServer
 import org.friendularity.respire.DetachedGST
-import org.friendularity.vwimpl.MakesVWBoss
-import org.friendularity.vwmsg.{VWBodyMakeRq, VWBodyNotice, VWSetupRq_Lnch, VWSetupRq_Conf, VWSetSwingCanvasBranding}
+import org.friendularity.vw.impl.boss.MakesVWBoss
+import org.friendularity.vw.msg.adm.{VWSetSwingCanvasBranding, VWSetupRq_Lnch, VWSetupRq_Conf}
+import org.friendularity.vw.msg.bdy.{VWBodyNotice, VWBodyMakeRq}
 
 /**
   * Created by Stub22 on 8/8/2016.

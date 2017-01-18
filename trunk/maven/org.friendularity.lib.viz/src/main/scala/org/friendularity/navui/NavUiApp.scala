@@ -26,8 +26,11 @@ import org.friendularity.closing.SpeechServerCloser
 import org.friendularity.cpmsg.{ActorRefCPMsgTeller, CPMsgTeller, CPStrongTeller, CPumpMsg}
 import org.friendularity.cpump.ScheduleHelper
 import org.friendularity.dull.SpecialAppPumpSpace
-import org.friendularity.vwimpl.LegacyBodyLoader_Stateless
-import org.friendularity.vwmsg.{VWARM_GreetFromPumpAdmin, VWBodyNotice}
+import org.friendularity.vw.cli.bdy.{ExoActorFactory, ExoBodyUserLogic, BodyTestClient}
+import org.friendularity.vw.impl.bdy.LegacyBodyLoader_Stateless
+import org.friendularity.vw.msg.adm.VWARM_GreetFromPumpAdmin
+import org.friendularity.vw.msg.bdy.VWBodyNotice
+
 import org.osgi.framework.BundleContext
 
 /**

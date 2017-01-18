@@ -22,14 +22,15 @@ import org.cogchar.api.thing.ThingActionSpec
 import org.cogchar.name.goody.GoodyNames
 import org.cogchar.render.rendtest.GoodyTestMsgMaker
 import org.friendularity.navui.TestNavUI.{info1, info0}
-import org.friendularity.qpc.{QPidFeatureEndpoint, JmsDestMgr, WritesJmsHeaders, KnowsVWTARqDestinations}
+import org.friendularity.qpc.{QPidFeatureEndpoint, JmsDestMgr, WritesJmsHeaders}
 import org.friendularity.thact.{TAEncodePrefs, ThingActSender}
-import org.friendularity.vwmsg.{PartialTransform3D}
 
 import javax.jms.{Destination => JMSDestination, Message => JMSMsg,
 		MessageConsumer => JMSMsgConsumer, MessageListener => JMSMsgListener,
 		MessageProducer => JMSMsgProducer, ObjectMessage => JMSObjMsg,
 		Session => JMSSession, TextMessage => JMSTextMsg}
+
+import org.friendularity.vw.api.amqp.KnowsVWTARqDestinations
 
 /**
   * Created by Stub22 on 8/11/2016.

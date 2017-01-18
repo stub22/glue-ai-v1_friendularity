@@ -4,7 +4,7 @@ import org.appdapter.core.name.Ident
 import org.cogchar.api.thing.SerTypedValueMap
 import org.cogchar.name.goody.GoodyNames
 import org.friendularity.netcli.vwta.{OffersVWorldClient, VWTAMsgMaker}
-import org.friendularity.vwimpl.IdentHlp
+import org.friendularity.util.IdentHlp
 
 /**
   * Created by Owner on 1/4/2017.

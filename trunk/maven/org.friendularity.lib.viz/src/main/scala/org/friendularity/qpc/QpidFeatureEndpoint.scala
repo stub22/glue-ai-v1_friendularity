@@ -34,9 +34,11 @@ import org.cogchar.name.goody.GoodyNames
 import org.cogchar.render.rendtest.GoodyTestMsgMaker
 import org.friendularity.akact.{KnowsAkkaSys, DummyActorMaker}
 import org.friendularity.cpmsg.{CPStrongTeller, ActorRefCPMsgTeller}
+import org.friendularity.vw.impl.ta.{TestTAQpidServer, ServerFeatureAccess, ServerReceiveFeature, ServerPublishFeature}
+
 // import org.friendularity.netcli.vwta.QPidTATestClient
 import org.friendularity.thact.{ThingActSender, ThingActReceiverBinary, ThingActReceiverTxt}
-import org.friendularity.vwmsg.{MaybeTransform3D, VWRqTAWrapper, VWTARqRdf, VWorldNotice}
+import org.friendularity.vwmsg.{VWRqTAWrapper, VWTARqRdf}
 
 /**
   * Created by Stub22 on 8/8/2016.

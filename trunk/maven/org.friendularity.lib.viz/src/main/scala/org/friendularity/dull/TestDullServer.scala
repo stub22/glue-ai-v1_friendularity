@@ -5,8 +5,8 @@ import org.appdapter.core.name.{FreeIdent, Ident}
 import org.appdapter.fancy.log.VarargsLogging
 import org.friendularity.cpmsg.{ActorRefCPMsgTeller, CreatedChanTellerMsg, CPumpMsg}
 import org.friendularity.cpump._
-import org.friendularity.vwimpl.VWorldActorFactoryFuncs
-import org.friendularity.vwmsg.VWARM_GreetFromPumpAdmin
+import org.friendularity.vw.impl.sys.VWorldActorFactoryFuncs
+import org.friendularity.vw.msg.adm.VWARM_GreetFromPumpAdmin
 
 /**
   * Created by Stub22 on 4/13/2016.
