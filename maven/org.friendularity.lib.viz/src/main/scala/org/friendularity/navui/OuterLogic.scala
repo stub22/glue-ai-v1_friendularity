@@ -34,6 +34,7 @@ import org.friendularity.mjob.{MsgJobLogicFactory, MsgJobLogic}
 import com.hp.hpl.jena.rdf.model.{Model => JenaModel, ModelFactory => JenaModelFactory, Literal}
 import org.friendularity.util.IdentHlp
 import org.friendularity.vw.cli.cam.OuterCamHelp
+import org.friendularity.vw.cli.nav.OuterBindNavCmdKeys
 import org.friendularity.vw.impl.ovl.{NavPageDefs, OverlayPage}
 
 import org.friendularity.vw.mprt.manip.{CamStateParams3D, MakesManipDesc, TransformParams3D, SmooveManipEndingFullImpl}

@@ -31,6 +31,7 @@ import org.cogchar.render.goody.flat.{CrossHairGoody, ParagraphGoody, ScoreBoard
 import org.cogchar.render.sys.registry.RenderRegistryClient
 import org.cogchar.render.sys.window.WindowStatusMonitor
 import org.friendularity.thact.ThingActExposer
+import org.friendularity.vw.cli.goshcl.GoodyShapcliLogic
 import org.friendularity.vw.msg.cor.VWorldRequest
 import org.friendularity.vwmsg.{VWRqTAWrapImpl, VWRqTAWrapper, VWTARqRdf}
 
@@ -73,20 +74,28 @@ import org.friendularity.vwmsg.{VWRqTAWrapImpl, VWRqTAWrapper, VWTARqRdf}
 
   */
 
-trait VWGoodyJobLogic extends VarargsLogging {
+trait VWGoodyJobLogic extends VarargsLogging with GoodyShapcliLogic {
+	val FLAG_useLegacyGoodyCtx = true
 	protected def getGoodyCtx : BasicGoodyCtx
 	protected def processVWGoodyRequest(vwmsg : VWorldRequest, slfActr : ActorRef, localActorCtx : ActorContext): Unit = {
 		vwmsg match {
 
-			case taBinWrapMsg: VWRqTAWrapper => processVWGoodyActSpec(taBinWrapMsg, localActorCtx)
+			case taBinWrapMsg: VWRqTAWrapper => processVWGoodyActSpec(taBinWrapMsg, slfActr, localActorCtx)
 
 			case goodyRdfMsg: VWTARqRdf => processVWGoodyRdfMsg(goodyRdfMsg, slfActr, localActorCtx)
 		}
 	}
-	protected def processVWGoodyActSpec (thingActSpecMsg : VWRqTAWrapper, localActorCtx : ActorContext) : Unit = {
+	protected def processVWGoodyActSpec (thingActSpecMsg : VWRqTAWrapper, slfActr : ActorRef, localActorCtx : ActorContext) : Unit = {
 		val actSpec = thingActSpecMsg.getActionSpec
 		info4("VWGoodyJobLogic is processing received actSpec of class={}, verb={}, tgtType={} tgtID={}",
 					actSpec.getClass, actSpec.getVerbID, actSpec.getTargetThingTypeID, actSpec.getTargetThingID)
+		if (FLAG_useLegacyGoodyCtx) {
+			processGoodyTA_usingLegacyGoodyCtx(actSpec)
+		} else {
+			processVWGoodyTA_usingShaperMsgs(actSpec, slfActr, localActorCtx)
+		}
+	}
+	private def processGoodyTA_usingLegacyGoodyCtx(actSpec : ThingActionSpec) : Unit = {
 		val goodyCtx = getGoodyCtx
 
 		// As of 2016-10-06, this method call routes to the old Cogchar impl in
@@ -113,7 +122,7 @@ trait VWGoodyJobLogic extends VarargsLogging {
 
 			val specMsg = new VWRqTAWrapImpl(tas)
 
-			processVWGoodyActSpec(specMsg, localActorCtx)
+			processVWGoodyActSpec(specMsg, slfActr, localActorCtx)
 			// We could instead requeue, as we used to do (summer 2016), like so:
 			// 	slfActr.tell(specMsg, slfActr)
 			// but that could change order of mixed TA processing from client's point of view.
