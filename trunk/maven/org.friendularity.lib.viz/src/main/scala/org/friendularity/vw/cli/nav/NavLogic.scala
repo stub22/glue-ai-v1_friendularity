@@ -13,9 +13,9 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.friendularity.navui
+package org.friendularity.vw.cli.nav
 
-import org.friendularity.vw.msg.stg.{InnerNavCmds, NavCmdImpl, NavCmdKeyClkBind, NavCmd}
+import org.friendularity.vw.msg.stg.{InnerNavCmds, NavCmd, NavCmdImpl, NavCmdKeyClkBind}
 import org.friendularity.vwmsg.VWorldPublicTellers
 
 /** Created by Stub22 on 7/7/2016.

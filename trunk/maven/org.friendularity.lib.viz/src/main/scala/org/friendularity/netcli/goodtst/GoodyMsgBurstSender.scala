@@ -22,7 +22,7 @@ trait IdentBuncher extends IdentHlp with GoodyParamMaker with VWTAMsgMaker{
 }
 
 // burstWidth = num goodies
-// burstLen = not yet used, but intended to be the number of incremental moves in a sequence
+// burstLen = not yet used, but intended to be the dflt number of incremental moves in a gen seq
 class GoodyMsgBurstSender(entIdPrfx : String, burstWidth : Int, burstLen : Int) extends IdentBuncher {
 	lazy val myIdents : List[Ident] = makeSomeUniqueIdents(burstWidth, entIdPrfx)
 
@@ -33,6 +33,7 @@ class GoodyMsgBurstSender(entIdPrfx : String, burstWidth : Int, burstLen : Int) 
 			Thread.sleep(delayMsec_opt.get)
 		}
 	}
+	// N
 	// TODO:  Wrap up dyna pairs in a class, then pass a collection
 	def createGoodies(ovwc : OffersVWorldClient, typeID : Ident, seedParams : SerTypedValueMap,
 					  dynaParamID : Ident, dynaDelta : Float, delayMsec_opt : Option[Int]) : Unit = {
