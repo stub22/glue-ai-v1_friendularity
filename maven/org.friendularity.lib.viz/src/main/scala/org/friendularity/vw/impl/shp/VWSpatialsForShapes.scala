@@ -18,12 +18,12 @@ package org.friendularity.vw.impl.shp
 
 import com.jme3.material.Material
 import com.jme3.math.{Quaternion, Vector3f, ColorRGBA}
-import com.jme3.scene.shape.Sphere
+import com.jme3.scene.shape.{Torus, Cylinder, Sphere}
 
 import com.jme3.scene.{Geometry, Mesh, Node => JmeNode, Spatial}
 import org.cogchar.render.sys.registry.RenderRegistryClient
 import org.friendularity.vw.mprt.manip.Transform3D
-import org.friendularity.vw.msg.shp.deep.{VWSCR_Sphere, VWMeshyShapeRq, TwoPartMeshyShapeRq, VWSCR_CellGrid, VWSCR_TextBox, VWSCR_ExistingNode, VWSCR_CamGuideNode, VWSCR_Node, VWShapeCreateRq}
+import org.friendularity.vw.msg.shp.deep.{VWSCR_Torus, VWSCR_Cylinder, VWSCR_Sphere, VWMeshyShapeRq, TwoPartMeshyShapeRq, VWSCR_CellGrid, VWSCR_TextBox, VWSCR_ExistingNode, VWSCR_CamGuideNode, VWSCR_Node, VWShapeCreateRq}
 
 /**
   * Code moved to new file on 1/19/2017.
@@ -38,6 +38,8 @@ trait SpatMatHelper {
 	def getBrushJar : BrushJar = outerGuy.myBrushJar
 }
 
+
+// Interprets any ShapeCreateRq to produce a new JmeSpatial, or extract one from the request itself
 
 trait VWSpatialsForShapes extends PatternGridMaker with SpatMatHelper {
 
@@ -78,7 +80,14 @@ trait VWSpatialsForShapes extends PatternGridMaker with SpatMatHelper {
 				// zSamp, rSamp, radius
 				new Sphere(16, 16, sph.myRadius)
 			}
-
+			case cyl: VWSCR_Cylinder => {
+				// REVIEW:  5 arg version of constructor used here.
+				// Other 2 args are:  float radius2, boolean inverted
+				new Cylinder(cyl.axisSamples, cyl.radialSamples, cyl.radius, cyl.height, cyl.closed)
+			}
+			case tor : VWSCR_Torus => {
+				new Torus(40, 20, 1f / 5f, 5f / 6f)
+			}
 		}
 		val geomNameArb: String = "geom_from_msg_shape_" + System.currentTimeMillis()
 		val geom = new Geometry(geomNameArb, mesh)

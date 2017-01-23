@@ -34,7 +34,7 @@ import org.friendularity.vw.impl.sys.{VWorldStrap, UpdateAttacher, SimBalloonApp
 import org.friendularity.vw.mprt.ingred.{BodyMgrIngred, LesserIngred}
 import org.friendularity.vw.msg.adm.{VWARM_FindPublicTellers, VWARM_GreetFromPumpAdmin, VWAdminRqMsg, VWSetSwingCanvasBranding, VWSetupResultsNotice, VWSetupRq_Conf, VWSetupRq_Lnch}
 import org.friendularity.vw.msg.bdy.VWBodyLifeRq
-import org.friendularity.vw.msg.cor.{VWOverlayRq, VWorldInternalNotice, VWorldNotice, VWorldRequest}
+import org.friendularity.vw.msg.cor.{VWContentRq, VWOverlayRq, VWorldInternalNotice, VWorldNotice, VWorldRequest}
 import org.friendularity.vw.msg.shp.deep.VWShapeCreateRq
 import org.friendularity.vw.msg.stg.VWStageRqMsg
 import org.friendularity.vwgoody.BetterBGC
@@ -45,14 +45,16 @@ import org.friendularity.vwmsg.{VWPubTellersMsgImpl, VWRqTAWrapper}
   * Created by Stub22 on 6/15/2016.
   */
 trait VWorldBossLogic [VWSM <: VWorldSysMgr] extends VarargsLogging with VWPTRendezvous {
-    var myJavaCanvasManager_opt :Option[VWJdkAwtCanvasMgr] = Option.empty[VWJdkAwtCanvasMgr]
+
+	lazy val mySimCnvsLnchMgr = new VWSimCanvasLnchMgr {}
+
 	protected def getSysMgr : VWSM
 
 	protected def processVWorldRequest(vwmsg : VWorldRequest, slfActr : ActorRef, localActorCtx : ActorContext): Unit = {
 		val sysMgr = getSysMgr
 		vwmsg match {
 			// Heart of the V-World setup is done here:
-			case vwSetupLnchMsg : VWSetupRq_Lnch => launchSimRenderSpace(vwSetupLnchMsg, slfActr, localActorCtx)
+			case vwSetupLnchMsg : VWSetupRq_Lnch => mySimCnvsLnchMgr.launchSimRenderSpace(vwSetupLnchMsg, slfActr, localActorCtx)
 
 			case otherAdminRq : VWAdminRqMsg => processVWAdminMsg(otherAdminRq, localActorCtx)
 
@@ -78,11 +80,8 @@ trait VWorldBossLogic [VWSM <: VWorldSysMgr] extends VarargsLogging with VWPTRen
 			}
             
             case sscb: VWSetSwingCanvasBranding =>{
-                if(myJavaCanvasManager_opt.isDefined){
-                    info1("Setting swing canvas branding: {}", sscb)
-                    setSwingCanvasBranding(sscb.canvasTitle, sscb.canvasIconImage)    
-                }
-            }    
+				mySimCnvsLnchMgr.handleCanvasBranding(sscb)
+            }
 		}
 	}
 	// Handle event from inside this boss, translate into messages for boss-clients.
@@ -96,48 +95,6 @@ trait VWorldBossLogic [VWSM <: VWorldSysMgr] extends VarargsLogging with VWPTRen
 				completeBossSetupAndPublish(lesserIng, bodyMgrIng, updAtchr, tmb_opt, localActorCtx)
 			}
 		}
-	}
-
-	protected def launchSimRenderSpace(vwLnchMsg : VWSetupRq_Lnch, slfActr : ActorRef,  localActorCtx : ActorContext): Unit = {
-		// TODO:  We want this launch process to call us back with the ingredients chef needs to proceed.
-		// The soonest that *could* happen is *during* JME3.start(), but we would actually prefer it be later,
-		// during isolatedInitTask.
-		if (vwLnchMsg.wrapInSwingCanv) {
-
-			launchSwingWrappedCanvas(slfActr, localActorCtx, vwLnchMsg.fixmeClzrNonSerial)
-		} else {
-			launchBareJmeCanvas(slfActr, localActorCtx)
-		}
-	}
-	private def launchBareJmeCanvas(slfActr : ActorRef,  localActorCtx : ActorContext) : Unit = {
-		val bsim = new SimBalloonAppLauncher {}
-		val resultsTeller = new ActorRefCPMsgTeller(slfActr) // vwLnchMsg.resultsTeller
-		info0("launchBareJmeCanvas Calling bsim.setup")
-		bsim.setup(resultsTeller)
-		info0("launchBareJmeCanvas END - vworld is now running, but delayed setup jobs may still be running/pending")
-	}
-	private def launchSwingWrappedCanvas(slfActr : ActorRef,  localActorCtx : ActorContext, fixmeClzrNonSerial : NavAppCloser) : Unit = {
-		val resultsTeller = new ActorRefCPMsgTeller(slfActr)
-		val jdkSwCanvLauncher = new VWJdkAwtCanvasMgr{}
-		jdkSwCanvLauncher.launch(resultsTeller, fixmeClzrNonSerial)
-        myJavaCanvasManager_opt = Some(jdkSwCanvLauncher)
-	}
-    
-    private def setSwingCanvasBranding(canvasTitle: String,  canvasIconImage : Image) : Unit = {
-        
-        if(myJavaCanvasManager_opt.isDefined){
-            val javaCanvasManager : VWJdkAwtCanvasMgr  = myJavaCanvasManager_opt.get
-            val jFrame_opt: Option[JFrame] = javaCanvasManager.getFrameOption
-            if(jFrame_opt.isDefined){
-                val jFrame = jFrame_opt.get
-                jFrame.setTitle(canvasTitle)
-                jFrame.setIconImage(canvasIconImage)
-            }else{
-                error1("Cannot set swing canvas branding with title {}. jFrame does not exist.", canvasTitle)
-            }
-            error1("Cannot set swing canvas branding with title {}. javaCanvasManager does not exist.", canvasTitle)
-        }
-       
 	}
 
 	// Crucial method which wraps the internal setup results handles with a set of public actors,
@@ -156,16 +113,17 @@ trait VWorldBossLogic [VWSM <: VWorldSysMgr] extends VarargsLogging with VWPTRen
 		eitherBGC.setupAsMainGoodyCtx
 		val sysMgr = getSysMgr
 
-		val goodyActorRef = VWorldActorFactoryFuncs.makeVWGoodyActor(localActorCtx, "googoo", eitherBGC)
-		val goodyTeller = new ActorRefCPMsgTeller[VWRqTAWrapper](goodyActorRef)
-
 		val pmrc = bmi.getPMRC
 		val cmgrCtx = new VWCharMgrCtxImpl(pmrc)
 		val charAdmActorRef = VWorldActorFactoryFuncs.makeVWCharAdminActor(localActorCtx, "charAdm", cmgrCtx)
 		val charAdmTeller  = new ActorRefCPMsgTeller[VWBodyLifeRq](charAdmActorRef)
 
 		val shaperActorRef = VWorldActorFactoryFuncs.makeVWShaperActor(localActorCtx, "shaper", rrc)
-		val shaperTeller  = new ActorRefCPMsgTeller[VWShapeCreateRq](shaperActorRef)
+		val shaperTeller  = new ActorRefCPMsgTeller[VWContentRq](shaperActorRef)
+
+		val goodyActorRef = VWorldActorFactoryFuncs.makeVWGoodyActor(localActorCtx, "googoo", shaperTeller,  eitherBGC)
+		val goodyTeller = new ActorRefCPMsgTeller[VWRqTAWrapper](goodyActorRef)
+
 
 		val stagerCtx = new StageCtxImpl(pmrc, updAtchr, tmb_opt)
 		val stageActorRef = VWorldActorFactoryFuncs.makeVWStageActor(localActorCtx, "stager", stagerCtx)
@@ -207,19 +165,3 @@ class VWorldBossActor[VWSM <: VWorldSysMgr](sysMgr : VWSM, hackStrap : VWorldStr
 
 	override protected def getSysMgr : VWSM = sysMgr
 }
-
-
-trait KnowsVWBoss {
-	def getVWBossTeller : CPStrongTeller[VWorldRequest]
-}
-trait MakesVWBoss extends KnowsVWBoss with KnowsAkkaSys {
-	// lazy val akkaSys = getAkkaSys
-
-	def getVWBossActrName = "vworldBoss_818"
-
-	lazy private val myVWBossAR: ActorRef = VWorldActorFactoryFuncs.makeVWorldBoss(getAkkaSys, getVWBossActrName)
-	lazy private val myVWBossTeller : CPStrongTeller[VWorldRequest] = new ActorRefCPMsgTeller(myVWBossAR)
-
-	override def getVWBossTeller : CPStrongTeller[VWorldRequest] = myVWBossTeller
-}
-

@@ -31,6 +31,10 @@ import org.friendularity.navui.NavAppCloser
 
 /**
   * Created by Stub22 on 9/6/2016.
+  *
+  * There is a lot of dead old duplicate/legacy code commented out at the bottom of this, which should
+  * not be removed anytime soon.  It is a helpful reminder of all the important lines of code that we
+  * aren't directly running anymore, because they have been replaced with a tidier equivalent.
   */
 
 class WrappedSimBalloonApp extends  SimBalloonJmeApp {

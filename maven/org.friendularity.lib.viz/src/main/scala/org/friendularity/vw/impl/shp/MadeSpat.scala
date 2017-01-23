@@ -25,8 +25,11 @@ import org.friendularity.vw.msg.shp.deep.{VWSCR_CamGuideNode, VWShapeCreateRq}
   * Code moved to new file on 1/19/2017.
   */
 trait SyncMe {
+	// Does nothing by default, but may be overidden, e.g. by CamGuideeMSR below.
 	def syncAfterAttach_onRendThrd : Unit = { }
 }
+
+// Because this class is manipable, the spatial may be smooved or abruptlyMoved.
 abstract class MadeSpatRecBase extends Manipable with SyncMe
 
 case class MadeSpatRec(mySpat : Spatial, myID_opt : Option[Ident], myCreateRq : VWShapeCreateRq)

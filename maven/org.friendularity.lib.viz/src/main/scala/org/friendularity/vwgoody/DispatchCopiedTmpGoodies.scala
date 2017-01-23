@@ -11,8 +11,9 @@ import org.cogchar.render.app.entity.{VWorldEntity, GoodyActionExtractor}
 import org.cogchar.render.goody.basic.BasicGoodyCtx
 
 import org.friendularity.tmpgood.tgothr.{TG_VirtualFloor, TG_GoodyBox}
-import org.friendularity.tmpgood.tgbit.{TG_TicTacGrid, TG_TicTacMark, TG_BitCube, TG_BitBox}
+import org.friendularity.tmpgood.tgbit.{TG_BitCube, TG_BitBox}
 import org.friendularity.tmpgood.tgflat.{TG_ParagraphGoody, TG_ScoreBoardGoody, TG_CrossHairGoody}
+import org.friendularity.tmpgood.tgtic.{TG_TicTacGrid, TG_TicTacMark}
 
 /**
   * Created by Stub22 on 1/2/2017.
