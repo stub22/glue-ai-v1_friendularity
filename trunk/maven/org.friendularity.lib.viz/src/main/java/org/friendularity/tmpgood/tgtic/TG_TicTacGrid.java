@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.friendularity.tmpgood.tgbit;
+package org.friendularity.tmpgood.tgtic;
 
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;

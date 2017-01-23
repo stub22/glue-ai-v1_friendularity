@@ -45,7 +45,9 @@ case class VWSCR_Sphere(myRadius : Float, myCoreParams : CoreParams3D) extends V
 
 case class VWSCR_Box() extends VWMeshyShapeRq
 
-case class VWSCR_Cylinder() extends VWMeshyShapeRq
+// 2017-01-22 maps to 5-arg version of Cylinder constructor.
+// Other 2 poss. args not included, yet, are:  float radius2, boolean inverted
+case class VWSCR_Cylinder(axisSamples: Int, radialSamples: Int, radius: Float, height: Float, closed: Boolean) extends VWMeshyShapeRq
 
 case class VWSCR_Torus() extends VWMeshyShapeRq
 

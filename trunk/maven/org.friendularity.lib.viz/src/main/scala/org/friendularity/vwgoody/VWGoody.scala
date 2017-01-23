@@ -30,9 +30,10 @@ import org.cogchar.render.goody.bit.{BitBox, BitCube, TicTacGrid, TicTacMark}
 import org.cogchar.render.goody.flat.{CrossHairGoody, ParagraphGoody, ScoreBoardGoody}
 import org.cogchar.render.sys.registry.RenderRegistryClient
 import org.cogchar.render.sys.window.WindowStatusMonitor
+import org.friendularity.cpmsg.CPStrongTeller
 import org.friendularity.thact.ThingActExposer
 import org.friendularity.vw.cli.goshcl.GoodyShapcliLogic
-import org.friendularity.vw.msg.cor.VWorldRequest
+import org.friendularity.vw.msg.cor.{VWContentRq, VWorldRequest}
 import org.friendularity.vwmsg.{VWRqTAWrapImpl, VWRqTAWrapper, VWTARqRdf}
 
 /**
@@ -74,10 +75,19 @@ import org.friendularity.vwmsg.{VWRqTAWrapImpl, VWRqTAWrapper, VWTARqRdf}
 
   */
 
-trait VWGoodyJobLogic extends VarargsLogging with GoodyShapcliLogic {
+trait VWGoodyTopDispatcher extends VarargsLogging {
+	private lazy val myShapCliLogic : GoodyShapcliLogic = {
+		val gscl = new GoodyShapcliLogic {}
+		gscl.setupOnceWithShaper(getShaprTeller.get)
+		gscl
+	}
+	// Must override to use modern shaper messages
+	protected def getShaprTeller : Option[CPStrongTeller[VWContentRq]] = None
+
 	val FLAG_useLegacyGoodyCtx = true
 	protected def getGoodyCtx : BasicGoodyCtx
-	protected def processVWGoodyRequest(vwmsg : VWorldRequest, slfActr : ActorRef, localActorCtx : ActorContext): Unit = {
+
+	def processVWGoodyRequest(vwmsg : VWorldRequest, slfActr : ActorRef, localActorCtx : ActorContext): Unit = {
 		vwmsg match {
 
 			case taBinWrapMsg: VWRqTAWrapper => processVWGoodyActSpec(taBinWrapMsg, slfActr, localActorCtx)
@@ -92,7 +102,7 @@ trait VWGoodyJobLogic extends VarargsLogging with GoodyShapcliLogic {
 		if (FLAG_useLegacyGoodyCtx) {
 			processGoodyTA_usingLegacyGoodyCtx(actSpec)
 		} else {
-			processVWGoodyTA_usingShaperMsgs(actSpec, slfActr, localActorCtx)
+			myShapCliLogic.processVWGoodyTA_usingShaperMsgs(actSpec, slfActr, localActorCtx)
 		}
 	}
 	private def processGoodyTA_usingLegacyGoodyCtx(actSpec : ThingActionSpec) : Unit = {
@@ -131,11 +141,17 @@ trait VWGoodyJobLogic extends VarargsLogging with GoodyShapcliLogic {
 	}
 }
 
-class VWGoodyActor(myGoodyCtx : BasicGoodyCtx) extends Actor with VWGoodyJobLogic {
-	override protected def getGoodyCtx : BasicGoodyCtx = myGoodyCtx
+class VWGoodyActor(myShaprTlr : CPStrongTeller[VWContentRq], myGoodyCtx : BasicGoodyCtx) extends Actor {
+
+	val myGTD = new VWGoodyTopDispatcher {
+		override protected def getGoodyCtx : BasicGoodyCtx = myGoodyCtx
+		override protected def getShaprTeller  = Option(myShaprTlr)
+	}
+
+
 	def receive = {
 		case vwrq: VWorldRequest => {
-			processVWGoodyRequest(vwrq, self, context)
+			myGTD.processVWGoodyRequest(vwrq, self, context)
 		}
 	}
 }

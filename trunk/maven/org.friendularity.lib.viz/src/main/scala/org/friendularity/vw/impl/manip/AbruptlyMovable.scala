@@ -21,7 +21,10 @@ import org.friendularity.vw.mprt.manip.{Transform3D, MaybeTransform3D}
 import org.friendularity.vw.msg.shp.deep.DoTransformAbsoluteNow
 
 /**
-  * Created by Owner on 1/19/2017.
+  * Code moved to new file on 1/19/2017.
+  *
+  * partial -> apply only those properties supplied, leave others unmodified in tgt
+  * full -> apply all properties, using defaults where needed
   */
 trait AbruptlyMovable extends HasMainSpat {
 
@@ -36,23 +39,27 @@ trait AbruptlyMovable extends HasMainSpat {
 		naiveTransform_full_runThrd(xform)
 	}
 
+	// full -> set all properties in tgt, using defaults as needed.
 	protected def naiveTransform_full_runThrd(xform : Transform3D) : Unit = {
-		val spat = getMainSpat
+		val tgtSpat = getMainSpat
+		// These "get" ops will generally return a default if no specific value was given.
+		// That defaulting is what makes this a "full" transform apply.
 		val fPos = xform.getPos
 		val fRotQuat = xform.getRotQuat
 		val fScale = xform.getScale
-		spat.setLocalTranslation(fPos)
-		spat.setLocalRotation(fRotQuat)
-		spat.setLocalScale(fScale)
+		tgtSpat.setLocalTranslation(fPos)
+		tgtSpat.setLocalRotation(fRotQuat)
+		tgtSpat.setLocalScale(fScale)
 	}
+	// partial -> set only properties that are supplied
 	protected def naiveTransform_partial_runThrd(xform : MaybeTransform3D) : Unit = {
-		val spat = getMainSpat
+		val tgtSpat = getMainSpat
 		val fPos_opt = xform.getPos_opt
 		val fRotQuat_opt = xform.getRotQuat_opt
 		val fScale_opt = xform.getScl_opt
-		fPos_opt.map(spat.setLocalTranslation(_))
-		fRotQuat_opt.map(spat.setLocalRotation(_))
-		fScale_opt.map(spat.setLocalScale(_))
+		fPos_opt.map(tgtSpat.setLocalTranslation(_))
+		fRotQuat_opt.map(tgtSpat.setLocalRotation(_))
+		fScale_opt.map(tgtSpat.setLocalScale(_))
 	}
 
 	private def rotToLookAtWorldPos_UNUSED(dirToLook_worldCoord : Vector3f, upDir : Vector3f) : Unit = {

@@ -23,7 +23,7 @@ import org.appdapter.fancy.log.VarargsLogging
 import org.friendularity.vw.mprt.manip.{SmooveManipStoryFullImpl, SmooveManipStoryPartialImpl, SmooveManipEnding, ManipCompletionHandle, SmooveManipStory, Transform3D, MaybeTransform3D}
 
 /**
-  * Created by Owner on 1/19/2017.
+  * Code moved to new file on 1/19/2017.
   */
 trait Smoovable extends AbruptlyMovable with Locatable with Addressable with VarargsLogging {
 	val myAnimMaker = new JmeAnimMaker {}

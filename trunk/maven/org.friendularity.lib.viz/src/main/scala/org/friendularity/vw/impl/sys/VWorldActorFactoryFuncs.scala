@@ -1,6 +1,9 @@
 package org.friendularity.vw.impl.sys
 
 import akka.actor._
+import org.friendularity.cpmsg.CPStrongTeller
+import org.friendularity.vw.msg.cor.VWContentRq
+
 // import com.hp.hpl.jena.rdf.model.{Model => JenaModel}
 import org.cogchar.render.goody.basic.BasicGoodyCtx
 
@@ -26,8 +29,9 @@ object VWorldActorFactoryFuncs {
 		val vwbActorRef : ActorRef = parentARF.actorOf(vwbossActorProps, bossActorName)
 		vwbActorRef
 	}
-	def makeVWGoodyActor(parentARF : ActorRefFactory, goodyActorName : String, goodyCtx : BasicGoodyCtx) : ActorRef = {
-		val goodyActorProps = Props(classOf[VWGoodyActor], goodyCtx)
+	def makeVWGoodyActor(parentARF : ActorRefFactory, goodyActorName : String,
+						 shprTlr : CPStrongTeller[VWContentRq], goodyCtx : BasicGoodyCtx) : ActorRef = {
+		val goodyActorProps = Props(classOf[VWGoodyActor], shprTlr, goodyCtx)
 		val goodyActorRef : ActorRef = parentARF.actorOf(goodyActorProps, goodyActorName)
 		goodyActorRef
 	}

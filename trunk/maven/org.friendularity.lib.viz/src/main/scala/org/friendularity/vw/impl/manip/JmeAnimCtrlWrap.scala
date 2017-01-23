@@ -66,8 +66,6 @@ trait JmeAnimCtrlWrap extends VarargsLogging {
 		ac.addAnim(a) // Each anim may have multiple tracks of type:  SpatialTrack, BoneTrack, AudioTrack, EffectTrack
 		val chan = ac.createChannel
 
-
-
 		ac.setEnabled(true) // Will generally stay enabled until some direct abrupt move is sent
 		chan.setAnim(a.getName, blendTimeSec) // This step "activates" the ctrl-chan-anim combo, yes?
 		chan.setLoopMode(LoopMode.DontLoop)  // Cogchar lore says this should be done after setAnim
@@ -92,7 +90,7 @@ trait JmeAnimCtrlWrap extends VarargsLogging {
 	}
 
 	def registerPropagator(ac : JmeAnimCtrl, cmplHndl : ManipCompletionHandle) : Unit = {
-		val propagator = new ManipCompletionPropagator(cmplHndl)
+		val propagator = new JmeAnimStatusPropagator(cmplHndl)
 		registerListener(ac, propagator)
 	}
 	def registerPropagator(s : Spatial, cmplHndl : ManipCompletionHandle) : Unit = {

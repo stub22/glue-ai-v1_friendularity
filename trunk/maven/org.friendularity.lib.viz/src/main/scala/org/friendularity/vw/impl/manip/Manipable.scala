@@ -25,6 +25,7 @@ import org.friendularity.vw.mprt.manip.{AbruptManipAbs, SmooveManipEnding, Smoov
   * Code moved to new file on 1/19/2017.
   */
 trait Manipable extends Smoovable with IdentHlp with VarargsLogging {
+	// Caller may supply a completionHandle, which will get a callback
 	def applyManipDesc(manip : ManipDesc, enqHelp : FullJmeEnqHlp, ch_opt: Option[ManipCompletionHandle]) : Unit = {
 		val ch : ManipCompletionHandle = ch_opt.getOrElse(new ManipCompletionHandle with VarargsLogging {
 			override def notifyComplete(animName : String, dbg : Any): Unit = {
