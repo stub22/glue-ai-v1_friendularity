@@ -30,7 +30,7 @@ import org.friendularity.vw.impl.cam.SyncsToCam
 import org.friendularity.vw.impl.manip.Manipable
 import org.friendularity.vw.impl.tsk.JmeAttachHlp
 import org.friendularity.vw.mprt.manip.Transform3D
-import org.friendularity.vw.msg.shp.deep.{TwoPartMeshyShapeRq, VWClearAllShapes, VWMeshyShapeRq, VWSCR_CamGuideNode, VWSCR_CellGrid, VWSCR_ExistingNode, VWSCR_Node, VWSCR_Sphere, VWSCR_TextBox, VWShapeAttachRq, VWShapeCreateRq, VWShapeDetachRq, VWShapeManipRq}
+import org.friendularity.vw.msg.shp.deep.{ VWClearAllShapes,  VWSCR_CamGuideNode, VWSCR_CellGrid, VWSCR_ExistingNode, VWSCR_Node, VWSCR_Sphere, VWSCR_TextBox, VWShapeAttachRq, VWShapeCreateRq, VWShapeDetachRq, VWShapeManipRq}
 
 import scala.collection.mutable
 import scala.util.Random

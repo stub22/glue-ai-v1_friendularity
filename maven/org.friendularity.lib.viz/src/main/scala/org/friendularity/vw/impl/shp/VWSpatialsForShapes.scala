@@ -23,7 +23,7 @@ import com.jme3.scene.shape.{Torus, Cylinder, Sphere}
 import com.jme3.scene.{Geometry, Mesh, Node => JmeNode, Spatial}
 import org.cogchar.render.sys.registry.RenderRegistryClient
 import org.friendularity.vw.mprt.manip.Transform3D
-import org.friendularity.vw.msg.shp.deep.{VWSCR_Torus, VWSCR_Cylinder, VWSCR_Sphere, VWMeshyShapeRq, TwoPartMeshyShapeRq, VWSCR_CellGrid, VWSCR_TextBox, VWSCR_ExistingNode, VWSCR_CamGuideNode, VWSCR_Node, VWShapeCreateRq}
+import org.friendularity.vw.msg.shp.deep.{VWMatDesc, VWMeshDesc, VWSCR_Torus, VWSCR_Cylinder, VWSCR_Sphere, CompoundMeshyShapeRq, VWSCR_CellGrid, VWSCR_TextBox, VWSCR_ExistingNode, VWSCR_CamGuideNode, VWSCR_Node, VWShapeCreateRq}
 
 /**
   * Code moved to new file on 1/19/2017.
@@ -64,17 +64,22 @@ trait VWSpatialsForShapes extends PatternGridMaker with SpatMatHelper {
 			case bigGrid : VWSCR_CellGrid => {
 				makeBigGridNode(getTooMuchRRC)
 			}
-			case twoPartMeshyRq : TwoPartMeshyShapeRq => {
-				val meshDescPart = twoPartMeshyRq.getMeshyDescPart
-				val geom = makeMeshFromDesc(meshDescPart)
+			case cmpndMeshyRq : CompoundMeshyShapeRq => {
+				val meshDescPart = cmpndMeshyRq.getMeshDescPart
+				val geom : Geometry = makeMeshFromDesc(meshDescPart)
+				val matDescPart = cmpndMeshyRq.getMatDescPart
+				applyMat(geom, matDescPart)
+				// TODO:  Apply the MatDesc part, to set color.
 				geom
 			}
-			case meshBasedRq : VWMeshyShapeRq => {
+				/*
+			case meshBasedRq : VWMeshyDesc => {
 				makeMeshFromDesc(meshBasedRq)
 			}
+			*/
 		}
 	}
-	def makeMeshFromDesc(meshBasedRq : VWMeshyShapeRq) : Spatial = {
+	def makeMeshFromDesc(meshBasedRq : VWMeshDesc) : Geometry = {
 		val mesh: Mesh = meshBasedRq match {
 			case sph: VWSCR_Sphere => {
 				// zSamp, rSamp, radius
@@ -91,18 +96,17 @@ trait VWSpatialsForShapes extends PatternGridMaker with SpatMatHelper {
 		}
 		val geomNameArb: String = "geom_from_msg_shape_" + System.currentTimeMillis()
 		val geom = new Geometry(geomNameArb, mesh)
-		applyMat(geom, meshBasedRq)
-		applySpatialTransform(geom, meshBasedRq.getCoreParams3D.get)
+//		applySpatialTransform_full(geom, meshBasedRq.getCoreParams3D_opt.get)
 		geom
 
 	}
-	def applyMat(geom : Geometry, mshShpRq : VWMeshyShapeRq) : Unit = {
-		val dsc_opt : Option[ColorRGBA] = mshShpRq.getColorParam
+	def applyMat(geom : Geometry, matDesc: VWMatDesc) : Unit = {
+		val dsc_opt : Option[ColorRGBA] = matDesc.getColorParam_opt
 		val dsc = dsc_opt.getOrElse(ColorRGBA.Gray)
 		val brush = getBrushJar.makeBrush(dsc)
 		brush.stroke(geom)
 	}
-	def applySpatialTransform(spat : Spatial, params : Transform3D) : Unit = {
+	def applySpatialTransform_full(spat : Spatial, params : Transform3D) : Unit = {
 		val pos : Vector3f = params.getPos
 		spat.setLocalTranslation(pos)
 		val rot : Quaternion = params.getRotQuat
