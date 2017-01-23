@@ -1,9 +1,10 @@
 package org.friendularity.vw.msg.shp.deep
 
+import com.jme3.math.{ColorRGBA, Quaternion, Vector3f}
 import com.jme3.scene.{Node => JmeNode}
 import org.appdapter.core.name.Ident
 import org.friendularity.cpmsg.CPStrongTeller
-import org.friendularity.vw.mprt.manip.{ManipCompletionHandle, ManipDesc, ManipStatusMsg, ManipStatusPropagator, Transform3D}
+import org.friendularity.vw.mprt.manip.{MaybeTransform3D, ManipCompletionHandle, ManipDesc, ManipStatusMsg, ManipStatusPropagator, Transform3D}
 import org.friendularity.vw.msg.cor.VWContentRq
 
 /**
@@ -18,15 +19,29 @@ import org.friendularity.vw.msg.cor.VWContentRq
 	* AbstractBox, Arrow, Curve, Cylinder, Dome, Grid, Line, ParticleMesh, PQTorus, Quad, SkeletonPoints,
 	* SkeletonWire, Sphere, Surface, Torus, WireBox, WireFrustum, WireSphere
   */
-trait VWShapeCreateRq extends VWContentRq {
+trait KnowsShapeIDsPart {
 	def getKnownID_opt : Option[Ident] = None // We allow but don't require a client-assigned ID
 
 	def expectEmptySlot : Boolean = false
 
 	def getKnownParentID_opt : Option[Ident] = None // We allow but don't require a parentID.
 
-	def inFlatSpace : Boolean = false // Default is inDeepSpace=3D, override to make flat=2D=true
 }
+
+trait VWShapeCreateRq extends VWContentRq with KnowsShapeIDsPart {
+
+	def inFlatSpace : Boolean = false // Default is inDeepSpace=3D, override to make flat=2D=true
+
+	def getInitXform3D_partial : MaybeTransform3D
+
+	def getPosParam_opt : Option[Vector3f] =  getInitXform3D_partial.getPos_opt// getCoreParams3D_opt.map(_.getPos)
+	def getRotParam_opt : Option[Quaternion] = getInitXform3D_partial.getRotQuat_opt  // getCoreParams3D_opt.map(_.getRotQuat)
+	def getScaleParam_opt : Option[Vector3f] = getInitXform3D_partial.getScl_opt
+	def getColorParam_opt : Option[ColorRGBA] = None
+
+}
+
+
 
 case class VWShapeAttachRq(knownID : Ident, knownParentID_opt : Option[Ident]) extends VWContentRq
 
@@ -78,6 +93,10 @@ class KnownShapeCreateRqImpl(knownNodeID_opt : Option[Ident], knownParentID_opt 
 	override def getKnownID_opt : Option[Ident] = knownNodeID_opt
 	// We generally allow but don't require a parentID.
 	override def getKnownParentID_opt : Option[Ident] = knownParentID_opt
+
+	lazy val emptyXform = new MaybeTransform3D {}
+	override def getInitXform3D_partial : MaybeTransform3D = emptyXform
+
 }
 
 // Can only work as a local message.  Binds an existing JmeNode to a given ID, and optional parent.
@@ -104,10 +123,18 @@ case class VWSCR_CamGuideNode(knownNodeID : Ident, knownParentID_opt : Option[Id
 
 case class  VWSCR_TextBox(contentTxt : String) extends VWShapeCreateRq {
 	override def inFlatSpace : Boolean = true
+
+	lazy val emptyXform = new MaybeTransform3D {}
+	override def getInitXform3D_partial : MaybeTransform3D = emptyXform
+
 }
 
 
-trait VWSCR_CellGrid extends VWShapeCreateRq
+trait VWSCR_CellGrid extends VWShapeCreateRq {
+	lazy val emptyXform = new MaybeTransform3D {}
+
+	override def getInitXform3D_partial : MaybeTransform3D = emptyXform
+}
 // "AnimControl is a Spatial control that allows manipulation of skeletal animation."
 // SpatialTrack(float[] times, Vector3f[] translations, Quaternion[] rotations, Vector3f[] scales)
 // Creates a spatial track for the given track data.

@@ -37,10 +37,10 @@ import org.friendularity.vw.cli.cam.OuterCamHelp
 import org.friendularity.vw.cli.nav.OuterBindNavCmdKeys
 import org.friendularity.vw.impl.ovl.{NavPageDefs, OverlayPage}
 
-import org.friendularity.vw.mprt.manip.{CamStateParams3D, MakesManipDesc, TransformParams3D, SmooveManipEndingFullImpl}
+import org.friendularity.vw.mprt.manip.{PartialTransform3D, CamStateParams3D, MakesManipDesc, TransformParams3D, SmooveManipEndingFullImpl}
 import org.friendularity.vw.msg.bdy.{VWBodyDangerYogaRq, VWBodySkeletonDisplayToggle, VWBroadcastToAllBodies, VWBodyLifeRq}
 import org.friendularity.vw.msg.cor.{VWSetupOvlBookRq, VWOverlayRq}
-import org.friendularity.vw.msg.shp.deep.{VWSCR_Sphere, VWSCR_MeshyCmpnd, VWSCR_CellGrid, KnownShapeCreateRqImpl, VWClearAllShapes, ShapeManipRqImpl}
+import org.friendularity.vw.msg.shp.deep.{SimpleMatDesc, VWSCR_Sphere, VWSCR_MeshyCmpnd, VWSCR_CellGrid, KnownShapeCreateRqImpl, VWClearAllShapes, ShapeManipRqImpl}
 import org.friendularity.vw.msg.stg.{VWKeymapBinding_Medial, ViewportDesc, VWStageSetupLighting, VWStatsViewMessage, VWStageBackgroundSkybox, VWStageBackgroundColor, VWStageOpticsBasic, VWStageEmulateBonusContentAndCams, VWStageResetToDefault}
 import org.friendularity.vwimpl.VWorldMasterFactory
 
@@ -121,12 +121,14 @@ trait FunWithShapes extends MakesManipDesc with IdentHlp {
 		val sphereCol : ColorRGBA = aqua
 		val spherePos = new Vector3f(-15.0f, 12.0f, 4.0f) // biggish dirigible
 		val sphereRot = Quaternion.IDENTITY
-		val sphereParams = new OrdinaryParams3D(spherePos, sphereRot, Vector3f.UNIT_XYZ, sphereCol)
-		val msgPart_sphereDesc = new VWSCR_Sphere(9.0f, sphereParams)
+		val sphereXform = new PartialTransform3D(Some(spherePos), Some(sphereRot), Some(Vector3f.UNIT_XYZ))
+		val sphereMatDesc = new SimpleMatDesc(Some(sphereCol))
+	//	val sphereParams = new OrdinaryParams3D(spherePos, sphereRot, Vector3f.UNIT_XYZ, sphereCol)
+		val sphereMeshDesc = new VWSCR_Sphere(9.0f) // , sphereParams)
 		val knownSphereID_opt : Option[Ident] = Some(makeStampyRandyIdentAnon())
 		val parentID_opt = None
 		val msgPart_known = new KnownShapeCreateRqImpl(knownSphereID_opt, parentID_opt)
-		val sphereCmpndReq = new VWSCR_MeshyCmpnd(msgPart_known, msgPart_sphereDesc)
+		val sphereCmpndReq = new VWSCR_MeshyCmpnd(msgPart_known, sphereXform, sphereMeshDesc, sphereMatDesc)
 		shapeTeller.tellCPMsg(sphereCmpndReq)
 		knownSphereID_opt.get
 	}
