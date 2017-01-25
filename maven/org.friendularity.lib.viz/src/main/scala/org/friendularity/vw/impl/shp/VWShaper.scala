@@ -27,10 +27,10 @@ import org.cogchar.render.trial.TextSpatialFactory
 import org.friendularity.respire.Srtw
 import org.friendularity.util.IdentHlp
 import org.friendularity.vw.impl.cam.SyncsToCam
-import org.friendularity.vw.impl.manip.Manipable
+import org.friendularity.vw.impl.manip.{AppliesXforms, Manipable}
 import org.friendularity.vw.impl.tsk.JmeAttachHlp
 import org.friendularity.vw.mprt.manip.Transform3D
-import org.friendularity.vw.msg.shp.deep.{ VWClearAllShapes,  VWSCR_CamGuideNode, VWSCR_CellGrid, VWSCR_ExistingNode, VWSCR_Node, VWSCR_Sphere, VWSCR_TextBox, VWShapeAttachRq, VWShapeCreateRq, VWShapeDetachRq, VWShapeManipRq}
+import org.friendularity.vw.msg.shp.deep.{ VWClearAllShapes,  VWSCR_CamGuideNode, VWSCR_CellGrid, VWSCR_ExistingNode, VWSCR_Node, VWMD_Sphere, VWSCR_TextBox, VWShapeAttachRq, VWShapeCreateRq, VWShapeDetachRq, VWShapeManipRq}
 
 import scala.collection.mutable
 import scala.util.Random
@@ -85,7 +85,13 @@ trait 	VWShaperLogic extends PatternGridMaker with JmeAttachHlp with IdentHlp {
 	// makes the spat, attaches IDs as needed, defers attachment to parent-node as needed.
 	def makeAndPlace(toMake : VWShapeCreateRq, deferAttach : Boolean): MadeSpatRecBase = {
 		val madeSpat : Spatial = myShapeMaker.makeOrExtractSpat(toMake)
+
+		val xformApplier = new AppliesXforms {}
+		val xformPartial = toMake.getInitXform3D_partial
+		xformApplier.applyTransform_partial_runThrd(madeSpat, xformPartial)
+
 		val madeSpatRec : MadeSpatRecBase = registerSpat(madeSpat, toMake)
+
 		val deferredAttachFunc : Function0[Unit] = () => {
 			attachToParent_onRendThrd(madeSpat, toMake)
 			// This causes an exception if the sub-cam is not attached yet.
@@ -221,6 +227,7 @@ class VWShaperActor(myRRC: RenderRegistryClient) extends Actor with VWShaperLogi
 			val madeSpatRec_opt : Option[MadeSpatRecBase] = findMadeSpatRec(shapeID)
 			val manipDesc = manipRq.getManipDesc
 			val func : Function0[Unit] = () => {
+				info1("Finally applying manip for VWShapeManipRq={}", manipRq)
 				madeSpatRec_opt.get.applyManipDesc(manipDesc, this, manipRq.getStatusHandler_opt)
 			}
 			enqueueJmeCallable(myRRC, func)

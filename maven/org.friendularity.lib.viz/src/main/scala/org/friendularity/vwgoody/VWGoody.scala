@@ -76,6 +76,8 @@ import org.friendularity.vwmsg.{VWRqTAWrapImpl, VWRqTAWrapper, VWTARqRdf}
   */
 
 trait VWGoodyTopDispatcher extends VarargsLogging {
+	val flag_useLegacyGoodyCtx : Boolean = true
+
 	private lazy val myShapCliLogic : GoodyShapcliLogic = {
 		val gscl = new GoodyShapcliLogic {}
 		gscl.setupOnceWithShaper(getShaprTeller.get)
@@ -84,7 +86,6 @@ trait VWGoodyTopDispatcher extends VarargsLogging {
 	// Must override to use modern shaper messages
 	protected def getShaprTeller : Option[CPStrongTeller[VWContentRq]] = None
 
-	val FLAG_useLegacyGoodyCtx = true
 	protected def getGoodyCtx : BasicGoodyCtx
 
 	def processVWGoodyRequest(vwmsg : VWorldRequest, slfActr : ActorRef, localActorCtx : ActorContext): Unit = {
@@ -99,9 +100,10 @@ trait VWGoodyTopDispatcher extends VarargsLogging {
 		val actSpec = thingActSpecMsg.getActionSpec
 		info4("VWGoodyJobLogic is processing received actSpec of class={}, verb={}, tgtType={} tgtID={}",
 					actSpec.getClass, actSpec.getVerbID, actSpec.getTargetThingTypeID, actSpec.getTargetThingID)
-		if (FLAG_useLegacyGoodyCtx) {
+		if (flag_useLegacyGoodyCtx) {
 			processGoodyTA_usingLegacyGoodyCtx(actSpec)
 		} else {
+			// New in 2017, soon to be main path
 			myShapCliLogic.processVWGoodyTA_usingShaperMsgs(actSpec, slfActr, localActorCtx)
 		}
 	}

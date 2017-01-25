@@ -6,6 +6,17 @@ import org.friendularity.vwmsg.CoreParams3D
 
 /**
   * File created with code moved here from VWShapeMsg.scala by Stub22 on 1/17/2017.
+  *
+  * Copying header comment from there from June '16
+  *
+  * See both the "shape" and "debug" packages:
+  * https://github.com/jMonkeyEngine/jmonkeyengine/tree/master/jme3-core/src/main/java/com/jme3/scene/shape
+  * https://github.com/jMonkeyEngine/jmonkeyengine/tree/master/jme3-core/src/main/java/com/jme3/scene/debug
+  *
+  *...and this Cogchar comment:
+  * Mesh has these direct subclasses for simpler shapes:
+  * AbstractBox, Arrow, Curve, Cylinder, Dome, Grid, Line, ParticleMesh, PQTorus, Quad, SkeletonPoints,
+  * SkeletonWire, Sphere, Surface, Torus, WireBox, WireFrustum, WireSphere
   */
 
 trait VWMatDesc { // } extends VWShapeCreateRq {
@@ -21,57 +32,20 @@ case class SimpleMatDesc(myColor_opt : Option[ColorRGBA]) extends VWMatDesc {
 }
 abstract class BaseMeshDesc() extends VWMeshDesc {
 }
-trait CompoundMeshyShapeRq extends VWShapeCreateRq {
-	def getKnownIdentsPart : KnowsShapeIDsPart
-	def getMeshDescPart : VWMeshDesc
-	def getMatDescPart : VWMatDesc
-
-	override def getKnownID_opt  = getKnownIdentsPart.getKnownID_opt
-	override def getKnownParentID_opt  = getKnownIdentsPart.getKnownParentID_opt
-
-	override def getColorParam_opt = getMatDescPart.getColorParam_opt
-
-	//	override def getCoreParams3D_opt = getMeshyDescPart.getCoreParams3D_opt
-	// override def getPosParam_opt  = getMeshyDescPart.getPosParam_opt
-	// override def getRotParam_opt  = getMeshyDescPart.getRotParam_opt
-
-}
-
-
-// Arguable whether this compound msg should be a case class, with a VWSCR_ name.  Hmmm.
-case class VWSCR_MeshyCmpnd(idsPart : KnowsShapeIDsPart, initXform3D : MaybeTransform3D,
-							meshyPart : VWMeshDesc, matPart : VWMatDesc)
-			extends  CompoundMeshyShapeRq {
-
-	override def getKnownIdentsPart: KnowsShapeIDsPart = idsPart
-
-	override def getInitXform3D_partial : MaybeTransform3D = initXform3D
-
-	override def getMeshDescPart: VWMeshDesc = meshyPart
-
-	override def getMatDescPart : VWMatDesc = matPart
-	// override def getInitXform3D_partial : MaybeTransform3D = initXform3D
-}
-
 // Regular shape kinds:  Each of these is the inner-meshy part of a message to create one of the JME3 primitive
 // shape kinds.
 
 // class MeshyPrimMsgBase(partXForm : def getPaMaybeTransform3D)
-case class VWSCR_Sphere(myRadius : Float) extends BaseMeshDesc() {
+case class VWMD_Sphere(zSamples : Int, radialSamples : Int,  radiusF : Float) extends BaseMeshDesc()
 
-	// override def getCoreParams3D_opt : Option[CoreParams3D] = Option(myCoreParams)
-
-}
-
-
-case class VWSCR_Box() extends VWMeshDesc
+case class VWMD_Box(xSize : Float, ySize : Float, zSize : Float) extends VWMeshDesc
 
 // 2017-01-22 maps to 5-arg version of Cylinder constructor.
 // Other 2 poss. args not included, yet, are:  float radius2, boolean inverted
-case class VWSCR_Cylinder(axisSamples: Int, radialSamples: Int, radius: Float, height: Float, closed: Boolean) extends VWMeshDesc
+case class VWMD_Cylinder(axisSamples: Int, radialSamples: Int, radius: Float, height: Float, closed: Boolean) extends VWMeshDesc
 
-case class VWSCR_Torus() extends VWMeshDesc
+case class VWMD_Torus(circleSamples : Int, radialSamples : Int, innerRadius : Float, outerRadius : Float) extends VWMeshDesc
 
-case class VWSCR_PQTorus() extends VWMeshDesc
+case class VWMD_PQTorus(p : Float, q : Float, radius : Float, width : Float, steps : Int, radialSamples : Int) extends VWMeshDesc
 
-case class VWSCR_Quad() extends VWMeshDesc
+case class VWMD_Quad() extends VWMeshDesc

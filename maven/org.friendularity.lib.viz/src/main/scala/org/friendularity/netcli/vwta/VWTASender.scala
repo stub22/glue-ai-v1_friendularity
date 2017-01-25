@@ -21,7 +21,7 @@ import org.appdapter.fancy.log.VarargsLogging
 import org.cogchar.api.thing.ThingActionSpec
 import org.cogchar.name.goody.GoodyNames
 import org.cogchar.render.rendtest.GoodyTestMsgMaker
-import org.friendularity.navui.TestNavUI.{info1, info0}
+// import org.friendularity.navui.TestNavUI.{info1, info0}
 import org.friendularity.qpc.{QPidFeatureEndpoint, JmsDestMgr, WritesJmsHeaders}
 import org.friendularity.thact.{TAEncodePrefs, ThingActSender}
 

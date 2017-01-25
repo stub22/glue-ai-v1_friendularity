@@ -18,12 +18,12 @@ package org.friendularity.vw.impl.shp
 
 import com.jme3.material.Material
 import com.jme3.math.{Quaternion, Vector3f, ColorRGBA}
-import com.jme3.scene.shape.{Torus, Cylinder, Sphere}
+import com.jme3.scene.shape.{Box, PQTorus, Torus, Cylinder, Sphere}
 
 import com.jme3.scene.{Geometry, Mesh, Node => JmeNode, Spatial}
 import org.cogchar.render.sys.registry.RenderRegistryClient
 import org.friendularity.vw.mprt.manip.Transform3D
-import org.friendularity.vw.msg.shp.deep.{VWMatDesc, VWMeshDesc, VWSCR_Torus, VWSCR_Cylinder, VWSCR_Sphere, CompoundMeshyShapeRq, VWSCR_CellGrid, VWSCR_TextBox, VWSCR_ExistingNode, VWSCR_CamGuideNode, VWSCR_Node, VWShapeCreateRq}
+import org.friendularity.vw.msg.shp.deep.{VWMD_Box, VWMD_PQTorus, VWMatDesc, VWMeshDesc, VWMD_Torus, VWMD_Cylinder, VWMD_Sphere, CompositeMeshyShapeCreateRq, VWSCR_CellGrid, VWSCR_TextBox, VWSCR_ExistingNode, VWSCR_CamGuideNode, VWSCR_Node, VWShapeCreateRq}
 
 /**
   * Code moved to new file on 1/19/2017.
@@ -64,12 +64,12 @@ trait VWSpatialsForShapes extends PatternGridMaker with SpatMatHelper {
 			case bigGrid : VWSCR_CellGrid => {
 				makeBigGridNode(getTooMuchRRC)
 			}
-			case cmpndMeshyRq : CompoundMeshyShapeRq => {
+			case cmpndMeshyRq : CompositeMeshyShapeCreateRq => {
 				val meshDescPart = cmpndMeshyRq.getMeshDescPart
 				val geom : Geometry = makeMeshFromDesc(meshDescPart)
 				val matDescPart = cmpndMeshyRq.getMatDescPart
 				applyMat(geom, matDescPart)
-				// TODO:  Apply the MatDesc part, to set color.
+
 				geom
 			}
 				/*
@@ -81,17 +81,23 @@ trait VWSpatialsForShapes extends PatternGridMaker with SpatMatHelper {
 	}
 	def makeMeshFromDesc(meshBasedRq : VWMeshDesc) : Geometry = {
 		val mesh: Mesh = meshBasedRq match {
-			case sph: VWSCR_Sphere => {
+			case sph: VWMD_Sphere => {
 				// zSamp, rSamp, radius
-				new Sphere(16, 16, sph.myRadius)
+				new Sphere(sph.zSamples, sph.radialSamples, sph.radiusF)
 			}
-			case cyl: VWSCR_Cylinder => {
+			case cyl: VWMD_Cylinder => {
 				// REVIEW:  5 arg version of constructor used here.
 				// Other 2 args are:  float radius2, boolean inverted
 				new Cylinder(cyl.axisSamples, cyl.radialSamples, cyl.radius, cyl.height, cyl.closed)
 			}
-			case tor : VWSCR_Torus => {
-				new Torus(40, 20, 1f / 5f, 5f / 6f)
+			case tor : VWMD_Torus => {
+				new Torus(tor.circleSamples, tor.radialSamples, tor.innerRadius, tor.outerRadius)// 40, 20, 1f / 5f, 5f / 6f)
+			}
+			case pqTor : VWMD_PQTorus => {
+				new PQTorus(pqTor.p, pqTor.q, pqTor.radius, pqTor.width, pqTor.steps, pqTor.radialSamples)
+			}
+			case bx : VWMD_Box => {
+				new Box(bx.xSize, bx.ySize, bx.zSize)
 			}
 		}
 		val geomNameArb: String = "geom_from_msg_shape_" + System.currentTimeMillis()
