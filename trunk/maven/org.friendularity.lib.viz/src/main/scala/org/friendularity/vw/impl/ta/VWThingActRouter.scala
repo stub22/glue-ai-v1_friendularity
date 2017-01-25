@@ -44,6 +44,12 @@ import scala.collection.mutable.ListBuffer
 
 trait TARqExtractorHelp {
 	import scala.collection.JavaConverters._
+
+	def extractXform_part (taSpec : ThingActionSpec) : MaybeTransform3D = {
+		val tvm = taSpec.getParamTVM
+		val gax = new GoodyActionExtractor(taSpec)
+		extractXform(tvm, gax)
+	}
 	def extractXform (tvm : TypedValueMap, gax : GoodyActionExtractor) : MaybeTransform3D = {
 		val allKeys : Set[Ident] = tvm.iterateKeys().asScala.toSet
 		// We assume that presence or absence of a single coordinate indicates that part of

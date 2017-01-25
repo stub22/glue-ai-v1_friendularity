@@ -4,12 +4,13 @@ import com.jme3.math.{Quaternion, Vector3f, ColorRGBA}
 import com.jme3.scene.Mesh
 import com.jme3.scene.shape.Cylinder
 import org.appdapter.core.name.Ident
-import org.cogchar.api.thing.TypedValueMap
+import org.cogchar.api.thing.{ThingActionSpec, TypedValueMap}
 import org.cogchar.name.goody.GoodyNames
+import org.cogchar.render.app.entity.GoodyActionExtractor
 import org.friendularity.util.IdentHlp
-import org.friendularity.vw.mprt.manip.PartialTransform3D
+import org.friendularity.vw.mprt.manip.{ManipDesc, AbruptManipAbsPartialImpl, MaybeTransform3D, PartialTransform3D}
 import org.friendularity.vw.msg.cor.VWContentRq
-import org.friendularity.vw.msg.shp.deep.{KnownShapeCreateRqImpl, VWSCR_MeshyCmpnd, SimpleMatDesc, VWSCR_Cylinder}
+import org.friendularity.vw.msg.shp.deep.{ShapeManipRqImpl, VWMD_Torus, VWSCR_Node, CompositeMeshyShapeCreateRq, VWMatDesc, VWMeshDesc, KnownShapeCreateRqImpl, VWSCR_MeshyComposite, SimpleMatDesc, VWMD_Cylinder}
 
 /**
   * Created by Owner on 1/22/2017.
@@ -17,26 +18,54 @@ import org.friendularity.vw.msg.shp.deep.{KnownShapeCreateRqImpl, VWSCR_MeshyCmp
 trait TicTacShapeXlator extends GoodyRqPartialXlator {
 	lazy val myGridAdapter = new TTGridAdapter {}
 	lazy val myMarkAdapter = new TTMarkAdapter {}
-	override def makeCreateRqs(verbID : Ident, tgtTypeID : Ident, tgtID : Ident, paramTVM : TypedValueMap) : List[VWContentRq] = {
-		val msgList : List[VWContentRq] = tgtTypeID match {
+	override def makeCreateRqs(taSpec : ThingActionSpec) : List[VWContentRq]  = {
+//	override def makeCreateRqs(verbID : Ident, tgtTypeID : Ident, tgtID : Ident,  gax : GoodyActionExtractor) // paramTVM : TypedValueMap)
+//				: List[VWContentRq] = {
+		val tgtTypeID : Ident = taSpec.getTargetThingTypeID
+
+		val initXform_part = extractXform_part(taSpec)
+		info1("Extracted initXform_part={}", initXform_part)
+		val initManipDesc : ManipDesc = new AbruptManipAbsPartialImpl(initXform_part)
+
+		val parentNodeShapeID = makeStampyRandyIdent("ttParentNode")
+		val parentCreateRq = new VWSCR_Node(parentNodeShapeID, None)
+
+		val initManipRq = new ShapeManipRqImpl(parentNodeShapeID, initManipDesc, None)
+
+		val parentRqs = List[VWContentRq](parentCreateRq, initManipRq)
+
+		val childRqs : List[VWContentRq] = tgtTypeID match {
 			case GoodyNames.TYPE_TICTAC_GRID => {
-				myGridAdapter.makeFourIntersectingPostCylRqs
+				myGridAdapter.makePostCylShpRqs(Some(parentNodeShapeID))
 			}
 			case GoodyNames.TYPE_TICTAC_MARK => {
-				val flagIsO = false
 
-				Nil
+				val flagIsO = false
+				if (flagIsO) {
+					myMarkAdapter.makeRqs_TorusForO(None)
+				} else {
+					myMarkAdapter.makeRqs_X(None)
+				}
 			}
 		}
-		msgList
+		val fullRqList = parentRqs ::: childRqs
+		info1("FullRqList for TicTac goody create={}", fullRqList)
+		fullRqList
 	}
 }
-trait TTGridAdapter extends IdentHlp {
+trait TTGridAdapter extends GeneralXlatorSupport {
 	private val DEFAULT_GRID_COLOR: ColorRGBA = ColorRGBA.Blue
 	private val SIZE_MULTIPLIER: Float = 9f
 	private val ROTATE_UPRIGHT: Array[Float] = Array((Math.PI / 2).toFloat, 0f, 0f)
 
-	def makeFourIntersectingPostCylRqs : List[VWContentRq] = {
+/*	def makeTicTacGridShapeRqs : List[VWContentRq] = {
+		val parentNodeShapeID = makeStampyRandyIdent("ttGridParent")
+		val parentCreateRq = new VWSCR_Node(parentNodeShapeID, None)
+		val childCylRqs : List[VWContentRq] = makePostCylShpRqs(parentNodeShapeID)
+		List(parentCreateRq : VWContentRq) ::: childCylRqs
+	}
+	*/
+	def makePostCylShpRqs(parentShapeID_opt : Option[Ident]) : List[VWContentRq] = {
 		//
 		// val gridLeg : Mesh = new Cylinder(20, 20, 1f / 5f, SIZE_MULTIPLIER, true)
 
@@ -44,35 +73,80 @@ trait TTGridAdapter extends IdentHlp {
 
 		val axisSampCnt: Int = 20
 		val radialSampCnt: Int = 20
-		val radiusF: Float = 1f
-		val heightF: Float = 1f / 5f
+		val radiusF: Float = 1f / 5f
+		val heightF: Float = SIZE_MULTIPLIER
 		val flgClosed = true
-		val cylMeshDesc = new VWSCR_Cylinder(axisSampCnt, radialSampCnt, radiusF, heightF, flgClosed)
+		val cylMeshDesc = new VWMD_Cylinder(axisSampCnt, radialSampCnt, radiusF, heightF, flgClosed)
 
 		val aqua : ColorRGBA = new ColorRGBA(0.1f,1.0f,0.5f, 0.65f)
 		val cylCol : ColorRGBA = aqua
 		val cylMatDesc = new SimpleMatDesc(Some(cylCol))
 
-		val cylPos = new Vector3f(-15.0f, 12.0f, 4.0f) // biggish dirigible
-		val cylRot = Quaternion.IDENTITY
-		val cylXform = new PartialTransform3D(Some(cylPos), Some(cylRot), Some(Vector3f.UNIT_XYZ))
+		val cylPos_01 = new Vector3f(offsetDistance, 0f, 0f)
+		val cylPos_02 = new Vector3f(-offsetDistance, 0f, 0f)
 
-		val knownSphereID_opt : Option[Ident] = Some(makeStampyRandyIdentAnon())
-		val parentID_opt = None
-		val msgPart_known = new KnownShapeCreateRqImpl(knownSphereID_opt, parentID_opt)
+		val cylPos_03 = new Vector3f(0f, 0f, offsetDistance)
+		val cylPos_04 = new Vector3f(0f, 0f, -offsetDistance)
 
-		val cylRq1 = new VWSCR_MeshyCmpnd(msgPart_known, cylXform, cylMeshDesc, cylMatDesc)
+		val cylRot_A = Quaternion.IDENTITY
+		val rotate90DegAroundY: Quaternion = new Quaternion
+		rotate90DegAroundY.fromAngleAxis(Math.PI.toFloat / 2, new Vector3f(0f, 1f, 0f))
+		val cylRot_B = rotate90DegAroundY
 
-		List(cylRq1)
+		val cylXform_01 = new PartialTransform3D(Some(cylPos_01), Some(cylRot_A), Some(Vector3f.UNIT_XYZ))
+		val cylXform_02 = new PartialTransform3D(Some(cylPos_02), Some(cylRot_A), Some(Vector3f.UNIT_XYZ))
+		val cylXform_03 = new PartialTransform3D(Some(cylPos_03), Some(cylRot_B), Some(Vector3f.UNIT_XYZ))
+		val cylXform_04 = new PartialTransform3D(Some(cylPos_04), Some(cylRot_B), Some(Vector3f.UNIT_XYZ))
+
+		val cylRq_01 = makeMeshShapeCreateReq(parentShapeID_opt, cylXform_01, cylMeshDesc, cylMatDesc)
+		val cylRq_02 = makeMeshShapeCreateReq(parentShapeID_opt, cylXform_02, cylMeshDesc, cylMatDesc)
+		val cylRq_03 = makeMeshShapeCreateReq(parentShapeID_opt, cylXform_03, cylMeshDesc, cylMatDesc)
+		val cylRq_04 = makeMeshShapeCreateReq(parentShapeID_opt, cylXform_04, cylMeshDesc, cylMatDesc)
+
+		List(cylRq_01, cylRq_02, cylRq_03, cylRq_04)
 	}
+
 }
-trait TTMarkAdapter {
-	val xRotationAngles: Array[Float] = Array((Math.PI / 2).toFloat, 0f, 0f)
-	def makeRqs_TorusForO : List[VWContentRq] = {
-		Nil
+trait TTMarkAdapter extends GeneralXlatorSupport {
+	private val X_COLOR: ColorRGBA = ColorRGBA.Black
+	private val xMatDesc = new SimpleMatDesc(Some(X_COLOR))
+
+	private val O_COLOR: ColorRGBA = ColorRGBA.Red
+	private val oMatDesc = new SimpleMatDesc(Some(O_COLOR))
+
+	private var playerO: Boolean = false
+	private var indexX: Int = 0
+	private var indexO: Int = 0
+
+	def makeRqs_TorusForO(parentID_opt : Option[Ident]) : List[VWContentRq] = {
+		val oMeshDesc : VWMeshDesc = new VWMD_Torus(40, 20, 1f/5f, 5f/6f)
+		val oXform_01 = new PartialTransform3D(None, None, None)
+		val oRq_01 = makeMeshShapeCreateReq(parentID_opt, oXform_01, oMeshDesc, oMatDesc)
+		List(oRq_01)
 	}
-	def makeRqs_CrossedCylsForX : List[VWContentRq] = {
-		Nil
+
+	val xRotationAngles: Array[Float] = Array((Math.PI / 2).toFloat, 0f, 0f)
+	def makeRqs_X(gparentID_opt : Option[Ident]) : List[VWContentRq] = {
+		val parentNodeShapeID = makeStampyRandyIdent("xMarkParent")
+		val parentCreateRq = new VWSCR_Node(parentNodeShapeID, gparentID_opt)
+		val xLegRqs : List[VWContentRq] = makeRqs_CrossedCylsForX(Some(parentNodeShapeID))
+		// TODO: Set initial XForm (or later manip) for the overall X-rotation.
+		List(parentCreateRq : VWContentRq) ::: xLegRqs
+	}
+
+	def makeRqs_CrossedCylsForX(parentID_opt : Option[Ident]) : List[VWContentRq] = {
+		val xLegMeshDesc : VWMeshDesc = new VWMD_Cylinder(20, 20, 1f / 5f, 2.25f, true)
+
+		val rotate45DegAroundY: Quaternion = new Quaternion
+		rotate45DegAroundY.fromAngleAxis(Math.PI.toFloat / 4, new Vector3f(0f, 1f, 0f))
+
+		val legXform_01 = new PartialTransform3D(None, Some(rotate45DegAroundY), None)
+		val legXform_02 = new PartialTransform3D(None, Some(rotate45DegAroundY.inverse), None)
+
+		val legRq_01 = makeMeshShapeCreateReq(parentID_opt, legXform_01, xLegMeshDesc, xMatDesc)
+		val legRq_02 = makeMeshShapeCreateReq(parentID_opt, legXform_02, xLegMeshDesc, xMatDesc)
+
+		List(legRq_01, legRq_02)
 	}
 
 }
