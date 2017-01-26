@@ -16,6 +16,7 @@
 
 package org.friendularity.navui
 
+import java.lang.{Integer => JInt, Long => JLong}
 import java.util.{Random => JRandom}
 import java.lang.{Long => JLong, Integer => JInt}
 import akka.actor.{ActorSystem, ActorRefFactory, ActorContext, ActorRef}
@@ -24,6 +25,8 @@ import org.appdapter.core.name.FreeIdent
 import org.appdapter.core.name.Ident
 import org.appdapter.fancy.log.VarargsLogging
 import org.cogchar.api.fancy.FancyThingModelWriter
+import org.cogchar.api.thing.SerTypedValueMap
+import org.cogchar.api.vworld.GoodyActionParamWriter
 import org.cogchar.impl.thing.basic.BasicThingActionSpec
 import org.cogchar.render.rendtest.GoodyTestMsgMaker
 import org.friendularity.cpmsg.{ActorRefCPMsgTeller, CPStrongTeller, CPMsgTeller}
@@ -32,10 +35,14 @@ import org.friendularity.field.{StatusTickActorFactory, StatusTickDistributor, S
 import org.friendularity.mjob.{MsgJobLogicFactory, MsgJobLogic}
 
 import com.hp.hpl.jena.rdf.model.{Model => JenaModel, ModelFactory => JenaModelFactory, Literal}
+import org.friendularity.netcli.vwta.MakesVWTARqProducers
+import org.friendularity.netcli.vwta.OffersVWorldClient
+import org.friendularity.thact.ThingActSender
 import org.friendularity.util.IdentHlp
 import org.friendularity.vw.cli.cam.OuterCamHelp
 import org.friendularity.vw.cli.nav.OuterBindNavCmdKeys
 import org.friendularity.vw.impl.ovl.{NavPageDefs, OverlayPage}
+
 
 import org.friendularity.vw.mprt.manip.{PartialTransform3D, CamStateParams3D, MakesManipDesc, TransformParams3D, SmooveManipEndingFullImpl}
 import org.friendularity.vw.msg.bdy.{VWBodyDangerYogaRq, VWBodySkeletonDisplayToggle, VWBroadcastToAllBodies, VWBodyLifeRq}
@@ -50,21 +57,23 @@ import org.friendularity.vwmsg.{VWorldPublicTellers, OrdinaryParams3D, VWRqTAWra
 import org.cogchar.impl.thing.fancy.ConcreteTVM
 import org.cogchar.api.vworld.GoodyActionParamWriter
 import org.cogchar.api.thing.SerTypedValueMap;
+import org.cogchar.name.cinema.LightsCameraAN
 import org.cogchar.name.goody.GoodyNames
+import org.cogchar.render.rendtest.GoodyTestMsgMaker
 
 /**
   * Created by Stu B22 - June 2016
   */
 trait OuterLogic extends VarargsLogging {
 	// Tells the OuterLogic that the main public services (setup by VWorld boss) are now ready.
-	def rcvPubTellers (vwpt : VWorldPublicTellers): Unit
+	def rcvPubTellers(vwpt: VWorldPublicTellers): Unit
 
 	// Normally an OuterLogic will call doAllExtraSetup at the end of its rcvPubTellers impl.
 	// Adding setup tasks onto
-	protected def doAllExtraSetup(vwpt : VWorldPublicTellers) : Unit = {
+	protected def doAllExtraSetup(vwpt: VWorldPublicTellers): Unit = {
 		val extraSetupTasks = getExtraSetupTasks
 		if (extraSetupTasks.length > 0) {
-			info3("{} is processing {} extra setup tasks: {}", this, extraSetupTasks.length : JInt, extraSetupTasks)
+			info3("{} is processing {} extra setup tasks: {}", this, extraSetupTasks.length: JInt, extraSetupTasks)
 		}
 		extraSetupTasks.map(
 			_.doExtraSetup(vwpt)
@@ -72,30 +81,34 @@ trait OuterLogic extends VarargsLogging {
 	}
 
 	// Subclasses can effectively add tasks to be executed by overriding getExtraSetupTasks.
-	protected def getExtraSetupTasks() : List[ExtraSetupLogic] = Nil
+	protected def getExtraSetupTasks(): List[ExtraSetupLogic] = Nil
 }
-trait TurtleSerHlp extends VarargsLogging {
-	def serlzOneTAMsgToTurtleTxt(actSpec : BasicThingActionSpec, rand : JRandom) : String = {
-		val ftmw = new FancyThingModelWriter
-		val specModelWithPrefixes : JenaModel  = ftmw.writeTASpecAndPrefixesToNewModel(actSpec, rand)
 
-		val triplesTurtleTxt : String = ftmw.serializeSpecModelToTurtleString(specModelWithPrefixes)
+trait TurtleSerHlp extends VarargsLogging {
+	def serlzOneTAMsgToTurtleTxt(actSpec: BasicThingActionSpec, rand: JRandom): String = {
+		val ftmw = new FancyThingModelWriter
+		val specModelWithPrefixes: JenaModel = ftmw.writeTASpecAndPrefixesToNewModel(actSpec, rand)
+
+		val triplesTurtleTxt: String = ftmw.serializeSpecModelToTurtleString(specModelWithPrefixes)
 		info2("Serialized turtle message FROM model of size {} triples TO string of length {} chars",
-			specModelWithPrefixes.size() : JLong, triplesTurtleTxt.length : Integer)
+			specModelWithPrefixes.size(): JLong, triplesTurtleTxt.length: Integer)
 		debug1("Dumping serialized turtle message before send:\n {}", triplesTurtleTxt)
 		triplesTurtleTxt
 	}
 
 }
+
 trait GoodyTestMsgFun extends IdentHlp with TurtleSerHlp {
+
 	import scala.collection.JavaConverters._
+
 	private lazy val myRandomizer: JRandom = new JRandom
 
-	def finallySendGoodyTstMsgs(goodyTeller : CPMsgTeller, flag_serToTurtle : Boolean): Unit = {
+	def finallySendGoodyTstMsgs(goodyTeller: CPMsgTeller, flag_serToTurtle: Boolean): Unit = {
 		val gtmm: GoodyTestMsgMaker = new GoodyTestMsgMaker
 		val msgsJList = gtmm.makeGoodyCreationMsgs
 
-		val msgsScbuf : List[BasicThingActionSpec] = msgsJList.asScala.toList // BTAS is known to be serializable
+		val msgsScbuf: List[BasicThingActionSpec] = msgsJList.asScala.toList // BTAS is known to be serializable
 
 		for (actSpec <- msgsScbuf) {
 			if (flag_serToTurtle) {
@@ -110,47 +123,51 @@ trait GoodyTestMsgFun extends IdentHlp with TurtleSerHlp {
 		}
 	}
 }
+
 trait FunWithShapes extends MakesManipDesc with IdentHlp {
-	def sendBigGridRq(shapeTeller : CPMsgTeller): Unit = {
-		val rq_makeBigGrid = new VWSCR_CellGrid{}
+	def sendBigGridRq(shapeTeller: CPMsgTeller): Unit = {
+		val rq_makeBigGrid = new VWSCR_CellGrid {}
 		shapeTeller.tellCPMsg(rq_makeBigGrid)
 	}
 
-	def sendOvalRq_MAKE(shapeTeller : CPMsgTeller) : Ident = {
-		val aqua : ColorRGBA = new ColorRGBA(0.1f,1.0f,0.5f, 0.65f)
-		val sphereCol : ColorRGBA = aqua
+	def sendOvalRq_MAKE(shapeTeller: CPMsgTeller): Ident = {
+		val aqua: ColorRGBA = new ColorRGBA(0.1f, 1.0f, 0.5f, 0.65f)
+		val sphereCol: ColorRGBA = aqua
 		val spherePos = new Vector3f(-15.0f, 12.0f, 4.0f) // biggish dirigible
 		val sphereRot = Quaternion.IDENTITY
 		val sphereXform = new PartialTransform3D(Some(spherePos), Some(sphereRot), Some(Vector3f.UNIT_XYZ))
 		val sphereMatDesc = new SimpleMatDesc(Some(sphereCol))
 	//	val sphereParams = new OrdinaryParams3D(spherePos, sphereRot, Vector3f.UNIT_XYZ, sphereCol)
 		val sphereMeshDesc = new VWMD_Sphere(33, 33, 99.0f) // , sphereParams)
-		val knownSphereID_opt : Option[Ident] = Some(makeStampyRandyIdentAnon())
+		val knownSphereID_opt: Option[Ident] = Some(makeStampyRandyIdentAnon())
 		val parentID_opt = None
 		val msgPart_known = new KnownShapeCreateRqImpl(knownSphereID_opt, parentID_opt)
 		val sphereCmpndReq = new VWSCR_MeshyComposite(msgPart_known, sphereXform, sphereMeshDesc, sphereMatDesc)
 		shapeTeller.tellCPMsg(sphereCmpndReq)
 		knownSphereID_opt.get
 	}
-	def makeArbXform() : TransformParams3D = {
+
+	def makeArbXform(): TransformParams3D = {
 		val tgtPos = new Vector3f(-25.0f, 45.0f, 6.0f)
 		val tgtRot = Quaternion.IDENTITY
 		val tgtScale = new Vector3f(1.0f, 0.5f, 4.0f)
 		val tgtXform = new TransformParams3D(tgtPos, tgtRot, tgtScale)
 		tgtXform
 	}
-	def sendShpSmooveRq(shapeTeller : CPMsgTeller, shapeID : Ident,
-						tgtXform : TransformParams3D, durSec : Float) : Unit = {
-/*
-		// TODO:  Allow for a partial transform in, as is done in OuterCamHelp.sendGuidedCamMoveRq
-		val forceToFullXform = false // "Partial" approach is preferred as of 2016-Nov, see RVWS-49 and RVWS-57.
-		val manipGuts = makeManipGuts(mayXform, durSec_opt, forceToFullXform)
-*/
+
+	def sendShpSmooveRq(shapeTeller: CPMsgTeller, shapeID: Ident,
+						tgtXform: TransformParams3D, durSec: Float): Unit = {
+		/*
+				// TODO:  Allow for a partial transform in, as is done in OuterCamHelp.sendGuidedCamMoveRq
+				val forceToFullXform = false // "Partial" approach is preferred as of 2016-Nov, see RVWS-49 and RVWS-57.
+				val manipGuts = makeManipGuts(mayXform, durSec_opt, forceToFullXform)
+		*/
 		val endingManip = new SmooveManipEndingFullImpl(tgtXform, durSec)
 		val sphereManipMsg = new ShapeManipRqImpl(shapeID, endingManip, None)
 		shapeTeller.tellCPMsg(sphereManipMsg)
 	}
-	def finallySendFunShapeRqs(shapeTeller : CPMsgTeller) : Unit = {
+
+	def finallySendFunShapeRqs(shapeTeller: CPMsgTeller): Unit = {
 		sendBigGridRq(shapeTeller)
 		val bigOvalID = sendOvalRq_MAKE(shapeTeller)
 		val tgtXform = makeArbXform()
@@ -160,26 +177,25 @@ trait FunWithShapes extends MakesManipDesc with IdentHlp {
 }
 
 /**
- * Based off of {@link PatientSender_GoodyTest} but without the fun shapes. This is used
- * in {@link AppServiceHandles} to send Goody messages. 
- * (ben)[2016-10-04] 
- */
+  * Based off of {@link PatientSender_GoodyTest} but without the fun shapes. This is used
+  * in {@link AppServiceHandles} to send Goody messages.
+  * (ben)[2016-10-04]
+  */
 trait PatientSender_GoodyRouter extends OuterLogic {
 
-	override def rcvPubTellers (vwpt : VWorldPublicTellers): Unit = {
+	override def rcvPubTellers(vwpt: VWorldPublicTellers): Unit = {
 		doAllExtraSetup(vwpt)
 	}
 }
 
-trait PatientSender_GoodyTest extends OuterLogic with FunWithShapes with GoodyTestMsgFun
-                                 {
+trait PatientSender_GoodyTest extends OuterLogic with FunWithShapes with GoodyTestMsgFun {
 
-	private var myStoredTellers_opt : Option[VWorldPublicTellers] = None
+	private var myStoredTellers_opt: Option[VWorldPublicTellers] = None
 
-	private val useTurtleSerialization : Boolean = true
-	private val testGoodyMsgsInternally : Boolean = false
+	private val useTurtleSerialization: Boolean = true
+	private val testGoodyMsgsInternally: Boolean = false
 
-	override def rcvPubTellers (vwpt : VWorldPublicTellers): Unit = {
+	override def rcvPubTellers(vwpt: VWorldPublicTellers): Unit = {
 		// This is the (outbound) notice we get back from boss, confirming system has started and these tellers are ready for biz.
 		info1("Outer logic got public tellers: {}", vwpt)
 		myStoredTellers_opt = Option(vwpt)
@@ -203,7 +219,7 @@ trait PatientSender_GoodyTest extends OuterLogic with FunWithShapes with GoodyTe
 }
 
 trait PatientForwarder_CharAdminTest extends OuterLogic {
-	private var myStoredTellers_opt : Option[VWorldPublicTellers] = None
+	private var myStoredTellers_opt: Option[VWorldPublicTellers] = None
 	private val myPendingCharAdminRqs = new scala.collection.mutable.ListBuffer[VWBodyLifeRq]() //  = Nil // Any inbound messages we have not gotten to yet.
 
 	override def rcvPubTellers(vwpt: VWorldPublicTellers): Unit = {
@@ -212,7 +228,7 @@ trait PatientForwarder_CharAdminTest extends OuterLogic {
 		doAllExtraSetup(vwpt)
 	}
 
-	def appendInboundRq(rqMsg : VWBodyLifeRq) : Unit = {
+	def appendInboundRq(rqMsg: VWBodyLifeRq): Unit = {
 		synchronized {
 			myPendingCharAdminRqs.append(rqMsg)
 			info1("After append, pending charAdm msgs={}", myPendingCharAdminRqs)
@@ -222,7 +238,7 @@ trait PatientForwarder_CharAdminTest extends OuterLogic {
 		}
 	}
 
-	def propagateMessages(pubTellers_opt : Option[VWorldPublicTellers]) : Unit = {
+	def propagateMessages(pubTellers_opt: Option[VWorldPublicTellers]): Unit = {
 		this.synchronized {
 			// Top part of this method could easily be shortened to a few lines of functional piping, sure.
 			// We write it out long form here to make it more readable.
@@ -242,39 +258,45 @@ trait PatientForwarder_CharAdminTest extends OuterLogic {
 		}
 	}
 }
-trait PatientSender_BonusStaging extends OuterLogic with OuterCamHelp with IdentHlp {
+
+trait PatientSender_BonusStaging extends OuterLogic with OffersVWorldClient with IdentHlp {
+	
+	val IDENT_PREFIX : String = "urn:ftd:friendularity.org:2017:inst#";
+	
 	override def rcvPubTellers(vwpt: VWorldPublicTellers): Unit = {
 		val stageTeller = vwpt.getStageTeller.get
 
-		val moveSpeed : Int = 60
-        val pauseOnLostFocus = false
-        val dragMouseToRotateCamera = true
-        val location: Vector3f = new Vector3f(0f, 40f, 80f)
-        val direction: Vector3f =  new Vector3f(0f, -0.3f, -1f)
-		val opticsBasicRq = new VWStageOpticsBasic(location, direction, moveSpeed, pauseOnLostFocus, dragMouseToRotateCamera)
+		val moveSpeed: Int = 60
+		val pauseOnLostFocus = false
+		val dragMouseToRotateCamera = true
+
+		val opticsBasicRq = new VWStageOpticsBasic(moveSpeed, pauseOnLostFocus, dragMouseToRotateCamera)
 		stageTeller.tellCPMsg(opticsBasicRq)
 		
-		val darkBlue : ColorRGBA = new ColorRGBA(0f, 0.1f, 0.35f, 1f)
+		setDefaultCameraPositionAndLocation()
+
+		val darkBlue: ColorRGBA = new ColorRGBA(0f, 0.1f, 0.35f, 1f)
 		val backgroundColorRequest = new VWStageBackgroundColor(darkBlue)
 		stageTeller.tellCPMsg(backgroundColorRequest)
 
 		sendSkyboxRq(stageTeller)
-        
-        val displayContentStatsOnScreen = false
-        val displayFPSOnScreen = false
-        val displayStatsOnScreenRequest = new VWStatsViewMessage(displayContentStatsOnScreen, displayFPSOnScreen)
-        stageTeller.tellCPMsg(displayStatsOnScreenRequest)
-		
-		val mostlyWhite : ColorRGBA = new ColorRGBA(0.8f, 0.8f, 0.8f, 1f)
+
+		val displayContentStatsOnScreen = false
+		val displayFPSOnScreen = false
+		val displayStatsOnScreenRequest = new VWStatsViewMessage(displayContentStatsOnScreen, displayFPSOnScreen)
+		stageTeller.tellCPMsg(displayStatsOnScreenRequest)
+
+		val mostlyWhite: ColorRGBA = new ColorRGBA(0.8f, 0.8f, 0.8f, 1f)
 		val setupLightingRequest = new VWStageSetupLighting(mostlyWhite)
-        stageTeller.tellCPMsg(setupLightingRequest)
-    
+		stageTeller.tellCPMsg(setupLightingRequest)
+
 		val emuBonusRq = new VWStageEmulateBonusContentAndCams()
-	 	stageTeller.tellStrongCPMsg(emuBonusRq)
+		stageTeller.tellStrongCPMsg(emuBonusRq)
 
 		setupStatusPumps(vwpt)
 
-        setupFloorGoody(vwpt.getGoodyDirectTeller.get)
+		setupFloorGoody()
+		
 
 		val powerUserMode = false
 		if (powerUserMode) {
@@ -282,16 +304,14 @@ trait PatientSender_BonusStaging extends OuterLogic with OuterCamHelp with Ident
 		}
 
 		setupKeysAndClicks(vwpt, powerUserMode)
-
-        // (ben)[2016-10-04]: Removing for avatar release
-//		sendExtraCameraRqs(stageTeller, vwpt.getShaperTeller.get)
-
+	
 		doAllExtraSetup(vwpt)
 	}
-	private def sendSkyboxRq(stageTeller : CPMsgTeller) : Unit = {
+
+	private def sendSkyboxRq(stageTeller: CPMsgTeller): Unit = {
 		// Ooops!
 		// When we embed paths like this, we need to know where that resource is expected to be found, i.e. what bundle?
-		val skyboxFolder : String = "textures/skybox/Sunny Ocean/";
+		val skyboxFolder: String = "textures/skybox/Sunny Ocean/";
 		val northImagePath: String = skyboxFolder + "North.png"
 		val eastImagePath: String = skyboxFolder + "East.png"
 		val southImagePath: String = skyboxFolder + "South.png"
@@ -302,49 +322,74 @@ trait PatientSender_BonusStaging extends OuterLogic with OuterCamHelp with Ident
 			westImagePath, upImagePath, downImagePath)
 		stageTeller.tellCPMsg(backgroundSkyBoxRequest)
 	}
+
 	//
-	def sendStageReset(stageTeller : CPMsgTeller) : Unit = {
+	def sendStageReset(stageTeller: CPMsgTeller): Unit = {
 		val stgResetMsg = new VWStageResetToDefault()
 		stageTeller.tellCPMsg(stgResetMsg)
 	}
-	def sendClearKeysAndClicks(stageTeller : CPMsgTeller) : Unit = ???
-	def sendClearShaps(shapeTeller : CPMsgTeller) : Unit = {
+
+	def sendClearKeysAndClicks(stageTeller: CPMsgTeller): Unit = ???
+
+	def sendClearShaps(shapeTeller: CPMsgTeller): Unit = {
 		val clrShpsMsg = new VWClearAllShapes
 		shapeTeller.tellCPMsg(clrShpsMsg)
 	}
-    
-  /**
-   * TODO(ben)[2016-10-04]: Move to ttl sheet when we have the time.
-   */
-    def setupFloorGoody(messageTeller : CPMsgTeller) : Unit = {
-        val  paramWriter : GoodyActionParamWriter = new GoodyActionParamWriter(new ConcreteTVM())
-        // Virtual Floors *MUST* have a color and location
-        paramWriter.putColor(0.5f, 0.5f, 0.5f, 1f)
-        paramWriter.putLocation(0f, -0.5f, 0f)
-        val  postedTStampMsec : Long = System.currentTimeMillis()
-        val  valueMap : SerTypedValueMap = paramWriter.getValueMap()
-        val actionInstanceID : Ident = new FreeIdent("urn:ftd:cogchar.org:2012:inst#action_create_default_virtual_floor")
-        val entityID : Ident = new FreeIdent("urn:ftd:cogchar.org:2012:inst#default_virtual_floor")
-        val entityTypeID : Ident = GoodyNames.TYPE_FLOOR
-        val goodyActionVerbID : Ident = GoodyNames.ACTION_CREATE
-        val sourceAgentID : Ident = new FreeIdent("urn:ftd:robosteps.org:2012:inst#agent_outer_logic_setup_floor_goody")
-        
-        val  thingActionSpec : BasicThingActionSpec = new BasicThingActionSpec(actionInstanceID,
-                                                                         entityID,
-                                                                         entityTypeID,
-                                                                         goodyActionVerbID,
-                                                                         sourceAgentID, valueMap,
-                                                                         postedTStampMsec)
-        val vwMsgWrap = new VWRqTAWrapImpl(thingActionSpec)
-        messageTeller.tellCPMsg(vwMsgWrap)
+	
+	def setDefaultCameraPositionAndLocation(): Unit = {
+		val paramWriter: GoodyActionParamWriter = new GoodyActionParamWriter(new ConcreteTVM())
+		paramWriter.putRotation(-9.4608765E-9f, 0.976296f, -0.21643962f, -180f)
+		paramWriter.putLocation(0f, 48f, 60f)
+		
+		val actionInstanceID: Ident = new FreeIdent(IDENT_PREFIX + "action_outer_logic_setup_default_camera")
+		val entityID: Ident = new FreeIdent(LightsCameraAN.URI_defaultCam)
+		val sourceAgentID: Ident = new FreeIdent(IDENT_PREFIX + "agent_outer_logic_setup_default_camera")
+
+		val thingActionSpec: BasicThingActionSpec = new BasicThingActionSpec(actionInstanceID,
+			entityID,
+			GoodyNames.TYPE_CAMERA,
+			GoodyNames.ACTION_SET,
+			sourceAgentID, 
+			paramWriter.getValueMap,
+			System.currentTimeMillis)
+
+		sendTARq(thingActionSpec)
 	}
 
-	def sendToggleSkelHilite(cadmTeller : CPMsgTeller) : Unit = {
+	
+	
+	/**
+	  * TODO(ben)[2016-10-04]: Move to ttl sheet when we have the time.
+	  */
+	def setupFloorGoody(): Unit = {
+		val paramWriter: GoodyActionParamWriter = new GoodyActionParamWriter(new ConcreteTVM())
+		// Virtual Floors *MUST* have a color and location
+		paramWriter.putColor(0.5f, 0.5f, 0.5f, 1f)
+		paramWriter.putLocation(0f, -0.5f, 0f)
+		val postedTStampMsec: Long = System.currentTimeMillis()
+		val valueMap: SerTypedValueMap = paramWriter.getValueMap()
+		val actionInstanceID: Ident = new FreeIdent(IDENT_PREFIX + "action_create_default_virtual_floor")
+		val entityID: Ident = new FreeIdent(IDENT_PREFIX + "default_virtual_floor")
+		val entityTypeID: Ident = GoodyNames.TYPE_FLOOR
+		val goodyActionVerbID: Ident = GoodyNames.ACTION_CREATE
+		val sourceAgentID: Ident = new FreeIdent(IDENT_PREFIX + "agent_outer_logic_setup_floor_goody")
+
+		val thingActionSpec: BasicThingActionSpec = new BasicThingActionSpec(actionInstanceID,
+			entityID,
+			entityTypeID,
+			goodyActionVerbID,
+			sourceAgentID, valueMap,
+			postedTStampMsec)
+		sendTARq(thingActionSpec)
+	}
+
+	def sendToggleSkelHilite(cadmTeller: CPMsgTeller): Unit = {
 		val innerBodyRq = new VWBodySkeletonDisplayToggle
 		val brdcstRq = new VWBroadcastToAllBodies(innerBodyRq)
 		cadmTeller.tellCPMsg(brdcstRq)
 	}
-	def sendBodyYoga(cadmTeller : CPMsgTeller) : Unit = {
+
+	def sendBodyYoga(cadmTeller: CPMsgTeller): Unit = {
 		val innerBodyRq = new VWBodyDangerYogaRq
 		val brdcstRq = new VWBroadcastToAllBodies(innerBodyRq)
 		cadmTeller.tellCPMsg(brdcstRq)
@@ -352,22 +397,22 @@ trait PatientSender_BonusStaging extends OuterLogic with OuterCamHelp with Ident
 
 	// Cmds sent to navTeller
 
-	def setupOverlayBook(vwpt: VWorldPublicTellers) : Unit = {
+	def setupOverlayBook(vwpt: VWorldPublicTellers): Unit = {
 
-		val pages : List[OverlayPage] = NavPageDefs.pageList
+		val pages: List[OverlayPage] = NavPageDefs.pageList
 		val ovlTeller = vwpt.getOverlayTeller.get
 
 		val ovlSetupMsg = new VWSetupOvlBookRq(pages)
 
 		ovlTeller.tellStrongCPMsg(ovlSetupMsg)
 
-		val outerKeysWidg = new OuterBindNavCmdKeys{}
+		val outerKeysWidg = new OuterBindNavCmdKeys {}
 		val kcmdReg = new VWKeymapBinding_Medial(outerKeysWidg.navCmdKeyBindMap, vwpt)
 		val stageTeller = vwpt.getStageTeller.get
 		stageTeller.tellCPMsg(kcmdReg)
 	}
 
-	def setupStatusPumps(vwpt: VWorldPublicTellers) : Unit = {}
+	def setupStatusPumps(vwpt: VWorldPublicTellers): Unit = {}
 
 	private def setupPowerUserKeys(vwpt: VWorldPublicTellers): Unit = {
 		// Define callback functions to be invoked in response to keyboard down stroke events.
@@ -377,7 +422,7 @@ trait PatientSender_BonusStaging extends OuterLogic with OuterCamHelp with Ident
 		val funcClrShps = (pt: VWorldPublicTellers) => {
 			sendClearShaps(pt.getShaperTeller.get)
 		}
-		val funcBodyYogaTest = (pt : VWorldPublicTellers) => {
+		val funcBodyYogaTest = (pt: VWorldPublicTellers) => {
 			sendBodyYoga(pt.getCharAdminTeller.get)
 		}
 
@@ -393,7 +438,8 @@ trait PatientSender_BonusStaging extends OuterLogic with OuterCamHelp with Ident
 		stageTeller.tellCPMsg(regMsg)
 
 	}
-	def setupKeysAndClicks(vwpt: VWorldPublicTellers, powerUserMode : Boolean) : Unit = {
+
+	def setupKeysAndClicks(vwpt: VWorldPublicTellers, powerUserMode: Boolean): Unit = {
 
 		val stageTeller = vwpt.getStageTeller.get
 
@@ -403,20 +449,23 @@ trait PatientSender_BonusStaging extends OuterLogic with OuterCamHelp with Ident
 			setupPowerUserKeys(vwpt)
 		}
 		// Define callback functions to be invoked in response to keyboard down stroke events.
-		val funcSkelHiliteToggle = (pt : VWorldPublicTellers) => {sendToggleSkelHilite(pt.getCharAdminTeller.get)}
+		val funcSkelHiliteToggle = (pt: VWorldPublicTellers) => {
+			sendToggleSkelHilite(pt.getCharAdminTeller.get)
+		}
 
 		val nextMap = Map("F2" -> funcSkelHiliteToggle)
 		val regMsg2 = new VWKeymapBinding_Medial(nextMap, vwpt)
 		stageTeller.tellCPMsg(regMsg2)
 
 	}
-	def sendExtraCameraRqs(stageTeller : CPMsgTeller, spcTeller : CPMsgTeller): Unit = {
+
+	def sendExtraCameraRqs(stageTeller: CPMsgTeller, spcTeller: CPMsgTeller): Unit = {
 		val vpd = new ViewportDesc(0.2f, 0.4f, 0.15f, 0.30f, Some(ColorRGBA.DarkGray))
 		val cpv = new Vector3f(-70.0f, 5.0f, -3.0f)
 		val pdir = new Vector3f(1.0f, 0.0f, 0.0f)
 		val cst = new CamStateParams3D(cpv, pdir)
 
-		val camGuideNodeID : Ident = makeAndBindExtraCam(stageTeller, spcTeller, "extra", cst, vpd)
+		//val camGuideNodeID: Ident = makeAndBindExtraCam(stageTeller, spcTeller, "extra", cst, vpd)
 		/*
 		val camID : Ident = makeStampyRandyIdentAnon
 		val makeCamRq = new VWCreateCamAndViewportRq(camID, cst, vpd)
@@ -437,27 +486,29 @@ trait PatientSender_BonusStaging extends OuterLogic with OuterCamHelp with Ident
 		val guideTgtScale = Vector3f.UNIT_XYZ
 		val guideTgtXform = new TransformParams3D(guideTgtPos, guideTgtRot, guideTgtScale)
 
-		sendGuidedCamMoveRq(spcTeller, camGuideNodeID, guideTgtXform, Some(60.0f), None)
+		//sendGuidedCamMoveRq(spcTeller, camGuideNodeID, guideTgtXform, Some(60.0f), None)
 		// val endingManip = new SmooveManipEndingImpl(guideTgtXform, 60.0f)
 		// val guideManipMsg = new ShapeManipRqImpl(camGuideNodeID, endingManip)
 		// spcTeller.tellCPMsg(guideManipMsg)
 
 	}
 }
+
 // Serves as a rendezvous
 trait OuterAppPumpSetupLogic extends OuterLogic with IdentHlp with StatusTickScheduler {
-	protected def getAkkaSystem : ActorSystem
+	protected def getAkkaSystem: ActorSystem
 
 	// Bypasses the whole Distrib thing, encoding its own gathering+publishing chain out to AMQP topic
-	protected def makePubStatTempBypassTeller_opt(vwpt: VWorldPublicTellers) : Option[CPStrongTeller[MsgToStatusSrc]] = None
+	protected def makePubStatTempBypassTeller_opt(vwpt: VWorldPublicTellers): Option[CPStrongTeller[MsgToStatusSrc]] = None
 
-	def setupDownstreamActors_UnusedRightNow(ovlTeller : CPStrongTeller[VWOverlayRq]) : CPMsgTeller = {
+	def setupDownstreamActors_UnusedRightNow(ovlTeller: CPStrongTeller[VWOverlayRq]): CPMsgTeller = {
 		warn1("No setup is done yet to actually route mesages to ovlTeller: {}", ovlTeller)
 		val downstreamTeller = FieldActorFactory.makeDistribIndep(getAkkaSystem, "downstreamFieldDistrib")
 		downstreamTeller
 	}
-	def setupOuterPumpActors(tickLovinTellers : List[CPStrongTeller[ReportingTickChance]]) : Unit = {
-		val statusTickHandler = new StatusTickDistributor{}
+
+	def setupOuterPumpActors(tickLovinTellers: List[CPStrongTeller[ReportingTickChance]]): Unit = {
+		val statusTickHandler = new StatusTickDistributor {}
 		tickLovinTellers.map(statusTickHandler.registerTickLover(_))
 		val akkaSys = getAkkaSystem
 		val statusTickActorRef = StatusTickActorFactory.makeStatusTickDistribActor(akkaSys, "statusTickHandler", statusTickHandler)
@@ -470,7 +521,7 @@ trait OuterAppPumpSetupLogic extends OuterLogic with IdentHlp with StatusTickSch
 		val stageTeller = vwpt.getStageTeller.get
 		val stageTickLover = vwpt.getStageTeller.get.asInstanceOf[CPStrongTeller[MsgToStatusSrc]]
 		val pubStatTmpTellers = makePubStatTempBypassTeller_opt(vwpt).toList
-		val tickLovers : List[CPStrongTeller[ReportingTickChance]] = List(stageTickLover) ++ pubStatTmpTellers
+		val tickLovers: List[CPStrongTeller[ReportingTickChance]] = List(stageTickLover) ++ pubStatTmpTellers
 		setupOuterPumpActors(tickLovers)
 		val nope = false
 		if (nope) {
@@ -479,6 +530,7 @@ trait OuterAppPumpSetupLogic extends OuterLogic with IdentHlp with StatusTickSch
 
 		doAllExtraSetup(vwpt)
 	}
+
 	def setupDynamicStatusFlow(vwpt: VWorldPublicTellers): Unit = {
 		val downstreamTeller = setupDownstreamActors_UnusedRightNow(vwpt.getOverlayTeller.get)
 		val chanID = makeStampyRandyIdentAnon()
@@ -489,16 +541,17 @@ trait OuterAppPumpSetupLogic extends OuterLogic with IdentHlp with StatusTickSch
 
 	}
 }
+
 // Unnecessary to use the Jobby approach here, but working through it anyway as a comparative exercise.
-class OuterJobbyWrapper(outerLogic : OuterLogic) extends MsgJobLogic[VWorldPublicTellers] {
+class OuterJobbyWrapper(outerLogic: OuterLogic) extends MsgJobLogic[VWorldPublicTellers] {
 	// Differences here is that we get exception handling+logging, runtime type verification,
 	// and actor wrapping for free, but we must also create the factory stuff below.
 	// Note that we could also pass constructor parameters in via the factory, without Props hassles.
-	override def processMsgUnsafe(msg : VWorldPublicTellers, slf : ActorRef, sndr : ActorRef,
-								  actx : ActorContext) : Unit = {
+	override def processMsgUnsafe(msg: VWorldPublicTellers, slf: ActorRef, sndr: ActorRef,
+								  actx: ActorContext): Unit = {
 
 		msg match {
-			case vwpt : VWorldPublicTellers => 	{
+			case vwpt: VWorldPublicTellers => {
 				debug2("Received public-tellers-ready msg={} for outerLogic={}", msg, outerLogic)
 				outerLogic.rcvPubTellers(vwpt)
 			}
@@ -506,6 +559,7 @@ class OuterJobbyWrapper(outerLogic : OuterLogic) extends MsgJobLogic[VWorldPubli
 
 	}
 }
+
 // Now we add the factories needed to construct our logic + actor instances.
 // Question is:  When is this structure "better" than making an actor wrapper by hand, as done in DummyActorMaker, et al?
 // Tentative answer:  When we expect to make a "bunch" of somewhat similar actors to do smaller tasks, then a coherent
@@ -514,8 +568,8 @@ class OuterJobbyWrapper(outerLogic : OuterLogic) extends MsgJobLogic[VWorldPubli
 object OuterJobbyLogic_MasterFactory extends VWorldMasterFactory {
 	// val thatOtherParam : Int = 22
 	val oolFactory = new MsgJobLogicFactory[VWorldPublicTellers, OuterLogic]() {
-		override def makeJobLogic(olJobArg : OuterLogic, msgFilterClz: Class[VWorldPublicTellers]): MsgJobLogic[VWorldPublicTellers] = {
-			info2("Making jobby wrapper for outerlogic-jobArg={} for specific runtime filter clz: {}", olJobArg,  msgFilterClz)
+		override def makeJobLogic(olJobArg: OuterLogic, msgFilterClz: Class[VWorldPublicTellers]): MsgJobLogic[VWorldPublicTellers] = {
+			info2("Making jobby wrapper for outerlogic-jobArg={} for specific runtime filter clz: {}", olJobArg, msgFilterClz)
 			new OuterJobbyWrapper(olJobArg)
 		}
 	}
@@ -523,7 +577,7 @@ object OuterJobbyLogic_MasterFactory extends VWorldMasterFactory {
 
 	val oolJobbyActorName = "outer_jobby"
 
-	def makeOoLogicAndTeller(jobArg : OuterLogic,  arf : ActorRefFactory, actorName : String) : CPStrongTeller[VWorldPublicTellers] = {
+	def makeOoLogicAndTeller(jobArg: OuterLogic, arf: ActorRefFactory, actorName: String): CPStrongTeller[VWorldPublicTellers] = {
 		val aref = oolFactPair.makeLogicAndActor(jobArg, arf, actorName, None)
 		new ActorRefCPMsgTeller[VWorldPublicTellers](aref)
 	}
