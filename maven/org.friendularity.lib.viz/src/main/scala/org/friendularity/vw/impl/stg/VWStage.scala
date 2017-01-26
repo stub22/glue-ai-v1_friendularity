@@ -141,13 +141,12 @@ trait BasicOpticsLogic extends VarargsLogging with JmeEnqHlp {
 	
 	
 	def prepareIndependentOptics_onRendThrd(workaroundStub: WorkaroundAppStub, flyCam: FlyByCamera, mainViewPort: ViewPort,
-											location : Vector3f, direction : Vector3f, moveSpeed : Int, pauseOnLostFocus: Boolean, dragMouseToRotateCamera : Boolean): Unit = {
+											moveSpeed : Int, pauseOnLostFocus: Boolean, dragMouseToRotateCamera : Boolean): Unit = {
 
 		info1("prepareOpticsStage1: setting flyCam speed to {}", moveSpeed : Integer)
 		// Sets the speed of our POV camera movement.  The default is pretty slow.
 		flyCam.setMoveSpeed(moveSpeed)
 		flyCam.setDragToRotate(dragMouseToRotateCamera)
-        setLocationAndRotation(flyCam, location, direction)
         
         workaroundStub.setPauseOnLostFocus(pauseOnLostFocus)
 	}
@@ -228,36 +227,14 @@ trait BasicOpticsLogic extends VarargsLogging with JmeEnqHlp {
 				northTexture.get, southTexture.get, upTexture.get, downTexture.get))
 		parentDeepNode.attachChild(skyBox_opt.get);
     }
-    
-  /**
-   * TODO(ben)[2016-10-05]: Set default location and rotation in a better manner.
-   * This currently uses reflection, which means it could be done better. This is just
-   * a quick hack for a release. 
-   * 
-   * The location and rotation should both be loaded via ttl files in the future as well.
-   */
-    def setLocationAndRotation(flyCam: FlyByCamera, location : Vector3f, direction : Vector3f) : Unit = {
-      try{
-        val camField : java.lang.reflect.Field = flyCam.getClass().getDeclaredField("cam") //NoSuchFieldException
-        camField.setAccessible(true)
-        val camera : Camera = camField.get(flyCam).asInstanceOf[Camera] //IllegalAccessException
-        camera.setLocation(location)
-		val upRefDirection = Vector3f.UNIT_Y
-        camera.lookAtDirection(direction, upRefDirection) // new Vector3f(0f, 1f, 0f))
-        
-      } catch{
-        case e: NoSuchFieldException => error0("Could not set the camera's location and rotation!")
-        case ex: IllegalAccessException => error0("Could not set the camera's location and rotation!")
-        case _: Exception => error0("Got some other kind of exception")
-      }
-    }
+   
   
 	def sendRendTaskForOpticsBasic(rq : VWStageOpticsBasic, rrc: RenderRegistryClient) : Unit = {
 		val workaroundStub = rrc.getWorkaroundAppStub
 		val fbCam = workaroundStub.getFlyByCamera
 		val mvp = workaroundStub.getPrimaryAppViewPort
 		val senderCallable : Function0[Unit] = () => {
-			prepareIndependentOptics_onRendThrd(workaroundStub, fbCam, mvp, rq.location, rq.direction, rq.moveSpeed, rq.pauseOnLostFocus, rq.dragMouseToRotateCamera)
+			prepareIndependentOptics_onRendThrd(workaroundStub, fbCam, mvp, rq.moveSpeed, rq.pauseOnLostFocus, rq.dragMouseToRotateCamera)
 		}
 		enqueueJmeCallable(rrc, senderCallable)
 	}

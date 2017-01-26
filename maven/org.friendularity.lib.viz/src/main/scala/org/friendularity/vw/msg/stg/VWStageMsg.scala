@@ -15,7 +15,7 @@ trait VWStageRqMsg extends VWorldRequest
 case class VWStageResetToDefault() extends VWStageRqMsg // Reset all camera + lighting effects to stored defaults
 case class VWStageEmulateBonusContentAndCams() extends VWStageRqMsg
 
-case class VWStageOpticsBasic(location : Vector3f, direction :Vector3f, moveSpeed : Int, pauseOnLostFocus : Boolean, dragMouseToRotateCamera: Boolean)  extends VWStageRqMsg
+case class VWStageOpticsBasic(moveSpeed : Int, pauseOnLostFocus : Boolean, dragMouseToRotateCamera: Boolean)  extends VWStageRqMsg
 case class VWStageBackgroundColor(bgColor: ColorRGBA)  extends VWStageRqMsg
 case class VWStageBackgroundSkybox(northImagePath: String, eastImagePath: String, southImagePath: String,
 				  westImagePath: String, upImagePath: String, downImagePath: String)  extends VWStageRqMsg
