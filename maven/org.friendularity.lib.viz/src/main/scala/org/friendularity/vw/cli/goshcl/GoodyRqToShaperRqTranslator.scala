@@ -51,6 +51,8 @@ trait HandleGoodyModifyRequest extends KnowsGoodyCache with VarargsLogging {
 
 	// 3 public API methods
 	def makeDelRqsFromTA	(actSpec : ThingActionSpec) : List[VWContentRq] = {
+		// Only responsible for deleting corresponding shapes.
+		// For bookeeping of existence of the goody
 		operateOnExistingGoody(actSpec, opDel)
 	}
 	def makeMoveRqsFromTA(actSpec : ThingActionSpec) : List[VWContentRq] = {
@@ -81,13 +83,15 @@ trait HandleGoodyModifyRequest extends KnowsGoodyCache with VarargsLogging {
 	// Thinking:  One level of discrim we may want here is between flat and deep
 
 	protected def opDel(mgrec : MadeGoodyRec, taSpec : ThingActionSpec) : List[VWContentRq] = {
-		mgrec.xlator.makeDeleteRqs(taSpec.getVerbID, taSpec.getTargetThingID)
+		val delRqs = mgrec.xlator.makeDeleteRqs(mgrec, taSpec.getVerbID, taSpec.getTargetThingID)
+		getMGCache.logicallyDeleteMGRec(mgrec)
+		delRqs
 	}
 	protected def opMove(mgrec : MadeGoodyRec, taSpec : ThingActionSpec) : List[VWContentRq] = {
-		mgrec.xlator.makeMoveRqs(taSpec.getVerbID, taSpec.getTargetThingID, taSpec.getParamTVM)
+		mgrec.xlator.makeMoveRqs(mgrec, taSpec) // .getVerbID, taSpec.getTargetThingID, taSpec.getParamTVM)
 	}
 	protected def opSet(mgrec : MadeGoodyRec, taSpec : ThingActionSpec) : List[VWContentRq] = {
-		mgrec.xlator.makeSetRqs(taSpec.getVerbID, taSpec.getTargetThingID, taSpec.getParamTVM)
+		mgrec.xlator.makeSetRqs(mgrec, taSpec.getVerbID, taSpec.getTargetThingID, taSpec.getParamTVM)
 	}
 
 
