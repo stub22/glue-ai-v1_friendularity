@@ -14,3 +14,4 @@ case class VWClearAllShapes() extends VWShapeClearRq
 
 case class VWShapeDetachRq(shapeID : Ident) extends VWContentRq
 
+case class VWShapeDeleteRq(shapeID : Ident) extends VWContentRq

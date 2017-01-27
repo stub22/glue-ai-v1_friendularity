@@ -3,20 +3,37 @@ package org.friendularity.vw.cli.goshcl
 import org.appdapter.core.name.Ident
 import org.cogchar.api.thing.ThingActionSpec
 import org.friendularity.vw.msg.cor.VWContentRq
+import org.friendularity.vw.msg.shp.deep.VWSCR_Node
 
 import scala.collection.mutable.{Map => MutaMap, HashMap}
 /**
-  * Created by Owner on 1/23/2017.
+  * Created by Owner on 1/23/2017.8
   */
 case class RecordedXlation(taRcvd: ThingActionSpec, shapeRqsSent : List[VWContentRq], tstmpMsec : Long)
 
 case class MadeGoodyRec(goodyID : Ident, xlator : GoodyRqPartialXlator) {
+	private var myDeletedFlag : Boolean = false
+
 	private var myRecordedXlations : List[RecordedXlation] = Nil
 
 	def recordXlation(taRcvd : ThingActionSpec, shapeRqsSent : List[VWContentRq]) : Unit = {
 		val tstmpMsec = System.currentTimeMillis()
 		val xlt = new RecordedXlation(taRcvd, shapeRqsSent, tstmpMsec)
 		myRecordedXlations = myRecordedXlations ::: List(xlt)
+	}
+
+	def getTopShapeID : Ident = {
+		val firstXlation = myRecordedXlations.head
+		val firstRqSent = firstXlation.shapeRqsSent.head
+		firstRqSent.asInstanceOf[VWSCR_Node].knownNodeID
+	}
+
+	def getAllShapeIDs : List[Ident] = Nil
+
+	def isMarkedDeleted : Boolean = myDeletedFlag
+
+	def markDeleted : Unit = {
+		myDeletedFlag = true
 	}
 
 }
@@ -33,6 +50,11 @@ trait MadeGoodyCache {
 			throw new RuntimeException("Egads - cannot store a goody where one exists at ID=" + goodyID)
 		}
 		myMGRecsByID.put(goodyID, mgrec)
+	}
+
+	def logicallyDeleteMGRec(mgrec : MadeGoodyRec) : Unit = {
+		mgrec.markDeleted
+		// DECIDE:  Do we want goodies to go away
 	}
 }
 trait KnowsGoodyCache {

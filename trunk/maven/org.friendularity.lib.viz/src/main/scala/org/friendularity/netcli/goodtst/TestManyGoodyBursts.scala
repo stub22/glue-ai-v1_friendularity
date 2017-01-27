@@ -121,13 +121,16 @@ class TestManyGoodyBursts(ovwc : OffersVWorldClient) extends GoodyParamMaker wit
 			fireHorizBurst("horizCross", GT_CROSSHAIR, chParams, 0.1f, 0.1f, Some(400))
 		}
 		def fireSomeBursts(): Unit = {
+			fireTicTacGridBurst()
+			fireBoxBurst()
+
 			fireFloorBurst()
 			fireTextBurst()
 			fireScoreboardBurst()
 			fireCrosshairBurst()
-			fireBoxBurst()
+
 			// fireBitCubeBurst()
-			fireTicTacGridBurst()
+
 			overlapSomeBursts()
 		}
 		def overlapSomeBursts(): Unit = {
