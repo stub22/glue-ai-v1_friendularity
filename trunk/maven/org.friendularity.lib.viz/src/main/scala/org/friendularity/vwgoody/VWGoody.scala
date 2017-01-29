@@ -76,7 +76,7 @@ import org.friendularity.vwmsg.{VWRqTAWrapImpl, VWRqTAWrapper, VWTARqRdf}
   */
 
 trait VWGoodyTopDispatcher extends VarargsLogging {
-	val flag_useLegacyGoodyCtx : Boolean = true
+	val flag_useLegacyGoodyCtx : Boolean = false
 
 	private lazy val myShapCliLogic : GoodyShapcliLogic = {
 		val gscl = new GoodyShapcliLogic {}

@@ -1,5 +1,6 @@
 package org.friendularity.netcli.goodtst
 
+import com.jme3.math.Quaternion
 import org.appdapter.core.name.Ident
 import org.appdapter.fancy.log.VarargsLogging
 import org.cogchar.api.thing.SerTypedValueMap
@@ -34,8 +35,14 @@ class TestManyGoodyBursts(ovwc : OffersVWorldClient) extends GoodyParamMaker wit
 		val turnAboutZ_45deg = makeRotParam(45.0f, 0.0f, 0.0f, 1.0f)
 		val turnAboutX_45deg = makeRotParam(45.0f, 1.0f, 0.0f, 0.0f)
 
+		val degRot = 90f
+		val rotUpParam = makeRotParam(degRot, 1f, 0f, 0f)
 
-		def fireHorizBurst(bName : String, goodyTypeID : Ident, topParams : SerTypedValueMap) : Unit = {
+	//private val ROTATE_UPRIGHT_EULER : Array[Float] = Array((Math.PI / 2).toFloat, 0f, 0f)
+	//private val rotUpQuat = new Quaternion(ROTATE_UPRIGHT_EULER)
+
+
+	def fireHorizBurst(bName : String, goodyTypeID : Ident, topParams : SerTypedValueMap) : Unit = {
 			val (xSpc, yDelt, stepDlyMsec_opt) = (2.5f, 1.3f, Some(300))
 			fireHorizBurst(bName, goodyTypeID, topParams, xSpc, yDelt, stepDlyMsec_opt)
 		}
@@ -70,17 +77,33 @@ class TestManyGoodyBursts(ovwc : OffersVWorldClient) extends GoodyParamMaker wit
 			//		Texture blankTexture = assetMgr.loadTexture("textures/robosteps/BlankGray.png");
 			val yPos = makeFloatParam(GoodyNames.LOCATION_Y, 8.0f)
 
-			val boxParams = combineParams(List(redTrans, turnAboutY_45deg, stateTrue, yPos))
+			val bcubeParams = combineParams(List(redTrans, turnAboutY_45deg, stateTrue, yPos))
 
-			fireHorizBurst("horizBitCubeOne", GT_BIT_CUBE, boxParams)
+			fireHorizBurst("horizBitCubeOne", GT_BIT_CUBE, bcubeParams)
 		}
+
 		def fireTicTacGridBurst() : Unit = {
 			val zPos = makeFloatParam(GoodyNames.LOCATION_Z, -10.0f)
 
-			val boxParams = combineParams(List(redTrans, turnAboutY_45deg,  zPos))
+			// radIsNotUsed
 
-			fireHorizBurst("horizTTGridOne", GT_TICTAC_GRID, boxParams)
+			val ttGridParams = combineParams(List(redTrans, rotUpParam,  zPos)) // turnAboutY_45deg
+
+			fireHorizBurst("horizTTGridOne", GT_TICTAC_GRID, ttGridParams)
 		}
+		def fireTicXBurst() : Unit = {
+			val posParams = makeLoc3Params(9.0f, 11.0f, -2.0f)
+			val isOparm = makeXOStateParam(false)
+			val ticXparms = combineParams(List(prpTrans, posParams, rotUpParam, isOparm))
+			fireHorizBurst("ticX", GT_TICTAC_MARK, ticXparms)
+		}
+		def fireTacOBurst() : Unit = {
+			val posParams = makeLoc3Params(7.0f, 3.0f, 2.0f)
+			val isOparm = makeXOStateParam(true)
+			val ticOparms = combineParams(List(ylwTrans, posParams, rotUpParam, isOparm))
+			fireHorizBurst("tacO", GT_TICTAC_MARK, ticOparms)
+		}
+
 		def fireFloorBurst() : Unit = {
 			val yPos = makeFloatParam(GoodyNames.LOCATION_Y, -3.0f)
 
@@ -122,12 +145,20 @@ class TestManyGoodyBursts(ovwc : OffersVWorldClient) extends GoodyParamMaker wit
 		}
 		def fireSomeBursts(): Unit = {
 			fireTicTacGridBurst()
+
+			fireTicXBurst()
+
+			fireTacOBurst()
+
 			fireTextBurst()
+
 			fireBitCubeBurst()
 
 			fireBoxBurst()
 
 			fireFloorBurst()
+
+			// Above goodies are used by RK STEM as of 2017-Jan, below are not.
 			fireScoreboardBurst()
 			fireCrosshairBurst()
 

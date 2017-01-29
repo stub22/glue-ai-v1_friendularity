@@ -19,6 +19,9 @@ trait TicTacShapeXlator extends GoodyRqPartialXlator {
 	lazy val myGridAdapter = new TTGridAdapter {}
 	lazy val myMarkAdapter = new TTMarkAdapter {}
 
+	private val ROTATE_UPRIGHT_EULER : Array[Float] = Array((Math.PI / 2).toFloat, 0f, 0f)
+	private val rotUpQuat = new Quaternion(ROTATE_UPRIGHT_EULER)
+
 	override def makeCreateRqs(taSpec : ThingActionSpec) : List[VWContentRq]  = {
 //	override def makeCreateRqs(verbID : Ident, tgtTypeID : Ident, tgtID : Ident,  gax : GoodyActionExtractor) // paramTVM : TypedValueMap)
 //				: List[VWContentRq] = {
@@ -29,17 +32,20 @@ trait TicTacShapeXlator extends GoodyRqPartialXlator {
 
 		val matDesc = translateSimpleMatDesc(taSpec)
 
+		val gax = new GoodyActionExtractor(taSpec)
+
 		val childRqs : List[VWContentRq] = tgtTypeID match {
 			case GoodyNames.TYPE_TICTAC_GRID => {
-				myGridAdapter.makePostCylShpRqs(Some(parentNodeShapeID), matDesc)
+				val cylCrtRqs = myGridAdapter.makePostCylShpRqs(Some(parentNodeShapeID), matDesc)
+				cylCrtRqs
 			}
 			case GoodyNames.TYPE_TICTAC_MARK => {
 
-				val flagIsO = false
+				val flagIsO = gax.getSpecialBoolean(GoodyNames.USE_O)
 				if (flagIsO) {
-					myMarkAdapter.makeRqs_TorusForO(None, matDesc)
+					myMarkAdapter.makeRqs_TorusForO(Some(parentNodeShapeID), matDesc)
 				} else {
-					myMarkAdapter.makeRqs_X(None, matDesc)
+					myMarkAdapter.makeRqs_X(Some(parentNodeShapeID), matDesc)
 				}
 			}
 		}
@@ -77,11 +83,12 @@ trait TTGridAdapter extends GeneralXlatorSupport {
 //		val cylCol : ColorRGBA = aqua
 		val cylMatDesc = ttMD // new SimpleMatDesc(Some(cylCol))
 
-		val cylPos_01 = new Vector3f(offsetDistance, 0f, 0f)
-		val cylPos_02 = new Vector3f(-offsetDistance, 0f, 0f)
+		val centerVec = Vector3f.ZERO
+		val cylPos_01 = centerVec.add(offsetDistance, 0f, 0f)
+		val cylPos_02 = centerVec.add(-offsetDistance, 0f, 0f)
 
-		val cylPos_03 = new Vector3f(0f, 0f, offsetDistance)
-		val cylPos_04 = new Vector3f(0f, 0f, -offsetDistance)
+		val cylPos_03 = centerVec.add(0f, 0f, offsetDistance)
+		val cylPos_04 = centerVec.add(0f, 0f, -offsetDistance)
 
 		val cylRot_A = Quaternion.IDENTITY
 		val rotate90DegAroundY: Quaternion = new Quaternion
@@ -120,7 +127,7 @@ trait TTMarkAdapter extends GeneralXlatorSupport {
 		List(oRq_01)
 	}
 
-	val xRotationAngles: Array[Float] = Array((Math.PI / 2).toFloat, 0f, 0f)
+	// val xRotationAngles: Array[Float] = Array((Math.PI / 2).toFloat, 0f, 0f)
 	def makeRqs_X(gparentID_opt : Option[Ident], markMD : VWMatDesc) : List[VWContentRq] = {
 		val parentNodeShapeID = makeStampyRandyIdent("xMarkParent")
 		val parentCreateRq = new VWSCR_Node(parentNodeShapeID, gparentID_opt)
