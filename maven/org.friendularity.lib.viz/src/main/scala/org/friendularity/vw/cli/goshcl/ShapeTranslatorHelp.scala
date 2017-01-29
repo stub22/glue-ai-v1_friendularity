@@ -1,5 +1,6 @@
 package org.friendularity.vw.cli.goshcl
 
+import com.jme3.math.ColorRGBA
 import org.appdapter.core.name.Ident
 import org.friendularity.cpmsg.CPStrongTeller
 import org.friendularity.util.IdentHlp
@@ -12,7 +13,8 @@ import org.friendularity.vw.msg.shp.deep.{KnownShapeCreateRqImpl, CompositeMeshy
   * Created by Owner on 1/23/2017.
   */
 trait GeneralXlatorSupport extends IdentHlp with TARqExtractorHelp  {
-	def makeShapeXform : Unit = ???
+
+	lazy val EMPTY_XFORM = new MaybeTransform3D {}
 
 	protected def makeMeshShapeCreateRq(idsPart : KnowsShapeIDsPart, initXform3D : MaybeTransform3D,
 							   meshDesc : VWMeshDesc, matDesc : VWMatDesc) : CompositeMeshyShapeCreateRq = {
@@ -26,6 +28,7 @@ trait GeneralXlatorSupport extends IdentHlp with TARqExtractorHelp  {
 		makeMeshShapeCreateRq(shapeKnownIDs, initXform3D, meshDesc, matDesc)
 	}
 
+
 }
 import com.jme3.scene.{Node => JmeNode}
 
@@ -37,11 +40,12 @@ trait ShaperMsgMaker {
 	def makeRq_createEmptyJmeNode(nodeID : Ident, knParID_opt : Option[Ident]) :
 	VWShapeCreateRq = VWSCR_Node(nodeID, knParID_opt)
 
-	def makeRq_TextBox(contentTxt : String) = VWSCR_TextBox(contentTxt)
+	def makeRq_TextBox(contentTxt : String, flatSpc : Boolean, xform  : MaybeTransform3D, txtColor : ColorRGBA) =
+				VWSCR_TextBox(contentTxt, flatSpc, xform, txtColor)
 
 	def makeRq_Manip(tgtShapeID : Ident, manipDesc : ManipDesc,
 					 statusTlr_opt : Option[CPStrongTeller[ManipStatusMsg]]) : VWShapeManipRq =
-		ShapeManipRqImpl(tgtShapeID, manipDesc, statusTlr_opt)
+				ShapeManipRqImpl(tgtShapeID, manipDesc, statusTlr_opt)
 
 	def makeRq_Attach(knownID : Ident, knownParentID_opt : Option[Ident])  = VWShapeAttachRq(knownID, knownParentID_opt)
 

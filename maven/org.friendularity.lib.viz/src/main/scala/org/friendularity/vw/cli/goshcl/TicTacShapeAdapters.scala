@@ -18,33 +18,28 @@ import org.friendularity.vw.msg.shp.deep.{ShapeManipRqImpl, VWMD_Torus, VWSCR_No
 trait TicTacShapeXlator extends GoodyRqPartialXlator {
 	lazy val myGridAdapter = new TTGridAdapter {}
 	lazy val myMarkAdapter = new TTMarkAdapter {}
+
 	override def makeCreateRqs(taSpec : ThingActionSpec) : List[VWContentRq]  = {
 //	override def makeCreateRqs(verbID : Ident, tgtTypeID : Ident, tgtID : Ident,  gax : GoodyActionExtractor) // paramTVM : TypedValueMap)
 //				: List[VWContentRq] = {
 		val tgtTypeID : Ident = taSpec.getTargetThingTypeID
-
-		val initXform_part = extractXform_part(taSpec)
-		info1("Extracted initXform_part={}", initXform_part)
-		val initManipDesc : ManipDesc = new AbruptManipAbsPartialImpl(initXform_part)
-
 		val parentNodeShapeID = makeStampyRandyIdent("ttParentNode")
-		val parentCreateRq = new VWSCR_Node(parentNodeShapeID, None)
 
-		val initManipRq = new ShapeManipRqImpl(parentNodeShapeID, initManipDesc, None)
+		val parentRqs = makeParentCreateRqs(parentNodeShapeID, taSpec)
 
-		val parentRqs = List[VWContentRq](parentCreateRq, initManipRq)
+		val matDesc = translateSimpleMatDesc(taSpec)
 
 		val childRqs : List[VWContentRq] = tgtTypeID match {
 			case GoodyNames.TYPE_TICTAC_GRID => {
-				myGridAdapter.makePostCylShpRqs(Some(parentNodeShapeID))
+				myGridAdapter.makePostCylShpRqs(Some(parentNodeShapeID), matDesc)
 			}
 			case GoodyNames.TYPE_TICTAC_MARK => {
 
 				val flagIsO = false
 				if (flagIsO) {
-					myMarkAdapter.makeRqs_TorusForO(None)
+					myMarkAdapter.makeRqs_TorusForO(None, matDesc)
 				} else {
-					myMarkAdapter.makeRqs_X(None)
+					myMarkAdapter.makeRqs_X(None, matDesc)
 				}
 			}
 		}
@@ -65,7 +60,7 @@ trait TTGridAdapter extends GeneralXlatorSupport {
 		List(parentCreateRq : VWContentRq) ::: childCylRqs
 	}
 	*/
-	def makePostCylShpRqs(parentShapeID_opt : Option[Ident]) : List[VWContentRq] = {
+	def makePostCylShpRqs(parentShapeID_opt : Option[Ident], ttMD : VWMatDesc) : List[VWContentRq] = {
 		//
 		// val gridLeg : Mesh = new Cylinder(20, 20, 1f / 5f, SIZE_MULTIPLIER, true)
 
@@ -78,9 +73,9 @@ trait TTGridAdapter extends GeneralXlatorSupport {
 		val flgClosed = true
 		val cylMeshDesc = new VWMD_Cylinder(axisSampCnt, radialSampCnt, radiusF, heightF, flgClosed)
 
-		val aqua : ColorRGBA = new ColorRGBA(0.1f,1.0f,0.5f, 0.65f)
-		val cylCol : ColorRGBA = aqua
-		val cylMatDesc = new SimpleMatDesc(Some(cylCol))
+//		val aqua : ColorRGBA = new ColorRGBA(0.1f,1.0f,0.5f, 0.65f)
+//		val cylCol : ColorRGBA = aqua
+		val cylMatDesc = ttMD // new SimpleMatDesc(Some(cylCol))
 
 		val cylPos_01 = new Vector3f(offsetDistance, 0f, 0f)
 		val cylPos_02 = new Vector3f(-offsetDistance, 0f, 0f)
@@ -108,33 +103,33 @@ trait TTGridAdapter extends GeneralXlatorSupport {
 
 }
 trait TTMarkAdapter extends GeneralXlatorSupport {
-	private val X_COLOR: ColorRGBA = ColorRGBA.Black
-	private val xMatDesc = new SimpleMatDesc(Some(X_COLOR))
+	private val X_DFLT_COLOR: ColorRGBA = ColorRGBA.Black
+	private val xDfltMatDesc = new SimpleMatDesc(Some(X_DFLT_COLOR))
 
-	private val O_COLOR: ColorRGBA = ColorRGBA.Red
-	private val oMatDesc = new SimpleMatDesc(Some(O_COLOR))
+	private val O_DFLT_COLOR: ColorRGBA = ColorRGBA.Red
+	private val oDfltMatDesc = new SimpleMatDesc(Some(O_DFLT_COLOR))
 
 	private var playerO: Boolean = false
 	private var indexX: Int = 0
 	private var indexO: Int = 0
 
-	def makeRqs_TorusForO(parentID_opt : Option[Ident]) : List[VWContentRq] = {
+	def makeRqs_TorusForO(parentID_opt : Option[Ident], markMD : VWMatDesc) : List[VWContentRq] = {
 		val oMeshDesc : VWMeshDesc = new VWMD_Torus(40, 20, 1f/5f, 5f/6f)
-		val oXform_01 = new PartialTransform3D(None, None, None)
-		val oRq_01 = makeMeshShapeCreateReq(parentID_opt, oXform_01, oMeshDesc, oMatDesc)
+		val oXform_01 = EMPTY_XFORM
+		val oRq_01 = makeMeshShapeCreateReq(parentID_opt, oXform_01, oMeshDesc, markMD) //  oDfltMatDesc)
 		List(oRq_01)
 	}
 
 	val xRotationAngles: Array[Float] = Array((Math.PI / 2).toFloat, 0f, 0f)
-	def makeRqs_X(gparentID_opt : Option[Ident]) : List[VWContentRq] = {
+	def makeRqs_X(gparentID_opt : Option[Ident], markMD : VWMatDesc) : List[VWContentRq] = {
 		val parentNodeShapeID = makeStampyRandyIdent("xMarkParent")
 		val parentCreateRq = new VWSCR_Node(parentNodeShapeID, gparentID_opt)
-		val xLegRqs : List[VWContentRq] = makeRqs_CrossedCylsForX(Some(parentNodeShapeID))
+		val xLegRqs : List[VWContentRq] = makeRqs_CrossedCylsForX(Some(parentNodeShapeID), markMD)
 		// TODO: Set initial XForm (or later manip) for the overall X-rotation.
 		List(parentCreateRq : VWContentRq) ::: xLegRqs
 	}
 
-	def makeRqs_CrossedCylsForX(parentID_opt : Option[Ident]) : List[VWContentRq] = {
+	def makeRqs_CrossedCylsForX(parentID_opt : Option[Ident], markMD : VWMatDesc) : List[VWContentRq] = {
 		val xLegMeshDesc : VWMeshDesc = new VWMD_Cylinder(20, 20, 1f / 5f, 2.25f, true)
 
 		val rotate45DegAroundY: Quaternion = new Quaternion
@@ -143,8 +138,8 @@ trait TTMarkAdapter extends GeneralXlatorSupport {
 		val legXform_01 = new PartialTransform3D(None, Some(rotate45DegAroundY), None)
 		val legXform_02 = new PartialTransform3D(None, Some(rotate45DegAroundY.inverse), None)
 
-		val legRq_01 = makeMeshShapeCreateReq(parentID_opt, legXform_01, xLegMeshDesc, xMatDesc)
-		val legRq_02 = makeMeshShapeCreateReq(parentID_opt, legXform_02, xLegMeshDesc, xMatDesc)
+		val legRq_01 = makeMeshShapeCreateReq(parentID_opt, legXform_01, xLegMeshDesc, markMD)
+		val legRq_02 = makeMeshShapeCreateReq(parentID_opt, legXform_02, xLegMeshDesc, markMD)
 
 		List(legRq_01, legRq_02)
 	}

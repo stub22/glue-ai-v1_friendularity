@@ -16,12 +16,14 @@
 
 package org.friendularity.vw.impl.shp
 
+import com.jme3.font.BitmapText
 import com.jme3.material.Material
 import com.jme3.math.{Quaternion, Vector3f, ColorRGBA}
 import com.jme3.scene.shape.{Box, PQTorus, Torus, Cylinder, Sphere}
 
 import com.jme3.scene.{Geometry, Mesh, Node => JmeNode, Spatial}
 import org.cogchar.render.sys.registry.RenderRegistryClient
+import org.cogchar.render.trial.TextSpatialFactory
 import org.friendularity.vw.mprt.manip.Transform3D
 import org.friendularity.vw.msg.shp.deep.{VWMD_Box, VWMD_PQTorus, VWMatDesc, VWMeshDesc, VWMD_Torus, VWMD_Cylinder, VWMD_Sphere, CompositeMeshyShapeCreateRq, VWSCR_CellGrid, VWSCR_TextBox, VWSCR_ExistingNode, VWSCR_CamGuideNode, VWSCR_Node, VWShapeCreateRq}
 
@@ -38,11 +40,37 @@ trait SpatMatHelper {
 	def getBrushJar : BrushJar = outerGuy.myBrushJar
 }
 
+class TextSpatMkrWrpr(myRRC : RenderRegistryClient) {
+	lazy val myFirstTSF: TextSpatialFactory = new TextSpatialFactory(myRRC)
+	val happyTxtMaker = new TextSpatMaker(myFirstTSF) {
+		override val renderScale_meansWhat : Float = 0.8f
+		override val rectWidth_relatesToCharsPerScaleUnitOrWhat = 96
+	}
+
+	def makeTextSpat(txtBoxRq : VWSCR_TextBox) : BitmapText = {
+		val inFltSpc = txtBoxRq.inFlatSpace
+		val txtCntnt = txtBoxRq.contentTxt
+		val clr = txtBoxRq.color
+		val initXform = txtBoxRq.getInitXform3D_partial
+
+		val btmpTxt : BitmapText = if (inFltSpc)
+			happyTxtMaker.makeBitmapTxt2D(txtCntnt)
+		else
+			happyTxtMaker.makeBitmapTxt3D(txtCntnt)
+
+		btmpTxt
+	}
+	// myOverlayText.setSize(myOverlayText.getFont.getCharSet.getRenderedSize * scale)
+	// myOverlayText.setColor(color)
+	// myOverlayText = myRenderRegCli.getSceneTextFacade(null).getScaledBitmapText(myContent, myScale)
+
+}
 
 // Interprets any ShapeCreateRq to produce a new JmeSpatial, or extract one from the request itself
 
 trait VWSpatialsForShapes extends PatternGridMaker with SpatMatHelper {
 
+	lazy val txtSpatMW = new TextSpatMkrWrpr(getTooMuchRRC)
 
 	//	val tsf: TextSpatialFactory = new TextSpatialFactory(rrc)
 	def makeOrExtractSpat(vwscr : VWShapeCreateRq) : Spatial = {
@@ -59,7 +87,7 @@ trait VWSpatialsForShapes extends PatternGridMaker with SpatMatHelper {
 				existingNode.existingNode
 			}
 			case txtBox : VWSCR_TextBox => {
-				null
+				txtSpatMW.makeTextSpat(txtBox)
 			}
 			case bigGrid : VWSCR_CellGrid => {
 				makeBigGridNode(getTooMuchRRC)
@@ -72,11 +100,6 @@ trait VWSpatialsForShapes extends PatternGridMaker with SpatMatHelper {
 
 				geom
 			}
-				/*
-			case meshBasedRq : VWMeshyDesc => {
-				makeMeshFromDesc(meshBasedRq)
-			}
-			*/
 		}
 	}
 	def makeMeshFromDesc(meshBasedRq : VWMeshDesc) : Geometry = {

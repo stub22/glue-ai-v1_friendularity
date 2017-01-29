@@ -94,16 +94,17 @@ case class VWSCR_CamGuideNode(knownNodeID : Ident, knownParentID_opt : Option[Id
 }
 
 
-case class  VWSCR_TextBox(contentTxt : String) extends VWShapeCreateRq {
-	override def inFlatSpace : Boolean = true
+case class  VWSCR_TextBox(contentTxt : String, myFlatSpace : Boolean,
+						  	myXformOfVagueDim : MaybeTransform3D, color : ColorRGBA) extends VWShapeCreateRq {
+	override def inFlatSpace : Boolean = myFlatSpace
 
-	override def getInitXform3D_partial : MaybeTransform3D = EMPTY_XFORM
+	override def getInitXform3D_partial : MaybeTransform3D =  myXformOfVagueDim
 
 }
 
 trait VWSCR_CellGrid extends VWShapeCreateRq {
 
-	override def getInitXform3D_partial : MaybeTransform3D = EMPTY_XFORM
+	override def getInitXform3D_partial : MaybeTransform3D =  EMPTY_XFORM
 }
 // "AnimControl is a Spatial control that allows manipulation of skeletal animation."
 // SpatialTrack(float[] times, Vector3f[] translations, Quaternion[] rotations, Vector3f[] scales)
