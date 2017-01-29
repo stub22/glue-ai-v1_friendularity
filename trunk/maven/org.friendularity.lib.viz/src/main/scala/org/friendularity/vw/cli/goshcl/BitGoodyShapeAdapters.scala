@@ -36,16 +36,41 @@ trait BitGoodyShapeXlator extends GoodyRqPartialXlator {
 	override def makeCreateRqs(taSpec : ThingActionSpec) : List[VWContentRq]  = {
 //	override def makeCreateRqs(verbID : Ident, tgtTypeID : Ident, tgtID : Ident,  gax : GoodyActionExtractor)//  paramTVM : TypedValueMap)
 //				: List[VWContentRq] = {
+
 		val tgtTypeID : Ident = taSpec.getTargetThingTypeID
+		val parentNodeShapeID = makeStampyRandyIdent("ogParentNode")
+
+		val parentRqs : List[VWContentRq] = makeParentCreateRqs(parentNodeShapeID, taSpec)
+
 		val msgList : List[VWContentRq] = tgtTypeID match {
 			case GoodyNames.TYPE_BIT_BOX => {
-				Nil
+				makeRqs_bitBox(Some(parentNodeShapeID))
 			}
 			case GoodyNames.TYPE_BIT_CUBE => {
-				Nil
+				makeRqs_bitCube(Some(parentNodeShapeID))
 			}
 		}
-		msgList
+		parentRqs ::: msgList
 	}
 
+	def makeRqs_bitBox(parentID_opt : Option[Ident]) : List[VWContentRq] = {
+		Nil
+	}
+	def makeRqs_bitCube(parentID_opt : Option[Ident]) : List[VWContentRq] = {
+		Nil
+	}
+
+
 }
+/*
+		  val atlas : TextureAtlas = new TextureAtlas(400, 1200)
+		  val matFact : MatFactory = getRenderRegCli.getOpticMaterialFacade(null, null)
+		  val assetMgr : AssetManager = matFact.getAssetManager
+		  val zeroTexture : Texture = assetMgr.loadTexture("textures/robosteps/Zero.png")
+		  val oneTexture : Texture = assetMgr.loadTexture("textures/robosteps/One.png")
+		  val blankTexture : Texture = assetMgr.loadTexture("textures/robosteps/BlankGray.png")
+		atlas.addTexture(zeroTexture, "ColorMap")
+		atlas.addTexture(oneTexture, "ColorMap")
+		atlas.addTexture(blankTexture, "ColorMap")
+
+ */

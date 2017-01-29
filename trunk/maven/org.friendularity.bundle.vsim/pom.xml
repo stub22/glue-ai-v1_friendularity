@@ -98,6 +98,7 @@
                             org.friendularity.respire,
                             org.friendularity.struct,
                             org.friendu.tchunk.*,
+							org.friendu.goody_texture,
                             org.friendularity.field,
                             org.friendularity.raiz,
                             org.friendularity.cpump,

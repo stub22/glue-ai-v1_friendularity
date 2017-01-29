@@ -15,7 +15,6 @@
  */
 package org.friendularity.vw.impl.shp
 
-import com.jme3.font.BitmapText
 import com.jme3.material.Material
 import com.jme3.math.{ColorRGBA, Quaternion}
 import com.jme3.renderer.queue.RenderQueue

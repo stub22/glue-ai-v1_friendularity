@@ -79,7 +79,7 @@ class TestManyGoodyBursts(ovwc : OffersVWorldClient) extends GoodyParamMaker wit
 
 			val boxParams = combineParams(List(redTrans, turnAboutY_45deg,  zPos))
 
-			fireHorizBurst("horizBitCubeOne", GT_TICTAC_GRID, boxParams)
+			fireHorizBurst("horizTTGridOne", GT_TICTAC_GRID, boxParams)
 		}
 		def fireFloorBurst() : Unit = {
 			val yPos = makeFloatParam(GoodyNames.LOCATION_Y, -3.0f)
@@ -94,8 +94,8 @@ class TestManyGoodyBursts(ovwc : OffersVWorldClient) extends GoodyParamMaker wit
 			val locParams = makeLoc3Params(150.0f, 300.0f, 0.5f)
 			val txtParam = makeTxtParam("Burst o Text is HERE")
 			val scale3 = makeUniformScaleParam(1.0f)
-			val txtParams = combineParams(List(txtParam, scale3, locParams))
-			fireHorizBurst("horizTxt", GT_TEXT, txtParams, 20.0f, 40.0f, Some(500))
+			val prmsCombined = combineParams(List(txtParam, scale3, locParams))
+			fireHorizBurst("horizTxt", GT_TEXT, prmsCombined, 20.0f, 40.0f, Some(500))
 		}
 		def fireScoreboardBurst() : Unit = {
 			/*
@@ -122,14 +122,14 @@ class TestManyGoodyBursts(ovwc : OffersVWorldClient) extends GoodyParamMaker wit
 		}
 		def fireSomeBursts(): Unit = {
 			fireTicTacGridBurst()
+			fireTextBurst()
+			fireBitCubeBurst()
+
 			fireBoxBurst()
 
 			fireFloorBurst()
-			fireTextBurst()
 			fireScoreboardBurst()
 			fireCrosshairBurst()
-
-			// fireBitCubeBurst()
 
 			overlapSomeBursts()
 		}

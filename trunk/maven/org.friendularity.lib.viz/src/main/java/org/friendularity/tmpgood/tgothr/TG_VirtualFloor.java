@@ -51,6 +51,7 @@ public class TG_VirtualFloor extends BasicGoodyEntity {
 			color = DEFAULT_COLOR;
 		}
 		addGeometry(floorBox, null, color, new Quaternion(), new PlaneCollisionShape(plane), 0f);
+
 	}
 	
 	/*

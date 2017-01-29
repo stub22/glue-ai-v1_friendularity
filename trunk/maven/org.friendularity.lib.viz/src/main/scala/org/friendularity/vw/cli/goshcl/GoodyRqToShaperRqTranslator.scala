@@ -37,7 +37,6 @@ trait HandleGoodyCreateRequest extends SubTransChooser with KnowsGoodyCache with
 
 		val gax: GoodyActionExtractor = new GoodyActionExtractor(actSpec)
 
-
 // 		val paramTVM = actSpec.getParamTVM
 //		val shapeRqList : List[VWContentRq] = xlator.makeCreateRqs(verbID, tgtTypeID, tgtID, gax) // paramTVM)
 		val shapeRqList : List[VWContentRq] = xlator.makeCreateRqs(actSpec)
@@ -91,7 +90,7 @@ trait HandleGoodyModifyRequest extends KnowsGoodyCache with VarargsLogging {
 		mgrec.xlator.makeMoveRqs(mgrec, taSpec) // .getVerbID, taSpec.getTargetThingID, taSpec.getParamTVM)
 	}
 	protected def opSet(mgrec : MadeGoodyRec, taSpec : ThingActionSpec) : List[VWContentRq] = {
-		mgrec.xlator.makeSetRqs(mgrec, taSpec.getVerbID, taSpec.getTargetThingID, taSpec.getParamTVM)
+		mgrec.xlator.makeSetRqs(mgrec, taSpec) //  taSpec.getVerbID, taSpec.getTargetThingID, taSpec.getParamTVM)
 	}
 
 
