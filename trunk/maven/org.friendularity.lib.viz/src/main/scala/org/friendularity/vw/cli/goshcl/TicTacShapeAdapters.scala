@@ -15,12 +15,18 @@ import org.friendularity.vw.msg.shp.deep.{ShapeManipRqImpl, VWMD_Torus, VWSCR_No
 /**
   * Created by Owner on 1/22/2017.
   */
-trait TicTacShapeXlator extends GoodyRqPartialXlator {
+trait TicTacNums {
+	val ROTATE_UPRIGHT_EULER : Array[Float] = Array((Math.PI / 2).toFloat, 0f, 0f)
+	val rotUpQuat = new Quaternion(ROTATE_UPRIGHT_EULER)
+
+	val DEFAULT_GRID_COLOR: ColorRGBA = ColorRGBA.Blue
+	val SIZE_MULTIPLIER: Float = 9f
+
+}
+trait TicTacShapeXlator extends GoodyRqPartialXlator with TicTacNums {
 	lazy val myGridAdapter = new TTGridAdapter {}
 	lazy val myMarkAdapter = new TTMarkAdapter {}
 
-	private val ROTATE_UPRIGHT_EULER : Array[Float] = Array((Math.PI / 2).toFloat, 0f, 0f)
-	private val rotUpQuat = new Quaternion(ROTATE_UPRIGHT_EULER)
 
 	override def makeCreateRqs(taSpec : ThingActionSpec) : List[VWContentRq]  = {
 //	override def makeCreateRqs(verbID : Ident, tgtTypeID : Ident, tgtID : Ident,  gax : GoodyActionExtractor) // paramTVM : TypedValueMap)
@@ -96,10 +102,8 @@ trait TicTacShapeXlator extends GoodyRqPartialXlator {
 	}
 
 }
-trait TTGridAdapter extends GeneralXlatorSupport {
-	private val DEFAULT_GRID_COLOR: ColorRGBA = ColorRGBA.Blue
-	private val SIZE_MULTIPLIER: Float = 9f
-	private val ROTATE_UPRIGHT: Array[Float] = Array((Math.PI / 2).toFloat, 0f, 0f)
+trait TTGridAdapter extends GeneralXlatorSupport with TicTacNums {
+	// private val ROTATE_UPRIGHT: Array[Float] = Array((Math.PI / 2).toFloat, 0f, 0f)
 
 /*	def makeTicTacGridShapeRqs : List[VWContentRq] = {
 		val parentNodeShapeID = makeStampyRandyIdent("ttGridParent")
@@ -153,17 +157,18 @@ trait TTGridAdapter extends GeneralXlatorSupport {
 	def computeMarkCenterPos(markPosH : Int, markPosV: Int) : Vector3f = {
 		// val markOffsetX: Float = SIZE_MULTIPLIER * scale.getX / 3f
 		// val markOffsetY: Float = SIZE_MULTIPLIER * scale.getY / 3f
-		val markOffsetH: Float = SIZE_MULTIPLIER * 1f //  / 3f
-		val markOffsetV: Float = SIZE_MULTIPLIER * 1f // / 3f
+		val markOffsetH: Float = SIZE_MULTIPLIER / 3f //  / 3f
+		val markOffsetV: Float = SIZE_MULTIPLIER / 3f // / 3f
 
-		val markCntrPosRel: Vector3f = new Vector3f(markOffsetH * (markPosH - 2),
-						-markOffsetV * (markPosV - 2), 0)
+		val visX_afterRot = markOffsetH * (markPosH - 2)
+		val visY_afterRot = -markOffsetV * (markPosV - 2)
+		val markCntrPosRel: Vector3f = new Vector3f(visX_afterRot, 0f, visY_afterRot)
 
 		markCntrPosRel
 	}
 
 }
-trait TTMarkAdapter extends GeneralXlatorSupport {
+trait TTMarkAdapter extends GeneralXlatorSupport with TicTacNums {
 	private val X_DFLT_COLOR: ColorRGBA = ColorRGBA.Black
 	private val xDfltMatDesc = new SimpleMatDesc(Some(X_DFLT_COLOR))
 
@@ -171,12 +176,13 @@ trait TTMarkAdapter extends GeneralXlatorSupport {
 	private val oDfltMatDesc = new SimpleMatDesc(Some(O_DFLT_COLOR))
 
 	private var playerO: Boolean = false
-	private var indexX: Int = 0
-	private var indexO: Int = 0
+	// private var indexX: Int = 0
+	// private var indexO: Int = 0
 
 	def makeRqs_TorusForO(parentID_opt : Option[Ident], markMD : VWMatDesc) : List[VWContentRq] = {
 		val oMeshDesc : VWMeshDesc = new VWMD_Torus(40, 20, 1f/5f, 5f/6f)
-		val oXform_01 = EMPTY_XFORM
+		// val oXform_01 = EMPTY_XFORM
+		val oXform_01 = new PartialTransform3D(None, Some(rotUpQuat), None)
 		val oRq_01 = makeMeshShapeCreateReq(parentID_opt, oXform_01, oMeshDesc, markMD) //  oDfltMatDesc)
 		List(oRq_01)
 	}
@@ -190,10 +196,11 @@ trait TTMarkAdapter extends GeneralXlatorSupport {
 	}
 
 	def makeRqs_CrossedCylsForX(parentID_opt : Option[Ident], markMD : VWMatDesc) : List[VWContentRq] = {
+		// Cylinder begins in the X-Z plane (aligned with Z axis?)
 		val xLegMeshDesc : VWMeshDesc = new VWMD_Cylinder(20, 20, 1f / 5f, 2.25f, true)
 
 		val rotate45DegAroundY: Quaternion = new Quaternion
-		rotate45DegAroundY.fromAngleAxis(Math.PI.toFloat / 4, new Vector3f(0f, 1f, 0f))
+		rotate45DegAroundY.fromAngleAxis(Math.PI.toFloat / 5f, new Vector3f(0f, 1f, 0f))
 
 		val legXform_01 = new PartialTransform3D(None, Some(rotate45DegAroundY), None)
 		val legXform_02 = new PartialTransform3D(None, Some(rotate45DegAroundY.inverse), None)
