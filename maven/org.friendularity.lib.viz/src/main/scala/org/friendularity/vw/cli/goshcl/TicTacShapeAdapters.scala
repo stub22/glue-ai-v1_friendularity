@@ -28,7 +28,8 @@ trait TicTacShapeXlator extends GoodyRqPartialXlator {
 		val tgtTypeID : Ident = taSpec.getTargetThingTypeID
 		val parentNodeShapeID = makeStampyRandyIdent("ttParentNode")
 
-		val parentRqs = makeParentCreateRqs(parentNodeShapeID, taSpec)
+		val gparent_opt : Option[Ident] = None
+		val parentRqs = makeParentCreateRqs_withXform(parentNodeShapeID, gparent_opt, taSpec)
 
 		val matDesc = translateSimpleMatDesc(taSpec)
 
@@ -53,6 +54,47 @@ trait TicTacShapeXlator extends GoodyRqPartialXlator {
 		info1("FullRqList for TicTac goody create={}", fullRqList)
 		fullRqList
 	}
+
+	override def makeSetRqs(mgrec : MadeGoodyRec, taSpec : ThingActionSpec): List[VWContentRq] = {
+		val tgtTypeID_opt = mgrec.getFirstTgtTypeID
+		val ttSetRqs = if (tgtTypeID_opt.isDefined) {
+			val tgtTypeID : Ident = tgtTypeID_opt.get
+			if (tgtTypeID.equals(GoodyNames.TYPE_TICTAC_GRID)) {
+				val gparentID = mgrec.getTopShapeID
+
+				val markNodeShapeID = makeStampyRandyIdent("ttMarkNode")
+
+				val gax = new GoodyActionExtractor(taSpec)
+
+				val xCoord: Int = gax.getSpecialInteger(GoodyNames.COORDINATE_X)
+				val yCoord: Int = gax.getSpecialInteger(GoodyNames.COORDINATE_Y)
+
+				val markCenterPos : Vector3f = myGridAdapter.computeMarkCenterPos(xCoord, yCoord)
+
+				val markXform_part = new PartialTransform3D(Some(markCenterPos), None, None)
+
+				info1("TT-Mark Xform={}", markXform_part)
+				val parentRqs = makeParentCreateRqs_withXform(markNodeShapeID, Some(gparentID), markXform_part)
+
+				val matDesc = translateSimpleMatDesc(taSpec)
+
+				val flagIsO = gax.getSpecialBoolean(GoodyNames.USE_O)
+				val markSpatRqs = if (flagIsO) {
+					myMarkAdapter.makeRqs_TorusForO(Some(markNodeShapeID), matDesc)
+				} else {
+					myMarkAdapter.makeRqs_X(Some(markNodeShapeID), matDesc)
+				}
+				parentRqs ::: markSpatRqs
+			} else {
+				Nil
+			}
+		} else {
+			Nil
+		}
+		info1("TT-Grid setRqs={}", ttSetRqs)
+		ttSetRqs
+	}
+
 }
 trait TTGridAdapter extends GeneralXlatorSupport {
 	private val DEFAULT_GRID_COLOR: ColorRGBA = ColorRGBA.Blue
@@ -108,6 +150,18 @@ trait TTGridAdapter extends GeneralXlatorSupport {
 		List(cylRq_01, cylRq_02, cylRq_03, cylRq_04)
 	}
 
+	def computeMarkCenterPos(markPosH : Int, markPosV: Int) : Vector3f = {
+		// val markOffsetX: Float = SIZE_MULTIPLIER * scale.getX / 3f
+		// val markOffsetY: Float = SIZE_MULTIPLIER * scale.getY / 3f
+		val markOffsetH: Float = SIZE_MULTIPLIER * 1f //  / 3f
+		val markOffsetV: Float = SIZE_MULTIPLIER * 1f // / 3f
+
+		val markCntrPosRel: Vector3f = new Vector3f(markOffsetH * (markPosH - 2),
+						-markOffsetV * (markPosV - 2), 0)
+
+		markCntrPosRel
+	}
+
 }
 trait TTMarkAdapter extends GeneralXlatorSupport {
 	private val X_DFLT_COLOR: ColorRGBA = ColorRGBA.Black
@@ -132,7 +186,6 @@ trait TTMarkAdapter extends GeneralXlatorSupport {
 		val parentNodeShapeID = makeStampyRandyIdent("xMarkParent")
 		val parentCreateRq = new VWSCR_Node(parentNodeShapeID, gparentID_opt)
 		val xLegRqs : List[VWContentRq] = makeRqs_CrossedCylsForX(Some(parentNodeShapeID), markMD)
-		// TODO: Set initial XForm (or later manip) for the overall X-rotation.
 		List(parentCreateRq : VWContentRq) ::: xLegRqs
 	}
 

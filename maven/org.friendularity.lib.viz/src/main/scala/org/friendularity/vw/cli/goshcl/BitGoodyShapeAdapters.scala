@@ -38,9 +38,11 @@ trait BitGoodyShapeXlator extends GoodyRqPartialXlator {
 //				: List[VWContentRq] = {
 
 		val tgtTypeID : Ident = taSpec.getTargetThingTypeID
+
+		val gparentID_opt : Option[Ident] = None
 		val parentNodeShapeID = makeStampyRandyIdent("ogParentNode")
 
-		val parentRqs : List[VWContentRq] = makeParentCreateRqs(parentNodeShapeID, taSpec)
+		val parentRqs : List[VWContentRq] = makeParentCreateRqs_withXform(parentNodeShapeID, gparentID_opt, taSpec)
 
 		val msgList : List[VWContentRq] = tgtTypeID match {
 			case GoodyNames.TYPE_BIT_BOX => {

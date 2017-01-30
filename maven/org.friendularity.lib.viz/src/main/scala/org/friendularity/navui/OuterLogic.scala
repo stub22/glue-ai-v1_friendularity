@@ -47,7 +47,7 @@ import org.friendularity.vw.impl.ovl.{NavPageDefs, OverlayPage}
 import org.friendularity.vw.mprt.manip.{PartialTransform3D, CamStateParams3D, MakesManipDesc, TransformParams3D, SmooveManipEndingFullImpl}
 import org.friendularity.vw.msg.bdy.{VWBodyDangerYogaRq, VWBodySkeletonDisplayToggle, VWBroadcastToAllBodies, VWBodyLifeRq}
 import org.friendularity.vw.msg.cor.{VWSetupOvlBookRq, VWOverlayRq}
-import org.friendularity.vw.msg.shp.deep.{SimpleMatDesc, VWMD_Sphere, VWSCR_MeshyComposite, VWSCR_CellGrid, KnownShapeCreateRqImpl, VWClearAllShapes, ShapeManipRqImpl}
+import org.friendularity.vw.msg.shp.deep.{VWSCR_KnownShape, SimpleMatDesc, VWMD_Sphere, VWSCR_MeshyComposite, VWSCR_CellGrid, KnownShapeCreateRqImpl, VWClearAllShapes, ShapeManipRqImpl}
 import org.friendularity.vw.msg.stg.{VWKeymapBinding_Medial, ViewportDesc, VWStageSetupLighting, VWStatsViewMessage, VWStageBackgroundSkybox, VWStageBackgroundColor, VWStageOpticsBasic, VWStageEmulateBonusContentAndCams, VWStageResetToDefault}
 import org.friendularity.vwimpl.VWorldMasterFactory
 
@@ -141,7 +141,7 @@ trait FunWithShapes extends MakesManipDesc with IdentHlp {
 		val sphereMeshDesc = new VWMD_Sphere(33, 33, 99.0f) // , sphereParams)
 		val knownSphereID_opt: Option[Ident] = Some(makeStampyRandyIdentAnon())
 		val parentID_opt = None
-		val msgPart_known = new KnownShapeCreateRqImpl(knownSphereID_opt, parentID_opt)
+		val msgPart_known = new VWSCR_KnownShape(knownSphereID_opt, parentID_opt)
 		val sphereCmpndReq = new VWSCR_MeshyComposite(msgPart_known, sphereXform, sphereMeshDesc, sphereMatDesc)
 		shapeTeller.tellCPMsg(sphereCmpndReq)
 		knownSphereID_opt.get

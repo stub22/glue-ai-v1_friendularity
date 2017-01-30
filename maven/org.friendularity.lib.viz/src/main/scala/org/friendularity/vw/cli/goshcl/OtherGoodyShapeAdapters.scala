@@ -19,9 +19,12 @@ trait OtherGoodyShapeXlator extends GoodyRqPartialXlator {
 //	override def makeCreateRqs(verbID : Ident, tgtTypeID : Ident, tgtID : Ident,  gax : GoodyActionExtractor) // paramTVM : TypedValueMap)
 //				: List[VWContentRq] = {
 		val tgtTypeID : Ident = taSpec.getTargetThingTypeID
+
+		val gparentID_opt : Option[Ident] = None
+
 		val parentNodeShapeID = makeStampyRandyIdent("ogParentNode")
 
-		val parentRqs : List[VWContentRq] = makeParentCreateRqs(parentNodeShapeID, taSpec)
+		val parentRqs : List[VWContentRq] = makeParentCreateRqs_withXform(parentNodeShapeID, gparentID_opt, taSpec)
 
 		val suppliedMat = translateSimpleMatDesc(taSpec)
 

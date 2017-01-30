@@ -64,12 +64,17 @@ trait GoodyParamMaker extends VWTAMsgMaker with VarargsLogging {
 		var nwVal = oldVal + delta
 		tgtParams.putValueAtName(paramID, nwVal)
 	}
+	def makeIntParam(paramID: Ident, pval : Int) : SerTypedValueMap = {
+		val btvm : BasicTypedValueMap  = new ConcreteTVM()
+		val paramWriter = new GoodyActionParamWriter(btvm)
+		paramWriter.putObjectAtName(paramID, pval)
+		btvm
+	}
 	def makeFloatParam(paramID: Ident, pval : Float): SerTypedValueMap = {
 		val btvm : BasicTypedValueMap  = new ConcreteTVM()
 		val paramWriter = new GoodyActionParamWriter(btvm)
 		paramWriter.putObjectAtName(paramID, pval)
 		btvm
-
 	}
 	def makeDurParam(durSec : Float) : SerTypedValueMap = {
 		val btvm : BasicTypedValueMap  = new ConcreteTVM()
