@@ -3,7 +3,7 @@ package org.friendularity.vw.cli.goshcl
 import org.appdapter.core.name.Ident
 import org.cogchar.api.thing.ThingActionSpec
 import org.friendularity.vw.msg.cor.VWContentRq
-import org.friendularity.vw.msg.shp.deep.VWSCR_Node
+import org.friendularity.vw.msg.shp.deep.{VWShapeCreateRq, VWSCR_Node}
 
 import scala.collection.mutable.{Map => MutaMap, HashMap}
 /**
@@ -30,9 +30,9 @@ case class MadeGoodyRec(goodyID : Ident, xlator : GoodyRqPartialXlator) {
 	}
 
 	def getTopShapeID : Ident = {
-		val firstXlation = myRecordedXlations.head
-		val firstRqSent = firstXlation.shapeRqsSent.head
-		firstRqSent.asInstanceOf[VWSCR_Node].knownNodeID
+		val firstXlation : RecordedXlation = myRecordedXlations.head
+		val firstRqSent : VWContentRq  = firstXlation.shapeRqsSent.head
+		firstRqSent.asInstanceOf[VWShapeCreateRq].getKnownID_opt.get
 	}
 
 	def getAllShapeIDs : List[Ident] = Nil

@@ -21,7 +21,8 @@ trait FlatGoodyShapeXlator extends GoodyRqPartialXlator {
 		val txtContent = gax.getSpecialString(GoodyNames.TEXT) //  "This is the text"
 		info1("Extracted txtContent={}", txtContent)
 		val color_opt : Option[ColorRGBA] = extractColor(gax)
-		val txtBxRq = new VWSCR_TextBox(txtContent, inFlatSpc, xform, color_opt.getOrElse(ColorRGBA.Black))
+		val shapeID = makeStampyRandyIdent("textBoxShp")
+		val txtBxRq = new VWSCR_TextBox(Some(shapeID), txtContent, inFlatSpc, xform, color_opt.getOrElse(ColorRGBA.Black))
 		List(txtBxRq)
 	}
 }
