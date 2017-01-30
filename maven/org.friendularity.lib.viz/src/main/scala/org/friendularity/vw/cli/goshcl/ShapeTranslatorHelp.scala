@@ -40,8 +40,8 @@ trait ShaperMsgMaker {
 	def makeRq_createEmptyJmeNode(nodeID : Ident, knParID_opt : Option[Ident]) :
 	VWShapeCreateRq = VWSCR_Node(nodeID, knParID_opt)
 
-	def makeRq_TextBox(contentTxt : String, flatSpc : Boolean, xform  : MaybeTransform3D, txtColor : ColorRGBA) =
-				VWSCR_TextBox(contentTxt, flatSpc, xform, txtColor)
+	def makeRq_TextBox(shapeID : Ident, contentTxt : String, flatSpc : Boolean, xform  : MaybeTransform3D, txtColor : ColorRGBA) =
+				VWSCR_TextBox(Option(shapeID), contentTxt, flatSpc, xform, txtColor)
 
 	def makeRq_Manip(tgtShapeID : Ident, manipDesc : ManipDesc,
 					 statusTlr_opt : Option[CPStrongTeller[ManipStatusMsg]]) : VWShapeManipRq =

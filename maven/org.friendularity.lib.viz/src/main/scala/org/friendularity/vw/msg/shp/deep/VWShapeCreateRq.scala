@@ -98,8 +98,11 @@ case class VWSCR_CamGuideNode(knownNodeID : Ident, knownParentID_opt : Option[Id
 }
 
 
-case class  VWSCR_TextBox(contentTxt : String, myFlatSpace : Boolean,
+case class  VWSCR_TextBox(shapeID_opt : Option[Ident], contentTxt : String, myFlatSpace : Boolean,
 						  	myXformOfVagueDim : MaybeTransform3D, color : ColorRGBA) extends VWShapeCreateRq {
+
+	override def getKnownID_opt : Option[Ident] = shapeID_opt
+
 	override def inFlatSpace : Boolean = myFlatSpace
 
 	override def getInitXform3D_partial : MaybeTransform3D =  myXformOfVagueDim

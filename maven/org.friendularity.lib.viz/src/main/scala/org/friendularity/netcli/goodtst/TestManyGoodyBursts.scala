@@ -180,25 +180,26 @@ class TestManyGoodyBursts(ovwc : OffersVWorldClient) extends GoodyParamMaker wit
 		fireHorizBurst("horizCross", GT_CROSSHAIR, chParams, 0.1f, 0.1f, noSetParamsFunc, noMoveRotParam, Some(400))
 	}
 	def fireSomeBursts(): Unit = {
+		fireTextBurst()
+
 		fireTicTacGridBurst()
+
+		fireFloorBurst()
 
 		fireTicXBurst()
 
 		fireTacOBurst()
 
-		fireTextBurst()
-
 		fireBitCubeBurst()
 
 		fireBoxBurst()
 
-		fireFloorBurst()
 
 		// Above goodies are used by RK STEM as of 2017-Jan, below are not.
-		fireScoreboardBurst()
-		fireCrosshairBurst()
+//		fireScoreboardBurst()
+//		fireCrosshairBurst()
 
-		overlapSomeBursts()
+//		overlapSomeBursts()
 	}
 	def overlapSomeBursts(): Unit = {
 
