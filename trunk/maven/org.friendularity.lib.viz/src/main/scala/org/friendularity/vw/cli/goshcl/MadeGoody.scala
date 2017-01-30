@@ -21,6 +21,13 @@ case class MadeGoodyRec(goodyID : Ident, xlator : GoodyRqPartialXlator) {
 		val xlt = new RecordedXlation(taRcvd, shapeRqsSent, tstmpMsec)
 		myRecordedXlations = myRecordedXlations ::: List(xlt)
 	}
+	def getFirstTA : Option[ThingActionSpec] = {
+		myRecordedXlations.headOption.map(_.taRcvd)
+	}
+
+	def getFirstTgtTypeID : Option[Ident] = {
+		getFirstTA.map(_.getTargetThingTypeID)
+	}
 
 	def getTopShapeID : Ident = {
 		val firstXlation = myRecordedXlations.head

@@ -44,15 +44,19 @@ trait GoodyRqPartialXlator extends GeneralXlatorSupport with MakesManipDesc {
 					 : List[VWContentRq] = {
 		Nil
 	}
-
-	def makeParentCreateRqs(parentNodeShapeID : Ident, taSpec : ThingActionSpec) : List[VWContentRq] = {
-		val initXform_part = extractXform_part(taSpec)
-		info1("Extracted initXform_part={}", initXform_part)
+	def makeParentCreateRqs_withXform(parentNodeShapeID : Ident, gparent_opt : Option[Ident], initXform_part : MaybeTransform3D) : List[VWContentRq] = {
 		val initManipDesc : ManipDesc = new AbruptManipAbsPartialImpl(initXform_part)
-		val parentCreateRq = new VWSCR_Node(parentNodeShapeID, None)
-		val initManipRq = new ShapeManipRqImpl(parentNodeShapeID, initManipDesc, None)
+		val parentCreateRq = new VWSCR_Node(parentNodeShapeID, gparent_opt)
+		val statusTlr_opt = None
+		val initManipRq = new ShapeManipRqImpl(parentNodeShapeID, initManipDesc, statusTlr_opt)
 		val parentRqs = List[VWContentRq](parentCreateRq, initManipRq)
 		parentRqs
+	}
+
+	def makeParentCreateRqs_withXform(parentNodeShapeID : Ident, gparent_opt : Option[Ident], taSpec : ThingActionSpec) : List[VWContentRq] = {
+		val initXform_part = extractXform_part(taSpec)
+		info1("Extracted initXform_part={}", initXform_part)
+		makeParentCreateRqs_withXform(parentNodeShapeID, gparent_opt, initXform_part)
 	}
 
 	val DFLT_CLR = ColorRGBA.Gray

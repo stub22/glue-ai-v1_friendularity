@@ -17,6 +17,7 @@ class GoodyClientState(goodyID : Ident, typeID : Ident, initTASpec : ThingAction
 	private var		myLastParams : SerTypedValueMap = initParams
 	private var		myLastTASpec : ThingActionSpec = initTASpec
 
+	def getInitParams : SerTypedValueMap = initParams
 	def getLastParams : SerTypedValueMap = myLastParams
 	def makeReqAndUpdate(verbID : Ident, nextParams : SerTypedValueMap) : ThingActionSpec = {
 		myLastParams = nextParams

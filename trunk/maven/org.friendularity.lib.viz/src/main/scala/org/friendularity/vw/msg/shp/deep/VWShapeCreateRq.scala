@@ -63,7 +63,8 @@ trait VWShapeCreateRq extends VWContentRq with KnowsShapeIDsPart
 // As discussed above, all these hookup-node shapes have an EMPTY_XFORM by default, because
 // we expect clients to send manip rqs separately to explicitly set the xform, after the node-shape is created.
 
-class KnownShapeCreateRqImpl(knownNodeID_opt : Option[Ident], knownParentID_opt : Option[Ident]) extends VWShapeCreateRq {
+abstract class KnownShapeCreateRqImpl(knownNodeID_opt : Option[Ident], knownParentID_opt : Option[Ident])
+			extends VWShapeCreateRq {
 	override def getKnownID_opt : Option[Ident] = knownNodeID_opt
 	// We generally allow but don't require a parentID.
 	override def getKnownParentID_opt : Option[Ident] = knownParentID_opt
@@ -71,6 +72,9 @@ class KnownShapeCreateRqImpl(knownNodeID_opt : Option[Ident], knownParentID_opt 
 	override def getInitXform3D_partial : MaybeTransform3D = EMPTY_XFORM
 
 }
+case class VWSCR_KnownShape(knownNodeID_opt : Option[Ident], knownParentID_opt : Option[Ident]) extends
+			KnownShapeCreateRqImpl(knownNodeID_opt, knownParentID_opt)
+
 
 // Can only work as a local message.  Binds an existing JmeNode to a given ID, and optional parent.
 // We use this to register CameraNodes after they have been bound to a camera.

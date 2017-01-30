@@ -28,7 +28,7 @@ class GoodyMsgBurstSender(entIdPrfx : String, burstWidth : Int, burstLen : Int) 
 
 	var myRefs : List[GoodyClientState] = Nil
 
-	def delayAsNeeded(delayMsec_opt : Option[Int]) : Unit = {
+	def pauseAsNeeded(delayMsec_opt : Option[Int]) : Unit = {
 		if (delayMsec_opt.isDefined) {
 			Thread.sleep(delayMsec_opt.get)
 		}
@@ -36,7 +36,7 @@ class GoodyMsgBurstSender(entIdPrfx : String, burstWidth : Int, burstLen : Int) 
 	// N
 	// TODO:  Wrap up dyna pairs in a class, then pass a collection
 	def createGoodies(ovwc : OffersVWorldClient, typeID : Ident, seedParams : SerTypedValueMap,
-					  dynaParamID : Ident, dynaDelta : Float, delayMsec_opt : Option[Int]) : Unit = {
+					  dynaParamID : Ident, dynaDelta : Float, pauseMsec_opt : Option[Int]) : Unit = {
 		if (myRefs.nonEmpty) {
 			throw new Exception("Cant create goodies - refs already exist!")
 		}
@@ -47,27 +47,43 @@ class GoodyMsgBurstSender(entIdPrfx : String, burstWidth : Int, burstLen : Int) 
 			val taRq = makeTASpec(goodyID, typeID, GoodyNames.ACTION_CREATE, nxtParams)
 			ovwc.sendTARq(taRq)
 			lastParams = nxtParams
-			delayAsNeeded(delayMsec_opt)
+			pauseAsNeeded(pauseMsec_opt)
 			val ugRef = new GoodyClientState(goodyID, typeID, taRq, nxtParams)
 			ugRef
 		})
 	}
-	def moveAllGoodies(ovwc : OffersVWorldClient, dynaParamID : Ident, dynaDelta : Float, durSec : Float, delayMsec_opt : Option[Int]) : Unit = {
+	def moveAllGoodies(ovwc : OffersVWorldClient, dynaParamID : Ident, dynaDelta : Float,
+					   rotParam_opt : Option[SerTypedValueMap], durSec : Float,
+					   pauseMsec_opt : Option[Int]) : Unit = {
 		myRefs.foreach( ugref => {
-			val lastParams = ugref.getLastParams
-			val nxtParams = duplicateParams(lastParams)
+			// Unreliable, uses too many assumptions about state of last params.
+			val initParams  = ugref.getInitParams
+			val nxtParams = duplicateParams(initParams)
 			adjustFloatParam(nxtParams, dynaParamID, dynaDelta)
 			setDurParam(nxtParams, durSec)
-			val taRq = ugref.makeReqAndUpdate(GoodyNames.ACTION_MOVE, nxtParams)
+			val actualParams = combineParams(List(nxtParams) ::: rotParam_opt.toList)
+			val taRq = ugref.makeReqAndUpdate(GoodyNames.ACTION_MOVE, actualParams)
 			ovwc.sendTARq(taRq)
-			delayAsNeeded(delayMsec_opt)
+			pauseAsNeeded(pauseMsec_opt)
 		})
 	}
-	def deleteAllGoodies(ovwc : OffersVWorldClient, delayMsec_opt : Option[Int]) : Unit = {
+	def deleteAllGoodies(ovwc : OffersVWorldClient, pauseMsec_opt : Option[Int]) : Unit = {
 		myRefs.foreach(ugref => {
 			val taRq = ugref.makeDeleteReq
 			ovwc.sendTARq(taRq)
-			delayAsNeeded(delayMsec_opt)
+			pauseAsNeeded(pauseMsec_opt)
 		})
 	}
+	def setAllGoodies(ovwc : OffersVWorldClient, paramsFunc : Function1[Int, SerTypedValueMap],
+					  pauseMsec_opt : Option[Int]) : Unit = {
+		var idx = 0
+		myRefs.foreach( ugref => {
+			val nxtParams = paramsFunc(idx)
+			val taRq = ugref.makeReqAndUpdate(GoodyNames.ACTION_SET, nxtParams)
+			ovwc.sendTARq(taRq)
+			pauseAsNeeded(pauseMsec_opt)
+			idx += 1
+		})
+	}
+
 }

@@ -7,7 +7,7 @@ import org.friendularity.util.IdentHlp
 import org.friendularity.vw.impl.ta.TARqExtractorHelp
 import org.friendularity.vw.mprt.manip.{ManipStatusMsg, ManipDesc, MaybeTransform3D}
 import org.friendularity.vw.msg.cor.VWContentRq
-import org.friendularity.vw.msg.shp.deep.{KnownShapeCreateRqImpl, CompositeMeshyShapeCreateRq, VWClearAllShapes, VWShapeDetachRq, VWShapeAttachRq, ShapeManipRqImpl, VWShapeManipRq, VWSCR_TextBox, VWSCR_Node, VWSCR_ExistingNode, VWShapeCreateRq, VWSCR_MeshyComposite, VWMatDesc, VWMeshDesc, KnowsShapeIDsPart}
+import org.friendularity.vw.msg.shp.deep.{VWSCR_KnownShape, KnownShapeCreateRqImpl, CompositeMeshyShapeCreateRq, VWClearAllShapes, VWShapeDetachRq, VWShapeAttachRq, ShapeManipRqImpl, VWShapeManipRq, VWSCR_TextBox, VWSCR_Node, VWSCR_ExistingNode, VWShapeCreateRq, VWSCR_MeshyComposite, VWMatDesc, VWMeshDesc, KnowsShapeIDsPart}
 
 /**
   * Created by Owner on 1/23/2017.
@@ -24,7 +24,7 @@ trait GeneralXlatorSupport extends IdentHlp with TARqExtractorHelp  {
 	protected def makeMeshShapeCreateReq(parentID_opt : Option[Ident], initXform3D : MaybeTransform3D, meshDesc : VWMeshDesc,
 										 matDesc : VWMatDesc) : CompositeMeshyShapeCreateRq = {
 		val meshShapeID : Ident = makeStampyRandyIdentAnon()
-		val shapeKnownIDs = new KnownShapeCreateRqImpl(Some(meshShapeID), parentID_opt)
+		val shapeKnownIDs = new VWSCR_KnownShape(Some(meshShapeID), parentID_opt)
 		makeMeshShapeCreateRq(shapeKnownIDs, initXform3D, meshDesc, matDesc)
 	}
 
