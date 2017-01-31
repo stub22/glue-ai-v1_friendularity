@@ -52,11 +52,12 @@ class GoodyMsgBurstSender(entIdPrfx : String, burstWidth : Int, burstLen : Int) 
 			ugRef
 		})
 	}
-	def moveAllGoodies(ovwc : OffersVWorldClient, dynaParamID : Ident, dynaDelta : Float,
-					   rotParam_opt : Option[SerTypedValueMap], durSec : Float,
-					   pauseMsec_opt : Option[Int]) : Unit = {
+	def moveAllGoodiesSmoothly(ovwc : OffersVWorldClient, dynaParamID : Ident, dynaDelta : Float,
+							   rotParam_opt : Option[SerTypedValueMap], durSec : Float,
+							   pauseMsec_opt : Option[Int]) : Unit = {
 		myRefs.foreach( ugref => {
-			// Unreliable, uses too many assumptions about state of last params.
+			// "lastParams" is unreliable, uses too many assumptions about state of last params.
+			// So we use initParams.
 			val initParams  = ugref.getInitParams
 			val nxtParams = duplicateParams(initParams)
 			adjustFloatParam(nxtParams, dynaParamID, dynaDelta)
@@ -66,6 +67,20 @@ class GoodyMsgBurstSender(entIdPrfx : String, burstWidth : Int, burstLen : Int) 
 			ovwc.sendTARq(taRq)
 			pauseAsNeeded(pauseMsec_opt)
 		})
+	}
+	def setAllGoodyLocsAbruptly(ovwc : OffersVWorldClient, dynaParamID : Ident, dynaDelta : Float,
+								rotParam_opt : Option[SerTypedValueMap],
+								pauseMsec_opt : Option[Int]) : Unit = {
+		myRefs.foreach( ugref => {
+			val initParams  = ugref.getInitParams
+			val nxtParams = duplicateParams(initParams)
+			adjustFloatParam(nxtParams, dynaParamID, dynaDelta)
+			val actualParams = combineParams(List(nxtParams) ::: rotParam_opt.toList)
+			val taRq = ugref.makeReqAndUpdate(GoodyNames.ACTION_SET, actualParams)
+			ovwc.sendTARq(taRq)
+			pauseAsNeeded(pauseMsec_opt)
+		})
+
 	}
 	def deleteAllGoodies(ovwc : OffersVWorldClient, pauseMsec_opt : Option[Int]) : Unit = {
 		myRefs.foreach(ugref => {

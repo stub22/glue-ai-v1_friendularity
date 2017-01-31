@@ -18,8 +18,6 @@ import java.lang.{Float => JFloat, Integer => JInt, Long => JLong}
 trait GoodyRqPartialXlator extends GeneralXlatorSupport with MakesManipDesc {
 
 	// These methods are responsible for setting of all params in the output requests.
-	// def makeCreateRqs(verbID : Ident, tgtTypeID : Ident, tgtID : Ident, gax : GoodyActionExtractor) : List[VWContentRq] = Nil
-	//
 	def makeCreateRqs(taSpec : ThingActionSpec) : List[VWContentRq] = Nil
 
 	def makeDeleteRqs(mgrec : MadeGoodyRec, verbID : Ident, tgtID : Ident) : List[VWContentRq] = {
@@ -40,9 +38,20 @@ trait GoodyRqPartialXlator extends GeneralXlatorSupport with MakesManipDesc {
 		val shapeManipRq = new ShapeManipRqImpl(topShapeID, manipGuts, statusTlr_opt)
 		List(shapeManipRq)
 	}
-	def makeSetRqs(mgrec : MadeGoodyRec, taSpec : ThingActionSpec) // verbID : Ident, tgtID : Ident, paramTVM : TypedValueMap)
+	def makeSetRqs(mgrec : MadeGoodyRec, taSpec : ThingActionSpec)
 					 : List[VWContentRq] = {
-		Nil
+
+// 		val paramTVM : TypedValueMap = taSpec.getParamTVM
+		val maybeXform : MaybeTransform3D = extractXform_part(taSpec)
+		if (maybeXform.isEmpty) Nil else {
+			val topShapeID = mgrec.getTopShapeID
+			val forceToFullXform = false // "Partial" approach is preferred as of 2016-Nov, see RVWS-49 and RVWS-57.
+			val noDuration = None
+			val manipGuts = makeManipGuts(maybeXform, noDuration, forceToFullXform)
+			val noStatusTlr = None
+			val shapeManipRq = new ShapeManipRqImpl(topShapeID, manipGuts, noStatusTlr)
+			List(shapeManipRq)
+		}
 	}
 	def makeParentCreateRqs_withXform(parentNodeShapeID : Ident, gparent_opt : Option[Ident], initXform_part : MaybeTransform3D) : List[VWContentRq] = {
 		val initManipDesc : ManipDesc = new AbruptManipAbsPartialImpl(initXform_part)
@@ -68,7 +77,6 @@ trait GoodyRqPartialXlator extends GeneralXlatorSupport with MakesManipDesc {
 		new SimpleMatDesc(Some(colorUsed))
 
 	}
-
 }
 
 
