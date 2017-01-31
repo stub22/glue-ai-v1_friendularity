@@ -1,5 +1,7 @@
 package org.friendularity.vw.cli.goshcl
 
+import java.lang.{Integer => JInt, Long => JLong, Float => JFloat}
+
 import com.jme3.math.{Quaternion, Vector3f, ColorRGBA}
 import com.jme3.scene.Mesh
 import com.jme3.scene.shape.Cylinder
@@ -72,25 +74,32 @@ trait TicTacShapeXlator extends GoodyRqPartialXlator with TicTacNums {
 
 				val gax = new GoodyActionExtractor(taSpec)
 
-				val xCoord: Int = gax.getSpecialInteger(GoodyNames.COORDINATE_X)
-				val yCoord: Int = gax.getSpecialInteger(GoodyNames.COORDINATE_Y)
+				val xCoord: JInt = gax.getSpecialInteger(GoodyNames.COORDINATE_X)
+				val yCoord: JInt = gax.getSpecialInteger(GoodyNames.COORDINATE_Y)
 
-				val markCenterPos : Vector3f = myGridAdapter.computeMarkCenterPos(xCoord, yCoord)
+				val markPlcRqs = if ((xCoord != null) && (yCoord != null)) {
+					val markCenterPos : Vector3f = myGridAdapter.computeMarkCenterPos(xCoord, yCoord)
 
-				val markXform_part = new PartialTransform3D(Some(markCenterPos), None, None)
+					val markXform_part = new PartialTransform3D(Some(markCenterPos), None, None)
 
-				info1("TT-Mark Xform={}", markXform_part)
-				val parentRqs = makeParentCreateRqs_withXform(markNodeShapeID, Some(gparentID), markXform_part)
+					info1("TT-Mark Xform={}", markXform_part)
+					val parentRqs = makeParentCreateRqs_withXform(markNodeShapeID, Some(gparentID), markXform_part)
 
-				val matDesc = translateSimpleMatDesc(taSpec)
+					val matDesc = translateSimpleMatDesc(taSpec)
 
-				val flagIsO = gax.getSpecialBoolean(GoodyNames.USE_O)
-				val markSpatRqs = if (flagIsO) {
-					myMarkAdapter.makeRqs_TorusForO(Some(markNodeShapeID), matDesc)
+					val flagIsO = gax.getSpecialBoolean(GoodyNames.USE_O)
+					val markSpatRqs = if (flagIsO) {
+						myMarkAdapter.makeRqs_TorusForO(Some(markNodeShapeID), matDesc)
+					} else {
+						myMarkAdapter.makeRqs_X(Some(markNodeShapeID), matDesc)
+					}
+					parentRqs ::: markSpatRqs
 				} else {
-					myMarkAdapter.makeRqs_X(Some(markNodeShapeID), matDesc)
+					warn3("SET sent to TicTacGrid={}, but is missing one or both of COORDINATE_X={} and " +
+								"COORDINATE_Y={}, so no tictac mark will be added", mgrec, xCoord, yCoord)
+					Nil
 				}
-				parentRqs ::: markSpatRqs
+				markPlcRqs
 			} else {
 				Nil
 			}
