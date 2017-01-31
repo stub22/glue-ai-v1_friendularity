@@ -51,10 +51,10 @@ trait OtherGoodyShapeXlator extends GoodyRqPartialXlator {
 		List(boxRq)
 	}
 	def makeRqs_floor(parentID_opt : Option[Ident], floorMD : VWMatDesc) : List[VWContentRq] = {
-		val boxMeshDesc : VWMeshDesc = new VWMD_Box(140f, 0.25f, 140f)
-		val boxXform = EMPTY_XFORM
-		val boxRq = makeMeshShapeCreateReq(parentID_opt, boxXform, boxMeshDesc, floorMD)
-		List(boxRq)
+		val floorMeshDesc : VWMeshDesc = new VWMD_Box(140f, 0.25f, 140f)
+		val floorXform = EMPTY_XFORM
+		val floorRq = makeMeshShapeCreateReq(parentID_opt, floorXform, floorMeshDesc, floorMD)
+		List(floorRq)
 
 		/*
 				  val floorBox : Mesh = new Box(140f, 0.25f, 140f)

@@ -126,17 +126,17 @@ class TestManyGoodyBursts(ovwc : OffersVWorldClient) extends GoodyParamMaker wit
 					Some(ticTacStateSetParmsFunc), Some(wackyMoveRotParam), Some(700))
 	}
 	def fireTicXBurst() : Unit = {
-		// TicX is in the X-Z plane by default, so we rotate it up.
+		// TicX is in the X-Z plane by default, so we rotate it up for display.
 		val posParams = makeLoc3Params(9.0f, 11.0f, -2.0f)
 		val isOparm = makeXOStateParam(false)
 		val ticXparms = combineParams(List(prpTrans, posParams, rotUpParam, isOparm))
 		fireHorizBurst_withWackyMoveRot("ticX", GT_TICTAC_MARK, ticXparms)
 	}
 	def fireTacOBurst() : Unit = {
-		// TicY is in the X-Y plane by default, so we don't rotate it.
+		// TicY is in the X-Z plane by default (after its own internal rotation), so we rotate it up for display.
 		val posParams = makeLoc3Params(7.0f, 3.0f, 2.0f)
 		val isOparm = makeXOStateParam(true)
-		val ticOparms = combineParams(List(ylwTrans, posParams, isOparm))
+		val ticOparms = combineParams(List(ylwTrans, posParams, rotUpParam, isOparm))
 		fireHorizBurst_withWackyMoveRot("tacO", GT_TICTAC_MARK, ticOparms)
 	}
 
@@ -179,9 +179,12 @@ class TestManyGoodyBursts(ovwc : OffersVWorldClient) extends GoodyParamMaker wit
 		fireHorizBurst("horizCross", GT_CROSSHAIR, chParams, 0.1f, 0.1f, noSetParamsFunc, noMoveRotParam, Some(400))
 	}
 	def fireSomeBursts(): Unit = {
-		fireTicXBurst()
 
 		fireTacOBurst()
+
+		fireBitCubeBurst()
+
+		fireTicXBurst()
 
 		fireTicTacGridBurst()
 
@@ -189,10 +192,7 @@ class TestManyGoodyBursts(ovwc : OffersVWorldClient) extends GoodyParamMaker wit
 
 		fireFloorBurst()
 
-		fireBitCubeBurst()
-
 		fireBoxBurst()
-
 
 		// Above goodies are used by RK STEM as of 2017-Jan, below are not.
 //		fireScoreboardBurst()

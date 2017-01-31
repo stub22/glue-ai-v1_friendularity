@@ -24,8 +24,9 @@ import com.jme3.scene.shape.{Box, PQTorus, Torus, Cylinder, Sphere}
 import com.jme3.scene.{Geometry, Mesh, Node => JmeNode, Spatial}
 import org.cogchar.render.sys.registry.RenderRegistryClient
 import org.cogchar.render.trial.TextSpatialFactory
+import org.friendularity.tmpgood.tgbit.TG_BitCubeBox
 import org.friendularity.vw.mprt.manip.Transform3D
-import org.friendularity.vw.msg.shp.deep.{VWMD_Box, VWMD_PQTorus, VWMatDesc, VWMeshDesc, VWMD_Torus, VWMD_Cylinder, VWMD_Sphere, CompositeMeshyShapeCreateRq, VWSCR_CellGrid, VWSCR_TextBox, VWSCR_ExistingNode, VWSCR_CamGuideNode, VWSCR_Node, VWShapeCreateRq}
+import org.friendularity.vw.msg.shp.deep.{VWMD_TexturedBox, VWMD_Box, VWMD_PQTorus, VWMatDesc, VWMeshDesc, VWMD_Torus, VWMD_Cylinder, VWMD_Sphere, CompositeMeshyShapeCreateRq, VWSCR_CellGrid, VWSCR_TextBox, VWSCR_ExistingNode, VWSCR_CamGuideNode, VWSCR_Node, VWShapeCreateRq}
 
 /**
   * Code moved to new file on 1/19/2017.
@@ -94,7 +95,7 @@ trait VWSpatialsForShapes extends PatternGridMaker with SpatMatHelper {
 			}
 			case cmpndMeshyRq : CompositeMeshyShapeCreateRq => {
 				val meshDescPart = cmpndMeshyRq.getMeshDescPart
-				val geom : Geometry = makeMeshFromDesc(meshDescPart)
+				val geom : Geometry = makeMeshAndGeomFromDesc(meshDescPart)
 				val matDescPart = cmpndMeshyRq.getMatDescPart
 				applyMat(geom, matDescPart)
 
@@ -102,7 +103,7 @@ trait VWSpatialsForShapes extends PatternGridMaker with SpatMatHelper {
 			}
 		}
 	}
-	def makeMeshFromDesc(meshBasedRq : VWMeshDesc) : Geometry = {
+	def makeMeshAndGeomFromDesc(meshBasedRq : VWMeshDesc) : Geometry = {
 		val mesh: Mesh = meshBasedRq match {
 			case sph: VWMD_Sphere => {
 				// zSamp, rSamp, radius
@@ -122,6 +123,10 @@ trait VWSpatialsForShapes extends PatternGridMaker with SpatMatHelper {
 			case bx : VWMD_Box => {
 				new Box(bx.xSize, bx.ySize, bx.zSize)
 			}
+			case tbx : VWMD_TexturedBox => {
+				val msh = new TG_BitCubeBox(tbx.xSize, tbx.ySize, tbx.zSize)
+				msh
+			}
 		}
 		val geomNameArb: String = "geom_from_msg_shape_" + System.currentTimeMillis()
 		val geom = new Geometry(geomNameArb, mesh)
@@ -130,12 +135,18 @@ trait VWSpatialsForShapes extends PatternGridMaker with SpatMatHelper {
 
 	}
 	def applyMat(geom : Geometry, matDesc: VWMatDesc) : Unit = {
-		val dsc_opt : Option[ColorRGBA] = matDesc.getColorParam_opt
-		val dsc = dsc_opt.getOrElse(ColorRGBA.Gray)
-		val brush = getBrushJar.makeBrush(dsc)
-		brush.stroke(geom)
+		val rrc = getTooMuchRRC
+		val specialMat_opt = matDesc.makeSpecialMaterial_opt(rrc)
+		if (specialMat_opt.isDefined) {
+			geom.setMaterial(specialMat_opt.get)
+		} else {
+			val dsc_opt : Option[ColorRGBA] = matDesc.getColorParam_opt
+			val dsc = dsc_opt.getOrElse(ColorRGBA.Gray)
+			val brush = getBrushJar.makeBrush(dsc)
+			brush.stroke(geom)
+		}
 	}
-	def applySpatialTransform_full(spat : Spatial, params : Transform3D) : Unit = {
+	def UNUSED_applySpatialTransform_full_UNUSED_I_THINK(spat : Spatial, params : Transform3D) : Unit = {
 		val pos : Vector3f = params.getPos
 		spat.setLocalTranslation(pos)
 		val rot : Quaternion = params.getRotQuat

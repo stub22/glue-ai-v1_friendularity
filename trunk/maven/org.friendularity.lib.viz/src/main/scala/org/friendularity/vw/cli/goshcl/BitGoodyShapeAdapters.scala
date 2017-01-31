@@ -9,6 +9,7 @@ import org.cogchar.name.goody.GoodyNames
 import org.cogchar.render.app.entity.GoodyActionExtractor
 import org.cogchar.render.sys.task.Queuer
 import org.friendularity.vw.msg.cor.VWContentRq
+import org.friendularity.vw.msg.shp.deep.{VWMD_TexturedBox, VWMatDesc, VWMD_Box, VWMeshDesc}
 
 /**
   * Created by Owner on 1/22/2017.
@@ -40,7 +41,7 @@ trait BitGoodyShapeXlator extends GoodyRqPartialXlator {
 		val tgtTypeID : Ident = taSpec.getTargetThingTypeID
 
 		val gparentID_opt : Option[Ident] = None
-		val parentNodeShapeID = makeStampyRandyIdent("ogParentNode")
+		val parentNodeShapeID = makeStampyRandyIdent("bitgParentNode")
 
 		val parentRqs : List[VWContentRq] = makeParentCreateRqs_withXform(parentNodeShapeID, gparentID_opt, taSpec)
 
@@ -49,7 +50,8 @@ trait BitGoodyShapeXlator extends GoodyRqPartialXlator {
 				makeRqs_bitBox(Some(parentNodeShapeID))
 			}
 			case GoodyNames.TYPE_BIT_CUBE => {
-				makeRqs_bitCube(Some(parentNodeShapeID))
+				val suppliedMat = translateSimpleMatDesc(taSpec)
+				makeRqs_bitCube(Some(parentNodeShapeID), suppliedMat)
 			}
 		}
 		parentRqs ::: msgList
@@ -58,21 +60,80 @@ trait BitGoodyShapeXlator extends GoodyRqPartialXlator {
 	def makeRqs_bitBox(parentID_opt : Option[Ident]) : List[VWContentRq] = {
 		Nil
 	}
-	def makeRqs_bitCube(parentID_opt : Option[Ident]) : List[VWContentRq] = {
-		Nil
+	def makeRqs_bitCube(parentID_opt : Option[Ident], bcMatDesc : VWMatDesc) : List[VWContentRq] = {
+
+		val boxMeshDesc : VWMeshDesc = new VWMD_TexturedBox(1f, 1f, 1f)
+		val boxXform = EMPTY_XFORM
+		val boxRq = makeMeshShapeCreateReq(parentID_opt, boxXform, boxMeshDesc, bcMatDesc)
+		List(boxRq)
+
 	}
 
 
 }
 /*
+		  val cubeMesh : Mesh = new TG_BitCubeBox(1f, 1f, 1f)
+
+ class TG_BitCubeBox extends Box {
+	private   var NEW_GEOMETRY_TEXTURE_DATA : Array[Float] = Array(1, 0.333333f, 0, 0.333333f, 0, 0.666667f, 1, 0.666667f, 1, 0.666667f, 0, 0.666667f, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0.333333f, 1, 0.333333f, 1, 0.666667f, 0, 0.666667f, 0, 1, 1, 1, 1, 0.666667f, 0, 0.666667f, 0, 1, 1, 1, 1, 0.666667f, 0, 0.666667f, 0, 1, 1, 1)
+
+	private static float[] NEW_GEOMETRY_TEXTURE_DATA = {
+        1, 0.333333f, 0, 0.333333f, 0, 0.666667f, 1, 0.666667f, // back
+        1, 0.666667f, 0, 0.666667f, 0, 1, 1, 1, // right
+        1, 0, 0, 0, 0, 0.333333f, 1, 0.333333f, // front
+        1, 0.666667f, 0, 0.666667f, 0, 1, 1, 1, // left
+        1, 0.666667f, 0, 0.666667f, 0, 1, 1, 1, // top
+        1, 0.666667f, 0, 0.666667f, 0, 1, 1, 1  // bottom
+    };
+
+	  def this(x : Float, y : Float, z : Float){
+this()
+`super`(x, y, z)
+}
+
+	protected override   def duUpdateGeometryTextures{
+if (getBuffer(Type.TexCoord) == null) {
+setBuffer(Type.TexCoord, 2, BufferUtils.createFloatBuffer(NEW_GEOMETRY_TEXTURE_DATA))
+}
+}
+}
+
+		  val cubeMesh : Mesh = new TG_BitCubeBox(1f, 1f, 1f)
+
 		  val atlas : TextureAtlas = new TextureAtlas(400, 1200)
-		  val matFact : MatFactory = getRenderRegCli.getOpticMaterialFacade(null, null)
+
+		    val matFact : MatFactory = getRenderRegCli.getOpticMaterialFacade(null, null)
 		  val assetMgr : AssetManager = matFact.getAssetManager
-		  val zeroTexture : Texture = assetMgr.loadTexture("textures/robosteps/Zero.png")
+
+		 	  val zeroTexture : Texture = assetMgr.loadTexture("textures/robosteps/Zero.png")
 		  val oneTexture : Texture = assetMgr.loadTexture("textures/robosteps/One.png")
 		  val blankTexture : Texture = assetMgr.loadTexture("textures/robosteps/BlankGray.png")
-		atlas.addTexture(zeroTexture, "ColorMap")
+
+			atlas.addTexture(zeroTexture, "ColorMap")
 		atlas.addTexture(oneTexture, "ColorMap")
 		atlas.addTexture(blankTexture, "ColorMap")
+
+		  val cubeMaterial : Material = matFact.makeMatWithOptTexture("Common/MatDefs/Misc/Unshaded.j3md", "ColorMap", atlas.getAtlasTexture("ColorMap"))
+
+		return addGeometry(cubeMesh, cubeMaterial, null, new Quaternion)
+
+
+
+	private   def getStateAdjustedRotationOffset(boxState : Boolean) : Quaternion = {
+  val yaw : Float = if (boxState) Math.PI.toFloat else 0f
+return new Quaternion().fromAngles(0f, yaw, 0f)
+}
+
+	  def setState(boxState : Boolean, qStyle : Queuer.QueueingStyle){
+if (boxState != state) {
+  val initialRotation : Quaternion = getRotation
+  val position : Vector3f = getPosition
+  val scale : Vector3f = getScale
+moveViaAnimation(position, initialRotation.mult(new Quaternion().fromAngles(0f, Math.PI.toFloat, 0f)), scale, STATE_TRANSITION_TIME)
+setNewGeometryRotationOffset(geomIndex, getStateAdjustedRotationOffset(boxState))
+setRotation(initialRotation, qStyle)
+state = boxState
+}
+}
 
  */
