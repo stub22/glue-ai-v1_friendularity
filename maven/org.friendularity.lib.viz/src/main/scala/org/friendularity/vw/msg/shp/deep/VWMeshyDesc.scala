@@ -1,6 +1,8 @@
 package org.friendularity.vw.msg.shp.deep
 
+import com.jme3.material.Material
 import com.jme3.math.{ColorRGBA, Quaternion, Vector3f}
+import org.cogchar.render.sys.registry.RenderRegistryClient
 import org.friendularity.vw.mprt.manip.MaybeTransform3D
 import org.friendularity.vwmsg.CoreParams3D
 
@@ -23,6 +25,8 @@ trait VWMatDesc { // } extends VWShapeCreateRq {
 
 //	def getCoreParams3D_opt : Option[CoreParams3D] = None
 	def getColorParam_opt : Option[ColorRGBA] = None // getCoreParams3D_opt.map(_.getColor)
+
+	def makeSpecialMaterial_opt(rrc : RenderRegistryClient) : Option[Material] = None
 }
 trait VWMeshDesc {
 
@@ -39,6 +43,8 @@ abstract class BaseMeshDesc() extends VWMeshDesc {
 case class VWMD_Sphere(zSamples : Int, radialSamples : Int,  radiusF : Float) extends BaseMeshDesc()
 
 case class VWMD_Box(xSize : Float, ySize : Float, zSize : Float) extends VWMeshDesc
+
+case class VWMD_TexturedBox(xSize : Float, ySize : Float, zSize : Float) extends VWMeshDesc
 
 // 2017-01-22 maps to 5-arg version of Cylinder constructor.
 // Other 2 poss. args not included, yet, are:  float radius2, boolean inverted
