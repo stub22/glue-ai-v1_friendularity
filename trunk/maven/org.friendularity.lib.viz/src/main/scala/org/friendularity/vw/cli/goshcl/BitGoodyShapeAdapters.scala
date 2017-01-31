@@ -1,12 +1,18 @@
 package org.friendularity.vw.cli.goshcl
 
+import com.jme3.asset.AssetManager
+import com.jme3.material.Material
 import com.jme3.math.{Quaternion, ColorRGBA}
 import com.jme3.scene.Mesh
 import com.jme3.scene.shape.{Cylinder, Torus}
+import com.jme3.texture.Texture
+import jme3tools.optimize.TextureAtlas
 import org.appdapter.core.name.Ident
 import org.cogchar.api.thing.{ThingActionSpec, TypedValueMap}
 import org.cogchar.name.goody.GoodyNames
 import org.cogchar.render.app.entity.GoodyActionExtractor
+import org.cogchar.render.opengl.optic.MatFactory
+import org.cogchar.render.sys.registry.RenderRegistryClient
 import org.cogchar.render.sys.task.Queuer
 import org.friendularity.vw.msg.cor.VWContentRq
 import org.friendularity.vw.msg.shp.deep.{VWMD_TexturedBox, VWMatDesc, VWMD_Box, VWMeshDesc}
@@ -34,6 +40,7 @@ trait BitGoodyShapeXlator extends GoodyRqPartialXlator {
 		//setGeometryByIndex(geometryIndex, qStyle)
 		//state = boxState
 	}
+	lazy val myBitCubeMatDesc = new BitCubeMatDesc
 	override def makeCreateRqs(taSpec : ThingActionSpec) : List[VWContentRq]  = {
 //	override def makeCreateRqs(verbID : Ident, tgtTypeID : Ident, tgtID : Ident,  gax : GoodyActionExtractor)//  paramTVM : TypedValueMap)
 //				: List[VWContentRq] = {
@@ -50,8 +57,8 @@ trait BitGoodyShapeXlator extends GoodyRqPartialXlator {
 				makeRqs_bitBox(Some(parentNodeShapeID))
 			}
 			case GoodyNames.TYPE_BIT_CUBE => {
-				val suppliedMat = translateSimpleMatDesc(taSpec)
-				makeRqs_bitCube(Some(parentNodeShapeID), suppliedMat)
+
+				makeRqs_bitCube(Some(parentNodeShapeID), myBitCubeMatDesc)
 			}
 		}
 		parentRqs ::: msgList
@@ -62,14 +69,51 @@ trait BitGoodyShapeXlator extends GoodyRqPartialXlator {
 	}
 	def makeRqs_bitCube(parentID_opt : Option[Ident], bcMatDesc : VWMatDesc) : List[VWContentRq] = {
 
-		val boxMeshDesc : VWMeshDesc = new VWMD_TexturedBox(1f, 1f, 1f)
+		val boxMeshDesc: VWMeshDesc = new VWMD_TexturedBox(1f, 1f, 1f)
 		val boxXform = EMPTY_XFORM
 		val boxRq = makeMeshShapeCreateReq(parentID_opt, boxXform, boxMeshDesc, bcMatDesc)
 		List(boxRq)
 
 	}
+}
+
+class BitCubeMatDesc extends VWMatDesc {
+	val CM_KEY = "ColorMap"
+
+	var mySpecialMat_opt : Option[Material] = None
+
+	override def makeSpecialMaterial_opt(rrc : RenderRegistryClient) : Option[Material] = {
+		if (mySpecialMat_opt.isEmpty)  {
+
+			val matFact : MatFactory = rrc.getOpticMaterialFacade(null, null)
+			val assetMgr : AssetManager = matFact.getAssetManager
+
+			val atlas = makeTextureAtlas(assetMgr)
+
+			val atTx = atlas.getAtlasTexture("ColorMap")
+
+			val cubeMaterial : Material = matFact.makeMatWithOptTexture("Common/MatDefs/Misc/Unshaded.j3md", CM_KEY, atTx)
+
+			mySpecialMat_opt = Option(cubeMaterial)
+		}
+		mySpecialMat_opt
+	}
 
 
+	def makeTextureAtlas(assetMgr : AssetManager) : TextureAtlas = {
+		// val txPathPre = "textures/robosteps/"
+		val txPathPre = "org/friendu/goody_texture/"
+		val zeroTexture : Texture = assetMgr.loadTexture(txPathPre + "Zero.png")
+		val oneTexture : Texture = assetMgr.loadTexture(txPathPre + "One.png")
+		val blankTexture : Texture = assetMgr.loadTexture(txPathPre + "BlankGray.png")
+
+		val atlas : TextureAtlas = new TextureAtlas(400, 1200)
+
+		atlas.addTexture(zeroTexture, CM_KEY)
+		atlas.addTexture(oneTexture, CM_KEY)
+		atlas.addTexture(blankTexture, CM_KEY)
+		atlas
+	}
 }
 /*
 		  val cubeMesh : Mesh = new TG_BitCubeBox(1f, 1f, 1f)
