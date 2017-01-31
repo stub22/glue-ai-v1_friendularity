@@ -66,8 +66,9 @@ trait MaybeTransform3D extends MaybeLocated3D with MaybeRotated3D with MaybeScal
 		val rotOpt : Option[Quaternion] =  getRotQuat_opt.orElse(omt3d.getRotQuat_opt)
 		val sclOpt : Option[Vector3f] = getScl_opt.orElse(omt3d.getScl_opt)
 		new PartialTransform3D(posOpt, rotOpt, sclOpt)
-
 	}
+
+	def isEmpty : Boolean = getPos_opt.isEmpty && getRotQuat_opt.isEmpty && getScl_opt.isEmpty
 }
 
 case class PartialTransform3D(posOpt : Option[Vector3f], rotOpt : Option[Quaternion], sclOpt : Option[Vector3f]) extends MaybeTransform3D {

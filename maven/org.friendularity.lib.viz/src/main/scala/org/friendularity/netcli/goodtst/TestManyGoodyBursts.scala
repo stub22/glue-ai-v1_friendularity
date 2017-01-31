@@ -77,7 +77,9 @@ class TestManyGoodyBursts(ovwc : OffersVWorldClient) extends GoodyParamMaker wit
 			brst.setAllGoodies(ovwc, setParmsFunc_opt.get, stepDelay_opt)
 		}
 
-		brst.moveAllGoodies(ovwc, GoodyNames.LOCATION_Y, yDelta, moveRotParam_opt, 2.5f, stepDelay_opt)
+		brst.moveAllGoodiesSmoothly(ovwc, GoodyNames.LOCATION_Y, yDelta, moveRotParam_opt, 2.5f, stepDelay_opt)
+
+		brst.setAllGoodyLocsAbruptly(ovwc, GoodyNames.LOCATION_X, -1f * yDelta, None, stepDelay_opt)
 
 		brst.deleteAllGoodies(ovwc, stepDelay_opt)
 	}
@@ -208,7 +210,7 @@ class TestManyGoodyBursts(ovwc : OffersVWorldClient) extends GoodyParamMaker wit
 
 		brst1.createGoodies(ovwc, GT_TICTAC_MARK, b1Params, GoodyNames.LOCATION_X, 2.5f, Some(300))
 
-		brst1.moveAllGoodies(ovwc, GoodyNames.LOCATION_Y, 1.3f, noMoveRotParam,  2.5f, Some(300))
+		brst1.moveAllGoodiesSmoothly(ovwc, GoodyNames.LOCATION_Y, 1.3f, noMoveRotParam,  2.5f, Some(300))
 
 		val b2Params = combineParams(List(seedLocParam, stateFalse))
 
@@ -218,7 +220,7 @@ class TestManyGoodyBursts(ovwc : OffersVWorldClient) extends GoodyParamMaker wit
 
 		brst2.createGoodies(ovwc, GT_BIT_BOX, b2Params, GoodyNames.LOCATION_X, 2.5f, Some(300))
 
-		brst2.moveAllGoodies(ovwc, GoodyNames.LOCATION_Y, 1.3f, noMoveRotParam, 2.5f, Some(300))
+		brst2.moveAllGoodiesSmoothly(ovwc, GoodyNames.LOCATION_Y, 1.3f, noMoveRotParam, 2.5f, Some(300))
 
 		brst1.deleteAllGoodies(ovwc, Some(300))
 

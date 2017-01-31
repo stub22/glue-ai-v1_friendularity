@@ -63,7 +63,7 @@ trait TicTacShapeXlator extends GoodyRqPartialXlator with TicTacNums {
 
 	override def makeSetRqs(mgrec : MadeGoodyRec, taSpec : ThingActionSpec): List[VWContentRq] = {
 		val tgtTypeID_opt = mgrec.getFirstTgtTypeID
-		val ttSetRqs = if (tgtTypeID_opt.isDefined) {
+		val ttSetRqs : List[VWContentRq] = if (tgtTypeID_opt.isDefined) {
 			val tgtTypeID : Ident = tgtTypeID_opt.get
 			if (tgtTypeID.equals(GoodyNames.TYPE_TICTAC_GRID)) {
 				val gparentID = mgrec.getTopShapeID
@@ -97,8 +97,9 @@ trait TicTacShapeXlator extends GoodyRqPartialXlator with TicTacNums {
 		} else {
 			Nil
 		}
-		info1("TT-Grid setRqs={}", ttSetRqs)
-		ttSetRqs
+		val otherSetReqs : List[VWContentRq] = super.makeSetRqs(mgrec, taSpec)
+		info2("TT-Grid ttSetRqs={}, otherSetRqs={}", ttSetRqs, otherSetReqs)
+		ttSetRqs ::: otherSetReqs
 	}
 
 }
