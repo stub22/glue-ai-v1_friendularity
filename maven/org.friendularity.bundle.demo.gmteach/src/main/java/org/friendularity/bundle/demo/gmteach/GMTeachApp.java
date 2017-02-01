@@ -1057,7 +1057,7 @@ public class GMTeachApp extends CommonActivator implements BundleListener, Servi
 		}
 		forceLog4jConfig();
 
-		java.util.logging.Logger.getLogger(org.jflux.impl.services.rk.osgi.lifecycle.ServiceDependenciesTracker.class.getName()).setLevel(Level.WARNING);
+		org.slf4j.LoggerFactory.getLogger(org.jflux.impl.services.rk.osgi.lifecycle.ServiceDependenciesTracker.class.getName()).setLevel(Level.WARNING);
 
 	}
 

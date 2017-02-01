@@ -71,13 +71,13 @@ public class ConvoResponseFrame extends javax.swing.JFrame {
                 }
             }
         } catch(ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(ConvoResponseFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            org.slf4j.LoggerFactory.getLogger(ConvoResponseFrame.class).error(ex.getMessage(), ex);
         } catch(InstantiationException ex) {
-            java.util.logging.Logger.getLogger(ConvoResponseFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            org.slf4j.LoggerFactory.getLogger(ConvoResponseFrame.class).error(ex.getMessage(), ex);
         } catch(IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(ConvoResponseFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            org.slf4j.LoggerFactory.getLogger(ConvoResponseFrame.class).error(ex.getMessage(), ex);
         } catch(javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(ConvoResponseFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            org.slf4j.LoggerFactory.getLogger(ConvoResponseFrame.class).error(ex.getMessage(), ex);
         }
         //</editor-fold>
 

@@ -9,19 +9,17 @@ import org.slf4j.LoggerFactory;
 public class Activator implements BundleActivator {
     private final static Logger theLogger =
             LoggerFactory.getLogger(Activator.class);
-    
+
     @Override
     public void start(final BundleContext context) throws Exception {
         theLogger.info("AQServiceSwingUI Activation Begin.");
-        
+
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception ex) {
-            java.util.logging.Logger.getLogger(
-                    ConvoResponseFrame.class.getName()).log(
-                    java.util.logging.Level.SEVERE, null, ex);
+            org.slf4j.LoggerFactory.getLogger(ConvoResponseFrame.class).error(ex.getMessage(), ex);
         }
-        
+
         java.awt.EventQueue.invokeLater(new Runnable() {
 
             @Override
