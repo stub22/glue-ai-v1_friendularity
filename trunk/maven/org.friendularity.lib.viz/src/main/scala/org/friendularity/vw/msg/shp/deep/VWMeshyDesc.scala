@@ -27,6 +27,7 @@ trait VWMatDesc { // } extends VWShapeCreateRq {
 	def getColorParam_opt : Option[ColorRGBA] = None // getCoreParams3D_opt.map(_.getColor)
 
 	def makeSpecialMaterial_opt(rrc : RenderRegistryClient) : Option[Material] = None
+
 }
 trait VWMeshDesc {
 

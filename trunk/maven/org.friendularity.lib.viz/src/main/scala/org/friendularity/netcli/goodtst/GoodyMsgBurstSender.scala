@@ -1,5 +1,6 @@
 package org.friendularity.netcli.goodtst
 
+import com.jme3.math.ColorRGBA
 import org.appdapter.core.name.Ident
 import org.cogchar.api.thing.SerTypedValueMap
 import org.cogchar.name.goody.GoodyNames
@@ -69,13 +70,13 @@ class GoodyMsgBurstSender(entIdPrfx : String, burstWidth : Int, burstLen : Int) 
 		})
 	}
 	def setAllGoodyLocsAbruptly(ovwc : OffersVWorldClient, dynaParamID : Ident, dynaDelta : Float,
-								rotParam_opt : Option[SerTypedValueMap],
+								rotParam_opt : Option[SerTypedValueMap], colorParam_opt : Option[SerTypedValueMap],
 								pauseMsec_opt : Option[Int]) : Unit = {
 		myRefs.foreach( ugref => {
 			val initParams  = ugref.getInitParams
 			val nxtParams = duplicateParams(initParams)
 			adjustFloatParam(nxtParams, dynaParamID, dynaDelta)
-			val actualParams = combineParams(List(nxtParams) ::: rotParam_opt.toList)
+			val actualParams = combineParams(List(nxtParams) ::: rotParam_opt.toList ::: colorParam_opt.toList)
 			val taRq = ugref.makeReqAndUpdate(GoodyNames.ACTION_SET, actualParams)
 			ovwc.sendTARq(taRq)
 			pauseAsNeeded(pauseMsec_opt)
