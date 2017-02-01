@@ -31,7 +31,7 @@ public class Activator implements BundleActivator {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception ex) {
-            java.util.logging.Logger.getLogger(AnimationPlayerFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            org.slf4j.LoggerFactory.getLogger(AnimationPlayerFrame.class).error(ex.getMessage(), ex);
         }
         //</editor-fold>
 

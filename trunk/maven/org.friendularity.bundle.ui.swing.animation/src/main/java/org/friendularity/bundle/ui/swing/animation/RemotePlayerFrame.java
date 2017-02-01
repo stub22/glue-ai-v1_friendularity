@@ -82,13 +82,13 @@ public class RemotePlayerFrame extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(RemotePlayerFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            org.slf4j.LoggerFactory.getLogger(RemotePlayerFrame.class).error(ex.getMessage(), ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(RemotePlayerFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            org.slf4j.LoggerFactory.getLogger(RemotePlayerFrame.class).error(ex.getMessage(), ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(RemotePlayerFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            org.slf4j.LoggerFactory.getLogger(RemotePlayerFrame.class).error(ex.getMessage(), ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(RemotePlayerFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            org.slf4j.LoggerFactory.getLogger(RemotePlayerFrame.class).error(ex.getMessage(), ex);
         }
         //</editor-fold>
 

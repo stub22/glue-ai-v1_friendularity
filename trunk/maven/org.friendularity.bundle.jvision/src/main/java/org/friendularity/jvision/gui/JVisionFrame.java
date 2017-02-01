@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
 public class JVisionFrame extends JFrame implements WindowListener, ImageStreamConsumer {
 	static Logger theLogger = LoggerFactory.getLogger(JVisionFrame.class);
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -2429127330233038194L;
 
@@ -42,37 +42,37 @@ public class JVisionFrame extends JFrame implements WindowListener, ImageStreamC
 	private JButton			myImageOutButton = new JButton();
 	private	Quitter			myQuitter;
 
-	
+
 	private JPanel			myControlsPanel = new JPanel();
 	private JLabel			myLabel_Framerate = new JLabel();
 	private JMenuBar		myMenuBar;
-	
+
 	public JVisionFrame()
 	{
 		this.setSize(640, 640);
 		this.setTitle("JVision Bundle - OpenCV java demo");
-		
+
 		myImageOutButton.setIcon(myImageOutIcon);
 		myImageOutButton.setMinimumSize(new Dimension(640, 480));
 		myImageOutButton.setSize(new Dimension(640, 480));
-		
+
 		this.getContentPane().setLayout(new BorderLayout());
 		this.getContentPane().add(myImageOutButton, BorderLayout.CENTER);
 
 		myControlsPanel.setMinimumSize(new Dimension(640, 160));
 		myControlsPanel.setBackground(new Color(255, 200, 128));
 		myControlsPanel.add(myLabel_Framerate);
-	
+
 		this.getContentPane().add(myControlsPanel, BorderLayout.PAGE_END);
-		
+
 		setupMenus();
 
 		registerWindowListeners();
-		
+
 		this.setVisible(true);
-		
+
 		ImageStreamBroker.getDefaultImageStreamBroker().alwaysAddImageStreamConsumer(JVisionEngine.CAMERA_NAME, this);
-		// We "do nothing" from Swing point of view, but still catch the 
+		// We "do nothing" from Swing point of view, but still catch the
 		// WindowClosing event, which starts our official "quit" process.
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		// Other option is DISPOSE_ON_CLOSE
@@ -80,15 +80,15 @@ public class JVisionFrame extends JFrame implements WindowListener, ImageStreamC
 		// this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 
 	}
-	
+
 	public void setQuitter(Quitter q) {
 		myQuitter = q;
 	}
-		
+
 	private FilterSequence mytestfilters;
-	
+
 	public void showFilterBox() {
-		
+
 		FilterBox.showFilterBox();
 	}
 
@@ -96,21 +96,21 @@ public class JVisionFrame extends JFrame implements WindowListener, ImageStreamC
 		try {
 			myImageOutIcon.setImage(img.getBufferedImage());
 		} catch (ImageFlavorNotAvailable ex) {
-			java.util.logging.Logger.getLogger(JVisionFrame.class.getName()).log(Level.SEVERE, "Demoframe cant convert image");
+			org.slf4j.LoggerFactory.getLogger(JVisionFrame.class).error("Demoframe cant convert image");
 		}
 		this.repaint();
 	}
-	
+
 	@Override public void setConsumedMessage(String string) {
 		myLabel_Framerate.setText(string);
 	}
-	
+
 	// ========================  Window Listeners  ========================
 	@Override public void windowActivated(WindowEvent arg0) {
-		
+
 	}
 	@Override public void windowClosed(WindowEvent arg0) {
-		
+
 	}
 	@Override public void windowClosing(WindowEvent arg0) {
 		theLogger.debug("Caught windowClosing() event");
@@ -119,32 +119,32 @@ public class JVisionFrame extends JFrame implements WindowListener, ImageStreamC
 			myQuitter.setWantsToQuit(true);
 		}
 	}
-	
+
 	@Override public void windowDeactivated(WindowEvent arg0) {
-		
+
 	}
 	@Override public void windowDeiconified(WindowEvent arg0) {
-		
+
 	}
 	@Override	public void windowIconified(WindowEvent arg0) {
-		
+
 	}
 	@Override public void windowOpened(WindowEvent arg0) {
-		
+
 	}
-	
+
 	private  void setupMenus() {
 		// ================ setup menus =================
 		JMenu menu;
 		JMenuItem menuItem;
-		
+
 		myMenuBar = new JMenuBar();
 
 		//Build the first menu.
 		menu = new JMenu("File");
 		menu.setMnemonic(KeyEvent.VK_F);
 		myMenuBar.add(menu);
-    
+
 		//a group of JMenuItems
 		menuItem = new JMenuItem("Quit", KeyEvent.VK_Q);
 		menuItem.addActionListener(new ActionListener(){
@@ -159,17 +159,17 @@ public class JVisionFrame extends JFrame implements WindowListener, ImageStreamC
 			}
 		});
 		menu.add(menuItem);
-		
+
 		/* ========= */
 				//Build the camera menu
 		menu = new JMenu("Camera");
 		myMenuBar.add(menu);
-    
+
 
 		menuItem = new JCheckBoxMenuItem("0");
 
 		((JCheckBoxMenuItem)menuItem).setSelected(true);
-		
+
 		menuItem.addActionListener(new ActionListener(){
 			@Override	public void actionPerformed(ActionEvent e) {
 				theLogger.debug("Change to camera 0");
@@ -178,12 +178,12 @@ public class JVisionFrame extends JFrame implements WindowListener, ImageStreamC
 				((JCheckBoxMenuItem)(JVisionFrame.this.myMenuBar.getMenu(2).getMenuComponent(1))).setSelected(false);
 				((JCheckBoxMenuItem)(JVisionFrame.this.myMenuBar.getMenu(2).getMenuComponent(2))).setSelected(false);
 				((JCheckBoxMenuItem)(JVisionFrame.this.myMenuBar.getMenu(2).getMenuComponent(3))).setSelected(false);
-				
+
 			}
 		});
-		
+
 		menu.add(menuItem);
-		
+
 		menuItem = new JCheckBoxMenuItem("1");
 
 		menuItem.addActionListener(new ActionListener(){
@@ -197,7 +197,7 @@ public class JVisionFrame extends JFrame implements WindowListener, ImageStreamC
 			}
 		});
 		menu.add(menuItem);
-		
+
 		menuItem = new JCheckBoxMenuItem("2");
 
 		menuItem.addActionListener(new ActionListener(){
@@ -211,7 +211,7 @@ public class JVisionFrame extends JFrame implements WindowListener, ImageStreamC
 			}
 		});
 		menu.add(menuItem);
-		
+
 		menuItem = new JCheckBoxMenuItem("3");
 
 		menuItem.addActionListener(new ActionListener(){
@@ -224,14 +224,14 @@ public class JVisionFrame extends JFrame implements WindowListener, ImageStreamC
 				((JCheckBoxMenuItem)(JVisionFrame.this.myMenuBar.getMenu(2).getMenuComponent(3))).setSelected(true);
 			}
 		});
-		menu.add(menuItem);		
+		menu.add(menuItem);
 		/* ============= */
 
 		setJMenuBar(myMenuBar);
 	}
-	
 
-	private void registerWindowListeners() { 
+
+	private void registerWindowListeners() {
 		this.addWindowListener(this);
 
 		/* This makes the vision close if we merely click in it
@@ -243,15 +243,15 @@ public class JVisionFrame extends JFrame implements WindowListener, ImageStreamC
 				dispose();
 			}
 		});
-		*/		
+		*/
 	}
 
 	@Override
 	public void sourceIsEnding() {
-		
+
 	}
 
 
-	
-	
+
+
 }
