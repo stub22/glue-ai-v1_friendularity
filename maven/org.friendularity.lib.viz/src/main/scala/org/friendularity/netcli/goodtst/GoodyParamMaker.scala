@@ -2,6 +2,7 @@ package org.friendularity.netcli.goodtst
 
 import java.lang.{Boolean => JBool, Float => JFloat, Integer => JInt}
 
+import com.jme3.math.ColorRGBA
 import org.appdapter.core.name.Ident
 import org.appdapter.fancy.log.VarargsLogging
 import org.cogchar.api.thing.{SerTypedValueMap, ThingActionSpec, TypedValueMap}
@@ -93,7 +94,11 @@ trait GoodyParamMaker extends VWTAMsgMaker with VarargsLogging {
 		paramWriter.putRotation(axisX, axisY, axisZ, magDeg)
 		btvm
 	}
+	def makeColorParam(clr : ColorRGBA) : SerTypedValueMap = {
+		makeColorParam(clr.r, clr.g, clr.b, clr.a)
+	}
 	def makeColorParam(r : Float, g : Float, b: Float, a: Float) : SerTypedValueMap = {
+
 		val btvm : BasicTypedValueMap  = new ConcreteTVM()
 		val paramWriter = new GoodyActionParamWriter(btvm)
 		paramWriter.putColor(r, g, b, a)

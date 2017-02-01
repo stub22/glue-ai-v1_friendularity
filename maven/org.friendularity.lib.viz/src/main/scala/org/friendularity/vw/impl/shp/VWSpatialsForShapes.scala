@@ -31,15 +31,6 @@ import org.friendularity.vw.msg.shp.deep.{VWMD_TexturedBox, VWMD_Box, VWMD_PQTor
 /**
   * Code moved to new file on 1/19/2017.
   */
-trait SpatMatHelper {
-	protected def getTooMuchRRC : RenderRegistryClient
-	val rrc = getTooMuchRRC
-	val myAssetMgr = rrc.getJme3AssetManager(null);
-	val myUnshMat = new Material(myAssetMgr, "Common/MatDefs/Misc/Unshaded.j3md") // someContent.makeAlphaBlendedUnshadedMaterial(rrc, 0f, 1.0f, 0, 0.5f);
-	val myMatPal = new MatPallete(myUnshMat)
-	val outerGuy = new OuterTestQuadsAndTextMaker(rrc, myMatPal)
-	def getBrushJar : BrushJar = outerGuy.myBrushJar
-}
 
 class TextSpatMkrWrpr(myRRC : RenderRegistryClient) {
 	lazy val myFirstTSF: TextSpatialFactory = new TextSpatialFactory(myRRC)
@@ -69,7 +60,7 @@ class TextSpatMkrWrpr(myRRC : RenderRegistryClient) {
 
 // Interprets any ShapeCreateRq to produce a new JmeSpatial, or extract one from the request itself
 
-trait VWSpatialsForShapes extends PatternGridMaker with SpatMatHelper {
+trait VWSpatialsForShapes extends PatternGridMaker with MatsForShapes  {
 
 	lazy val txtSpatMW = new TextSpatMkrWrpr(getTooMuchRRC)
 
@@ -98,13 +89,12 @@ trait VWSpatialsForShapes extends PatternGridMaker with SpatMatHelper {
 				val geom : Geometry = makeMeshAndGeomFromDesc(meshDescPart)
 				val matDescPart = cmpndMeshyRq.getMatDescPart
 				applyMat(geom, matDescPart)
-
 				geom
 			}
 		}
 	}
-	def makeMeshAndGeomFromDesc(meshBasedRq : VWMeshDesc) : Geometry = {
-		val mesh: Mesh = meshBasedRq match {
+	def makeMeshAndGeomFromDesc(meshDesc : VWMeshDesc) : Geometry = {
+		val mesh: Mesh = meshDesc match {
 			case sph: VWMD_Sphere => {
 				// zSamp, rSamp, radius
 				new Sphere(sph.zSamples, sph.radialSamples, sph.radiusF)
@@ -130,21 +120,7 @@ trait VWSpatialsForShapes extends PatternGridMaker with SpatMatHelper {
 		}
 		val geomNameArb: String = "geom_from_msg_shape_" + System.currentTimeMillis()
 		val geom = new Geometry(geomNameArb, mesh)
-//		applySpatialTransform_full(geom, meshBasedRq.getCoreParams3D_opt.get)
 		geom
-
-	}
-	def applyMat(geom : Geometry, matDesc: VWMatDesc) : Unit = {
-		val rrc = getTooMuchRRC
-		val specialMat_opt = matDesc.makeSpecialMaterial_opt(rrc)
-		if (specialMat_opt.isDefined) {
-			geom.setMaterial(specialMat_opt.get)
-		} else {
-			val dsc_opt : Option[ColorRGBA] = matDesc.getColorParam_opt
-			val dsc = dsc_opt.getOrElse(ColorRGBA.Gray)
-			val brush = getBrushJar.makeBrush(dsc)
-			brush.stroke(geom)
-		}
 	}
 	def UNUSED_applySpatialTransform_full_UNUSED_I_THINK(spat : Spatial, params : Transform3D) : Unit = {
 		val pos : Vector3f = params.getPos

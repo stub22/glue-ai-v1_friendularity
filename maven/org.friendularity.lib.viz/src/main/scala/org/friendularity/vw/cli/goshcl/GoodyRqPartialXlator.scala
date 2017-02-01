@@ -7,7 +7,7 @@ import org.cogchar.name.goody.GoodyNames
 import org.cogchar.render.app.entity.GoodyActionExtractor
 import org.friendularity.vw.mprt.manip.{AbruptManipAbsPartialImpl, ManipDesc, MaybeTransform3D, MakesManipDesc}
 import org.friendularity.vw.msg.cor.VWContentRq
-import org.friendularity.vw.msg.shp.deep.{SimpleMatDesc, VWMatDesc, VWSCR_Node, ShapeManipRqImpl, VWShapeDeleteRq}
+import org.friendularity.vw.msg.shp.deep.{VWApplyMatToShapeTree, VWApplyMatToAll, SimpleMatDesc, VWMatDesc, VWSCR_Node, ShapeManipRqImpl, VWShapeDeleteRq}
 
 import java.lang.{Float => JFloat, Integer => JInt, Long => JLong}
 
@@ -41,17 +41,33 @@ trait GoodyRqPartialXlator extends GeneralXlatorSupport with MakesManipDesc {
 	def makeSetRqs(mgrec : MadeGoodyRec, taSpec : ThingActionSpec)
 					 : List[VWContentRq] = {
 
-// 		val paramTVM : TypedValueMap = taSpec.getParamTVM
-		val maybeXform : MaybeTransform3D = extractXform_part(taSpec)
-		if (maybeXform.isEmpty) Nil else {
-			val topShapeID = mgrec.getTopShapeID
-			val forceToFullXform = false // "Partial" approach is preferred as of 2016-Nov, see RVWS-49 and RVWS-57.
-			val noDuration = None
-			val manipGuts = makeManipGuts(maybeXform, noDuration, forceToFullXform)
-			val noStatusTlr = None
-			val shapeManipRq = new ShapeManipRqImpl(topShapeID, manipGuts, noStatusTlr)
-			List(shapeManipRq)
-		}
+		val paramTVM : TypedValueMap = taSpec.getParamTVM
+		val gax = new GoodyActionExtractor(taSpec)
+
+		val topShapeID = mgrec.getTopShapeID
+
+		val maybeXform : MaybeTransform3D = extractXform(paramTVM, gax)
+		val colorParm_opt : Option[ColorRGBA] = extractColor(gax)
+
+		val manipRqs : List[VWContentRq] = if (maybeXform.isEmpty) Nil else makeAbruptManipRqs(topShapeID, maybeXform)
+
+		val colorRqs : List[VWContentRq] = if (colorParm_opt.isEmpty) Nil else makeColorSetRqs(topShapeID, colorParm_opt.get)
+
+		colorRqs ::: manipRqs
+	}
+	private def makeAbruptManipRqs(topShapeID : Ident, maybeXform : MaybeTransform3D) : List[VWContentRq] = {
+		val forceToFullXform = false // "Partial" approach is preferred as of 2016-Nov, see RVWS-49 and RVWS-57.
+		val noDuration = None
+		val manipGuts = makeManipGuts(maybeXform, noDuration, forceToFullXform)
+		val noStatusTlr = None
+		val shapeManipRq = new ShapeManipRqImpl(topShapeID, manipGuts, noStatusTlr)
+		List(shapeManipRq)
+	}
+
+	private def makeColorSetRqs(topShapeID : Ident, clr : ColorRGBA) : List[VWContentRq] = {
+		val matDesc = new SimpleMatDesc(Option(clr))
+		val applyRq = new VWApplyMatToShapeTree(topShapeID, matDesc)
+		List(applyRq)
 	}
 	def makeParentCreateRqs_withXform(parentNodeShapeID : Ident, gparent_opt : Option[Ident], initXform_part : MaybeTransform3D) : List[VWContentRq] = {
 		val initManipDesc : ManipDesc = new AbruptManipAbsPartialImpl(initXform_part)

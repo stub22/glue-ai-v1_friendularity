@@ -1,6 +1,6 @@
 package org.friendularity.netcli.goodtst
 
-import com.jme3.math.Quaternion
+import com.jme3.math.{ColorRGBA, Quaternion}
 import org.appdapter.core.name.Ident
 import org.appdapter.fancy.log.VarargsLogging
 import org.cogchar.api.thing.SerTypedValueMap
@@ -54,17 +54,18 @@ class TestManyGoodyBursts(ovwc : OffersVWorldClient) extends GoodyParamMaker wit
 
 	def fireHorizBurst_withWackyMoveRot(bName : String, goodyTypeID : Ident, topParams : SerTypedValueMap) : Unit = {
 
-		fireHorizBurst(bName, goodyTypeID, topParams, DFL_X_SPC, DFL_Y_DELT, noSetParamsFunc, Some(wackyMoveRotParam), DFL_STP_DLY_OPT)
+		fireHorizBurst(bName, goodyTypeID, topParams, DFL_X_SPC, DFL_Y_DELT, noSetParamsFunc, Some(wackyMoveRotParam), None, DFL_STP_DLY_OPT)
 	}
 
 	def fireHorizBurst(bName : String, goodyTypeID : Ident, topParams : SerTypedValueMap) : Unit = {
 
-		fireHorizBurst(bName, goodyTypeID, topParams, DFL_X_SPC, DFL_Y_DELT, noSetParamsFunc, noMoveRotParam, DFL_STP_DLY_OPT)
+		fireHorizBurst(bName, goodyTypeID, topParams, DFL_X_SPC, DFL_Y_DELT, noSetParamsFunc, noMoveRotParam, None, DFL_STP_DLY_OPT)
 	}
 
 	def fireHorizBurst(bName : String, goodyTypeID : Ident, topParams : SerTypedValueMap, xSpacing : Float,
 					   yDelta: Float, setParmsFunc_opt : Option[Function1[Int, SerTypedValueMap]],
-					   moveRotParam_opt : Option[SerTypedValueMap], stepDelay_opt : Option[Int]) : Unit = {
+					   moveRotParam_opt : Option[SerTypedValueMap], colorParam_opt : Option[SerTypedValueMap],
+					   stepDelay_opt : Option[Int]) : Unit = {
 
 		val burstParams = combineParams(List(seedLocParam, topParams))
 
@@ -79,7 +80,7 @@ class TestManyGoodyBursts(ovwc : OffersVWorldClient) extends GoodyParamMaker wit
 
 		brst.moveAllGoodiesSmoothly(ovwc, GoodyNames.LOCATION_Y, yDelta, moveRotParam_opt, 2.5f, stepDelay_opt)
 
-		brst.setAllGoodyLocsAbruptly(ovwc, GoodyNames.LOCATION_X, -1f * yDelta, None, stepDelay_opt)
+		brst.setAllGoodyLocsAbruptly(ovwc, GoodyNames.LOCATION_X, -1f * yDelta, None, colorParam_opt, stepDelay_opt)
 
 		brst.deleteAllGoodies(ovwc, stepDelay_opt)
 	}
@@ -94,10 +95,8 @@ class TestManyGoodyBursts(ovwc : OffersVWorldClient) extends GoodyParamMaker wit
 	}
 
 	def fireBitCubeBurst() : Unit = {
-		// TODO:  BitCube expects these texture images:
-		//		Texture zeroTexture = assetMgr.loadTexture("textures/robosteps/Zero.png");
-		//		Texture oneTexture = assetMgr.loadTexture("textures/robosteps/One.png");
-		//		Texture blankTexture = assetMgr.loadTexture("textures/robosteps/BlankGray.png");
+		// Note:  BitCube back-end expects to find texture images.
+
 		val yPos = makeFloatParam(GoodyNames.LOCATION_Y, 8.0f)
 
 		val bcubeParams = combineParams(List(redTrans, turnAboutY_45deg, stateTrue, yPos))
@@ -125,7 +124,7 @@ class TestManyGoodyBursts(ovwc : OffersVWorldClient) extends GoodyParamMaker wit
 		val ttGridParams = combineParams(List(redTrans, rotUpParam,  posParams)) // turnAboutY_45deg
 
 		fireHorizBurst("horizTTGridOne", GT_TICTAC_GRID, ttGridParams, DFL_X_SPC * 4.0f, DFL_Y_DELT * 3.0f,
-					Some(ticTacStateSetParmsFunc), Some(wackyMoveRotParam), Some(700))
+					Some(ticTacStateSetParmsFunc), Some(wackyMoveRotParam),  Some(bluTrans), Some(700))
 	}
 	def fireTicXBurst() : Unit = {
 		// TicX is in the X-Z plane by default, so we rotate it up for display.
@@ -147,15 +146,18 @@ class TestManyGoodyBursts(ovwc : OffersVWorldClient) extends GoodyParamMaker wit
 
 		val floorParams = combineParams(List(bluTrans, turnAboutZ_45deg, posParams))
 
-		fireHorizBurst("horizFloorOne", GT_FLOOR, floorParams, 6.0f, 3.0f, noSetParamsFunc, Some(wackyMoveRotParam),  Some(700))
+		fireHorizBurst("horizFloorOne", GT_FLOOR, floorParams, 6.0f, 3.0f, noSetParamsFunc, Some(wackyMoveRotParam),
+					Some(ylwTrans), Some(700))
 	}
 
 	def fireTextBurst() : Unit = {
 		val locParams = makeLoc3Params(150.0f, 300.0f, 0.5f)
 		val txtParam = makeTxtParam("Burst o Text is HERE")
 		val scale3 = makeUniformScaleParam(1.0f)
-		val prmsCombined = combineParams(List(txtParam, scale3, locParams))
-		fireHorizBurst("horizTxt", GT_TEXT, prmsCombined, 20.0f, 40.0f, noSetParamsFunc, noMoveRotParam, Some(500))
+		val prmsCombined = combineParams(List(txtParam, scale3, locParams, bluTrans))
+		fireHorizBurst("horizTxt", GT_TEXT, prmsCombined, 20.0f, 40.0f, noSetParamsFunc, noMoveRotParam,
+						Some(prpTrans), Some(500))
+
 	}
 	def fireScoreboardBurst() : Unit = {
 		/*
@@ -170,7 +172,7 @@ class TestManyGoodyBursts(ovwc : OffersVWorldClient) extends GoodyParamMaker wit
 		val rows = makeRowCountParam(4)
 		val sbParams = combineParams(List(scale, locParams, sizes, rows))
 
-		fireHorizBurst("horizScore", GT_SCOREBOARD, sbParams, 20.0f, 30.0f, noSetParamsFunc, noMoveRotParam, Some(400))
+		fireHorizBurst("horizScore", GT_SCOREBOARD, sbParams, 20.0f, 30.0f, noSetParamsFunc, noMoveRotParam, None, Some(400))
 	}
 	def fireCrosshairBurst() : Unit = {
 		//  org.cogchar.render.goody.flat.CrossHairGoody (FlatGoodyWithScreenFracPos.java:41)
@@ -178,7 +180,7 @@ class TestManyGoodyBursts(ovwc : OffersVWorldClient) extends GoodyParamMaker wit
 		val locParams = makeLoc3Params(0.1f, 0.5f, 0.0f)
 		val scale = makeUniformScaleParam(1.0f)
 		val chParams = combineParams(List(scale, locParams))
-		fireHorizBurst("horizCross", GT_CROSSHAIR, chParams, 0.1f, 0.1f, noSetParamsFunc, noMoveRotParam, Some(400))
+		fireHorizBurst("horizCross", GT_CROSSHAIR, chParams, 0.1f, 0.1f, noSetParamsFunc, noMoveRotParam, None, Some(400))
 	}
 	def fireSomeBursts(): Unit = {
 

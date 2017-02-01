@@ -37,7 +37,8 @@ class MatPallete(myBaseMat: Material) {
 	}
 }
 class Brush(myMatPal : MatPallete, myColor : ColorRGBA) {
-	lazy val myBSC = myMatPal.getBSC_forColor(myColor)
+	// BSC handles application of material, queueBucket, and cullHint.
+	lazy val myBSC : BlendedShapeContext = myMatPal.getBSC_forColor(myColor)
 
 	def stroke(geom : Geometry) : Unit = {
 		myBSC.setupGeom(geom)
