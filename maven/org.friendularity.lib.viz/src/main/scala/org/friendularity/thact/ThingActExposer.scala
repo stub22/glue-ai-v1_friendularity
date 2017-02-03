@@ -112,7 +112,7 @@ trait ThingActExposer extends VarargsLogging {
 	// Assumes "weak" param convention, where each param gets its own instanceURI
 	def readWeakParamsIntoBTVMap( btvm : BasicTypedValueMap, actionItem : Item) : Unit = {
 		val paramItems: JSet[Item] = actionItem.getLinkedItemSet(propID_linkFromParamToAction, LinkDirection.REVERSE)
-		info1("Found {} paramItems", paramItems.size() : Integer)
+		debug1("Found {} paramItems", paramItems.size() : Integer)
 		debug1("ParamItems dump={}", paramItems)
 		for (pit <- paramItems) {
 			val pitItem : Item = pit
@@ -138,16 +138,16 @@ trait ThingActExposer extends VarargsLogging {
 			resBuffer.append(taResIter.nextResource())
 		}
 		val foundRsrcs : List[Resource] = resBuffer.toList
-		info2("Found {} ThingAct resources: {}", foundRsrcs.length : Integer, foundRsrcs)
+		trace2("Found {} ThingAct resources: {}", foundRsrcs.length : Integer, foundRsrcs)
 
 		val specBuffer = new ListBuffer[ThingActionSpec]
 		for (rsrc <- foundRsrcs) {
 			val actionID : Ident = new JenaResourceItem(rsrc)
 			val actSpec : ThingActionSpec = readActionFromJenaModel(jenaModel, actionID)
-			info4("extractThingsFromModel read actSpec of actionID={}, verb={}, tgtType={} tgtID={}",
+			debug4("extractThingsFromModel read actSpec of actionID={}, verb={}, tgtType={} tgtID={}",
 				actionID, actSpec.getVerbID, actSpec.getTargetThingTypeID, actSpec.getTargetThingID)
 
-			debug1("Full dump of thingActionSpec:\n {}", actSpec)
+			trace1("Full dump of thingActionSpec:\n {}", actSpec)
 			specBuffer.append(actSpec)
 		}
 		specBuffer.toList

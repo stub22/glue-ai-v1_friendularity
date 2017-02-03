@@ -72,13 +72,13 @@ trait JmeAnimCtrlWrap extends VarargsLogging {
 	}
 
 	def fireAnimUnloopedUnblended(ac : JmeAnimCtrl, a: JmeGrossAnim, cmplHndl_opt : Option[ManipCompletionHandle]) : Unit = {
-		info1("********** Preparing to fire grossAnim={} - canceling old anims and clearing listeners, first", a)
+		debug1("********** Preparing to fire grossAnim={} - canceling old anims and clearing listeners, first", a)
 		cancelOldAnims(ac)  // Note that this calls clearChannels
 		ac.clearListeners()
 		cmplHndl_opt.map(registerPropagator(ac, _))
 		val blendTimeSec = 0f
 		fireAnim(ac, a, blendTimeSec, LoopMode.DontLoop)
-		info1("Completed firing of grossAnim={}", a)
+		trace1("Completed firing of grossAnim={}", a)
 	}
 	def fireAnimUnloopedUnblended(s : Spatial, a: JmeGrossAnim, cmplHndl_opt : Option[ManipCompletionHandle]) : Unit = {
 		val ac = findOrMakeAnimCtrl(s)

@@ -68,7 +68,7 @@ trait 	VWShaperLogic extends PatternGridMaker with JmeAttachHlp with IdentHlp {
 		val spatRec: MadeSpatRecBase = myMadeSpatRecsByID.get(childSpatID).get
 		val spat = spatRec.getMainSpat
 		val resultFlag = spat.removeFromParent()
-		info3("removeFromParent returned={} for spat={} found at shapeID={}", resultFlag: java.lang.Boolean, spat, spatRec)
+		debug3("removeFromParent returned={} for spat={} found at shapeID={}", resultFlag: java.lang.Boolean, spat, spatRec)
 	}
 
 	protected def clearAllShapes_onRendThrd(): Unit = {

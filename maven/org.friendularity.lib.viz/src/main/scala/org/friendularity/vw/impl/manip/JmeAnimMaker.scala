@@ -33,11 +33,11 @@ trait JmeAnimMaker extends VarargsLogging {
 		val animName = "smv_" + smv.hashCode() + "_at_" + System.currentTimeMillis()
 		val animFactory = new AnimationFactory(durF, animName)
 		if (assumeFullXforms) {
-			info1("Using full keyFrames for story: {}", smv)
+			debug1("Using full keyFrames for story: {}", smv)
 			addFullJmeAnimKeyFrame(animFactory, 0, smv.getXform_begin_full)
 			addFullJmeAnimTimedFrame(animFactory, durF, smv.getXform_finish_full)
 		} else {
-			info1("Using partial keyFrames for story: {}", smv)
+			debug1("Using partial keyFrames for story: {}", smv)
 			addPartialJmeAnimKeyFrame(animFactory, 0, smv.getXform_begin_partial)
 			addPartialJmeAnimTimedFrame(animFactory, durF, smv.getXform_finish_partial)
 		}

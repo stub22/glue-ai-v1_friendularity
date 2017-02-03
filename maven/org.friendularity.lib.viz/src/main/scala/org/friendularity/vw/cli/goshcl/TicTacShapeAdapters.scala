@@ -59,7 +59,7 @@ trait TicTacShapeXlator extends GoodyRqPartialXlator with TicTacNums {
 			}
 		}
 		val fullRqList = parentRqs ::: childRqs
-		info1("FullRqList for TicTac goody create={}", fullRqList)
+		debug1("fullRqList for TicTac goody create={}", fullRqList)
 		fullRqList
 	}
 
@@ -110,7 +110,7 @@ trait TicTacShapeXlator extends GoodyRqPartialXlator with TicTacNums {
 			Nil
 		}
 		val otherSetReqs : List[VWContentRq] = super.makeSetRqs(mgrec, taSpec)
-		info2("TT-Grid ttSetRqs={}, otherSetRqs={}", ttSetRqs, otherSetReqs)
+		debug2("TT-Grid ttSetRqs={}, otherSetRqs={}", ttSetRqs, otherSetReqs)
 		ttSetRqs ::: otherSetReqs
 	}
 
