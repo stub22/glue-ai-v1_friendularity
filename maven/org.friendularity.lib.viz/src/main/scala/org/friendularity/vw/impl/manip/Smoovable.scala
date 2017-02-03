@@ -79,7 +79,7 @@ trait Smoovable extends AbruptlyMovable with Locatable with Addressable with Var
 		} else {
 			createSmooveStartingFromCurrentPartialXform_anyThrd(manipEnding.getXform_finish_partial, manipEnding.getDuration_sec)
 		}
-		info1("Created smoove starting from current pos: {}", smv)
+		debug1("Created smoove starting from current pos: {}", smv)
 		applySmooveNow_anyThrd(smv, ch )
 	}
 

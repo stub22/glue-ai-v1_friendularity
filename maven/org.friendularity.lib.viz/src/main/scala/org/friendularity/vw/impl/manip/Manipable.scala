@@ -37,12 +37,12 @@ trait Manipable extends Smoovable with IdentHlp with VarargsLogging {
 		})
 		manip match {
 			case smf : SmooveManipStory => {
-				info1("Starting full-smoove manip: {}", smf)
+				debug1("Starting full-smoove manip: {}", smf)
 				applySmooveNow_anyThrd(smf, ch)
 
 			}
 			case sme : SmooveManipEnding => {
-				info1("Starting half-smoove manip: {}", sme)
+				debug1("Starting half-smoove manip: {}", sme)
 				applySmooveFromCurrent_mystThrd(sme, ch)
 			}
 			case ama : AbruptManipAbs => {
