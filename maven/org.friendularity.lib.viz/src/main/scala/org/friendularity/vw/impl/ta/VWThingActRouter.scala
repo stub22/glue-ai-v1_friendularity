@@ -51,7 +51,7 @@ trait VWThingActReqRouterLogic extends VWBodyTARouterLogic with CamTARouterLogic
 	override protected def getMedialRendezvous :  VWBodyMedialRendezvous  = myBodyMedialRndzvs
 	def routeRq(vwtarq: VWRqTAWrapper, whoDat : ActorRef) : Unit = {
 		val tellers = getVWPubTellers
-		info1("Router handling TARq in binary format: {}, and wisely using vwpt-tellers...", vwtarq)
+		debug1("Router handling TARq in binary format: {}, and wisely using vwpt-tellers...", vwtarq)
 
 		val taSpec : ThingActionSpec = vwtarq.getActionSpec
 		val gax: GoodyActionExtractor = new GoodyActionExtractor(taSpec)

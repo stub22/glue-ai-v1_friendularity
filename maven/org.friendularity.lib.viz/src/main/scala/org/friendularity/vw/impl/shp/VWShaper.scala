@@ -149,7 +149,7 @@ trait 	VWShaperLogic extends PatternGridMaker with JmeAttachHlp with IdentHlp {
 					}
 
 				}
-				info2("Storing madeSpatRec at id={}, rec={}", assignedID, madeSpatRec)
+				debug2("Storing madeSpatRec at id={}, rec={}", assignedID, madeSpatRec)
 				myMadeSpatRecsByID.put(assignedID, madeSpatRec)
 				madeSpatRec
 			})
@@ -174,7 +174,7 @@ trait 	VWShaperLogic extends PatternGridMaker with JmeAttachHlp with IdentHlp {
 			val knownParentMadeRec_opt = myMadeSpatRecsByID.get(kparid)
 			if (knownParentMadeRec_opt.isDefined) {
 				val pNode: JmeNode = knownParentMadeRec_opt.get.getMainSpat.asInstanceOf[JmeNode]
-				info1("Found known parentNode: {}", pNode)
+				debug1("Found known parentNode: {}", pNode)
 				Option(pNode)
 			} else {
 				warn2("Could not find expected parentNode at ID={}, for child={}", kparid, spatToAttach)
@@ -191,7 +191,7 @@ trait 	VWShaperLogic extends PatternGridMaker with JmeAttachHlp with IdentHlp {
 			}
 		)
 
-		info2("Using parentNode={} for childSpatial={}", parentToUse_opt, spatToAttach)
+		debug2("Using parentNode={} for childSpatial={}", parentToUse_opt, spatToAttach)
 		val dooda = parentToUse_opt.map(_.attachChild(spatToAttach))
 	}
 
@@ -255,7 +255,7 @@ class VWShaperActor(myRRC: RenderRegistryClient) extends Actor with VWShaperLogi
 			val madeSpatRec_opt : Option[MadeSpatRecBase] = findMadeSpatRec(shapeID)
 			val manipDesc = manipRq.getManipDesc
 			val func : Function0[Unit] = () => {
-				info1("Finally applying manip for VWShapeManipRq={}", manipRq)
+				debug1("Finally applying manip for VWShapeManipRq={}", manipRq)
 				madeSpatRec_opt.get.applyManipDesc(manipDesc, this, manipRq.getStatusHandler_opt)
 			}
 			enqueueJmeCallable(myRRC, func)

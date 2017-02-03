@@ -50,6 +50,9 @@ class TextSpatMkrWrpr(myRRC : RenderRegistryClient) {
 		else
 			happyTxtMaker.makeBitmapTxt3D(txtCntnt)
 
+		// Since BitmapText supports this method directly, we don't have to make a material and apply it...?
+		btmpTxt.setColor(clr)
+
 		btmpTxt
 	}
 	// myOverlayText.setSize(myOverlayText.getFont.getCharSet.getRenderedSize * scale)
@@ -78,6 +81,8 @@ trait VWSpatialsForShapes extends PatternGridMaker with MatsForShapes  {
 			case existingNode :	VWSCR_ExistingNode => {
 				existingNode.existingNode
 			}
+			// We treat Txt specially because it might be either 2D or 3D, which would place it in a different
+			// renderBucket.
 			case txtBox : VWSCR_TextBox => {
 				txtSpatMW.makeTextSpat(txtBox)
 			}
@@ -88,7 +93,7 @@ trait VWSpatialsForShapes extends PatternGridMaker with MatsForShapes  {
 				val meshDescPart = cmpndMeshyRq.getMeshDescPart
 				val geom : Geometry = makeMeshAndGeomFromDesc(meshDescPart)
 				val matDescPart = cmpndMeshyRq.getMatDescPart
-				applyMat(geom, matDescPart)
+				applyMatFromBrushOrSpecial(geom, matDescPart)
 				geom
 			}
 		}
