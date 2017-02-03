@@ -7,7 +7,7 @@ import org.cogchar.name.goody.GoodyNames
 import org.cogchar.render.app.entity.GoodyActionExtractor
 import org.friendularity.vw.mprt.manip.{AbruptManipAbsPartialImpl, ManipDesc, MaybeTransform3D, MakesManipDesc}
 import org.friendularity.vw.msg.cor.VWContentRq
-import org.friendularity.vw.msg.shp.deep.{VWApplyMatToShapeTree, VWApplyMatToAll, SimpleMatDesc, VWMatDesc, VWSCR_Node, ShapeManipRqImpl, VWShapeDeleteRq}
+import org.friendularity.vw.msg.shp.deep.{VWApplyMatToShapeTree, VWApplyMatToTree, SimpleMatDesc, VWMatDesc, VWSCR_Node, ShapeManipRqImpl, VWShapeDeleteRq}
 
 import java.lang.{Float => JFloat, Integer => JInt, Long => JLong}
 

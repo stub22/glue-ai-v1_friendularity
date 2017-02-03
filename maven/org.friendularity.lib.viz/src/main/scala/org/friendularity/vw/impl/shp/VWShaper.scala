@@ -30,7 +30,7 @@ import org.friendularity.vw.impl.cam.SyncsToCam
 import org.friendularity.vw.impl.manip.{AppliesXforms, Manipable}
 import org.friendularity.vw.impl.tsk.JmeAttachHlp
 import org.friendularity.vw.mprt.manip.Transform3D
-import org.friendularity.vw.msg.shp.deep.{VWMatDesc, VWApplyMatToAll, VWShapeDeleteRq, VWClearAllShapes, VWSCR_CamGuideNode, VWSCR_CellGrid, VWSCR_ExistingNode, VWSCR_Node, VWMD_Sphere, VWSCR_TextBox, VWShapeAttachRq, VWShapeCreateRq, VWShapeDetachRq, VWShapeManipRq}
+import org.friendularity.vw.msg.shp.deep.{VWMatDesc, VWApplyMatToTree, VWShapeDeleteRq, VWClearAllShapes, VWSCR_CamGuideNode, VWSCR_CellGrid, VWSCR_ExistingNode, VWSCR_Node, VWMD_Sphere, VWSCR_TextBox, VWShapeAttachRq, VWShapeCreateRq, VWShapeDetachRq, VWShapeManipRq}
 
 import scala.collection.mutable
 import scala.util.Random
@@ -260,7 +260,7 @@ class VWShaperActor(myRRC: RenderRegistryClient) extends Actor with VWShaperLogi
 			}
 			enqueueJmeCallable(myRRC, func)
 		}
-		case matChgRq : VWApplyMatToAll => {
+		case matChgRq : VWApplyMatToTree => {
 			val topShapeID : Ident = matChgRq.getTopShapeID
 			val matDesc : VWMatDesc = matChgRq.getMatDesc
 			val mat = myShapeMaker.getBestMat(matDesc)
