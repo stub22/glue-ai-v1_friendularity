@@ -57,7 +57,7 @@ object WbrstServerTest  extends VarargsLogging {
 		val directSvcAkkaRef = wbrstAkkaSys.actorOf(directProps, wbrstDirectActorName)
 		val launcher = new SprayCanLauncher {}
 		launcher.launchForListener(wbrstAkkaSys,  directSvcAkkaRef, wbrstDirectPort)
-		info2("Finished launch routing-based service on port={}, svc={}", wbrstDirectPort : Integer, directSvcAkkaRef)
+		info2("Finished launch direct req+resp service on port={}, svc={}", wbrstDirectPort : Integer, directSvcAkkaRef)
 	}
 
 }

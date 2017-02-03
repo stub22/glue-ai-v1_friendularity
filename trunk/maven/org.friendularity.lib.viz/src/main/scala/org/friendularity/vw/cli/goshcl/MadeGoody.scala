@@ -43,6 +43,9 @@ case class MadeGoodyRec(goodyID : Ident, xlator : GoodyRqPartialXlator) {
 		myDeletedFlag = true
 	}
 
+	// TODO:  Need something like this to find old tic-tac mark to be replaced.
+	def getAllSetXlationsMatchingParams : Unit = {}
+
 }
 trait MadeGoodyCache {
 	lazy val myMGRecsByID : MutaMap[Ident, MadeGoodyRec] = new HashMap[Ident, MadeGoodyRec]

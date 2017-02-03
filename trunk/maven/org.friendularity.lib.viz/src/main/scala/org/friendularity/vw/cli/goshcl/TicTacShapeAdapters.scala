@@ -78,6 +78,9 @@ trait TicTacShapeXlator extends GoodyRqPartialXlator with TicTacNums {
 				val yCoord: JInt = gax.getSpecialInteger(GoodyNames.COORDINATE_Y)
 
 				val markPlcRqs = if ((xCoord != null) && (yCoord != null)) {
+					// TODO: Find shape ID for last mark created at this position, if any.
+					// If found, then prepend a Rq to delete that mark-node.
+
 					val markCenterPos : Vector3f = myGridAdapter.computeMarkCenterPos(xCoord, yCoord)
 
 					val markXform_part = new PartialTransform3D(Some(markCenterPos), None, None)
