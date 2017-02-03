@@ -79,7 +79,7 @@ class ThingActReceiverTxt(taTurtleTeller : CPStrongTeller[VWTARqRdf]) extends
 				debug1("ThingActReceiverTxt-JMSListener - received msg, dumping to see if 'wacky' headers show up:\n{}", msg)
 				msg match {
 					case txtMsg: JMSTextMsg => {
-						info2("JMSListener processing received txtMsg with length={} and tstamp={}", txtMsg.getText.length : JInt,  txtMsg.getJMSTimestamp: JLong)
+						trace2("JMSListener processing received txtMsg with length={} and tstamp={}", txtMsg.getText.length : JInt,  txtMsg.getJMSTimestamp: JLong)
 						forwardUndecodedGoodyTxtMsg(txtMsg)
 					}
 					case other => {
@@ -103,7 +103,7 @@ class ThingActReceiverBinary(taDirectTeller : CPStrongTeller[VWRqTAWrapper])
 		val verbID = taSpec.getVerbID
 		val targetID = taSpec.getTargetThingID
 		val targetTypeID = taSpec.getTargetThingTypeID
-		info3("forwarding TA to taTeller for target={}, targetType={}, verb={}", targetID, targetTypeID, verbID)
+		debug3("forwarding TA to taTeller for target={}, targetType={}, verb={}", targetID, targetTypeID, verbID)
 		forwardMsgToThingActionActor(taSpec)
 	}
 	def forwardMsgToThingActionActor(taSpec: ThingActionSpec) : Unit = {
@@ -113,11 +113,11 @@ class ThingActReceiverBinary(taDirectTeller : CPStrongTeller[VWRqTAWrapper])
 	override def makeListener : JMSMsgListener = {
 		new JMSMsgListener() {
 			override def onMessage(msg: JMSMsg): Unit = {
-				info2("ThingActReceiverBinary-JMSListener msgID={} timestamp={}", msg.getJMSMessageID, msg.getJMSTimestamp : JLong)
-				debug1("ThingActReceiverBinary-JMSListener - received msg, dumping to see if 'wacky' headers show up:\n{}", msg)
+				debug2("ThingActReceiverBinary-JMSListener msgID={} timestamp={}", msg.getJMSMessageID, msg.getJMSTimestamp : JLong)
+				trace1("ThingActReceiverBinary-JMSListener - received msg, dumping to see if 'wacky' headers show up:\n{}", msg)
 				msg match {
 					case objMsg: JMSObjMsg => {
-						info1("Listener processing received objMsg with tstamp={}", objMsg.getJMSTimestamp: JLong)
+						trace1("Listener processing received objMsg with tstamp={}", objMsg.getJMSTimestamp: JLong)
 						receiveJSerBinaryMsg(objMsg)
 					}
 					case other => {
@@ -142,7 +142,7 @@ class ThingActReceiverDual(myTARcvBin : ThingActReceiverBinary) extends JmsListe
 	override def makeListener: JMSMsgListener = {
 		new JMSMsgListener() {
 			override def onMessage(msg: JMSMsg): Unit = {
-				info2("ThingActReceiverDual-JMSListener rcvd msgID={} timestamp={}", msg.getJMSMessageID, msg.getJMSTimestamp: JLong)
+				debug2("ThingActReceiverDual-JMSListener rcvd msgID={} timestamp={}", msg.getJMSMessageID, msg.getJMSTimestamp: JLong)
 				msg match {
 					case txtMsg: JMSTextMsg => {
 						val taCount = receiveTAJmsTurtleMsg(txtMsg)
@@ -150,7 +150,7 @@ class ThingActReceiverDual(myTARcvBin : ThingActReceiverBinary) extends JmsListe
 									taCount : JInt, txtMsg.getText.length : JInt)
 					}
 					case objMsg: JMSObjMsg => {
-						info1("Dual-Listener processing received objMsg with tstamp={}", objMsg.getJMSTimestamp: JLong)
+						trace1("Dual-Listener processing received objMsg with tstamp={}", objMsg.getJMSTimestamp: JLong)
 						myTARcvBin.receiveJSerBinaryMsg(objMsg)
 					}
 					case other => {
@@ -174,11 +174,11 @@ class VWStatReceiverBinary(statusTeller : CPStrongTeller[VWorldNotice]) extends 
 	def makeListener : JMSMsgListener = {
 		new JMSMsgListener() {
 			override def onMessage(msg: JMSMsg): Unit = {
-				info2("ThingActReceiverBinary-JMSListener msgID={} timestamp={}", msg.getJMSMessageID, msg.getJMSTimestamp : JLong)
-				debug1("ThingActReceiverBinary-JMSListener - received msg, dumping to see if 'wacky' headers show up:\n{}", msg)
+				debug2("ThingActReceiverBinary-JMSListener msgID={} timestamp={}", msg.getJMSMessageID, msg.getJMSTimestamp : JLong)
+				trace1("ThingActReceiverBinary-JMSListener - received msg, dumping to see if 'wacky' headers show up:\n{}", msg)
 				msg match {
 					case objMsg: JMSObjMsg => {
-						info1("Listener processing received objMsg with tstamp={}", objMsg.getJMSTimestamp: JLong)
+						trace1("Listener processing received objMsg with tstamp={}", objMsg.getJMSTimestamp: JLong)
 						receiveJSerBinaryMsg(objMsg)
 					}
 					case other => {

@@ -38,8 +38,8 @@ trait JenaModelReader extends VarargsLogging {
 		val baseURI_orNull : String = null
 		val lang : String = RDFFormat.TURTLE.getLang.getName //  "TURTLE"
 		model.read(modelByteStream, baseURI_orNull, lang)
-		info1("After read, model size is (at least) {} stmts", model.size() : java.lang.Long)
-		debug1("Model contentDump:\n{}", model)
+		debug1("After read, model size is (at least) {} stmts", model.size() : java.lang.Long)
+		trace1("Model contentDump:\n{}", model)
 		model
 	}
 }
