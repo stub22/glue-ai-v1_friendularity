@@ -42,7 +42,7 @@ trait AppliesXforms extends VarargsLogging {
 	}
 	// partial -> set only properties that are supplied
 	def applyTransform_partial_runThrd(tgtSpat : Spatial, xform : MaybeTransform3D) : Unit = {
-		info2("Applying transform on run thread, spat={}, xform={}", tgtSpat, xform)
+		debug2("Applying transform on run thread, spat={}, xform={}", tgtSpat, xform)
 		val fPos_opt = xform.getPos_opt
 		val fRotQuat_opt = xform.getRotQuat_opt
 		val fScale_opt = xform.getScl_opt

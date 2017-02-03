@@ -34,7 +34,7 @@ trait MatsForShapes extends SpatMatHelper  {
 			unsh
 		}
 	}
-	def applyMat(geom : Geometry, matDesc: VWMatDesc) : Unit = {
+	def applyMatFromBrushOrSpecial(geom : Geometry, matDesc: VWMatDesc) : Unit = {
 		val rrc = getTooMuchRRC
 		val specialMat_opt = matDesc.makeSpecialMaterial_opt(rrc)
 		if (specialMat_opt.isDefined) {
