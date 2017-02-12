@@ -52,10 +52,21 @@ object TestNavUI extends VarargsLogging {
 
 
 	def main(args: Array[String]): Unit = {
-		// These two lines activate Log4J (at max verbosity!) without requiring a log4j.properties file.
-		// However, when a log4j.properties file is present, these commands should not be used.
+		// Note that log files go into the working directory, which under IntelliJ is wherever the intlj
+		// project is found, which may be different from the maven folder.
+
+		// Also note that it appears that if we run multiple .main() test simultaneously, the output
+		// of all of them is merged into the rolling appender file.  Unclear how much fidelity that
+		// merge has, it could be that some blocks are clobbered or dropped.
+
+		// These two lines activate Log4J (at max verbosity!) logging to console, without requiring a
+		// log4j.properties file.   However, when a log4j.properties file is present, these commands
+		// should not be used.  The o.f.lib.viz project has such a file, but we leave these disabled
+		// lines here in case this .main() is copied somewhere and logging becomes mysterious.
+
 		//		org.apache.log4j.BasicConfigurator.configure();
 		//		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.ALL);
+
 		val useOldTestApp = false
 		if (useOldTestApp)
 			launchOldGoodyRenderTestApp
