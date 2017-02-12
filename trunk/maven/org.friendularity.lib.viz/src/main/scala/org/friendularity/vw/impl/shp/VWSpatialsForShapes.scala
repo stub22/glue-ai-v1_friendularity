@@ -22,6 +22,7 @@ import com.jme3.math.{Quaternion, Vector3f, ColorRGBA}
 import com.jme3.scene.shape.{Box, PQTorus, Torus, Cylinder, Sphere}
 
 import com.jme3.scene.{Geometry, Mesh, Node => JmeNode, Spatial}
+import org.appdapter.fancy.log.VarargsLogging
 import org.cogchar.render.sys.registry.RenderRegistryClient
 import org.cogchar.render.trial.TextSpatialFactory
 import org.friendularity.tmpgood.tgbit.TG_BitCubeBox
@@ -32,7 +33,7 @@ import org.friendularity.vw.msg.shp.deep.{VWMD_TexturedBox, VWMD_Box, VWMD_PQTor
   * Code moved to new file on 1/19/2017.
   */
 
-class TextSpatMkrWrpr(myRRC : RenderRegistryClient) {
+class TextSpatMkrWrpr(myRRC : RenderRegistryClient) extends VarargsLogging {
 	lazy val myFirstTSF: TextSpatialFactory = new TextSpatialFactory(myRRC)
 	val happyTxtMaker = new TextSpatMaker(myFirstTSF) {
 		override val renderScale_meansWhat : Float = 0.8f
@@ -41,7 +42,11 @@ class TextSpatMkrWrpr(myRRC : RenderRegistryClient) {
 
 	def makeTextSpat(txtBoxRq : VWSCR_TextBox) : BitmapText = {
 		val inFltSpc = txtBoxRq.inFlatSpace
-		val txtCntnt = txtBoxRq.contentTxt
+		val txtCntnt : String = Option(txtBoxRq.contentTxt).getOrElse({
+			val rplc = "______"
+			warn2("Replacing null input text with {}, inputRq was={}", rplc, txtBoxRq)
+			rplc
+		})
 		val clr = txtBoxRq.color
 		val initXform = txtBoxRq.getInitXform3D_partial
 
