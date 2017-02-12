@@ -69,9 +69,13 @@ class TestManyGoodyBursts(ovwc : OffersVWorldClient) extends GoodyParamMaker wit
 
 		val burstParams = combineParams(List(seedLocParam, topParams))
 
-		val brst = new GoodyMsgBurstSender(bName, 12, 16)
+		val stressLikeRS : Boolean = true
+		val burstWidth : Int = if (stressLikeRS) 1 else 12
+		val crtDlyMsec_opt : Option[Int] = if (stressLikeRS) None else stepDelay_opt
 
-		brst.createGoodies(ovwc, goodyTypeID, burstParams, GoodyNames.LOCATION_X, xSpacing, stepDelay_opt)
+		val brst = new GoodyMsgBurstSender(bName, burstWidth, 16)
+
+		brst.createGoodies(ovwc, goodyTypeID, burstParams, GoodyNames.LOCATION_X, xSpacing, crtDlyMsec_opt)
 
 		// If user supplies a set-func, we apply it across all the goodies.
 		if (setParmsFunc_opt.isDefined) {
