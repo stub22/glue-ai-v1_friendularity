@@ -25,7 +25,7 @@ import org.cogchar.blob.emit.RenderConfigEmitter
 import org.cogchar.platform.gui.keybind.KeyBindingConfig
 import org.cogchar.platform.trigger.CommandSpace
 import org.cogchar.render.goody.basic.BasicGoodyCtx
-import org.cogchar.render.rendtest.{GoodyTestMsgMaker, GoodyRenderTestApp}
+import org.cogchar.render.rendtest.{GoodyRenderTestApp} // GoodyTestMsgMaker
 import org.friendularity.vw.cli.bdy.ExoBodyUserLogic
 
 import org.friendularity.netcli.vwta.ClientTestMsgSender

@@ -177,7 +177,7 @@ object RunClientTestMsgSender {
 	def main(args: Array[String]): Unit = {
 
 
-		val (doSinbadMoves, doExtraCam, doGoodyPile, doMainCamMoves, doGoodyBursts) = (false, false, true, true, true)
+		val (doSinbadMoves, doExtraCam, doGoodyPile, doMainCamMoves, doGoodyBursts) = (false, false, false, false, true)
 						// (true, true, false, true, true)
 		val (initDelayMsec, stepDelayMsec) = (3000, 2000)
 		val clientTestSender = new ClientTestMsgSender(initDelayMsec, stepDelayMsec, doSinbadMoves, doExtraCam, doGoodyPile, doMainCamMoves, doGoodyBursts)

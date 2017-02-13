@@ -31,7 +31,7 @@ import org.cogchar.api.vworld.GoodyActionParamWriter
 import org.cogchar.impl.thing.basic.BasicTypedValueMap
 import org.cogchar.impl.thing.fancy.ConcreteTVM
 import org.cogchar.name.goody.GoodyNames
-import org.cogchar.render.rendtest.GoodyTestMsgMaker
+// import org.cogchar.render.rendtest.GoodyTestMsgMaker
 import org.friendularity.akact.{KnowsAkkaSys, DummyActorMaker}
 import org.friendularity.cpmsg.{CPStrongTeller, ActorRefCPMsgTeller}
 import org.friendularity.vw.impl.ta.{TestTAQpidServer, ServerFeatureAccess, ServerReceiveFeature, ServerPublishFeature}
