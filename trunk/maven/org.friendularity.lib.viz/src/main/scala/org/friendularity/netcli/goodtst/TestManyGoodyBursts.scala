@@ -61,7 +61,6 @@ class TestManyGoodyBursts(ovwc : OffersVWorldClient) extends GoodyParamMaker wit
 
 		fireHorizBurst(bName, goodyTypeID, topParams, DFL_X_SPC, DFL_Y_DELT, noSetParamsFunc, noMoveRotParam, None, DFL_STP_DLY_OPT)
 	}
-
 	def fireHorizBurst(bName : String, goodyTypeID : Ident, topParams : SerTypedValueMap, xSpacing : Float,
 					   yDelta: Float, setParmsFunc_opt : Option[Function1[Int, SerTypedValueMap]],
 					   moveRotParam_opt : Option[SerTypedValueMap], colorParam_opt : Option[SerTypedValueMap],
@@ -69,7 +68,7 @@ class TestManyGoodyBursts(ovwc : OffersVWorldClient) extends GoodyParamMaker wit
 
 		val burstParams = combineParams(List(seedLocParam, topParams))
 
-		val stressLikeRS : Boolean = true
+		val stressLikeRS : Boolean = false
 		val burstWidth : Int = if (stressLikeRS) 1 else 12
 		val crtDlyMsec_opt : Option[Int] = if (stressLikeRS) None else stepDelay_opt
 
@@ -87,6 +86,18 @@ class TestManyGoodyBursts(ovwc : OffersVWorldClient) extends GoodyParamMaker wit
 		brst.setAllGoodyLocsAbruptly(ovwc, GoodyNames.LOCATION_X, -1f * yDelta, None, colorParam_opt, stepDelay_opt)
 
 		brst.deleteAllGoodies(ovwc, stepDelay_opt)
+	}
+	def fireExtraRapidBurst(bName : String, goodyTypeID : Ident, topParams : SerTypedValueMap, width : Int,
+							xSpacing : Float, chgParams : SerTypedValueMap,   delayBeforeDel : Int) : Unit = {
+
+		val rBrstParams = combineParams(List(seedLocParam, topParams))
+
+		val lengthDoesntMatter = 16
+		val rBrst = new GoodyMsgBurstSender(bName, width, lengthDoesntMatter)
+
+		rBrst.rapidMakeAndSet(ovwc, goodyTypeID, rBrstParams, GoodyNames.LOCATION_X, xSpacing, chgParams)
+		rBrst.pauseAsNeeded(Some(delayBeforeDel))
+		rBrst.deleteAllGoodies(ovwc, None)
 	}
 
 	def fireBoxBurst() : Unit = {
@@ -130,6 +141,29 @@ class TestManyGoodyBursts(ovwc : OffersVWorldClient) extends GoodyParamMaker wit
 		fireHorizBurst("horizTTGridOne", GT_TICTAC_GRID, ttGridParams, DFL_X_SPC * 4.0f, DFL_Y_DELT * 3.0f,
 					Some(ticTacStateSetParmsFunc), Some(wackyMoveRotParam),  Some(bluTrans), Some(700))
 	}
+	def fireRapidTTGBurst() : Unit = {
+
+		val posParams = makeLoc3Params(-50.0f, 28.0f, -25.0f)
+
+		val ttGridParams = combineParams(List(redTrans, rotUpParam,  posParams))
+
+		val isOparm = makeXOStateParam(false)
+		val hParam = makeIntParam(GoodyNames.COORDINATE_X, 2)
+		val vParam = makeIntParam(GoodyNames.COORDINATE_Y, 2)
+
+		val chgParams = combineParams(List(isOparm, hParam, vParam, bluTrans))
+
+		fireExtraRapidBurst("rapidHorizTTG", GT_TICTAC_GRID, ttGridParams, 50, DFL_X_SPC * 4.0f, chgParams, 12000)
+	}
+	def fireRapidXBurst() : Unit = {
+		val posParams = makeLoc3Params(-10.0f, 13.0f, 3.0f)
+		val isOparm = makeXOStateParam(false)
+		val ticXparms = combineParams(List(prpTrans, posParams, rotUpParam, isOparm))
+		val chgParams = combineParams(List(grnTrans))
+
+		fireExtraRapidBurst("rapidHorizX", GT_TICTAC_MARK,  ticXparms, 50, DFL_X_SPC * 1.5f, chgParams, 10000)
+	}
+
 	def fireTicXBurst() : Unit = {
 		// TicX is in the X-Z plane by default, so we rotate it up for display.
 		val posParams = makeLoc3Params(9.0f, 11.0f, -2.0f)
@@ -194,7 +228,11 @@ class TestManyGoodyBursts(ovwc : OffersVWorldClient) extends GoodyParamMaker wit
 
 		fireTicXBurst()
 
+		fireRapidXBurst
+
 		fireTicTacGridBurst()
+
+		fireRapidTTGBurst()
 
 		fireTextBurst()
 
