@@ -53,5 +53,6 @@ trait TARqExtractorHelp {
 	}
 	def extractDuration(tvm : TypedValueMap) : Option[JFloat] = Option(tvm.getAsFloat(GoodyNames.TRAVEL_TIME))
 
+	// TODO(ben)[2017-02-13]: gax.getColor ALWAYS returns a color. So an Option type is deceptive. Code that relies on it should be updated.
 	def extractColor(gax : GoodyActionExtractor) : Option[ColorRGBA] = Option(gax.getColor)
 }
