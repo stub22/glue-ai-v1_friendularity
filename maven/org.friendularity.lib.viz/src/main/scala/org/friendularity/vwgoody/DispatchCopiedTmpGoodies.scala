@@ -46,7 +46,7 @@ trait DispatchCopiedTmpGoodies extends GoodyParamExtractorHelp with BasicGoodyCt
 					novGoody = new TG_BitCube(bgc, goodyID, locVec, rotQuat, scaleVec, bitBoxState)
 				}
 				else if (GoodyNames.TYPE_FLOOR == goodyType) {
-					val gcolor: ColorRGBA = ga.getColor
+					val gcolor: ColorRGBA = ga.getColorOrDefault
 					novGoody = new TG_VirtualFloor(bgc, goodyID, locVec, gcolor, true)
 				}
 				else if (GoodyNames.TYPE_TICTAC_MARK == goodyType) {
@@ -58,13 +58,13 @@ trait DispatchCopiedTmpGoodies extends GoodyParamExtractorHelp with BasicGoodyCt
 				else if (GoodyNames.TYPE_TICTAC_GRID == goodyType) {
 					val rotQuat: Quaternion = ga.getRotationQuaternion
 					val scaleVec: Vector3f = getScaleVectorFrom(ga)
-					val gcolor: ColorRGBA = ga.getColor
+					val gcolor: ColorRGBA = ga.getColorOrDefault
 					novGoody = new TG_TicTacGrid(bgc, goodyID, locVec, rotQuat, gcolor, scaleVec)
 				}
 				else if (GoodyNames.TYPE_BOX == goodyType) {
 					val rotQuat: Quaternion = ga.getRotationQuaternion
 					val scaleVec: Vector3f = getScaleVectorFrom(ga)
-					val gcolor: ColorRGBA = ga.getColor
+					val gcolor: ColorRGBA = ga.getColorOrDefault
 					novGoody = new TG_GoodyBox(bgc, goodyID, locVec, rotQuat, gcolor, scaleVec)
 				}
 				else if (GoodyNames.TYPE_CROSSHAIR == goodyType) {
@@ -85,7 +85,7 @@ trait DispatchCopiedTmpGoodies extends GoodyParamExtractorHelp with BasicGoodyCt
 				else if (GoodyNames.TYPE_TEXT == goodyType) {
 					val goodyText: String = ga.getText
 					val scaleVec: Vector3f = getScaleVectorFrom(ga)
-					val gcolor: ColorRGBA = ga.getColor
+					val gcolor: ColorRGBA = ga.getColorOrDefault
 					novGoody = new TG_ParagraphGoody(bgc, goodyID, locVec, scaleVec.getX, gcolor, goodyText)
 				}
 				else {
