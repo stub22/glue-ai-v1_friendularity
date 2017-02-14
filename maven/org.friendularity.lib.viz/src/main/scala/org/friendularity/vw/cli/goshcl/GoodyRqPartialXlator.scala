@@ -49,9 +49,10 @@ trait GoodyRqPartialXlator extends GeneralXlatorSupport with MakesManipDesc {
 		val maybeXform : MaybeTransform3D = extractXform(paramTVM, gax)
 		val colorParm_opt : Option[ColorRGBA] = extractColor(gax)
 
+		
 		val manipRqs : List[VWContentRq] = if (maybeXform.isEmpty) Nil else makeAbruptManipRqs(topShapeID, maybeXform)
 
-		val colorRqs : List[VWContentRq] = if (colorParm_opt.isEmpty) Nil else makeColorSetRqs(topShapeID, colorParm_opt.get)
+		val colorRqs : List[VWContentRq] = if (gax.hasColor) makeColorSetRqs(topShapeID, colorParm_opt.get) else Nil
 
 		colorRqs ::: manipRqs
 	}
