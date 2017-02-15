@@ -28,7 +28,7 @@ trait GoodyShapcliLogic {
 	def processVWGoodyTA_usingShaperMsgs(actSpec : ThingActionSpec, slfActr : ActorRef,
 								   localActorCtx : ActorContext): Unit = {
 
-		val trnsltdMsgList = myGoodyXlator.makeContentRqsFromTA(actSpec, 0)
+		val trnsltdMsgList  : List[VWContentRq] = myGoodyXlator.makeContentRqsFromTA(actSpec, 0)
 		val shprTlr = myShprTlr_opt.get
 		trnsltdMsgList.map(shprTlr.tellStrongCPMsg(_))
 	}

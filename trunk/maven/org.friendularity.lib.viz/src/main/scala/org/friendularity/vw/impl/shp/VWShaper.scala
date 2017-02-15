@@ -251,20 +251,24 @@ class VWShaperActor(myRRC: RenderRegistryClient) extends Actor with VWShaperLogi
 
 		}
 		case manipRq : VWShapeManipRq => {
-			val shapeID : Ident = manipRq.getTgtShapeID
-			val madeSpatRec_opt : Option[MadeSpatRecBase] = findMadeSpatRec(shapeID)
-			val manipDesc = manipRq.getManipDesc
 			val func : Function0[Unit] = () => {
+				val shapeID : Ident = manipRq.getTgtShapeID
+				val madeSpatRec_opt : Option[MadeSpatRecBase] = findMadeSpatRec(shapeID)
+				val manipDesc = manipRq.getManipDesc
+
 				debug1("Finally applying manip for VWShapeManipRq={}", manipRq)
 				madeSpatRec_opt.get.applyManipDesc(manipDesc, this, manipRq.getStatusHandler_opt)
 			}
 			enqueueJmeCallable(myRRC, func)
 		}
 		case matChgRq : VWApplyMatToTree => {
-			val topShapeID : Ident = matChgRq.getTopShapeID
-			val matDesc : VWMatDesc = matChgRq.getMatDesc
-			val mat = myShapeMaker.getBestMat(matDesc)
-			applyMatToSubtree(topShapeID, mat)
+			val func : Function0[Unit] = () => {
+				val topShapeID : Ident = matChgRq.getTopShapeID
+				val matDesc : VWMatDesc = matChgRq.getMatDesc
+				val mat = myShapeMaker.getBestMat(matDesc)
+				applyMatToSubtree(topShapeID, mat)
+			}
+			enqueueJmeCallable(myRRC, func)
 		}
 	}
 }
