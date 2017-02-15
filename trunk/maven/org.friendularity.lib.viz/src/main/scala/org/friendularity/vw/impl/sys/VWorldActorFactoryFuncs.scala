@@ -30,8 +30,8 @@ object VWorldActorFactoryFuncs {
 		vwbActorRef
 	}
 	def makeVWGoodyActor(parentARF : ActorRefFactory, goodyActorName : String,
-						 shprTlr : CPStrongTeller[VWContentRq], goodyCtx : BasicGoodyCtx) : ActorRef = {
-		val goodyActorProps = Props(classOf[VWGoodyActor], shprTlr, goodyCtx)
+						 shprTlr : CPStrongTeller[VWContentRq]) : ActorRef = {
+		val goodyActorProps = Props(classOf[VWGoodyActor], shprTlr)
 		val goodyActorRef : ActorRef = parentARF.actorOf(goodyActorProps, goodyActorName)
 		goodyActorRef
 	}

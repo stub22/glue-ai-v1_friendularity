@@ -37,7 +37,6 @@ import org.friendularity.vw.msg.bdy.VWBodyLifeRq
 import org.friendularity.vw.msg.cor.{VWContentRq, VWOverlayRq, VWorldInternalNotice, VWorldNotice, VWorldRequest}
 import org.friendularity.vw.msg.shp.deep.VWShapeCreateRq
 import org.friendularity.vw.msg.stg.VWStageRqMsg
-import org.friendularity.vwgoody.BetterBGC
 
 import org.friendularity.vwmsg.{VWPubTellersMsgImpl, VWRqTAWrapper}
 
@@ -106,11 +105,7 @@ trait VWorldBossLogic [VWSM <: VWorldSysMgr] extends VarargsLogging with VWPTRen
 		info1("Got setup result (lesser) ingredients: {}", lesserIngred)
 		val rrc : RenderRegistryClient = lesserIngred.getRendRegClient
 		val winStatMon : WindowStatusMonitor = lesserIngred.getWindowStatusMonitor
-		// val oldStyleBGC : BasicGoodyCtx = new BasicGoodyCtxImpl(rrc, winStatMon)
-		// Fall 2016 xition solution: Plug in our "better" GoodyCtx, which overrides the createByAction method.
-		val betterBGC = new BetterBGC(rrc, winStatMon)
-		val eitherBGC : BasicGoodyCtx = betterBGC
-		eitherBGC.setupAsMainGoodyCtx
+
 		val sysMgr = getSysMgr
 
 		val pmrc = bmi.getPMRC
@@ -121,7 +116,7 @@ trait VWorldBossLogic [VWSM <: VWorldSysMgr] extends VarargsLogging with VWPTRen
 		val shaperActorRef = VWorldActorFactoryFuncs.makeVWShaperActor(localActorCtx, "shaper", rrc)
 		val shaperTeller  = new ActorRefCPMsgTeller[VWContentRq](shaperActorRef)
 
-		val goodyActorRef = VWorldActorFactoryFuncs.makeVWGoodyActor(localActorCtx, "googoo", shaperTeller,  eitherBGC)
+		val goodyActorRef = VWorldActorFactoryFuncs.makeVWGoodyActor(localActorCtx, "googoo", shaperTeller)
 		val goodyTeller = new ActorRefCPMsgTeller[VWRqTAWrapper](goodyActorRef)
 
 

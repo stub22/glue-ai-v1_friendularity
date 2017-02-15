@@ -25,9 +25,7 @@ import org.appdapter.fancy.log.VarargsLogging
 import org.cogchar.api.thing.ThingActionSpec
 import org.cogchar.name.goody.GoodyNames
 import org.cogchar.render.app.entity.{GoodyActionExtractor, VWorldEntity}
-import org.cogchar.render.goody.basic.{BasicGoodyCtx, BasicGoodyCtxImpl, GoodyBox, VirtualFloor}
-import org.cogchar.render.goody.bit.{BitBox, BitCube, TicTacGrid, TicTacMark}
-import org.cogchar.render.goody.flat.{CrossHairGoody, ParagraphGoody, ScoreBoardGoody}
+
 import org.cogchar.render.sys.registry.RenderRegistryClient
 import org.cogchar.render.sys.window.WindowStatusMonitor
 import org.friendularity.cpmsg.CPStrongTeller
@@ -86,8 +84,6 @@ trait VWGoodyTopDispatcher extends VarargsLogging {
 	// Must override to use modern shaper messages
 	protected def getShaprTeller : Option[CPStrongTeller[VWContentRq]] = None
 
-	protected def getGoodyCtx : BasicGoodyCtx
-
 	def processVWGoodyRequest(vwmsg : VWorldRequest, slfActr : ActorRef, localActorCtx : ActorContext): Unit = {
 		vwmsg match {
 
@@ -100,22 +96,9 @@ trait VWGoodyTopDispatcher extends VarargsLogging {
 		val actSpec = thingActSpecMsg.getActionSpec
 		info4("VWGoodyJobLogic is processing received actSpec of class={}, verb={}, tgtType={} tgtID={}",
 					actSpec.getClass, actSpec.getVerbID, actSpec.getTargetThingTypeID, actSpec.getTargetThingID)
-		if (flag_useLegacyGoodyCtx) {
-			processGoodyTA_usingLegacyGoodyCtx(actSpec)
-		} else {
-			// New in 2017, soon to be main path
-			myShapCliLogic.processVWGoodyTA_usingShaperMsgs(actSpec, slfActr, localActorCtx)
-		}
-	}
-	private def processGoodyTA_usingLegacyGoodyCtx(actSpec : ThingActionSpec) : Unit = {
-		val goodyCtx = getGoodyCtx
 
-		// As of 2016-10-06, this method call routes to the old Cogchar impl in
-		//   o.c.render.goody.basic.BasicGoodyCtxImpl.consumeAction(actSpec)
-		// However, in the case of CREATE operations, the behavior is overridden in
-		// BetterBGC.createByAction.
+		myShapCliLogic.processVWGoodyTA_usingShaperMsgs(actSpec, slfActr, localActorCtx)
 
-		goodyCtx.consumeAction(actSpec)
 	}
 
 	protected def processVWGoodyRdfMsg (goodyMsg : VWTARqRdf, slfActr : ActorRef, localActorCtx : ActorContext) : Unit = {
@@ -143,10 +126,10 @@ trait VWGoodyTopDispatcher extends VarargsLogging {
 	}
 }
 
-class VWGoodyActor(myShaprTlr : CPStrongTeller[VWContentRq], myGoodyCtx : BasicGoodyCtx) extends Actor {
+class VWGoodyActor(myShaprTlr : CPStrongTeller[VWContentRq]) extends Actor {
 
 	val myGTD = new VWGoodyTopDispatcher {
-		override protected def getGoodyCtx : BasicGoodyCtx = myGoodyCtx
+
 		override protected def getShaprTeller  = Option(myShaprTlr)
 	}
 
