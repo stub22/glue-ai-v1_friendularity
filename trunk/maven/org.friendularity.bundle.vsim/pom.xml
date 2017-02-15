@@ -113,6 +113,7 @@
                             org.friendularity.vwmsg,
                             org.friendularity.vwimpl,
 							org.friendularity.vwgoody,
+							org.friendularity.vwobstub,
                             org.friendularity.mjob,
                             org.friendularity.qpc,
                             org.friendularity.thact,

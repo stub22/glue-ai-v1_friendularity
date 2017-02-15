@@ -28,6 +28,7 @@ import org.appdapter.fancy.log.VarargsLogging
 import org.appdapter.fancy.rclient.RepoClient
 import org.cogchar.api.skeleton.config.BoneRobotConfig
 import org.friendularity.vw.impl.manip.Manipable
+import org.friendularity.vwobstub.VWorldRoboPump
 
 //import org.cogchar.app.puma.body.PumaBodyGateway
 //import org.cogchar.app.puma.config.BodyHandleRecord
@@ -36,7 +37,8 @@ import org.cogchar.bind.mio.robot.client.{RobotAnimClient, DirectRobotAnimContex
 import org.cogchar.bind.mio.robot.model.ModelRobot
 import org.cogchar.bind.mio.robot.svc.ModelBlendingRobotServiceContext
 import org.cogchar.blob.emit.{BehaviorConfigEmitter, RenderConfigEmitter}
-import org.cogchar.bundle.app.vworld.central.VWorldRoboPump
+
+
 import org.cogchar.platform.util.ClassLoaderUtils
 import org.cogchar.render.app.humanoid.HumanoidRenderContext
 import org.cogchar.render.goody.basic.BasicGoodyCtx
