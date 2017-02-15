@@ -99,10 +99,14 @@ public abstract class TG_FlatGoody extends BasicVWorldEntity {
 					setScreenPosition(locVec, qStyle);
 				}
 				setUniformScaleFactor(ga.getScaleUniform(), qStyle);
+				/*
+				Stu disabled this obsolete code due to  compile errors on 2017-02-15
+
 				Option<ColorRGBA> c = ga.getColor();
 				if (c.isDefined()) {
-					myForeColor = ga.getColorOrDefault();
+					myForeColor = c.get() //
 				}
+				*/
 				break;
 			}
 			default: {
