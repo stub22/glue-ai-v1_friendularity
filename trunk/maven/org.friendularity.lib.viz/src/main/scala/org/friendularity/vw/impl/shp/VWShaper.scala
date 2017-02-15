@@ -220,6 +220,10 @@ class VWShaperActor(myRRC: RenderRegistryClient) extends Actor with VWShaperLogi
 
 	override protected def getRRC : RenderRegistryClient = myRRC
 
+	// Notice that all of these messages are turned into a deferred function call that is sent to the
+	// JME Render thread-queue.  The ShapeCreateRq method is more of a hybrid which does some of its
+	// work before that deferral, which should not cause problems, but could be factored out.
+
 	def receive = {
 		case clearAll : VWClearAllShapes => {
 			val func : Function0[Unit] = () => {clearAllShapes_onRendThrd}
