@@ -3,7 +3,7 @@ package org.friendularity.rbody
 import org.appdapter.core.name.Ident
 import org.appdapter.fancy.log.VarargsLogging
 import org.cogchar.api.skeleton.config.{BoneRotationAxis, BoneProjectionPosition}
-import org.cogchar.app.puma.registry.{PumaRegistryClient, ResourceFileCategory}
+// import org.cogchar.app.puma.registry.{PumaRegistryClient, ResourceFileCategory}
 import org.cogchar.bind.mio.robot.client.DirectRobotAnimContext
 import org.cogchar.bind.mio.robot.model.{ModelRobot, ModelRobotUtils}
 import org.cogchar.bind.mio.robot.svc.{ModelBlendingRobotServiceContext, RobotServiceContext}
