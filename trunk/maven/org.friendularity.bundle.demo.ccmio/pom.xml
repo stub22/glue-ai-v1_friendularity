@@ -78,17 +78,12 @@
 			<version>${appdapter.version}</version>
 		</dependency>
 
-        <!-- Last two deps may be easily disabled, along with a few lines of Java code in the Activator -->
+        <!-- Optional deps that may be easily disabled, along with a few lines of Java code in the Activator -->
         <!-- For displaying the dynamic lifecycle monitor, which is just an extra debug tool -->
 		<dependency>
 			<groupId>org.rwshop</groupId>
 			<artifactId>org.rwshop.swing.common</artifactId>
 		</dependency>
-        <!-- o.a.b.gui allows us to use DemoBrowser object inspector, yet another extra debug tool -->
-        <dependency>
-            <groupId>org.appdapter</groupId>
-            <artifactId>org.appdapter.bundle.gui</artifactId>
-        </dependency>
 
 	</dependencies>
 
