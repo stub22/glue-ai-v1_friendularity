@@ -27,6 +27,7 @@ import org.cogchar.render.model.humanoid.HumanoidFigure;
 import java.util.List;
 
 /**
+ ** This class COPIED from Cogchar on 2017-02-15
  *
  * @author Stu B22 <stub22@appstract.com>
  */

@@ -32,6 +32,8 @@ import java.util.Map.Entry;
 /**
  * @author Stu B. <www.texpedient.com>
  *
+ * This class COPIED from Cogchar on 2017-02-15
+ *
  *
  * Encodes our naive assumptions for bone rotation mappings.
  *

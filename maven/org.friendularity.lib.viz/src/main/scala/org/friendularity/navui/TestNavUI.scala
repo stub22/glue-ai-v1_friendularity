@@ -74,7 +74,9 @@ object TestNavUI extends VarargsLogging {
 			launchNuiiTest
 	}
 	def launchNuiiTest : Unit = {
-		val appSysStandalone = new StandaloneNavAppSys();
+		val powerUserMode : Boolean = true
+		val appSvcConfigHacks = new AppServiceConfigHacksImpl(powerUserMode)
+		val appSysStandalone = new StandaloneNavAppSys(appSvcConfigHacks);
 		val navUiAppImpl : NavUiAppImpl = appSysStandalone.findOrMakeNavUiApp
 		val navUiAppSvc : NavUiAppSvc = navUiAppImpl
  		info1("^^^^^^^^^^^^^^^^^^^^^^^^  TestNavUI.launchNuiiTest() created nuii={}", navUiAppImpl)
@@ -123,10 +125,10 @@ object NavUiTestPublicNames {
 	val cpumpName = "standPumpCtx_181"
 }
 // Use to run from main().
-class StandaloneNavAppSys() {
+class StandaloneNavAppSys(appSvcConfigHacks : AppServiceConfigHacks) {
 	private val akkaSysName: String = NavUiTestPublicNames.akkaSysName
 	lazy private val myAkkaSys = ActorSystem(akkaSysName)
-	lazy private val myNavUiApp = new NavUiAppImpl(myAkkaSys)
+	lazy private val myNavUiApp = new NavUiAppImpl(myAkkaSys, appSvcConfigHacks)
 
 	def findOrMakeNavUiApp: NavUiAppImpl = myNavUiApp
 

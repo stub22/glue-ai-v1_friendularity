@@ -23,6 +23,8 @@ import org.cogchar.bind.symja.MathGate;
 import org.friendularity.api.west.WorldEstimate;
 import org.friendularity.bundle.headless.animation.AnimServiceLauncher;
 import org.friendularity.bundle.qpid_broker_wrap.QPidBrokerLauncher;
+import org.friendularity.navui.AppServiceConfigHacks;
+import org.friendularity.navui.AppServiceConfigHacksImpl;
 import org.friendularity.vw.cli.bdy.ExoBodyUserLogic;
 import org.friendularity.navui.NavUiAppImpl;
 import org.friendularity.navui.NavUiAppSvc;
@@ -212,7 +214,10 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 		// Launches OpenGL world and actors for talking to it.
 		// Can be tested separately using the TestNavUI.main() launcher.
 
-		NavUiAppSvc appSvc = startVWorldNavUI_2016(bundleCtx, akkaSys);
+		boolean powerUserMode = true;
+		AppServiceConfigHacks appSvcConfigHacks = new AppServiceConfigHacksImpl(powerUserMode);
+
+		NavUiAppSvc appSvc = startVWorldNavUI_2016(bundleCtx, akkaSys, appSvcConfigHacks);
 
 		if (myFlag_launchVWorldAmqpSvcs) {
 			getLogger().info("============ Calling startQpidConn() and checkServerSvcs() ==========");
@@ -245,8 +250,8 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 		getLogger().info("============= 2016 semi-legacy VWorld + Body launcher is done sending messages  ======");
 
 	}
-	private NavUiAppImpl startVWorldNavUI_2016(BundleContext bundleCtx, ActorSystem akkaSys) {
-		NavUiAppImpl nuiApp = new NavUiAppImpl(akkaSys);
+	private NavUiAppImpl startVWorldNavUI_2016(BundleContext bundleCtx, ActorSystem akkaSys, AppServiceConfigHacks appSvcConfigHacks ) {
+		NavUiAppImpl nuiApp = new NavUiAppImpl(akkaSys, appSvcConfigHacks);
 		getLogger().info("^^^^^^^^^^^^  CCMIO_DemoActivator.startVWorldNavUI_2016() for bundle={} created nuiApp={}\n\nNow sending setup msgs", bundleCtx.getBundle(), nuiApp);
 		boolean flag_wrapWithSwing = true;
 		nuiApp.sendSetupMsgs_Async(flag_wrapWithSwing);
