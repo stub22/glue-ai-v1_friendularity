@@ -39,6 +39,14 @@
 			<version>${project.version}</version>
             <scope>provided</scope>
 		</dependency>
+
+		<!-- Added o.a.b.gui to ensure it propagates, since is still used one place in o.f.lib.viz.
+		-->
+		<dependency>
+			<groupId>org.appdapter</groupId>
+			<artifactId>org.appdapter.bundle.gui</artifactId>
+		</dependency>
+
         <dependency>
             <groupId>org.cogchar</groupId>
             <artifactId>org.cogchar.bundle.render.opengl</artifactId>
