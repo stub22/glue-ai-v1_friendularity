@@ -57,11 +57,21 @@ trait VWTARqRouterSetupLogic extends ExtraSetupLogic with MakesVWTAReqRouterTell
 		}
 	}
 }
+
+trait AppServiceConfigHacks {
+	def getPowerUserModeFlag : Boolean
+}
+case class AppServiceConfigHacksImpl(myFlag_powerUserMode: Boolean) extends AppServiceConfigHacks {
+	override def getPowerUserModeFlag : Boolean = myFlag_powerUserMode
+}
+
 // Extend this trait in an app specific method.
 // All the wiring of these lazy vals begins whenever someone calls registerPostInitWaiters,
 // which can happen as soon as a "boss" teller is known.
 trait AppServiceHandleGroup extends KnowsAkkaSys with VarargsLogging {
 	private lazy val myAppAkkaSys = getAkkaSys
+
+	protected def getAppServiceConfigHacks : AppServiceConfigHacks
 
 	// When this method is overridden by the app class, it is seen in nested our subclasses of TARqRouterSetupLogic and VWStatPubLogic.
 	protected def findAppQpidSvcOffering_opt : Option[OffersVWorldServer] = None
@@ -88,7 +98,9 @@ trait AppServiceHandleGroup extends KnowsAkkaSys with VarargsLogging {
 	lazy private val charAdmForwarderLogic = new PatientForwarder_CharAdminTest {}
 	lazy private val charAdmSenderTrigTeller  = OuterJobbyLogic_MasterFactory.makeOoLogicAndTeller(charAdmForwarderLogic, myAppAkkaSys, "charAdmForwarder")
 
-	lazy private val bonusStagingLogic = new PatientSender_BonusStaging {}
+	lazy private val bonusStagingLogic = new PatientSender_BonusStaging {
+		override val FLAG_powerUserMode = getAppServiceConfigHacks.getPowerUserModeFlag
+	}
 	lazy private val bonusStagingTrigTeller  = OuterJobbyLogic_MasterFactory.makeOoLogicAndTeller(bonusStagingLogic, myAppAkkaSys, "bonusStagingRequester")
 
 

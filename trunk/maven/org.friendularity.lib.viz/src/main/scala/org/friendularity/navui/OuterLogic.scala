@@ -262,7 +262,9 @@ trait PatientForwarder_CharAdminTest extends OuterLogic {
 trait PatientSender_BonusStaging extends OuterLogic with OffersVWorldClient with IdentHlp {
 	
 	val IDENT_PREFIX : String = "urn:ftd:friendularity.org:2017:inst#";
-	
+
+	val FLAG_powerUserMode = false
+
 	override def rcvPubTellers(vwpt: VWorldPublicTellers): Unit = {
 		val stageTeller = vwpt.getStageTeller.get
 
@@ -272,7 +274,7 @@ trait PatientSender_BonusStaging extends OuterLogic with OffersVWorldClient with
 
 		val opticsBasicRq = new VWStageOpticsBasic(moveSpeed, pauseOnLostFocus, dragMouseToRotateCamera)
 		stageTeller.tellCPMsg(opticsBasicRq)
-		
+
 		setDefaultCameraPositionAndLocation()
 
 		val darkBlue: ColorRGBA = new ColorRGBA(0f, 0.1f, 0.35f, 1f)
@@ -296,14 +298,13 @@ trait PatientSender_BonusStaging extends OuterLogic with OffersVWorldClient with
 		setupStatusPumps(vwpt)
 
 		setupFloorGoody()
-		
 
-		val powerUserMode = false
-		if (powerUserMode) {
+
+		if (FLAG_powerUserMode) {
 			setupOverlayBook(vwpt)
 		}
 
-		setupKeysAndClicks(vwpt, powerUserMode)
+		setupKeysAndClicks(vwpt, FLAG_powerUserMode)
 	
 		doAllExtraSetup(vwpt)
 	}

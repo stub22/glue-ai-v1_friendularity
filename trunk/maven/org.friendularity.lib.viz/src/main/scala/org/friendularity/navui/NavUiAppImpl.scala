@@ -31,9 +31,11 @@ import org.friendularity.vw.msg.bdy.{VWBodyNotice, VWBodyMakeRq}
 /**
   * Created by Stub22 on 8/8/2016.
   */
-class NavUiAppImpl(myAkkaSys : ActorSystem) extends NavUiAppSvc with NavAppCloser with NavPumpSpaceOwner
+
+class NavUiAppImpl(myAkkaSys : ActorSystem, myConfigHacks : AppServiceConfigHacks)  extends NavUiAppSvc with NavAppCloser with NavPumpSpaceOwner
 			with AppServiceHandleGroup with MakesVWBoss with OffersVWorldServer  {
 
+	override protected def getAppServiceConfigHacks : AppServiceConfigHacks = myConfigHacks
 	override protected def getAkkaSys : ActorSystem = myAkkaSys
 	override protected def findAppQpidSvcOffering_opt : Option[OffersVWorldServer] = Some(this)
 
