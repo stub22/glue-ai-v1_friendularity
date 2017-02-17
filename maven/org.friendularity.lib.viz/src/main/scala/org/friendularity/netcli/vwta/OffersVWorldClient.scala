@@ -85,3 +85,6 @@ trait OffersVWorldClient extends OffersQpidSomething  with VWTAMsgMaker {
 		val taSpec = makeTASpec(camGuideShapeID, GoodyNames.TYPE_CAMERA, GoodyNames.ACTION_SET, btvm)
 	}
 }
+class OffersVWorldClientWrapper() extends OffersVWorldClient {
+	override val myPreferredEncoding: Int = myClient.ENCODE_PREF_TRT
+}

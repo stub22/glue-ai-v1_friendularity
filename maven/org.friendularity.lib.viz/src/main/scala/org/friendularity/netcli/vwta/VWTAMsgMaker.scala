@@ -55,3 +55,5 @@ trait VWTAMsgMaker extends IdentHlp {
 		writeXform3D(gapw, mayXform)
 	}
 }
+
+class VWTAMsgMakerWrapper() extends VWTAMsgMaker  {}
