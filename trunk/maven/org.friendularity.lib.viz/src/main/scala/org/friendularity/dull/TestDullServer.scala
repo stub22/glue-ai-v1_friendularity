@@ -3,9 +3,8 @@ package org.friendularity.dull
 import akka.actor._
 import org.appdapter.core.name.{FreeIdent, Ident}
 import org.appdapter.fancy.log.VarargsLogging
-import org.friendularity.cpmsg.{ActorRefCPMsgTeller, CreatedChanTellerMsg, CPumpMsg}
+import org.friendularity.cpmsg.{CPMsgTeller, ActorRefCPMsgTeller, CreatedChanTellerMsg, CPumpMsg}
 import org.friendularity.cpump._
-import org.friendularity.vw.impl.sys.VWorldActorFactoryFuncs
 import org.friendularity.vw.msg.adm.VWARM_GreetFromPumpAdmin
 
 /**
@@ -41,15 +40,22 @@ object TestDullServer extends VarargsLogging {
 		standPumpAdminTeller.tellCPMsg(rqMakePostChan)
 		info1("Request SENT to make dispatch-post chan for ID={}", dispPostChanID)
 
+	}
+	def simulateVWBossStartup(fromWhom : CPMsgTeller): Unit = {
+		/*
+		import org.friendularity.vw.impl.sys.VWorldActorFactoryFuncs
+
 		val vwBossAR : ActorRef = VWorldActorFactoryFuncs.makeVWorldBoss(myAkkaSys, "vworldBoss_888")
 		val vwBossTeller = new ActorRefCPMsgTeller(vwBossAR)
-		val hpatMsg = new VWARM_GreetFromPumpAdmin(standPumpAdminTeller)
+		val hpatMsg = new VWARM_GreetFromPumpAdmin(fromWhom)
 		vwBossTeller.tellCPMsg(hpatMsg)
 		info1("HelloPumpAdminTeller SENT to VWBossTeller : {}", vwBossTeller)
+		*/
 		// This answerTeller now requires strong type.
-//		val fptMsg = new VWARM_FindPublicTellers(answerTeller)
-//		vwBossTeller.tellCPMsg(fptMsg)
-//		info1("VWARM_FindPublicTellers SENT to VWBossTeller : {}", vwBossTeller)
+		//		val fptMsg = new VWARM_FindPublicTellers(answerTeller)
+		//		vwBossTeller.tellCPMsg(fptMsg)
+		//		info1("VWARM_FindPublicTellers SENT to VWBossTeller : {}", vwBossTeller)
+
 	}
 
 	lazy private val myAkkaSys = ActorSystem(akkaSysName)

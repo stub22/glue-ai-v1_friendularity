@@ -22,9 +22,10 @@ import org.appdapter.core.name.Ident
 import org.cogchar.api.humanoid.HumanoidFigureConfig
 import org.cogchar.bind.mio.robot.svc.ModelBlendingRobotServiceContext
 import org.friendularity.cpmsg.CPStrongTeller
-import org.friendularity.qpc.OffersVWorldServer
+
 import org.friendularity.respire.DetachedGST
 import org.friendularity.vw.impl.boss.MakesVWBoss
+import org.friendularity.vw.impl.ta.OffersVWorldQpidServer
 import org.friendularity.vw.msg.adm.{VWSetSwingCanvasBranding, VWSetupRq_Lnch, VWSetupRq_Conf}
 import org.friendularity.vw.msg.bdy.{VWBodyNotice, VWBodyMakeRq}
 
@@ -33,11 +34,11 @@ import org.friendularity.vw.msg.bdy.{VWBodyNotice, VWBodyMakeRq}
   */
 
 class NavUiAppImpl(myAkkaSys : ActorSystem, myConfigHacks : AppServiceConfigHacks)  extends NavUiAppSvc with NavAppCloser with NavPumpSpaceOwner
-			with AppServiceHandleGroup with MakesVWBoss with OffersVWorldServer  {
+			with AppServiceHandleGroup with MakesVWBoss with OffersVWorldQpidServer  {
 
 	override protected def getAppServiceConfigHacks : AppServiceConfigHacks = myConfigHacks
 	override protected def getAkkaSys : ActorSystem = myAkkaSys
-	override protected def findAppQpidSvcOffering_opt : Option[OffersVWorldServer] = Some(this)
+	override protected def findAppQpidSvcOffering_opt : Option[OffersVWorldQpidServer] = Some(this)
 
 	// Desired effect of these messages is to launch a running OpenGL v-world, ready for characters and other content
 	// to be inserted into it.  Those facilities are available via actors defined in PubTeller replies sent to the
