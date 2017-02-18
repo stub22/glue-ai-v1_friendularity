@@ -51,6 +51,13 @@
             <groupId>org.cogchar</groupId>
             <artifactId>org.cogchar.bundle.render.opengl</artifactId>
         </dependency>
+
+		<dependency>
+			<groupId>org.cogchar</groupId>
+			<artifactId>org.cogchar.bundle.bind.mechio</artifactId>
+		</dependency>
+
+
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>org.friendularity.bundle.jvision</artifactId>
@@ -100,6 +107,7 @@
                             org.friendularity.api.*,
                             org.friendularity.visual.*,
                             org.friendularity.impl.visual,
+							org.friendularity.migccmio,
                             org.friendularity.respire,
                             org.friendularity.struct,
                             org.friendu.tchunk.*,
@@ -127,6 +135,7 @@
 							org.friendularity.tmpgood.*
                         </Export-Package>
                         <Private-Package>
+							<!-- This package should be exported by a different bundle -->
                             org.friendularity.netcli.*
                         </Private-Package>
                         <!-- org.parboiled,  shapeless,  org.uncommons.maths  are used by spray-http -->

@@ -29,7 +29,7 @@ import org.friendularity.vw.cli.bdy.ExoBodyUserLogic;
 import org.friendularity.navui.NavUiAppImpl;
 import org.friendularity.navui.NavUiAppSvc;
 
-import org.friendularity.old.ccmio.OldLaunchHelper;
+// import org.friendularity.old.ccmio.OldLaunchHelper;
 // import org.friendularity.raiz.TestSetupLoader;
 import org.friendularity.qpc.OffersVWorldServer;
 import org.friendularity.qpc.QpidConnMgr;
@@ -120,7 +120,7 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 	private Class 		myProfileMarkerClz = CCMIO_DemoActivator.class;
 	private Class 		myLegConfMarkerClz = CCMIO_DemoActivator.class;
 
-	private OldLaunchHelper myOldLaunchHelper;
+	// private OldLaunchHelper myOldLaunchHelper;
 
 	@Override public void start(final BundleContext context) throws Exception {
 		// Need to tell the MacroBundle system that we are the main launcher, so that forceLog4JConfig will work.
@@ -136,9 +136,9 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 		startAkkaOSGi(context);
 
 		if (myFlag_useOldLaunchStyle2014) {
-			myOldLaunchHelper = new OldLaunchHelper();
-			// Preliminary step allows fallback to old-old 2012 way (doubly outdated now, really).
-			myOldLaunchHelper.registerOldMediatorStuff_duringStart();
+	//		myOldLaunchHelper = new OldLaunchHelper();
+	//		// Preliminary step allows fallback to old-old 2012 way (doubly outdated now, really).
+	//		myOldLaunchHelper.registerOldMediatorStuff_duringStart();
 		}
 
 		// Schedule our callback to the handle method below.
@@ -185,7 +185,7 @@ public class CCMIO_DemoActivator extends BundleActivatorBase {
 
 			} // else we would be seeing fallback injected mediator in control
 
-			myOldLaunchHelper.startOldPumaThenVWorld(bundleCtx);
+	//		myOldLaunchHelper.startOldPumaThenVWorld(bundleCtx);
 		} else {
 			// 2016 way:
 			ActorSystem akkaSys = myCPumpHelper.dangerActorSysExposed();  // Should be avail because startAkkaOSGi was called during .start().

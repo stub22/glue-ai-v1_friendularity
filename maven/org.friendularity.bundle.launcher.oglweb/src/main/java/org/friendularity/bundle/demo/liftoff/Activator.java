@@ -1,8 +1,8 @@
 package org.friendularity.bundle.demo.liftoff;
 
 import org.appdapter.osgi.core.BundleActivatorBase;
-import org.cogchar.app.puma.web.LifterLifecycle;
-import org.cogchar.bundle.app.puma.GruesomeTAProcessingFuncs;
+//import org.cogchar.app.puma.web.LifterLifecycle;
+//import org.cogchar.bundle.app.puma.GruesomeTAProcessingFuncs;
 
 import org.osgi.framework.BundleContext;
 import org.jflux.impl.services.rk.osgi.lifecycle.OSGiComponent;
@@ -21,9 +21,9 @@ public class Activator extends BundleActivatorBase {
 
     public void initWebapp(BundleContext context) {
         // Tell the lifter lifecycle to start, once its dependencies are satisfied
-        LifterLifecycle lifecycle = new LifterLifecycle();
-        OSGiComponent lifterComp = new OSGiComponent(context, lifecycle);
-        lifterComp.start();
+  //      LifterLifecycle lifecycle = new LifterLifecycle();
+  //    OSGiComponent lifterComp = new OSGiComponent(context, lifecycle);
+  //      lifterComp.start();
     }
 
 	public void setupRepoUpdateCallback() {

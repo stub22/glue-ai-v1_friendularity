@@ -75,6 +75,29 @@ class GoodyMsgBurstSender(entIdPrfx : String, burstWidth : Int, burstLen : Int) 
 			ugRef
 		})
 	}
+	def rapidMakeAndMove(ovwc : OffersVWorldClient, typeID : Ident, seedParams : SerTypedValueMap,
+						dynaParamID : Ident, dynaDelta : Float, chgParams : SerTypedValueMap) : Unit = {
+		if (myRefs.nonEmpty) {
+			throw new Exception("Cant create goodies - refs already exist!")
+		}
+		var lastParams = seedParams
+		myRefs = myIdents.map(goodyID => {
+			val nxtParams_create = duplicateParams(lastParams)
+			adjustFloatParam(nxtParams_create, dynaParamID, dynaDelta)
+			val create_TA = makeTASpec(goodyID, typeID, GoodyNames.ACTION_CREATE, nxtParams_create)
+			val ugRef = new GoodyClientState(goodyID, typeID, create_TA, nxtParams_create)
+
+			lastParams = nxtParams_create
+
+			val actualParams = combineParams(List(chgParams))
+
+			val modify_TA = ugRef.makeReqAndUpdate(GoodyNames.ACTION_MOVE, actualParams)
+			ovwc.sendTARq(create_TA)
+			ovwc.sendTARq(modify_TA)
+			ugRef
+		})
+	}
+
 
 	def moveAllGoodiesSmoothly(ovwc : OffersVWorldClient, dynaParamID : Ident, dynaDelta : Float,
 							   rotParam_opt : Option[SerTypedValueMap], durSec : Float,
