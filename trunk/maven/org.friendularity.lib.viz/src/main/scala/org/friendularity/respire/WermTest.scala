@@ -1,12 +1,12 @@
 /*
  *  Copyright 2014 by The Friendularity Project (www.friendularity.org).
- * 
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- * 
+ *
  *       http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,14 +14,12 @@
  *  limitations under the License.
  */
 
-package org.friendularity.vwtest
-import org.friendularity.api.west.{ThingEstimate, WorldEstimate}
-import org.friendularity.bundle.demo.ccmio.{CCMIO_WorldEstimateRenderModule}
-import org.appdapter.core.name.{Ident, FreeIdent}
+package org.friendularity.respire
 
+import org.appdapter.core.name.{FreeIdent, Ident}
 import org.cogchar.bind.symja.{MathGate, MathSpaceFactory}
-
-import org.friendularity.respire.{RespirationTest}  
+import org.friendularity.api.west.WorldEstimate
+import org.friendularity.migccmio.{SnapMonApi, Mig_WorldEstimateRenderModule}
 
 object WermTest {
 	def main(args: Array[String]) : Unit = {
@@ -37,7 +35,9 @@ object WermTest {
 		//Unfinished:  testWermCalcs();		
 	}	
 	def testWermCalcs() : Unit = { 
-		val werm : CCMIO_WorldEstimateRenderModule  = new CCMIO_WorldEstimateRenderModule();
+		val werm : Mig_WorldEstimateRenderModule  = new Mig_WorldEstimateRenderModule() {
+			override protected def makeSnapMon(): SnapMonApi = ???  // Impl is in vsim
+		}
 		// PumaAppUtils.attachVWorldRenderModule(bundleCtx, werm, null);
 		// werm.setupVisualizer(null, null, null);
 		// Needs to be done at least once for the selfEstim to exist.

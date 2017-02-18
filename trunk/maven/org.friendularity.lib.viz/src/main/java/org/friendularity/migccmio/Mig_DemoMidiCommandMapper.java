@@ -13,34 +13,26 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.friendularity.bundle.demo.ccmio;
+package org.friendularity.migccmio;
 
 import org.appdapter.core.log.BasicDebugger;
-import org.friendularity.api.west.WorldEstimate;
-import org.cogchar.bind.midi.in.InterestingMidiEvent;
-import org.cogchar.bind.midi.in.InterestingMidiEvent.NoteOn;
-import org.cogchar.bind.midi.in.InterestingMidiEvent.ControlChange;
-import org.cogchar.bind.midi.in.MidiEventReporter;
 import org.cogchar.bind.midi.general.FunMidiEventRouter;
-
+import org.cogchar.bind.midi.in.CCParamRouter;
+import org.cogchar.bind.midi.in.InterestingMidiEvent;
+import org.cogchar.bind.midi.in.InterestingMidiEvent.ControlChange;
+import org.cogchar.bind.midi.in.InterestingMidiEvent.NoteOn;
+import org.cogchar.bind.midi.in.MidiEventReporter;
 import org.cogchar.bind.midi.out.DemoMidiOutputPlayer;
 import org.cogchar.bind.midi.out.NovLpadTest;
 import org.cogchar.bind.midi.out.Switcheroo;
-import org.cogchar.bind.midi.in.CCParamRouter;
-
-import org.friendularity.migccmio.Mig_DemoMidiCommandMapper;
-
+import org.friendularity.api.west.WorldEstimate;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class CCMIO_DemoMidiCommandMapper extends Mig_DemoMidiCommandMapper {
+public class Mig_DemoMidiCommandMapper extends BasicDebugger implements MidiEventReporter.Listener {
 
-}
-/*
-		BasicDebugger implements MidiEventReporter.Listener {
-
-	public	CCMIO_WorldEstimateRenderModule	myWERM;
+	public Mig_WorldEstimateRenderModule myWERM;
 	public	FunMidiEventRouter			myFMER = new FunMidiEventRouter();
 	public	NovLpadTest					myNLT  = new NovLpadTest();
 	public	DemoMidiOutputPlayer		myDMOP  = new DemoMidiOutputPlayer();
@@ -81,7 +73,7 @@ public class CCMIO_DemoMidiCommandMapper extends Mig_DemoMidiCommandMapper {
 		myFMER.startPumpingMidiEvents();		
 		myCCPR = new CCParamRouter(myFMER);
 	}	
-	public void setWERM(CCMIO_WorldEstimateRenderModule werm) { 
+	public void setWERM(Mig_WorldEstimateRenderModule werm) {
 		myWERM = werm;
 	}
 	protected void startMidiOutputDemo() { 
@@ -102,10 +94,10 @@ public class CCMIO_DemoMidiCommandMapper extends Mig_DemoMidiCommandMapper {
 		private boolean myFlag_connectMidiOut = true;
 		private boolean myFlag_connectMidiSwitcheroo = true;
 
-		private CCMIO_DemoMidiCommandMapper myMidiMapper;
-		public CCMIO_DemoMidiCommandMapper initMapperWithFeatures() {
+		private Mig_DemoMidiCommandMapper myMidiMapper;
+		public Mig_DemoMidiCommandMapper initMapperWithFeatures() {
 			if (myMidiMapper == null) {
-				myMidiMapper = new CCMIO_DemoMidiCommandMapper();
+				myMidiMapper = new Mig_DemoMidiCommandMapper();
 
 				if (myFlag_connectMidiIn) {
 					myMidiMapper.startMidiRouters();
@@ -122,4 +114,3 @@ public class CCMIO_DemoMidiCommandMapper extends Mig_DemoMidiCommandMapper {
 		}
 	}
 }
-*/

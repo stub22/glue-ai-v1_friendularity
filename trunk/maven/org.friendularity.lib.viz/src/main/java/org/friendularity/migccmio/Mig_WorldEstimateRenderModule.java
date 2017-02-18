@@ -13,34 +13,27 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.friendularity.bundle.demo.ccmio;
+package org.friendularity.migccmio;
 
-import org.cogchar.bind.symja.MathGate;
+import com.jme3.scene.Node;
 import org.appdapter.core.name.Ident;
 import org.appdapter.fancy.rclient.RepoClient;
-
+import org.cogchar.bind.symja.MathGate;
+import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 import org.cogchar.render.sys.module.RenderGateway;
 import org.cogchar.render.sys.module.RenderModule;
-import org.cogchar.render.app.humanoid.HumanoidRenderContext;
-
 import org.cogchar.render.sys.registry.RenderRegistryClient;
-import com.jme3.scene.Node;
-import org.friendularity.vsim.vworld.SnapshotMonitor;
-
-import org.friendularity.migccmio.Mig_WorldEstimateRenderModule;
-import org.friendularity.migccmio.SnapMonApi;
-
+import org.friendularity.api.west.WorldEstimate;
+import org.friendularity.impl.visual.DemoWorldVisualizer;
+import org.friendularity.impl.visual.EstimateVisualizer;
+import org.friendularity.visual.texture.JVisionTextureMapper;
+import org.friendularity.visual.texture.MagicVisionBoxScene;
+// import org.friendularity.vsim.vworld.SnapshotMonitor;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class CCMIO_WorldEstimateRenderModule extends Mig_WorldEstimateRenderModule {
-	@Override protected SnapMonApi makeSnapMon() {
-		return null;
-	}
-
-}
-/*		extends RenderModule implements WorldEstimate.Consumer {
+public abstract class Mig_WorldEstimateRenderModule extends RenderModule implements WorldEstimate.Consumer {
 
 	private EstimateVisualizer<WorldEstimate> myWorldEstimVisualizer;
 	// calc engine holds a set of variables defining our state.
@@ -56,17 +49,17 @@ public class CCMIO_WorldEstimateRenderModule extends Mig_WorldEstimateRenderModu
 	private boolean myFlag_JVisionTextureRoutingEnabled = false;
 
 	private MagicVisionBoxScene		myMVBS;
-	private SnapshotMonitor			mySnapMon;  // extends TrialContent, includes 3D gridspace of numbers+colors
-	private CCMIO_DemoMidiCommandMapper		myMidiMapper;
+	private SnapMonApi			mySnapMon;  // extends TrialContent, includes 3D gridspace of numbers+colors
+	private Mig_DemoMidiCommandMapper myMidiMapper;
 	
-	public CCMIO_WorldEstimateRenderModule() {
+	public Mig_WorldEstimateRenderModule() {
 		setDebugRateModulus(1000);
 	}
 
 	@Override public void setWorldEstimate(WorldEstimate worldEstim) {
 		myCachedWorldEstim = worldEstim;
 	}
-	public void setMidiMapper(CCMIO_DemoMidiCommandMapper midiMapper) {
+	public void setMidiMapper(Mig_DemoMidiCommandMapper midiMapper) {
 		myMidiMapper = midiMapper;
 	}
 
@@ -98,7 +91,21 @@ public class CCMIO_WorldEstimateRenderModule extends Mig_WorldEstimateRenderModu
 		}
 
 	}
+	abstract protected SnapMonApi makeSnapMon();  // mySnapMon = new SnapshotMonitor(); // extends TrialContent, shows big matrix of numbers+colors
 
+	protected void setupSnapMon(RenderRegistryClient rrc, JVisionTextureMapper optJVTM) {
+		Node rootDeepNode = rrc.getJme3RootDeepNode(null);
+		mySnapMon = makeSnapMon();
+		mySnapMon.setup_onRendThrd(rrc, rootDeepNode);
+		mySnapMon.setJVisionTextureMapper(optJVTM);  // OK to set it to null
+		if ((myMidiMapper != null) && (myMidiMapper.myCCPR != null)) {
+			mySnapMon.attachMidiCCs(myMidiMapper.myCCPR);
+		} else {
+			getLogger().warn("NOT setting up CC-paramRouter mapping to SnapshotMonitor!  midiMapper={}, ccpr={}",
+					myMidiMapper, (myMidiMapper != null) ? myMidiMapper.myCCPR : null);
+		}
+
+	}
 	@Override protected void doRenderCycle(long runSeqNum, float timePerFrame) {
 
 		if (myMathGate != null) {
@@ -125,17 +132,8 @@ public class CCMIO_WorldEstimateRenderModule extends Mig_WorldEstimateRenderModu
 			
 				((DemoWorldVisualizer) myWorldEstimVisualizer).makeBonusMeshes();
 				
-				if (mySnapMon == null) { 
-					Node rootDeepNode = rrc.getJme3RootDeepNode(null);
-					mySnapMon = new SnapshotMonitor(); // extends TrialContent, shows big matrix of numbers+colors
-					mySnapMon.setup_onRendThrd(rrc, rootDeepNode);
-					mySnapMon.setJVisionTextureMapper(optJVTM);  // OK to set it to null
-					if ((myMidiMapper != null) && (myMidiMapper.myCCPR != null)) {
-						mySnapMon.attachMidiCCs(myMidiMapper.myCCPR);
-					} else {
-						getLogger().warn("NOT setting up CC-paramRouter mapping to SnapshotMonitor!  midiMapper={}, ccpr={}",
-								myMidiMapper, (myMidiMapper != null) ? myMidiMapper.myCCPR : null);
-					}
+				if (mySnapMon == null) {
+					setupSnapMon(rrc, optJVTM);
 				}
 				if (myMVBS == null) {
 					// Disable this line if we get sceneGraph concurrency errors mentioning "offBox"
@@ -171,7 +169,6 @@ public class CCMIO_WorldEstimateRenderModule extends Mig_WorldEstimateRenderModu
 		return viz;
 	}
 }
-*/
 /*
  * BonyRenderContext brc, 
 		brc.runTaskSafelyUntilComplete(new BasicCallableRenderTask(brc) {
