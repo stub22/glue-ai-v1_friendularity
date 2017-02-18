@@ -105,37 +105,3 @@ object TestQpidThingActMover extends VarargsLogging {
 
 }
 
-trait ClientStatListenerCouldUseAkkaButThatWouldBeWeird extends  DummyActorMaker {
-	val myParentARF : ActorRefFactory = ???
-	val wwStatRcvActor = makeTestDummyActor(myParentARF, "vwStatRcvr")
-	val vwStatWeakTeller = new ActorRefCPMsgTeller(wwStatRcvActor)
-}
-
-// Test far-outer client ability to receive VWorld status and dump the message contents.
-// A real external client can do something more fun or useful with this data.
-trait ExoPubStatDumpingListenerMaker extends VarargsLogging {
-	// statDumpPeriod <= 0   means no stat dumps
-	def makePubStatDumpingListener(statDumpPeriod : Int) : JMSMsgListener = {
-		new JMSMsgListener() {
-			var myStatusRcvdCnt = 0
-			override def onMessage(msg: JMSMsg): Unit = {
-				debug2("VWPubStatListener-JMSListener msgID={} timestamp={}", msg.getJMSMessageID, msg.getJMSTimestamp : JLong)
-				debug1("VWPubStatListener-JMSListener - dumping rcvd msg, to see if 'wacky' headers show up:\n{}", msg)
-				msg match {
-					case objMsg: JMSObjMsg => {
-						myStatusRcvdCnt += 1
-						if ((statDumpPeriod > 0) && ((myStatusRcvdCnt % statDumpPeriod) == 0)) {
-							val objCont: JSerializable = objMsg.getObject
-							info4("VWPubStatListener received {}th update, msgID={}, tstamp={}, notice={}", myStatusRcvdCnt : JInt,
-								objMsg.getJMSMessageID, objMsg.getJMSTimestamp: JLong, objCont.asInstanceOf[AnyRef])
-						}
-					}
-					case otherMsg => {
-						error2("Received unexpected (not JMS-ObjectMessage) message, class={}, dump=\n{}", otherMsg.getClass,  otherMsg)
-					}
-				}
-			}
-		}
-	}
-}
-

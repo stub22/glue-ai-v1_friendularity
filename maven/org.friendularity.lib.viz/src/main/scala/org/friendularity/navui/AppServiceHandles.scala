@@ -22,8 +22,8 @@ import org.friendularity.akact.{FrienduActor, KnowsAkkaSys}
 import org.friendularity.cpmsg.{ActorRefCPMsgTeller, CPStrongTeller}
 import org.friendularity.field.MsgToStatusSrc
 import org.friendularity.vw.cli.stat.{VWStatPubActor, VWStatPubLogic}
-import org.friendularity.qpc.OffersVWorldServer
-import org.friendularity.vw.impl.ta.MakesVWTAReqRouterTeller
+
+import org.friendularity.vw.impl.ta.{OffersVWorldQpidServer, MakesVWTAReqRouterTeller}
 import org.friendularity.vw.msg.adm.VWARM_FindPublicTellers
 import org.friendularity.vw.msg.bdy.VWBodyLifeRq
 import org.friendularity.vw.msg.cor.VWorldRequest
@@ -36,7 +36,7 @@ trait ExtraSetupLogic {
 	def doExtraSetup(vwpt : VWorldPublicTellers) : Unit
 }
 trait VWTARqRouterSetupLogic extends ExtraSetupLogic with MakesVWTAReqRouterTeller {
-	protected def findRouterQpidSvcOffering_opt : Option[OffersVWorldServer] = None  // Override to plugin QPid services
+	protected def findRouterQpidSvcOffering_opt : Option[OffersVWorldQpidServer] = None  // Override to plugin QPid services
 
 	override def doExtraSetup(vwpt : VWorldPublicTellers) : Unit = {
 		info0("TARqRouterSetupLogic is calling setupRouting")
@@ -74,12 +74,12 @@ trait AppServiceHandleGroup extends KnowsAkkaSys with VarargsLogging {
 	protected def getAppServiceConfigHacks : AppServiceConfigHacks
 
 	// When this method is overridden by the app class, it is seen in nested our subclasses of TARqRouterSetupLogic and VWStatPubLogic.
-	protected def findAppQpidSvcOffering_opt : Option[OffersVWorldServer] = None
+	protected def findAppQpidSvcOffering_opt : Option[OffersVWorldQpidServer] = None
 
 	// Here instead of a dedicated rendezvous, we make the TARouter setup subord to
 	// PatientSender_GoodyTest, but perhaps those roles should be reversed!
 	lazy private val taRouterSetupLogic = new VWTARqRouterSetupLogic {
-		override protected def findRouterQpidSvcOffering_opt : Option[OffersVWorldServer] = findAppQpidSvcOffering_opt
+		override protected def findRouterQpidSvcOffering_opt : Option[OffersVWorldQpidServer] = findAppQpidSvcOffering_opt
 
 		override protected def getAkkaSys: ActorSystem = myAppAkkaSys
 	}
