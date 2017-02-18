@@ -14,19 +14,16 @@
  *  limitations under the License.
  */
 
-package org.friendularity.netcli.bigtest
+package org.friendularity.vw.impl.ta
 
 import java.io.{Serializable => JSerializable}
 import java.lang.{Integer => JInt, Long => JLong}
 import javax.jms.{Destination => JMSDestination, Message => JMSMsg, MessageConsumer => JMSMsgConsumer, MessageListener => JMSMsgListener, MessageProducer => JMSMsgProducer, ObjectMessage => JMSObjMsg, Session => JMSSession, TextMessage => JMSTextMsg}
 
-import akka.actor.{ActorRefFactory, ActorSystem}
+import akka.actor.ActorSystem
 import org.appdapter.fancy.log.VarargsLogging
-import org.friendularity.akact.DummyActorMaker
-import org.friendularity.cpmsg.ActorRefCPMsgTeller
 import org.friendularity.netcli.vwta.{DummyGoodySender, QPidTATestClient}
 import org.friendularity.qpc.{JmsDestMgr, QPidDestMgrJFlux, QpidConnMgr, QpidConnMgrJFlux, VWNoticeSender}
-import org.friendularity.vw.impl.ta.TestTAQpidServer
 
 /**
   * Created by StuB22 on 6/13/2016.

@@ -26,15 +26,17 @@ import javax.jms.{Destination => JMSDestination, Message => JMSMsg, MessageConsu
 import akka.actor.ActorRefFactory
 import org.appdapter.core.name.{Ident, FreeIdent}
 import org.appdapter.fancy.log.VarargsLogging
+/*
 import org.cogchar.api.thing.ThingActionSpec
 import org.cogchar.api.vworld.GoodyActionParamWriter
 import org.cogchar.impl.thing.basic.BasicTypedValueMap
 import org.cogchar.impl.thing.fancy.ConcreteTVM
 import org.cogchar.name.goody.GoodyNames
+*/
 // import org.cogchar.render.rendtest.GoodyTestMsgMaker
 import org.friendularity.akact.{KnowsAkkaSys, DummyActorMaker}
 import org.friendularity.cpmsg.{CPStrongTeller, ActorRefCPMsgTeller}
-import org.friendularity.vw.impl.ta.{TestTAQpidServer, ServerFeatureAccess, ServerReceiveFeature, ServerPublishFeature}
+// import org.friendularity.vw.impl.ta.{TestTAQpidServer, ServerFeatureAccess, ServerReceiveFeature, ServerPublishFeature}
 
 // import org.friendularity.netcli.vwta.QPidTATestClient
 import org.friendularity.thact.{ThingActSender, ThingActReceiverBinary, ThingActReceiverTxt}
