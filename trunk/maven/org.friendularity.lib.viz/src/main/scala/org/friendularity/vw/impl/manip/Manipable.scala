@@ -35,20 +35,27 @@ trait Manipable extends Smoovable with IdentHlp with VarargsLogging {
 
 			override def getHandleID: Ident = myDummyHandleID
 		})
+		// These ops should all be deferred onto run thread, because target
+		// spatial may not be fully created, yet.
 		manip match {
 			case smf : SmooveManipStory => {
-				debug1("Starting full-smoove manip: {}", smf)
-				applySmooveNow_anyThrd(smf, ch)
-
+				val func : Function0[Unit] = () => {
+					debug1("Starting full-smoove manip: {}", smf)
+					applySmooveNow_anyThrd(smf, ch)
+				}
+				enqHelp.enqueueJmeCallable(func)
 			}
 			case sme : SmooveManipEnding => {
-				debug1("Starting half-smoove manip: {}", sme)
-				applySmooveFromCurrent_mystThrd(sme, ch)
+				val func : Function0[Unit] = () => {
+					debug1("Starting half-smoove manip: {}", sme)
+					applySmooveFromCurrent_mystThrd(sme, ch)
+				}
+				enqHelp.enqueueJmeCallable(func)
 			}
 			case ama : AbruptManipAbs => {
 				// val xformFull = ama.getXform_finish_full
-				val xformPart = ama.getXform_finish_partial
 				val func : Function0[Unit] = () => {
+					val xformPart = ama.getXform_finish_partial
 					applyTransform_partial_runThrd(xformPart)
 					ch.notifyComplete("ABRUPT_NO_ANIM", "abrubtXform_partial=[" + xformPart + "]")
 				}

@@ -132,7 +132,7 @@
 							org.friendularity.tmpgood.*
                         </Export-Package>
                         <Private-Package>
-							<!-- This package should be exported by a different bundle -->
+							<!-- This package is exported for client use by o.f.b.vscli -->
                             org.friendularity.netcli.*
                         </Private-Package>
                         <!-- org.parboiled,  shapeless,  org.uncommons.maths  are used by spray-http -->
