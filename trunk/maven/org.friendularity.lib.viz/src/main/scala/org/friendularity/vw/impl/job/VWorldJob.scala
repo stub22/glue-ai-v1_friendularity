@@ -1,4 +1,4 @@
-package org.friendularity.vwimpl
+package org.friendularity.vw.impl.job
 
 import org.friendularity.mjob.{MasterFactory, MsgFactoryPair, MsgJobLogic}
 import org.friendularity.vw.msg.cor.VWorldMsg

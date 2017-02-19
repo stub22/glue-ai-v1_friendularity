@@ -16,23 +16,17 @@
 
 package org.friendularity.qpc
 
+/*
 import java.io.{Serializable => JSerializable}
 import java.lang.{Long => JLong}
 import javax.jms.{Destination => JMSDestination, Message => JMSMsg, MessageConsumer => JMSMsgConsumer,
 		MessageListener => JMSMsgListener, MessageProducer => JMSMsgProducer, ObjectMessage => JMSObjMsg,
 		Session => JMSSession, TextMessage => JMSTextMsg}
+*/
 
-
-import akka.actor.ActorRefFactory
+// import akka.actor.ActorRefFactory
 import org.appdapter.core.name.{Ident, FreeIdent}
 import org.appdapter.fancy.log.VarargsLogging
-/*
-import org.cogchar.api.thing.ThingActionSpec
-import org.cogchar.api.vworld.GoodyActionParamWriter
-import org.cogchar.impl.thing.basic.BasicTypedValueMap
-import org.cogchar.impl.thing.fancy.ConcreteTVM
-import org.cogchar.name.goody.GoodyNames
-*/
 // import org.cogchar.render.rendtest.GoodyTestMsgMaker
 import org.friendularity.akact.{KnowsAkkaSys, DummyActorMaker}
 import org.friendularity.cpmsg.{CPStrongTeller, ActorRefCPMsgTeller}
@@ -40,7 +34,7 @@ import org.friendularity.cpmsg.{CPStrongTeller, ActorRefCPMsgTeller}
 
 // import org.friendularity.netcli.vwta.QPidTATestClient
 import org.friendularity.thact.{ThingActSender, ThingActReceiverBinary, ThingActReceiverTxt}
-import org.friendularity.vwmsg.{VWRqTAWrapper, VWTARqRdf}
+
 
 /**
   * Created by Stub22 on 8/8/2016.

@@ -3,8 +3,7 @@ package org.friendularity.vw.msg.shp.deep
 import com.jme3.material.Material
 import com.jme3.math.{ColorRGBA, Quaternion, Vector3f}
 import org.cogchar.render.sys.registry.RenderRegistryClient
-import org.friendularity.vw.mprt.manip.MaybeTransform3D
-import org.friendularity.vwmsg.CoreParams3D
+import org.friendularity.vw.mprt.manip.{CoreParams3D, MaybeTransform3D}
 
 /**
   * File created with code moved here from VWShapeMsg.scala by Stub22 on 1/17/2017.

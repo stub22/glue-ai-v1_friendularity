@@ -14,23 +14,22 @@
  *  limitations under the License.
  */
 
-package org.friendularity.vwmsg
+package org.friendularity.vw.msg.ta
 
-import java.io.ByteArrayInputStream
-import java.lang
-import java.lang.{Double, Float, Boolean}
-import java.nio.charset.StandardCharsets
+//import java.io.ByteArrayInputStream
+//import java.lang
+//import java.nio.charset.StandardCharsets
 
 
-import com.hp.hpl.jena.rdf.model.{Model => JenaModel, ModelFactory => JenaModelFactory, Resource, ResIterator}
-import com.jme3.math.Vector3f
-import org.apache.jena.riot.RDFFormat
-import org.appdapter.core.name.Ident
+import com.hp.hpl.jena.rdf.model.{Model => JenaModel} // , ModelFactory => JenaModelFactory, Resource, ResIterator}
+//import com.jme3.math.Vector3f
+//import org.apache.jena.riot.RDFFormat
+//import org.appdapter.core.name.Ident
 import org.appdapter.fancy.log.VarargsLogging
-import org.cogchar.api.thing.{SerTypedValueMap, TypedValueMap, ActionParamWriter, ThingActionSpec}
-import org.cogchar.api.vworld.GoodyActionParamWriter
-import org.cogchar.impl.thing.basic.{BasicTypedValueMap, BasicThingActionSpec}
-import org.cogchar.impl.thing.fancy.ConcreteTVM
+import org.cogchar.api.thing.ThingActionSpec // SerTypedValueMap, TypedValueMap, ActionParamWriter}
+//import org.cogchar.api.vworld.GoodyActionParamWriter
+// import org.cogchar.impl.thing.basic.{BasicTypedValueMap, BasicThingActionSpec}
+//import org.cogchar.impl.thing.fancy.ConcreteTVM
 import org.friendularity.thact.{JenaModelReader, RdfMsg}
 import org.friendularity.vw.msg.cor.{VWContentRq, VWorldNotice}
 

@@ -3,9 +3,9 @@ package org.friendularity.respire
 import akka.actor.{ActorContext, ActorRef}
 import org.appdapter.fancy.log.VarargsLogging
 import org.friendularity.mjob.{MsgJobLogic, MsgJobLogicFactory}
+import org.friendularity.vw.impl.job.VWorldJobLogic
 import org.friendularity.vw.impl.sys.VWorldSysMgr
 import org.friendularity.vw.msg.cor.VWorldRequest
-import org.friendularity.vwimpl.VWorldJobLogic
 
 /**
   * Created by Owner on 5/20/2016.

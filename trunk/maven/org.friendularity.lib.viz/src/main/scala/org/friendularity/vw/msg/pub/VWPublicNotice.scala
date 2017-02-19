@@ -1,11 +1,12 @@
-package org.friendularity.vwmsg
+package org.friendularity.vw.msg.pub
 
-import org.appdapter.core.name.Ident
 import org.friendularity.cpmsg.CPStrongTeller
-import org.friendularity.vw.msg.bdy.{VWBodyRq, VWBodyLifeRq}
+import org.friendularity.vw.msg.bdy.VWBodyLifeRq
 import org.friendularity.vw.msg.cor.{VWOverlayRq, VWorldNotice}
+
 import org.friendularity.vw.msg.shp.deep.VWShapeCreateRq
 import org.friendularity.vw.msg.stg.VWStageRqMsg
+import org.friendularity.vw.msg.ta.VWRqTAWrapper
 
 /*
 // VWorldPublicTellers = client access to main features for application building.

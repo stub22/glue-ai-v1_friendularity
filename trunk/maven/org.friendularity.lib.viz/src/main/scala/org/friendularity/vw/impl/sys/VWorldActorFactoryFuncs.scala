@@ -2,6 +2,7 @@ package org.friendularity.vw.impl.sys
 
 import akka.actor._
 import org.friendularity.cpmsg.CPStrongTeller
+import org.friendularity.vw.impl.goody.VWGoodyActor
 import org.friendularity.vw.msg.cor.VWContentRq
 
 // import com.hp.hpl.jena.rdf.model.{Model => JenaModel}
@@ -13,7 +14,6 @@ import org.friendularity.vw.impl.boss.VWorldBossActor
 import org.friendularity.vw.impl.ovl.VWOverlayActor
 import org.friendularity.vw.impl.shp.VWShaperActor
 import org.friendularity.vw.impl.stg.VWStageActor
-import org.friendularity.vwgoody.VWGoodyActor
 /**
   * Created by Owner on 1/19/2017.
   */

@@ -35,7 +35,8 @@ import org.friendularity.rbody.{DualBodyHelper, DualBodyRecord, EnhRobotAnimCont
 import org.friendularity.vw.impl.sys.VWorldActorFactoryFuncs
 import org.friendularity.vw.impl.tsk.FullJmeEnqHlp
 import org.friendularity.vw.mprt.manip.ManipDesc
-import org.friendularity.vw.msg.bdy.{VWBodyDangerYogaRq, VWBodyFindRq, VWBodyLifeRq, VWBodyMakeRq, VWBodyManipRq, VWBodyNoticeImpl, VWBodyRq, VWBodySkeletonDisplayToggle, VWBroadcastToAllBodies}
+import org.friendularity.vw.msg.bdy.{VWBodyDangerYogaRq, VWBodyFindRq, VWBodyLifeRq, VWBodyManipRq, VWBodyNoticeImpl, VWBodyRq, VWBodySkeletonDisplayToggle, VWBroadcastToAllBodies}
+import org.friendularity.vw.msg.intrn.VWBodyMakeRq
 import org.mechio.api.animation.{Animation, Channel}
 
 import scala.collection.mutable

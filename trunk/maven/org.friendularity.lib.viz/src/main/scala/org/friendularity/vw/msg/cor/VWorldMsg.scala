@@ -1,7 +1,7 @@
 package org.friendularity.vw.msg.cor
 
 import org.friendularity.cpmsg.CPumpMsg
-import org.friendularity.vw.impl.ovl.OverlayPage
+// import org.friendularity.vw.impl.ovl.OverlayPage
 
 // Our most general vw-msg traits are all simply type markers, adding no new methods.
 trait VWorldMsg extends CPumpMsg
@@ -11,6 +11,10 @@ trait VWorldRequest  extends VWorldMsg
 
 
 trait VWContentRq extends VWorldRequest
+
+trait VWOverlayRq extends VWorldRequest
+
+
 
 /* These make sense as design abstrcts, equivalent to constructs:  A, B,
 but were never actively used.

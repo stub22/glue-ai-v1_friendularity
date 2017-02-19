@@ -21,7 +21,7 @@ import org.appdapter.fancy.log.VarargsLogging
 import org.cogchar.platform.gui.keybind.KeyBindingTracker
 import org.cogchar.render.sys.input.VW_InputBindingFuncs
 import org.cogchar.render.sys.registry.RenderRegistryClient
-import org.friendularity.vwmsg.VWorldPublicTellers
+import org.friendularity.vw.msg.pub.VWorldPublicTellers
 
 /**
   * Created by Stub22 on 6/26/2016.

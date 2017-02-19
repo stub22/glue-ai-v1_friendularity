@@ -1,15 +1,15 @@
 package org.friendularity.vw.cli.goshcl
 
-import com.jme3.math.{ColorRGBA, Quaternion, Vector3f}
-import org.appdapter.core.name.Ident
+// import com.jme3.math.{ColorRGBA, Quaternion, Vector3f}
+// import org.appdapter.core.name.Ident
 import org.appdapter.fancy.log.VarargsLogging
 import org.cogchar.api.thing.{TypedValueMap, ThingActionSpec}
 import org.cogchar.name.goody.GoodyNames
 import org.cogchar.render.app.entity.GoodyActionExtractor
-import org.friendularity.vw.mprt.manip.MaybeTransform3D
+// import org.friendularity.vw.mprt.manip.MaybeTransform3D
 import org.friendularity.vw.msg.cor.VWContentRq
-import org.friendularity.vw.msg.shp.deep.{VWMeshDesc, VWMatDesc, KnowsShapeIDsPart, VWSCR_MeshyComposite}
-import org.friendularity.vwmsg.{OrdinaryParams3D, CoreParams3D}
+// import org.friendularity.vw.msg.shp.deep.{VWMeshDesc, VWMatDesc, KnowsShapeIDsPart, VWSCR_MeshyComposite}
+
 
 /**
   *

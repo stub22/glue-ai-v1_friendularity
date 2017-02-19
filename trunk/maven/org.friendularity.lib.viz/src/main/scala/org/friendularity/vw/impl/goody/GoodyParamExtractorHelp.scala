@@ -1,4 +1,4 @@
-package org.friendularity.vwgoody
+package org.friendularity.vw.impl.goody
 
 import com.jme3.math.Vector3f
 import org.cogchar.render.app.entity.GoodyActionExtractor

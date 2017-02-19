@@ -128,7 +128,15 @@
 							org.friendularity.cpump,
 							org.friendularity.dull,
 							org.friendularity.util,
-							org.friendularity.vw.api.amqp
+							org.friendularity.vw.api.amqp,
+							org.friendularity.vw.mprt.manip,
+							org.friendularity.vw.msg.cor,
+							org.friendularity.vw.msg.adm,
+							org.friendularity.vw.msg.bdy,
+							org.friendularity.vw.msg.shp,
+							org.friendularity.vw.msg.stg,
+							org.friendularity.vw.msg.pub,
+							org.friendularity.vw.msg.ta
                         </Export-Package>
                         <Private-Package>
                         </Private-Package>

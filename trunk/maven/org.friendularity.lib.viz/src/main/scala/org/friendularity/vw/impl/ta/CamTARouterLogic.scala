@@ -10,9 +10,9 @@ import org.friendularity.cpmsg.{ActorRefCPMsgTeller, CPMsgTeller}
 import org.friendularity.util.IdentHlp
 import org.friendularity.vw.cli.cam.OuterCamHelp
 import org.friendularity.vw.mprt.manip.{CamStateParams3D, CamState3D, MakesTransform3D, ManipStatusMsg, MaybeTransform3D}
+import org.friendularity.vw.msg.pub.VWorldPublicTellers
 import org.friendularity.vw.msg.shp.deep.{VWShapeAttachRq, VWShapeDetachRq}
 import org.friendularity.vw.msg.stg.ViewportDesc
-import org.friendularity.vwmsg.VWorldPublicTellers
 
 import java.lang.{Float => JFloat, Integer => JInt, Long => JLong}
 
