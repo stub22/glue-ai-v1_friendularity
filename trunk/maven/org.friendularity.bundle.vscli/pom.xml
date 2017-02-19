@@ -69,6 +69,12 @@
 		</dependency>
 		-->
 
+		<dependency>
+			<groupId>org.jflux</groupId>
+			<artifactId>org.jflux.impl.messaging.rk</artifactId>
+		</dependency>
+
+
 		<!-- FIXME: Used for JME vector3f, color, and quaternion types only -->
 
 		<dependency>
@@ -133,7 +139,7 @@
 							org.friendularity.vw.msg.cor,
 							org.friendularity.vw.msg.adm,
 							org.friendularity.vw.msg.bdy,
-							org.friendularity.vw.msg.shp,
+							org.friendularity.vw.msg.shp.*,
 							org.friendularity.vw.msg.stg,
 							org.friendularity.vw.msg.pub,
 							org.friendularity.vw.msg.ta
