@@ -32,9 +32,10 @@ import org.friendularity.util.IdentHlp
 import org.friendularity.vw.cli.cam.OuterCamHelp
 import org.friendularity.vw.mprt.manip.{CamState3D, CamStateParams3D, MakesManipDesc, MakesTransform3D, ManipStatusMsg, MaybeTransform3D, PartialTransform3D}
 import org.friendularity.vw.msg.bdy.{VWBodyFindRq, VWBodyLifeRq, VWBodyManipRq, VWBodyNotice, VWBodyRq}
+import org.friendularity.vw.msg.pub.VWorldPublicTellers
 import org.friendularity.vw.msg.shp.deep.{VWShapeAttachRq, VWShapeDetachRq}
 import org.friendularity.vw.msg.stg.ViewportDesc
-import org.friendularity.vwmsg.{VWRqTAWrapper, VWorldPublicTellers}
+import org.friendularity.vw.msg.ta.VWRqTAWrapper
 
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer

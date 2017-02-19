@@ -19,36 +19,20 @@ package org.friendularity.vw.msg.adm
 import java.awt.Image
 
 import org.appdapter.fancy.log.VarargsLogging
-import org.cogchar.bind.midi.in.TempMidiBridge
 import org.friendularity.cpmsg.{CPMsgTeller, CPStrongTeller}
-import org.friendularity.navui.NavAppCloser
-import org.friendularity.vw.impl.sys.UpdateAttacher
-import org.friendularity.vw.mprt.ingred.{BodyMgrIngred, LesserIngred}
-import org.friendularity.vw.msg.cor.{VWorldInternalNotice, VWorldRequest}
-import org.friendularity.vwmsg.VWorldPublicTellers
+import org.friendularity.vw.msg.cor.VWorldRequest
+import org.friendularity.vw.msg.pub.VWorldPublicTellers
 
+// trait VWBodyLifeRq extends VWorldRequest // disjoint from VWBodyRq
 
 trait VWAdminRqMsg extends VWorldRequest with VarargsLogging
 
 case class VWARM_GreetFromPumpAdmin(pumpAdminTeller : CPMsgTeller) extends VWAdminRqMsg
-// case class VWARM_FindGoodyTeller(answerTeller: CPMsgTeller) extends VWAdminRqMsg
 
 // Receiver can wait to answer until the system is sufficiently ready, e.g. until the VWorld is up.
 // However, Sndr may inquire well after the VWorld is up, and then Rcvr should answer right away.
 case class VWARM_FindPublicTellers(answerTeller: CPStrongTeller[VWorldPublicTellers]) extends VWAdminRqMsg
 
-
 case class VWSetupRq_Conf() extends VWorldRequest // Not being sent as of 2016-06-16
 
-// TODO:  This nonserializable NavAppCloser reference should be replaced by separate message pathway.
-case class VWSetupRq_Lnch(wrapInSwingCanv : Boolean, fixmeClzrNonSerial : NavAppCloser) extends VWorldRequest {
-	// Sent from NuiiApp to VWBoss, as of 2016-06-16
-}
-
 case class VWSetSwingCanvasBranding(canvasTitle: String,  canvasIconImage : Image) extends VWAdminRqMsg
-
-// Boss eventually sends this response to the answerTeller of each VWARM_FindPublicTellers rcvd.
-case class VWSetupResultsNotice(lesserIngred: LesserIngred,
-								bodyMgrIngred: BodyMgrIngred,
-								updAtchr : UpdateAttacher, tmb_opt : Option[TempMidiBridge]) extends VWorldInternalNotice
-

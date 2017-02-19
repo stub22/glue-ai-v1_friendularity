@@ -14,25 +14,26 @@
  *  limitations under the License.
  */
 
-package org.friendularity.vwgoody
+package org.friendularity.vw.impl.goody
 
 import akka.actor.{Actor, ActorContext, ActorRef}
-import com.hp.hpl.jena.rdf.model.{Model => JenaModel, ModelFactory => JenaModelFactory}
-import com.jme3.math.{ColorRGBA, Quaternion, Vector3f}
-import com.jme3.scene.{Node => JmeNode}
-import org.appdapter.core.name.Ident
+// import com.hp.hpl.jena.rdf.model.{Model => JenaModel, ModelFactory => JenaModelFactory}
+// import com.jme3.math.{ColorRGBA, Quaternion, Vector3f}
+// import com.jme3.scene.{Node => JmeNode}
+// import org.appdapter.core.name.Ident
 import org.appdapter.fancy.log.VarargsLogging
 import org.cogchar.api.thing.ThingActionSpec
-import org.cogchar.name.goody.GoodyNames
-import org.cogchar.render.app.entity.{GoodyActionExtractor, VWorldEntity}
+// import org.cogchar.name.goody.GoodyNames
+// import org.cogchar.render.app.entity.{GoodyActionExtractor, VWorldEntity}
 
-import org.cogchar.render.sys.registry.RenderRegistryClient
-import org.cogchar.render.sys.window.WindowStatusMonitor
+// import org.cogchar.render.sys.registry.RenderRegistryClient
+// import org.cogchar.render.sys.window.WindowStatusMonitor
 import org.friendularity.cpmsg.CPStrongTeller
 import org.friendularity.thact.ThingActExposer
 import org.friendularity.vw.cli.goshcl.GoodyShapcliLogic
 import org.friendularity.vw.msg.cor.{VWContentRq, VWorldRequest}
-import org.friendularity.vwmsg.{VWRqTAWrapImpl, VWRqTAWrapper, VWTARqRdf}
+import org.friendularity.vw.msg.ta.{VWRqTAWrapImpl, VWRqTAWrapper, VWTARqRdf}
+
 
 /**
   * Created by Stub22 on 5/25/2016.

@@ -8,7 +8,8 @@ import org.appdapter.fancy.log.VarargsLogging
 import org.friendularity.cpmsg.ActorRefCPMsgTeller
 import org.friendularity.navui.NavAppCloser
 import org.friendularity.vw.impl.sys.{VWJdkAwtCanvasMgr, SimBalloonAppLauncher}
-import org.friendularity.vw.msg.adm.{VWSetSwingCanvasBranding, VWSetupRq_Lnch}
+import org.friendularity.vw.msg.adm.VWSetSwingCanvasBranding
+import org.friendularity.vw.msg.intrn.VWSetupRq_Lnch
 
 /**
   * Created by Owner on 1/22/2017.

@@ -29,8 +29,8 @@ import org.friendularity.util.IdentHlp
 import org.friendularity.vw.impl.cam.VWCamSummary
 import org.friendularity.vw.impl.shp.{TextSpatMaker, MeshGeoMaker, BrushJar, SpatMatHelper}
 import org.friendularity.vw.impl.tsk.SvcGate
-import org.friendularity.vw.msg.cor.VWSetupOvlBookRq
-import org.friendularity.vw.msg.stg.{InnerNavCmds, NavCmd}
+import org.friendularity.vw.msg.ovl.VWSetupOvlBookRq
+import org.friendularity.vw.msg.nav.{InnerNavCmds, NavCmd}
 
 
 // import org.friendularity.navui.NavPage_Bodies

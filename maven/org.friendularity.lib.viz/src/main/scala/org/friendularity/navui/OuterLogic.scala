@@ -25,35 +25,35 @@ import org.appdapter.core.name.FreeIdent
 import org.appdapter.core.name.Ident
 import org.appdapter.fancy.log.VarargsLogging
 import org.cogchar.api.fancy.FancyThingModelWriter
-import org.cogchar.api.thing.SerTypedValueMap
-import org.cogchar.api.vworld.GoodyActionParamWriter
+// import org.cogchar.api.thing.SerTypedValueMap
+// import org.cogchar.api.vworld.GoodyActionParamWriter
 import org.cogchar.impl.thing.basic.BasicThingActionSpec
-import org.cogchar.render.rendtest.GoodyTestMsgMaker
+// import org.cogchar.render.rendtest.GoodyTestMsgMaker
 import org.friendularity.cpmsg.{ActorRefCPMsgTeller, CPStrongTeller, CPMsgTeller}
 
 import org.friendularity.field.{StatusTickActorFactory, StatusTickDistributor, StatusTickScheduler, ReportingPolicy, ReportSrcOpen, SourceDataMsg, MsgToStatusSrc, ReportingTickChance, FieldActorFactory}
 import org.friendularity.mjob.{MsgJobLogicFactory, MsgJobLogic}
 
 import com.hp.hpl.jena.rdf.model.{Model => JenaModel, ModelFactory => JenaModelFactory, Literal}
-import org.friendularity.netcli.vwta.MakesVWTARqProducers
+// import org.friendularity.netcli.vwta.MakesVWTARqProducers
 import org.friendularity.netcli.vwta.OffersVWorldClient
-import org.friendularity.thact.ThingActSender
+// import org.friendularity.thact.ThingActSender
 import org.friendularity.util.IdentHlp
-import org.friendularity.vw.cli.cam.OuterCamHelp
+// import org.friendularity.vw.cli.cam.OuterCamHelp
 import org.friendularity.vw.cli.nav.OuterBindNavCmdKeys
+import org.friendularity.vw.impl.job.VWorldMasterFactory
 import org.friendularity.vw.impl.ovl.{NavPageDefs, OverlayPage}
-
 
 import org.friendularity.vw.mprt.manip.{PartialTransform3D, CamStateParams3D, MakesManipDesc, TransformParams3D, SmooveManipEndingFullImpl}
 import org.friendularity.vw.msg.bdy.{VWBodyDangerYogaRq, VWBodySkeletonDisplayToggle, VWBroadcastToAllBodies, VWBodyLifeRq}
-import org.friendularity.vw.msg.cor.{VWSetupOvlBookRq, VWOverlayRq}
+import org.friendularity.vw.msg.cor.VWOverlayRq
+
+import org.friendularity.vw.msg.ovl.{VWSetupOvlBookRq}
+import org.friendularity.vw.msg.pub.VWorldPublicTellers
 import org.friendularity.vw.msg.shp.deep.{VWSCR_KnownShape, SimpleMatDesc, VWMD_Sphere, VWSCR_MeshyComposite, VWSCR_CellGrid, KnownShapeCreateRqImpl, VWClearAllShapes, ShapeManipRqImpl}
 import org.friendularity.vw.msg.stg.{VWKeymapBinding_Medial, ViewportDesc, VWStageSetupLighting, VWStatsViewMessage, VWStageBackgroundSkybox, VWStageBackgroundColor, VWStageOpticsBasic, VWStageEmulateBonusContentAndCams, VWStageResetToDefault}
-import org.friendularity.vwimpl.VWorldMasterFactory
+import org.friendularity.vw.msg.ta.{VWRqTAWrapImpl, VWTARqTurtle}
 
-import scala.collection.immutable.HashMap
-
-import org.friendularity.vwmsg.{VWorldPublicTellers, OrdinaryParams3D, VWRqTAWrapImpl, VWTARqTurtle}
 import org.cogchar.impl.thing.fancy.ConcreteTVM
 import org.cogchar.api.vworld.GoodyActionParamWriter
 import org.cogchar.api.thing.SerTypedValueMap;

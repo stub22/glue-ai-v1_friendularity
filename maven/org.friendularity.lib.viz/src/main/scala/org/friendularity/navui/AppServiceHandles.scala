@@ -27,7 +27,8 @@ import org.friendularity.vw.impl.ta.{OffersVWorldQpidServer, MakesVWTAReqRouterT
 import org.friendularity.vw.msg.adm.VWARM_FindPublicTellers
 import org.friendularity.vw.msg.bdy.VWBodyLifeRq
 import org.friendularity.vw.msg.cor.VWorldRequest
-import org.friendularity.vwmsg.{VWRqTAWrapper, VWorldPublicTellers}
+import org.friendularity.vw.msg.pub.VWorldPublicTellers
+import org.friendularity.vw.msg.ta.VWRqTAWrapper
 
 /**
   * Created by Stub22 on 8/8/2016.

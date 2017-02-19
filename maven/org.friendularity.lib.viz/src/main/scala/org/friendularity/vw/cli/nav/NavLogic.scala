@@ -15,8 +15,8 @@
  */
 package org.friendularity.vw.cli.nav
 
-import org.friendularity.vw.msg.stg.{InnerNavCmds, NavCmd, NavCmdImpl, NavCmdKeyClkBind}
-import org.friendularity.vwmsg.VWorldPublicTellers
+import org.friendularity.vw.msg.nav.{InnerNavCmds, NavCmd, NavCmdImpl, NavCmdKeyClkBind}
+import org.friendularity.vw.msg.pub.VWorldPublicTellers
 
 /** Created by Stub22 on 7/7/2016.
   */

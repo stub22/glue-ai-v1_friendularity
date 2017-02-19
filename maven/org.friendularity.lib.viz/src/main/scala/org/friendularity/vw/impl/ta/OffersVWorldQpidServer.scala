@@ -3,7 +3,7 @@ package org.friendularity.vw.impl.ta
 import org.friendularity.akact.KnowsAkkaSys
 import org.friendularity.cpmsg.CPStrongTeller
 import org.friendularity.qpc.{OffersQpidSomething, VWNoticeSender}
-import org.friendularity.vwmsg.VWRqTAWrapper
+import org.friendularity.vw.msg.ta.VWRqTAWrapper
 
 /**
   * Created by Owner on 2/18/2017.

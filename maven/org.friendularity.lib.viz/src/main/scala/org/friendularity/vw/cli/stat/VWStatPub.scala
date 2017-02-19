@@ -5,7 +5,7 @@ import org.appdapter.fancy.log.VarargsLogging
 import org.friendularity.field.{MsgToStatusSrc, StatusTickMsg}
 
 import org.friendularity.vw.impl.ta.OffersVWorldQpidServer
-import org.friendularity.vwmsg.VWorldPublicTellers
+import org.friendularity.vw.msg.pub.VWorldPublicTellers
 
 /**
   * Created by Owner on 8/8/2016.

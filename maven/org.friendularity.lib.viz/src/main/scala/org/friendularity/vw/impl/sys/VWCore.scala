@@ -25,7 +25,7 @@ import org.cogchar.render.trial.{TrialBalloon, TrialUpdater}
 import org.friendularity.cpmsg.CPMsgTeller
 import org.friendularity.respire.SweetDynaSpace
 import org.friendularity.vw.mprt.ingred.FullIngredMsgImpl
-import org.friendularity.vw.msg.adm.VWSetupResultsNotice
+import org.friendularity.vw.msg.intrn.VWSetupResultsNotice
 
 // Marker trait for a vw sys kernel.   Usually only one exists per java runtime, but should be safe in plural, too.
 trait VWCore {

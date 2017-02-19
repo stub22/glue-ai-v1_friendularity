@@ -24,14 +24,14 @@ import org.appdapter.fancy.log.VarargsLogging
 import org.cogchar.api.thing.ThingActionSpec
 import org.friendularity.cpmsg.CPStrongTeller
 import org.friendularity.vw.msg.cor.VWorldNotice
-import org.friendularity.vwmsg.{VWRqTAWrapper, VWRqTAWrapImpl,  VWTARqTurtle, VWTARqRdf}
+import org.friendularity.vw.msg.ta.{VWRqTAWrapImpl, VWRqTAWrapper, VWTARqTurtle, VWTARqRdf}
 
 /**
   * Created by Stub22 on 8/6/2016.
   */
 // JMS spec requires Listener's onMessage method to only be called serially [...although if we attach same listener to
 // multiple consumers, probably can be called concurrently, eh?].   We don't really need that invariant
-// here, cince we just statelessly forward the message to an actor destination.
+// here, since we just statelessly forward the message to an actor destination.
 // Impl Notes:
 // This listener sniffs at the inbound JMS message to find type, and dispatches to Receiver code.
 // Receiver code wraps and sends an appropriate actor msg to enqueue further work on the message.

@@ -26,8 +26,9 @@ import org.friendularity.cpmsg.CPStrongTeller
 import org.friendularity.respire.DetachedGST
 import org.friendularity.vw.impl.boss.MakesVWBoss
 import org.friendularity.vw.impl.ta.OffersVWorldQpidServer
-import org.friendularity.vw.msg.adm.{VWSetSwingCanvasBranding, VWSetupRq_Lnch, VWSetupRq_Conf}
-import org.friendularity.vw.msg.bdy.{VWBodyNotice, VWBodyMakeRq}
+import org.friendularity.vw.msg.adm.{VWSetSwingCanvasBranding, VWSetupRq_Conf}
+import org.friendularity.vw.msg.bdy.VWBodyNotice
+import org.friendularity.vw.msg.intrn.{VWSetupRq_Lnch, VWBodyMakeRq}
 
 /**
   * Created by Stub22 on 8/8/2016.

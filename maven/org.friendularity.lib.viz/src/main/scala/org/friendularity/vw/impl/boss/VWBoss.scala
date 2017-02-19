@@ -32,13 +32,15 @@ import org.friendularity.vw.impl.bdy.VWCharMgrCtxImpl
 import org.friendularity.vw.impl.stg.StageCtxImpl
 import org.friendularity.vw.impl.sys.{VWorldStrap, UpdateAttacher, SimBalloonAppLauncher, VWorldActorFactoryFuncs, VWPTRendezvous, VWorldSysMgr, VWJdkAwtCanvasMgr}
 import org.friendularity.vw.mprt.ingred.{BodyMgrIngred, LesserIngred}
-import org.friendularity.vw.msg.adm.{VWARM_FindPublicTellers, VWARM_GreetFromPumpAdmin, VWAdminRqMsg, VWSetSwingCanvasBranding, VWSetupResultsNotice, VWSetupRq_Conf, VWSetupRq_Lnch}
+import org.friendularity.vw.msg.adm.{VWARM_FindPublicTellers, VWARM_GreetFromPumpAdmin, VWAdminRqMsg, VWSetSwingCanvasBranding, VWSetupRq_Conf}
 import org.friendularity.vw.msg.bdy.VWBodyLifeRq
-import org.friendularity.vw.msg.cor.{VWContentRq, VWOverlayRq, VWorldInternalNotice, VWorldNotice, VWorldRequest}
-import org.friendularity.vw.msg.shp.deep.VWShapeCreateRq
-import org.friendularity.vw.msg.stg.VWStageRqMsg
+import org.friendularity.vw.msg.cor.{VWOverlayRq, VWContentRq, VWorldNotice, VWorldRequest}
+import org.friendularity.vw.msg.intrn.{VWSetupRq_Lnch, VWSetupResultsNotice, VWorldInternalNotice}
 
-import org.friendularity.vwmsg.{VWPubTellersMsgImpl, VWRqTAWrapper}
+import org.friendularity.vw.msg.pub.VWPubTellersMsgImpl
+
+import org.friendularity.vw.msg.stg.VWStageRqMsg
+import org.friendularity.vw.msg.ta.VWRqTAWrapper
 
 /**
   * Created by Stub22 on 6/15/2016.

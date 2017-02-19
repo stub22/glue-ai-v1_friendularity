@@ -1,7 +1,6 @@
-package org.friendularity.vwmsg
+package org.friendularity.vw.mprt.manip
 
-import com.jme3.math.{Quaternion, Vector3f, ColorRGBA}
-import org.friendularity.vw.mprt.manip.{TransformParams3D, Transform3D}
+import com.jme3.math.{ColorRGBA, Quaternion, Vector3f}
 
 /**
   * File created with code moved here from VWShapeMsg.scala by Stub22 on 1/17/2017.

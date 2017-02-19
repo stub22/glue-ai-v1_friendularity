@@ -26,7 +26,7 @@ import org.friendularity.cpmsg.{ActorRefCPMsgTeller, CPStrongTeller}
 import org.friendularity.qpc.{VWNoticeSenderJmsImpl, JmsDestMgr, QPidFeatureEndpoint, QPidDestMgrJFlux, QpidConnMgr, VWNoticeSender}
 import org.friendularity.thact.{ThingActReceiverBinary, ThingActReceiverDual, ThingActReceiverTxt}
 import org.friendularity.vw.api.amqp.{KnowsVWPubStatDestinations, KnowsVWTARqDestinations}
-import org.friendularity.vwmsg.{VWRqTAWrapper, VWTARqRdf}
+import org.friendularity.vw.msg.ta.{VWRqTAWrapper, VWTARqRdf}
 
 /**
   * Created by Stub22 on 8/10/2016.
