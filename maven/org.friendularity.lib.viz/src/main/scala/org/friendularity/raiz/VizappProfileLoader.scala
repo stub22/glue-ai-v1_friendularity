@@ -33,6 +33,17 @@ trait VizappProfileLoader {
 	}
 	def makeMergedProfileGraph : JenaModel = myApproGrphMkr.makeMergedProfileGraph
 
+	def makeMrgPrfGrphFrsh(ovlToks_opt : Option[Array[String]]) : Option[JenaModel] = {
+		val mgAtmptJM : JenaModel = if (ovlToks_opt.isDefined) {
+			val prfRoots = getProfileRoots
+			val tapgm = new ApproProfileGraphMaker(prfRoots.getProfileEHost, prfRoots.getProfilePathRel, ovlToks_opt.get)
+			tapgm.makeMergedProfileGraph
+		} else makeMergedProfileGraph
+		if ((mgAtmptJM == null) || (mgAtmptJM.size() == 0)) {
+			None
+		} else Some(mgAtmptJM)
+	}
+
 }
 class VizappProfileLoaderImpl(profileRoots: VizappProfileRoots) extends VizappProfileLoader {
 	override protected def getProfileRoots: VizappProfileRoots = profileRoots

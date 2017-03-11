@@ -27,7 +27,9 @@ import org.cogchar.render.sys.registry.RenderRegistryClient
 import org.cogchar.render.trial.TextSpatialFactory
 import org.friendularity.tmpgood.tgbit.TG_BitCubeBox
 import org.friendularity.vw.mprt.manip.Transform3D
-import org.friendularity.vw.msg.shp.deep.{VWMD_TexturedBox, VWMD_Box, VWMD_PQTorus, VWMatDesc, VWMeshDesc, VWMD_Torus, VWMD_Cylinder, VWMD_Sphere, CompositeMeshyShapeCreateRq, VWSCR_CellGrid, VWSCR_TextBox, VWSCR_ExistingNode, VWSCR_CamGuideNode, VWSCR_Node, VWShapeCreateRq}
+import org.friendularity.vw.msg.shp.deep.{VWMD_TexturedBox, VWMD_Box, VWMD_PQTorus, VWMeshDesc, VWMD_Torus,
+		VWMD_Cylinder, VWMD_Sphere, CompositeMeshyShapeCreateRq, VWSCR_CellGrid, VWSCR_TextBox,
+		VWSCR_ExistingNode, VWSCR_CamGuideNode, VWSCR_Node, VWShapeCreateRq}
 
 /**
   * Code moved to new file on 1/19/2017.
@@ -132,7 +134,7 @@ trait VWSpatialsForShapes extends PatternGridMaker with MatsForShapes  {
 		val geom = new Geometry(geomNameArb, mesh)
 		geom
 	}
-	def UNUSED_applySpatialTransform_full_UNUSED_I_THINK(spat : Spatial, params : Transform3D) : Unit = {
+	private def UNUSED_applySpatialTransform_full_UNUSED_I_THINK(spat : Spatial, params : Transform3D) : Unit = {
 		val pos : Vector3f = params.getPos
 		spat.setLocalTranslation(pos)
 		val rot : Quaternion = params.getRotQuat
