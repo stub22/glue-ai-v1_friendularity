@@ -21,16 +21,19 @@ import com.jme3.math.{ColorRGBA, Quaternion, Vector3f}
 import com.jme3.scene.shape.{Quad, Sphere}
 import com.jme3.scene.{Geometry, Mesh, Node => JmeNode, Spatial}
 import org.appdapter.core.name.{FreeIdent, Ident}
-import org.appdapter.fancy.log.VarargsLogging
+// import org.appdapter.fancy.log.VarargsLogging
 import org.cogchar.render.sys.registry.RenderRegistryClient
-import org.cogchar.render.trial.TextSpatialFactory
-import org.friendularity.respire.Srtw
+// import org.cogchar.render.trial.TextSpatialFactory
+// import org.friendularity.respire.Srtw
 import org.friendularity.util.IdentHlp
-import org.friendularity.vw.impl.cam.SyncsToCam
+// import org.friendularity.vw.impl.cam.SyncsToCam
 import org.friendularity.vw.impl.manip.{AppliesXforms, Manipable}
 import org.friendularity.vw.impl.tsk.JmeAttachHlp
-import org.friendularity.vw.mprt.manip.Transform3D
-import org.friendularity.vw.msg.shp.deep.{VWMatDesc, VWApplyMatToTree, VWShapeDeleteRq, VWClearAllShapes, VWSCR_CamGuideNode, VWSCR_CellGrid, VWSCR_ExistingNode, VWSCR_Node, VWMD_Sphere, VWSCR_TextBox, VWShapeAttachRq, VWShapeCreateRq, VWShapeDetachRq, VWShapeManipRq}
+// import org.friendularity.vw.mprt.manip.Transform3D
+import org.friendularity.vw.msg.shp.deep.{VWMatDesc, VWApplyMatToTree, VWShapeDeleteRq, VWClearAllShapes,
+		VWSCR_CamGuideNode, VWSCR_CellGrid, 		VWShapeAttachRq, VWShapeCreateRq, VWShapeDetachRq, VWShapeManipRq}
+//VWSCR_ExistingNode, VWSCR_Node, VWMD_Sphere, VWSCR_TextBox,
+
 
 import scala.collection.mutable
 import scala.util.Random
