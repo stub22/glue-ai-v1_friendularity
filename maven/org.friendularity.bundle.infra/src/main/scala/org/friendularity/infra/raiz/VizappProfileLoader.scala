@@ -53,7 +53,7 @@ object VizappProfileLoaderFactory extends UtilFuncs {
 	def makeProfileLoader(profileRoots: VizappProfileRoots) : VizappProfileLoader = new VizappProfileLoaderImpl(profileRoots)
 
 	def makeUnitTestProfileLoader(profileEHost : EntryHost, profileRelFolder : String,
-								  activeTokens : Array[String]) : VizappProfileLoader = {
+										activeTokens : Array[String]) : VizappProfileLoader = {
 		val profRoots = new VizappProfileRootsImpl(profileEHost, profileRelFolder, activeTokens)
 		makeProfileLoader(profRoots)
 	}
@@ -63,9 +63,16 @@ object VizappProfileLoaderFactory extends UtilFuncs {
 		makeUnitTestProfileLoader(profileEHost, profileRelFolder, activeTokens)
 	}
 	val regDesktopTokens = Array[String]("all", "regular", "desktop")
+
+	val rzTstProfilePath = "org/friendu/raiztst/rztst_profile"
 	val vizDlftProfilePath = "org/friendu/tchunk/vizapp_profile"
 
-	def makeUnitTestProfileLoader(): VizappProfileLoader = {
+	def makeRaizUnitTestProfileLoader(): VizappProfileLoader = {
+		val vizappImplClz = classOf[VizappProfileLoaderImpl]
+		makeUnitTestProfileLoader(vizappImplClz, rzTstProfilePath, regDesktopTokens)
+	}
+
+	def makeVizappUnitTestProfileLoader(): VizappProfileLoader = {
 		val vizappImplClz = classOf[VizappProfileLoaderImpl]
 		makeUnitTestProfileLoader(vizappImplClz, vizDlftProfilePath, regDesktopTokens)
 	}
