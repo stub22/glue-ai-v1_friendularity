@@ -132,7 +132,7 @@ class StandaloneNavAppSys(appSvcConfigHacks : AppServiceConfigHacks) {
 
 	def findOrMakeNavUiApp: NavUiAppImpl = myNavUiApp
 
-	lazy private val myProfileLoader = VizappProfileLoaderFactory.makeUnitTestProfileLoader()
+	lazy private val myProfileLoader = VizappProfileLoaderFactory.makeVizappUnitTestProfileLoader()
 
 	lazy private val myMergedProfileGraph : JenaModel = myProfileLoader.makeMergedProfileGraph
 

@@ -51,43 +51,7 @@
              which conflicts with the Avro 3.8.0 that akka-remote wants,
              leading to a VerifyError during startup of DemoCPump when we run with akka-remoting activated -->
 
-		<dependency>
-            <groupId>org.jflux</groupId>
-            <artifactId>org.jflux.impl.transport.qpid</artifactId>
-        </dependency>
 
-        <dependency>
-            <groupId>org.jflux</groupId>
-            <artifactId>org.jflux.impl.registry.osgi</artifactId>
-        </dependency>
-        <!-- Issue with type parameters in OSGi classes, compiled under java 7, v 4.3.0 and 4.3.1
-        http://blog.osgi.org/2012/10/43-companion-code-for-java-7.html
-        -->
-        <dependency>
-            <groupId>org.appdapter</groupId>
-            <artifactId>ext.bundle.osgi.common</artifactId>
-            <version>${appdapter.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.appdapter</groupId>
-            <artifactId>ext.bundle.akka.remote_v2315_s210</artifactId>
-            <version>${appdapter.version}</version>
-        </dependency>
-
-
-        <dependency>
-            <!-- Separate akka-slf4j dependence helps during unit testing -->
-            <groupId>com.typesafe.akka</groupId>
-            <artifactId>akka-slf4j_2.10</artifactId>
-            <version>2.3.15</version>
-        </dependency>
-        <dependency>
-            <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.core</artifactId>
-            <!--
-            <scope>provided</scope>
-            -->
-        </dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>

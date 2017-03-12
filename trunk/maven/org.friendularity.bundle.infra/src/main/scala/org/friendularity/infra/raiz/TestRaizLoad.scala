@@ -108,7 +108,7 @@ val profDataEntryHost: EntryHost = setupLoader.getUnitTestResourceEntryHost
 val mergedProfileGraph = setupLoader.getMergedProfileGraph_RegularDesktop(profDataEntryHost)
 */
 
-		val profileLoader = VizappProfileLoaderFactory.makeUnitTestProfileLoader
+		val profileLoader = VizappProfileLoaderFactory.makeRaizUnitTestProfileLoader // makeVizappUnitTestProfileLoader
 		val mergedProfileGraph = profileLoader.makeMergedProfileGraph
 		info1("Fetched mergedProfileGraph of size {}", mergedProfileGraph.size: java.lang.Long)
 		debug1("mergedProfileGraph dump:\n{}", mergedProfileGraph)
