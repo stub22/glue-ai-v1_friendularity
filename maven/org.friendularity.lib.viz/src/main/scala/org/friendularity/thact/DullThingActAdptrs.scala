@@ -3,8 +3,8 @@ package org.friendularity.thact
 import org.appdapter.core.name.Ident
 import org.cogchar.api.thing.WantsThingAction
 import org.cogchar.impl.thing.route.BasicThingActionRouter
-import org.friendularity.cpmsg.CPMsgTeller
-import org.friendularity.dull.{DullFilterAdptr, DullPumpCtx}
+import org.friendularity.infra.cpmsg.CPMsgTeller
+import org.friendularity.infra.dull.{DullFilterAdptr, DullPumpCtx}
 
 /**
   * Created by Stu on 4/13/2016.

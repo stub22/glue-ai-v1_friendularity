@@ -28,6 +28,12 @@
         </dependency>
 
 		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>org.friendularity.bundle.infra</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
 			<!-- Note "provided" scope on o.f.lib.viz, used only to OSGi-export
 				high-level client API.  Network wiring for Akka + AMQP comes from explicit
 				propagatable deps below.
@@ -69,12 +75,6 @@
 		</dependency>
 		-->
 
-		<dependency>
-			<groupId>org.jflux</groupId>
-			<artifactId>org.jflux.impl.messaging.rk</artifactId>
-		</dependency>
-
-
 		<!-- FIXME: Used for JME vector3f, color, and quaternion types only -->
 
 		<dependency>
@@ -82,11 +82,6 @@
 			<artifactId>ext.bundle.opengl.jmonkey</artifactId>
 		</dependency>
 
-		<!-- FIXME:   Used for o.c.api.thing -->
-		<dependency>
-			<groupId>org.cogchar</groupId>
-			<artifactId>org.cogchar.bundle.core</artifactId>
-		</dependency>
 
 		<!-- FIXME:   Used for o.c.render.rendtest -->
 		<dependency>
@@ -125,15 +120,9 @@
                     <instructions>
                         <Bundle-Activator>org.friendularity.bundle.vscli.Activator</Bundle-Activator>
                         <Export-Package>
-                            org.friendularity.bundle.vscli,
+							org.friendularity.bundle.vscli,
 							org.friendularity.netcli.*,
-							org.friendularity.akact,
-							org.friendularity.cpmsg,
-							org.friendularity.qpc,
 							org.friendularity.thact,
-							org.friendularity.cpump,
-							org.friendularity.dull,
-							org.friendularity.util,
 							org.friendularity.vw.api.amqp,
 							org.friendularity.vw.mprt.manip,
 							org.friendularity.vw.msg.cor,
@@ -143,7 +132,7 @@
 							org.friendularity.vw.msg.stg,
 							org.friendularity.vw.msg.pub,
 							org.friendularity.vw.msg.ta
-                        </Export-Package>
+						</Export-Package>
                         <Private-Package>
                         </Private-Package>
                         

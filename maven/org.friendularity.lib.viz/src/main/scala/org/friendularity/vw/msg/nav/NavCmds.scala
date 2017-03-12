@@ -1,6 +1,6 @@
 package org.friendularity.vw.msg.nav
 
-import org.friendularity.cpmsg.CPMsgTeller
+import org.friendularity.infra.cpmsg.CPMsgTeller
 import org.friendularity.vw.msg.cor.VWOverlayRq
 
 import org.friendularity.vw.msg.pub.VWorldPublicTellers

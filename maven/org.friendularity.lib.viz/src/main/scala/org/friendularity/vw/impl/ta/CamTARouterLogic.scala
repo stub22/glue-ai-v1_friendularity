@@ -6,8 +6,8 @@ import org.appdapter.core.name.{FreeIdent, Ident}
 import org.cogchar.api.thing.ThingActionSpec
 import org.cogchar.name.cinema.LightsCameraAN
 import org.cogchar.render.app.entity.GoodyActionExtractor
-import org.friendularity.cpmsg.{ActorRefCPMsgTeller, CPMsgTeller}
-import org.friendularity.util.IdentHlp
+import org.friendularity.infra.cpmsg.{ActorRefCPMsgTeller, CPMsgTeller}
+import org.friendularity.infra.util.IdentHlp
 import org.friendularity.vw.cli.cam.OuterCamHelp
 import org.friendularity.vw.mprt.manip.{CamStateParams3D, CamState3D, MakesTransform3D, ManipStatusMsg, MaybeTransform3D}
 import org.friendularity.vw.msg.pub.VWorldPublicTellers

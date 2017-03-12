@@ -1,7 +1,7 @@
 package org.friendularity.vw.impl.sys
 
 import akka.actor._
-import org.friendularity.cpmsg.CPStrongTeller
+import org.friendularity.infra.cpmsg.CPStrongTeller
 import org.friendularity.vw.impl.goody.VWGoodyActor
 import org.friendularity.vw.msg.cor.VWContentRq
 

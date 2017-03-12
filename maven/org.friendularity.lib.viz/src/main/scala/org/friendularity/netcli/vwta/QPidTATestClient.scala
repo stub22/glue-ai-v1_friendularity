@@ -11,12 +11,13 @@ import akka.actor.ActorRefFactory
 import org.appdapter.fancy.log.VarargsLogging
 import org.cogchar.api.thing.ThingActionSpec
 import org.cogchar.name.goody.GoodyNames
-import org.friendularity.akact.DummyActorMaker
-import org.friendularity.cpmsg.ActorRefCPMsgTeller
+import org.friendularity.infra.akact.DummyActorMaker
+import org.friendularity.infra.cpmsg.ActorRefCPMsgTeller
+import org.friendularity.qth.QPidFeatureEndpoint
 
 // import org.cogchar.render.rendtest.GoodyTestMsgMaker
 
-import org.friendularity.qpc.{QPidFeatureEndpoint, JmsDestMgr}
+import org.friendularity.infra.qpc.JmsDestMgr
 import javax.jms.{Destination => JMSDestination, Message => JMSMsg, MessageConsumer => JMSMsgConsumer,
 MessageListener => JMSMsgListener, MessageProducer => JMSMsgProducer, ObjectMessage => JMSObjMsg,
 Session => JMSSession, TextMessage => JMSTextMsg}

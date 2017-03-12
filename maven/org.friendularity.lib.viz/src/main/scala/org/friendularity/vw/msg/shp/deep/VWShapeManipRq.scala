@@ -1,7 +1,7 @@
 package org.friendularity.vw.msg.shp.deep
 
 import org.appdapter.core.name.Ident
-import org.friendularity.cpmsg.CPStrongTeller
+import org.friendularity.infra.cpmsg.CPStrongTeller
 import org.friendularity.vw.mprt.manip.{Transform3D, ManipStatusPropagator, ManipStatusMsg, ManipCompletionHandle, ManipDesc}
 import org.friendularity.vw.msg.cor.VWContentRq
 

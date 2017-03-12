@@ -30,7 +30,7 @@ import org.cogchar.bind.mio.robot.svc.ModelBlendingRobotServiceContext
 import org.cogchar.render.model.humanoid.HumanoidFigureManager
 import org.cogchar.render.sys.context.PhysicalModularRenderContext
 import org.cogchar.render.sys.registry.RenderRegistryClient
-import org.friendularity.cpmsg.{ActorRefCPMsgTeller, CPStrongTeller}
+import org.friendularity.infra.cpmsg.{ActorRefCPMsgTeller, CPStrongTeller}
 import org.friendularity.rbody.{DualBodyHelper, DualBodyRecord, EnhRobotAnimContext}
 import org.friendularity.vw.impl.sys.VWorldActorFactoryFuncs
 import org.friendularity.vw.impl.tsk.FullJmeEnqHlp

@@ -21,9 +21,10 @@ import java.lang.{Long => JLong}
 import javax.jms.{Destination => JMSDestination, Message => JMSMsg, MessageConsumer => JMSMsgConsumer, MessageListener => JMSMsgListener, MessageProducer => JMSMsgProducer, ObjectMessage => JMSObjMsg, Session => JMSSession, TextMessage => JMSTextMsg}
 
 import akka.actor.ActorRefFactory
-import org.friendularity.akact.DummyActorMaker
-import org.friendularity.cpmsg.{ActorRefCPMsgTeller, CPStrongTeller}
-import org.friendularity.qpc.{VWNoticeSenderJmsImpl, JmsDestMgr, QPidFeatureEndpoint, QPidDestMgrJFlux, QpidConnMgr, VWNoticeSender}
+import org.friendularity.infra.akact.DummyActorMaker
+import org.friendularity.infra.cpmsg.{ActorRefCPMsgTeller, CPStrongTeller}
+import org.friendularity.infra.qpc.{JmsDestMgr, QPidDestMgrJFlux, QpidConnMgr}
+import org.friendularity.qth.{VWNoticeSenderJmsImpl, VWNoticeSender, QPidFeatureEndpoint}
 import org.friendularity.thact.{ThingActReceiverBinary, ThingActReceiverDual, ThingActReceiverTxt}
 import org.friendularity.vw.api.amqp.{KnowsVWPubStatDestinations, KnowsVWTARqDestinations}
 import org.friendularity.vw.msg.ta.{VWRqTAWrapper, VWTARqRdf}

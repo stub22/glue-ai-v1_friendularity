@@ -2,7 +2,7 @@ package org.friendularity.vw.cli.bdy
 
 import com.jme3.math.{Quaternion, Vector3f}
 import org.appdapter.fancy.log.VarargsLogging
-import org.friendularity.cpmsg.CPStrongTeller
+import org.friendularity.infra.cpmsg.CPStrongTeller
 import org.friendularity.vw.mprt.manip.{AbruptManipAbsFullImpl, TransformParams3D}
 import org.friendularity.vw.msg.bdy.{VWBodyManipRq, VWBodyRq, VWExoBodyChance}
 

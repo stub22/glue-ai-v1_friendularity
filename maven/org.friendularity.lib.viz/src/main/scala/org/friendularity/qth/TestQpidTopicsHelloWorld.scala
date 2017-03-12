@@ -14,12 +14,12 @@
  *  limitations under the License.
  */
 
-package org.friendularity.qpc
+package org.friendularity.qth
+
+import javax.jms.{MessageConsumer, MessageProducer, Session, TextMessage}
 
 import org.appdapter.fancy.log.VarargsLogging
-import java.util.Properties
-import javax.jms.{ConnectionFactory, Destination, MessageConsumer, MessageProducer, Session, TextMessage}
-import javax.naming.InitialContext;
+import org.friendularity.infra.qpc.{QpidConnMgrJndi, QPid_032_NameManager}
 
 
 /**

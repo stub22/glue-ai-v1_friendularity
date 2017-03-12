@@ -1,6 +1,6 @@
 package org.friendularity.vw.msg.pub
 
-import org.friendularity.cpmsg.CPStrongTeller
+import org.friendularity.infra.cpmsg.CPStrongTeller
 import org.friendularity.vw.msg.bdy.VWBodyLifeRq
 import org.friendularity.vw.msg.cor.{VWOverlayRq, VWorldNotice}
 

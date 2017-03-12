@@ -29,16 +29,16 @@ import org.cogchar.api.fancy.FancyThingModelWriter
 // import org.cogchar.api.vworld.GoodyActionParamWriter
 import org.cogchar.impl.thing.basic.BasicThingActionSpec
 // import org.cogchar.render.rendtest.GoodyTestMsgMaker
-import org.friendularity.cpmsg.{ActorRefCPMsgTeller, CPStrongTeller, CPMsgTeller}
+import org.friendularity.infra.cpmsg.{ActorRefCPMsgTeller, CPStrongTeller, CPMsgTeller}
 
-import org.friendularity.field.{StatusTickActorFactory, StatusTickDistributor, StatusTickScheduler, ReportingPolicy, ReportSrcOpen, SourceDataMsg, MsgToStatusSrc, ReportingTickChance, FieldActorFactory}
-import org.friendularity.mjob.{MsgJobLogicFactory, MsgJobLogic}
+import org.friendularity.infra.field.{StatusTickActorFactory, StatusTickDistributor, StatusTickScheduler, ReportingPolicy, ReportSrcOpen, SourceDataMsg, MsgToStatusSrc, ReportingTickChance, FieldActorFactory}
+import org.friendularity.infra.mjob.{MsgJobLogicFactory, MsgJobLogic}
 
 import com.hp.hpl.jena.rdf.model.{Model => JenaModel, ModelFactory => JenaModelFactory, Literal}
 // import org.friendularity.netcli.vwta.MakesVWTARqProducers
 import org.friendularity.netcli.vwta.OffersVWorldClient
 // import org.friendularity.thact.ThingActSender
-import org.friendularity.util.IdentHlp
+import org.friendularity.infra.util.IdentHlp
 // import org.friendularity.vw.cli.cam.OuterCamHelp
 import org.friendularity.vw.cli.nav.OuterBindNavCmdKeys
 import org.friendularity.vw.impl.job.VWorldMasterFactory

@@ -32,12 +32,12 @@ import org.friendularity.navui.NavUiAppSvc;
 // import org.friendularity.old.ccmio.OldLaunchHelper;
 // import org.friendularity.raiz.TestSetupLoader;
 
-import org.friendularity.qpc.QpidConnMgr;
-import org.friendularity.qpc.QpidConnMgrJFlux;
-import org.friendularity.raiz.VizappLegacyLoader;
-import org.friendularity.raiz.VizappLegacyLoaderFactory;
-import org.friendularity.raiz.VizappProfileLoader;
-import org.friendularity.raiz.VizappProfileLoaderFactory;
+import org.friendularity.infra.qpc.QpidConnMgr;
+import org.friendularity.infra.qpc.QpidConnMgrJFlux;
+import org.friendularity.infra.raiz.VizappLegacyLoader;
+import org.friendularity.infra.raiz.VizappLegacyLoaderFactory;
+import org.friendularity.infra.raiz.VizappProfileLoader;
+import org.friendularity.infra.raiz.VizappProfileLoaderFactory;
 import org.friendularity.vsim.vworld.UnusedNetworkVisionDataFeed;
 import org.friendularity.vw.impl.ta.OffersVWorldQpidServer;
 import org.friendularity.wbrst.WbrstServerTest;

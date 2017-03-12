@@ -21,7 +21,7 @@ import java.awt.Image
 import org.appdapter.core.name.Ident
 import org.cogchar.api.humanoid.HumanoidFigureConfig
 import org.cogchar.bind.mio.robot.svc.ModelBlendingRobotServiceContext
-import org.friendularity.cpmsg.CPStrongTeller
+import org.friendularity.infra.cpmsg.CPStrongTeller
 
 import org.friendularity.respire.DetachedGST
 import org.friendularity.vw.impl.boss.MakesVWBoss

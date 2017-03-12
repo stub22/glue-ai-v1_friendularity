@@ -28,7 +28,7 @@ import org.cogchar.api.thing.ThingActionSpec
 
 // import org.cogchar.render.sys.registry.RenderRegistryClient
 // import org.cogchar.render.sys.window.WindowStatusMonitor
-import org.friendularity.cpmsg.CPStrongTeller
+import org.friendularity.infra.cpmsg.CPStrongTeller
 import org.friendularity.thact.ThingActExposer
 import org.friendularity.vw.cli.goshcl.GoodyShapcliLogic
 import org.friendularity.vw.msg.cor.{VWContentRq, VWorldRequest}

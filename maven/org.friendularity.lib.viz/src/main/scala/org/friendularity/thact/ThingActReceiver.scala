@@ -22,7 +22,7 @@ import javax.jms.{Destination => JMSDestination, Message => JMSMsg, MessageConsu
 
 import org.appdapter.fancy.log.VarargsLogging
 import org.cogchar.api.thing.ThingActionSpec
-import org.friendularity.cpmsg.CPStrongTeller
+import org.friendularity.infra.cpmsg.CPStrongTeller
 import org.friendularity.vw.msg.cor.VWorldNotice
 import org.friendularity.vw.msg.ta.{VWRqTAWrapImpl, VWRqTAWrapper, VWTARqTurtle, VWTARqRdf}
 

@@ -3,7 +3,7 @@ package org.friendularity.vw.msg.shp.deep
 import com.jme3.math.{ColorRGBA, Quaternion, Vector3f}
 import com.jme3.scene.{Node => JmeNode}
 import org.appdapter.core.name.Ident
-import org.friendularity.cpmsg.CPStrongTeller
+import org.friendularity.infra.cpmsg.CPStrongTeller
 import org.friendularity.vw.mprt.manip.{MaybeTransform3D, ManipCompletionHandle, ManipDesc, ManipStatusMsg, ManipStatusPropagator, Transform3D}
 import org.friendularity.vw.msg.cor.VWContentRq
 

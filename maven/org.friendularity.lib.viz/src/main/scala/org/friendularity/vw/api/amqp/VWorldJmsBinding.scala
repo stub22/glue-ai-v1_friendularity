@@ -20,7 +20,7 @@ import java.io.{Serializable => JSerializable}
 import java.lang.{Long => JLong}
 import javax.jms.{Destination => JMSDestination, Message => JMSMsg, MessageConsumer => JMSMsgConsumer, MessageListener => JMSMsgListener, MessageProducer => JMSMsgProducer, ObjectMessage => JMSObjMsg, Session => JMSSession, TextMessage => JMSTextMsg}
 
-import org.friendularity.qpc.KnowsDestMgr
+import org.friendularity.infra.qpc.KnowsDestMgr
 
 
 /** Defines all the VWorld AMQP destination names and JMSDestinations.

@@ -24,8 +24,8 @@ import org.appdapter.core.name.Ident
 import org.appdapter.fancy.log.VarargsLogging
 import org.cogchar.render.sys.registry.RenderRegistryClient
 import org.cogchar.render.trial.TextSpatialFactory
-import org.friendularity.field.{BoundToDataSrc, VWTestFieldIdents}
-import org.friendularity.util.IdentHlp
+import org.friendularity.infra.field.{BoundToDataSrc, VWTestFieldIdents}
+import org.friendularity.infra.util.IdentHlp
 import org.friendularity.vw.impl.cam.VWCamSummary
 import org.friendularity.vw.impl.shp.{TextSpatMaker, MeshGeoMaker, BrushJar, SpatMatHelper}
 import org.friendularity.vw.impl.tsk.SvcGate

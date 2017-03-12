@@ -8,7 +8,7 @@ import javax.jms.{Destination => JMSDestination, Message => JMSMsg,
 		Session => JMSSession, TextMessage => JMSTextMsg}
 
 import org.cogchar.api.thing.ThingActionSpec
-import org.friendularity.qpc.{DefinedJmsSenderChan, JmsSenderChanImpl, KnowsJmsSession, WritesJmsHeaders}
+import org.friendularity.infra.qpc.{DefinedJmsSenderChan, JmsSenderChanImpl, KnowsJmsSession, WritesJmsHeaders}
 import org.friendularity.thact.{ThingActSender, ThingActTurtleEncoder}
 
 /**

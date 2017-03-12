@@ -30,7 +30,14 @@
 			<scope>runtime</scope>
 		</dependency>
 
-        <dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>org.friendularity.bundle.infra</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+
+		<dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>org.friendularity.bundle.jvision</artifactId>
             <version>${project.version}</version>

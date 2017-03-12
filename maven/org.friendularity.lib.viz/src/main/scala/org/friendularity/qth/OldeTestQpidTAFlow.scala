@@ -14,17 +14,13 @@
  *  limitations under the License.
  */
 
-package org.friendularity.qpc
+package org.friendularity.qth
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
 
-import org.appdapter.core.name.{FreeIdent, Ident}
-import org.appdapter.fancy.log.VarargsLogging
-
-import org.cogchar.impl.thing.basic.{BasicThingActionSpec, BasicTypedValueMap, BasicTypedValueMapWithConversion}
-import org.cogchar.name.goody.GoodyNames
+import org.cogchar.impl.thing.basic.BasicThingActionSpec
 import org.friendularity.thact.DummyThingActionMaker
 
 /**

@@ -6,11 +6,7 @@ import org.friendularity.bundle.headless.messaging.MessagingServiceLauncher;
 import org.friendularity.bundle.headless.animation.AnimServiceLauncher;
 import org.friendularity.bundle.headless.speech.SpeechServiceLauncher;
  ***********/
-import org.friendularity.qpc.QpidConnMgr;
-import org.friendularity.qpc.QpidConnMgrJFlux;
 import org.osgi.framework.BundleContext;
-
-import javax.jms.Connection;
 
 /**
  * Created by Stub22 on 7/27/2016.

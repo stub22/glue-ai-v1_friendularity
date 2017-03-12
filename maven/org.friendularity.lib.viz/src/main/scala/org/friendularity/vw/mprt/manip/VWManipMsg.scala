@@ -1,8 +1,8 @@
 package org.friendularity.vw.mprt.manip
 
 import org.appdapter.core.name.Ident
-import org.friendularity.cpmsg.{CPStrongTeller, CPumpMsg}
-import org.friendularity.util.IdentHlp
+import org.friendularity.infra.cpmsg.{CPStrongTeller, CPumpMsg}
+import org.friendularity.infra.util.IdentHlp
 
 /**
   * Created by Stub22  on 7/2/2016.

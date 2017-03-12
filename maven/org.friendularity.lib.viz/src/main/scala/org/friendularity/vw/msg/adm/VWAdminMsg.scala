@@ -19,7 +19,7 @@ package org.friendularity.vw.msg.adm
 import java.awt.Image
 
 import org.appdapter.fancy.log.VarargsLogging
-import org.friendularity.cpmsg.{CPMsgTeller, CPStrongTeller}
+import org.friendularity.infra.cpmsg.{CPMsgTeller, CPStrongTeller}
 import org.friendularity.vw.msg.cor.VWorldRequest
 import org.friendularity.vw.msg.pub.VWorldPublicTellers
 

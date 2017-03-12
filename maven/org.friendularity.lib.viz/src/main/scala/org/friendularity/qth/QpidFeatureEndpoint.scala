@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.friendularity.qpc
+package org.friendularity.qth
 
 /*
 import java.io.{Serializable => JSerializable}
@@ -25,15 +25,13 @@ import javax.jms.{Destination => JMSDestination, Message => JMSMsg, MessageConsu
 */
 
 // import akka.actor.ActorRefFactory
-import org.appdapter.core.name.{Ident, FreeIdent}
 import org.appdapter.fancy.log.VarargsLogging
+import org.friendularity.infra.qpc.{QpidConnMgrJFlux, QpidConnMgr, JmsDestMgr, KnowsDestMgr}
+
 // import org.cogchar.render.rendtest.GoodyTestMsgMaker
-import org.friendularity.akact.{KnowsAkkaSys, DummyActorMaker}
-import org.friendularity.cpmsg.{CPStrongTeller, ActorRefCPMsgTeller}
 // import org.friendularity.vw.impl.ta.{TestTAQpidServer, ServerFeatureAccess, ServerReceiveFeature, ServerPublishFeature}
 
 // import org.friendularity.netcli.vwta.QPidTATestClient
-import org.friendularity.thact.{ThingActSender, ThingActReceiverBinary, ThingActReceiverTxt}
 
 
 /**

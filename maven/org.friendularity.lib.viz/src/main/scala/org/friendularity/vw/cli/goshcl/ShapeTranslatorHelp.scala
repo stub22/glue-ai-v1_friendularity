@@ -2,8 +2,8 @@ package org.friendularity.vw.cli.goshcl
 
 import com.jme3.math.ColorRGBA
 import org.appdapter.core.name.Ident
-import org.friendularity.cpmsg.CPStrongTeller
-import org.friendularity.util.IdentHlp
+import org.friendularity.infra.cpmsg.CPStrongTeller
+import org.friendularity.infra.util.IdentHlp
 import org.friendularity.vw.impl.ta.TARqExtractorHelp
 import org.friendularity.vw.mprt.manip.{ManipStatusMsg, ManipDesc, MaybeTransform3D}
 import org.friendularity.vw.msg.cor.VWContentRq

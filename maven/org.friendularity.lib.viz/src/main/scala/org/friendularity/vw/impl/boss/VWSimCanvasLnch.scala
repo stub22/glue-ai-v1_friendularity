@@ -5,7 +5,7 @@ import javax.swing.JFrame
 
 import akka.actor.{ActorContext, ActorRef}
 import org.appdapter.fancy.log.VarargsLogging
-import org.friendularity.cpmsg.ActorRefCPMsgTeller
+import org.friendularity.infra.cpmsg.ActorRefCPMsgTeller
 import org.friendularity.navui.NavAppCloser
 import org.friendularity.vw.impl.sys.{VWJdkAwtCanvasMgr, SimBalloonAppLauncher}
 import org.friendularity.vw.msg.adm.VWSetSwingCanvasBranding

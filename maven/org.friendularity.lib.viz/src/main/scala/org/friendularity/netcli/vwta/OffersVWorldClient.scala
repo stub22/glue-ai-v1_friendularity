@@ -6,7 +6,8 @@ import org.cogchar.api.vworld.GoodyActionParamWriter
 import org.cogchar.impl.thing.basic.BasicTypedValueMap
 import org.cogchar.impl.thing.fancy.ConcreteTVM
 import org.cogchar.name.goody.GoodyNames
-import org.friendularity.qpc.{OffersQpidSomething, QPidDestMgrJFlux, JmsDestMgr}
+import org.friendularity.infra.qpc.{QPidDestMgrJFlux, JmsDestMgr}
+import org.friendularity.qth.OffersQpidSomething
 import org.friendularity.vw.mprt.manip.MaybeTransform3D
 
 /**
