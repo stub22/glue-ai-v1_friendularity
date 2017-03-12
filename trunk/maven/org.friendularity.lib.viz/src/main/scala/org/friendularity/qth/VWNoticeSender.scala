@@ -1,9 +1,8 @@
-package org.friendularity.qpc
+package org.friendularity.qth
 
-import javax.jms.{Destination => JMSDestination, Message => JMSMsg, MessageConsumer => JMSMsgConsumer,
-MessageListener => JMSMsgListener, MessageProducer => JMSMsgProducer, ObjectMessage => JMSObjMsg,
-Session => JMSSession, TextMessage => JMSTextMsg}
+import javax.jms.{Destination => JMSDestination, Message => JMSMsg, MessageConsumer => JMSMsgConsumer, MessageListener => JMSMsgListener, MessageProducer => JMSMsgProducer, ObjectMessage => JMSObjMsg, Session => JMSSession, TextMessage => JMSTextMsg}
 
+import org.friendularity.infra.qpc.{KnowsJmsSession, JmsSenderChanImpl, DefinedJmsSenderChan, WritesJmsHeaders}
 import org.friendularity.vw.msg.cor.VWorldNotice
 
 /**

@@ -16,8 +16,8 @@
 package org.friendularity.vw.cli.bdy
 
 import akka.actor.{Actor, ActorRef, ActorRefFactory, Props}
-import org.friendularity.cpmsg.CPStrongTeller
-import org.friendularity.cpump.{SchedTaskRepeating, ScheduleHelper}
+import org.friendularity.infra.cpmsg.CPStrongTeller
+import org.friendularity.infra.cpump.{SchedTaskRepeating, ScheduleHelper}
 import org.friendularity.vw.msg.bdy.{VWBodyNotice, VWBodyRq, VWExoBodyChance}
 
 // import akka.dispatch.{Dispatcher => AkkaDisp}

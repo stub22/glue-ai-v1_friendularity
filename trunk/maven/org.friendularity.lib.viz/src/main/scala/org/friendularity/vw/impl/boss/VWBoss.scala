@@ -25,8 +25,8 @@ import org.cogchar.bind.midi.in.TempMidiBridge
 import org.cogchar.render.goody.basic.BasicGoodyCtx
 import org.cogchar.render.sys.registry.RenderRegistryClient
 import org.cogchar.render.sys.window.WindowStatusMonitor
-import org.friendularity.akact.KnowsAkkaSys
-import org.friendularity.cpmsg.{ActorRefCPMsgTeller, CPStrongTeller}
+import org.friendularity.infra.akact.KnowsAkkaSys
+import org.friendularity.infra.cpmsg.{ActorRefCPMsgTeller, CPStrongTeller}
 import org.friendularity.navui.NavAppCloser
 import org.friendularity.vw.impl.bdy.VWCharMgrCtxImpl
 import org.friendularity.vw.impl.stg.StageCtxImpl

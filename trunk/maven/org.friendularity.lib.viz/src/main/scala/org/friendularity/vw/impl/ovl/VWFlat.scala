@@ -22,7 +22,7 @@ import org.appdapter.core.name.{FreeIdent, Ident}
 import org.cogchar.render.sys.registry.RenderRegistryClient
 import org.cogchar.render.sys.task.Queuer
 import org.cogchar.render.trial.TextBox2D
-import org.friendularity.field.BoundToDataSrc
+import org.friendularity.infra.field.BoundToDataSrc
 
 // import scala.collection.mutable
 

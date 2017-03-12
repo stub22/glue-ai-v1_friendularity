@@ -21,11 +21,11 @@ import org.appdapter.fancy.log.VarargsLogging
 import org.appdapter.fancy.rclient.EnhancedLocalRepoClient
 import org.cogchar.api.humanoid.HumanoidFigureConfig
 import org.cogchar.bind.mio.robot.svc.ModelBlendingRobotServiceContext
-import org.friendularity.akact.KnowsAkkaSys
+import org.friendularity.infra.akact.KnowsAkkaSys
 import org.friendularity.closing.SpeechServerCloser
-import org.friendularity.cpmsg.{ActorRefCPMsgTeller, CPMsgTeller, CPStrongTeller, CPumpMsg}
-import org.friendularity.cpump.ScheduleHelper
-import org.friendularity.dull.SpecialAppPumpSpace
+import org.friendularity.infra.cpmsg.{ActorRefCPMsgTeller, CPMsgTeller, CPStrongTeller, CPumpMsg}
+import org.friendularity.infra.cpump.ScheduleHelper
+import org.friendularity.infra.dull.SpecialAppPumpSpace
 import org.friendularity.vw.cli.bdy.{ExoActorFactory, ExoBodyUserLogic, BodyTestClient}
 import org.friendularity.vw.impl.bdy.LegacyBodyLoader_Stateless
 import org.friendularity.vw.msg.adm.VWARM_GreetFromPumpAdmin

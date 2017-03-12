@@ -4,7 +4,7 @@ import com.jme3.renderer.Camera
 import org.appdapter.core.name.Ident
 //import org.cogchar.api.humanoid.HumanoidFigureConfig
 //import org.cogchar.bind.mio.robot.svc.ModelBlendingRobotServiceContext
-import org.friendularity.cpmsg.CPStrongTeller
+import org.friendularity.infra.cpmsg.CPStrongTeller
 import org.friendularity.vw.mprt.manip.ManipDesc
 import org.friendularity.vw.msg.cor.VWorldRequest
 

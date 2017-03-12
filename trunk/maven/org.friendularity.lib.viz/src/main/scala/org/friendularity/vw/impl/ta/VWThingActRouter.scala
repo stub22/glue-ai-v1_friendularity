@@ -26,9 +26,9 @@ import org.cogchar.api.thing.{ThingActionSpec, TypedValueMap}
 import org.cogchar.name.cinema.LightsCameraAN
 import org.cogchar.name.goody.GoodyNames
 import org.cogchar.render.app.entity.GoodyActionExtractor
-import org.friendularity.akact.{FrienduActor, KnowsAkkaSys}
-import org.friendularity.cpmsg.{ActorRefCPMsgTeller, CPMsgTeller, CPStrongTeller}
-import org.friendularity.util.IdentHlp
+import org.friendularity.infra.akact.{FrienduActor, KnowsAkkaSys}
+import org.friendularity.infra.cpmsg.{ActorRefCPMsgTeller, CPMsgTeller, CPStrongTeller}
+import org.friendularity.infra.util.IdentHlp
 import org.friendularity.vw.cli.cam.OuterCamHelp
 import org.friendularity.vw.mprt.manip.{CamState3D, CamStateParams3D, MakesManipDesc, MakesTransform3D, ManipStatusMsg, MaybeTransform3D, PartialTransform3D}
 import org.friendularity.vw.msg.bdy.{VWBodyFindRq, VWBodyLifeRq, VWBodyManipRq, VWBodyNotice, VWBodyRq}

@@ -23,7 +23,8 @@ import javax.jms.{Destination => JMSDestination, Message => JMSMsg, MessageConsu
 import akka.actor.ActorSystem
 import org.appdapter.fancy.log.VarargsLogging
 import org.friendularity.netcli.vwta.{DummyGoodySender, QPidTATestClient}
-import org.friendularity.qpc.{JmsDestMgr, QPidDestMgrJFlux, QpidConnMgr, QpidConnMgrJFlux, VWNoticeSender}
+import org.friendularity.infra.qpc.{JmsDestMgr, QPidDestMgrJFlux, QpidConnMgr, QpidConnMgrJFlux}
+import org.friendularity.qth.VWNoticeSender
 
 /**
   * Created by StuB22 on 6/13/2016.

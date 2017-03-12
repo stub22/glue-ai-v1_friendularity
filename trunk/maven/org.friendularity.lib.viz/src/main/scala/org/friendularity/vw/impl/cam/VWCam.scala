@@ -11,9 +11,9 @@ import org.cogchar.render.opengl.optic.CameraMgr
 import org.cogchar.render.sys.registry.RenderRegistryClient
 import org.cogchar.render.sys.task.Queuer
 import org.cogchar.render.trial.PointerCone
-import org.friendularity.cpmsg.CPMsgTeller
-import org.friendularity.field.{ItemFieldData, ItemFieldSpecDirectImpl, MediumFieldDataBag, MonitoredSpaceImpl, ReportFilteringPolicy, TypedFieldDataLeafImpl, VWTestFieldIdents}
-import org.friendularity.util.IdentHlp
+import org.friendularity.infra.cpmsg.CPMsgTeller
+import org.friendularity.infra.field.{ItemFieldData, ItemFieldSpecDirectImpl, MediumFieldDataBag, MonitoredSpaceImpl, ReportFilteringPolicy, TypedFieldDataLeafImpl, VWTestFieldIdents}
+import org.friendularity.infra.util.IdentHlp
 import org.friendularity.vw.impl.manip.{Locatable, AbruptlyMovable}
 
 import org.friendularity.vw.impl.stg.VWStageCtx

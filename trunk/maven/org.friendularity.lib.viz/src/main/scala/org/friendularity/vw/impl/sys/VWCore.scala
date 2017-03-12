@@ -22,7 +22,7 @@ import org.cogchar.render.sys.context.{CogcharRenderContext, FramedRenderContext
 import org.cogchar.render.sys.registry.RenderRegistryClient
 import org.cogchar.render.sys.window.WindowStatusMonitor
 import org.cogchar.render.trial.{TrialBalloon, TrialUpdater}
-import org.friendularity.cpmsg.CPMsgTeller
+import org.friendularity.infra.cpmsg.CPMsgTeller
 import org.friendularity.respire.SweetDynaSpace
 import org.friendularity.vw.mprt.ingred.FullIngredMsgImpl
 import org.friendularity.vw.msg.intrn.VWSetupResultsNotice

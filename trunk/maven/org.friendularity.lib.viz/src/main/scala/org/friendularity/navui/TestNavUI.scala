@@ -29,7 +29,7 @@ import org.cogchar.render.rendtest.{GoodyRenderTestApp} // GoodyTestMsgMaker
 import org.friendularity.vw.cli.bdy.ExoBodyUserLogic
 
 import org.friendularity.netcli.vwta.ClientTestMsgSender
-import org.friendularity.raiz.{VizappLegacyLoaderFactory, VizappProfileLoaderFactory, TestRaizLoad}
+import org.friendularity.infra.raiz.{VizappLegacyLoaderFactory, VizappProfileLoaderFactory, TestRaizLoad}
 
 /**
   * Created by Stub22 on 4/1/2016.

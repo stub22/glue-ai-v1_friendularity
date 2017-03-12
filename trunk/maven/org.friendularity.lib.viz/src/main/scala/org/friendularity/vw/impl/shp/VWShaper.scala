@@ -25,7 +25,7 @@ import org.appdapter.core.name.{FreeIdent, Ident}
 import org.cogchar.render.sys.registry.RenderRegistryClient
 // import org.cogchar.render.trial.TextSpatialFactory
 // import org.friendularity.respire.Srtw
-import org.friendularity.util.IdentHlp
+import org.friendularity.infra.util.IdentHlp
 // import org.friendularity.vw.impl.cam.SyncsToCam
 import org.friendularity.vw.impl.manip.{AppliesXforms, Manipable}
 import org.friendularity.vw.impl.tsk.JmeAttachHlp

@@ -2,7 +2,7 @@ package org.friendularity.vw.cli.stat
 
 import akka.actor.Actor
 import org.appdapter.fancy.log.VarargsLogging
-import org.friendularity.field.{MsgToStatusSrc, StatusTickMsg}
+import org.friendularity.infra.field.{MsgToStatusSrc, StatusTickMsg}
 
 import org.friendularity.vw.impl.ta.OffersVWorldQpidServer
 import org.friendularity.vw.msg.pub.VWorldPublicTellers

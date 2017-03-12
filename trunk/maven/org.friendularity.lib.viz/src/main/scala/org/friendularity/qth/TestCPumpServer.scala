@@ -1,7 +1,7 @@
-package org.friendularity.cptest
+package org.friendularity.qth
 
 import org.appdapter.fancy.log.VarargsLogging
-import org.friendularity.cpmsg.TxtSymMsg
+import org.friendularity.infra.cpmsg.TxtSymMsg
 
 /**
   * Offers RDF pumping services over both Akka-remoting and Spray-HTTP

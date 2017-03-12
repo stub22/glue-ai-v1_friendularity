@@ -1,6 +1,6 @@
 package org.friendularity.vw.impl.sys
 
-import org.friendularity.cpmsg.CPStrongTeller
+import org.friendularity.infra.cpmsg.CPStrongTeller
 import org.friendularity.vw.msg.pub.VWorldPublicTellers
 
 

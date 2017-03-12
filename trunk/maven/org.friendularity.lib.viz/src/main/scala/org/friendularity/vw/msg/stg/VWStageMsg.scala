@@ -2,7 +2,7 @@ package org.friendularity.vw.msg.stg
 
 import com.jme3.math.{ColorRGBA, Vector3f}
 import org.appdapter.core.name.Ident
-import org.friendularity.cpmsg.CPMsgTeller
+import org.friendularity.infra.cpmsg.CPMsgTeller
 import org.friendularity.vw.mprt.manip.CamState3D
 import org.friendularity.vw.msg.cor.VWorldRequest
 

@@ -18,9 +18,9 @@ package org.friendularity.navui
 
 import akka.actor.{ActorRef, Props, ActorSystem}
 import org.appdapter.fancy.log.VarargsLogging
-import org.friendularity.akact.{FrienduActor, KnowsAkkaSys}
-import org.friendularity.cpmsg.{ActorRefCPMsgTeller, CPStrongTeller}
-import org.friendularity.field.MsgToStatusSrc
+import org.friendularity.infra.akact.{FrienduActor, KnowsAkkaSys}
+import org.friendularity.infra.cpmsg.{ActorRefCPMsgTeller, CPStrongTeller}
+import org.friendularity.infra.field.MsgToStatusSrc
 import org.friendularity.vw.cli.stat.{VWStatPubActor, VWStatPubLogic}
 
 import org.friendularity.vw.impl.ta.{OffersVWorldQpidServer, MakesVWTAReqRouterTeller}

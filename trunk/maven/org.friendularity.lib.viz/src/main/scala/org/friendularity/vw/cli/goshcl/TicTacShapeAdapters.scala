@@ -9,7 +9,7 @@ import org.appdapter.core.name.Ident
 import org.cogchar.api.thing.{ThingActionSpec, TypedValueMap}
 import org.cogchar.name.goody.GoodyNames
 import org.cogchar.render.app.entity.GoodyActionExtractor
-import org.friendularity.util.IdentHlp
+import org.friendularity.infra.util.IdentHlp
 import org.friendularity.vw.mprt.manip.{ManipDesc, AbruptManipAbsPartialImpl, MaybeTransform3D, PartialTransform3D}
 import org.friendularity.vw.msg.cor.VWContentRq
 import org.friendularity.vw.msg.shp.deep.{ShapeManipRqImpl, VWMD_Torus, VWSCR_Node, CompositeMeshyShapeCreateRq, VWMatDesc, VWMeshDesc, KnownShapeCreateRqImpl, VWSCR_MeshyComposite, SimpleMatDesc, VWMD_Cylinder}

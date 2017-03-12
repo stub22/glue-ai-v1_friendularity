@@ -17,8 +17,8 @@ package org.friendularity.vw.impl.ovl
 
 import com.jme3.scene.{Node => JmeNode}
 import org.appdapter.core.name.Ident
-import org.friendularity.field.{BoundToDataSrc, BoundToFieldOfVariableItem}
-import org.friendularity.util.IdentHlp
+import org.friendularity.infra.field.{BoundToDataSrc, BoundToFieldOfVariableItem}
+import org.friendularity.infra.util.IdentHlp
 
 /**
   * Created by Stub22 on 7/7/2016.

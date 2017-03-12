@@ -24,7 +24,7 @@ import com.hp.hpl.jena.rdf.model.{Model => JenaModel, ModelFactory => JenaModelF
 
 import org.apache.jena.riot.RDFFormat
 import org.appdapter.fancy.log.VarargsLogging
-import org.friendularity.cpmsg.{CPMsgTeller, CPSymbolMsg, CPRepliableMsg}
+import org.friendularity.infra.cpmsg.{CPMsgTeller, CPSymbolMsg, CPRepliableMsg}
 
 /**
   *

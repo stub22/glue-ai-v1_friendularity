@@ -1,6 +1,6 @@
 package org.friendularity.thact
 
-import org.friendularity.cpump.{CPumpAdptr, CPChanPost, CPChanListen, CPumpCtx}
+import org.friendularity.infra.cpump.{CPumpAdptr, CPChanPost, CPChanListen, CPumpCtx}
 
 /**
   * Created by Owner on 4/7/2016.

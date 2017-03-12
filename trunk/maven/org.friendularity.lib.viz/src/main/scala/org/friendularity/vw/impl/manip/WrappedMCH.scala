@@ -18,7 +18,7 @@ package org.friendularity.vw.impl.manip
 
 import org.appdapter.core.name.Ident
 import org.appdapter.fancy.log.VarargsLogging
-import org.friendularity.util.IdentHlp
+import org.friendularity.infra.util.IdentHlp
 import org.friendularity.vw.mprt.manip.ManipCompletionHandle
 
 /**

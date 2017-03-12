@@ -1,12 +1,11 @@
-package org.friendularity.cptest
+package org.friendularity.netcli.bigtest
 
-import akka.actor.{ActorLogging, Actor, AddressFromURIString, Props, ActorSystem, Address}
+import akka.actor.{Actor, ActorLogging, ActorSystem, Address, AddressFromURIString, Props}
 import org.appdapter.fancy.log.VarargsLogging
-import org.friendularity.cpmsg.{ActorSelCPMsgTeller, ActorRefCPMsgTeller, RepliableTxtSymMsg, TxtSymMsg}
-
-import org.friendularity.dull.TestDullServer
+import org.friendularity.infra.dull.TestDullServer
+import org.friendularity.infra.cpmsg.{ActorRefCPMsgTeller, ActorSelCPMsgTeller, RepliableTxtSymMsg, TxtSymMsg}
 import org.friendularity.navui.NavUiTestPublicNames
-import org.friendularity.thact.{DummyThingActionMaker, CPTAWrapMsg}
+import org.friendularity.thact.{CPTAWrapMsg, DummyThingActionMaker}
 
 /**
   * Goal here is to post ThingActions over akka-remote so they are seen in TestCPumpServer process,

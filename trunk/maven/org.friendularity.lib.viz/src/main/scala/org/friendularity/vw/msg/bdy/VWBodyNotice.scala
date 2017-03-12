@@ -1,7 +1,7 @@
 package org.friendularity.vw.msg.bdy
 
 import org.appdapter.core.name.Ident
-import org.friendularity.cpmsg.CPStrongTeller
+import org.friendularity.infra.cpmsg.CPStrongTeller
 import org.friendularity.vw.msg.cor.VWorldNotice
 
 /**

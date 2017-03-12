@@ -1,6 +1,6 @@
 package org.friendularity.vw.msg.cor
 
-import org.friendularity.cpmsg.CPumpMsg
+import org.friendularity.infra.cpmsg.CPumpMsg
 // import org.friendularity.vw.impl.ovl.OverlayPage
 
 // Our most general vw-msg traits are all simply type markers, adding no new methods.

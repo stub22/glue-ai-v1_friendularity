@@ -14,12 +14,12 @@
  *  limitations under the License.
  */
 
-package org.friendularity.cptest
+package org.friendularity.qth
 
 import akka.actor.{Actor, ActorLogging, ActorRef, ActorSystem, Props}
 import org.appdapter.fancy.log.VarargsLogging
-import org.friendularity.akact.AkkaSysTerminator
-import org.friendularity.cpmsg.{ActorRefCPMsgTeller, RepliableTxtSymMsg, TxtSymMsg}
+import org.friendularity.infra.akact.AkkaSysTerminator
+import org.friendularity.infra.cpmsg.{ActorRefCPMsgTeller, RepliableTxtSymMsg, TxtSymMsg}
 import org.friendularity.thact.CPRepliableThingActionMsg
 
 
@@ -56,10 +56,7 @@ object DemoCPump extends VarargsLogging {
 		info0("^^^^^^^^^^^^^^^^^^^^^^^^  DemoCPump main().END");
 	}
 
-
-
 }
-
 
 // Wrapper for both an ActorSystem and a cpump-factory actor
 trait DemoCPumpMgr extends VarargsLogging {
@@ -68,7 +65,7 @@ trait DemoCPumpMgr extends VarargsLogging {
 	private val cpumpEndListenerName = "demoCPASTerm"
 
 	protected def getTestCPumpName : String
-	protected[cptest] def getActorSys : ActorSystem
+	protected[qth] def getActorSys : ActorSystem
 
 	lazy private val myCPumpActRef : ActorRef = getActorSys.actorOf(Props[DemoCPumpActor], getTestCPumpName)
 	private def getCPumpActRef : ActorRef = myCPumpActRef
@@ -92,11 +89,11 @@ class StandaloneDemoCPumpMgr(akkaSysName : String, testCPumpName: String) extend
 
 	override protected def getTestCPumpName : String = testCPumpName
 	lazy private val myAkkaSys = ActorSystem(akkaSysName)  // Using case-class cons
-	override protected[cptest] def getActorSys : ActorSystem = myAkkaSys
+	override protected[qth] def getActorSys : ActorSystem = myAkkaSys
 }
 
 class PluginDemoCPumpMgr(myAkkaSys: ActorSystem, testCPumpName: String) extends  DemoCPumpMgr {
-	override protected[cptest] def getActorSys : ActorSystem = myAkkaSys
+	override protected[qth] def getActorSys : ActorSystem = myAkkaSys
 	override protected def getTestCPumpName : String = testCPumpName
 }
 

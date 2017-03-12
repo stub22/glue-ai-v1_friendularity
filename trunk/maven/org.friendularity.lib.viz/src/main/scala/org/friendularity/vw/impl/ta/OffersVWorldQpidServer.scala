@@ -1,8 +1,9 @@
 package org.friendularity.vw.impl.ta
 
-import org.friendularity.akact.KnowsAkkaSys
-import org.friendularity.cpmsg.CPStrongTeller
-import org.friendularity.qpc.{OffersQpidSomething, VWNoticeSender}
+import org.friendularity.infra.akact.KnowsAkkaSys
+import org.friendularity.infra.cpmsg.CPStrongTeller
+
+import org.friendularity.qth.{VWNoticeSender, OffersQpidSomething}
 import org.friendularity.vw.msg.ta.VWRqTAWrapper
 
 /**

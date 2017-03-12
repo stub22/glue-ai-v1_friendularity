@@ -2,7 +2,7 @@ package org.friendularity.vw.impl.boss
 
 import akka.actor.{ActorContext, ActorRef}
 import org.appdapter.fancy.log.VarargsLogging
-import org.friendularity.cpmsg.ActorRefCPMsgTeller
+import org.friendularity.infra.cpmsg.ActorRefCPMsgTeller
 import org.friendularity.vw.impl.sys.SimBalloonAppLauncher
 
 /**

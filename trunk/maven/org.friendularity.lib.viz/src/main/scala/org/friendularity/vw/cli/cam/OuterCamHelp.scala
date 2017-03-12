@@ -19,8 +19,8 @@ import java.lang.{Float => JFloat, Integer => JInt, Long => JLong}
 
 import org.appdapter.core.name.Ident
 import org.appdapter.fancy.log.VarargsLogging
-import org.friendularity.cpmsg.{CPMsgTeller, CPStrongTeller}
-import org.friendularity.util.IdentHlp
+import org.friendularity.infra.cpmsg.{CPMsgTeller, CPStrongTeller}
+import org.friendularity.infra.util.IdentHlp
 
 import org.friendularity.vw.mprt.manip.{CamState3D, MakesManipDesc, ManipStatusMsg, MaybeTransform3D}
 import org.friendularity.vw.msg.shp.deep.{ShapeManipRqImpl, VWSCR_CamGuideNode, VWSCR_Node}

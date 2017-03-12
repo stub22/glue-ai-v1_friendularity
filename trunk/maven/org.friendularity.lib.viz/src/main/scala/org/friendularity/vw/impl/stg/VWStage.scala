@@ -33,7 +33,7 @@ import org.cogchar.render.opengl.optic.LightFactory
 import org.cogchar.render.sys.context.CogcharRenderContext
 import org.cogchar.render.sys.registry.RenderRegistryClient
 import org.cogchar.render.trial.{TrialCameras, TrialContent}
-import org.friendularity.field.MsgToStatusSrc
+import org.friendularity.infra.field.MsgToStatusSrc
 import org.friendularity.vw.impl.cam.VWCamLogic
 import org.friendularity.vw.impl.inp.VWKeyMapLogic
 import org.friendularity.vw.impl.ovl.OverlayLogic

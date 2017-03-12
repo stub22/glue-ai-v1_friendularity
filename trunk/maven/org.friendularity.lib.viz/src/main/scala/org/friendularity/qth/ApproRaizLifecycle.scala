@@ -14,15 +14,15 @@
  *  limitations under the License.
  */
 
-package org.friendularity.raiz
+package org.friendularity.qth
 
-
+import org.friendularity.infra.jfdep.{BindingMaker, DepSpecMaker}
+import org.friendularity.infra.raiz.{ApproRaiz, ApproRaizCtxImpl, ApproRaizImpl, ApproRaizRecipeNames}
 import org.jflux.api.service.{ServiceDependency, ServiceLifecycle};
 // import org.mechio.api.speech.SpeechService;
 
 import java.util.{HashMap => JavaHashMap, List => JavaList, Map => JavaMap}
 
-import com.hp.hpl.jena
 import com.hp.hpl.jena.rdf.model.{Model => JenaModel, ModelFactory => JenaModelFactory}
 import org.appdapter.fancy.log.VarargsLogging
 import org.cogchar.blob.entry.EntryHost
@@ -104,10 +104,10 @@ class ApproRaizLifecycle extends ServiceLifecycle[ApproRaiz] with VarargsLogging
 	}*/
 }
 import org.jflux.api.registry.Registry
-import org.jflux.api.service.{DefaultRegistrationStrategy, RegistrationStrategy, ServiceManager}
-import org.jflux.api.service.binding.ServiceBinding;
+import org.jflux.api.service.binding.ServiceBinding
+import org.jflux.api.service.{DefaultRegistrationStrategy, RegistrationStrategy, ServiceManager};
 // import org.jflux.api.service.binding.ServiceBinding.BindingStrategy;
-import org.jflux.impl.registry.OSGiRegistry;
+import org.jflux.impl.registry.OSGiRegistry
 import org.osgi.framework.BundleContext;
 
 object ApproRaizLifeLauncher extends VarargsLogging with BindingMaker {

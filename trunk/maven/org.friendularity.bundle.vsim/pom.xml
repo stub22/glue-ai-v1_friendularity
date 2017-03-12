@@ -35,6 +35,12 @@
 
 		<dependency>
 			<groupId>${project.groupId}</groupId>
+			<artifactId>org.friendularity.bundle.infra</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>org.friendularity.lib.viz</artifactId>
 			<version>${project.version}</version>
             <scope>provided</scope>
@@ -102,35 +108,30 @@
                                 (Including "*" exports the whole universe of visible classes - exciting but horrible!)
                         -->
                         <Export-Package>
-                            org.friendularity.bundle.vsim,
-                            org.friendularity.vsim.*,
-                            org.friendularity.api.*,
-                            org.friendularity.visual.*,
-                            org.friendularity.impl.visual,
+							org.friendularity.bundle.vsim,
+							org.friendularity.vsim.*,
+							org.friendularity.api.*,
+							org.friendularity.visual.*,
+							org.friendularity.impl.visual,
 							org.friendularity.migccmio,
-                            org.friendularity.respire,
-                            org.friendularity.struct,
-                            org.friendu.tchunk.*,
+							org.friendularity.respire,
+							org.friendularity.struct,
+							org.friendu.tchunk.*,
 							org.friendu.goody_texture,
-                            org.friendularity.field,
-                            org.friendularity.raiz,
-                            org.friendularity.cpump,
-                            org.friendularity.cpmsg,
-                            org.friendularity.cptest,
-                            org.friendularity.dull,
-                            org.friendularity.navui,
-                            org.friendularity.rbody,
-                            org.friendularity.ignore.*,
-							org.friendularity.util,
+
+							org.friendularity.thact,
+							org.friendularity.qth,
+
+							org.friendularity.navui,
+							org.friendularity.rbody,
+							org.friendularity.ignore.*,
+
 							org.friendularity.vw.*,
+
 							org.friendularity.vwobstub,
-                            org.friendularity.mjob,
-                            org.friendularity.qpc,
-                            org.friendularity.thact,
-                            org.friendularity.akact,
-                            org.friendularity.closing,
+							org.friendularity.closing,
 							org.friendularity.tmpgood.*
-                        </Export-Package>
+						</Export-Package>
                         <Private-Package>
 							<!-- This package is exported for client use by o.f.b.vscli -->
                             org.friendularity.netcli.*

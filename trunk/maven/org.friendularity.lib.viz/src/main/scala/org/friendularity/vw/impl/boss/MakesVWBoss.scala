@@ -1,8 +1,8 @@
 package org.friendularity.vw.impl.boss
 
 import akka.actor.ActorRef
-import org.friendularity.akact.KnowsAkkaSys
-import org.friendularity.cpmsg.{ActorRefCPMsgTeller, CPStrongTeller}
+import org.friendularity.infra.akact.KnowsAkkaSys
+import org.friendularity.infra.cpmsg.{ActorRefCPMsgTeller, CPStrongTeller}
 import org.friendularity.vw.impl.sys.VWorldActorFactoryFuncs
 import org.friendularity.vw.msg.cor.VWorldRequest
 

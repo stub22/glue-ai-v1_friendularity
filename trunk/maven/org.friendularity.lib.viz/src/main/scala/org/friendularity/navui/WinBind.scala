@@ -6,7 +6,7 @@ package org.friendularity.navui
 
 import org.cogchar.api.owrap.{scrn => cscrn}
 import cscrn._
-import org.friendularity.cpmsg.{CPMsgTeller, CPumpMsg}
+import org.friendularity.infra.cpmsg.{CPMsgTeller, CPumpMsg}
 
 class WinBind(createOp : OSAWindowCreate, inTeller : CPMsgTeller) {
 	def processScrnOp(outScrnAct : OSAScreenOp): Unit = {

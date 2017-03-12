@@ -26,7 +26,7 @@ import org.appdapter.fancy.log.VarargsLogging
 import org.cogchar.blob.emit.RenderConfigEmitter
 import org.cogchar.render.gui.bony.{PanelUtils, VirtualCharacterPanel}
 import org.cogchar.render.sys.window.WindowStatusMonitor
-import org.friendularity.cpmsg.CPMsgTeller
+import org.friendularity.infra.cpmsg.CPMsgTeller
 import org.friendularity.navui.NavAppCloser
 
 /**

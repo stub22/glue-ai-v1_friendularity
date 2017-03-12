@@ -3,7 +3,7 @@ package org.friendularity.vw.msg.intrn
 import org.appdapter.core.name.Ident
 import org.cogchar.api.humanoid.HumanoidFigureConfig
 import org.cogchar.bind.mio.robot.svc.ModelBlendingRobotServiceContext
-import org.friendularity.cpmsg.CPStrongTeller
+import org.friendularity.infra.cpmsg.CPStrongTeller
 import org.friendularity.vw.msg.bdy.{VWBodyLifeRq, VWBodyNotice}
 
 /**

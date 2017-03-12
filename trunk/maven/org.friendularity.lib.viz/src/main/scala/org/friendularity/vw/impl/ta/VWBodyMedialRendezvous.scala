@@ -3,7 +3,7 @@ package org.friendularity.vw.impl.ta
 import akka.actor.ActorRef
 import org.appdapter.core.name.Ident
 import org.appdapter.fancy.log.VarargsLogging
-import org.friendularity.cpmsg.{ActorRefCPMsgTeller, CPStrongTeller}
+import org.friendularity.infra.cpmsg.{ActorRefCPMsgTeller, CPStrongTeller}
 import org.friendularity.vw.msg.bdy.{VWBodyFindRq, VWBodyNotice, VWBodyRq, VWBodyLifeRq}
 
 import scala.collection.mutable
