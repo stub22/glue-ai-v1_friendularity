@@ -1,0 +1,233 @@
+# load this with..  Repo repo = new UrlRepoSpec("file:/D:/Projects/com.rkbots.tools/maven/com.rkbots.tools.repoexport/RK_R25_Demo_OnDisk/dir.ttl").makeRepo();
+
+
+
+@prefix appsnazz:  <http://www.appdapter.org/ontologies/2010/snazzy.owl#> .
+@prefix apsb:    <http://www.appdapter.org/schema/box#> .
+@prefix apt:     <http://www.appdapter.org/test#> .
+@prefix bc:      <http://www.cogchar.org/bony/config#> .
+@prefix bci:     <http://www.cogchar.org/bony/config/instance#> .
+@prefix cc:      <http://www.cogchar.org/schema/crazyRandom#> .
+@prefix cca:     <http://www.cogchar.org/ontologies/y2012m06/AnimMotivMapBlend.owl#> .
+@prefix ccrt:    <urn:ftd:cogchar.org:2012:runtime#> .
+@prefix ccrti:   <urn:ftd:cogchar.org:2012:runtime_instance#> .
+@prefix cp:      <http://www.cogchar.org/schema/path#> .
+@prefix cpi:     <http://www.cogchar.org/schema/path/instance#> .
+@prefix cs:      <http://www.cogchar.org/schema/scene#> .
+@prefix csi:     <http://www.cogchar.org/schema/scene/instance#> .
+@prefix dc:      <http://purl.org/dc/elements/1.1/> .
+@prefix edi:     <http://www.cogchar.org/TODO/maybe_enhanced_demo/instance#> .
+@prefix edt:     <http://www.cogchar.org/TODO/maybe_enhanced_demo/test_instance#> .
+@prefix f:       <http://www.friedularity.org/config#> .
+@prefix fc:      <http://www.friedularity.org/Connection#> .
+@prefix frt:     <urn:ftd:friendularity.org:2012:runtime#> .
+@prefix gai:     <http://www.glue.ai/system/class/reference#> .
+@prefix goody:   <urn:ftd:cogchar.org:2012:goody#> .
+@prefix gr:      <http://www.cogchar.org/general/config#> .
+@prefix gri:     <http://www.cogchar.org/general/config/instance#> .
+@prefix hev:     <urn:ftd:headyspace.org:2013:estimviz_type#> .
+@prefix hevi:    <urn:ftd:headyspace.org:2013:estimviz_inst#> .
+@prefix hrk:     <http://www.hrkind.com/model#> .
+@prefix hrrt:    <urn:ftd:hrkind.com:2012:runtime#> .
+@prefix ja:      <http://jena.hpl.hp.com/2005/11/Assembler#> .
+@prefix jfrt:    <urn:ftd:jflux.org:2012:runtime#> .
+@prefix jfrti:   <urn:ftd:jflux.org:2012:runtime_instance#> .
+@prefix jfs:     <http://www.jflux.org/service#> .
+@prefix jfsd:    <http://www.jflux.org/service/dependency#> .
+@prefix jfsi:    <http://www.jflux.org/service/instance#> .
+@prefix jme3:    <urn:ftd:cogchar.org:2012:jme3#> .
+@prefix kb:      <http://www.cogchar.org/key/binding#> .
+@prefix lc:      <http://www.cogchar.org/lift/config#> .
+@prefix lcc:     <http://www.cogchar.org/lightscamera/config#> .
+@prefix lcci:    <http://www.cogchar.org/lightscamera/config/instance#> .
+@prefix lci:     <http://www.cogchar.org/lift/config/instance#> .
+@prefix lfa:     <http://www.cogchar.org/lift/flow/action#> .
+@prefix liftcmd:  <http://www.cogchar.org/lift/config/command#> .
+@prefix liftconfig:  <http://www.cogchar.org/lift/config/configroot#> .
+@prefix liftdisp:  <http://www.cogchar.org/lift/action/display#> .
+@prefix liftqa:  <http://www.cogchar.org/lift/question_and_answer#> .
+@prefix liftquery:  <http://www.cogchar.org/lift/action/query#> .
+@prefix liftreg:  <http://www.cogchar.org/lift/action/registration#> .
+@prefix liftsessionvar:  <http://www.cogchar.org/lift/config/sessionVariable#> .
+@prefix liftuser:  <http://www.cogchar.org/lift/user#> .
+@prefix liftvar:  <http://www.cogchar.org/lift/config/variable#> .
+@prefix lua:     <http://www.cogchar.org/lift/user/action#> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix path:    <http://www.cogchar.org/schema/path/definition#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rkrt:    <urn:ftd:robokind.org:2012:runtime#> .
+@prefix rktsr:   <urn:ftd:robosphinx.org:2013:SpeechRec#> .
+@prefix scenetrig:  <http://www.cogchar.org/schema/scene/trigger#> .
+@prefix ta:      <http://www.cogchar.org/thing/action#> .
+@prefix tai:     <http://www.cogchar.org/thing/action/instance#> .
+@prefix tap:     <http://www.cogchar.org/TODO/tap#> .
+@prefix thinganim:  <http://www.cogchar.org/schema/thinganim/definition#> .
+@prefix ua:      <http://www.cogchar.org/lift/user/config#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix zanim:   <http://www.hrkind.com/metad/2012/06/zenoAnims.owl#> .
+
+ccrt:anim_sheet_22
+      rdf:type cc:AnimsModel , ccrt:FileModel ;
+      ccrt:repo csi:filerepo_2014071107_5721_917 ;
+      ccrt:sourcePath "anim_sheet_22.ttl" .
+
+csi:behav_admin_22
+      rdf:type cc:BehavAdminModel , ccrt:FileModel ;
+      ccrt:repo csi:filerepo_2014071107_5721_917 ;
+      ccrt:sourcePath "behav_admin_22.ttl" .
+
+csi:behavScene_sheet_77
+      rdf:type cc:BehavSceneModel , ccrt:FileModel ;
+      ccrt:repo csi:filerepo_2014071107_5721_917 ;
+      ccrt:sourcePath "behavScene_sheet_77.ttl" .
+
+csi:behavStep_sheet_77
+      rdf:type cc:BehavStepModel , ccrt:FileModel ;
+      ccrt:repo csi:filerepo_2014071107_5721_917 ;
+      ccrt:sourcePath "behavStep_sheet_77.ttl" .
+
+ccrt:bindings_sheet_22
+      rdf:type ccrt:InputActionModel , ccrt:FileModel ;
+      ccrt:repo csi:filerepo_2014071107_5721_917 ;
+      ccrt:sourcePath "bindings_sheet_22.ttl" .
+
+ccrt:bony_sheet_22
+      rdf:type ccrt:BonyConfigModel , ccrt:FileModel ;
+      ccrt:repo csi:filerepo_2014071107_5721_917 ;
+      ccrt:sourcePath "bony_sheet_22.ttl" .
+
+ccrt:bony_sheet_sinbad
+      rdf:type ccrt:BonyConfigModel , ccrt:FileModel ;
+      ccrt:repo csi:filerepo_2014071107_5721_917 ;
+      ccrt:sourcePath "bony_sheet_sinbad.ttl" .
+
+csi:chan_sheet_77
+      rdf:type cc:ChannelModel , ccrt:FileModel ;
+      ccrt:repo csi:filerepo_2014071107_5721_917 ;
+      ccrt:sourcePath "chan_sheet_77.ttl" .
+
+ccrt:cmd_sheet_sin23
+      rdf:type ccrt:FileModel , cc:CommandsModel ;
+      ccrt:repo csi:filerepo_2014071107_5721_917 ;
+      ccrt:sourcePath "cmd_sheet_sin23.ttl" .
+
+fc:connection_sheet_1
+      rdf:type f:Connection , ccrt:FileModel ;
+      ccrt:repo csi:filerepo_2014071107_5721_917 ;
+      ccrt:sourcePath "connection_sheet_1.ttl" .
+
+csi:filerepo_2014071107_5721_917
+      rdf:type ccrt:FileRepo ;
+      ccrt:sourcePath "RK_R25_Demo_OnDisk/" .
+
+csi:filters_sheet_77
+      rdf:type ccrt:FileModel , cc:TAFilterModel ;
+      ccrt:repo csi:filerepo_2014071107_5721_917 ;
+      ccrt:sourcePath "filters_sheet_77.ttl" .
+
+ccrt:general_sheet_22
+      rdf:type ccrt:FileModel , ccrt:GeneralConfigModel ;
+      ccrt:repo csi:filerepo_2014071107_5721_917 ;
+      ccrt:sourcePath "general_sheet_22.ttl" .
+
+ccrt:hmd_sheet_22
+      rdf:type ccrt:HumanoidModel , ccrt:FileModel ;
+      ccrt:repo csi:filerepo_2014071107_5721_917 ;
+      ccrt:sourcePath "hmd_sheet_22.ttl" .
+
+ccrt:inbox_sheet_AZR50
+      rdf:type ccrt:FileModel , cc:InboxModel ;
+      ccrt:repo csi:filerepo_2014071107_5721_917 ;
+      ccrt:sourcePath "inbox_sheet_AZR50.ttl" .
+
+csi:lifecycle_1
+      rdf:type cc:LifecycleModel , ccrt:FileModel ;
+      ccrt:repo csi:filerepo_2014071107_5721_917 ;
+      ccrt:sourcePath "lifecycle_1.ttl" .
+
+ccrt:lifter_sheet_22
+      rdf:type ccrt:LiftConfigModel , ccrt:FileModel ;
+      ccrt:repo csi:filerepo_2014071107_5721_917 ;
+      ccrt:sourcePath "lifter_sheet_22.ttl" .
+
+ccrt:lights_camera_sheet_22
+      rdf:type ccrt:FileModel , ccrt:LightsCameraModel ;
+      ccrt:repo csi:filerepo_2014071107_5721_917 ;
+      ccrt:sourcePath "lights_camera_sheet_22.ttl" .
+
+ccrt:modes_sheet_22
+      rdf:type ccrt:GlobalModesModel , ccrt:FileModel ;
+      ccrt:repo csi:filerepo_2014071107_5721_917 ;
+      ccrt:sourcePath "modes_sheet_22.ttl" .
+
+ccrt:path_sheet_22
+      rdf:type ccrt:CinematicsModel , ccrt:FileModel ;
+      ccrt:repo csi:filerepo_2014071107_5721_917 ;
+      ccrt:sourcePath "path_sheet_22.ttl" .
+
+csi:pipeline_sheet_22
+      rdf:type cc:PipelineModel , ccrt:FileModel ;
+      ccrt:repo csi:filerepo_2014071107_5721_917 ;
+      ccrt:sourcePath "pipeline_sheet_22.ttl" .
+
+csi:pipeline_sheet_77
+      rdf:type cc:PipelineModel , ccrt:FileModel ;
+      ccrt:repo csi:filerepo_2014071107_5721_917 ;
+      ccrt:sourcePath "pipeline_sheet_77.ttl" .
+
+ccrt:qry_sheet_22
+      rdf:type ccrt:QueryTxtModel , ccrt:FileModel ;
+      ccrt:repo csi:filerepo_2014071107_5721_917 ;
+      ccrt:sourcePath "qry_sheet_22.ttl" .
+
+ccrt:qry_sheet_77
+      rdf:type ccrt:QueryTxtModel , ccrt:FileModel ;
+      ccrt:repo csi:filerepo_2014071107_5721_917 ;
+      ccrt:sourcePath "qry_sheet_77.ttl" .
+
+csi:service_manager_1
+      rdf:type cc:SvcMngrModel , ccrt:FileModel ;
+      ccrt:repo csi:filerepo_2014071107_5721_917 ;
+      ccrt:sourcePath "service_manager_1.ttl" .
+
+rktsr:SpeechRecConfig
+      rdf:type ccrt:FileModel , ccrt:SpeechRec ;
+      ccrt:repo csi:filerepo_2014071107_5721_917 ;
+      ccrt:sourcePath "SpeechRecConfig.ttl" .
+
+ccrt:taChan_sheet_77
+      rdf:type ccrt:TAChan , ccrt:FileModel ;
+      ccrt:repo csi:filerepo_2014071107_5721_917 ;
+      ccrt:sourcePath "taChan_sheet_77.ttl" .
+
+ta:taRuntime_forFiring_sheet_77
+      rdf:type ccrt:TASheet , ccrt:FileModel ;
+      ccrt:repo csi:filerepo_2014071107_5721_917 ;
+      ccrt:sourcePath "taRuntime_forFiring_sheet_77.ttl" .
+
+ccrt:thing_anim_sheet_22
+      rdf:type cc:GoodyThingAnimModel , ccrt:FileModel ;
+      ccrt:repo csi:filerepo_2014071107_5721_917 ;
+      ccrt:sourcePath "thing_anim_sheet_22.ttl" .
+
+ccrt:thing_sheet_22
+      rdf:type cc:GoodyThingModel , ccrt:FileModel ;
+      ccrt:repo csi:filerepo_2014071107_5721_917 ;
+      ccrt:sourcePath "thing_sheet_22.ttl" .
+
+ccrt:user_access_sheet_22
+      rdf:type ccrt:GlobalModesModel , ccrt:FileModel ;
+      ccrt:repo csi:filerepo_2014071107_5721_917 ;
+      ccrt:sourcePath "user_access_sheet_22.ttl" .
+
+ccrt:waypoint_sheet_22
+      rdf:type cc:WaypointModel , ccrt:FileModel ;
+      ccrt:repo csi:filerepo_2014071107_5721_917 ;
+      ccrt:sourcePath "waypoint_sheet_22.ttl" .
+
+
+# modelSize=167
+
+
+# dirModel = 167

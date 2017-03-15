@@ -1,0 +1,29 @@
+# modelName=http://www.friedularity.org/Connection#connection_sheet_1
+# modelSize=11
+
+
+
+
+@prefix cs:      <http://www.cogchar.org/schema/scene#> .
+@prefix fc:      <http://www.friedularity.org/Connection#> .
+@prefix ja:      <http://jena.hpl.hp.com/2005/11/Assembler#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+
+cs:BuildableConnectionSpec
+      rdfs:subClassOf ja:Object ;
+      rdf:type rdfs:Class ;
+      ja:assembler "org.friendularity.spec.connection.ConnectionSpecBuilder" .
+
+fc:myExampleConnection
+      rdf:type cs:BuildableConnectionSpec ;
+      fc:clientName "?" ;
+      fc:connectionOptions
+              "{}" ;
+      fc:ipAddress "192.168.2.100" ;
+      fc:password "password" ;
+      fc:port "8080" ;
+      fc:username "joe" ;
+      fc:virutalHost "N/A" .
+
+

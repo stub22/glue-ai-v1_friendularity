@@ -1,0 +1,144 @@
+# modelName=urn:ftd:cogchar.org:2012:runtime#modes_sheet_22
+# modelSize=86
+
+
+
+
+@prefix bc:      <http://www.cogchar.org/bony/config#> .
+@prefix ccrt:    <urn:ftd:cogchar.org:2012:runtime#> .
+@prefix gr:      <http://www.cogchar.org/general/config#> .
+@prefix hrk:     <http://www.hrkind.com/model#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rkrt:    <urn:ftd:robokind.org:2012:runtime#> .
+
+#hrk:aZR50
+#      rdf:type gr:CharEntity ;
+#      bc:globalMode rkrt:test_spread_reload .
+
+#rkrt:bind_tsm_01
+#      rdf:type gr:Binding ;
+#      bc:entity hrk:char_cajunZeno_77 ;
+#      bc:globalMode rkrt:test_special_mode ;
+#      bc:graph ccrt:graph_0709 ;
+#      bc:role rkrt:bonyAvatarConf .
+
+#rkrt:bind_tsm_02
+#      rdf:type gr:Binding ;
+#      bc:entity hrk:char_cajunZeno_77 ;
+#      bc:globalMode rkrt:test_special_mode ;
+#      bc:graph ccrt:hmd_sheet_22 ;
+#      bc:role rkrt:humanoidConf .
+
+rkrt:bind_tsr_03
+      rdf:type gr:Binding ;
+      bc:entity ccrt:char_sinbad_88 ;
+      bc:globalMode rkrt:test_spread_reload ;
+      bc:graph ccrt:bony_sheet_sinbad ;
+      bc:role rkrt:bonyAvatarConf .
+
+rkrt:bind_tsr_04
+      rdf:type gr:Binding ;
+      bc:entity hrk:webapp_pushy_Zeno ;
+      bc:globalMode rkrt:test_spread_reload ;
+      bc:graph ccrt:lifter_sheet_22 ;
+      bc:role rkrt:lifterConf .
+
+rkrt:bind_tsr_05
+      rdf:type gr:Binding ;
+      bc:entity ccrt:fun_world ;
+      bc:globalMode rkrt:test_spread_reload ;
+      bc:graph ccrt:lights_camera_sheet_22 ;
+      bc:role rkrt:camLightsConf .
+
+#rkrt:bind_tsr_06
+#      rdf:type gr:Binding ;
+#      bc:entity hrk:aZR50 ;
+#      bc:globalMode rkrt:test_spread_reload ;
+#      bc:graph ccrt:bony_sheet_22 ;
+#      bc:role rkrt:bonyAvatarConf .
+
+#rkrt:bind_tsr_07
+#      rdf:type gr:Binding ;
+#      bc:entity hrk:aZR50 ;
+#      bc:globalMode rkrt:test_spread_reload ;
+#      bc:graph ccrt:hmd_sheet_22 ;
+#      bc:role rkrt:humanoidConf .
+
+rkrt:bind_tsr_08
+      rdf:type gr:Binding ;
+      bc:entity ccrt:char_sinbad_88 ;
+      bc:globalMode rkrt:test_spread_reload ;
+      bc:graph ccrt:hmd_sheet_22 ;
+      bc:role rkrt:humanoidConf .
+
+rkrt:bind_tsr_09
+      rdf:type gr:Binding ;
+      bc:entity ccrt:fun_world ;
+      bc:globalMode rkrt:test_spread_reload ;
+      bc:graph ccrt:path_sheet_22 ;
+      bc:role rkrt:pathConf .
+
+rkrt:bind_tsr_10
+      rdf:type gr:Binding ;
+      bc:entity hrk:webapp_pushy_Zeno ;
+      bc:globalMode rkrt:test_spread_reload ;
+      bc:graph ccrt:general_sheet_22 ;
+      bc:role rkrt:generalConf .
+
+rkrt:bind_tsr_11
+      rdf:type gr:Binding ;
+      bc:entity ccrt:fun_world ;
+      bc:globalMode rkrt:test_spread_reload ;
+      bc:graph ccrt:bindings_sheet_22 ;
+      bc:role rkrt:inputBindings .
+
+rkrt:bind_tsr_12
+      rdf:type gr:Binding ;
+      bc:entity hrk:webapp_pushy_Zeno ;
+      bc:globalMode rkrt:test_spread_reload ;
+      bc:graph ccrt:user_access_sheet_22 ;
+      bc:role rkrt:userConf .
+
+rkrt:bind_tsr_13
+      rdf:type gr:Binding ;
+      bc:entity ccrt:fun_world ;
+      bc:globalMode rkrt:test_spread_reload ;
+      bc:graph ccrt:thing_sheet_22 ;
+      bc:role rkrt:thingActions .
+
+rkrt:bind_tsr_14
+      rdf:type gr:Binding ;
+      bc:entity ccrt:fun_world ;
+      bc:globalMode rkrt:test_spread_reload ;
+      bc:graph ccrt:thing_anim_sheet_22 ;
+      bc:role rkrt:thingAnims .
+
+rkrt:bind_tsr_15
+      rdf:type gr:Binding ;
+      bc:entity ccrt:fun_world ;
+      bc:globalMode rkrt:test_spread_reload ;
+      bc:graph ccrt:waypoint_sheet_22 ;
+      bc:role rkrt:thingWaypoints .
+
+#hrk:char_cajunZeno_77
+#      bc:globalMode rkrt:test_spread_reload .
+
+ccrt:char_sinbad_88
+      rdf:type gr:CharEntity ;
+      bc:globalMode rkrt:test_spread_reload .
+
+ccrt:fun_world
+      rdf:type gr:VirtualWorldEntity ;
+      bc:globalMode rkrt:test_spread_reload .
+
+rkrt:test_special_mode
+      rdf:type gr:GlobalMode .
+
+rkrt:test_spread_reload
+      rdf:type gr:GlobalMode .
+
+hrk:webapp_pushy_Zeno
+      rdf:type gr:WebappEntity ;
+      bc:globalMode rkrt:test_spread_reload .
+
+

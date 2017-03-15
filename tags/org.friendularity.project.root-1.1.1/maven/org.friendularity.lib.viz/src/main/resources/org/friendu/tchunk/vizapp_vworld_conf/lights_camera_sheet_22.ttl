@@ -1,0 +1,52 @@
+# modelName=urn:ftd:cogchar.org:2012:runtime#lights_camera_sheet_22
+# modelSize=31
+
+
+
+
+@prefix ccrt:    <urn:ftd:cogchar.org:2012:runtime#> .
+@prefix lcc:     <http://www.cogchar.org/lightscamera/config#> .
+@prefix lcci:    <http://www.cogchar.org/lightscamera/config/instance#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+
+ccrt:camera_DEFAULT
+      rdf:type ccrt:camera ;
+      lcc:viewportXend "1"^^xsd:float ;
+      lcc:viewportXstart "0"^^xsd:float ;
+      lcc:viewportYend "1"^^xsd:float ;
+      lcc:viewportYstart "0"^^xsd:float ;
+      lcc:xDir "0"^^xsd:float ;
+      lcc:xPos "-30"^^xsd:float ;
+      lcc:yDir "-0.3"^^xsd:float ;
+      lcc:yPos "40"^^xsd:float ;
+      lcc:zDir "-1"^^xsd:float ;
+      lcc:zPos "80"^^xsd:float .
+
+ccrt:light_Ambient
+      rdf:type ccrt:light ;
+      lcc:colorAlpha "1"^^xsd:float ;
+      lcc:colorB "0.8"^^xsd:float ;
+      lcc:colorG "0.8"^^xsd:float ;
+      lcc:colorR "0.8"^^xsd:float ;
+      lcc:lightType lcci:AMBIENT .
+
+ccrt:light_Demo
+      rdf:type ccrt:light ;
+      lcc:colorAlpha "1"^^xsd:float ;
+      lcc:colorB "1"^^xsd:float ;
+      lcc:colorG "1"^^xsd:float ;
+      lcc:colorR "1"^^xsd:float ;
+      lcc:lightType lcci:DIRECTIONAL ;
+      lcc:xDir "-0.1"^^xsd:float ;
+      lcc:yDir "-0.7"^^xsd:float ;
+      lcc:zDir "-1"^^xsd:float .
+
+ccrt:mainViewportBackgroundColor
+      rdf:type ccrt:backgroundColor ;
+      lcc:colorAlpha "1"^^xsd:float ;
+      lcc:colorB "0.35"^^xsd:float ;
+      lcc:colorG "0.1"^^xsd:float ;
+      lcc:colorR "0"^^xsd:float .
+
+

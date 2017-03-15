@@ -1,0 +1,18 @@
+# modelName=http://www.cogchar.org/schema/scene/instance#pipeline_sheet_77
+# modelSize=15
+
+
+
+
+@prefix cc:      <http://www.cogchar.org/schema/crazyRandom#> .
+@prefix ccrt:    <urn:ftd:cogchar.org:2012:runtime#> .
+@prefix csi:     <http://www.cogchar.org/schema/scene/instance#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix ta:      <http://www.cogchar.org/thing/action#> .
+
+csi:merged_model_5001
+      rdf:type ccrt:UnionModel , ccrt:BehaviorModel , ccrt:DerivedModel ;
+      ccrt:filter cc:BehavStepModel , cc:ChannelModel , cc:BehavSceneModel , ccrt:TASheet , ccrt:TAChan , cc:TAFilterModel ;
+      ccrt:sourceModel csi:behavScene_sheet_77 , ta:taTests_forGuard_sheet_77 , csi:behavStep_sheet_77 , csi:chan_sheet_77 , ta:taRuntime_forFiring_sheet_77 , csi:filters_sheet_77 .
+
+

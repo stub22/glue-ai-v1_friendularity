@@ -1,0 +1,94 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+  
+	<parent>
+		<groupId>org.friendularity</groupId>
+		<artifactId>org.friendularity.modules.main</artifactId>
+		<version>1.1.1</version>
+		<relativePath>../org.friendularity.modules.main/pom.xml</relativePath>
+	</parent>	
+
+	<artifactId>org.friendularity.lib.viz</artifactId>
+	<packaging>jar</packaging>
+	<name>${project.artifactId} - Temp Scala math lab quickrun</name>	
+
+	<dependencies>
+		<dependency>
+			<groupId>org.cogchar</groupId>
+			<artifactId>org.cogchar.bundle.render.opengl</artifactId>
+		</dependency>
+
+        <dependency>
+            <groupId>org.cogchar</groupId>
+            <artifactId>org.cogchar.bundle.bind.mechio</artifactId>
+        </dependency>
+
+		<!-- content for 3D models, incl Sinbad char -->
+		<dependency>
+			<groupId>org.cogchar</groupId>
+			<artifactId>org.cogchar.bundle.render.resources</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>org.friendularity.bundle.infra</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+
+		<dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>org.friendularity.bundle.jvision</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+		<dependency>
+            <groupId>org.appdapter</groupId>
+            <artifactId>org.appdapter.bundle.gui</artifactId>
+        </dependency>
+        <!-- JFlux QPid -> JFlux Avro -> org.jboss.netty 3.2.4,
+             which conflicts with the Avro 3.8.0 that akka-remote wants,
+             leading to a VerifyError during startup of DemoCPump when we run with akka-remoting activated -->
+
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+		</dependency>
+
+        <!-- For network integration we use Spray and/or Camel (which has a QPid component) -->
+        <!--
+
+        <dependency>
+            <groupId>io.spray</groupId>
+            <artifactId>spray-client_2.10</artifactId>
+            <version>1.3.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.typesafe.akka</groupId>
+            <artifactId>akka-camel_2.10</artifactId>
+            <version>2.3.14</version>
+        </dependency>
+        -->
+	</dependencies>
+	<build>	
+		<plugins>
+			<plugin>
+				<groupId>org.scala-tools</groupId>
+				<artifactId>maven-scala-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>compile</goal>
+							<!-- We're not actually using any scala tests right now
+							<goal>testCompile</goal>
+							-->
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>  
+</project>

@@ -1,0 +1,559 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Skein rootNode="node-0x02477A48" xmlns="http://www.logicalshift.org.uk/IF/Skein">
+  <generator>Inform 7 for Windows</generator>
+  <activeNode nodeId="node-0x02477A48"/>
+  <item nodeId="node-0x02477A48">
+    <command xml:space="preserve">- start -</command>
+    <result xml:space="preserve">It used to be said that there are two kinds of magic-user: those who have been to Tolti-Aph, and charlatans. It used to be generally understood that the attempt to prove oneself in the unforgiving society of Tolti-Aph was a bid for rapid level advancement or else romantic, thin-young-mage-in-midnight-black-robes death. The closer you get to the wilderness island vaguely marked "Tholtaff" on the agate globe in your great-great-grandfather's study, the better the alternative sounds: settling down in some coastal village, perhaps, a little weathermongering, some polymancy, and helping out with the nets after a bad storm. Retire at maybe level 3, with most of your experience points gained from observing rare fish-based poisons carry off those villagers careless about gutting. Publish an awesomely tedious monograph on the correct usage of the "untangle rigging" spell. You know, the good life.&#x000A;&#x000A;The Reliques of Tolti-Aph&#x000A;A W&amp;W Scenario by Graham Nelson&#x000A;Release 1 / Serial number 131216 / Inform 7 build 6G60 (I6/v6.32 lib 6/12N) SD&#x000A;&#x000A;Longwall Street&#x000A;Almost overgrown in the deep forest, collapsed and at once standing, the cyclopean east-west Longwall of the fallen city sinks here to a mostly flat, lichened stone clearing: it must once have been a customs post. To the west, an old wall turret like a broken chess piece still seems enterable by a dark doorway, whereas the eastern side of the wall's gap is only a shapeless ramp of masonry. Northwards, to what was once the interior, stubborn, wiry trees grapple with ancient pavings.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">NO</temporary>
+    <children>
+      <child nodeId="node-0x02477B98"/>
+      <child nodeId="node-0x0E2AF200"/>
+    </children>
+  </item>
+  <item nodeId="node-0x02477B98">
+    <command xml:space="preserve">n</command>
+    <result xml:space="preserve">Fallen Tree&#x000A;The overgrown ground, sloping gradually downwards to the north, is interrupted here by the fallen trunk of a giant of a tree. The trunk seems to have partially demolished an old town-house to northeast.&#x000A;&#x000A;Propped against the trunk in a parody of a sitting man, a skeleton - no, a woman's, to judge from the pelvis - shines white in the sunlight. The empty eye-sockets look up at the sky with a curious sort of expectancy.&#x000A;&#x000A;On the skeleton's lap is a leather pack.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x02477CE8"/>
+      <child nodeId="node-0x024D32F8"/>
+    </children>
+  </item>
+  <item nodeId="node-0x02477CE8">
+    <command xml:space="preserve">e</command>
+    <result xml:space="preserve">If it were not for the break in the wall to northeast, you would only be able to go north or south along the lane.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x02477D58"/>
+    </children>
+  </item>
+  <item nodeId="node-0x02477D58">
+    <command xml:space="preserve">w</command>
+    <result xml:space="preserve">If it were not for the break in the wall to northeast, you would only be able to go north or south along the lane.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x02477DC8"/>
+    </children>
+  </item>
+  <item nodeId="node-0x02477DC8">
+    <command xml:space="preserve">n</command>
+    <result xml:space="preserve">Broken Lane&#x000A;This must once have been a north-south thoroughfare, but now it is as cracked as a fishmonger's face. Even the old paving has given out, and its place is taken by stolen tombstones.&#x000A;&#x000A;Set into the slab-sided western cutting of the lane is a flame-blackened door, no more than four feet high.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x02477E38"/>
+    </children>
+  </item>
+  <item nodeId="node-0x02477E38">
+    <command xml:space="preserve">n</command>
+    <result xml:space="preserve">Gravel Track&#x000A;Even the makeshift paving gives out here, and the lane degenerates into a gravel track, rutted by carts and stamped all over with oddly inhuman prints of bare feet.&#x000A;&#x000A;Vish, a goblin lookout armed with a spear, hisses in rage at the very sight of you desecrating his realm.&#x000A;&#x000A;You attack Vish, stabbing the dagger, making an attack roll (1d20) of 6, +1 for your level - miss (3 to 10): no damage done!&#x000A;Vish attacks you, lunging with the spear, making an attack roll (1d20) of 10 - miss (3 to 10): no damage done!&#x000A;&#x000A;Jamming&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>YES</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x02477EA8"/>
+    </children>
+  </item>
+  <item nodeId="node-0x02477EA8">
+    <command xml:space="preserve">n</command>
+    <result xml:space="preserve">Just a warning before proceeding: you might want to exercise a little caution. It looks as if the lane may descend a little into shallow water, and if the goblin encampment has a centre, that will be it.&#x000A;&#x000A;You attack Vish, stabbing the dagger, making an attack roll (1d20) of 5, +1 for your level - miss (3 to 10): no damage done!&#x000A;Vish attacks you, lunging with the spear, making an attack roll (1d20) of 7 - miss (3 to 10): no damage done!&#x000A;&#x000A;Jamming&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>YES</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x02477F18"/>
+    </children>
+  </item>
+  <item nodeId="node-0x02477F18">
+    <command xml:space="preserve">e</command>
+    <result xml:space="preserve">Though the humps around the lane - half-masonry, half-tree boles - must once have been public buildings, they are impenetrable now. Perhaps further on to the north.&#x000A;&#x000A;You attack Vish, stabbing the dagger, making an attack roll (1d20) of 3, +1 for your level - miss (3 to 10): no damage done!&#x000A;Vish attacks you, lunging with the spear, making an attack roll (1d20) of 16 - hit (11 to 19), doing 1d6 of damage: 1d6: 4 points: the leather jerkin absorbs 1, leaving 3 to take, reducing your strength to 11.&#x000A;&#x000A;Jamming&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>YES</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x02477F88"/>
+    </children>
+  </item>
+  <item nodeId="node-0x02477F88">
+    <command xml:space="preserve">w</command>
+    <result xml:space="preserve">Though the humps around the lane - half-masonry, half-tree boles - must once have been public buildings, they are impenetrable now. Perhaps further on to the north.&#x000A;&#x000A;You attack Vish, stabbing the dagger, making an attack roll (1d20) of 8, +1 for your level - miss (3 to 10): no damage done!&#x000A;Vish attacks you, lunging with the spear, making an attack roll (1d20) of 6 - miss (3 to 10): no damage done!&#x000A;&#x000A;Jamming&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>YES</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x02477FF8"/>
+    </children>
+  </item>
+  <item nodeId="node-0x02477FF8">
+    <command xml:space="preserve">w</command>
+    <result xml:space="preserve">Though the humps around the lane - half-masonry, half-tree boles - must once have been public buildings, they are impenetrable now. Perhaps further on to the north.&#x000A;&#x000A;You attack Vish, stabbing the dagger, making an attack roll (1d20) of 6, +1 for your level - miss (3 to 10): no damage done!&#x000A;Vish attacks you, lunging with the spear, making an attack roll (1d20) of 12 - hit (11 to 19), doing 1d6 of damage: 1d6: 1 point, reducing your strength to 10.&#x000A;&#x000A;Jamming&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>YES</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x02478068"/>
+    </children>
+  </item>
+  <item nodeId="node-0x02478068">
+    <command xml:space="preserve">r</command>
+    <result xml:space="preserve">I didn't understand that sentence.&#x000A;&#x000A;Jamming&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>YES</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x024780D8"/>
+    </children>
+  </item>
+  <item nodeId="node-0x024780D8">
+    <command xml:space="preserve">u</command>
+    <result xml:space="preserve">Though the humps around the lane - half-masonry, half-tree boles - must once have been public buildings, they are impenetrable now. Perhaps further on to the north.&#x000A;&#x000A;You attack Vish, stabbing the dagger, making an attack roll (1d20) of 18, +1 for your level - hit (11 to 19), doing 1d3 of damage: 1d3: 3 points, wounding Vish to a strength of 2.&#x000A;Vish attacks you, lunging with the spear, making an attack roll (1d20) of 20 - critical hit (20 or more), doing 1d6 doubled of damage: 1d6: 1, doubled up to 2 points: the leather jerkin absorbs 1, leaving 1 to take, reducing your strength to 9.&#x000A;&#x000A;Jamming&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>YES</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x02478148"/>
+    </children>
+  </item>
+  <item nodeId="node-0x02478148">
+    <command xml:space="preserve">q</command>
+    <result xml:space="preserve">Are you sure you want to quit?</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x024781B8"/>
+    </children>
+  </item>
+  <item nodeId="node-0x024781B8">
+    <command xml:space="preserve">n</command>
+    <result xml:space="preserve">Jamming&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>YES</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x02478228"/>
+    </children>
+  </item>
+  <item nodeId="node-0x02478228">
+    <command xml:space="preserve">exit</command>
+    <result xml:space="preserve">But you aren't in anything at the moment.&#x000A;&#x000A;You attack Vish, stabbing the dagger, making an attack roll (1d20) of 2, +1 for your level - miss (3 to 10): no damage done!&#x000A;Vish attacks you, lunging with the spear, making an attack roll (1d20) of 12 - hit (11 to 19), doing 1d6 of damage: 1d6: 2 points: the leather jerkin absorbs 1, leaving 1 to take, reducing your strength to 8.&#x000A;&#x000A;Jamming&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>YES</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x02478298"/>
+    </children>
+  </item>
+  <item nodeId="node-0x02478298">
+    <command xml:space="preserve">peace</command>
+    <result xml:space="preserve">I didn't understand that sentence.&#x000A;&#x000A;Jamming&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>YES</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x0E2AEDA0"/>
+    </children>
+  </item>
+  <item nodeId="node-0x0E2AEDA0">
+    <command xml:space="preserve">help</command>
+    <result xml:space="preserve">(This game is being run according to the rules of a simplified role-playing game which we will call Woodpulp &amp; Wyverns, or W&amp;W. The protagonist is a magic-user, whose main ability is to cast spells. We are not in search of riches but of experience: by collecting experience points, the protagonist may progress upwards in "level": the SCORE command shows this. An INVENTORY (or I) lists the spells known as well as the items carried.&#x000A;&#x000A;One's strength, STR, is drained both by casting spells and by being wounded, and - especially early on - it is important to husband this carefully: but the means of restoration can also be found. It will probably take several games to work out the best tactics of play. Tolti-Aph is not a safe place, so expect to be killed every now and again (i.e. with terrifying frequency - E.S.).&#x000A;&#x000A;W&amp;W play differs from conventional interactive fiction in that there is a great deal of randomised behaviour. Notations like 4d6+2 express the (virtual) dice rolls to be made: this one would involve rolling 4 six-sided dice, then adding 2 to the result. Jamming is an especially unpredictable business, but note that one can often run away from a fight which is going badly.&#x000A;&#x000A;It is possible to get yourself into some insanely hard fights, or to run risks of appalling strength loss, where you might get lucky, but will die nine times out of ten. This is almost always a sign that you've missed something. The designer intends that a sufficiently ingenious player of IF can win through with even the worst luck. Still, with life and death hanging on the roll of a die, the UNDO command has been withdrawn. SAVE is allowed, but an important early puzzle is to work out how to do it.&#x000A;&#x000A;Lastly, this is one of the worked examples whose source text is included in full in the documentation for Inform 7, a system to create interactive fiction. About the first quarter lays out general rules for W&amp;W play, and can be borrowed to write new W&amp;W scenarios.)&#x000A;&#x000A;Jamming&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>YES</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x0E2AEEF0"/>
+    </children>
+  </item>
+  <item nodeId="node-0x0E2AEEF0">
+    <command xml:space="preserve">play</command>
+    <result xml:space="preserve">Your singing is abominable.&#x000A;&#x000A;You attack Vish, stabbing the dagger, making an attack roll (1d20) of 10, +1 for your level - hit (11 to 19), doing 1d3 of damage: 1d3: 1 point, wounding Vish to a strength of 1.&#x000A;Vish attacks you, lunging with the spear, making an attack roll (1d20) of 3 - miss (3 to 10): no damage done!&#x000A;&#x000A;Jamming&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x0E2AEF60"/>
+    </children>
+  </item>
+  <item nodeId="node-0x0E2AEF60">
+    <command xml:space="preserve">hit</command>
+    <result xml:space="preserve">What do you want to hit?&#x000A;&#x000A;Jamming&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+  </item>
+  <item nodeId="node-0x024D32F8">
+    <command xml:space="preserve">n</command>
+    <result xml:space="preserve">Broken Lane&#x000A;This must once have been a north-south thoroughfare, but now it is as cracked as a fishmonger's face. Even the old paving has given out, and its place is taken by stolen tombstones.&#x000A;&#x000A;Set into the slab-sided western cutting of the lane is a flame-blackened door, no more than four feet high.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x024D3368"/>
+    </children>
+  </item>
+  <item nodeId="node-0x024D3368">
+    <command xml:space="preserve">n</command>
+    <result xml:space="preserve">Gravel Track&#x000A;Even the makeshift paving gives out here, and the lane degenerates into a gravel track, rutted by carts and stamped all over with oddly inhuman prints of bare feet.&#x000A;&#x000A;Vish, a guitar lookout armed with a fastLick, hisses in rage at the very sight of you desecrating his realm.&#x000A;&#x000A;You attack Vish, stabbing the dagger, making an attack roll (1d20) of 6, +1 for your level - miss (3 to 10): no damage done!&#x000A;Vish attacks you, lunging with the fastLick, making an attack roll (1d20) of 10 - miss (3 to 10): no damage done!&#x000A;&#x000A;performance&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+  </item>
+  <item nodeId="node-0x0E2AF200">
+    <command xml:space="preserve">e</command>
+    <result xml:space="preserve">It is a long, steep climb up the ragged eastern side of the Longwall breach, and costs you 1 strength point.&#x000A;&#x000A;Stone Mound&#x000A;The remains of the Longwall rise steeply up eastward of the curious ruined platform, and also lose their shape, becoming little more than a great stone mound. Here at the top, it looks as if the stonework has been shattered by lightning and not just slow old time, but that seems an unreal idea when the canopies of the forest stretch out in every direction against a clear autumnal-blue sky.&#x000A;&#x000A;A barbed metallic feather, from a bird which must have been scaly and very large - also, disconcertingly, metallic - lies in the loose rubble.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x0E2AF270"/>
+    </children>
+  </item>
+  <item nodeId="node-0x0E2AF270">
+    <command xml:space="preserve">e</command>
+    <result xml:space="preserve">The only safe way down the Mound is back to westward.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x0E2AF2E0"/>
+    </children>
+  </item>
+  <item nodeId="node-0x0E2AF2E0">
+    <command xml:space="preserve">w</command>
+    <result xml:space="preserve">Longwall Street&#x000A;Almost overgrown in the deep forest, collapsed and at once standing, the cyclopean east-west Longwall of the fallen city sinks here to a mostly flat, lichened stone clearing: it must once have been a customs post. To the west, an old wall turret like a broken chess piece still seems enterable by a dark doorway, whereas the eastern side of the wall's gap is only a shapeless ramp of masonry. Northwards, to what was once the interior, stubborn, wiry trees grapple with ancient pavings.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x0E2AF350"/>
+    </children>
+  </item>
+  <item nodeId="node-0x0E2AF350">
+    <command xml:space="preserve">w</command>
+    <result xml:space="preserve">Your passage through the doorway triggers off an old trap, of rusty blades swung across by a counterweight! A crude, one-time device, but this doesn't seem the time to sneer at its naive simplicity. You just know there was something you could have done to avoid this... You soak up 4d4: 2,2,1,3=8 points of damage: the leather jerkin absorbs 1, leaving 7 to take, reducing your strength to 6.&#x000A;&#x000A;Turret Roundhouse&#x000A;This broad round chamber forms the central well of the turret. Little light enters by the dark doorway from the east, but the crude steps upward presumably lead to a lookout.&#x000A;&#x000A;An old trestle table is scattered with a few crumbs, suggesting that somebody has lived here quite recently.&#x000A;&#x000A;Propped against one wall, almost as if it was meant for you to find it, is a battered scroll.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x0E2AF3C0"/>
+    </children>
+  </item>
+  <item nodeId="node-0x0E2AF3C0">
+    <command xml:space="preserve">u</command>
+    <result xml:space="preserve">Turret Alcove&#x000A;The rough steps - probably not the original construction - end at a blank-walled alcove, bare except for a medicine chest.&#x000A;&#x000A;A little light shows through a broad arrowslit in the northwestern wall of the turret, which is where the steps have wound around to.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x0E2AF430"/>
+    </children>
+  </item>
+  <item nodeId="node-0x0E2AF430">
+    <command xml:space="preserve">u</command>
+    <result xml:space="preserve">You can't go that way.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x0E2AF4A0"/>
+    </children>
+  </item>
+  <item nodeId="node-0x0E2AF4A0">
+    <command xml:space="preserve">fight</command>
+    <result xml:space="preserve">What do you want to fight?&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x0E2AF510"/>
+    </children>
+  </item>
+  <item nodeId="node-0x0E2AF510">
+    <command xml:space="preserve">jam</command>
+    <result xml:space="preserve">You can't see any such thing.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x0E2AF580"/>
+    </children>
+  </item>
+  <item nodeId="node-0x0E2AF580">
+    <command xml:space="preserve">jam with</command>
+    <result xml:space="preserve">I didn't understand that sentence.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x0E2AF5F0"/>
+    </children>
+  </item>
+  <item nodeId="node-0x0E2AF5F0">
+    <command xml:space="preserve">comvat</command>
+    <result xml:space="preserve">I didn't understand that sentence.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x0E2AF660"/>
+    </children>
+  </item>
+  <item nodeId="node-0x0E2AF660">
+    <command xml:space="preserve">combat</command>
+    <result xml:space="preserve">I didn't understand that sentence.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x0E2AF6D0"/>
+    </children>
+  </item>
+  <item nodeId="node-0x0E2AF6D0">
+    <command xml:space="preserve">fight</command>
+    <result xml:space="preserve">What do you want to fight?&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x0E2AF740"/>
+    </children>
+  </item>
+  <item nodeId="node-0x0E2AF740">
+    <command xml:space="preserve">look</command>
+    <result xml:space="preserve">Turret Alcove&#x000A;The rough steps - probably not the original construction - end at a blank-walled alcove, bare except for a medicine chest.&#x000A;&#x000A;A little light shows through a broad arrowslit in the northwestern wall of the turret, which is where the steps have wound around to.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x0E2AF7B0"/>
+    </children>
+  </item>
+  <item nodeId="node-0x0E2AF7B0">
+    <command xml:space="preserve">nw</command>
+    <result xml:space="preserve">You can't go that way.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x0E2AF820"/>
+    </children>
+  </item>
+  <item nodeId="node-0x0E2AF820">
+    <command xml:space="preserve">n</command>
+    <result xml:space="preserve">You can't go that way.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x0E2AF890"/>
+    </children>
+  </item>
+  <item nodeId="node-0x0E2AF890">
+    <command xml:space="preserve">w</command>
+    <result xml:space="preserve">You can't go that way.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x0E2AF900"/>
+    </children>
+  </item>
+  <item nodeId="node-0x0E2AF900">
+    <command xml:space="preserve">e</command>
+    <result xml:space="preserve">You can't go that way.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x0E2AF970"/>
+    </children>
+  </item>
+  <item nodeId="node-0x0E2AF970">
+    <command xml:space="preserve">d</command>
+    <result xml:space="preserve">Turret Roundhouse&#x000A;This broad round chamber forms the central well of the turret. Little light enters by the dark doorway from the east, but the crude steps upward presumably lead to a lookout.&#x000A;&#x000A;An old trestle table is scattered with a few crumbs, suggesting that somebody has lived here quite recently.&#x000A;&#x000A;Propped against one wall, almost as if it was meant for you to find it, is a battered scroll.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x0E2AF9E0"/>
+    </children>
+  </item>
+  <item nodeId="node-0x0E2AF9E0">
+    <command xml:space="preserve">d</command>
+    <result xml:space="preserve">You can't go that way.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x0E2AFA50"/>
+    </children>
+  </item>
+  <item nodeId="node-0x0E2AFA50">
+    <command xml:space="preserve">take scroll</command>
+    <result xml:space="preserve">Taken.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x0E2AFAC0"/>
+    </children>
+  </item>
+  <item nodeId="node-0x0E2AFAC0">
+    <command xml:space="preserve">look</command>
+    <result xml:space="preserve">Turret Roundhouse&#x000A;This broad round chamber forms the central well of the turret. Little light enters by the dark doorway from the east, but the crude steps upward presumably lead to a lookout.&#x000A;&#x000A;An old trestle table is scattered with a few crumbs, suggesting that somebody has lived here quite recently.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x0E2AFB30"/>
+    </children>
+  </item>
+  <item nodeId="node-0x0E2AFB30">
+    <command xml:space="preserve">get crumbs</command>
+    <result xml:space="preserve">They're too small and fiddly.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x0E2AFBA0"/>
+    </children>
+  </item>
+  <item nodeId="node-0x0E2AFBA0">
+    <command xml:space="preserve">e</command>
+    <result xml:space="preserve">Longwall Street&#x000A;Almost overgrown in the deep forest, collapsed and at once standing, the cyclopean east-west Longwall of the fallen city sinks here to a mostly flat, lichened stone clearing: it must once have been a customs post. To the west, an old wall turret like a broken chess piece still seems enterable by a dark doorway, whereas the eastern side of the wall's gap is only a shapeless ramp of masonry. Northwards, to what was once the interior, stubborn, wiry trees grapple with ancient pavings.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x0E2AFC10"/>
+    </children>
+  </item>
+  <item nodeId="node-0x0E2AFC10">
+    <command xml:space="preserve">e</command>
+    <result xml:space="preserve">It is a long, steep climb up the ragged eastern side of the Longwall breach, and costs you 1 strength point.&#x000A;&#x000A;Stone Mound&#x000A;The remains of the Longwall rise steeply up eastward of the curious ruined platform, and also lose their shape, becoming little more than a great stone mound. Here at the top, it looks as if the stonework has been shattered by lightning and not just slow old time, but that seems an unreal idea when the canopies of the forest stretch out in every direction against a clear autumnal-blue sky.&#x000A;&#x000A;A barbed metallic feather, from a bird which must have been scaly and very large - also, disconcertingly, metallic - lies in the loose rubble.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x0E2AFC80"/>
+    </children>
+  </item>
+  <item nodeId="node-0x0E2AFC80">
+    <command xml:space="preserve">e</command>
+    <result xml:space="preserve">The only safe way down the Mound is back to westward.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x0E2AFCF0"/>
+    </children>
+  </item>
+  <item nodeId="node-0x0E2AFCF0">
+    <command xml:space="preserve">e</command>
+    <result xml:space="preserve">The only safe way down the Mound is back to westward.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x024D2E98"/>
+    </children>
+  </item>
+  <item nodeId="node-0x024D2E98">
+    <command xml:space="preserve">w</command>
+    <result xml:space="preserve">Longwall Street&#x000A;Almost overgrown in the deep forest, collapsed and at once standing, the cyclopean east-west Longwall of the fallen city sinks here to a mostly flat, lichened stone clearing: it must once have been a customs post. To the west, an old wall turret like a broken chess piece still seems enterable by a dark doorway, whereas the eastern side of the wall's gap is only a shapeless ramp of masonry. Northwards, to what was once the interior, stubborn, wiry trees grapple with ancient pavings.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x024D2F08"/>
+    </children>
+  </item>
+  <item nodeId="node-0x024D2F08">
+    <command xml:space="preserve">n</command>
+    <result xml:space="preserve">Fallen Tree&#x000A;The overgrown ground, sloping gradually downwards to the north, is interrupted here by the fallen trunk of a giant of a tree. The trunk seems to have partially demolished an old town-house to northeast.&#x000A;&#x000A;Propped against the trunk in a parody of a sitting man, a skeleton - no, a woman's, to judge from the pelvis - shines white in the sunlight. The empty eye-sockets look up at the sky with a curious sort of expectancy.&#x000A;&#x000A;On the skeleton's lap is a leather pack.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x024D2F78"/>
+    </children>
+  </item>
+  <item nodeId="node-0x024D2F78">
+    <command xml:space="preserve">n</command>
+    <result xml:space="preserve">Broken Lane&#x000A;This must once have been a north-south thoroughfare, but now it is as cracked as a fishmonger's face. Even the old paving has given out, and its place is taken by stolen tombstones.&#x000A;&#x000A;Set into the slab-sided western cutting of the lane is a flame-blackened door, no more than four feet high.&#x000A;&#x000A;&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+    <children>
+      <child nodeId="node-0x024D2FE8"/>
+    </children>
+  </item>
+  <item nodeId="node-0x024D2FE8">
+    <command xml:space="preserve">n</command>
+    <result xml:space="preserve">Gravel Track&#x000A;Even the makeshift paving gives out here, and the lane degenerates into a gravel track, rutted by carts and stamped all over with oddly inhuman prints of bare feet.&#x000A;&#x000A;Vish, a goblin lookout armed with a spear, hisses in rage at the very sight of you desecrating his realm.&#x000A;&#x000A;You attack Vish, stabbing the keyboard, making an attack roll (1d20) of 3, +1 for your level - miss (3 to 10): no damage done!&#x000A;Vish attacks you, lunging with the spear, making an attack roll (1d20) of 16 - hit (11 to 19), doing 1d6 of damage: 1d6: 4 points: the leather jerkin absorbs 1, leaving 3 to take, reducing your strength to 2.&#x000A;&#x000A;Jamming&gt;</result>
+    <commentary xml:space="preserve"></commentary>
+    <played>YES</played>
+    <changed>NO</changed>
+    <temporary score="0">YES</temporary>
+  </item>
+</Skein>

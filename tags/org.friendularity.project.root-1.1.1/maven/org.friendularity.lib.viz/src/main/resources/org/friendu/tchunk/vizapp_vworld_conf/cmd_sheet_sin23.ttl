@@ -1,0 +1,210 @@
+# modelName=urn:ftd:cogchar.org:2012:runtime#cmd_sheet_AZR50
+# modelSize=111
+
+
+@prefix cc:      <http://www.cogchar.org/schema/crazyRandom#> .
+@prefix ccrt:    <urn:ftd:cogchar.org:2012:runtime#> .
+@prefix ccrti:   <urn:ftd:cogchar.org:2012:runtime_instance#> .
+@prefix hrk:     <http://www.hrkind.com/model#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+ccrti:cmd_BiggerProjectile
+      rdf:type cc:CommandNoargs ;
+      cc:targetBox ccrti:pumaCtxCmdBox ;
+      cc:trigger ccrti:trig_BiggerProjectile .
+
+ccrti:cmd_Boogie
+      rdf:type cc:CommandNoargs ;
+      cc:targetBox ccrti:pumaCtxCmdBox ;
+      cc:trigger ccrti:trig_Boogie .
+
+ccrti:cmd_Boom
+      rdf:type cc:CommandNoargs ;
+      cc:targetBox ccrti:pumaCtxCmdBox ;
+      cc:trigger ccrti:trig_Boom .
+
+ccrti:cmd_dangerYogaSinbad
+      rdf:type cc:CommandNoargs ;
+      cc:targetBox ccrt:char_sinbad_88 ;
+      cc:trigger ccrti:trig_dangerYoga .
+
+ccrti:cmd_dangerYogaZeno
+      rdf:type cc:CommandNoargs ;
+      cc:targetBox hrk:aZR50 ;
+      cc:trigger ccrti:trig_dangerYoga .
+
+ccrti:cmd_PickBalls
+      rdf:type cc:CommandNoargs ;
+      cc:targetBox ccrti:pumaCtxCmdBox ;
+      cc:trigger ccrti:trig_PickBalls .
+
+ccrti:cmd_ReloadBehavior
+      rdf:type cc:CommandNoargs ;
+      cc:targetBox hrk:aZR50 ;
+      cc:trigger ccrti:trig_ReloadBehavior .
+
+ccrti:cmd_ResetMainCamera
+      rdf:type cc:CommandNoargs ;
+      cc:targetBox ccrti:pumaCtxCmdBox ;
+      cc:trigger ccrti:trig_ResetMainCamera .
+
+ccrti:cmd_sayTheTime
+      rdf:type cc:CommandNoargs ;
+      cc:targetBox hrk:aZR50 ;
+      cc:trigger ccrti:trig_sayTheTime .
+
+ccrti:cmd_Shoot
+      rdf:type cc:CommandNoargs ;
+      cc:targetBox ccrti:pumaCtxCmdBox ;
+      cc:trigger ccrti:trig_Shoot .
+
+ccrti:cmd_ShowResourceBalls
+      rdf:type cc:CommandNoargs ;
+      cc:targetBox ccrti:pumaCtxCmdBox ;
+      cc:trigger ccrti:trig_ShowResourceBalls .
+
+ccrti:cmd_SmallerProjectile
+      rdf:type cc:CommandNoargs ;
+      cc:targetBox ccrti:pumaCtxCmdBox ;
+      cc:trigger ccrti:trig_SmallerProjectile .
+
+ccrti:cmd_StandUp
+      rdf:type cc:CommandNoargs ;
+      cc:targetBox ccrti:pumaCtxCmdBox ;
+      cc:trigger ccrti:trig_StandUp .
+
+ccrti:cmd_StopAndReset
+      rdf:type cc:CommandNoargs ;
+      cc:targetBox hrk:aZR50 ;
+      cc:trigger ccrti:trig_StopAndReset .
+
+ccrti:cmd_StopResetAndRecenter
+      rdf:type cc:CommandNoargs ;
+      cc:targetBox hrk:aZR50 ;
+      cc:trigger ccrti:trig_StopResetAndRecenter .
+
+ccrti:cmd_ToggleHelp
+      rdf:type cc:CommandNoargs ;
+      cc:targetBox ccrti:pumaCtxCmdBox ;
+      cc:trigger ccrti:trig_ToggleHelp .
+
+ccrti:cmd_ToggleKinMode
+      rdf:type cc:CommandNoargs ;
+      cc:targetBox ccrti:pumaCtxCmdBox ;
+      cc:trigger ccrti:trig_ToggleKinMode .
+
+ccrti:cmd_ToggleSkeletonHilite
+      rdf:type cc:CommandNoargs ;
+      cc:targetBox ccrti:pumaCtxCmdBox ;
+      cc:trigger ccrti:trig_ToggleSkeletonHilite .
+
+ccrti:cmd_updateBonyConfig
+      rdf:type cc:CommandNoargs ;
+      cc:targetBox ccrti:pumaCtxCmdBox ;
+      cc:trigger ccrti:trig_UpCfgBoneRobot .
+
+ccrti:cmd_updateHumanoids
+      rdf:type cc:CommandNoargs ;
+      cc:targetBox ccrti:pumaCtxCmdBox ;
+      cc:trigger ccrti:trig_UpCfgAllHumoid .
+
+ccrti:cmd_updateWorldConfig
+      rdf:type cc:CommandNoargs ;
+      cc:targetBox ccrti:pumaCtxCmdBox ;
+      cc:trigger ccrti:trig_UpCfgWorld .
+
+ccrti:cmd_UsePermAnims
+      rdf:type cc:CommandNoargs ;
+      cc:targetBox hrk:aZR50 ;
+      cc:trigger ccrti:trig_UsePermAnims .
+
+ccrti:cmd_UseTempAnims
+      rdf:type cc:CommandNoargs ;
+      cc:targetBox hrk:aZR50 ;
+      cc:trigger ccrti:trig_UseTempAnims .
+
+ccrti:trig_BiggerProjectile
+      rdf:type cc:TriggerWithBoxArg ;
+      cc:triggerFQCN "org.cogchar.app.buddy.busker.TriggerItems$BiggerProjectile" .
+
+ccrti:trig_Boogie
+      rdf:type cc:TriggerWithBoxArg ;
+      cc:triggerFQCN "org.cogchar.app.buddy.busker.TriggerItems$Boogie" .
+
+ccrti:trig_Boom
+      rdf:type cc:TriggerWithBoxArg ;
+      cc:triggerFQCN "org.cogchar.app.buddy.busker.TriggerItems$Boom" .
+
+ccrti:trig_dangerYoga
+      rdf:type cc:TriggerWithBoxArg ;
+      cc:triggerFQCN "org.cogchar.app.buddy.busker.TriggerItems$DangerYoga" .
+
+ccrti:trig_PickBalls
+      rdf:type cc:TriggerWithBoxArg ;
+      cc:triggerFQCN "org.cogchar.app.buddy.busker.TriggerItems$PickBalls" .
+
+ccrti:trig_ReloadBehavior
+      rdf:type cc:TriggerWithBoxArg ;
+      cc:triggerFQCN "org.cogchar.app.buddy.busker.TriggerItems$ReloadBehavior" .
+
+ccrti:trig_ResetMainCamera
+      rdf:type cc:TriggerWithBoxArg ;
+      cc:triggerFQCN "org.cogchar.app.buddy.busker.TriggerItems$ResetMainCamera" .
+
+ccrti:trig_sayTheTime
+      rdf:type cc:TriggerWithBoxArg ;
+      cc:triggerFQCN "org.cogchar.app.buddy.busker.TriggerItems$SayTheTime" .
+
+ccrti:trig_Shoot
+      rdf:type cc:TriggerWithBoxArg ;
+      cc:triggerFQCN "org.cogchar.app.buddy.busker.TriggerItems$Shoot" .
+
+ccrti:trig_ShowResourceBalls
+      rdf:type cc:TriggerWithBoxArg ;
+      cc:triggerFQCN "org.cogchar.app.buddy.busker.TriggerItems$ShowResourceBalls" .
+
+ccrti:trig_SmallerProjectile
+      rdf:type cc:TriggerWithBoxArg ;
+      cc:triggerFQCN "org.cogchar.app.buddy.busker.TriggerItems$SmallerProjectile" .
+
+ccrti:trig_StandUp
+      rdf:type cc:TriggerWithBoxArg ;
+      cc:triggerFQCN "org.cogchar.app.buddy.busker.TriggerItems$StandUp" .
+
+ccrti:trig_StopAndReset
+      rdf:type cc:TriggerWithBoxArg ;
+      cc:triggerFQCN "org.cogchar.app.buddy.busker.TriggerItems$StopAndReset" .
+
+ccrti:trig_StopResetAndRecenter
+      rdf:type cc:TriggerWithBoxArg ;
+      cc:triggerFQCN "org.cogchar.app.buddy.busker.TriggerItems$StopResetAndRecenter" .
+
+ccrti:trig_ToggleHelp
+      rdf:type cc:TriggerWithBoxArg ;
+      cc:triggerFQCN "org.cogchar.app.buddy.busker.TriggerItems$ToggleHelp" .
+
+ccrti:trig_ToggleSkeletonHilite
+      rdf:type cc:TriggerWithBoxArg ;
+      cc:triggerFQCN "org.cogchar.app.buddy.busker.TriggerItems$ToggleSkeletonHilite" .
+
+ccrti:trig_UpCfgAllHumoid
+      rdf:type cc:TriggerWithBoxArg ;
+      cc:triggerFQCN "org.cogchar.app.buddy.busker.TriggerItems$UpdateAllHumanoidConfig" .
+
+ccrti:trig_UpCfgBoneRobot
+      rdf:type cc:TriggerWithBoxArg ;
+      cc:triggerFQCN "org.cogchar.app.buddy.busker.TriggerItems$UpdateBoneRobotConfig" .
+
+ccrti:trig_UpCfgWorld
+      rdf:type cc:TriggerWithBoxArg ;
+      cc:triggerFQCN "org.cogchar.app.buddy.busker.TriggerItems$UpdateWorldConfig" .
+
+ccrti:trig_UsePermAnims
+      rdf:type cc:TriggerWithBoxArg ;
+      cc:triggerFQCN "org.cogchar.app.buddy.busker.TriggerItems$UsePermAnims" .
+
+ccrti:trig_UseTempAnims
+      rdf:type cc:TriggerWithBoxArg ;
+      cc:triggerFQCN "org.cogchar.app.buddy.busker.TriggerItems$UseTempAnims" .
+
+

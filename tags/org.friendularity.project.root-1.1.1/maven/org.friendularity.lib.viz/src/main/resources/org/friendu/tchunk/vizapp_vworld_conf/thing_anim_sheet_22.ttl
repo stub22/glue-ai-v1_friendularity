@@ -1,0 +1,57 @@
+# modelName=urn:ftd:cogchar.org:2012:runtime#thing_anim_sheet_22
+# modelSize=33
+
+
+
+
+@prefix ccrt:    <urn:ftd:cogchar.org:2012:runtime#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix ta:      <http://www.cogchar.org/thing/action#> .
+@prefix tai:     <http://www.cogchar.org/thing/action/instance#> .
+@prefix thinganim:  <http://www.cogchar.org/schema/thinganim/definition#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+
+thinganim:demoThingAnim1
+      rdf:type ccrt:thingAnim ;
+      ta:attachedItemType ccrt:goody ;
+      ta:duration "20"^^xsd:float ;
+      ta:loopMode tai:DontLoop ;
+      ta:targetThing ccrt:bitBox1 .
+
+ccrt:demoThingAnim1_keyframe0
+      rdf:type ccrt:thingAnimKeyFrame ;
+      ta:keyFrameTime "5"^^xsd:float ;
+      ta:locationRef ccrt:animLoc1 ;
+      ta:orientationRef ccrt:animRot1 ;
+      ta:scale "10"^^xsd:float ;
+      ta:scaleRef ccrt:animScale1 ;
+      ta:targetAnim thinganim:demoThingAnim1 .
+
+ccrt:demoThingAnim1_keyframe1
+      rdf:type ccrt:thingAnimKeyFrame ;
+      ta:keyFrameTime "10"^^xsd:float ;
+      ta:locationRef ccrt:animLoc2 ;
+      ta:orientationRef ccrt:animRot2 ;
+      ta:scale "100"^^xsd:float ;
+      ta:scaleRef ccrt:animScale2 ;
+      ta:targetAnim thinganim:demoThingAnim1 .
+
+ccrt:demoThingAnim1_keyframe2
+      rdf:type ccrt:thingAnimKeyFrame ;
+      ta:keyFrameTime "15"^^xsd:float ;
+      ta:locationRef ccrt:animLoc3 ;
+      ta:orientationRef ccrt:animRot3 ;
+      ta:scale "10"^^xsd:float ;
+      ta:scaleRef ccrt:animScale3 ;
+      ta:targetAnim thinganim:demoThingAnim1 .
+
+ccrt:demoThingAnim1_keyframe3
+      rdf:type ccrt:thingAnimKeyFrame ;
+      ta:keyFrameTime "20"^^xsd:float ;
+      ta:locationRef ccrt:animLoc4 ;
+      ta:orientationRef ccrt:animRot4 ;
+      ta:scale "1"^^xsd:float ;
+      ta:scaleRef ccrt:animScale4 ;
+      ta:targetAnim thinganim:demoThingAnim1 .
+
+

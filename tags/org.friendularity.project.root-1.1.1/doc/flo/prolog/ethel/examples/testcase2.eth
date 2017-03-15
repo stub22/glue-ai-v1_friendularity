@@ -1,0 +1,8 @@
+java org.friendularity.test.block.TestCaseTwo
+
+connect
+
+c!camera:O => g!gray:A
+g:O => _!horpipe:A
+_:O => publish image testcasetwo
+

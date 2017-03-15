@@ -1,0 +1,349 @@
+# modelName=urn:ftd:cogchar.org:2012:runtime#qry_sheet_22
+# modelSize=136
+
+
+
+
+@prefix ccrt:    <urn:ftd:cogchar.org:2012:runtime#> .
+@prefix liftquery:  <http://www.cogchar.org/lift/action/query#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+ccrt:find_agentItemEvents_99
+      rdf:type ccrt:SparqlQuery , ccrt:NeedsPrefixHelp ;
+      ccrt:queryText "SELECT ?eventID ?agentID ?tstamp ?action WHERE { GRAPH ?qGraph { ?eventID a ccrt:AgentRequest; cc:byAgent ?agentID; cc:milsecSince1970 ?tstamp;   cc:actionName ?action. }}" .
+
+liftquery:find_anim_actions
+      rdf:type ccrt:SparqlQuery , ccrt:NeedsPrefixHelp ;
+      ccrt:queryText """SELECT ?action ?name
+WHERE { GRAPH ccrt:anim_sheet_22 { 
+?action a ccrt:AnimFile; cc:name ?name.
+}}""" .
+
+ccrt:find_anims_77
+      rdf:type ccrt:SparqlQuery , ccrt:NeedsPrefixHelp ;
+      ccrt:queryText """SELECT ?anim ?relPath ?folderPath 
+WHERE { GRAPH ?qGraph { 
+?anim a ccrt:AnimFile; cc:path ?relPath.
+OPTIONAL {?anim cc:folder ?folder.   ?folder cc:path ?folderPath.}
+}}""" .
+
+ccrt:find_anims_99
+      rdf:type ccrt:SparqlQuery , ccrt:NeedsPrefixHelp ;
+      ccrt:queryText """SELECT ?anim ?relPath ?folderPath 
+WHERE { GRAPH ?qGraph { 
+?anim a ccrt:AnimFile; cc:path ?relPath.
+OPTIONAL {?anim cc:folder ?folder.   ?folder cc:path ?folderPath.}
+}}""" .
+
+ccrt:find_background_color_99
+      rdf:type ccrt:SparqlQuery , ccrt:NeedsPrefixHelp ;
+      ccrt:queryText """SELECT ?colorR ?colorG ?colorB ?colorAlpha
+WHERE { GRAPH ?qGraph { 
+?color a ccrt:backgroundColor; lcc:colorR ?colorR; lcc:colorG ?colorG; lcc:colorB ?colorB; lcc:colorAlpha ?colorAlpha.
+}}""" .
+
+liftquery:find_behav_scenes
+      rdf:type ccrt:SparqlQuery , ccrt:NeedsPrefixHelp ;
+      ccrt:queryText """SELECT ?action ?name
+WHERE { GRAPH csi:behavScene_sheet_77 {
+?action a cs:BuildableSceneSpec; apsb:label ?name  
+}}""" .
+
+liftquery:find_behav_scenes_admin
+      rdf:type ccrt:SparqlQuery , ccrt:NeedsPrefixHelp ;
+      ccrt:queryText """SELECT ?action ?name
+WHERE { GRAPH csi:behav_admin_22 {
+?action a cs:BehaviorAdminAction; apsb:label ?name  
+}}""" .
+
+ccrt:find_cameras_99
+      rdf:type ccrt:SparqlQuery , ccrt:NeedsPrefixHelp ;
+      ccrt:queryText """SELECT ?camera ?xPos ?yPos ?zPos ?xDir ?yDir ?zDir ?viewportXstart ?viewportXend ?viewportYstart ?viewportYend ?robot ?bone
+WHERE { GRAPH ?qGraph { 
+?camera a ccrt:camera; lcc:xPos ?xPos; lcc:yPos ?yPos; lcc:zPos ?zPos; lcc:viewportXstart ?viewportXstart;  lcc:viewportXend ?viewportXend; lcc:viewportYstart ?viewportYstart; lcc:viewportYend ?viewportYend; .
+OPTIONAL { ?camera a ccrt:camera; lcc:xDir ?xDir; lcc:yDir ?yDir; lcc:zDir ?zDir;.}
+OPTIONAL { ?camera a ccrt:camera; lcc:attachedToRobot ?robot; lcc:attachedToBone ?bone;}
+}}""" .
+
+ccrt:find_cmds_99
+      rdf:type ccrt:SparqlQuery , ccrt:NeedsPrefixHelp ;
+      ccrt:queryText "SELECT ?cmdID ?boxID ?trigID ?trigFQCN WHERE { GRAPH ?qGraph { ?cmdID a cc:CommandNoargs; cc:targetBox ?boxID; cc:trigger ?trigID.  ?trigID cc:triggerFQCN ?trigFQCN }}" .
+
+ccrt:find_humanoids_99
+      rdf:type ccrt:SparqlQuery , ccrt:NeedsPrefixHelp ;
+      ccrt:queryText """select ?humInd ?meshPath ?rkRobotID ?jointConfigPath ?initX ?initY ?initZ ?scale ?physics WHERE {
+    GRAPH ?qGraph { 
+        ?humInd a ccrt:Humanoid;   ccrt:meshPath ?meshPath;  ccrt:rkRobotID ?rkRobotID; ccrt:jointConfigPath ?jointConfigPath; ccrt:initX ?initX; ccrt:initY ?initY; ccrt:initZ ?initZ; ccrt:scale ?scale; ccrt:physics ?physics
+}}""" .
+
+ccrt:find_keybindings_99
+      rdf:type ccrt:SparqlQuery , ccrt:NeedsPrefixHelp ;
+      ccrt:queryText """SELECT ?name ?type ?action ?key ?cmdID ?featCat
+WHERE { GRAPH ?qGraph { 
+?name a ?type; kb:boundKey ?key.
+OPTIONAL {  ?name kb:boundAction ?action.}
+OPTIONAL { ?name cc:command ?cmdID.}
+OPTIONAL { ?name cc:featureCategory ?featCat.}
+}}""" .
+
+ccrt:find_lift_startConfig_99
+      rdf:type ccrt:SparqlQuery , ccrt:NeedsPrefixHelp ;
+      ccrt:queryText """SELECT ?liftConfig
+WHERE { GRAPH ?qGraph { 
+?defaultConfig a ccrt:startliftconfig; lc:liftConfig ?liftConfig.
+}}""" .
+
+ccrt:find_lift_templates_99
+      rdf:type ccrt:SparqlQuery , ccrt:NeedsPrefixHelp ;
+      ccrt:queryText """SELECT ?liftConfig ?template
+WHERE { GRAPH ?qGraph { 
+?liftConfig a ccrt:liftconfig; lc:template ?template;
+}}""" .
+
+ccrt:find_lights_99
+      rdf:type ccrt:SparqlQuery , ccrt:NeedsPrefixHelp ;
+      ccrt:queryText """SELECT ?light ?xPos ?yPos ?zPos ?xDir ?yDir ?zDir ?lightType ?colorR ?colorG ?colorB ?colorAlpha
+WHERE { GRAPH ?qGraph { 
+?light a ccrt:light; lcc:lightType ?lightType; lcc:colorR ?colorR; lcc:colorG ?colorG; lcc:colorB ?colorB; lcc:colorAlpha ?colorAlpha .
+OPTIONAL { ?light a ccrt:light; lcc:xPos ?xPos; lcc:yPos ?yPos; lcc:zPos ?zPos;.}
+OPTIONAL { ?light a ccrt:light; lcc:xDir ?xDir; lcc:yDir ?yDir; lcc:zDir ?zDir;.}
+}}""" .
+
+ccrt:find_login_page_99
+      rdf:type ccrt:SparqlQuery , ccrt:NeedsPrefixHelp ;
+      ccrt:queryText """SELECT ?loginPage 
+WHERE { GRAPH ?qGraph { 
+?loginPage a ccrt:loginPage.
+}}""" .
+
+ccrt:find_paths_99
+      rdf:type ccrt:SparqlQuery , ccrt:NeedsPrefixHelp ;
+      ccrt:queryText """SELECT ?path ?attachedItem ?attachedItemType ?directionType ?xDir ?yDir ?zDir ?tension ?cycle ?loop ?duration 
+WHERE { GRAPH ?qGraph { 
+?path a ccrt:motionpath; ta:attachedItem ?attachedItem; ta:attachedItemType ?attachedItemType; ta:loop ?loop; ta:duration ?duration.
+OPTIONAL {?path a ccrt:motionpath; ta:directionType ?directionType; ta:xDir ?xDir; ta:yDir ?yDir; ta:zDir ?zDir; ta:tension ?tension; ta:cycle ?cycle.}
+}}""" .
+
+ccrt:find_pipe_sources_78
+      rdf:type ccrt:SparqlQuery , ccrt:NeedsPrefixHelp ;
+      ccrt:queryText """SELECT  ?pipeID   ?sourceID
+WHERE { GRAPH ?qGraph {
+?pipeID ccrt:sourceModel ?sourceID.
+}}""" .
+
+ccrt:find_pipe_sources_99
+      rdf:type ccrt:SparqlQuery , ccrt:NeedsPrefixHelp ;
+      ccrt:queryText """SELECT  ?pipeID   ?sourceID
+WHERE { GRAPH ?qGraph {
+?pipeID ccrt:sourceModel ?sourceID.
+}}""" .
+
+ccrt:find_pipes_77
+      rdf:type ccrt:SparqlQuery , ccrt:NeedsPrefixHelp ;
+      ccrt:queryText """SELECT  ?pipeID   ?typeID
+WHERE { GRAPH ?qGraph {
+?pipeID rdf:type ?typeID.
+}}""" .
+
+ccrt:find_pipes_99
+      rdf:type ccrt:SparqlQuery , ccrt:NeedsPrefixHelp ;
+      ccrt:queryText """SELECT  ?pipeID   ?typeID
+WHERE { GRAPH ?qGraph {
+?pipeID rdf:type ?typeID.
+}}""" .
+
+ccrt:find_robotName_99
+      rdf:type ccrt:SparqlQuery , ccrt:NeedsPrefixHelp ;
+      ccrt:queryText """SELECT ?humInd ?robotName
+WHERE { GRAPH ?qGraph { 
+?brc a ccrt:BoneRobotConfig; bc:robotName ?robotName.
+?brc bc:char ?humInd.
+}}""" .
+
+ccrt:find_rotations_99
+      rdf:type ccrt:SparqlQuery , ccrt:NeedsPrefixHelp ;
+      ccrt:queryText """SELECT ?rotation ?rotX ?rotY ?rotZ ?rotMag
+WHERE { GRAPH ?qGraph { 
+?rotation a ccrt:orientation; ta:xRotAxis ?rotX; ta:yRotAxis ?rotY; ta:zRotAxis ?rotZ; ta:magnitudeRot ?rotMag.
+}}""" .
+
+ccrt:find_sheets_77
+      rdf:type ccrt:SparqlQuery , ccrt:NeedsPrefixHelp ;
+      ccrt:queryText "select ?sheet { ?sheet a ccrt:GoogSheet }" .
+
+ccrt:find_sheets_99
+      rdf:type ccrt:SparqlQuery , ccrt:NeedsPrefixHelp ;
+      ccrt:queryText "select ?sheet { ?sheet a ccrt:GoogSheet }" .
+
+ccrt:find_thing_action_params_99
+      rdf:type ccrt:SparqlQuery , ccrt:NeedsPrefixHelp ;
+      ccrt:queryText """SELECT ?actParamID ?actParamVal
+WHERE { GRAPH ?qGraph { 
+?thingActionParam a ccrt:ThingActionParam; 
+ta:targetAction ?attachedToAction;
+ ta:paramIdent ?actParamID ; 
+ta:paramValue ?actParamVal.
+}}""" .
+
+ccrt:find_thing_actions_99
+      rdf:type ccrt:SparqlQuery , ccrt:NeedsPrefixHelp ;
+      ccrt:queryText """SELECT ?thingActionID ?verbID ?tgtThingID ?tgtThingTypeID
+WHERE { GRAPH ?qGraph { 
+?thingActionID a ccrt:ThingAction; 
+   ta:verb ?verbID ; 
+   ta:targetThing ?tgtThingID .
+OPTIONAL { ?tgtThingID rdf:type  ?tgtThingTypeID. }
+}}""" .
+
+ccrt:find_thing_anims_99
+      rdf:type ccrt:SparqlQuery , ccrt:NeedsPrefixHelp ;
+      ccrt:queryText """SELECT ?anim ?duration ?attachedItem ?attachedItemType ?loop
+WHERE { GRAPH ?qGraph { 
+?anim a ccrt:thingAnim.
+?anim ta:duration ?duration; ta:targetThing ?attachedItem; ta:attachedItemType ?attachedItemType.
+OPTIONAL {?anim ta:loopMode ?loop.}
+}}""" .
+
+ccrt:find_unseen_thing_actions_99
+      rdf:type ccrt:SparqlQuery , ccrt:NeedsPrefixHelp ;
+      ccrt:queryText """SELECT ?thingActionID ?verbID ?tgtThingID ?tgtThingTypeID ?postTStampMsec
+WHERE { GRAPH ?qGraph { 
+?thingActionID a ccrt:ThingAction; 
+   ta:verb ?verbID ; 
+   ta:targetThing ?tgtThingID;
+ta:postTStampMsec ?postTStampMsec .
+MINUS {?thingActionID ta:viewedBy ?viewingAgentID }
+FILTER (?postTStampMsec >= ?cutoffTStampMsec)
+OPTIONAL { ?tgtThingID rdf:type  ?tgtThingTypeID.}
+}}""" .
+
+ccrt:find_users_99
+      rdf:type ccrt:SparqlQuery , ccrt:NeedsPrefixHelp ;
+      ccrt:queryText """SELECT ?user ?password ?salt ?startPage
+WHERE { GRAPH ?qGraph { 
+?user a ccrt:userConfig; ua:password ?password; ua:salt ?salt; ua:homePage ?startPage.
+}}""" .
+
+ccrt:find_vector_scalings_99
+      rdf:type ccrt:SparqlQuery , ccrt:NeedsPrefixHelp ;
+      ccrt:queryText """SELECT ?vectorScale ?scaleX ?scaleY ?scaleZ
+WHERE { GRAPH ?qGraph { 
+?vectorScale a ccrt:vectorScale; ta:xScale ?scaleX; ta:yScale ?scaleY; ta:zScale ?scaleZ.
+}}""" .
+
+ccrt:find_waypoints_99
+      rdf:type ccrt:SparqlQuery , ccrt:NeedsPrefixHelp ;
+      ccrt:queryText """SELECT ?waypoint ?xPos ?yPos ?zPos
+WHERE { GRAPH ?qGraph { 
+?waypoint a ccrt:waypoint; ta:xPos ?xPos; ta:yPos ?yPos; ta:zPos ?zPos; 
+}}""" .
+
+ccrt:template_additionalBones_99
+      rdf:type ccrt:SparqlQuery , ccrt:NeedsPrefixHelp ;
+      ccrt:queryText """SELECT ?boneName ?rotationAxis ?minAngle ?maxAngle
+WHERE { GRAPH ?qGraph { 
+        ?boneJointUri a ccrt:BoneJointConfig.
+                ?additionalBone bc:boneJointConfig ?boneJointUri; bc:boneName ?boneName; bc:rotationAxis ?rotationAxis; bc:minAngleDeg ?minAngle; bc:maxAngleDeg ?maxAngle
+}}""" .
+
+ccrt:template_basicJointProperties_99
+      rdf:type ccrt:SparqlQuery , ccrt:NeedsPrefixHelp ;
+      ccrt:queryText """SELECT ?joint ?jointNum ?jointName ?defaultPos ?invert
+WHERE { GRAPH ?qGraph {
+?brc bc:char ?robotUri.
+?joint bc:boneRobotConf ?brc.
+?joint a ccrt:BoneJointConfig; bc:jointNum ?jointNum; bc:jointName ?jointName; bc:defaultPosNorm ?defaultPos .
+OPTIONAL { ?joint a ccrt:BoneJointConfig; bc:invertForSymmetry ?invert}
+}}""" .
+
+ccrt:template_boneJointConfigs_99
+      rdf:type ccrt:SparqlQuery , ccrt:NeedsPrefixHelp ;
+      ccrt:queryText """SELECT ?jointConfigInstance
+WHERE { GRAPH ?qGraph { 
+?boneRobotConfig a ccrt:BoneRobotConfig; bc:char ?robotUri.
+?jointConfigInstance a ccrt:BoneJointConfig; bc:boneRobotConf ?boneRobotConfig.
+}}""" .
+
+ccrt:template_boneNames_99
+      rdf:type ccrt:SparqlQuery , ccrt:NeedsPrefixHelp ;
+      ccrt:queryText """SELECT ?boneName
+WHERE { GRAPH ?qGraph {
+?brc a ccrt:BoneRobotConfig; bc:char ?robotUri.
+?joint bc:boneRobotConf ?brc.
+?joint bc:boneName ?boneName
+}}""" .
+
+ccrt:template_boneProjectionRanges_99
+      rdf:type ccrt:SparqlQuery , ccrt:NeedsPrefixHelp ;
+      ccrt:queryText """SELECT ?jointNum ?boneName ?rotationAxis ?minAngle ?maxAngle
+WHERE { GRAPH ?qGraph { 
+        ?boneJointUri a ccrt:BoneJointConfig; bc:boneName ?boneName; bc:rotationAxis ?rotationAxis; bc:minAngleDeg ?minAngle; bc:maxAngleDeg ?maxAngle
+}}""" .
+
+ccrt:template_find_free_control_99
+      rdf:type ccrt:SparqlQuery , ccrt:NeedsPrefixHelp , ccrt:QueryTemplate ;
+      ccrt:queryText """SELECT ?type ?text ?style ?resource ?action
+WHERE { GRAPH ?qGraph { 
+?desiredControl lc:type ?type.
+OPTIONAL {?desiredControl lc:text ?text.}
+OPTIONAL {?desiredControl lc:style ?style.}
+OPTIONAL {?desiredControl lc:resource ?resource.}
+OPTIONAL {?desiredControl lc:action ?action.}
+}}""" .
+
+ccrt:template_general_items_99
+      rdf:type ccrt:SparqlQuery , ccrt:NeedsPrefixHelp , ccrt:QueryTemplate ;
+      ccrt:queryText """SELECT ?ident ?url
+WHERE { GRAPH ?qGraph { 
+?ident gr:category ?category; gr:hasURL ?url.
+}}""" .
+
+ccrt:template_global_entities_99
+      rdf:type ccrt:SparqlQuery , ccrt:NeedsPrefixHelp , ccrt:QueryTemplate ;
+      ccrt:queryText """SELECT ?entity
+WHERE { GRAPH ccrt:modes_sheet_22 { 
+?entity a ?type; bc:globalMode ?mode.
+}}""" .
+
+ccrt:template_globalmode_99
+      rdf:type ccrt:SparqlQuery , ccrt:NeedsPrefixHelp , ccrt:QueryTemplate ;
+      ccrt:queryText """SELECT ?entity ?role ?graph
+WHERE { GRAPH ccrt:modes_sheet_22 { 
+?binding a gr:Binding.
+?binding bc:globalMode ?mode.
+?binding bc:entity ?entity; bc:role ?role; bc:graph ?graph.
+}}""" .
+
+ccrt:template_key_frames_99
+      rdf:type ccrt:SparqlQuery , ccrt:NeedsPrefixHelp , ccrt:QueryTemplate ;
+      ccrt:queryText """SELECT ?frame ?time ?locationRef ?orientationRef ?scaleRef ?scale
+WHERE { GRAPH ?qGraph { 
+?frame a ccrt:thingAnimKeyFrame; ta:targetAnim ?anim; ta:keyFrameTime ?time.
+OPTIONAL {?frame ta:locationRef ?locationRef.}
+OPTIONAL {?frame ta:orientationRef ?orientationRef.}
+OPTIONAL {?frame ta:scaleRef ?scaleRef.}
+OPTIONAL {?frame ta:scale ?scale.}
+}}""" .
+
+ccrt:template_lift_control_99
+      rdf:type ccrt:SparqlQuery , ccrt:NeedsPrefixHelp , ccrt:QueryTemplate ;
+      ccrt:queryText """SELECT ?control ?type ?text ?style ?resource ?action
+WHERE { GRAPH ?qGraph { 
+?control lc:liftConfig ?config.
+?control lc:type ?type.
+OPTIONAL {?control lc:text ?text.}
+OPTIONAL {?control lc:style ?style.}
+OPTIONAL {?control lc:resource ?resource.}
+OPTIONAL {?control lc:action ?action.}
+}}""" .
+
+ccrt:template_waypoint_99
+      rdf:type ccrt:SparqlQuery , ccrt:NeedsPrefixHelp , ccrt:QueryTemplate ;
+      ccrt:queryText """SELECT ?wp ?waypoint ?order ?xPos ?yPos ?zPos
+WHERE { GRAPH ?qGraph { 
+?wp a ccrt:includedWaypoint; ta:attachedPath ?path; ta:sequenceOrder ?order.
+OPTIONAL {?wp a ccrt:includedWaypoint; ta:waypointRef ?waypoint.}
+OPTIONAL {?wp a ccrt:includedWaypoint; ta:xPos ?xPos; ta:yPos ?yPos; ta:zPos ?zPos.}
+}}""" .
+
+

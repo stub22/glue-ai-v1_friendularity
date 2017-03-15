@@ -1,0 +1,131 @@
+# modelName=urn:ftd:cogchar.org:2012:runtime#thing_sheet_22
+# modelSize=75
+
+
+
+
+@prefix ccrt:    <urn:ftd:cogchar.org:2012:runtime#> .
+@prefix goody:   <urn:ftd:cogchar.org:2012:goody#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix ta:      <http://www.cogchar.org/thing/action#> .
+
+ccrt:bitBox1
+      rdf:type goody:BitBox .
+
+ccrt:bitBox2
+      rdf:type goody:BitCube .
+
+ccrt:createBitBox1_param2
+      rdf:type ccrt:ThingActionParam ;
+      ta:paramIdent goody:locX ;
+      ta:paramValue "-10" ;
+      ta:targetAction ccrt:createBitBox1 .
+
+ccrt:createBitBox1_param3
+      rdf:type ccrt:ThingActionParam ;
+      ta:paramIdent goody:locY ;
+      ta:paramValue "15" ;
+      ta:targetAction ccrt:createBitBox1 .
+
+ccrt:createBitBox1_param4
+      rdf:type ccrt:ThingActionParam ;
+      ta:paramIdent goody:locZ ;
+      ta:paramValue "10" ;
+      ta:targetAction ccrt:createBitBox1 .
+
+ccrt:createBitBox1_param5
+      rdf:type ccrt:ThingActionParam ;
+      ta:paramIdent goody:scale ;
+      ta:paramValue "4" ;
+      ta:targetAction ccrt:createBitBox1 .
+
+ccrt:createBitBox1_param6
+      rdf:type ccrt:ThingActionParam ;
+      ta:paramIdent goody:booleanState ;
+      ta:paramValue "false" ;
+      ta:targetAction ccrt:createBitBox1 .
+
+ccrt:createBitBox2_param2
+      rdf:type ccrt:ThingActionParam ;
+      ta:paramIdent goody:locX ;
+      ta:paramValue "10" ;
+      ta:targetAction ccrt:createBitBox2 .
+
+ccrt:createBitBox2_param3
+      rdf:type ccrt:ThingActionParam ;
+      ta:paramIdent goody:locY ;
+      ta:paramValue "15" ;
+      ta:targetAction ccrt:createBitBox2 .
+
+ccrt:createBitBox2_param4
+      rdf:type ccrt:ThingActionParam ;
+      ta:paramIdent goody:locZ ;
+      ta:paramValue "10" ;
+      ta:targetAction ccrt:createBitBox2 .
+
+ccrt:createBitBox2_param5
+      rdf:type ccrt:ThingActionParam ;
+      ta:paramIdent goody:scale ;
+      ta:paramValue "4" ;
+      ta:targetAction ccrt:createBitBox2 .
+
+ccrt:createBitBox2_param6
+      rdf:type ccrt:ThingActionParam ;
+      ta:paramIdent goody:booleanState ;
+      ta:paramValue "true" ;
+      ta:targetAction ccrt:createBitBox2 .
+
+ccrt:createCrossHair_param2
+      rdf:type ccrt:ThingActionParam ;
+      ta:paramIdent goody:scale ;
+      ta:paramValue "2" ;
+      ta:targetAction ccrt:createCrossHair .
+
+ccrt:createFloor
+      rdf:type ccrt:ThingAction ;
+      ta:targetThing ccrt:floor ;
+      ta:verb goody:ActionCreate .
+
+ccrt:createFloor_param2
+      rdf:type ccrt:ThingActionParam ;
+      ta:paramIdent goody:locX ;
+      ta:paramValue "0" ;
+      ta:targetAction ccrt:createFloor .
+
+ccrt:createFloor_param3
+      rdf:type ccrt:ThingActionParam ;
+      ta:paramIdent goody:locY ;
+      ta:paramValue "-5" ;
+      ta:targetAction ccrt:createFloor .
+
+ccrt:createFloor_param4
+      rdf:type ccrt:ThingActionParam ;
+      ta:paramIdent goody:locZ ;
+      ta:paramValue "0" ;
+      ta:targetAction ccrt:createFloor .
+
+ccrt:createFloor_param5
+      rdf:type ccrt:ThingActionParam ;
+      ta:paramIdent goody:colorR ;
+      ta:paramValue "0.5" ;
+      ta:targetAction ccrt:createFloor .
+
+ccrt:createFloor_param6
+      rdf:type ccrt:ThingActionParam ;
+      ta:paramIdent goody:colorG ;
+      ta:paramValue "0.5" ;
+      ta:targetAction ccrt:createFloor .
+
+ccrt:createFloor_param7
+      rdf:type ccrt:ThingActionParam ;
+      ta:paramIdent goody:colorB ;
+      ta:paramValue "0.5" ;
+      ta:targetAction ccrt:createFloor .
+
+ccrt:crossHair_01
+      rdf:type goody:CrossHair .
+
+ccrt:floor
+      rdf:type goody:Floor .
+
+
