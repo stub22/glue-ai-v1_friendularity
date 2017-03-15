@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.friendularity</groupId>
 		<artifactId>org.friendularity.modules.main</artifactId>
-		<version>1.1.0</version>
+		<version>1.0.9-SNAPSHOT</version>
 		<relativePath>../org.friendularity.modules.main/pom.xml</relativePath>
 	</parent>	
 <!--  Let's see, this error started happening during launch, after upgrade to LiftWeb 2.6.3.
