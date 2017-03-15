@@ -53,5 +53,5 @@ trait TARqExtractorHelp {
 	}
 	def extractDuration(tvm : TypedValueMap) : Option[JFloat] = Option(tvm.getAsFloat(GoodyNames.TRAVEL_TIME))
 
-	def extractColor(gax : GoodyActionExtractor) : Option[ColorRGBA] = Option(gax.getColor)
+	def extractColor(gax : GoodyActionExtractor) : Option[ColorRGBA] = gax.getColor
 }
