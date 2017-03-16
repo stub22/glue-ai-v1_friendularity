@@ -57,12 +57,12 @@
 		<netbeans.compile.on.save>none</netbeans.compile.on.save>
 
 		<!--  Glue Dependencies -->
-		<appdapter.version>1.2.4</appdapter.version>
-		<appdapter.msg.version>1.2.4</appdapter.msg.version>
+        <appdapter.version>1.2.5-SNAPSHOT</appdapter.version>
+        <appdapter.msg.version>1.2.5-SNAPSHOT</appdapter.msg.version>
 		<appdapter.jscience.version>1.0.9</appdapter.jscience.version>
-        <jflux.version>0.2.5</jflux.version>
-        <mechio.version>1.0.6</mechio.version>
-		<cogchar.version>1.1.4</cogchar.version>
+        <jflux.version>0.2.6-SNAPSHOT</jflux.version>
+        <mechio.version>1.0.7-SNAPSHOT</mechio.version>
+        <cogchar.version>1.1.5-SNAPSHOT</cogchar.version>
 		<rwshop.version>1.0.0-SNAPSHOT</rwshop.version>
 		<!-- Non Glue Dependencies -->
 		<encoding>UTF-8</encoding>
