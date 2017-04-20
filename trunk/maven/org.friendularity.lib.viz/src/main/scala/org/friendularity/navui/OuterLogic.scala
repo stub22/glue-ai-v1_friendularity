@@ -25,9 +25,11 @@ import org.appdapter.core.name.FreeIdent
 import org.appdapter.core.name.Ident
 import org.appdapter.fancy.log.VarargsLogging
 import org.cogchar.api.fancy.FancyThingModelWriter
+
 // import org.cogchar.api.thing.SerTypedValueMap
 // import org.cogchar.api.vworld.GoodyActionParamWriter
 import org.cogchar.impl.thing.basic.BasicThingActionSpec
+
 // import org.cogchar.render.rendtest.GoodyTestMsgMaker
 import org.friendularity.infra.cpmsg.{ActorRefCPMsgTeller, CPStrongTeller, CPMsgTeller}
 
@@ -35,10 +37,13 @@ import org.friendularity.infra.field.{StatusTickActorFactory, StatusTickDistribu
 import org.friendularity.infra.mjob.{MsgJobLogicFactory, MsgJobLogic}
 
 import com.hp.hpl.jena.rdf.model.{Model => JenaModel, ModelFactory => JenaModelFactory, Literal}
+
 // import org.friendularity.netcli.vwta.MakesVWTARqProducers
 import org.friendularity.netcli.vwta.OffersVWorldClient
+
 // import org.friendularity.thact.ThingActSender
 import org.friendularity.infra.util.IdentHlp
+
 // import org.friendularity.vw.cli.cam.OuterCamHelp
 import org.friendularity.vw.cli.nav.OuterBindNavCmdKeys
 import org.friendularity.vw.impl.job.VWorldMasterFactory
@@ -137,7 +142,7 @@ trait FunWithShapes extends MakesManipDesc with IdentHlp {
 		val sphereRot = Quaternion.IDENTITY
 		val sphereXform = new PartialTransform3D(Some(spherePos), Some(sphereRot), Some(Vector3f.UNIT_XYZ))
 		val sphereMatDesc = new SimpleMatDesc(Some(sphereCol))
-	//	val sphereParams = new OrdinaryParams3D(spherePos, sphereRot, Vector3f.UNIT_XYZ, sphereCol)
+		//	val sphereParams = new OrdinaryParams3D(spherePos, sphereRot, Vector3f.UNIT_XYZ, sphereCol)
 		val sphereMeshDesc = new VWMD_Sphere(33, 33, 99.0f) // , sphereParams)
 		val knownSphereID_opt: Option[Ident] = Some(makeStampyRandyIdentAnon())
 		val parentID_opt = None
@@ -260,8 +265,8 @@ trait PatientForwarder_CharAdminTest extends OuterLogic {
 }
 
 trait PatientSender_BonusStaging extends OuterLogic with OffersVWorldClient with IdentHlp {
-	
-	val IDENT_PREFIX : String = "urn:ftd:friendularity.org:2017:inst#";
+
+	val IDENT_PREFIX: String = "urn:ftd:friendularity.org:2017:inst#";
 
 	val FLAG_powerUserMode = false
 
@@ -272,27 +277,30 @@ trait PatientSender_BonusStaging extends OuterLogic with OffersVWorldClient with
 		val pauseOnLostFocus = false
 		val dragMouseToRotateCamera = true
 
-		val opticsBasicRq = new VWStageOpticsBasic(moveSpeed, pauseOnLostFocus, dragMouseToRotateCamera)
+		val opticsBasicRq = VWStageOpticsBasic(moveSpeed, pauseOnLostFocus, dragMouseToRotateCamera)
 		stageTeller.tellCPMsg(opticsBasicRq)
 
-		setDefaultCameraPositionAndLocation()
+		// Ensure the camera is properly created before being set. The pause should ensure the messages aren't mixed up
+		actDefaultCameraPositionAndLocation(GoodyNames.ACTION_CREATE)
+		Thread.sleep(150)
+		actDefaultCameraPositionAndLocation(GoodyNames.ACTION_SET)
 
 		val darkBlue: ColorRGBA = new ColorRGBA(0f, 0.1f, 0.35f, 1f)
-		val backgroundColorRequest = new VWStageBackgroundColor(darkBlue)
+		val backgroundColorRequest = VWStageBackgroundColor(darkBlue)
 		stageTeller.tellCPMsg(backgroundColorRequest)
 
 		sendSkyboxRq(stageTeller)
 
 		val displayContentStatsOnScreen = false
 		val displayFPSOnScreen = false
-		val displayStatsOnScreenRequest = new VWStatsViewMessage(displayContentStatsOnScreen, displayFPSOnScreen)
+		val displayStatsOnScreenRequest = VWStatsViewMessage(displayContentStatsOnScreen, displayFPSOnScreen)
 		stageTeller.tellCPMsg(displayStatsOnScreenRequest)
 
 		val mostlyWhite: ColorRGBA = new ColorRGBA(0.8f, 0.8f, 0.8f, 1f)
-		val setupLightingRequest = new VWStageSetupLighting(mostlyWhite)
+		val setupLightingRequest = VWStageSetupLighting(mostlyWhite)
 		stageTeller.tellCPMsg(setupLightingRequest)
 
-		val emuBonusRq = new VWStageEmulateBonusContentAndCams()
+		val emuBonusRq = VWStageEmulateBonusContentAndCams()
 		stageTeller.tellStrongCPMsg(emuBonusRq)
 
 		setupStatusPumps(vwpt)
@@ -305,7 +313,7 @@ trait PatientSender_BonusStaging extends OuterLogic with OffersVWorldClient with
 		}
 
 		setupKeysAndClicks(vwpt, FLAG_powerUserMode)
-	
+
 		doAllExtraSetup(vwpt)
 	}
 
@@ -319,14 +327,14 @@ trait PatientSender_BonusStaging extends OuterLogic with OffersVWorldClient with
 		val westImagePath: String = skyboxFolder + "West.png"
 		val upImagePath: String = skyboxFolder + "Up.png"
 		val downImagePath: String = skyboxFolder + "Down.png"
-		val backgroundSkyBoxRequest = new VWStageBackgroundSkybox(northImagePath, eastImagePath, southImagePath,
+		val backgroundSkyBoxRequest = VWStageBackgroundSkybox(northImagePath, eastImagePath, southImagePath,
 			westImagePath, upImagePath, downImagePath)
 		stageTeller.tellCPMsg(backgroundSkyBoxRequest)
 	}
 
 	//
 	def sendStageReset(stageTeller: CPMsgTeller): Unit = {
-		val stgResetMsg = new VWStageResetToDefault()
+		val stgResetMsg = VWStageResetToDefault()
 		stageTeller.tellCPMsg(stgResetMsg)
 	}
 
@@ -336,29 +344,28 @@ trait PatientSender_BonusStaging extends OuterLogic with OffersVWorldClient with
 		val clrShpsMsg = new VWClearAllShapes
 		shapeTeller.tellCPMsg(clrShpsMsg)
 	}
-	
-	def setDefaultCameraPositionAndLocation(): Unit = {
+
+	def actDefaultCameraPositionAndLocation(actionID: Ident): Unit = {
 		val paramWriter: GoodyActionParamWriter = new GoodyActionParamWriter(new ConcreteTVM())
 		paramWriter.putRotation(-9.4608765E-9f, 0.976296f, -0.21643962f, -180f)
 		paramWriter.putLocation(0f, 48f, 60f)
-		
-		val actionInstanceID: Ident = new FreeIdent(IDENT_PREFIX + "action_outer_logic_setup_default_camera")
+
+		val actionInstanceID: Ident = new FreeIdent(IDENT_PREFIX + "action_outer_logic_setup_default_camera_" + actionID.getLocalName)
 		val entityID: Ident = new FreeIdent(LightsCameraAN.URI_defaultCam)
-		val sourceAgentID: Ident = new FreeIdent(IDENT_PREFIX + "agent_outer_logic_setup_default_camera")
+		val sourceAgentID: Ident = new FreeIdent(IDENT_PREFIX + "agent_outer_logic_setup_default_camera_" + actionID.getLocalName)
 
 		val thingActionSpec: BasicThingActionSpec = new BasicThingActionSpec(actionInstanceID,
 			entityID,
 			GoodyNames.TYPE_CAMERA,
-			GoodyNames.ACTION_SET,
-			sourceAgentID, 
+			actionID,
+			sourceAgentID,
 			paramWriter.getValueMap,
 			System.currentTimeMillis)
 
 		sendTARq(thingActionSpec)
 	}
 
-	
-	
+
 	/**
 	  * TODO(ben)[2016-10-04]: Move to ttl sheet when we have the time.
 	  */
@@ -367,8 +374,8 @@ trait PatientSender_BonusStaging extends OuterLogic with OffersVWorldClient with
 		// Virtual Floors *MUST* have a color and location
 		paramWriter.putColor(0.5f, 0.5f, 0.5f, 1f)
 		paramWriter.putLocation(0f, -0.5f, 0f)
-		val postedTStampMsec: Long = System.currentTimeMillis()
-		val valueMap: SerTypedValueMap = paramWriter.getValueMap()
+		val postedTStampMsec: Long = System.currentTimeMillis
+		val valueMap: SerTypedValueMap = paramWriter.getValueMap
 		val actionInstanceID: Ident = new FreeIdent(IDENT_PREFIX + "action_create_default_virtual_floor")
 		val entityID: Ident = new FreeIdent(IDENT_PREFIX + "default_virtual_floor")
 		val entityTypeID: Ident = GoodyNames.TYPE_FLOOR
@@ -386,13 +393,13 @@ trait PatientSender_BonusStaging extends OuterLogic with OffersVWorldClient with
 
 	def sendToggleSkelHilite(cadmTeller: CPMsgTeller): Unit = {
 		val innerBodyRq = new VWBodySkeletonDisplayToggle
-		val brdcstRq = new VWBroadcastToAllBodies(innerBodyRq)
+		val brdcstRq = VWBroadcastToAllBodies(innerBodyRq)
 		cadmTeller.tellCPMsg(brdcstRq)
 	}
 
 	def sendBodyYoga(cadmTeller: CPMsgTeller): Unit = {
 		val innerBodyRq = new VWBodyDangerYogaRq
-		val brdcstRq = new VWBroadcastToAllBodies(innerBodyRq)
+		val brdcstRq = VWBroadcastToAllBodies(innerBodyRq)
 		cadmTeller.tellCPMsg(brdcstRq)
 	}
 
@@ -403,12 +410,12 @@ trait PatientSender_BonusStaging extends OuterLogic with OffersVWorldClient with
 		val pages: List[OverlayPage] = NavPageDefs.pageList
 		val ovlTeller = vwpt.getOverlayTeller.get
 
-		val ovlSetupMsg = new VWSetupOvlBookRq(pages)
+		val ovlSetupMsg = VWSetupOvlBookRq(pages)
 
 		ovlTeller.tellStrongCPMsg(ovlSetupMsg)
 
 		val outerKeysWidg = new OuterBindNavCmdKeys {}
-		val kcmdReg = new VWKeymapBinding_Medial(outerKeysWidg.navCmdKeyBindMap, vwpt)
+		val kcmdReg = VWKeymapBinding_Medial(outerKeysWidg.navCmdKeyBindMap, vwpt)
 		val stageTeller = vwpt.getStageTeller.get
 		stageTeller.tellCPMsg(kcmdReg)
 	}
@@ -434,7 +441,7 @@ trait PatientSender_BonusStaging extends OuterLogic with OffersVWorldClient with
 
 		// val typedMap =  HashMap(inlineMap)
 		info1("inlineKeymap={}", inlineMap) // , typedMap)
-		val regMsg = new VWKeymapBinding_Medial(inlineMap, vwpt)
+		val regMsg = VWKeymapBinding_Medial(inlineMap, vwpt)
 		val stageTeller = vwpt.getStageTeller.get
 		stageTeller.tellCPMsg(regMsg)
 
@@ -455,16 +462,16 @@ trait PatientSender_BonusStaging extends OuterLogic with OffersVWorldClient with
 		}
 
 		val nextMap = Map("F2" -> funcSkelHiliteToggle)
-		val regMsg2 = new VWKeymapBinding_Medial(nextMap, vwpt)
+		val regMsg2 = VWKeymapBinding_Medial(nextMap, vwpt)
 		stageTeller.tellCPMsg(regMsg2)
 
 	}
 
 	def sendExtraCameraRqs(stageTeller: CPMsgTeller, spcTeller: CPMsgTeller): Unit = {
-		val vpd = new ViewportDesc(0.2f, 0.4f, 0.15f, 0.30f, Some(ColorRGBA.DarkGray))
+		val vpd = ViewportDesc(0.2f, 0.4f, 0.15f, 0.30f, Some(ColorRGBA.DarkGray))
 		val cpv = new Vector3f(-70.0f, 5.0f, -3.0f)
 		val pdir = new Vector3f(1.0f, 0.0f, 0.0f)
-		val cst = new CamStateParams3D(cpv, pdir)
+		val cst = CamStateParams3D(cpv, pdir)
 
 		//val camGuideNodeID: Ident = makeAndBindExtraCam(stageTeller, spcTeller, "extra", cst, vpd)
 		/*
@@ -485,7 +492,7 @@ trait PatientSender_BonusStaging extends OuterLogic with OffersVWorldClient with
 		val rotAngles = Array(45.0f, -45.0f, 15.0f)
 		val guideTgtRot = new Quaternion(rotAngles)
 		val guideTgtScale = Vector3f.UNIT_XYZ
-		val guideTgtXform = new TransformParams3D(guideTgtPos, guideTgtRot, guideTgtScale)
+		val guideTgtXform = TransformParams3D(guideTgtPos, guideTgtRot, guideTgtScale)
 
 		//sendGuidedCamMoveRq(spcTeller, camGuideNodeID, guideTgtXform, Some(60.0f), None)
 		// val endingManip = new SmooveManipEndingImpl(guideTgtXform, 60.0f)

@@ -23,9 +23,7 @@ import org.slf4j.Logger;
  *
  * Our goal in deriving here is just to shutoff QPid's attempt to configure Log4J.
  *
- * Superclass source is here:
- * http://grepcode.com/file/repo1.maven.org/maven2/org.apache.qpid/qpid-broker/0.32/org/apache/qpid/server/Main.java?av=f
- *
+ * Superclass source is here: http://grepcode.com/file/repo1.maven.org/maven2/org.apache.qpid/qpid-broker/0.32/org/apache/qpid/server/Main.java?av=f
  */
 public class QPidBrokerMain extends org.apache.qpid.server.Main {
 
@@ -42,15 +40,19 @@ public class QPidBrokerMain extends org.apache.qpid.server.Main {
 		QPidBrokerMain qbm = new QPidBrokerMain(); // suppresses superclass constructor behavior.
 		return qbm.ourBetterLauncherModifiedFromSuperConstructor(args); // Pass good args, without suppression.
 	}
+
 	private static String SUPPRESSED_ARG = "SUPPRESSED_PARENT";
 	public static String[] suppressionArgsForParentConstructor = {SUPPRESSED_ARG};
+
 	public QPidBrokerMain() {
 		// We *must* call a superclass constructor for this class to compile.
 		// But we don't like what that constructor does, so we disable it with suppressive arg.
-		super (suppressionArgsForParentConstructor);
+		super(suppressionArgsForParentConstructor);
 		theLog.info("Finished suppressed-superclass constructor execution");
 	}
-	@Override protected boolean parseCommandline(final String[] args) {
+
+	@Override
+	protected boolean parseCommandline(final String[] args) {
 		// Implements the suppression trick, since this method happens to be called on first
 		// line of Main's constructor.
 		if ((args.length == 1) && (args[0].equals(SUPPRESSED_ARG))) {
@@ -67,13 +69,11 @@ public class QPidBrokerMain extends org.apache.qpid.server.Main {
 		theLog.info("In QPidBrokerMain.ourBetterLauncherModifiedFromSuperConstructor, hooray!");
 		// We do allow superclass constructor to get past the first line, because it contains
 		// the hard-shutdown exception handler.   Instead we use a modified impl here.
-		if (parseCommandline(args))
-		{
-			try	{
+		if (parseCommandline(args)) {
+			try {
 				execute(); // Note that this calls the startBroker method, which we override below.
 				successFlag = true;
-			}
-			catch(Exception e)	{
+			} catch (Exception e) {
 				theLog.error("QPidBrokerMain caught exception during startup", e);
 				weFailedSoMaybeExitJVM();
 			}
@@ -81,9 +81,10 @@ public class QPidBrokerMain extends org.apache.qpid.server.Main {
 			theLog.error("parseCommandline failed for args={}", (Object) args);
 			weFailedSoMaybeExitJVM();
 		}
-		theLog.info("QPidBrokerMain.ourBetterLauncherMod- returning successFlag={}",successFlag);
+		theLog.info("QPidBrokerMain.ourBetterLauncherMod- returning successFlag={}", successFlag);
 		return successFlag;
 	}
+
 	private void weFailedSoMaybeExitJVM() {
 		// Superclass always does this shutdown on launch failure, but we make it optional.
 		if (doExitOnLaunchFailure) {
@@ -91,9 +92,12 @@ public class QPidBrokerMain extends org.apache.qpid.server.Main {
 			shutdown(1);
 		}
 	}
-	@Override protected void startBroker(final BrokerOptions options) throws Exception {
-		theLog.info("In our special startBroker method, tee hee!");
-		options.setSkipLoggingConfiguration(true);
+
+	@Override
+	protected void startBroker(final BrokerOptions options) throws Exception {
+		final boolean skipLoggingConfiguration = true;
+		theLog.info("Overriding startBroker method. skipLoggingConfiguration={}", skipLoggingConfiguration);
+		options.setSkipLoggingConfiguration(skipLoggingConfiguration);
 		super.startBroker(options); // Herein lies the beef of regular startup.
 	}
 }
