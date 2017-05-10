@@ -496,6 +496,7 @@
 			<name>sonatype public</name>
 			<url>https://oss.sonatype.org/content/groups/public/</url>
 		</pluginRepository>
+		<!--
                 <pluginRepository>
                     <id>semweb4j-repo</id>
                     <name>FZI Maven Repository</name>
@@ -506,7 +507,8 @@
                     <snapshots>
                         <enabled>false</enabled>
                     </snapshots>
-		</pluginRepository>
+			</pluginRepository>
+		-->
 	</pluginRepositories>
         <!-- Disabling, since this is incompatible with project release process
         <distributionManagement>
