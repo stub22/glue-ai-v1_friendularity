@@ -2,7 +2,7 @@ package org.friendularity.spec.connection;
 
 /**
  *
- * @author Major Jacquote II <mjacquote@gmail.com>
+ * @author
  */
 import java.util.Arrays;
 import java.util.Collections;
