@@ -9,10 +9,6 @@ import com.hp.hpl.jena.assembler.Mode;
 
 import org.appdapter.bind.rdf.jena.assembly.ItemAssemblyReader;
 
-/**
- *
- * @author Major Jacquote II <mjacquote@gmail.com>
- */
 public class AnimationLibrarySpecBuilder extends CachingComponentAssembler<AnimationLibrarySpec> {
     private final static String id="http://www.friedularity.org/Connection#libraryID";
             
