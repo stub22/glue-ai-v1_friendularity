@@ -3,10 +3,6 @@ package org.friendularity.spec.connection;
 
 import org.appdapter.bind.rdf.jena.assembly.KnownComponentImpl;
 
-/**
- *
- * @author Major Jacquote II <mjacquote@gmail.com>
- */
 
 
 public class RemoteClientPropertySpec extends KnownComponentImpl {

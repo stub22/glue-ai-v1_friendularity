@@ -1,9 +1,5 @@
 package org.friendularity.spec.connection;
 
-/**
- *
- * @author Major Jacquote II <mjacquote@gmail.com>
- */
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;

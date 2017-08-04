@@ -32,10 +32,6 @@ import org.mechio.api.speech.SpeechRequest;
 import org.mechio.api.speech.SpeechRequestFactory;
 import org.mechio.api.speech.messaging.RemoteSpeechServiceClient;
 
-/**
- *
- * @author Major Jacquote II <mjacquote@gmail.com>
- */
 public class RemoteSpeechServiceClientLifecycle implements ServiceLifecycle<RemoteSpeechServiceClient> {
 
     private final static String theCommandSender = "svc_cmd_sender_dep";
