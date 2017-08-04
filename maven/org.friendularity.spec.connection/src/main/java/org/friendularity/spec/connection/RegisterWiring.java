@@ -35,7 +35,7 @@ import org.jflux.impl.services.rk.osgi.lifecycle.OSGiComponent;
 
 /**
  *
- * @author Major Jacquote II <mjacquote@gmail.com>
+ * @author
  */
 public class RegisterWiring {
 

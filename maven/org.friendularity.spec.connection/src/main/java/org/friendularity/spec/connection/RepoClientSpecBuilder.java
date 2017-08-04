@@ -27,7 +27,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
 
 /**
  *
- * @author Major Jacquote II <mjacquote@gmail.com>
+ * @author
  */
 public class RepoClientSpecBuilder extends CachingComponentAssembler<RepoClientSpec> {
 
