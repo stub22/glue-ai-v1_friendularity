@@ -13,7 +13,7 @@ import org.appdapter.bind.rdf.jena.assembly.ItemAssemblyReader;
 
 /**
  *
- * @author Major Jacquote II <mjacquote@gmail.com>
+ * @author
  */
 public class BundleContextSpecBuilder extends CachingComponentAssembler<BundleContextSpec> {
     private final static String id="http://www.friedularity.org/Connection#libraryID";

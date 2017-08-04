@@ -20,7 +20,7 @@ import org.appdapter.bind.rdf.jena.assembly.KnownComponentImpl;
 
 /**
  *
- * @author Major Jacquote II <mjacquote@gmail.com>
+ * @author
  */
 public class BundleContextSpec extends KnownComponentImpl {
 

@@ -5,7 +5,7 @@ import org.appdapter.help.repo.RepoClient;
 
 /**
  *
- * @author Major Jacquote II <mjacquote@gmail.com>
+ * @author
  */
 public class RepoClientSpec extends KnownComponentImpl {
 

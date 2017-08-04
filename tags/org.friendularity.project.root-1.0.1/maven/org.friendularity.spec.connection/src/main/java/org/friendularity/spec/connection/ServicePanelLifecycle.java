@@ -12,7 +12,7 @@ import org.rwshop.swing.common.lifecycle.ServicesFrame;
 
 /**
  *
- * @author Major Jacquote II <mjacquote@gmail.com>
+ * @author
  */
 public class ServicePanelLifecycle implements ServiceLifecycle<ServicesFrame> {
 

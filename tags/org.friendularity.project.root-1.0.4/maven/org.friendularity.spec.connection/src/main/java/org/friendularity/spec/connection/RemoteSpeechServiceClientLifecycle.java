@@ -34,7 +34,7 @@ import org.mechio.api.speech.messaging.RemoteSpeechServiceClient;
 
 /**
  *
- * @author Major Jacquote II <mjacquote@gmail.com>
+ * @author
  */
 public class RemoteSpeechServiceClientLifecycle implements ServiceLifecycle<RemoteSpeechServiceClient> {
 
