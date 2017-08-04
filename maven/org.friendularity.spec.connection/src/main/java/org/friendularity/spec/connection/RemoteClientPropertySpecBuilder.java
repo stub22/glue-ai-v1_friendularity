@@ -9,10 +9,6 @@ import org.appdapter.core.name.Ident;
 
 import com.hp.hpl.jena.rdf.model.Resource;
 
-/**
- *
- * @author Major Jacquote II <mjavquote@gmail.com>
- */
 public class RemoteClientPropertySpecBuilder extends CachingComponentAssembler<RemoteClientPropertySpec> {
 
     private final String theSpeechServiceId="http://www.friedularity.org/Connection#speechServiceIDRC";
